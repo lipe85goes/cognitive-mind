@@ -1,7 +1,16 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
-import { Check, Play } from "lucide-react";
+import { motion, useReducedMotion } from "motion/react";
+import { Check, LayoutGrid, Play } from "lucide-react";
+import {
+  gentleShakeAnimate,
+  positivePulseAnimate,
+} from "@/lib/feedback-motion";
+import {
+  playGentleErrorTone,
+  playSuccessChime,
+} from "@/lib/game-sounds";
 import { GameActions } from "@/components/GameActions";
 import { GameLayout } from "@/components/GameLayout";
 import { StatCard } from "@/components/ui/StatCard";
@@ -39,35 +48,40 @@ const PANEL_TARGETS: Record<
     label: "Botão azul",
     instructionPart: "no botão azul",
     kind: "button",
-    surface: "bg-sky-100 border-sky-600 text-sky-950",
+    surface:
+      "bg-sky-100 border-sky-600 text-sky-950 shadow-[0_5px_0_0_#0284c7]",
     accent: "bg-sky-500",
   },
   "button-green": {
     label: "Botão verde",
     instructionPart: "no botão verde",
     kind: "button",
-    surface: "bg-emerald-100 border-emerald-600 text-emerald-950",
+    surface:
+      "bg-emerald-100 border-emerald-600 text-emerald-950 shadow-[0_5px_0_0_#059669]",
     accent: "bg-emerald-500",
   },
   "wire-yellow": {
     label: "Fio amarelo",
     instructionPart: "no fio amarelo",
     kind: "wire",
-    surface: "bg-amber-50 border-amber-500 text-amber-950",
+    surface:
+      "bg-amber-50 border-amber-500 text-amber-950 shadow-[0_5px_0_0_#d97706]",
     accent: "bg-amber-400",
   },
   "wire-red": {
     label: "Fio vermelho",
     instructionPart: "no fio vermelho",
     kind: "wire",
-    surface: "bg-rose-50 border-rose-500 text-rose-950",
+    surface:
+      "bg-rose-50 border-rose-500 text-rose-950 shadow-[0_5px_0_0_#e11d48]",
     accent: "bg-rose-500",
   },
   confirm: {
     label: "Confirmar",
     instructionPart: "em Confirmar",
     kind: "confirm",
-    surface: "bg-teal-700 border-teal-900 text-white",
+    surface:
+      "bg-teal-700 border-teal-900 text-white shadow-[0_5px_0_0_#115e59]",
     accent: "bg-teal-600",
   },
 };
@@ -164,6 +178,9 @@ export function SecurityPanelGame({ onComplete, onExit }: GameComponentProps) {
   const [lastTapped, setLastTapped] = useState<PanelTargetId | null>(null);
   const [inputLocked, setInputLocked] = useState(false);
   const [roundMessage, setRoundMessage] = useState<string | null>(null);
+  const [shakeToken, setShakeToken] = useState(0);
+
+  const reducedMotion = useReducedMotion();
 
   const forbiddenRule = useMemo(
     () => getActiveForbiddenRule(level),
@@ -190,13 +207,13 @@ export function SecurityPanelGame({ onComplete, onExit }: GameComponentProps) {
     }) => {
       onComplete({
         activityId: "security-panel",
-        activityTitle: "Painel de Segurança",
+        activityTitle: "Central de Comandos",
         gameId: "security-panel",
         score: calculateSecurityPanelScore(stats),
         summary:
           stats.panelsCompleted > 0
-            ? `Você concluiu ${stats.panelsCompleted} ${stats.panelsCompleted === 1 ? "painel" : "painéis"} no nível ${stats.level}.`
-            : "Continue praticando — seguir instruções fortalece a atenção.",
+            ? `Central ativada! Você concluiu ${stats.panelsCompleted} ${stats.panelsCompleted === 1 ? "sequência" : "sequências"}.`
+            : "Boa tentativa! Releia o comando com calma e tente novamente.",
         details: {
           level: stats.level,
           currentStep: stats.currentStep,
@@ -239,8 +256,10 @@ export function SecurityPanelGame({ onComplete, onExit }: GameComponentProps) {
       currentErrors: number,
       stats: { level: number; panelsCompleted: number; currentStep: number },
     ) => {
+      setShakeToken((t) => t + 1);
+      playGentleErrorTone();
       setTapFeedback("wrong");
-      setRoundMessage("Tente novamente. Observe a instrução.");
+      setRoundMessage("Tente novamente com calma.");
       const nextErrors = currentErrors + 1;
       setErrors(nextErrors);
 
@@ -292,7 +311,7 @@ export function SecurityPanelGame({ onComplete, onExit }: GameComponentProps) {
     }
 
     setTapFeedback("correct");
-    setRoundMessage("Correto");
+    setRoundMessage("Muito bem, comando correto");
 
     window.setTimeout(() => {
       setTapFeedback(null);
@@ -310,7 +329,8 @@ export function SecurityPanelGame({ onComplete, onExit }: GameComponentProps) {
       const nextLevel = level + 1;
       setPanelsCompleted(nextPanels);
       setPhase("round-complete");
-      setRoundMessage("Painel concluído");
+      setRoundMessage("Central ativada");
+      playSuccessChime();
 
       window.setTimeout(() => {
         setRoundMessage(null);
@@ -323,10 +343,11 @@ export function SecurityPanelGame({ onComplete, onExit }: GameComponentProps) {
   const statusMessage = (() => {
     if (phase === "idle") return "Toque em Iniciar para ver a primeira instrução.";
     if (roundMessage) return roundMessage;
-    if (tapFeedback === "wrong") return "Tente novamente. Observe a instrução.";
-    if (tapFeedback === "correct") return "Correto";
-    if (phase === "round-complete") return "Painel concluído";
-    return "Siga a instrução acima, passo a passo.";
+    if (tapFeedback === "wrong") return "Tente novamente com calma.";
+    if (tapFeedback === "correct") return "Muito bem, comando correto";
+    if (phase === "round-complete") return "Sequência concluída";
+    if (roundMessage === "Central ativada") return "Central ativada";
+    return "Siga o comando acima, passo a passo.";
   })();
 
   const statusVariant = (():
@@ -340,8 +361,8 @@ export function SecurityPanelGame({ onComplete, onExit }: GameComponentProps) {
     if (
       tapFeedback === "correct" ||
       phase === "round-complete" ||
-      roundMessage === "Painel concluído" ||
-      roundMessage === "Correto"
+      roundMessage === "Central ativada" ||
+      roundMessage === "Muito bem, comando correto"
     ) {
       return "success";
     }
@@ -357,18 +378,42 @@ export function SecurityPanelGame({ onComplete, onExit }: GameComponentProps) {
     const isConfirm = target.kind === "confirm";
     const isWrong = tapFeedback === "wrong" && lastTapped === targetId;
     const isCorrect = tapFeedback === "correct" && lastTapped === targetId;
+    const isNext =
+      phase === "playing" &&
+      sequence[inputIndex] === targetId &&
+      !inputLocked &&
+      tapFeedback === null;
 
     return (
-      <button
+      <motion.button
         key={targetId}
         type="button"
         disabled={!canTap}
         aria-label={target.label}
         onClick={() => handleTargetPress(targetId)}
-        className={`relative flex min-h-[4.5rem] w-full flex-col items-center justify-center gap-2 rounded-2xl border-4 px-3 py-4 text-lg font-bold transition-colors duration-200 focus-visible:outline-offset-4 disabled:opacity-55 sm:min-h-[5rem] sm:text-xl ${
+        animate={
+          reducedMotion
+            ? undefined
+            : isWrong
+              ? gentleShakeAnimate
+              : isCorrect
+                ? positivePulseAnimate
+                : undefined
+        }
+        whileTap={canTap && !reducedMotion ? { scale: 0.96, y: 2 } : undefined}
+        whileHover={canTap && !reducedMotion ? { y: -2 } : undefined}
+        className={`relative flex min-h-[4.75rem] w-full flex-col items-center justify-center gap-2 rounded-2xl border-4 px-3 py-4 text-lg font-bold transition-[transform,box-shadow] duration-200 focus-visible:outline-offset-4 disabled:opacity-55 sm:min-h-[5.25rem] sm:text-xl ${
           target.surface
-        } ${isWrong ? "!border-red-700 !bg-red-50 ring-4 ring-red-300" : ""} ${
-          isCorrect ? "!border-emerald-700 ring-4 ring-emerald-300" : ""
+        } ${isWrong ? "!border-red-700 !bg-red-50 !shadow-[0_3px_0_0_#dc2626] ring-4 ring-red-300" : ""} ${
+          isCorrect
+            ? "!border-emerald-700 !bg-emerald-100 ring-4 ring-emerald-400"
+            : ""
+        } ${
+          isNext && isConfirm
+            ? "!ring-4 !ring-amber-300 !ring-offset-2"
+            : isNext
+              ? "!ring-2 !ring-teal-400 !ring-offset-2"
+              : ""
         }`}
       >
         {isWire && (
@@ -387,26 +432,27 @@ export function SecurityPanelGame({ onComplete, onExit }: GameComponentProps) {
           <Check className="h-8 w-8 shrink-0" strokeWidth={2.5} aria-hidden />
         )}
         <span>{target.label}</span>
-      </button>
+      </motion.button>
     );
   };
 
   return (
     <GameLayout
-      title="Painel de Segurança"
-      description="Leia a instrução com calma e toque cada item na ordem indicada. Três erros encerram a sessão."
+      title="Central de Comandos"
+      description="Opere botões e fios táteis seguindo a sequência indicada."
+      world="commands"
       onBack={onExit}
       footer={
         <p className="text-center">
-          A partir do nível 3, aparecem regras de não tocar em itens indicados.{" "}
+          A partir da etapa 3, aparecem regras de não tocar em itens indicados.{" "}
           {SECURITY_PANEL_MAX_ERRORS} erros encerram a atividade.
         </p>
       }
     >
       <div className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <StatCard label="Nível" value={level} accent="success" />
+        <StatCard label="Etapa" value={level} accent="success" />
         <StatCard
-          label="Etapa"
+          label="Passo"
           value={
             sequence.length > 0
               ? `${currentStepDisplay}/${sequence.length}`
@@ -422,7 +468,7 @@ export function SecurityPanelGame({ onComplete, onExit }: GameComponentProps) {
       </div>
 
       <div className="mb-4">
-        <StatCard label="Painéis concluídos" value={panelsCompleted} />
+        <StatCard label="Sequências concluídas" value={panelsCompleted} />
       </div>
 
       {phase !== "idle" && instructionText && (
@@ -431,7 +477,7 @@ export function SecurityPanelGame({ onComplete, onExit }: GameComponentProps) {
           aria-live="polite"
         >
           <p className="text-muted mb-2 text-sm font-semibold uppercase tracking-wide">
-            Instrução
+            Comando
           </p>
           <p className="text-xl font-bold leading-snug text-slate-900 sm:text-2xl">
             {instructionText}
@@ -444,18 +490,65 @@ export function SecurityPanelGame({ onComplete, onExit }: GameComponentProps) {
         </div>
       )}
 
-      <StatusBanner variant={statusVariant} className="mb-5">
-        {statusMessage}
-      </StatusBanner>
+      <motion.div
+        key={statusMessage}
+        initial={reducedMotion ? false : { opacity: 0, y: 6 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.25 }}
+      >
+        <StatusBanner variant={statusVariant} className="mb-5">
+          {statusMessage}
+        </StatusBanner>
+      </motion.div>
 
-      <div
-        className={`surface-panel mx-auto w-full min-w-0 space-y-3 p-4 sm:p-5 ${
-          canTap ? "" : phase === "playing" ? "opacity-95" : ""
-        }`}
+      {phase === "playing" && sequence.length > 0 && (
+        <div
+          className="mb-4 flex flex-wrap justify-center gap-2.5 rounded-xl border-2 border-slate-300 bg-slate-800/5 px-4 py-3"
+          role="progressbar"
+          aria-valuenow={inputIndex + 1}
+          aria-valuemin={1}
+          aria-valuemax={sequence.length}
+          aria-label={`Progresso do painel: passo ${currentStepDisplay} de ${sequence.length}`}
+        >
+          {sequence.map((stepId, index) => {
+            const done = index < inputIndex;
+            const current = index === inputIndex;
+            return (
+              <span
+                key={`${stepId}-${index}`}
+                className={`h-3 w-8 rounded-full border-2 transition-shadow sm:h-3.5 sm:w-10 ${
+                  done
+                    ? "border-teal-600 bg-teal-400 shadow-[0_0_10px_rgba(45,212,191,0.7)]"
+                    : current
+                      ? "border-amber-500 bg-amber-300 shadow-[0_0_8px_rgba(251,191,36,0.6)]"
+                      : "border-slate-400 bg-slate-200"
+                }`}
+                aria-hidden
+              />
+            );
+          })}
+        </div>
+      )}
+
+      <motion.div
+        className={`board-surface command-board mx-auto w-full min-w-0 space-y-3 rounded-3xl p-4 sm:p-5 ${
+          phase === "round-complete"
+            ? "border-emerald-500 ring-4 ring-emerald-200"
+            : "border-slate-400"
+        } ${canTap ? "" : phase === "playing" ? "opacity-95" : ""}`}
         role="group"
         aria-label="Painel de segurança com botões e fios"
+        initial={false}
+        animate={
+          reducedMotion || shakeToken === 0 ? undefined : gentleShakeAnimate
+        }
+        key={shakeToken > 0 ? `panel-shake-${shakeToken}` : "panel"}
       >
-        <p className="text-muted text-center text-sm font-medium">
+        <div className="mb-2 flex items-center justify-center gap-2 border-b border-slate-200 pb-3">
+          <LayoutGrid className="h-5 w-5 text-teal-700" aria-hidden />
+          <p className="text-base font-bold text-slate-800">Central de comandos</p>
+        </div>
+        <p className="text-muted -mt-1 mb-1 text-center text-sm font-medium">
           Botões
         </p>
         <div className="grid grid-cols-2 gap-3">
@@ -475,17 +568,17 @@ export function SecurityPanelGame({ onComplete, onExit }: GameComponentProps) {
           Finalizar
         </p>
         {renderTarget("confirm")}
-      </div>
+      </motion.div>
 
       {phase === "idle" ? (
         <button
           type="button"
           onClick={beginGame}
-          aria-label="Iniciar atividade Painel de Segurança"
+          aria-label="Iniciar atividade Central de Comandos"
           className="btn-primary mt-6 flex w-full items-center justify-center gap-2"
         >
           <Play className="h-6 w-6 fill-current" aria-hidden />
-          Iniciar atividade
+          Ativar central
         </button>
       ) : (
         <GameActions

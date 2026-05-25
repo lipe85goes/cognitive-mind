@@ -2,16 +2,24 @@ import type { DifficultyLevel } from "@/types/game";
 
 /** Portuguese labels for result detail keys. */
 export const DETAIL_LABELS: Record<string, string> = {
-  level: "Nível",
+  level: "Etapa",
   sequenceLength: "Sequência",
   errors: "Erros",
   maxErrors: "Máx. erros",
   turns: "Turnos",
   won: "Vitória",
+  starsCollected: "Luzes coletadas",
+  totalStars: "Total de luzes",
   blockedMoves: "Bloqueios",
   difficulty: "Dificuldade",
   currentStep: "Etapa atual",
+  currentNumber: "Número atual",
+  roundsCompleted: "Rodadas concluídas",
+  correctNumbers: "Números corretos",
   panelsCompleted: "Painéis concluídos",
+  movesUsed: "Movimentos usados",
+  movesRemaining: "Movimentos restantes",
+  targetCompleted: "Objetivo concluído",
 };
 
 export const DIFFICULTY_PT: Record<DifficultyLevel, string> = {

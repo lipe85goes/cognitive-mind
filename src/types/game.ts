@@ -8,7 +8,12 @@ export type CognitiveSkill =
 
 export type ActivityStatus = "available" | "locked";
 
-export type GameId = "color-sequence" | "escape-maze" | "security-panel";
+export type GameId =
+  | "color-sequence"
+  | "escape-maze"
+  | "security-panel"
+  | "number-trail"
+  | "seed-garden";
 
 export type DifficultyLevel = "easy" | "medium" | "hard";
 
@@ -60,12 +65,32 @@ export interface SecurityPanelStats {
   score: number;
 }
 
+/** Number Trail game stats tracked during play. */
+export interface NumberTrailStats {
+  level: number;
+  currentNumber: number;
+  errors: number;
+  roundsCompleted: number;
+  score: number;
+}
+
+/** Seed Garden game stats tracked during play. */
+export interface SeedGardenStats {
+  movesUsed: number;
+  movesRemaining: number;
+  targetCompleted: boolean;
+  roundsCompleted: number;
+  score: number;
+}
+
 /** Escape Maze game stats tracked during play. */
 export interface EscapeMazeStats {
   turns: number;
   won: boolean;
   blockedMoves: number;
   errors: number;
+  starsCollected: number;
+  totalStars: number;
   score: number;
   difficulty: DifficultyLevel;
 }

@@ -1,65 +1,101 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
-  return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+import { useCallback, useEffect, useState } from "react";
+import { GamifiedDashboard } from "@/components/GamifiedDashboard";
+import { GameScreen } from "@/components/GameScreen";
+import { RewardResultModal } from "@/components/RewardResultModal";
+import { ACTIVITIES } from "@/data/activities";
+import { getRecentResults, saveGameResult } from "@/engine/storage";
+import type {
+  Activity,
+  DashboardView,
+  GameId,
+  GameResult,
+} from "@/types/game";
+
+/**
+ * Main dashboard: activity grid, game routing, and recent results.
+ * Game logic stays inside each game component under src/games/.
+ */
+export default function HomePage() {
+  const [view, setView] = useState<DashboardView>("home");
+  const [activeGameId, setActiveGameId] = useState<GameId | null>(null);
+  const [lastResult, setLastResult] = useState<GameResult | null>(null);
+  const [recentResults, setRecentResults] = useState<GameResult[]>([]);
+  /** Bumped to remount game components on each new session. */
+  const [gameSession, setGameSession] = useState(0);
+
+  const refreshResults = useCallback(() => {
+    setRecentResults(getRecentResults());
+  }, []);
+
+  useEffect(() => {
+    // Load from localStorage only after mount so SSR and hydration match.
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- client-only storage read
+    setRecentResults(getRecentResults());
+  }, []);
+
+  const openActivity = (activity: Activity) => {
+    if (activity.status !== "available" || !activity.gameId) return;
+    setActiveGameId(activity.gameId);
+    setGameSession((n) => n + 1);
+    setView("game");
+  };
+
+  const handleGameComplete = (
+    partial: Omit<GameResult, "id" | "playedAt">,
+  ) => {
+    const saved = saveGameResult(partial);
+    setLastResult(saved);
+    refreshResults();
+    setView("result");
+  };
+
+  const returnHome = () => {
+    setActiveGameId(null);
+    setView("home");
+  };
+
+  const playAgain = () => {
+    if (lastResult?.gameId) {
+      setActiveGameId(lastResult.gameId);
+      setGameSession((n) => n + 1);
+      setView("game");
+    }
+  };
+
+  if (view === "game" && activeGameId) {
+    return (
+      <main className="flex min-h-full min-w-0 flex-1 flex-col overflow-x-hidden">
+        <GameScreen
+          gameId={activeGameId}
+          sessionKey={gameSession}
+          onComplete={handleGameComplete}
+          onExit={returnHome}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
       </main>
-    </div>
+    );
+  }
+
+  if (view === "result" && lastResult) {
+    return (
+      <main className="flex min-h-full min-w-0 flex-1 items-center justify-center overflow-x-hidden px-4 py-8 sm:py-10">
+        <RewardResultModal
+          result={lastResult}
+          onPlayAgain={playAgain}
+          onDashboard={returnHome}
+        />
+      </main>
+    );
+  }
+
+  return (
+    <main className="mx-auto w-full min-w-0 max-w-4xl flex-1 overflow-x-hidden px-4 py-5 pb-12 sm:px-6 sm:py-6">
+      <GamifiedDashboard
+        activities={ACTIVITIES}
+        recentResults={recentResults}
+        onSelectActivity={openActivity}
+      />
+    </main>
   );
 }

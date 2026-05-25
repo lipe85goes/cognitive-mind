@@ -7,6 +7,7 @@ import {
   Map,
   Palette,
   Search,
+  Sprout,
   Target,
   Zap,
 } from "lucide-react";
@@ -35,6 +36,8 @@ export function ActivityIcon({
       return <ShieldCheck className={className} strokeWidth={2} aria-hidden />;
     case "number-trail":
       return <Hash className={className} strokeWidth={2} aria-hidden />;
+    case "seed-garden":
+      return <Sprout className={className} strokeWidth={2} aria-hidden />;
     case "quick-tap":
       return <Zap className={className} strokeWidth={2} aria-hidden />;
     case "pattern-match":
