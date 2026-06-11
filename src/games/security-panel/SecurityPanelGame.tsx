@@ -441,6 +441,7 @@ export function SecurityPanelGame({ onComplete, onExit }: GameComponentProps) {
       title="Central de Comandos"
       description="Opere botões e fios táteis seguindo a sequência indicada."
       world="commands"
+      wide
       onBack={onExit}
       footer={
         <p className="text-center">
@@ -449,151 +450,158 @@ export function SecurityPanelGame({ onComplete, onExit }: GameComponentProps) {
         </p>
       }
     >
-      <div className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <StatCard label="Etapa" value={level} accent="success" />
-        <StatCard
-          label="Passo"
-          value={
-            sequence.length > 0
-              ? `${currentStepDisplay}/${sequence.length}`
-              : "—"
-          }
-        />
-        <StatCard
-          label="Erros"
-          value={`${errors}/${SECURITY_PANEL_MAX_ERRORS}`}
-          accent={errors > 0 ? "danger" : "default"}
-        />
-        <StatCard label="Pontuação" value={score} accent="score" />
-      </div>
-
-      <div className="mb-4">
-        <StatCard label="Sequências concluídas" value={panelsCompleted} />
-      </div>
-
-      {phase !== "idle" && instructionText && (
-        <div
-          className="surface-panel mb-4 px-4 py-5 text-center"
-          aria-live="polite"
-        >
-          <p className="text-muted mb-2 text-sm font-semibold uppercase tracking-wide">
-            Comando
-          </p>
-          <p className="text-xl font-bold leading-snug text-slate-900 sm:text-2xl">
-            {instructionText}
-          </p>
-          {forbiddenRule && (
-            <p className="mt-3 text-lg font-semibold text-amber-900">
-              {forbiddenRule.ruleText}
-            </p>
+      <div className="miniworld-grid command-world-grid">
+        <aside className="miniworld-side" aria-label="Instrução do comando">
+          <section className="miniworld-guide-card command-guide-card">
+            <p className="miniworld-label">Missão</p>
+            <h3>Ative a central</h3>
+            <ol className="miniworld-steps">
+              <li>Observe a instrução exibida.</li>
+              <li>Acione botões e fios na ordem.</li>
+              <li>Confirme para completar o circuito.</li>
+            </ol>
+          </section>
+          {phase !== "idle" && instructionText && (
+            <section className="miniworld-command-card" aria-live="polite">
+              <p className="miniworld-label">Comando atual</p>
+              <p className="miniworld-command-text">{instructionText}</p>
+              {forbiddenRule && <p className="miniworld-rule">{forbiddenRule.ruleText}</p>}
+            </section>
           )}
-        </div>
-      )}
+        </aside>
 
-      <motion.div
-        key={statusMessage}
-        initial={reducedMotion ? false : { opacity: 0, y: 6 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.25 }}
-      >
-        <StatusBanner variant={statusVariant} className="mb-5">
-          {statusMessage}
-        </StatusBanner>
-      </motion.div>
+        <section className="miniworld-play-area" aria-label="Mesa de comandos">
+          <motion.div
+            key={statusMessage}
+            initial={reducedMotion ? false : { opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.25 }}
+          >
+            <StatusBanner
+              variant={statusVariant}
+              label="Sinal da central"
+              className="mb-4"
+            >
+              {statusMessage}
+            </StatusBanner>
+          </motion.div>
 
-      {phase === "playing" && sequence.length > 0 && (
-        <div
-          className="mb-4 flex flex-wrap justify-center gap-2.5 rounded-xl border-2 border-slate-300 bg-slate-800/5 px-4 py-3"
-          role="progressbar"
-          aria-valuenow={inputIndex + 1}
-          aria-valuemin={1}
-          aria-valuemax={sequence.length}
-          aria-label={`Progresso do painel: passo ${currentStepDisplay} de ${sequence.length}`}
-        >
-          {sequence.map((stepId, index) => {
-            const done = index < inputIndex;
-            const current = index === inputIndex;
-            return (
-              <span
-                key={`${stepId}-${index}`}
-                className={`h-3 w-8 rounded-full border-2 transition-shadow sm:h-3.5 sm:w-10 ${
-                  done
-                    ? "border-teal-600 bg-teal-400 shadow-[0_0_10px_rgba(45,212,191,0.7)]"
-                    : current
-                      ? "border-amber-500 bg-amber-300 shadow-[0_0_8px_rgba(251,191,36,0.6)]"
-                      : "border-slate-400 bg-slate-200"
-                }`}
-                aria-hidden
+          {phase === "idle" && (
+            <section className="miniworld-action-card miniworld-quick-start">
+              <p>Comece para receber um comando simples de cada vez.</p>
+              <button
+                type="button"
+                onClick={beginGame}
+                aria-label="Iniciar atividade Central de Comandos"
+                className="btn-primary flex w-full items-center justify-center gap-2"
+              >
+                <Play className="h-6 w-6 fill-current" aria-hidden />
+                Ativar central
+              </button>
+            </section>
+          )}
+
+          {phase === "playing" && sequence.length > 0 && (
+            <div
+              className="command-progress-lights"
+              role="progressbar"
+              aria-valuenow={inputIndex + 1}
+              aria-valuemin={1}
+              aria-valuemax={sequence.length}
+              aria-label={`Progresso do painel: passo ${currentStepDisplay} de ${sequence.length}`}
+            >
+              {sequence.map((stepId, index) => {
+                const done = index < inputIndex;
+                const current = index === inputIndex;
+                return (
+                  <span
+                    key={`${stepId}-${index}`}
+                    className={done ? "is-lit" : current ? "is-current" : ""}
+                    aria-hidden
+                  />
+                );
+              })}
+            </div>
+          )}
+
+          <motion.div
+            className={`board-surface command-board command-console mx-auto w-full min-w-0 space-y-3 rounded-3xl p-4 sm:p-5 ${
+              phase === "round-complete"
+                ? "border-emerald-500 ring-4 ring-emerald-200"
+                : "border-slate-400"
+            } ${canTap ? "" : phase === "playing" ? "opacity-95" : ""}`}
+            role="group"
+            aria-label="Central de comandos com botões e fios"
+            initial={false}
+            animate={
+              reducedMotion || shakeToken === 0 ? undefined : gentleShakeAnimate
+            }
+            key={shakeToken > 0 ? `panel-shake-${shakeToken}` : "panel"}
+          >
+            <div className="mb-2 flex items-center justify-center gap-2 border-b border-teal-100 pb-3">
+              <LayoutGrid className="h-6 w-6 text-teal-700" aria-hidden />
+              <p className="text-lg font-bold text-slate-800">Painel de ativação</p>
+            </div>
+            <p className="text-muted -mt-1 mb-1 text-center text-sm font-medium">Botões</p>
+            <div className="grid grid-cols-2 gap-3">
+              {renderTarget("button-blue")}
+              {renderTarget("button-green")}
+            </div>
+            <p className="text-muted pt-1 text-center text-sm font-medium">Fios</p>
+            <div className="grid grid-cols-2 gap-3">
+              {renderTarget("wire-yellow")}
+              {renderTarget("wire-red")}
+            </div>
+            <p className="text-muted pt-1 text-center text-sm font-medium">Finalizar</p>
+            {renderTarget("confirm")}
+          </motion.div>
+        </section>
+
+        <aside className="miniworld-side" aria-label="Ações e progresso">
+          <section
+            className={`miniworld-action-card ${
+              phase === "idle" ? "miniworld-idle-side-action" : ""
+            }`}
+          >
+            <p>Leia o comando e confirme somente quando estiver pronto.</p>
+            {phase === "idle" ? (
+              <button
+                type="button"
+                onClick={beginGame}
+                aria-label="Iniciar atividade Central de Comandos"
+                className="btn-primary flex w-full items-center justify-center gap-2"
+              >
+                <Play className="h-6 w-6 fill-current" aria-hidden />
+                Ativar central
+              </button>
+            ) : (
+              <GameActions
+                onRestart={restartSession}
+                onEndSession={() =>
+                  finishGame({
+                    level,
+                    panelsCompleted,
+                    errors,
+                    currentStep: currentStepDisplay,
+                  })
+                }
+                disabled={inputLocked && phase === "playing"}
               />
-            );
-          })}
-        </div>
-      )}
-
-      <motion.div
-        className={`board-surface command-board mx-auto w-full min-w-0 space-y-3 rounded-3xl p-4 sm:p-5 ${
-          phase === "round-complete"
-            ? "border-emerald-500 ring-4 ring-emerald-200"
-            : "border-slate-400"
-        } ${canTap ? "" : phase === "playing" ? "opacity-95" : ""}`}
-        role="group"
-        aria-label="Painel de segurança com botões e fios"
-        initial={false}
-        animate={
-          reducedMotion || shakeToken === 0 ? undefined : gentleShakeAnimate
-        }
-        key={shakeToken > 0 ? `panel-shake-${shakeToken}` : "panel"}
-      >
-        <div className="mb-2 flex items-center justify-center gap-2 border-b border-slate-200 pb-3">
-          <LayoutGrid className="h-5 w-5 text-teal-700" aria-hidden />
-          <p className="text-base font-bold text-slate-800">Central de comandos</p>
-        </div>
-        <p className="text-muted -mt-1 mb-1 text-center text-sm font-medium">
-          Botões
-        </p>
-        <div className="grid grid-cols-2 gap-3">
-          {renderTarget("button-blue")}
-          {renderTarget("button-green")}
-        </div>
-
-        <p className="text-muted pt-1 text-center text-sm font-medium">
-          Fios
-        </p>
-        <div className="grid grid-cols-2 gap-3">
-          {renderTarget("wire-yellow")}
-          {renderTarget("wire-red")}
-        </div>
-
-        <p className="text-muted pt-1 text-center text-sm font-medium">
-          Finalizar
-        </p>
-        {renderTarget("confirm")}
-      </motion.div>
-
-      {phase === "idle" ? (
-        <button
-          type="button"
-          onClick={beginGame}
-          aria-label="Iniciar atividade Central de Comandos"
-          className="btn-primary mt-6 flex w-full items-center justify-center gap-2"
-        >
-          <Play className="h-6 w-6 fill-current" aria-hidden />
-          Ativar central
-        </button>
-      ) : (
-        <GameActions
-          onRestart={restartSession}
-          onEndSession={() =>
-            finishGame({
-              level,
-              panelsCompleted,
-              errors,
-              currentStep: currentStepDisplay,
-            })
-          }
-          disabled={inputLocked && phase === "playing"}
-        />
-      )}
+            )}
+          </section>
+          <div className="miniworld-stats-grid">
+            <StatCard label="Etapa" value={level} accent="success" />
+            <StatCard label="Passo" value={sequence.length > 0 ? `${currentStepDisplay}/${sequence.length}` : "—"} />
+            <StatCard label="Erros" value={`${errors}/${SECURITY_PANEL_MAX_ERRORS}`} accent={errors > 0 ? "danger" : "default"} />
+            <StatCard label="Pontuação" value={score} accent="score" />
+          </div>
+          <section className="miniworld-focus-card command-focus-card">
+            <p>Centrais ativadas</p>
+            <strong>{panelsCompleted}</strong>
+            <span>Cada sequência acende o painel.</span>
+          </section>
+        </aside>
+      </div>
     </GameLayout>
   );
 }

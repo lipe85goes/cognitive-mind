@@ -48,41 +48,6 @@ export interface GameComponentProps {
   onExit: () => void;
 }
 
-/** Color Sequence game stats tracked during play. */
-export interface ColorSequenceStats {
-  level: number;
-  sequenceLength: number;
-  errors: number;
-  score: number;
-}
-
-/** Security Panel game stats tracked during play. */
-export interface SecurityPanelStats {
-  level: number;
-  currentStep: number;
-  errors: number;
-  panelsCompleted: number;
-  score: number;
-}
-
-/** Number Trail game stats tracked during play. */
-export interface NumberTrailStats {
-  level: number;
-  currentNumber: number;
-  errors: number;
-  roundsCompleted: number;
-  score: number;
-}
-
-/** Seed Garden game stats tracked during play. */
-export interface SeedGardenStats {
-  movesUsed: number;
-  movesRemaining: number;
-  targetCompleted: boolean;
-  roundsCompleted: number;
-  score: number;
-}
-
 /** Escape Maze game stats tracked during play. */
 export interface EscapeMazeStats {
   turns: number;
@@ -94,8 +59,6 @@ export interface EscapeMazeStats {
   score: number;
   difficulty: DifficultyLevel;
 }
-
-export type CellType = "empty" | "wall" | "player" | "predator" | "exit";
 
 export interface GridPosition {
   row: number;

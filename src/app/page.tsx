@@ -35,6 +35,12 @@ export default function HomePage() {
     setRecentResults(getRecentResults());
   }, []);
 
+  useEffect(() => {
+    // Each view is a new "screen": start it at the top so users never land
+    // mid-page when opening a game or returning to the dashboard.
+    window.scrollTo(0, 0);
+  }, [view, activeGameId, gameSession]);
+
   const openActivity = (activity: Activity) => {
     if (activity.status !== "available" || !activity.gameId) return;
     setActiveGameId(activity.gameId);
@@ -90,7 +96,7 @@ export default function HomePage() {
   }
 
   return (
-    <main className="mx-auto w-full min-w-0 max-w-4xl flex-1 overflow-x-hidden px-4 py-5 pb-12 sm:px-6 sm:py-6">
+    <main className="mx-auto w-full min-w-0 max-w-[88rem] flex-1 overflow-x-hidden px-4 py-5 pb-12 sm:px-6 sm:py-6">
       <GamifiedDashboard
         activities={ACTIVITIES}
         recentResults={recentResults}

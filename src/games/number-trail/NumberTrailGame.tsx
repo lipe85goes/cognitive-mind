@@ -203,7 +203,7 @@ export function NumberTrailGame({ onComplete, onExit }: GameComponentProps) {
       const nextLevel = Math.min(level + 1, LEVEL_NUMBER_COUNTS.length);
       setRoundsCompleted(nextRoundsCompleted);
       setPhase("round-complete");
-      setMessage("Rota concluída");
+      setMessage("Trecho da trilha concluído!");
       playSuccessChime();
 
       window.setTimeout(() => {
@@ -224,7 +224,7 @@ export function NumberTrailGame({ onComplete, onExit }: GameComponentProps) {
   const statusMessage = (() => {
     if (phase === "idle") return "Toque em Iniciar para começar.";
     if (message) return message;
-    if (phase === "round-complete") return "Rota concluída";
+    if (phase === "round-complete") return "Trecho da trilha concluído!";
     return `Siga o próximo número: ${targetNumber}`;
   })();
 
@@ -242,6 +242,7 @@ export function NumberTrailGame({ onComplete, onExit }: GameComponentProps) {
       title="Trilha Lógica"
       description="Construa uma rota tocando os números na ordem indicada."
       world="logic"
+      wide
       onBack={onExit}
       footer={
         <p className="text-center">
@@ -250,170 +251,169 @@ export function NumberTrailGame({ onComplete, onExit }: GameComponentProps) {
         </p>
       }
     >
-      <div className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <StatCard label="Etapa" value={level} accent="success" />
-        <StatCard
-          label="Número atual"
-          value={phase === "idle" ? "—" : targetNumber}
-        />
-        <StatCard
-          label="Erros"
-          value={`${errors}/${NUMBER_TRAIL_MAX_ERRORS}`}
-          accent={errors > 0 ? "danger" : "default"}
-        />
-        <StatCard label="Pontuação" value={score} accent="score" />
-      </div>
+      <div className="miniworld-grid logic-world-grid">
+        <aside className="miniworld-side" aria-label="Orientação da trilha">
+          <section className="miniworld-guide-card logic-guide-card">
+            <p className="miniworld-label">Objetivo</p>
+            <h3>Construa o caminho</h3>
+            <ol className="miniworld-steps">
+              <li>Veja o próximo número indicado.</li>
+              <li>Encontre a peça na trilha.</li>
+              <li>Ative a rota no seu ritmo.</li>
+            </ol>
+          </section>
+          <section className="logic-target-card" aria-live="polite">
+            <p>Siga o próximo número</p>
+            <strong>{phase === "idle" ? "—" : targetNumber}</strong>
+            <span>A sequência muda a cada rodada.</span>
+          </section>
+        </aside>
 
-      <div className="mb-4">
-        <StatCard label="Rodadas concluídas" value={roundsCompleted} />
-      </div>
+        <section className="miniworld-play-area" aria-label="Tabuleiro da trilha">
+          <motion.div
+            key={statusMessage}
+            initial={reducedMotion ? false : { opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.25 }}
+          >
+            <StatusBanner
+              variant={statusVariant}
+              label="Sinal da trilha"
+              className="mb-4"
+            >
+              {statusMessage}
+            </StatusBanner>
+          </motion.div>
 
-      <motion.div
-        key={statusMessage}
-        initial={reducedMotion ? false : { opacity: 0, y: 6 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.25 }}
-      >
-        <StatusBanner variant={statusVariant} className="mb-5">
-          {statusMessage}
-        </StatusBanner>
-      </motion.div>
+          {phase === "idle" && (
+            <section className="miniworld-action-card miniworld-quick-start">
+              <p>Comece e procure somente o número mostrado a cada vez.</p>
+              <button
+                type="button"
+                onClick={beginGame}
+                aria-label="Iniciar atividade Trilha Lógica"
+                className="btn-primary flex w-full items-center justify-center gap-2"
+              >
+                <Play className="h-6 w-6 fill-current" aria-hidden />
+                Iniciar trilha
+              </button>
+            </section>
+          )}
 
-      {phase !== "idle" && (
-        <div
-          className="surface-panel mb-4 flex items-center justify-center gap-3 border-teal-200 bg-teal-50 px-4 py-5 text-center"
-          aria-live="polite"
-        >
-          <Hash className="h-7 w-7 shrink-0 text-teal-700" aria-hidden />
-          <p className="text-2xl font-bold text-slate-900">
-            Próximo número{" "}
-            <span className="tabular-nums text-teal-700">{targetNumber}</span>
-          </p>
-        </div>
-      )}
+          <motion.div
+            className={`board-surface logic-board logic-path-board mx-auto w-full min-w-0 rounded-3xl p-3 sm:p-5 ${
+              phase === "round-complete"
+                ? "border-emerald-500 ring-4 ring-emerald-200"
+                : ""
+            }`}
+            role="group"
+            aria-label="Grade da Trilha Lógica"
+            initial={false}
+            animate={
+              reducedMotion || shakeToken === 0 ? undefined : gentleShakeAnimate
+            }
+            key={
+              shakeToken > 0 ? `number-trail-shake-${shakeToken}` : "number-trail"
+            }
+          >
+            {phase === "idle" ? (
+              <div className="logic-empty-board">
+                <Hash className="mb-3 h-12 w-12 text-indigo-700" aria-hidden />
+                <p className="text-xl font-bold text-slate-900">Pronto para seguir a rota?</p>
+                <p className="text-muted mt-2">
+                  A ordem muda a cada rodada. Leia o número indicado e procure com calma.
+                </p>
+              </div>
+            ) : (
+              <div className="logic-tile-grid">
+                {tiles.map((tile) => {
+                  const done = completedSet.has(tile.value);
+                  const isWrong = tapFeedback === "wrong" && lastTapped === tile.value;
+                  const isCorrect = tapFeedback === "correct" && lastTapped === tile.value;
 
-      <motion.div
-        className={`board-surface logic-board mx-auto w-full min-w-0 rounded-3xl p-3 sm:p-4 ${
-          phase === "round-complete"
-            ? "border-emerald-500 ring-4 ring-emerald-200"
-            : ""
-        }`}
-        role="group"
-        aria-label="Grade da Trilha Lógica"
-        initial={false}
-        animate={
-          reducedMotion || shakeToken === 0 ? undefined : gentleShakeAnimate
-        }
-        key={
-          shakeToken > 0 ? `number-trail-shake-${shakeToken}` : "number-trail"
-        }
-      >
-        {phase === "idle" ? (
-          <div className="flex min-h-[16rem] flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-300 bg-white/70 px-5 py-8 text-center">
-            <Hash className="mb-3 h-12 w-12 text-teal-700" aria-hidden />
-            <p className="text-xl font-bold text-slate-900">
-              Pronto para seguir a rota?
-            </p>
-            <p className="text-muted mt-2">
-              A ordem muda a cada rodada. Leia o número indicado e procure com calma.
-            </p>
+                  return (
+                    <motion.button
+                      key={`${tile.value}-${tile.position}`}
+                      type="button"
+                      disabled={phase !== "playing" || inputLocked || done}
+                      aria-label={`Tocar número ${tile.value}`}
+                      aria-pressed={done}
+                      onClick={() => handleNumberPress(tile.value)}
+                      animate={
+                        reducedMotion
+                          ? undefined
+                          : isWrong
+                            ? gentleShakeAnimate
+                            : isCorrect
+                              ? positivePulseAnimate
+                              : undefined
+                      }
+                      whileHover={phase === "playing" && !inputLocked && !done && !reducedMotion ? { y: -3 } : undefined}
+                      whileTap={phase === "playing" && !inputLocked && !done && !reducedMotion ? { scale: 0.96, y: 2 } : undefined}
+                      className={`logic-tile relative flex aspect-square min-h-20 w-full items-center justify-center rounded-2xl border-4 text-3xl font-bold tabular-nums transition-[background,border-color,box-shadow,transform,opacity] duration-200 focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[var(--focus-ring)] sm:min-h-24 sm:text-4xl ${
+                        done
+                          ? "is-complete border-emerald-600 bg-emerald-100 text-emerald-900 shadow-[0_4px_0_0_#059669]"
+                          : "tactile-tile border-indigo-600 bg-[#fffefa] text-slate-950"
+                      } ${isWrong ? "!border-red-700 !bg-red-50 !text-red-900 !shadow-[0_3px_0_0_#dc2626] ring-4 ring-red-300" : ""} ${
+                        isCorrect ? "!border-emerald-700 !bg-emerald-100 ring-4 ring-emerald-400" : ""
+                      } disabled:cursor-default disabled:opacity-85`}
+                    >
+                      {done && <Check className="absolute right-2 top-2 h-5 w-5 text-emerald-700" strokeWidth={3} aria-hidden />}
+                      {tile.value}
+                    </motion.button>
+                  );
+                })}
+              </div>
+            )}
+          </motion.div>
+        </section>
+
+        <aside className="miniworld-side" aria-label="Ações e progresso">
+          <section
+            className={`miniworld-action-card ${
+              phase === "idle" ? "miniworld-idle-side-action" : ""
+            }`}
+          >
+            <p>Não há relógio. Procure a peça indicada com calma.</p>
+            {phase === "idle" ? (
+              <button
+                type="button"
+                onClick={beginGame}
+                aria-label="Iniciar atividade Trilha Lógica"
+                className="btn-primary flex w-full items-center justify-center gap-2"
+              >
+                <Play className="h-6 w-6 fill-current" aria-hidden />
+                Iniciar trilha
+              </button>
+            ) : (
+              <GameActions
+                onRestart={restartSession}
+                onEndSession={() =>
+                  finishGame({
+                    level,
+                    currentNumber: targetNumber,
+                    errors,
+                    roundsCompleted,
+                    correctNumbers,
+                  })
+                }
+                disabled={inputLocked && phase === "playing"}
+              />
+            )}
+          </section>
+          <div className="miniworld-stats-grid">
+            <StatCard label="Etapa" value={level} accent="success" />
+            <StatCard label="Número atual" value={phase === "idle" ? "—" : targetNumber} />
+            <StatCard label="Erros" value={`${errors}/${NUMBER_TRAIL_MAX_ERRORS}`} accent={errors > 0 ? "danger" : "default"} />
+            <StatCard label="Pontuação" value={score} accent="score" />
           </div>
-        ) : (
-          <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
-            {tiles.map((tile) => {
-              const done = completedSet.has(tile.value);
-              const isWrong =
-                tapFeedback === "wrong" && lastTapped === tile.value;
-              const isCorrect =
-                tapFeedback === "correct" && lastTapped === tile.value;
-
-              return (
-                <motion.button
-                  key={`${tile.value}-${tile.position}`}
-                  type="button"
-                  disabled={phase !== "playing" || inputLocked || done}
-                  aria-label={`Tocar número ${tile.value}`}
-                  aria-pressed={done}
-                  onClick={() => handleNumberPress(tile.value)}
-                  animate={
-                    reducedMotion
-                      ? undefined
-                      : isWrong
-                        ? gentleShakeAnimate
-                        : isCorrect
-                          ? positivePulseAnimate
-                          : undefined
-                  }
-                  whileHover={
-                    phase === "playing" &&
-                    !inputLocked &&
-                    !done &&
-                    !reducedMotion
-                      ? { y: -3 }
-                      : undefined
-                  }
-                  whileTap={
-                    phase === "playing" &&
-                    !inputLocked &&
-                    !done &&
-                    !reducedMotion
-                      ? { scale: 0.96, y: 2 }
-                      : undefined
-                  }
-                  className={`relative flex aspect-square min-h-20 w-full items-center justify-center rounded-2xl border-4 text-3xl font-bold tabular-nums transition-[background,border-color,box-shadow,transform,opacity] duration-200 focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[var(--focus-ring)] sm:min-h-24 sm:text-4xl ${
-                    done
-                      ? "border-emerald-600 bg-emerald-100 text-emerald-900 shadow-[0_4px_0_0_#059669]"
-                      : "tactile-tile border-sky-700 bg-[#fffefa] text-slate-950 shadow-[0_7px_0_0_#0369a1,0_10px_22px_rgb(14_165_233/0.16)]"
-                  } ${
-                    isWrong
-                      ? "!border-red-700 !bg-red-50 !text-red-900 !shadow-[0_3px_0_0_#dc2626] ring-4 ring-red-300"
-                      : ""
-                  } ${
-                    isCorrect
-                      ? "!border-emerald-700 !bg-emerald-100 ring-4 ring-emerald-400"
-                      : ""
-                  } disabled:cursor-default disabled:opacity-85`}
-                >
-                  {done && (
-                    <Check
-                      className="absolute right-2 top-2 h-5 w-5 text-emerald-700"
-                      strokeWidth={3}
-                      aria-hidden
-                    />
-                  )}
-                  {tile.value}
-                </motion.button>
-              );
-            })}
-          </div>
-        )}
-      </motion.div>
-
-      {phase === "idle" ? (
-        <button
-          type="button"
-          onClick={beginGame}
-          aria-label="Iniciar atividade Trilha Lógica"
-          className="btn-primary mt-6 flex w-full items-center justify-center gap-2"
-        >
-          <Play className="h-6 w-6 fill-current" aria-hidden />
-          Iniciar trilha
-        </button>
-      ) : (
-        <GameActions
-          onRestart={restartSession}
-          onEndSession={() =>
-            finishGame({
-              level,
-              currentNumber: targetNumber,
-              errors,
-              roundsCompleted,
-              correctNumbers,
-            })
-          }
-          disabled={inputLocked && phase === "playing"}
-        />
-      )}
+          <section className="miniworld-focus-card logic-focus-card">
+            <p>Caminhos concluídos</p>
+            <strong>{roundsCompleted}</strong>
+            <span>As peças acesas formam sua trilha.</span>
+          </section>
+        </aside>
+      </div>
     </GameLayout>
   );
 }

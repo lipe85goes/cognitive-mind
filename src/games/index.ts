@@ -19,9 +19,3 @@ export const GAME_COMPONENTS: Record<
   "number-trail": NumberTrailGame,
   "seed-garden": SeedGardenGame,
 };
-
-export function getGameComponent(
-  gameId: GameId,
-): ComponentType<GameComponentProps> | null {
-  return GAME_COMPONENTS[gameId] ?? null;
-}

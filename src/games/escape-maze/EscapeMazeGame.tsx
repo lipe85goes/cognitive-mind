@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import {
   ChevronDown,
@@ -80,6 +80,13 @@ const MAZE_TEMPLATES: number[][][] = [
 ];
 
 const FALLBACK_GRID = MAZE_TEMPLATES[0];
+
+const ARROW_DELTAS: Record<string, GridPosition> = {
+  ArrowUp: { row: -1, col: 0 },
+  ArrowDown: { row: 1, col: 0 },
+  ArrowLeft: { row: 0, col: -1 },
+  ArrowRight: { row: 0, col: 1 },
+};
 
 const DIFFICULTY_LABELS: Record<DifficultyLevel, string> = {
   easy: "Mais aberto",
@@ -412,8 +419,8 @@ export function generateMaze(difficulty: DifficultyLevel): MazeMap {
  * Turn-based maze escape: reach the exit before the guardian catches you.
  */
 export function EscapeMazeGame({ onComplete, onExit }: GameComponentProps) {
-  const [difficulty, setDifficulty] = useState<DifficultyLevel>("medium");
-  const [mazeMap, setMazeMap] = useState<MazeMap>(() => generateMaze("medium"));
+  const [difficulty, setDifficulty] = useState<DifficultyLevel>("easy");
+  const [mazeMap, setMazeMap] = useState<MazeMap>(() => generateMaze("easy"));
   const [player, setPlayer] = useState<GridPosition>(mazeMap.playerStart);
   const [guardian, setGuardian] = useState<GridPosition>(
     mazeMap.guardianStart,
@@ -476,7 +483,7 @@ export function EscapeMazeGame({ onComplete, onExit }: GameComponentProps) {
       setStatus(won ? "won" : "lost");
       if (won) {
         playSuccessChime();
-        setMessage("Você chegou ao destino!");
+        setMessage("Rota concluída! Você chegou à saída.");
       } else {
         playGentleErrorTone();
         setMessage("Boa tentativa! Tente outra rota com calma.");
@@ -495,7 +502,7 @@ export function EscapeMazeGame({ onComplete, onExit }: GameComponentProps) {
           difficulty: finalStats.difficulty,
         }),
         summary: won
-          ? `Você chegou ao destino em ${finalStats.turns} turnos e coletou ${finalStats.starsCollected} ${
+          ? `Você chegou à saída em ${finalStats.turns} turnos e coletou ${finalStats.starsCollected} ${
               finalStats.starsCollected === 1 ? "luz" : "luzes"
             }.`
           : "Boa tentativa! Tente outra rota com calma.",
@@ -618,6 +625,22 @@ export function EscapeMazeGame({ onComplete, onExit }: GameComponentProps) {
     );
   };
 
+  // Optional keyboard support: arrow keys mirror the on-screen move buttons.
+  // No dependency array so the handler always sees the latest game state.
+  useEffect(() => {
+    if (status !== "playing") return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const delta = ARROW_DELTAS[event.key];
+      if (!delta) return;
+      event.preventDefault();
+      tryMovePlayer(delta);
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  });
+
   const renderCell = (row: number, col: number) => {
     const pos = { row, col };
     const key = posKey(pos);
@@ -731,182 +754,147 @@ export function EscapeMazeGame({ onComplete, onExit }: GameComponentProps) {
       title="Rota Estratégica"
       description="Escolha caminhos com calma, colete luzes e evite o guardião."
       world="route"
+      wide
       onBack={onExit}
+      footer={
+        <p className="text-center">
+          Toque nos botões de direção ou use as setas do teclado para mover.
+        </p>
+      }
     >
-      <div className="min-w-0 w-full max-w-full">
-        {status === "setup" && (
-          <div className="surface-panel mb-5 space-y-4 p-4 sm:p-5">
-            <div className="flex items-center gap-2 text-lg font-bold text-slate-800">
-              <Gauge className="h-6 w-6 text-teal-700" aria-hidden />
-              Escolha a dificuldade
-            </div>
-            <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3">
-              {(["easy", "medium", "hard"] as DifficultyLevel[]).map((level) => (
-                <button
-                  key={level}
-                  type="button"
-                  onClick={() => handleDifficultyChange(level)}
-                  aria-label={`Dificuldade ${DIFFICULTY_TITLE[level]}: ${DIFFICULTY_LABELS[level]}`}
-                  aria-pressed={difficulty === level}
-                  className={`flex min-h-[4.25rem] flex-col items-center justify-center rounded-xl border-2 px-3 py-3 transition ${
-                    difficulty === level
-                      ? "border-teal-600 bg-teal-50 text-teal-900"
-                      : "border-slate-300 bg-white text-slate-800 hover:border-teal-400"
-                  }`}
-                >
-                  <span className="text-lg font-bold">
-                    {DIFFICULTY_TITLE[level]}
-                  </span>
-                  <span className="mt-0.5 text-center text-sm font-semibold text-slate-600">
-                    {DIFFICULTY_LABELS[level]}
-                  </span>
-                </button>
-              ))}
-            </div>
-            <button
-              type="button"
-              onClick={startGame}
-              aria-label="Iniciar labirinto com a dificuldade selecionada"
-              className="btn-primary flex w-full items-center justify-center gap-2"
-            >
-              <Play className="h-6 w-6 fill-current" aria-hidden />
-              Iniciar rota
-            </button>
-          </div>
-        )}
+      <div className="miniworld-grid route-world-grid">
+        <aside className="miniworld-side" aria-label="Orientações da rota">
+          <section className="miniworld-guide-card route-guide-card">
+            <p className="miniworld-label">Objetivo</p>
+            <h3>Chegue à saída</h3>
+            <ol className="miniworld-steps">
+              <li>Leve seu explorador pelo caminho livre.</li>
+              <li>Colete luzes se desejar mais pontos.</li>
+              <li>Evite o guardião com escolhas calmas.</li>
+            </ol>
+          </section>
+          {status === "setup" && (
+            <section className="miniworld-setup-card">
+              <div className="flex items-center gap-2 text-lg font-bold text-slate-800">
+                <Gauge className="h-6 w-6 text-teal-700" aria-hidden />
+                Escolha a dificuldade
+              </div>
+              <div className="mt-4 grid gap-2.5">
+                {(["easy", "medium", "hard"] as DifficultyLevel[]).map((level) => (
+                  <button
+                    key={level}
+                    type="button"
+                    onClick={() => handleDifficultyChange(level)}
+                    aria-label={`Dificuldade ${DIFFICULTY_TITLE[level]}: ${DIFFICULTY_LABELS[level]}`}
+                    aria-pressed={difficulty === level}
+                    className={`flex min-h-[3.9rem] items-center justify-between rounded-xl border-2 px-4 py-2.5 transition ${
+                      difficulty === level
+                        ? "border-teal-600 bg-teal-50 text-teal-900"
+                        : "border-slate-300 bg-white text-slate-800 hover:border-teal-400"
+                    }`}
+                  >
+                    <span className="text-lg font-bold">{DIFFICULTY_TITLE[level]}</span>
+                    <span className="text-sm font-semibold text-slate-600">{DIFFICULTY_LABELS[level]}</span>
+                  </button>
+                ))}
+              </div>
+              <button
+                type="button"
+                onClick={startGame}
+                aria-label="Iniciar labirinto com a dificuldade selecionada"
+                className="btn-primary mt-4 flex w-full items-center justify-center gap-2"
+              >
+                <Play className="h-6 w-6 fill-current" aria-hidden />
+                Iniciar rota
+              </button>
+            </section>
+          )}
+        </aside>
 
-        <div className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <StatCard label="Turnos" value={turns} />
-          <StatCard
-            label="Luzes"
-            value={`${collectedStars.length}/${mazeMap.collectibleStars.length}`}
-            accent="success"
-          />
-          <StatCard
-            label="Bloqueios"
-            value={blockedMoves}
-            accent={blockedMoves > 0 ? "danger" : "default"}
-          />
-          <StatCard label="Pontuação" value={score} accent="score" />
-        </div>
-
-        <StatusBanner variant={messageVariant} className="mb-4">
-          {message}
-        </StatusBanner>
-
-        <motion.div
-          className={`board-surface route-board route-tabletop relative mx-auto w-full min-w-0 max-w-[min(100%,calc(100vw-2rem),380px)] overflow-hidden rounded-2xl bg-gradient-to-b from-sky-50 via-[#fffdf8] to-teal-50/70 p-2 sm:max-w-[min(100%,410px)] sm:p-4 ${
-            status === "won"
-              ? "border-emerald-500 ring-4 ring-emerald-200"
-              : status === "lost"
-                ? "border-amber-400 ring-4 ring-amber-100"
-                : "border-slate-400"
-          }`}
-          initial={false}
-          animate={
-            reducedMotion || blockedShake === 0 ? undefined : gentleShakeAnimate
-          }
-          key={blockedShake > 0 ? `board-${blockedShake}` : "board"}
-        >
-          <div
-            className="grid w-full min-w-0 gap-1 sm:gap-2"
-            style={{ gridTemplateColumns: `repeat(${COLS}, minmax(0, 1fr))` }}
-            role="img"
-            aria-label="Rota estratégica: azul é você, laranja é o guardião, verde é a saída, amarelo são luzes, cinza é parede"
+        <section className="miniworld-play-area" aria-label="Tabuleiro da rota">
+          <StatusBanner
+            variant={messageVariant}
+            label="Sinal da rota"
+            className="mb-4"
           >
-            {Array.from({ length: ROWS }, (_, row) =>
-              Array.from({ length: COLS }, (_, col) => renderCell(row, col)),
-            )}
-          </div>
-        </motion.div>
-
-        <ul
-          className="mx-auto mt-4 grid w-full max-w-[min(100%,360px)] min-w-0 grid-cols-2 justify-items-center gap-x-2 gap-y-2 px-1 text-sm font-bold text-slate-800 sm:max-w-none sm:flex sm:flex-wrap sm:justify-center sm:gap-x-4 sm:gap-y-2.5 sm:text-[1.0625rem]"
-          aria-label="Legenda do labirinto"
-        >
-          <li className="flex items-center gap-1.5 sm:gap-2">
-            <CircleUserRound
-              className="h-5 w-5 shrink-0 text-sky-800 sm:h-6 sm:w-6"
-              aria-hidden
-            />
-            Você
-          </li>
-          <li className="flex items-center gap-1.5 sm:gap-2">
-            <Shield
-              className="h-5 w-5 shrink-0 text-orange-800 sm:h-6 sm:w-6"
-              aria-hidden
-            />
-            Guardião
-          </li>
-          <li className="flex items-center gap-1.5 sm:gap-2">
-            <DoorOpen
-              className="h-5 w-5 shrink-0 text-emerald-800 sm:h-6 sm:w-6"
-              aria-hidden
-            />
-            Saída
-          </li>
-          <li className="flex items-center gap-1.5 sm:gap-2">
-            <Sparkles
-              className="h-5 w-5 shrink-0 text-amber-600 sm:h-6 sm:w-6"
-              aria-hidden
-            />
-            Luz
-          </li>
-        </ul>
-
-        {status === "playing" && (
+            {message}
+          </StatusBanner>
           <motion.div
-            className="surface-panel route-controls mx-auto mt-5 w-full min-w-0 max-w-[min(100%,calc(100vw-2rem))] p-3 sm:max-w-[min(340px,100%)] sm:p-4"
-            role="group"
-            aria-label="Controles de movimento"
+            className={`board-surface route-board route-tabletop relative mx-auto w-full min-w-0 max-w-[min(100%,calc(100vw-2rem),470px)] overflow-hidden rounded-2xl bg-gradient-to-b from-sky-50 via-[#fffdf8] to-teal-50/70 p-2 sm:p-4 ${
+              status === "won"
+                ? "border-emerald-500 ring-4 ring-emerald-200"
+                : status === "lost"
+                  ? "border-amber-400 ring-4 ring-amber-100"
+                  : "border-slate-400"
+            }`}
             initial={false}
             animate={
               reducedMotion || blockedShake === 0 ? undefined : gentleShakeAnimate
             }
-            key={blockedShake > 0 ? `controls-${blockedShake}` : "controls"}
+            key={blockedShake > 0 ? `board-${blockedShake}` : "board"}
           >
-            <p className="mb-3 flex items-center justify-center gap-2 text-center text-base font-bold text-slate-800">
-              <Sparkles className="h-5 w-5 text-amber-500" aria-hidden />
-              Toque para mover
-            </p>
-            <div className="mx-auto grid w-full min-w-0 max-w-full grid-cols-3 gap-2 sm:gap-3">
-              <div />
-              <MoveButton
-                direction="up"
-                label="Cima"
-                reducedMotion={reducedMotion}
-                onClick={() => tryMovePlayer({ row: -1, col: 0 })}
-              />
-              <div />
-              <MoveButton
-                direction="left"
-                label="Esquerda"
-                reducedMotion={reducedMotion}
-                onClick={() => tryMovePlayer({ row: 0, col: -1 })}
-              />
-              <MoveButton
-                direction="down"
-                label="Baixo"
-                reducedMotion={reducedMotion}
-                onClick={() => tryMovePlayer({ row: 1, col: 0 })}
-              />
-              <MoveButton
-                direction="right"
-                label="Direita"
-                reducedMotion={reducedMotion}
-                onClick={() => tryMovePlayer({ row: 0, col: 1 })}
-              />
+            <div
+              className="grid w-full min-w-0 gap-1 sm:gap-2"
+              style={{ gridTemplateColumns: `repeat(${COLS}, minmax(0, 1fr))` }}
+              role="img"
+              aria-label="Rota estratégica: azul é você, laranja é o guardião, verde é a saída, amarelo são luzes, cinza é parede"
+            >
+              {Array.from({ length: ROWS }, (_, row) =>
+                Array.from({ length: COLS }, (_, col) => renderCell(row, col)),
+              )}
             </div>
           </motion.div>
-        )}
+          <ul className="route-legend" aria-label="Legenda do labirinto">
+            <li><CircleUserRound className="text-sky-800" aria-hidden />Você</li>
+            <li><Shield className="text-orange-800" aria-hidden />Guardião</li>
+            <li><DoorOpen className="text-emerald-800" aria-hidden />Saída</li>
+            <li><Sparkles className="text-amber-600" aria-hidden />Luz</li>
+          </ul>
+        </section>
 
-        {status !== "setup" && (
-          <GameActions
-            onRestart={restartGame}
-            disabled={status === "won" || status === "lost"}
-            subtle
-          />
-        )}
+        <aside className="miniworld-side" aria-label="Movimento e progresso">
+          {status === "playing" && (
+            <motion.div
+              className="surface-panel route-controls w-full min-w-0 p-3 sm:p-4"
+              role="group"
+              aria-label="Controles de movimento"
+              initial={false}
+              animate={
+                reducedMotion || blockedShake === 0 ? undefined : gentleShakeAnimate
+              }
+              key={blockedShake > 0 ? `controls-${blockedShake}` : "controls"}
+            >
+              <p className="mb-3 flex items-center justify-center gap-2 text-center text-base font-bold text-slate-800">
+                <Sparkles className="h-5 w-5 text-amber-500" aria-hidden />
+                Toque para mover
+              </p>
+              <div className="mx-auto grid w-full min-w-0 max-w-full grid-cols-3 gap-2 sm:gap-3">
+                <div />
+                <MoveButton direction="up" label="Cima" reducedMotion={reducedMotion} onClick={() => tryMovePlayer({ row: -1, col: 0 })} />
+                <div />
+                <MoveButton direction="left" label="Esquerda" reducedMotion={reducedMotion} onClick={() => tryMovePlayer({ row: 0, col: -1 })} />
+                <span className="route-control-center" aria-hidden />
+                <MoveButton direction="right" label="Direita" reducedMotion={reducedMotion} onClick={() => tryMovePlayer({ row: 0, col: 1 })} />
+                <div />
+                <MoveButton direction="down" label="Baixo" reducedMotion={reducedMotion} onClick={() => tryMovePlayer({ row: 1, col: 0 })} />
+                <div />
+              </div>
+            </motion.div>
+          )}
+          <div className="miniworld-stats-grid">
+            <StatCard label="Turnos" value={turns} />
+            <StatCard label="Luzes" value={`${collectedStars.length}/${mazeMap.collectibleStars.length}`} accent="success" />
+            <StatCard label="Bloqueios" value={blockedMoves} accent={blockedMoves > 0 ? "danger" : "default"} />
+            <StatCard label="Pontuação" value={score} accent="score" />
+          </div>
+          {status !== "setup" && (
+            <GameActions
+              onRestart={restartGame}
+              disabled={status === "won" || status === "lost"}
+              subtle
+            />
+          )}
+        </aside>
       </div>
     </GameLayout>
   );

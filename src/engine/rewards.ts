@@ -36,81 +36,69 @@ export interface RewardCopy {
   encouragement: string;
 }
 
+interface WorldRewardCopy {
+  successTitle: string;
+  successSubtitle: string;
+  attemptSubtitle: string;
+  registeredLine: string;
+}
+
+const DEFAULT_REWARD_COPY: WorldRewardCopy = {
+  successTitle: "Circuito ativado",
+  successSubtitle: "Você praticou memória e atenção.",
+  attemptSubtitle: "Você praticou memória e atenção.",
+  registeredLine: "O circuito foi registrado na sua jornada.",
+};
+
+/** Reward copy per game; unknown ids (older saved results) use the default. */
+const WORLD_REWARD_COPY: Record<GameResult["gameId"], WorldRewardCopy> = {
+  "color-sequence": DEFAULT_REWARD_COPY,
+  "escape-maze": {
+    successTitle: "Rota concluída",
+    successSubtitle: "Você praticou planejamento e estratégia.",
+    attemptSubtitle: "Você praticou escolha de caminho e tomada de decisão.",
+    registeredLine: "A rota foi registrada na sua jornada.",
+  },
+  "security-panel": {
+    successTitle: "Central ativada",
+    successSubtitle: "Você praticou foco e sequência.",
+    attemptSubtitle: "Você praticou observação e controle de passos.",
+    registeredLine: "A central foi registrada na sua jornada.",
+  },
+  "number-trail": {
+    successTitle: "Trilha concluída",
+    successSubtitle: "Você praticou atenção e ordem lógica.",
+    attemptSubtitle: "Você praticou atenção visual e sequência.",
+    registeredLine: "A trilha foi registrada na sua jornada.",
+  },
+  "seed-garden": {
+    successTitle: "Jardim equilibrado",
+    successSubtitle: "Você praticou contagem, planejamento e atenção.",
+    attemptSubtitle: "Você praticou planejamento e causa e efeito.",
+    registeredLine: "O jardim foi registrado na sua jornada.",
+  },
+};
+
 /** Portuguese reward messages for the result modal. */
 export function getRewardCopy(
-  result: Pick<GameResult, "activityTitle" | "score" | "details">,
-  stars: number,
+  result: Pick<GameResult, "gameId" | "score" | "details">,
 ): RewardCopy {
   const success = isSuccessfulResult(result);
-  const title = result.activityTitle.toLowerCase();
-  const worldCopy = title.includes("rota")
-    ? {
-        successTitle: "Rota concluída",
-        successSubtitle: "Você praticou planejamento e estratégia.",
-        attemptSubtitle: "Você praticou escolha de caminho e tomada de decisão.",
-        unit: "rota",
-      }
-    : title.includes("central")
-      ? {
-          successTitle: "Central ativada",
-          successSubtitle: "Você praticou foco e sequência.",
-          attemptSubtitle: "Você praticou observação e controle de passos.",
-          unit: "central",
-        }
-      : title.includes("trilha")
-        ? {
-            successTitle: "Trilha concluída",
-            successSubtitle: "Você praticou atenção e ordem lógica.",
-            attemptSubtitle: "Você praticou atenção visual e sequência.",
-            unit: "trilha",
-          }
-        : title.includes("jardim")
-          ? {
-              successTitle: "Jardim equilibrado",
-              successSubtitle: "Você praticou contagem, planejamento e atenção.",
-              attemptSubtitle: "Você praticou planejamento e causa e efeito.",
-              unit: "jardim",
-            }
-        : {
-            successTitle: "Circuito ativado",
-            successSubtitle: "Você praticou memória e atenção.",
-            attemptSubtitle: "Você praticou memória e atenção.",
-            unit: "circuito",
-          };
+  const worldCopy = WORLD_REWARD_COPY[result.gameId] ?? DEFAULT_REWARD_COPY;
 
   if (success) {
-    const progressLine =
-      stars === 1
-        ? `${worldCopy.unit[0].toUpperCase()}${worldCopy.unit.slice(1)} iniciado com atenção.`
-        : stars === 2
-          ? `${worldCopy.unit[0].toUpperCase()}${worldCopy.unit.slice(1)} bem ativado.`
-          : stars >= 3
-            ? `${worldCopy.unit[0].toUpperCase()}${worldCopy.unit.slice(1)} ativado com firmeza.`
-            : "Continue praticando para abrir novos caminhos.";
-
     return {
       title: worldCopy.successTitle,
       subtitle: worldCopy.successSubtitle,
-      progressLine,
+      progressLine: worldCopy.registeredLine,
       encouragement: "Continue sua rota no seu ritmo. Cada prática conta.",
     };
   }
 
-  const progressLine =
-    stars > 0
-      ? "Você manteve o circuito em movimento."
-      : "Quase lá — tente outra rota com calma.";
-
   return {
     title: "Boa tentativa!",
     subtitle: worldCopy.attemptSubtitle,
-    progressLine,
+    progressLine: "Esta prática foi registrada na sua jornada.",
     encouragement: "Observe com calma e tente novamente no seu ritmo.",
   };
-}
-
-export function totalActivationSignalsFromResults(
-  results: Pick<GameResult, "score">[],
-): number {
-  return results.reduce((sum, r) => sum + calculateStars(r.score), 0);
 }

@@ -107,7 +107,7 @@ export function ColorSequenceGame({ onComplete, onExit }: GameComponentProps) {
         score: calculateColorSequenceScore(stats),
         summary:
           stats.level > 1
-            ? `Circuito correto! Você chegou à etapa ${stats.level}.`
+            ? `Circuito ativado! Você chegou à etapa ${stats.level}.`
             : "Boa tentativa! Observe o circuito com calma e tente novamente.",
         details: {
           level: stats.level,
@@ -267,7 +267,7 @@ export function ColorSequenceGame({ onComplete, onExit }: GameComponentProps) {
       return "Tente novamente com calma.";
     }
     if (phase === "round-complete" || roundMessage === "correct") {
-      return "Circuito correto!";
+      return "Circuito ativado!";
     }
     if (tapFeedback === "correct") {
       return inputIndex % 2 === 0 ? "Comando correto!" : "Boa memória!";
@@ -305,6 +305,7 @@ export function ColorSequenceGame({ onComplete, onExit }: GameComponentProps) {
       title="Circuito de Memória"
       description="Observe os sinais coloridos e reative o circuito na mesma ordem."
       world="memory"
+      wide
       onBack={onExit}
       footer={
         <p className="text-center">
@@ -313,138 +314,181 @@ export function ColorSequenceGame({ onComplete, onExit }: GameComponentProps) {
         </p>
       }
     >
-      <div className="mb-3 flex justify-center">
-        <SoundToggle />
-      </div>
+      <div className="miniworld-grid memory-world-grid">
+        <aside className="miniworld-side" aria-label="Orientação do circuito">
+          <section className="miniworld-guide-card">
+            <p className="miniworld-label">Como ativar</p>
+            <h3>Acenda a memória</h3>
+            <ol className="miniworld-steps">
+              <li>Observe os sinais luminosos.</li>
+              <li>Repita a sequência de cores.</li>
+              <li>Avance com calma a cada circuito.</li>
+            </ol>
+          </section>
+          <section className="miniworld-focus-card memory-focus-card">
+            <p>Sinais do circuito</p>
+            <strong>{sequence.length > 0 ? sequence.length : "—"}</strong>
+            <span>Uma luz por vez, no seu ritmo.</span>
+          </section>
+        </aside>
 
-      <div className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <StatCard label="Etapa" value={level} accent="success" />
-        <StatCard
-          label="Circuito"
-          value={sequence.length > 0 ? `${sequence.length} sinais` : "—"}
-        />
-        <StatCard
-          label="Erros"
-          value={`${errors}/${COLOR_SEQUENCE_MAX_ERRORS}`}
-          accent={errors > 0 ? "danger" : "default"}
-        />
-        <StatCard label="Pontuação" value={score} accent="score" />
-      </div>
+        <section className="miniworld-play-area" aria-label="Tabuleiro do circuito">
+          <StatusBanner
+            variant={statusVariant}
+            label="Sinal do circuito"
+            className="mb-4"
+          >
+            {statusMessage}
+          </StatusBanner>
 
-      <StatusBanner variant={statusVariant} className="mb-5">
-        {statusMessage}
-      </StatusBanner>
-
-      <motion.div
-        className={`board-surface memory-board memory-console relative mx-auto w-full max-w-md min-w-0 overflow-hidden rounded-3xl border-rose-300 p-4 sm:p-6 ${
-          canTap ? "" : "pointer-events-none"
-        }`}
-        role="group"
-        aria-label="Circuito de memória com quatro cores"
-        aria-busy={phase === "showing"}
-        initial={false}
-        animate={
-          reducedMotion || shakeToken === 0 ? undefined : gentleShakeAnimate
-        }
-        key={shakeToken > 0 ? `shake-${shakeToken}` : "panel"}
-      >
-        <div className="relative z-[1] grid grid-cols-2 gap-3 sm:gap-5">
-          {COLORS.map((color) => {
-            const isActive = activeColor === color.id;
-            const isShowing = phase === "showing";
-            const isHighlighted = isActive && (isShowing || phase === "input");
-            const isWrongTap =
-              tapFeedback === "wrong" && lastTapped === color.id;
-            const isCorrectTap =
-              tapFeedback === "correct" && lastTapped === color.id;
-            const dimOthers =
-              isShowing && activeColor !== null && !isActive;
-
-            const colorLabel = isShowing
-              ? isHighlighted
-                ? `Cor ${color.name} acesa`
-                : `Cor ${color.name}`
-              : `Cor ${color.name}`;
-
-            return (
-              <motion.button
-                key={color.id}
+          {phase === "idle" && (
+            <section className="miniworld-action-card miniworld-quick-start">
+              <SoundToggle />
+              <p>Observe as luzes primeiro. Depois repita com calma.</p>
+              <button
                 type="button"
-                aria-label={colorLabel}
-                aria-pressed={isHighlighted}
-                disabled={!canTap}
-                tabIndex={canTap ? 0 : -1}
-                onClick={() => handleColorPress(color.id)}
-                animate={
-                  reducedMotion
-                    ? undefined
-                    : isWrongTap
-                      ? gentleShakeAnimate
-                      : isCorrectTap
-                        ? positivePulseAnimate
-                        : isHighlighted && isShowing
-                          ? { scale: [1, 1.12, 1.08] }
-                          : undefined
-                }
-                transition={
-                  isHighlighted && isShowing
-                    ? { duration: 0.35, ease: "easeOut" }
-                    : undefined
-                }
-                whileTap={
-                  canTap && !reducedMotion ? { scale: 0.96 } : undefined
-                }
-                className={`memory-pad relative aspect-square min-h-[min(44vw,168px)] max-h-[210px] w-full rounded-full border-4 transition-[transform,box-shadow,opacity] duration-200 sm:min-h-[156px] ${
-                  isHighlighted ? color.active : color.base
-                } ${
-                  isWrongTap
-                    ? "!border-red-700 !from-red-100 !to-red-200 !ring-[8px] !ring-red-500 ring-offset-4 ring-offset-white"
-                    : isCorrectTap
-                      ? "!border-emerald-700 !ring-[8px] !ring-emerald-400 ring-offset-4 ring-offset-white"
-                      : ""
-                } ${dimOthers ? "opacity-25 saturate-[0.65] scale-[0.92]" : ""} ${
-                  !canTap && !isShowing ? "opacity-50" : ""
-                }`}
+                onClick={beginGame}
+                aria-label="Iniciar atividade Circuito de Memória"
+                className="btn-primary flex w-full items-center justify-center gap-2"
               >
-                <span
-                  className="pointer-events-none absolute inset-[14%] rounded-full bg-white/30"
-                  aria-hidden
-                />
-                {isHighlighted && isShowing && !reducedMotion && (
-                  <span
-                    className="pointer-events-none absolute inset-0 rounded-full opacity-60"
-                    style={{
-                      boxShadow: `0 0 32px 8px ${color.glow}`,
-                    }}
-                    aria-hidden
-                  />
-                )}
-                <span className="sr-only">{color.name}</span>
-              </motion.button>
-            );
-          })}
-        </div>
-      </motion.div>
+                <Play className="h-6 w-6 fill-current" aria-hidden />
+                Ativar circuito
+              </button>
+            </section>
+          )}
 
-      {phase === "idle" ? (
-        <button
-          type="button"
-          onClick={beginGame}
-          aria-label="Iniciar atividade Circuito de Memória"
-          className="btn-primary mt-6 flex w-full items-center justify-center gap-2"
-        >
-          <Play className="h-6 w-6 fill-current" aria-hidden />
-          Ativar circuito
-        </button>
-      ) : (
-        <GameActions
-          onRestart={restartSession}
-          onEndSession={() =>
-            finishGame({ level, sequenceLength: sequence.length, errors })
-          }
-          disabled={phase === "showing"}
-        />
-      )}
+          <motion.div
+            className={`board-surface memory-board memory-console relative mx-auto w-full max-w-md min-w-0 overflow-hidden rounded-3xl border-rose-300 p-4 sm:p-6 ${
+              canTap ? "" : "pointer-events-none"
+            }`}
+            role="group"
+            aria-label="Circuito de memória com quatro cores"
+            aria-busy={phase === "showing"}
+            initial={false}
+            animate={
+              reducedMotion || shakeToken === 0 ? undefined : gentleShakeAnimate
+            }
+            key={shakeToken > 0 ? `shake-${shakeToken}` : "panel"}
+          >
+            <div className="relative z-[1] grid grid-cols-2 gap-3 sm:gap-5">
+              {COLORS.map((color) => {
+                const isActive = activeColor === color.id;
+                const isShowing = phase === "showing";
+                const isHighlighted = isActive && (isShowing || phase === "input");
+                const isWrongTap =
+                  tapFeedback === "wrong" && lastTapped === color.id;
+                const isCorrectTap =
+                  tapFeedback === "correct" && lastTapped === color.id;
+                const dimOthers =
+                  isShowing && activeColor !== null && !isActive;
+
+                const colorLabel = isShowing
+                  ? isHighlighted
+                    ? `Cor ${color.name} acesa`
+                    : `Cor ${color.name}`
+                  : `Cor ${color.name}`;
+
+                return (
+                  <motion.button
+                    key={color.id}
+                    type="button"
+                    aria-label={colorLabel}
+                    aria-pressed={isHighlighted}
+                    disabled={!canTap}
+                    tabIndex={canTap ? 0 : -1}
+                    onClick={() => handleColorPress(color.id)}
+                    animate={
+                      reducedMotion
+                        ? undefined
+                        : isWrongTap
+                          ? gentleShakeAnimate
+                          : isCorrectTap
+                            ? positivePulseAnimate
+                            : isHighlighted && isShowing
+                              ? { scale: [1, 1.12, 1.08] }
+                              : undefined
+                    }
+                    transition={
+                      isHighlighted && isShowing
+                        ? { duration: 0.35, ease: "easeOut" }
+                        : undefined
+                    }
+                    whileTap={
+                      canTap && !reducedMotion ? { scale: 0.96 } : undefined
+                    }
+                    className={`memory-pad relative aspect-square min-h-[min(44vw,168px)] max-h-[210px] w-full rounded-full border-4 transition-[transform,box-shadow,opacity] duration-200 sm:min-h-[156px] ${
+                      isHighlighted ? color.active : color.base
+                    } ${
+                      isWrongTap
+                        ? "!border-red-700 !from-red-100 !to-red-200 !ring-[8px] !ring-red-500 ring-offset-4 ring-offset-white"
+                        : isCorrectTap
+                          ? "!border-emerald-700 !ring-[8px] !ring-emerald-400 ring-offset-4 ring-offset-white"
+                          : ""
+                    } ${dimOthers ? "opacity-25 saturate-[0.65] scale-[0.92]" : ""} ${
+                      !canTap && !isShowing ? "opacity-50" : ""
+                    }`}
+                  >
+                    <span
+                      className="pointer-events-none absolute inset-[14%] rounded-full bg-white/30"
+                      aria-hidden
+                    />
+                    {isHighlighted && isShowing && !reducedMotion && (
+                      <span
+                        className="pointer-events-none absolute inset-0 rounded-full opacity-60"
+                        style={{
+                          boxShadow: `0 0 32px 8px ${color.glow}`,
+                        }}
+                        aria-hidden
+                      />
+                    )}
+                    <span className="sr-only">{color.name}</span>
+                  </motion.button>
+                );
+              })}
+            </div>
+          </motion.div>
+        </section>
+
+        <aside className="miniworld-side" aria-label="Ações e progresso">
+          <section
+            className={`miniworld-action-card ${
+              phase === "idle" ? "miniworld-idle-side-action" : ""
+            }`}
+          >
+            <SoundToggle />
+            <p>Escute os tons e observe as luzes antes de repetir.</p>
+            {phase === "idle" ? (
+              <button
+                type="button"
+                onClick={beginGame}
+                aria-label="Iniciar atividade Circuito de Memória"
+                className="btn-primary flex w-full items-center justify-center gap-2"
+              >
+                <Play className="h-6 w-6 fill-current" aria-hidden />
+                Ativar circuito
+              </button>
+            ) : (
+              <GameActions
+                onRestart={restartSession}
+                onEndSession={() =>
+                  finishGame({ level, sequenceLength: sequence.length, errors })
+                }
+                disabled={phase === "showing"}
+              />
+            )}
+          </section>
+          <div className="miniworld-stats-grid">
+            <StatCard label="Etapa" value={level} accent="success" />
+            <StatCard label="Circuito" value={sequence.length > 0 ? `${sequence.length} sinais` : "—"} />
+            <StatCard
+              label="Erros"
+              value={`${errors}/${COLOR_SEQUENCE_MAX_ERRORS}`}
+              accent={errors > 0 ? "danger" : "default"}
+            />
+            <StatCard label="Pontuação" value={score} accent="score" />
+          </div>
+        </aside>
+      </div>
     </GameLayout>
   );
 }

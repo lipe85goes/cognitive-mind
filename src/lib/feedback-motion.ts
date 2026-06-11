@@ -1,4 +1,4 @@
-import type { TargetAndTransition, Transition, Variants } from "motion/react";
+import type { TargetAndTransition, Variants } from "motion/react";
 
 /** Gentle horizontal shake for wrong taps (respect reduced motion externally). */
 export const gentleShakeAnimate: TargetAndTransition = {
@@ -20,16 +20,4 @@ export const fadeSlideUp: Variants = {
     scale: 1,
     transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] as const },
   },
-};
-
-export const noMotionTransition: Transition = { duration: 0 };
-
-/** @deprecated Use gentleShakeAnimate */
-export const gentleShake: Variants = {
-  shake: gentleShakeAnimate,
-};
-
-/** @deprecated Use positivePulseAnimate */
-export const positivePulse: Variants = {
-  pulse: positivePulseAnimate,
 };
