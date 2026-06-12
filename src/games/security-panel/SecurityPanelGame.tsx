@@ -2,7 +2,14 @@
 
 import { useCallback, useMemo, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
-import { Check, LayoutGrid, Play } from "lucide-react";
+import {
+  Droplets,
+  Lightbulb,
+  Music,
+  Play,
+  Power,
+  Zap,
+} from "lucide-react";
 import {
   gentleShakeAnimate,
   positivePulseAnimate,
@@ -34,57 +41,75 @@ type TapFeedback = "correct" | "wrong" | null;
 
 const TAP_RESET_MS = 700;
 
+/**
+ * The central operates the station's real systems. Target ids are kept
+ * stable (storage/scoring untouched); only the presented identity changed.
+ */
 const PANEL_TARGETS: Record<
   PanelTargetId,
   {
     label: string;
     instructionPart: string;
-    kind: "button" | "wire" | "confirm";
+    kind: "system" | "confirm";
+    icon: typeof Music;
+    lamp: "som" | "agua" | "luz" | "energia" | "ativar";
     surface: string;
-    accent: string;
   }
 > = {
   "button-blue": {
-    label: "Botão azul",
-    instructionPart: "no botão azul",
-    kind: "button",
+    label: "Som",
+    instructionPart: "em Som",
+    kind: "system",
+    icon: Music,
+    lamp: "som",
     surface:
       "bg-sky-100 border-sky-600 text-sky-950 shadow-[0_5px_0_0_#0284c7]",
-    accent: "bg-sky-500",
   },
   "button-green": {
-    label: "Botão verde",
-    instructionPart: "no botão verde",
-    kind: "button",
+    label: "Água",
+    instructionPart: "na Água",
+    kind: "system",
+    icon: Droplets,
+    lamp: "agua",
     surface:
       "bg-emerald-100 border-emerald-600 text-emerald-950 shadow-[0_5px_0_0_#059669]",
-    accent: "bg-emerald-500",
   },
   "wire-yellow": {
-    label: "Fio amarelo",
-    instructionPart: "no fio amarelo",
-    kind: "wire",
+    label: "Luz",
+    instructionPart: "na Luz",
+    kind: "system",
+    icon: Lightbulb,
+    lamp: "luz",
     surface:
       "bg-amber-50 border-amber-500 text-amber-950 shadow-[0_5px_0_0_#d97706]",
-    accent: "bg-amber-400",
   },
   "wire-red": {
-    label: "Fio vermelho",
-    instructionPart: "no fio vermelho",
-    kind: "wire",
+    label: "Energia",
+    instructionPart: "na Energia",
+    kind: "system",
+    icon: Zap,
+    lamp: "energia",
     surface:
       "bg-rose-50 border-rose-500 text-rose-950 shadow-[0_5px_0_0_#e11d48]",
-    accent: "bg-rose-500",
   },
   confirm: {
-    label: "Confirmar",
-    instructionPart: "em Confirmar",
+    label: "Ativar",
+    instructionPart: "em Ativar",
     kind: "confirm",
+    icon: Power,
+    lamp: "ativar",
     surface:
       "bg-teal-700 border-teal-900 text-white shadow-[0_5px_0_0_#115e59]",
-    accent: "bg-teal-600",
   },
 };
+
+/** Display order of the four station systems on the lamp strip. */
+const SYSTEM_IDS: PanelTargetId[] = [
+  "wire-yellow",
+  "button-blue",
+  "button-green",
+  "wire-red",
+];
 
 const SEQUENCE_POOL: PanelTargetId[] = [
   "button-blue",
@@ -101,12 +126,12 @@ const FORBIDDEN_RULES: {
   {
     minLevel: 3,
     forbiddenId: "wire-red",
-    ruleText: "Não toque no vermelho.",
+    ruleText: "A Energia está em manutenção. Não toque na Energia.",
   },
   {
     minLevel: 5,
     forbiddenId: "button-green",
-    ruleText: "Não toque no verde.",
+    ruleText: "A Água está em pausa hoje. Não toque na Água.",
   },
 ];
 
@@ -123,7 +148,7 @@ function buildInstruction(sequence: PanelTargetId[]): string {
 
   if (sequence.length === 1) {
     const only = sequence[0];
-    if (only === "confirm") return "Toque em Confirmar.";
+    if (only === "confirm") return "Toque em Ativar.";
     return `Toque ${PANEL_TARGETS[only].instructionPart}.`;
   }
 
@@ -136,7 +161,7 @@ function buildInstruction(sequence: PanelTargetId[]): string {
   }
 
   if (last === "confirm") {
-    text += ", e finalize em Confirmar.";
+    text += ", e finalize em Ativar.";
   } else {
     text += `, e por último ${PANEL_TARGETS[last].instructionPart}.`;
   }
@@ -197,6 +222,17 @@ export function SecurityPanelGame({ onComplete, onExit }: GameComponentProps) {
 
   const currentStepDisplay =
     sequence.length > 0 ? Math.min(inputIndex + 1, sequence.length) : 0;
+
+  /** Steps already completed this round (all of them once the round closes). */
+  const completedSteps =
+    phase === "round-complete" ? sequence.length : inputIndex;
+  const activatedSystems = useMemo(
+    () =>
+      new Set<PanelTargetId>(
+        sequence.slice(0, completedSteps).filter((id) => id !== "confirm"),
+      ),
+    [sequence, completedSteps],
+  );
 
   const finishGame = useCallback(
     (stats: {
@@ -341,13 +377,14 @@ export function SecurityPanelGame({ onComplete, onExit }: GameComponentProps) {
   };
 
   const statusMessage = (() => {
-    if (phase === "idle") return "Toque em Iniciar para ver a primeira instrução.";
+    if (phase === "idle")
+      return "Toque em Ativar central para receber o primeiro comando.";
     if (roundMessage) return roundMessage;
     if (tapFeedback === "wrong") return "Tente novamente com calma.";
     if (tapFeedback === "correct") return "Muito bem, comando correto";
     if (phase === "round-complete") return "Sequência concluída";
     if (roundMessage === "Central ativada") return "Central ativada";
-    return "Siga o comando acima, passo a passo.";
+    return "Siga os passos e acenda os sistemas da estação.";
   })();
 
   const statusVariant = (():
@@ -374,22 +411,20 @@ export function SecurityPanelGame({ onComplete, onExit }: GameComponentProps) {
 
   const renderTarget = (targetId: PanelTargetId) => {
     const target = PANEL_TARGETS[targetId];
-    const isWire = target.kind === "wire";
-    const isConfirm = target.kind === "confirm";
+    const TargetIcon = target.icon;
     const isWrong = tapFeedback === "wrong" && lastTapped === targetId;
     const isCorrect = tapFeedback === "correct" && lastTapped === targetId;
-    const isNext =
-      phase === "playing" &&
-      sequence[inputIndex] === targetId &&
-      !inputLocked &&
-      tapFeedback === null;
+    const isForbidden =
+      phase !== "idle" && forbiddenRule?.forbiddenId === targetId;
 
     return (
       <motion.button
         key={targetId}
         type="button"
         disabled={!canTap}
-        aria-label={target.label}
+        aria-label={
+          isForbidden ? `${target.label}, em manutenção, não toque` : target.label
+        }
         onClick={() => handleTargetPress(targetId)}
         animate={
           reducedMotion
@@ -402,35 +437,22 @@ export function SecurityPanelGame({ onComplete, onExit }: GameComponentProps) {
         }
         whileTap={canTap && !reducedMotion ? { scale: 0.96, y: 2 } : undefined}
         whileHover={canTap && !reducedMotion ? { y: -2 } : undefined}
-        className={`relative flex min-h-[4.75rem] w-full flex-col items-center justify-center gap-2 rounded-2xl border-4 px-3 py-4 text-lg font-bold transition-[transform,box-shadow] duration-200 focus-visible:outline-offset-4 disabled:opacity-55 sm:min-h-[5.25rem] sm:text-xl ${
+        className={`command-key relative flex min-h-[4.9rem] w-full flex-col items-center justify-center gap-1.5 rounded-2xl border-4 px-3 py-3.5 text-lg font-bold transition-[transform,box-shadow] duration-200 focus-visible:outline-offset-4 disabled:opacity-55 sm:min-h-[5.5rem] sm:text-xl ${
           target.surface
-        } ${isWrong ? "!border-red-700 !bg-red-50 !shadow-[0_3px_0_0_#dc2626] ring-4 ring-red-300" : ""} ${
-          isCorrect
-            ? "!border-emerald-700 !bg-emerald-100 ring-4 ring-emerald-400"
-            : ""
-        } ${
-          isNext && isConfirm
-            ? "!ring-4 !ring-amber-300 !ring-offset-2"
-            : isNext
-              ? "!ring-2 !ring-teal-400 !ring-offset-2"
-              : ""
-        }`}
+        } ${isForbidden ? "command-key-forbidden" : ""} ${
+          isWrong ? "is-wrong !border-red-700 !bg-red-50" : ""
+        } ${isCorrect ? "is-correct !border-emerald-700 !bg-emerald-100" : ""}`}
       >
-        {isWire && (
-          <span
-            className={`block h-2.5 w-full max-w-[85%] rounded-full border-2 border-current ${target.accent}`}
-            aria-hidden
-          />
+        {isForbidden && (
+          <span className="command-no-touch" aria-hidden>
+            Não tocar
+          </span>
         )}
-        {!isWire && !isConfirm && (
-          <span
-            className={`h-10 w-10 rounded-full border-2 border-current ${target.accent}`}
-            aria-hidden
-          />
-        )}
-        {isConfirm && (
-          <Check className="h-8 w-8 shrink-0" strokeWidth={2.5} aria-hidden />
-        )}
+        <TargetIcon
+          className="h-9 w-9 shrink-0"
+          strokeWidth={2.2}
+          aria-hidden
+        />
         <span>{target.label}</span>
       </motion.button>
     );
@@ -439,14 +461,14 @@ export function SecurityPanelGame({ onComplete, onExit }: GameComponentProps) {
   return (
     <GameLayout
       title="Central de Comandos"
-      description="Opere botões e fios táteis seguindo a sequência indicada."
+      description="Acenda os sistemas da estação seguindo um comando de cada vez."
       world="commands"
       wide
       onBack={onExit}
       footer={
         <p className="text-center">
-          A partir da etapa 3, aparecem regras de não tocar em itens indicados.{" "}
-          {SECURITY_PANEL_MAX_ERRORS} erros encerram a atividade.
+          A partir da etapa 3, alguns sistemas entram em manutenção: não toque
+          neles. {SECURITY_PANEL_MAX_ERRORS} erros encerram a atividade.
         </p>
       }
     >
@@ -454,11 +476,11 @@ export function SecurityPanelGame({ onComplete, onExit }: GameComponentProps) {
         <aside className="miniworld-side" aria-label="Instrução do comando">
           <section className="miniworld-guide-card command-guide-card">
             <p className="miniworld-label">Missão</p>
-            <h3>Ative a central</h3>
+            <h3>Acenda a estação</h3>
             <ol className="miniworld-steps">
-              <li>Observe a instrução exibida.</li>
-              <li>Acione botões e fios na ordem.</li>
-              <li>Confirme para completar o circuito.</li>
+              <li>Veja quais sistemas o comando pede.</li>
+              <li>Toque nos sistemas na ordem indicada.</li>
+              <li>Finalize em Ativar para acender a central.</li>
             </ol>
           </section>
           {phase !== "idle" && instructionText && (
@@ -501,24 +523,33 @@ export function SecurityPanelGame({ onComplete, onExit }: GameComponentProps) {
             </section>
           )}
 
-          {phase === "playing" && sequence.length > 0 && (
+          {phase !== "idle" && sequence.length > 0 && (
             <div
-              className="command-progress-lights"
+              className="command-step-chips"
               role="progressbar"
-              aria-valuenow={inputIndex + 1}
+              aria-valuenow={Math.min(completedSteps + 1, sequence.length)}
               aria-valuemin={1}
               aria-valuemax={sequence.length}
-              aria-label={`Progresso do painel: passo ${currentStepDisplay} de ${sequence.length}`}
+              aria-label={`Passos do comando: passo ${currentStepDisplay} de ${sequence.length}`}
             >
               {sequence.map((stepId, index) => {
-                const done = index < inputIndex;
-                const current = index === inputIndex;
+                const target = PANEL_TARGETS[stepId];
+                const StepIcon = target.icon;
+                const state =
+                  index < completedSteps
+                    ? "is-done"
+                    : index === completedSteps
+                      ? "is-current"
+                      : "";
                 return (
                   <span
                     key={`${stepId}-${index}`}
-                    className={done ? "is-lit" : current ? "is-current" : ""}
+                    className={`command-step-chip ${state}`}
                     aria-hidden
-                  />
+                  >
+                    <StepIcon strokeWidth={2.4} aria-hidden />
+                    <span>{target.label}</span>
+                  </span>
                 );
               })}
             </div>
@@ -527,32 +558,48 @@ export function SecurityPanelGame({ onComplete, onExit }: GameComponentProps) {
           <motion.div
             className={`board-surface command-board command-console mx-auto w-full min-w-0 space-y-3 rounded-3xl p-4 sm:p-5 ${
               phase === "round-complete"
-                ? "border-emerald-500 ring-4 ring-emerald-200"
+                ? "is-activated border-emerald-500"
                 : "border-slate-400"
             } ${canTap ? "" : phase === "playing" ? "opacity-95" : ""}`}
             role="group"
-            aria-label="Central de comandos com botões e fios"
+            aria-label="Central de comandos com os sistemas da estação"
             initial={false}
             animate={
               reducedMotion || shakeToken === 0 ? undefined : gentleShakeAnimate
             }
             key={shakeToken > 0 ? `panel-shake-${shakeToken}` : "panel"}
           >
-            <div className="mb-2 flex items-center justify-center gap-2 border-b border-teal-100 pb-3">
-              <LayoutGrid className="h-6 w-6 text-teal-700" aria-hidden />
-              <p className="text-lg font-bold text-slate-800">Painel de ativação</p>
-            </div>
-            <p className="text-muted -mt-1 mb-1 text-center text-sm font-medium">Botões</p>
-            <div className="grid grid-cols-2 gap-3">
-              {renderTarget("button-blue")}
-              {renderTarget("button-green")}
-            </div>
-            <p className="text-muted pt-1 text-center text-sm font-medium">Fios</p>
+            <ul className="command-lamps" aria-hidden="true">
+              {SYSTEM_IDS.map((systemId) => {
+                const system = PANEL_TARGETS[systemId];
+                const SystemIcon = system.icon;
+                const isOn =
+                  activatedSystems.has(systemId) || phase === "round-complete";
+                return (
+                  <li
+                    key={systemId}
+                    className={`command-lamp command-lamp-${system.lamp} ${
+                      isOn ? "is-on" : ""
+                    }`}
+                  >
+                    <SystemIcon strokeWidth={2.3} aria-hidden />
+                    <span>{system.label}</span>
+                  </li>
+                );
+              })}
+            </ul>
+            <p className="text-muted mb-1 pt-1 text-center text-sm font-semibold">
+              Sistemas da estação
+            </p>
             <div className="grid grid-cols-2 gap-3">
               {renderTarget("wire-yellow")}
+              {renderTarget("button-blue")}
+              {renderTarget("button-green")}
               {renderTarget("wire-red")}
             </div>
-            <p className="text-muted pt-1 text-center text-sm font-medium">Finalizar</p>
+            <p className="text-muted pt-1 text-center text-sm font-semibold">
+              Quando o comando terminar
+            </p>
             {renderTarget("confirm")}
           </motion.div>
         </section>

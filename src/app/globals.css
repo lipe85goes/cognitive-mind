@@ -2278,41 +2278,184 @@ button:disabled:focus-visible {
   font-weight: 700;
 }
 
-.command-progress-lights {
+/* The command as readable step chips: icon + system name per step */
+.command-step-chips {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   justify-content: center;
-  gap: 0.6rem;
+  gap: 0.45rem;
   margin-bottom: 0.9rem;
   border: 2px solid #c8ddcf;
-  border-radius: 1rem;
+  border-radius: 1.1rem;
   background: #fffdf8;
-  padding: 0.8rem;
+  padding: 0.65rem 0.7rem;
+  box-shadow: 0 4px 0 rgb(104 126 113 / 0.13);
 }
 
-.command-progress-lights span {
-  height: 0.78rem;
-  width: clamp(2.2rem, 8vw, 3.2rem);
-  border: 2px solid #b6c8be;
+.command-step-chip {
+  display: inline-flex;
+  min-height: 2.6rem;
+  align-items: center;
+  gap: 0.4rem;
+  border: 2px solid #c2d2c6;
   border-radius: 9999px;
-  background: #dce5dd;
+  background: #f4f7f1;
+  padding: 0.3rem 0.75rem;
+  color: #57676c;
+  font-size: 0.95rem;
+  font-weight: 800;
 }
 
-.command-progress-lights span.is-current {
+.command-step-chip svg {
+  height: 1.2rem;
+  width: 1.2rem;
+}
+
+.command-step-chip:not(:last-child)::after {
+  content: "›";
+  margin-left: 0.35rem;
+  color: #93a59a;
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+.command-step-chip.is-current {
   border-color: #d69b35;
-  background: #fcd86e;
-  box-shadow: 0 0 12px rgb(214 155 53 / 0.42);
+  background: #fff3d2;
+  color: #7a4f10;
+  box-shadow: 0 0 0 3px rgb(214 155 53 / 0.25);
 }
 
-.command-progress-lights span.is-lit {
+.command-step-chip.is-done {
   border-color: #16877f;
-  background: #42b9a9;
-  box-shadow: 0 0 12px rgb(22 135 127 / 0.42);
+  background: #dcf3ee;
+  color: #0d625d;
+}
+
+/* The "machine": station system lamps that light as the command advances */
+.command-lamps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem;
+  border: 2px solid #2c4a48;
+  border-radius: 1.1rem;
+  background: linear-gradient(180deg, #1d3533, #25403d);
+  padding: 0.6rem;
+  box-shadow:
+    inset 0 2px 4px rgb(0 0 0 / 0.35),
+    inset 0 -1px 0 rgb(255 255 255 / 0.08);
+}
+
+.command-lamp {
+  display: flex;
+  min-height: 3.4rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.18rem;
+  border: 2px solid #3c5a55;
+  border-radius: 0.8rem;
+  background: #21393a;
+  color: #6f8d86;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  transition:
+    background 220ms ease,
+    color 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.command-lamp svg {
+  height: 1.35rem;
+  width: 1.35rem;
+}
+
+.command-lamp-luz.is-on {
+  border-color: #fbbf24;
+  background: #fff3d2;
+  color: #92600c;
+  box-shadow: 0 0 14px rgb(251 191 36 / 0.55);
+}
+
+.command-lamp-som.is-on {
+  border-color: #38bdf8;
+  background: #e0f2fe;
+  color: #075985;
+  box-shadow: 0 0 14px rgb(56 189 248 / 0.5);
+}
+
+.command-lamp-agua.is-on {
+  border-color: #34d399;
+  background: #d1fae5;
+  color: #065f46;
+  box-shadow: 0 0 14px rgb(52 211 153 / 0.5);
+}
+
+.command-lamp-energia.is-on {
+  border-color: #fb7185;
+  background: #ffe4e6;
+  color: #9f1239;
+  box-shadow: 0 0 14px rgb(251 113 133 / 0.5);
+}
+
+/* Maintenance tag pinned to the forbidden system key */
+.command-no-touch {
+  position: absolute;
+  right: 0.4rem;
+  top: 0.4rem;
+  z-index: 1;
+  border: 2px solid #d97706;
+  border-radius: 9999px;
+  background: #fef3c7;
+  padding: 0.12rem 0.5rem;
+  color: #92400e;
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.command-key-forbidden {
+  opacity: 0.92;
+  background-image: repeating-linear-gradient(
+    135deg,
+    rgb(217 119 6 / 0.07) 0 10px,
+    transparent 10px 20px
+  );
+}
+
+.command-key.is-wrong {
+  box-shadow:
+    0 0 0 4px #fffdf8,
+    0 0 0 7px #ef4444,
+    0 3px 0 rgb(127 29 29 / 0.5);
+}
+
+.command-key.is-correct {
+  box-shadow:
+    0 0 0 4px #fffdf8,
+    0 0 0 7px #34d399,
+    0 0 20px rgb(16 185 129 / 0.45),
+    0 3px 0 rgb(6 95 70 / 0.5);
 }
 
 .command-console {
   box-shadow:
     inset 0 0 0 5px rgb(255 253 248 / 0.7),
     0 7px 0 rgb(19 127 120 / 0.18),
+    0 16px 29px rgb(28 47 44 / 0.11);
+}
+
+/* Power-on moment: the whole console glows when the command completes */
+.command-console.is-activated {
+  box-shadow:
+    inset 0 0 0 5px rgb(255 253 248 / 0.7),
+    0 0 0 4px rgb(110 231 183 / 0.55),
+    0 0 34px rgb(16 185 129 / 0.35),
+    0 7px 0 rgb(5 150 105 / 0.3),
     0 16px 29px rgb(28 47 44 / 0.11);
 }
 
@@ -2378,23 +2521,98 @@ button:disabled:focus-visible {
 }
 
 .logic-tile-grid {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.75rem;
+  gap: 0.9rem;
+}
+
+/* The golden path drawn through the stones already lit, in tap order */
+.logic-trail-svg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  height: 100%;
+  width: 100%;
+  pointer-events: none;
+}
+
+.logic-trail-svg polyline {
+  fill: none;
+  stroke: #d69b35;
+  stroke-width: 7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.8;
 }
 
 .logic-tile {
+  z-index: 1;
   box-shadow:
     inset 0 3px 3px rgb(255 255 255 / 0.72),
     0 7px 0 #6479ad,
     0 12px 18px rgb(79 109 178 / 0.14);
 }
 
+/* Lit stepping stone */
 .logic-tile.is-complete {
   box-shadow:
-    inset 0 3px 3px rgb(255 255 255 / 0.72),
-    0 5px 0 #059669,
-    0 12px 18px rgb(5 150 105 / 0.12);
+    inset 0 3px 4px rgb(255 255 255 / 0.8),
+    0 5px 0 #b97f1e,
+    0 0 16px rgb(214 155 53 / 0.4),
+    0 12px 18px rgb(146 102 21 / 0.14);
+}
+
+.logic-tile.is-wrong {
+  box-shadow:
+    0 0 0 4px #fffdf8,
+    0 0 0 7px #ef4444,
+    0 3px 0 rgb(127 29 29 / 0.5);
+}
+
+.logic-tile.is-correct {
+  box-shadow:
+    0 0 0 4px #fffdf8,
+    0 0 0 7px #f4b860,
+    0 0 18px rgb(214 155 53 / 0.5),
+    0 4px 0 #b97f1e;
+}
+
+.logic-tile.is-trail-end {
+  box-shadow:
+    inset 0 3px 4px rgb(255 255 255 / 0.8),
+    0 0 0 4px rgb(214 155 53 / 0.4),
+    0 0 24px rgb(214 155 53 / 0.55),
+    0 5px 0 #b97f1e;
+}
+
+/* Trail complete: the whole board and path glow warmly for a moment */
+.logic-path-board.is-trail-complete {
+  border-color: #d69b35;
+  box-shadow:
+    inset 0 0 0 5px rgb(255 255 255 / 0.6),
+    0 0 0 4px rgb(214 155 53 / 0.35),
+    0 0 30px rgb(214 155 53 / 0.3),
+    0 7px 0 rgb(146 102 21 / 0.25),
+    0 16px 28px rgb(28 47 44 / 0.08);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .logic-path-board.is-trail-complete .logic-trail-svg polyline {
+    animation: trail-glow-pulse 0.9s ease-in-out;
+  }
+}
+
+@keyframes trail-glow-pulse {
+  0%,
+  100% {
+    stroke-width: 7;
+    opacity: 0.8;
+  }
+  50% {
+    stroke-width: 10;
+    opacity: 1;
+  }
 }
 
 .garden-pot {
@@ -2490,25 +2708,140 @@ button:disabled:focus-visible {
   line-height: 1.52;
 }
 
-.seed-objective-flower {
-  position: absolute;
-  right: 0.8rem;
-  bottom: 0.75rem;
-  color: #d48676;
+/* The goal as a picture: three mini pots, each with 3 seeds and a flower */
+.seed-goal-picture {
+  display: flex;
+  justify-content: flex-start;
+  gap: 0.6rem;
+  margin-top: 1rem;
 }
 
-.seed-objective-flower svg:first-child {
-  height: 2.7rem;
-  width: 2.7rem;
+.seed-goal-pot {
+  display: flex;
+  height: 3.6rem;
+  width: 3.6rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.1rem;
+  border: 2px solid #cb9360;
+  border-radius: 0 0 1.3rem 1.3rem;
+  background: linear-gradient(165deg, #f0c388, #d99b63);
+  box-shadow:
+    inset 0 3px 2px rgb(255 225 175 / 0.6),
+    0 4px 0 rgb(161 104 66 / 0.8);
 }
 
-.seed-objective-flower svg:last-child {
-  position: absolute;
-  right: 1.15rem;
-  bottom: -0.4rem;
-  height: 1.8rem;
-  width: 1.8rem;
-  color: #78a26c;
+.seed-goal-pot svg {
+  height: 1.3rem;
+  width: 1.3rem;
+  color: #356537;
+}
+
+.seed-goal-pot strong {
+  color: #5b3a1d;
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.seed-goal-caption {
+  margin-top: 0.6rem;
+  color: #49854d;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+/* First-time demonstration: one pot empties, next pots receive one seed each */
+.seed-how-card {
+  margin-bottom: 1rem;
+  border: 2px solid #dccdb4;
+  border-radius: 1.25rem;
+  background: linear-gradient(150deg, #fffdf8, #f8f2e2);
+  padding: 0.85rem 1rem;
+  text-align: center;
+  box-shadow: 0 4px 0 rgb(152 124 78 / 0.13);
+}
+
+.seed-how-title {
+  color: #87683c;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.seed-how-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  margin-top: 0.55rem;
+}
+
+.seed-how-row svg {
+  height: 1.4rem;
+  width: 1.4rem;
+  color: #a98352;
+}
+
+.seed-how-pot {
+  display: flex;
+  height: 2.9rem;
+  width: 2.9rem;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #cb9360;
+  border-radius: 0 0 1.1rem 1.1rem;
+  background: linear-gradient(165deg, #f0c388, #dca468);
+  color: #5b3a1d;
+  font-size: 1.05rem;
+  font-weight: 800;
+  box-shadow: 0 3px 0 rgb(161 104 66 / 0.7);
+}
+
+.seed-how-pot.is-receive {
+  border-color: #5cb0d6;
+  background: linear-gradient(165deg, #eaf6fd, #d9eefb);
+  color: #0c5e80;
+  box-shadow:
+    0 3px 0 rgb(12 94 128 / 0.4),
+    0 0 10px rgb(56 189 248 / 0.3);
+}
+
+.seed-how-caption {
+  margin-top: 0.6rem;
+  color: #57676c;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+/* Garden completed: the whole board blooms warmly before the result screen */
+.seed-orbit-board.is-blooming {
+  border-color: #97c277;
+  box-shadow:
+    inset 0 0 0 5px rgb(255 250 237 / 0.72),
+    0 0 0 4px rgb(151 194 119 / 0.5),
+    0 0 36px rgb(120 180 90 / 0.4),
+    0 8px 0 rgb(123 161 99 / 0.5),
+    0 16px 32px rgb(54 58 41 / 0.11);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .seed-orbit-board.is-blooming .garden-pot-bloom {
+    animation: garden-bloom-pulse 1s ease-in-out;
+  }
+}
+
+/* `scale` (not `transform`) so the orbit pots' translateX positioning
+   is preserved while they pulse. */
+@keyframes garden-bloom-pulse {
+  0%,
+  100% {
+    scale: 1;
+  }
+  50% {
+    scale: 1.05;
+  }
 }
 
 .seed-moves-card {

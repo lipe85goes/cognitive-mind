@@ -39,32 +39,37 @@ const INTRO_COPY: Record<
   },
   "security-panel": {
     originalName: "Painel de Segurança",
-    description: "Acione controles táteis seguindo uma instrução de cada vez.",
-    reassurance: "Leia o comando inteiro antes de começar.",
+    description:
+      "Acenda os sistemas da estação — Luz, Som, Água e Energia — seguindo um comando de cada vez.",
+    reassurance:
+      "Como seguir uma receita: leia o comando inteiro antes de começar.",
     steps: [
-      "Observe a instrução com atenção.",
-      "Ative botões e fios na ordem indicada.",
-      "Confirme para acender a central.",
+      "Veja quais sistemas o comando pede.",
+      "Toque nos sistemas na ordem indicada.",
+      "Finalize em Ativar para acender a central.",
     ],
   },
   "number-trail": {
     originalName: "Trilha de Números",
-    description: "Encontre as peças numéricas e ilumine uma rota de atenção.",
-    reassurance: "A sequência muda; não há cronômetro.",
+    description:
+      "Toque nas pedras numeradas, em ordem, e veja a trilha se acender atrás de você.",
+    reassurance: "A ordem muda a cada trilha; não há cronômetro.",
     steps: [
-      "Encontre o número indicado.",
-      "Toque nos números na ordem indicada.",
-      "Complete a trilha no seu ritmo.",
+      "Veja o número da próxima pedra.",
+      "Toque nas pedras na ordem certa.",
+      "Ilumine a trilha completa no seu ritmo.",
     ],
   },
   "seed-garden": {
     originalName: "Jogo de planejamento e contagem",
-    description: "Distribua sementes em vasos e ajude seu jardim a florescer.",
-    reassurance: "Escolha, visualize e distribua sem pressa.",
+    description:
+      "Semeie como em um jardim de verdade: o vaso escolhido se esvazia e cada semente cai no vaso seguinte.",
+    reassurance:
+      "Escolher um vaso só mostra a prévia — nada é gasto até você distribuir.",
     steps: [
-      "Escolha um vaso com sementes.",
-      "As sementes serão distribuídas nos próximos vasos.",
-      "Complete o objetivo usando poucos movimentos.",
+      "Toque em um vaso com sementes.",
+      "Veja a prévia: cada semente vai para o vaso seguinte, uma a uma.",
+      "Deixe 3 vasos com 3 sementes para o jardim florescer.",
     ],
   },
 };

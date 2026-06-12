@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
-import { Check, Hash, Play } from "lucide-react";
+import { Check, Flag, Hash, Play } from "lucide-react";
 import { GameActions } from "@/components/GameActions";
 import { GameLayout } from "@/components/GameLayout";
 import { StatCard } from "@/components/ui/StatCard";
@@ -86,6 +86,39 @@ export function NumberTrailGame({ onComplete, onExit }: GameComponentProps) {
     [completedNumbers],
   );
 
+  /** The lit trail: a line drawn through the stones already tapped, in order. */
+  const boardRef = useRef<HTMLDivElement>(null);
+  const stoneRefs = useRef(new Map<number, HTMLButtonElement>());
+  const [trailPoints, setTrailPoints] = useState<{ x: number; y: number }[]>(
+    [],
+  );
+
+  useEffect(() => {
+    const recomputeTrail = () => {
+      const board = boardRef.current;
+      if (!board || completedNumbers.length === 0) {
+        setTrailPoints([]);
+        return;
+      }
+      const boardRect = board.getBoundingClientRect();
+      const points = completedNumbers
+        .map((value) => stoneRefs.current.get(value))
+        .filter((el): el is HTMLButtonElement => Boolean(el))
+        .map((el) => {
+          const rect = el.getBoundingClientRect();
+          return {
+            x: rect.left - boardRect.left + rect.width / 2,
+            y: rect.top - boardRect.top + rect.height / 2,
+          };
+        });
+      setTrailPoints(points);
+    };
+
+    recomputeTrail();
+    window.addEventListener("resize", recomputeTrail);
+    return () => window.removeEventListener("resize", recomputeTrail);
+  }, [completedNumbers]);
+
   const finishGame = useCallback(
     (stats: {
       level: number;
@@ -101,10 +134,10 @@ export function NumberTrailGame({ onComplete, onExit }: GameComponentProps) {
         score: calculateNumberTrailScore(stats),
         summary:
           stats.roundsCompleted > 0
-            ? `Você construiu ${stats.roundsCompleted} ${
-                stats.roundsCompleted === 1 ? "rodada" : "rodadas"
+            ? `Você iluminou ${stats.roundsCompleted} ${
+                stats.roundsCompleted === 1 ? "trilha completa" : "trilhas completas"
               } na Trilha Lógica.`
-            : "Boa tentativa! Siga a próxima indicação com calma.",
+            : "Boa tentativa! Procure a próxima pedra com calma.",
         details: {
           level: stats.level,
           currentNumber: stats.currentNumber,
@@ -193,7 +226,7 @@ export function NumberTrailGame({ onComplete, onExit }: GameComponentProps) {
     setCorrectNumbers(nextCorrectNumbers);
     setLastTapped(value);
     setTapFeedback("correct");
-      setMessage("Caminho correto");
+    setMessage("Pedra acesa!");
     setInputLocked(true);
 
     const nextTargetIndex = targetIndex + 1;
@@ -203,7 +236,7 @@ export function NumberTrailGame({ onComplete, onExit }: GameComponentProps) {
       const nextLevel = Math.min(level + 1, LEVEL_NUMBER_COUNTS.length);
       setRoundsCompleted(nextRoundsCompleted);
       setPhase("round-complete");
-      setMessage("Trecho da trilha concluído!");
+      setMessage("Trilha iluminada!");
       playSuccessChime();
 
       window.setTimeout(() => {
@@ -224,8 +257,8 @@ export function NumberTrailGame({ onComplete, onExit }: GameComponentProps) {
   const statusMessage = (() => {
     if (phase === "idle") return "Toque em Iniciar para começar.";
     if (message) return message;
-    if (phase === "round-complete") return "Trecho da trilha concluído!";
-    return `Siga o próximo número: ${targetNumber}`;
+    if (phase === "round-complete") return "Trilha iluminada!";
+    return `Procure a pedra ${targetNumber}`;
   })();
 
   const statusVariant = ((): "neutral" | "info" | "success" | "error" => {
@@ -240,7 +273,7 @@ export function NumberTrailGame({ onComplete, onExit }: GameComponentProps) {
   return (
     <GameLayout
       title="Trilha Lógica"
-      description="Construa uma rota tocando os números na ordem indicada."
+      description="Acenda as pedras numeradas, em ordem, e ilumine a trilha."
       world="logic"
       wide
       onBack={onExit}
@@ -255,17 +288,17 @@ export function NumberTrailGame({ onComplete, onExit }: GameComponentProps) {
         <aside className="miniworld-side" aria-label="Orientação da trilha">
           <section className="miniworld-guide-card logic-guide-card">
             <p className="miniworld-label">Objetivo</p>
-            <h3>Construa o caminho</h3>
+            <h3>Ilumine a trilha</h3>
             <ol className="miniworld-steps">
-              <li>Veja o próximo número indicado.</li>
-              <li>Encontre a peça na trilha.</li>
-              <li>Ative a rota no seu ritmo.</li>
+              <li>Veja o número da próxima pedra.</li>
+              <li>Encontre a pedra na trilha.</li>
+              <li>Acenda o caminho no seu ritmo.</li>
             </ol>
           </section>
           <section className="logic-target-card" aria-live="polite">
-            <p>Siga o próximo número</p>
+            <p>Procure a pedra</p>
             <strong>{phase === "idle" ? "—" : targetNumber}</strong>
-            <span>A sequência muda a cada rodada.</span>
+            <span>A ordem muda a cada trilha.</span>
           </section>
         </aside>
 
@@ -287,7 +320,7 @@ export function NumberTrailGame({ onComplete, onExit }: GameComponentProps) {
 
           {phase === "idle" && (
             <section className="miniworld-action-card miniworld-quick-start">
-              <p>Comece e procure somente o número mostrado a cada vez.</p>
+              <p>Comece e procure somente a pedra mostrada a cada vez.</p>
               <button
                 type="button"
                 onClick={beginGame}
@@ -302,12 +335,10 @@ export function NumberTrailGame({ onComplete, onExit }: GameComponentProps) {
 
           <motion.div
             className={`board-surface logic-board logic-path-board mx-auto w-full min-w-0 rounded-3xl p-3 sm:p-5 ${
-              phase === "round-complete"
-                ? "border-emerald-500 ring-4 ring-emerald-200"
-                : ""
+              phase === "round-complete" ? "is-trail-complete" : ""
             }`}
             role="group"
-            aria-label="Grade da Trilha Lógica"
+            aria-label="Trilha de pedras numeradas"
             initial={false}
             animate={
               reducedMotion || shakeToken === 0 ? undefined : gentleShakeAnimate
@@ -319,24 +350,43 @@ export function NumberTrailGame({ onComplete, onExit }: GameComponentProps) {
             {phase === "idle" ? (
               <div className="logic-empty-board">
                 <Hash className="mb-3 h-12 w-12 text-indigo-700" aria-hidden />
-                <p className="text-xl font-bold text-slate-900">Pronto para seguir a rota?</p>
+                <p className="text-xl font-bold text-slate-900">Pronto para iluminar a trilha?</p>
                 <p className="text-muted mt-2">
-                  A ordem muda a cada rodada. Leia o número indicado e procure com calma.
+                  A ordem muda a cada rodada. Veja o número indicado e procure a pedra com calma.
                 </p>
               </div>
             ) : (
-              <div className="logic-tile-grid">
+              <div ref={boardRef} className="logic-tile-grid">
+                {trailPoints.length > 1 && (
+                  <svg className="logic-trail-svg" aria-hidden="true">
+                    <polyline
+                      points={trailPoints
+                        .map((point) => `${point.x},${point.y}`)
+                        .join(" ")}
+                    />
+                  </svg>
+                )}
                 {tiles.map((tile) => {
                   const done = completedSet.has(tile.value);
                   const isWrong = tapFeedback === "wrong" && lastTapped === tile.value;
                   const isCorrect = tapFeedback === "correct" && lastTapped === tile.value;
+                  const isTrailEnd =
+                    phase === "round-complete" &&
+                    completedNumbers[completedNumbers.length - 1] === tile.value;
 
                   return (
                     <motion.button
                       key={`${tile.value}-${tile.position}`}
+                      ref={(el) => {
+                        if (el) {
+                          stoneRefs.current.set(tile.value, el);
+                        } else {
+                          stoneRefs.current.delete(tile.value);
+                        }
+                      }}
                       type="button"
                       disabled={phase !== "playing" || inputLocked || done}
-                      aria-label={`Tocar número ${tile.value}`}
+                      aria-label={`Pedra ${tile.value}`}
                       aria-pressed={done}
                       onClick={() => handleNumberPress(tile.value)}
                       animate={
@@ -350,15 +400,30 @@ export function NumberTrailGame({ onComplete, onExit }: GameComponentProps) {
                       }
                       whileHover={phase === "playing" && !inputLocked && !done && !reducedMotion ? { y: -3 } : undefined}
                       whileTap={phase === "playing" && !inputLocked && !done && !reducedMotion ? { scale: 0.96, y: 2 } : undefined}
-                      className={`logic-tile relative flex aspect-square min-h-20 w-full items-center justify-center rounded-2xl border-4 text-3xl font-bold tabular-nums transition-[background,border-color,box-shadow,transform,opacity] duration-200 focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[var(--focus-ring)] sm:min-h-24 sm:text-4xl ${
+                      className={`logic-tile relative flex aspect-square min-h-20 w-full items-center justify-center rounded-full border-4 text-3xl font-bold tabular-nums transition-[background,border-color,box-shadow,transform,opacity] duration-200 focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[var(--focus-ring)] sm:min-h-24 sm:text-4xl ${
                         done
-                          ? "is-complete border-emerald-600 bg-emerald-100 text-emerald-900 shadow-[0_4px_0_0_#059669]"
+                          ? "is-complete border-amber-500 bg-gradient-to-b from-amber-100 to-amber-200 text-amber-900"
                           : "tactile-tile border-indigo-600 bg-[#fffefa] text-slate-950"
-                      } ${isWrong ? "!border-red-700 !bg-red-50 !text-red-900 !shadow-[0_3px_0_0_#dc2626] ring-4 ring-red-300" : ""} ${
-                        isCorrect ? "!border-emerald-700 !bg-emerald-100 ring-4 ring-emerald-400" : ""
-                      } disabled:cursor-default disabled:opacity-85`}
+                      } ${isTrailEnd ? "is-trail-end" : ""} ${
+                        isWrong ? "is-wrong !border-red-700 !bg-red-50 !text-red-900" : ""
+                      } ${
+                        isCorrect ? "is-correct !border-amber-600 !bg-amber-100" : ""
+                      } disabled:cursor-default disabled:opacity-95`}
                     >
-                      {done && <Check className="absolute right-2 top-2 h-5 w-5 text-emerald-700" strokeWidth={3} aria-hidden />}
+                      {done && !isTrailEnd && (
+                        <Check
+                          className="absolute right-1.5 top-1.5 h-5 w-5 text-amber-700"
+                          strokeWidth={3}
+                          aria-hidden
+                        />
+                      )}
+                      {isTrailEnd && (
+                        <Flag
+                          className="absolute -top-2 left-1/2 h-6 w-6 -translate-x-1/2 text-amber-700"
+                          strokeWidth={2.6}
+                          aria-hidden
+                        />
+                      )}
                       {tile.value}
                     </motion.button>
                   );
@@ -374,7 +439,7 @@ export function NumberTrailGame({ onComplete, onExit }: GameComponentProps) {
               phase === "idle" ? "miniworld-idle-side-action" : ""
             }`}
           >
-            <p>Não há relógio. Procure a peça indicada com calma.</p>
+            <p>Não há relógio. Procure a pedra indicada com calma.</p>
             {phase === "idle" ? (
               <button
                 type="button"
@@ -403,14 +468,14 @@ export function NumberTrailGame({ onComplete, onExit }: GameComponentProps) {
           </section>
           <div className="miniworld-stats-grid">
             <StatCard label="Etapa" value={level} accent="success" />
-            <StatCard label="Número atual" value={phase === "idle" ? "—" : targetNumber} />
+            <StatCard label="Próxima pedra" value={phase === "idle" ? "—" : targetNumber} />
             <StatCard label="Erros" value={`${errors}/${NUMBER_TRAIL_MAX_ERRORS}`} accent={errors > 0 ? "danger" : "default"} />
             <StatCard label="Pontuação" value={score} accent="score" />
           </div>
           <section className="miniworld-focus-card logic-focus-card">
-            <p>Caminhos concluídos</p>
+            <p>Trilhas iluminadas</p>
             <strong>{roundsCompleted}</strong>
-            <span>As peças acesas formam sua trilha.</span>
+            <span>Cada trilha completa acende a próxima.</span>
           </section>
         </aside>
       </div>

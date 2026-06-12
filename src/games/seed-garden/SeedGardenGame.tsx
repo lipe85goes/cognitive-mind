@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
-import { Flower2, Leaf, Sprout, Target } from "lucide-react";
+import { ChevronRight, Flower2, Sprout, Target } from "lucide-react";
 import { GameActions } from "@/components/GameActions";
 import { GameLayout } from "@/components/GameLayout";
 import { StatusBanner } from "@/components/ui/StatusBanner";
@@ -12,6 +12,9 @@ import type { GameComponentProps, GameResult } from "@/types/game";
 
 const TARGET_SEED_COUNT = 3;
 const TARGET_VASES = 3;
+
+/** Pause so the player sees the garden bloom before the result screen. */
+const BLOOM_CELEBRATION_MS = 1200;
 
 interface SeedGardenPuzzle {
   initialSeeds: number[];
@@ -166,7 +169,7 @@ export function SeedGardenGame({ onComplete, onExit }: GameComponentProps) {
   const [movesUsed, setMovesUsed] = useState(0);
   const [status, setStatus] = useState<GameStatus>("idle");
   const [message, setMessage] = useState(
-    "Escolha um vaso para distribuir as sementes.",
+    "Toque em um vaso com sementes para ver a prévia.",
   );
   const [invalidIndex, setInvalidIndex] = useState<number | null>(null);
   const [receivingIndices, setReceivingIndices] = useState<number[]>([]);
@@ -188,22 +191,42 @@ export function SeedGardenGame({ onComplete, onExit }: GameComponentProps) {
     movesRemaining,
   });
 
+  const bloomTimerRef = useRef<number | null>(null);
+
+  useEffect(
+    () => () => {
+      if (bloomTimerRef.current !== null) {
+        window.clearTimeout(bloomTimerRef.current);
+      }
+    },
+    [],
+  );
+
   const finishGame = useCallback(
     (targetCompleted: boolean, nextMovesUsed = movesUsed) => {
       const nextMovesRemaining = Math.max(0, puzzle.maxMoves - nextMovesUsed);
       setStatus(targetCompleted ? "success" : "failed");
       setMessage(
         targetCompleted
-          ? "Jardim equilibrado!"
+          ? "Jardim equilibrado! As flores se abriram."
           : "Boa tentativa. Tente outra estratégia.",
       );
-      onComplete(
-        createResult({
-          targetCompleted,
-          movesUsed: nextMovesUsed,
-          movesRemaining: nextMovesRemaining,
-        }),
-      );
+      const result = createResult({
+        targetCompleted,
+        movesUsed: nextMovesUsed,
+        movesRemaining: nextMovesRemaining,
+      });
+
+      if (targetCompleted) {
+        // Hold the blooming garden on screen briefly before the result.
+        bloomTimerRef.current = window.setTimeout(
+          () => onComplete(result),
+          BLOOM_CELEBRATION_MS,
+        );
+        return;
+      }
+
+      onComplete(result);
     },
     [movesUsed, onComplete, puzzle.maxMoves],
   );
@@ -215,7 +238,9 @@ export function SeedGardenGame({ onComplete, onExit }: GameComponentProps) {
     setSelectedIndex(null);
     setMovesUsed(0);
     setStatus("playing");
-    setMessage("Escolha um vaso para distribuir as sementes.");
+    setMessage(
+      "Toque em um vaso com sementes para ver a prévia. Trocar de vaso não gasta movimentos.",
+    );
     setInvalidIndex(null);
     setReceivingIndices([]);
   }, []);
@@ -240,9 +265,9 @@ export function SeedGardenGame({ onComplete, onExit }: GameComponentProps) {
 
     setSelectedIndex(index);
     setMessage(
-      `Esta escolha distribui ${vases[index]} ${
-        vases[index] === 1 ? "semente" : "sementes"
-      }.`,
+      `Prévia: ${vases[index]} ${
+        vases[index] === 1 ? "semente vai" : "sementes vão"
+      } para os vasos seguintes. Distribua quando quiser.`,
     );
   };
 
@@ -305,7 +330,7 @@ export function SeedGardenGame({ onComplete, onExit }: GameComponentProps) {
           />
         ))}
       </div>
-      <p className="seed-encouragement">Planeje uma escolha por vez.</p>
+      <p className="seed-encouragement">Ver a prévia não gasta movimentos.</p>
     </section>
   );
 
@@ -316,10 +341,10 @@ export function SeedGardenGame({ onComplete, onExit }: GameComponentProps) {
       ) : (
         <p>
           {selectedIndex === null
-            ? "Escolha um vaso com sementes."
-            : `Esta escolha distribui ${selectedSeeds} ${
+            ? "Toque em um vaso para ver a prévia. Trocar de vaso não gasta movimentos."
+            : `Prévia pronta: ${selectedSeeds} ${
                 selectedSeeds === 1 ? "semente" : "sementes"
-              }.`}
+              } para os vasos seguintes.`}
         </p>
       )}
       {status === "idle" ? (
@@ -342,7 +367,11 @@ export function SeedGardenGame({ onComplete, onExit }: GameComponentProps) {
             className="btn-primary flex w-full items-center justify-center gap-2 text-lg disabled:opacity-50"
           >
             <Sprout className="h-6 w-6" aria-hidden="true" />
-            Distribuir sementes
+            {canDistribute
+              ? `Distribuir ${selectedSeeds} ${
+                  selectedSeeds === 1 ? "semente" : "sementes"
+                }`
+              : "Distribuir sementes"}
           </button>
           <GameActions
             onRestart={restartGame}
@@ -373,13 +402,20 @@ export function SeedGardenGame({ onComplete, onExit }: GameComponentProps) {
               <span>Objetivo</span>
             </div>
             <h3 id="seed-target-heading">
-              Objetivo: deixe <strong>{puzzle.targetVases} vasos</strong> com
-              exatamente <strong>{puzzle.targetSeedCount} sementes.</strong>
+              Deixe <strong>{puzzle.targetVases} vasos</strong> com exatamente{" "}
+              <strong>{puzzle.targetSeedCount} sementes</strong> cada um.
             </h3>
-            <div className="seed-objective-flower" aria-hidden="true">
-              <Flower2 />
-              <Leaf />
+            <div className="seed-goal-picture" aria-hidden="true">
+              {Array.from({ length: puzzle.targetVases }, (_, index) => (
+                <span key={index} className="seed-goal-pot">
+                  <Flower2 />
+                  <strong>{puzzle.targetSeedCount}</strong>
+                </span>
+              ))}
             </div>
+            <p className="seed-goal-caption">
+              Assim o jardim floresce.
+            </p>
           </section>
 
           {renderMovesCard("seed-moves-desktop")}
@@ -387,7 +423,26 @@ export function SeedGardenGame({ onComplete, onExit }: GameComponentProps) {
 
         <section className="seed-play-area" aria-label="Tabuleiro do jardim">
           {renderActionCard("seed-action-mobile")}
-          <div className="seed-orbit-board" role="group" aria-label="Tabuleiro com seis vasos">
+          {status === "idle" && (
+            <section className="seed-how-card" aria-label="Como funciona a distribuição">
+              <p className="seed-how-title">Como funciona</p>
+              <div className="seed-how-row" aria-hidden="true">
+                <span className="seed-how-pot is-source">2</span>
+                <ChevronRight strokeWidth={2.6} />
+                <span className="seed-how-pot is-receive">+1</span>
+                <span className="seed-how-pot is-receive">+1</span>
+              </div>
+              <p className="seed-how-caption">
+                O vaso escolhido se esvazia: cada semente vai para o vaso
+                seguinte, uma a uma.
+              </p>
+            </section>
+          )}
+          <div
+            className={`seed-orbit-board ${status === "success" ? "is-blooming" : ""}`}
+            role="group"
+            aria-label="Tabuleiro com seis vasos"
+          >
             <span className="seed-orbit-trace" aria-hidden="true" />
             <span className="seed-board-leaf seed-board-leaf-one" aria-hidden="true" />
             <span className="seed-board-leaf seed-board-leaf-two" aria-hidden="true" />
