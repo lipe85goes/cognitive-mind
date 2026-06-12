@@ -22,17 +22,26 @@ export default function HomePage() {
   const [activeGameId, setActiveGameId] = useState<GameId | null>(null);
   const [lastResult, setLastResult] = useState<GameResult | null>(null);
   const [recentResults, setRecentResults] = useState<GameResult[]>([]);
+  const [selectedDashboardGameId, setSelectedDashboardGameId] =
+    useState<GameId | null>(null);
+  const [dashboardNotice, setDashboardNotice] = useState<string | null>(null);
   /** Bumped to remount game components on each new session. */
   const [gameSession, setGameSession] = useState(0);
 
   const refreshResults = useCallback(() => {
-    setRecentResults(getRecentResults());
+    const nextResults = getRecentResults();
+    setRecentResults(nextResults);
+    return nextResults;
   }, []);
 
   useEffect(() => {
     // Load from localStorage only after mount so SSR and hydration match.
+    const storedResults = getRecentResults();
     // eslint-disable-next-line react-hooks/set-state-in-effect -- client-only storage read
-    setRecentResults(getRecentResults());
+    setRecentResults(storedResults);
+    if (storedResults[0]?.gameId) {
+      setSelectedDashboardGameId(storedResults[0].gameId);
+    }
   }, []);
 
   useEffect(() => {
@@ -43,6 +52,8 @@ export default function HomePage() {
 
   const openActivity = (activity: Activity) => {
     if (activity.status !== "available" || !activity.gameId) return;
+    setDashboardNotice(null);
+    setSelectedDashboardGameId(activity.gameId);
     setActiveGameId(activity.gameId);
     setGameSession((n) => n + 1);
     setView("game");
@@ -53,17 +64,28 @@ export default function HomePage() {
   ) => {
     const saved = saveGameResult(partial);
     setLastResult(saved);
+    setSelectedDashboardGameId(saved.gameId);
     refreshResults();
     setView("result");
   };
 
   const returnHome = () => {
+    if (lastResult?.gameId) {
+      setSelectedDashboardGameId(lastResult.gameId);
+      setDashboardNotice("Treino salvo neste aparelho");
+    } else if (activeGameId) {
+      setSelectedDashboardGameId(activeGameId);
+      setDashboardNotice(null);
+    }
+
     setActiveGameId(null);
     setView("home");
   };
 
   const playAgain = () => {
     if (lastResult?.gameId) {
+      setDashboardNotice(null);
+      setSelectedDashboardGameId(lastResult.gameId);
       setActiveGameId(lastResult.gameId);
       setGameSession((n) => n + 1);
       setView("game");
@@ -100,6 +122,9 @@ export default function HomePage() {
       <GamifiedDashboard
         activities={ACTIVITIES}
         recentResults={recentResults}
+        selectedGameId={selectedDashboardGameId}
+        statusMessage={dashboardNotice}
+        onSelectedGameIdChange={setSelectedDashboardGameId}
         onSelectActivity={openActivity}
       />
     </main>

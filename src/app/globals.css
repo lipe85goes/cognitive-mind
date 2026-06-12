@@ -1169,6 +1169,101 @@ button:disabled:focus-visible {
   background: #357fa1;
 }
 
+.dashboard-save-note {
+  display: flex;
+  min-height: 3.25rem;
+  align-items: center;
+  border: 2px solid #9fcfb9;
+  border-radius: 1.1rem;
+  background: linear-gradient(120deg, #f4fbf4, #fffdf8);
+  padding: 0.75rem 1rem;
+  color: #23653e;
+  font-size: 1rem;
+  font-weight: 800;
+  box-shadow: 0 4px 0 rgb(88 137 93 / 0.16);
+}
+
+.journey-action-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.journey-action-card {
+  display: grid;
+  min-width: 0;
+  gap: 0.8rem;
+  border: 2px solid #c7d4c9;
+  border-radius: 1.25rem;
+  background:
+    linear-gradient(115deg, rgb(232 244 235 / 0.72), transparent 42%),
+    #fffdf8;
+  padding: 1rem;
+  box-shadow:
+    inset 0 1px 0 #fff,
+    0 5px 0 rgb(110 128 116 / 0.16),
+    0 12px 20px rgb(32 53 49 / 0.06);
+}
+
+.journey-action-icon {
+  display: flex;
+  height: 3rem;
+  width: 3rem;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #a7c9bd;
+  border-radius: 0.95rem;
+  background: #edf7ef;
+  color: #11675f;
+}
+
+.journey-action-eyebrow {
+  color: #11675f;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.journey-action-card h3 {
+  margin-top: 0.2rem;
+  color: #153748;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.journey-action-card p:not(.journey-action-eyebrow) {
+  margin-top: 0.35rem;
+  color: #435963;
+  font-size: 1rem;
+  line-height: 1.45;
+}
+
+.journey-action-button {
+  display: inline-flex;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #11675f;
+  border-radius: 0.95rem;
+  background: #14776f;
+  padding: 0.65rem 1rem;
+  color: #fffdf8;
+  font-size: 1rem;
+  font-weight: 800;
+  box-shadow: 0 4px 0 #0d625d;
+}
+
+.journey-action-button:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 4px;
+}
+
+.journey-action-button:hover {
+  background: #0d625d;
+}
+
 /* —— Cognitive World Shelf —— */
 /* Per-world tones for shelf tiles and the featured panel. Calibrated to the
    station illustrations (so the memory tone is green like its tree art). */
@@ -1318,6 +1413,10 @@ button:disabled:focus-visible {
     0 0 0 3px color-mix(in srgb, var(--entry-accent) 24%, transparent),
     0 7px 0 color-mix(in srgb, var(--entry-accent) 40%, #cfc8b4),
     0 16px 24px rgb(32 53 49 / 0.12);
+}
+
+.shelf-tile.is-selected .shelf-tile-media {
+  border-color: var(--entry-accent);
 }
 
 .shelf-tile-media {
@@ -2754,6 +2853,10 @@ button:disabled:focus-visible {
 @media (min-width: 768px) {
   .dashboard-summary-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .journey-action-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .daily-tip {

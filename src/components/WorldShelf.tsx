@@ -10,13 +10,15 @@ import {
   getBestActivationSignalsForGame,
   PLAYABLE_STAGE_IDS,
 } from "@/engine/stage-progress";
-import type { Activity, GameResult } from "@/types/game";
+import type { Activity, GameId, GameResult } from "@/types/game";
 
 const MAX_SIGNALS = 3;
 
 interface WorldShelfProps {
   activities: Activity[];
   recentResults: GameResult[];
+  selectedGameId?: GameId | null;
+  onSelectedGameIdChange?: (gameId: GameId) => void;
   onSelect: (activity: Activity) => void;
 }
 
@@ -38,28 +40,45 @@ function SignalDots({ lit, className }: { lit: number; className: string }) {
 export function WorldShelf({
   activities,
   recentResults,
+  selectedGameId,
+  onSelectedGameIdChange,
   onSelect,
 }: WorldShelfProps) {
   const reducedMotion = useReducedMotion();
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [internalSelectedIndex, setInternalSelectedIndex] = useState(0);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   const byId = Object.fromEntries(
     activities.map((activity) => [activity.id, activity]),
   );
   const worlds = PLAYABLE_STAGE_IDS.map((id) => byId[id]).filter(Boolean);
+  const controlledIndex = selectedGameId
+    ? worlds.findIndex((activity) => activity.gameId === selectedGameId)
+    : -1;
+  const selectedIndex =
+    controlledIndex >= 0
+      ? controlledIndex
+      : Math.min(internalSelectedIndex, Math.max(worlds.length - 1, 0));
   const selected = worlds[selectedIndex];
 
+  const selectIndex = (index: number) => {
+    const next = Math.min(Math.max(index, 0), worlds.length - 1);
+    const nextGameId = worlds[next]?.gameId;
+
+    setInternalSelectedIndex(next);
+    if (nextGameId) {
+      onSelectedGameIdChange?.(nextGameId);
+    }
+  };
+
   const stepSelection = (delta: number) => {
-    setSelectedIndex((index) =>
-      Math.min(Math.max(index + delta, 0), worlds.length - 1),
-    );
+    selectIndex(selectedIndex + delta);
   };
 
   /** Roving tabindex: arrows move both selection and focus inside the shelf. */
   const moveFocusTo = (index: number) => {
     const next = Math.min(Math.max(index, 0), worlds.length - 1);
-    setSelectedIndex(next);
+    selectIndex(next);
     tabRefs.current[next]?.focus();
   };
 
@@ -126,7 +145,7 @@ export function WorldShelf({
                 aria-selected={isSelected}
                 aria-controls="world-detail"
                 tabIndex={isSelected ? 0 : -1}
-                onClick={() => setSelectedIndex(index)}
+                onClick={() => selectIndex(index)}
                 className={`shelf-tile world-tone-${meta.world} ${
                   isSelected ? "is-selected" : ""
                 }`}
@@ -174,6 +193,7 @@ export function WorldShelf({
           role="tabpanel"
           id="world-detail"
           aria-labelledby={`world-tab-${selected.id}`}
+          aria-live="polite"
           className={`featured-world world-tone-${selectedMeta.world}`}
         >
           <motion.div

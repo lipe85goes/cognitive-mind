@@ -1,7 +1,14 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import { motion, useReducedMotion } from "motion/react";
 import {
   Brain,
@@ -16,12 +23,16 @@ import { WorldShelf } from "@/components/WorldShelf";
 import { getWorldMeta } from "@/data/worlds";
 import { getDailyGoalProgress } from "@/engine/daily-goal";
 import { isSuccessfulResult } from "@/engine/rewards";
+import { PLAYABLE_STAGE_IDS } from "@/engine/stage-progress";
 import { formatPlayedAt } from "@/engine/storage";
-import type { Activity, GameResult } from "@/types/game";
+import type { Activity, GameId, GameResult } from "@/types/game";
 
 interface GamifiedDashboardProps {
   activities: Activity[];
   recentResults: GameResult[];
+  selectedGameId?: GameId | null;
+  statusMessage?: string | null;
+  onSelectedGameIdChange?: (gameId: GameId) => void;
   onSelectActivity: (activity: Activity) => void;
 }
 
@@ -107,10 +118,96 @@ function SummaryCard({
   );
 }
 
+function getPlayableActivities(activities: Activity[]): Activity[] {
+  const byId = Object.fromEntries(
+    activities
+      .filter((activity) => activity.status === "available" && activity.gameId)
+      .map((activity) => [activity.gameId, activity]),
+  );
+
+  return PLAYABLE_STAGE_IDS.map((id) => byId[id]).filter(
+    (activity): activity is Activity => Boolean(activity),
+  );
+}
+
+function getDailySuggestion(
+  playableActivities: Activity[],
+  recentResults: GameResult[],
+): Activity | undefined {
+  const firstWorld = playableActivities[0];
+  const lastGameId = recentResults[0]?.gameId;
+  if (!firstWorld || !lastGameId) return firstWorld;
+
+  const playedIds = new Set(recentResults.map((result) => result.gameId));
+  const lastActivity = playableActivities.find(
+    (activity) => activity.gameId === lastGameId,
+  );
+  const lastSkill = lastActivity?.skill;
+
+  const freshDifferentSkill = playableActivities.find(
+    (activity) =>
+      activity.gameId !== lastGameId &&
+      activity.skill !== lastSkill &&
+      activity.gameId !== undefined &&
+      !playedIds.has(activity.gameId),
+  );
+  if (freshDifferentSkill) return freshDifferentSkill;
+
+  const differentSkill = playableActivities.find(
+    (activity) =>
+      activity.gameId !== lastGameId && activity.skill !== lastSkill,
+  );
+  if (differentSkill) return differentSkill;
+
+  const lastIndex = playableActivities.findIndex(
+    (activity) => activity.gameId === lastGameId,
+  );
+  return playableActivities[(lastIndex + 1) % playableActivities.length] ?? firstWorld;
+}
+
+function JourneyActionCard({
+  eyebrow,
+  title,
+  body,
+  buttonLabel,
+  icon: Icon,
+  onClick,
+}: {
+  eyebrow: string;
+  title: string;
+  body: string;
+  buttonLabel: string;
+  icon: typeof Clock;
+  onClick: () => void;
+}) {
+  return (
+    <motion.article variants={cardVariants} className="journey-action-card">
+      <div className="journey-action-icon" aria-hidden>
+        <Icon className="h-6 w-6" strokeWidth={2.2} />
+      </div>
+      <div className="min-w-0">
+        <p className="journey-action-eyebrow">{eyebrow}</p>
+        <h3>{title}</h3>
+        <p>{body}</p>
+      </div>
+      <button
+        type="button"
+        onClick={onClick}
+        className="journey-action-button"
+      >
+        {buttonLabel}
+      </button>
+    </motion.article>
+  );
+}
+
 /** Premium, accessible home view. Data and navigation behavior remain external. */
 export function GamifiedDashboard({
   activities,
   recentResults,
+  selectedGameId,
+  statusMessage,
+  onSelectedGameIdChange,
   onSelectActivity,
 }: GamifiedDashboardProps) {
   const reducedMotion = useReducedMotion();
@@ -126,10 +223,60 @@ export function GamifiedDashboard({
   const availableCount = activities.filter((activity) => activity.status === "available").length;
   const dailyGoal = getDailyGoalProgress(recentResults);
   const dailyProgressPct = Math.round((dailyGoal.completed / dailyGoal.target) * 100);
+  const playableActivities = useMemo(
+    () => getPlayableActivities(activities),
+    [activities],
+  );
+  const activityByGameId = useMemo(
+    () =>
+      new Map(
+        playableActivities
+          .filter((activity) => activity.gameId)
+          .map((activity) => [activity.gameId as GameId, activity]),
+      ),
+    [playableActivities],
+  );
+  const lastResult = recentResults[0];
+  const lastActivity = lastResult
+    ? activityByGameId.get(lastResult.gameId)
+    : undefined;
+  const firstActivity = playableActivities[0];
+  const continueActivity = lastActivity ?? firstActivity;
+  const dailySuggestion = useMemo(
+    () => getDailySuggestion(playableActivities, recentResults),
+    [playableActivities, recentResults],
+  );
+  const continueMeta = continueActivity?.gameId
+    ? getWorldMeta(continueActivity.gameId)
+    : undefined;
+  const suggestionMeta = dailySuggestion?.gameId
+    ? getWorldMeta(dailySuggestion.gameId)
+    : undefined;
 
   const scrollToChallenges = () => {
     challengeSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
+
+  const selectWorldInShelf = useCallback(
+    (gameId: GameId) => {
+      onSelectedGameIdChange?.(gameId);
+      challengeSectionRef.current?.scrollIntoView({
+        behavior: reducedMotion ? "auto" : "smooth",
+        block: "start",
+      });
+    },
+    [onSelectedGameIdChange, reducedMotion],
+  );
+
+  const startContinueActivity = useCallback(() => {
+    if (!continueActivity) return;
+    onSelectActivity(continueActivity);
+  }, [continueActivity, onSelectActivity]);
+
+  const showSuggestion = useCallback(() => {
+    if (!dailySuggestion?.gameId) return;
+    selectWorldInShelf(dailySuggestion.gameId);
+  }, [dailySuggestion, selectWorldInShelf]);
 
   return (
     <div className="dashboard-home min-w-0 w-full max-w-full">
@@ -248,14 +395,57 @@ export function GamifiedDashboard({
             Escolha um desafio
           </h2>
           <p className="mt-2 max-w-2xl text-lg text-slate-700">
-            Cada estação é um pequeno mundo tátil. Toque em uma estação para
+            Escolha uma estação para praticar com calma. Toque em uma estação para
             conhecer e comece quando quiser.
           </p>
         </motion.div>
+
+        {statusMessage && (
+          <motion.p
+            variants={cardVariants}
+            className="dashboard-save-note mb-4"
+            role="status"
+            aria-live="polite"
+          >
+            {statusMessage}. Jornada atualizada.
+          </motion.p>
+        )}
+
+        {continueActivity && continueMeta && dailySuggestion && suggestionMeta && (
+          <motion.div
+            variants={sectionVariants}
+            className="journey-action-grid mb-6"
+            aria-label="Atalhos da jornada"
+          >
+            <JourneyActionCard
+              eyebrow={lastResult ? "Seu último treino" : "Comece sua primeira jornada"}
+              title={lastResult ? continueMeta.name : "Circuito de Memória"}
+              body={
+                lastResult
+                  ? `Última prática: ${formatPlayedAt(lastResult.playedAt)}.`
+                  : "Um começo leve para observar, lembrar e repetir no seu ritmo."
+              }
+              buttonLabel={lastResult ? "Continuar treino" : "Começar jornada"}
+              icon={Clock}
+              onClick={startContinueActivity}
+            />
+            <JourneyActionCard
+              eyebrow="Sugestão de hoje"
+              title={suggestionMeta.name}
+              body={`Hoje sugerimos ${suggestionMeta.name} para praticar ${suggestionMeta.skill.toLowerCase()}.`}
+              buttonLabel="Ver sugestão"
+              icon={Target}
+              onClick={showSuggestion}
+            />
+          </motion.div>
+        )}
+
         <motion.div variants={cardVariants}>
           <WorldShelf
             activities={activities}
             recentResults={recentResults}
+            selectedGameId={selectedGameId}
+            onSelectedGameIdChange={onSelectedGameIdChange}
             onSelect={onSelectActivity}
           />
         </motion.div>
