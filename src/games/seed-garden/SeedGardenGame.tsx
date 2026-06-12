@@ -426,7 +426,7 @@ export function SeedGardenGame({ onComplete, onExit }: GameComponentProps) {
                       : isComplete
                         ? "garden-pot-bloom border-emerald-400 bg-emerald-50 text-emerald-950"
                         : "border-amber-300 bg-gradient-to-b from-amber-50 to-white text-slate-900"
-                  } ${isPreviewed ? "ring-4 ring-sky-300/70" : ""}`}
+                  } ${isPreviewed ? "garden-pot-previewed" : ""}`}
                 >
                   {isPreviewed && (
                     <span className="garden-receive" aria-hidden="true">

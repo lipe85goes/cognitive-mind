@@ -12,7 +12,7 @@ import {
   Sprout,
   Target,
 } from "lucide-react";
-import { TrainingMap } from "@/components/TrainingMap";
+import { WorldShelf } from "@/components/WorldShelf";
 import { getWorldMeta } from "@/data/worlds";
 import { getDailyGoalProgress } from "@/engine/daily-goal";
 import { isSuccessfulResult } from "@/engine/rewards";
@@ -93,16 +93,16 @@ function SummaryCard({
   return (
     <motion.div variants={cardVariants} className={`dashboard-summary dashboard-summary-${tone}`}>
       <div className="flex items-start justify-between gap-3">
-        <div>
-          <p className="text-base font-bold text-slate-700">{label}</p>
-          <p className="mt-1 text-4xl font-bold tabular-nums text-slate-900">{value}</p>
+        <div className="min-w-0">
+          <p className="dashboard-summary-label">{label}</p>
+          <p className="dashboard-summary-value tabular-nums">{value}</p>
         </div>
         <div className="dashboard-summary-icon" aria-hidden>
           <Icon className="h-7 w-7" strokeWidth={2.2} />
         </div>
       </div>
       {children}
-      <p className="mt-3 text-base font-medium text-slate-700">{helper}</p>
+      <p className="dashboard-summary-helper">{helper}</p>
     </motion.div>
   );
 }
@@ -181,6 +181,11 @@ export function GamifiedDashboard({
             <Play className="h-6 w-6 fill-current" aria-hidden />
             Começar jornada
           </motion.button>
+          <ul className="hero-assurances" aria-label="Como o MindFlow funciona">
+            <li>Sem cronômetro</li>
+            <li>Sem pressão</li>
+            <li>Dados só no seu aparelho</li>
+          </ul>
         </div>
         <HeroIllustration />
         </motion.section>
@@ -243,14 +248,17 @@ export function GamifiedDashboard({
             Escolha um desafio
           </h2>
           <p className="mt-2 max-w-2xl text-lg text-slate-700">
-            Cada estação oferece uma experiência tátil para praticar uma habilidade diferente.
+            Cada estação é um pequeno mundo tátil. Toque em uma estação para
+            conhecer e comece quando quiser.
           </p>
         </motion.div>
-        <TrainingMap
-          activities={activities}
-          recentResults={recentResults}
-          onSelect={onSelectActivity}
-        />
+        <motion.div variants={cardVariants}>
+          <WorldShelf
+            activities={activities}
+            recentResults={recentResults}
+            onSelect={onSelectActivity}
+          />
+        </motion.div>
       </motion.section>
 
       <motion.aside
@@ -278,7 +286,7 @@ export function GamifiedDashboard({
             <h2 id="daily-tip-heading" className="dashboard-display text-2xl font-bold text-teal-900">
               Dica do dia
             </h2>
-            <p className="mt-2 text-lg leading-relaxed text-slate-800">
+            <p className="daily-tip-quote mt-2">
               Pequenos passos todos os dias constroem grandes conquistas.
             </p>
           </div>

@@ -7,7 +7,7 @@ Guia para quem vai evoluir o MVP. Leia antes de adicionar jogos ou mexer no desi
 Tudo acontece em uma única rota (`src/app/page.tsx`) controlada por um estado de visão:
 
 ```
-home (GamifiedDashboard + TrainingMap)
+home (GamifiedDashboard + WorldShelf)
   └─ selecionar estação → game (GameScreen)
        ├─ GameHowToPlay (intro "Como jogar")
        └─ <Jogo /> (remontado por sessionKey a cada nova sessão)
@@ -26,7 +26,7 @@ Todo o material de apresentação por jogo (nome da estação, habilidade, ilust
 
 | Consumidor | O que usa |
 |------------|-----------|
-| `TrainingMap` | nome, propósito, imagem, mundo (cartões de estação) |
+| `WorldShelf` | nome, habilidade, propósito, imagem, mundo (prateleira de mundos + painel da estação selecionada) |
 | `GameHowToPlay` + `data/game-intros.ts` | título, habilidade, imagem, mundo |
 | `GameLayout` | ícone e rótulo do tabuleiro (via `WORLDS`) |
 | `GamifiedDashboard` | nome, habilidade, ícone (circuitos recentes) |
@@ -38,7 +38,9 @@ Use sempre `getWorldMeta(gameId)` para dados vindos do `localStorage` — ele te
 
 `globals.css` define tokens em `:root` (`--memory-*`, `--route-*`, `--commands-*`, `--logic-*`, `--garden-*`). As classes temáticas (`game-world-*`, `game-intro-*`, `reward-world-*`, `recent-circuit-*`) **apenas referenciam** esses tokens. Para ajustar a cor de um mundo, mude o token — nunca duplique hex.
 
-Exceção intencional: `station-entry-*` (cartões do dashboard) tem paleta própria, calibrada à ilustração de cada estação (ex.: a arte do Circuito de Memória é verde, embora o mundo em jogo seja rosé).
+Exceção intencional: `world-tone-*` (prateleira de mundos e painel da estação no dashboard) tem paleta própria, calibrada à ilustração de cada estação (ex.: a arte do Circuito de Memória é verde, embora o mundo em jogo seja rosé).
+
+Atenção (cascade layers): as utilities do Tailwind v4 vivem em `@layer utilities`; as classes customizadas do `globals.css` são *unlayered* e sempre vencem. Se um elemento tem uma classe customizada com `box-shadow` (ex.: `.route-cell`, `.memory-pad`, `.garden-pot`), utilities `ring-*`/`shadow-*` nele **não têm efeito** — estados visuais desses elementos devem ser classes CSS explícitas (ex.: `.route-player-cell`, `.memory-pad.is-lit`, `.garden-pot-previewed`).
 
 ## Engine (`src/engine/`)
 

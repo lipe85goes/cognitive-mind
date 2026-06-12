@@ -396,6 +396,7 @@ export function ColorSequenceGame({ onComplete, onExit }: GameComponentProps) {
                     aria-pressed={isHighlighted}
                     disabled={!canTap}
                     tabIndex={canTap ? 0 : -1}
+                    style={{ "--pad-glow": color.glow } as React.CSSProperties}
                     onClick={() => handleColorPress(color.id)}
                     animate={
                       reducedMotion
@@ -418,18 +419,18 @@ export function ColorSequenceGame({ onComplete, onExit }: GameComponentProps) {
                     }
                     className={`memory-pad relative aspect-square min-h-[min(44vw,168px)] max-h-[210px] w-full rounded-full border-4 transition-[transform,box-shadow,opacity] duration-200 sm:min-h-[156px] ${
                       isHighlighted ? color.active : color.base
-                    } ${
+                    } ${isHighlighted ? "is-lit" : ""} ${
                       isWrongTap
-                        ? "!border-red-700 !from-red-100 !to-red-200 !ring-[8px] !ring-red-500 ring-offset-4 ring-offset-white"
+                        ? "is-wrong !border-red-700 !from-red-100 !to-red-200"
                         : isCorrectTap
-                          ? "!border-emerald-700 !ring-[8px] !ring-emerald-400 ring-offset-4 ring-offset-white"
+                          ? "is-correct !border-emerald-700"
                           : ""
                     } ${dimOthers ? "opacity-25 saturate-[0.65] scale-[0.92]" : ""} ${
                       !canTap && !isShowing ? "opacity-50" : ""
                     }`}
                   >
                     <span
-                      className="pointer-events-none absolute inset-[14%] rounded-full bg-white/30"
+                      className="pointer-events-none absolute inset-[12%] rounded-full bg-[radial-gradient(circle_at_32%_26%,rgb(255_255_255/0.55),rgb(255_255_255/0.06)_62%)]"
                       aria-hidden
                     />
                     {isHighlighted && isShowing && !reducedMotion && (

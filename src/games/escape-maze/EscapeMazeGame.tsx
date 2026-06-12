@@ -657,18 +657,20 @@ export function EscapeMazeGame({ onComplete, onExit }: GameComponentProps) {
 
     if (isWall) {
       cellClass +=
-        "route-wall border-slate-600 bg-gradient-to-br from-slate-500 to-slate-700 shadow-[inset_0_2px_4px_rgba(0,0,0,0.22)]";
+        "route-wall border-slate-600 bg-gradient-to-br from-slate-500 to-slate-700";
     } else if (isPlayer) {
       cellClass +=
-        "border-sky-700 bg-gradient-to-br from-sky-100 to-sky-300 ring-2 ring-inset ring-sky-500 shadow-[0_0_14px_rgba(14,165,233,0.5)]";
+        "route-player-cell border-sky-700 bg-gradient-to-br from-sky-100 to-sky-300";
     } else if (isGuardian) {
       cellClass +=
-        "border-orange-700 bg-gradient-to-br from-orange-100 to-amber-300 ring-2 ring-inset ring-orange-500 shadow-[0_0_10px_rgba(249,115,22,0.35)]";
+        "route-guardian-cell border-orange-700 bg-gradient-to-br from-orange-100 to-amber-300";
     } else if (isExit) {
       cellClass +=
-        "border-emerald-700 bg-gradient-to-br from-emerald-100 to-emerald-300 ring-2 ring-inset ring-emerald-500 shadow-[0_0_18px_rgba(16,185,129,0.6)]";
+        "route-exit-cell border-emerald-700 bg-gradient-to-br from-emerald-100 to-emerald-300";
     } else {
-      cellClass += "route-floor border-slate-300 bg-white";
+      cellClass += `route-floor border-slate-300 bg-white${
+        isStar ? " route-star-cell" : ""
+      }`;
     }
 
     return (
