@@ -1,9 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
+import { useReducedMotion } from "motion/react";
 import { GamifiedDashboard } from "@/components/GamifiedDashboard";
 import { GameScreen } from "@/components/GameScreen";
 import { RewardResultModal } from "@/components/RewardResultModal";
+import { WorldEntryTransition } from "@/components/WorldEntryTransition";
 import { ACTIVITIES } from "@/data/activities";
 import { getRecentResults, saveGameResult } from "@/engine/storage";
 import type {
@@ -25,8 +27,12 @@ export default function HomePage() {
   const [selectedDashboardGameId, setSelectedDashboardGameId] =
     useState<GameId | null>(null);
   const [dashboardNotice, setDashboardNotice] = useState<string | null>(null);
+  /** World whose entry threshold is currently playing (null = none). */
+  const [enteringGameId, setEnteringGameId] = useState<GameId | null>(null);
   /** Bumped to remount game components on each new session. */
   const [gameSession, setGameSession] = useState(0);
+
+  const reducedMotion = useReducedMotion();
 
   const refreshResults = useCallback(() => {
     const nextResults = getRecentResults();
@@ -57,6 +63,7 @@ export default function HomePage() {
     setActiveGameId(activity.gameId);
     setGameSession((n) => n + 1);
     setView("game");
+    if (!reducedMotion) setEnteringGameId(activity.gameId);
   };
 
   const handleGameComplete = (
@@ -89,11 +96,13 @@ export default function HomePage() {
       setActiveGameId(lastResult.gameId);
       setGameSession((n) => n + 1);
       setView("game");
+      if (!reducedMotion) setEnteringGameId(lastResult.gameId);
     }
   };
 
+  let content: ReactNode;
   if (view === "game" && activeGameId) {
-    return (
+    content = (
       <main className="flex min-h-full min-w-0 flex-1 flex-col overflow-x-hidden">
         <GameScreen
           gameId={activeGameId}
@@ -103,10 +112,8 @@ export default function HomePage() {
         />
       </main>
     );
-  }
-
-  if (view === "result" && lastResult) {
-    return (
+  } else if (view === "result" && lastResult) {
+    content = (
       <main className="flex min-h-full min-w-0 flex-1 items-center justify-center overflow-x-hidden px-4 py-8 sm:py-10">
         <RewardResultModal
           result={lastResult}
@@ -115,18 +122,31 @@ export default function HomePage() {
         />
       </main>
     );
+  } else {
+    content = (
+      <main className="mx-auto w-full min-w-0 max-w-[88rem] flex-1 overflow-x-hidden px-4 py-5 pb-12 sm:px-6 sm:py-6">
+        <GamifiedDashboard
+          activities={ACTIVITIES}
+          recentResults={recentResults}
+          selectedGameId={selectedDashboardGameId}
+          statusMessage={dashboardNotice}
+          onSelectedGameIdChange={setSelectedDashboardGameId}
+          onSelectActivity={openActivity}
+        />
+      </main>
+    );
   }
 
   return (
-    <main className="mx-auto w-full min-w-0 max-w-[88rem] flex-1 overflow-x-hidden px-4 py-5 pb-12 sm:px-6 sm:py-6">
-      <GamifiedDashboard
-        activities={ACTIVITIES}
-        recentResults={recentResults}
-        selectedGameId={selectedDashboardGameId}
-        statusMessage={dashboardNotice}
-        onSelectedGameIdChange={setSelectedDashboardGameId}
-        onSelectActivity={openActivity}
-      />
-    </main>
+    <>
+      {content}
+      {enteringGameId && (
+        <WorldEntryTransition
+          key={`${enteringGameId}-${gameSession}`}
+          gameId={enteringGameId}
+          onDone={() => setEnteringGameId(null)}
+        />
+      )}
+    </>
   );
 }
