@@ -18,14 +18,17 @@ import {
   Settings,
   Sparkles,
   Sprout,
+  Star,
   Trophy,
   type LucideIcon,
 } from "lucide-react";
 import { WorldShelf } from "@/components/WorldShelf";
 import { getWorldMeta } from "@/data/worlds";
-import { getDailyGoalProgress } from "@/engine/daily-goal";
 import { isSuccessfulResult } from "@/engine/rewards";
-import { PLAYABLE_STAGE_IDS } from "@/engine/stage-progress";
+import {
+  getBestActivationSignalsForGame,
+  PLAYABLE_STAGE_IDS,
+} from "@/engine/stage-progress";
 import { formatPlayedAt } from "@/engine/storage";
 import type { Activity, GameId, GameResult } from "@/types/game";
 
@@ -171,9 +174,14 @@ export function GamifiedDashboard({
   const reducedMotion = useReducedMotion();
   const shelfRef = useRef<HTMLElement>(null);
 
-  const dailyGoal = getDailyGoalProgress(recentResults);
-  const dailyProgressPct = Math.round((dailyGoal.completed / dailyGoal.target) * 100);
   const successfulResults = recentResults.filter(isSuccessfulResult);
+  const focusDays = useMemo(
+    () =>
+      new Set(
+        recentResults.map((result) => new Date(result.playedAt).toDateString()),
+      ).size,
+    [recentResults],
+  );
   const playableActivities = useMemo(
     () => getPlayableActivities(activities),
     [activities],
@@ -182,6 +190,23 @@ export function GamifiedDashboard({
     () => new Set(recentResults.map((result) => result.gameId)).size,
     [recentResults],
   );
+  // Mastery = best activation signals earned across all worlds (read-only over
+  // stored results; no scoring/storage changes). Powers the HUD/overall meter.
+  const totalSignals = useMemo(
+    () =>
+      playableActivities.reduce(
+        (sum, activity) =>
+          sum +
+          (activity.gameId
+            ? getBestActivationSignalsForGame(recentResults, activity.gameId)
+            : 0),
+        0,
+      ),
+    [playableActivities, recentResults],
+  );
+  const masteryMax = playableActivities.length * 3;
+  const masteryPct =
+    masteryMax > 0 ? Math.round((totalSignals / masteryMax) * 100) : 0;
   const activityByGameId = useMemo(
     () =>
       new Map(
@@ -209,9 +234,9 @@ export function GamifiedDashboard({
     ? getWorldMeta(dailySuggestion.gameId)
     : undefined;
 
-  const focusLabel =
-    dailyGoal.completed > 0
-      ? "Continue assim"
+  const focusValue =
+    focusDays > 0
+      ? `${focusDays} ${focusDays === 1 ? "dia" : "dias"}`
       : "Comece hoje";
   const continueHint =
     lastResult && continueActivity?.gameId && continueMeta
@@ -259,15 +284,15 @@ export function GamifiedDashboard({
 
           <div className="game-topbar-status" aria-label="Resumo rápido">
             <FocusChip
-              icon={Trophy}
-              value={successfulResults.length}
-              label="Circuitos"
+              icon={Star}
+              value={totalSignals}
+              label="Conquistas"
               tone="gold"
             />
             <FocusChip
               icon={Flame}
-              value={`${dailyGoal.completed}/${dailyGoal.target}`}
-              label="Foco hoje"
+              value={focusDays}
+              label="Dias de foco"
               tone="ember"
             />
             <div className="game-profile-chip">
@@ -357,17 +382,17 @@ export function GamifiedDashboard({
           <div className="min-w-0 flex-1">
             <div className="flex items-center justify-between gap-3">
               <p>Seu progresso geral</p>
-              <strong>{dailyProgressPct}%</strong>
+              <strong>{masteryPct}%</strong>
             </div>
             <div
               className="game-hud-progress"
               role="progressbar"
-              aria-label={`Progresso de hoje: ${dailyGoal.completed} de ${dailyGoal.target}`}
+              aria-label={`Progresso geral: ${masteryPct}%`}
               aria-valuemin={0}
-              aria-valuemax={dailyGoal.target}
-              aria-valuenow={dailyGoal.completed}
+              aria-valuemax={100}
+              aria-valuenow={masteryPct}
             >
-              <span style={{ width: `${dailyProgressPct}%` }} />
+              <span style={{ width: `${masteryPct}%` }} />
             </div>
             <small>Continue assim, você está indo muito bem.</small>
           </div>
@@ -391,7 +416,7 @@ export function GamifiedDashboard({
         <ProgressPlaque
           icon={CalendarDays}
           label="Sequência de foco"
-          value={focusLabel}
+          value={focusValue}
           helper="Treino salvo neste aparelho"
         />
       </section>

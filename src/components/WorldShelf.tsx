@@ -131,6 +131,7 @@ export function WorldShelf({
               viewport={{ once: true, margin: "-30px" }}
               transition={{ duration: 0.32, delay: index * 0.035 }}
             >
+              <span className="world-piece-backplate" aria-hidden />
               <button
                 ref={(el) => {
                   tabRefs.current[index] = el;
@@ -151,12 +152,15 @@ export function WorldShelf({
                     sizes="(max-width: 767px) 82vw, (max-width: 1279px) 28vw, 17vw"
                     className="world-card-image"
                   />
+                  <span className="world-card-inner-frame" />
                   <span className="world-card-glow" />
                   <span className="world-number-medal">{index + 1}</span>
                   {best === 0 && <span className="world-new-ribbon">Novo</span>}
                 </span>
                 <span className="world-card-body">
-                  <span className="world-card-title">{meta.name}</span>
+                  <span className="world-title-plaque">
+                    <span className="world-card-title">{meta.name}</span>
+                  </span>
                   <span className="world-card-copy">
                     {meta.purpose}
                   </span>
@@ -182,6 +186,7 @@ export function WorldShelf({
                 <Play className="h-5 w-5 fill-current" aria-hidden />
                 Entrar
               </button>
+              <span className="world-piece-foot" aria-hidden />
             </motion.article>
           );
         })}
