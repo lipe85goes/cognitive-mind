@@ -131,6 +131,8 @@ export function WorldShelf({
               viewport={{ once: true, margin: "-30px" }}
               transition={{ duration: 0.32, delay: index * 0.035 }}
             >
+              <span className="world-piece-shadow" aria-hidden />
+              <span className="world-object-aura" aria-hidden />
               <span className="world-piece-backplate" aria-hidden />
               <button
                 ref={(el) => {
@@ -144,36 +146,40 @@ export function WorldShelf({
                 onClick={() => selectIndex(index)}
                 className="world-stage-tab"
               >
-                <span className="world-card-media" aria-hidden>
-                  <Image
-                    src={meta.image}
-                    alt=""
-                    fill
-                    sizes="(max-width: 767px) 82vw, (max-width: 1279px) 28vw, 17vw"
-                    className="world-card-image"
-                  />
-                  <span className="world-card-inner-frame" />
-                  <span className="world-card-glow" />
-                  <span className="world-number-medal">{index + 1}</span>
-                  {best === 0 && <span className="world-new-ribbon">Novo</span>}
+                <span className="world-art-shell" aria-hidden>
+                  <span className="world-card-media">
+                    <Image
+                      src={meta.image}
+                      alt=""
+                      fill
+                      sizes="(max-width: 767px) 82vw, (max-width: 1279px) 28vw, 17vw"
+                      className="world-card-image"
+                    />
+                    <span className="world-card-inner-frame" />
+                    <span className="world-card-glow" />
+                    <span className="world-number-medal">{index + 1}</span>
+                    {best === 0 && <span className="world-new-ribbon">Novo</span>}
+                  </span>
                 </span>
-                <span className="world-card-body">
+                <span className="world-card-body world-pedestal-deck">
                   <span className="world-title-plaque">
                     <span className="world-card-title">{meta.name}</span>
                   </span>
                   <span className="world-card-copy">
                     {meta.purpose}
                   </span>
-                  {best > 0 ? (
-                    <span className="world-card-progress">
-                      <SignalDots lit={best} />
-                      <span className="sr-only">
-                        Melhor resultado: {best} de {MAX_SIGNALS} sinais.
+                  <span className="world-card-meta-row">
+                    {best > 0 ? (
+                      <span className="world-card-progress">
+                        <SignalDots lit={best} />
+                        <span className="sr-only">
+                          Melhor resultado: {best} de {MAX_SIGNALS} sinais.
+                        </span>
                       </span>
-                    </span>
-                  ) : (
-                    <span className="world-card-skill">{meta.skill}</span>
-                  )}
+                    ) : (
+                      <span className="world-card-skill">{meta.skill}</span>
+                    )}
+                  </span>
                 </span>
               </button>
 

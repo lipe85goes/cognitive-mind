@@ -4768,6 +4768,1349 @@ button:disabled:focus-visible {
   }
 }
 
+/* Final home cascade lock: keeps the rebuilt selector above older fidelity layers. */
+.game-opening-stage {
+  min-height: clamp(38rem, 65vw, 50rem);
+  border-bottom: 0;
+  box-shadow:
+    inset 0 -7rem 7rem rgb(22 12 7 / 0.42),
+    0 1.4rem 4rem rgb(20 14 10 / 0.24);
+}
+
+.game-opening-stage::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.1rem;
+  z-index: 2;
+  height: clamp(7rem, 12vw, 11rem);
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, transparent, rgb(40 24 15 / 0.68) 60%, rgb(40 24 15 / 0.96)),
+    radial-gradient(62% 70% at 50% 70%, rgb(255 219 146 / 0.18), transparent 70%);
+}
+
+.game-topbar {
+  background:
+    linear-gradient(180deg, rgb(4 19 24 / 0.78), rgb(6 24 28 / 0.28)),
+    radial-gradient(30rem 5rem at 8% 0%, rgb(99 230 203 / 0.13), transparent 70%);
+}
+
+.game-hud-chip,
+.game-profile-chip,
+.game-settings-button {
+  border-color: rgb(255 238 192 / 0.32);
+  background:
+    radial-gradient(circle at 22% 18%, rgb(255 255 255 / 0.38), transparent 28%),
+    linear-gradient(180deg, rgb(255 255 255 / 0.86), rgb(224 235 225 / 0.78));
+  box-shadow:
+    inset 0 2px 0 rgb(255 255 255 / 0.3),
+    inset 0 -3px 0 rgb(0 0 0 / 0.18),
+    0 0.4rem 0 rgb(0 0 0 / 0.17),
+    0 1rem 1.8rem rgb(0 0 0 / 0.22);
+}
+
+.game-play-cta {
+  border-radius: 1.6rem;
+  background:
+    radial-gradient(circle at 24% 20%, rgb(255 255 255 / 0.26), transparent 28%),
+    linear-gradient(180deg, #6fc28b 0%, #2c8b63 48%, #176044 100%);
+  box-shadow:
+    inset 0 3px 0 rgb(255 255 255 / 0.35),
+    inset 0 -5px 0 rgb(0 0 0 / 0.19),
+    0 0.55rem 0 #123e2f,
+    0 1.4rem 2.8rem rgb(0 0 0 / 0.4),
+    0 0 0 0.5rem rgb(90 174 119 / 0.22);
+}
+
+.game-world-stage {
+  width: min(98rem, calc(100% - 1.25rem));
+  margin-top: clamp(-10.5rem, -11vw, -7rem);
+  padding: clamp(4.8rem, 6.5vw, 5.8rem) clamp(0.65rem, 1.8vw, 1.6rem) 1.45rem;
+  border: 0;
+  border-radius: 4rem 4rem 2.2rem 2.2rem / 2.35rem 2.35rem 1.7rem 1.7rem;
+  background:
+    radial-gradient(90% 80% at 50% -18%, rgb(255 226 160 / 0.34), transparent 48%),
+    linear-gradient(180deg, #8b5a38 0%, #6d432d 28%, #3f261b 72%, #271711 100%);
+  box-shadow:
+    inset 0 0.28rem 0 rgb(255 234 184 / 0.24),
+    inset 0 -1.2rem 1.5rem rgb(10 5 3 / 0.34),
+    0 -2rem 4rem rgb(9 7 6 / 0.2),
+    0 2rem 4.5rem rgb(38 22 14 / 0.36);
+}
+
+.game-world-stage::before {
+  inset: 0.55rem 1rem auto;
+  height: 5.8rem;
+  border-radius: 999px 999px 45% 45%;
+  background:
+    linear-gradient(180deg, rgb(255 226 169 / 0.32), rgb(255 255 255 / 0)),
+    repeating-linear-gradient(96deg, rgb(255 255 255 / 0.06) 0 1px, transparent 1px 6.5rem);
+}
+
+.game-world-stage::after {
+  left: 1rem;
+  right: 1rem;
+  bottom: -1.05rem;
+  height: 2.25rem;
+  border-radius: 0 0 2.4rem 2.4rem;
+  background: linear-gradient(180deg, #3a2117, #180d09);
+  box-shadow:
+    inset 0 0.35rem 0 rgb(255 255 255 / 0.05),
+    0 1.2rem 1.8rem rgb(0 0 0 / 0.26);
+}
+
+.game-world-plaque {
+  width: min(41rem, calc(100% - 1rem));
+  border: 2px solid rgb(199 148 88 / 0.65);
+  border-radius: 1.8rem 1.8rem 1.25rem 1.25rem;
+  background:
+    radial-gradient(circle at 50% -20%, rgb(255 227 160 / 0.36), transparent 48%),
+    linear-gradient(180deg, #7c5238 0%, #4a2c1d 58%, #25130d 100%);
+}
+
+.game-world-shelf {
+  perspective: 1200px;
+}
+
+.game-world-shelf .shelf-track {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(12.4rem, 1fr));
+  align-items: end;
+  gap: clamp(0.45rem, 0.9vw, 0.85rem);
+  min-width: 0;
+  padding: 0.35rem 0.15rem 1.1rem;
+  overflow: visible;
+}
+
+.world-diorama-card {
+  position: relative;
+  display: block;
+  min-height: clamp(25rem, 31vw, 31rem);
+  min-width: 0;
+  overflow: visible;
+  padding: 0.3rem 0.1rem 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  isolation: isolate;
+  transform-style: preserve-3d;
+}
+
+.world-diorama-card:nth-child(1) {
+  transform: rotate(-1.6deg) translateY(0.3rem);
+}
+
+.world-diorama-card:nth-child(2) {
+  transform: rotate(-0.7deg) translateY(0.9rem);
+}
+
+.world-diorama-card:nth-child(3) {
+  transform: translateY(-0.25rem);
+}
+
+.world-diorama-card:nth-child(4) {
+  transform: rotate(0.7deg) translateY(0.75rem);
+}
+
+.world-diorama-card:nth-child(5) {
+  transform: rotate(1.4deg) translateY(0.45rem);
+}
+
+.world-piece-shadow,
+.world-object-aura,
+.world-piece-backplate,
+.world-piece-foot {
+  position: absolute;
+  pointer-events: none;
+}
+
+.world-piece-shadow {
+  left: 5%;
+  right: 5%;
+  bottom: 0.15rem;
+  z-index: -4;
+  height: 3.1rem;
+  border-radius: 999px;
+  background: radial-gradient(closest-side, rgb(0 0 0 / 0.52), transparent 78%);
+  filter: blur(10px);
+}
+
+.world-object-aura {
+  left: 7%;
+  right: 7%;
+  top: 1.4rem;
+  z-index: -3;
+  height: 14rem;
+  border-radius: 50%;
+  background:
+    radial-gradient(closest-side, color-mix(in srgb, var(--world-card-accent) 48%, #ffe3a3), transparent 76%);
+  opacity: 0.58;
+  filter: blur(5px);
+}
+
+.world-piece-backplate {
+  left: 4%;
+  right: 4%;
+  top: 7.6rem;
+  bottom: 1.25rem;
+  z-index: -2;
+  border-radius: 2.8rem 2.8rem 1.65rem 1.65rem / 2.1rem 2.1rem 1.3rem 1.3rem;
+  background:
+    radial-gradient(80% 55% at 50% 0%, color-mix(in srgb, var(--world-card-accent) 34%, #fff1c9), transparent 65%),
+    linear-gradient(180deg, color-mix(in srgb, var(--world-card-mid) 42%, #ffdba0), color-mix(in srgb, var(--world-card-deep) 86%, #5b3929) 66%, color-mix(in srgb, var(--world-card-deep) 92%, #000000));
+  box-shadow:
+    inset 0 0.25rem 0 rgb(255 255 255 / 0.28),
+    inset 0 -0.8rem 1rem rgb(0 0 0 / 0.28),
+    0 0.7rem 0 color-mix(in srgb, var(--world-card-deep) 82%, #000000);
+}
+
+.world-piece-foot {
+  left: 12%;
+  right: 12%;
+  bottom: 0.1rem;
+  z-index: -1;
+  height: 1.55rem;
+  border-radius: 0 0 999px 999px;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--world-card-button) 62%, #ffffff), color-mix(in srgb, var(--world-card-deep) 86%, #000000));
+  box-shadow:
+    inset 0 0.25rem 0 rgb(255 255 255 / 0.11),
+    0 0.48rem 0 rgb(0 0 0 / 0.22);
+}
+
+.world-stage-tab {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  width: 100%;
+  min-height: clamp(22.8rem, 28vw, 28rem);
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  overflow: visible;
+  border: 0;
+  border-radius: 2.6rem;
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  text-align: center;
+  box-shadow: none;
+}
+
+.world-stage-tab::before,
+.world-stage-tab::after {
+  display: none;
+}
+
+.world-stage-tab:focus-visible {
+  outline: 4px solid #93f5dd;
+  outline-offset: 0.3rem;
+}
+
+.world-art-shell {
+  position: relative;
+  z-index: 3;
+  display: block;
+  height: clamp(14rem, 17.5vw, 17.9rem);
+  margin-inline: 0.25rem;
+  transform: translateY(-0.45rem);
+  filter: drop-shadow(0 1rem 0.7rem rgb(0 0 0 / 0.28));
+}
+
+.world-card-media {
+  position: absolute;
+  inset: 0;
+  display: block;
+  height: auto;
+  margin: 0;
+  overflow: hidden;
+  border: 3px solid color-mix(in srgb, var(--world-card-accent) 28%, #ffe4b4);
+  border-radius: 2.3rem 2.3rem 1.45rem 1.45rem / 1.95rem 1.95rem 1.2rem 1.2rem;
+  background:
+    radial-gradient(70% 80% at 50% 18%, #fff9df, var(--world-card-soft) 58%, color-mix(in srgb, var(--world-card-accent) 32%, #ffffff));
+  clip-path: polygon(10% 0, 90% 0, 100% 11%, 96% 82%, 86% 100%, 14% 100%, 4% 82%, 0 11%);
+  box-shadow:
+    inset 0 0.25rem 0 rgb(255 255 255 / 0.62),
+    inset 0 -1rem 1.4rem rgb(0 0 0 / 0.18),
+    0 0.6rem 0 color-mix(in srgb, var(--world-card-deep) 66%, #000000),
+    0 1.5rem 2rem rgb(0 0 0 / 0.22);
+}
+
+.world-card-image {
+  object-fit: cover;
+  object-position: center;
+  transform: scale(1.1) translateY(-0.1rem);
+  filter: saturate(1.18) contrast(1.05);
+}
+
+.world-card-inner-frame {
+  inset: 0.65rem;
+  border-radius: 1.7rem 1.7rem 1rem 1rem;
+  border: 1px solid rgb(255 247 218 / 0.4);
+}
+
+.world-card-glow {
+  inset: auto 0 0;
+  height: 62%;
+  background:
+    linear-gradient(180deg, transparent 10%, color-mix(in srgb, var(--world-card-deep) 42%, transparent)),
+    radial-gradient(60% 56% at 50% 70%, color-mix(in srgb, var(--world-card-accent) 44%, transparent), transparent 74%);
+}
+
+.world-number-medal {
+  left: 0.85rem;
+  top: 0.8rem;
+  height: 3.25rem;
+  width: 3.25rem;
+  border: 3px solid rgb(255 247 217 / 0.76);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.36rem;
+}
+
+.world-new-ribbon {
+  top: 1rem;
+  left: auto;
+  right: 1rem;
+  font-size: 0.68rem;
+}
+
+.world-pedestal-deck {
+  position: relative;
+  z-index: 4;
+  min-height: 8rem;
+  margin: -1.35rem 0.58rem 3.85rem;
+  border: 2px solid color-mix(in srgb, var(--world-card-accent) 22%, #f5d8a9);
+  border-radius: 1.65rem 1.65rem 1.15rem 1.15rem / 1.2rem 1.2rem 1rem 1rem;
+  background:
+    radial-gradient(120% 80% at 50% -18%, color-mix(in srgb, var(--world-card-accent) 34%, transparent), transparent 62%),
+    linear-gradient(180deg, color-mix(in srgb, var(--world-card-mid) 52%, #f3ddaa) 0%, var(--world-card-deep) 48%, color-mix(in srgb, var(--world-card-deep) 88%, #000000) 100%);
+  box-shadow:
+    inset 0 0.18rem 0 rgb(255 255 255 / 0.22),
+    inset 0 -0.4rem 0 rgb(0 0 0 / 0.22),
+    0 0.42rem 0 color-mix(in srgb, var(--world-card-deep) 86%, #000000),
+    0 0.85rem 1rem rgb(0 0 0 / 0.2);
+}
+
+.world-title-plaque {
+  min-height: 2.85rem;
+  width: min(100%, 13.8rem);
+  border-radius: 1rem;
+}
+
+.world-card-title {
+  color: #fff9e7;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.06rem, 1.15vw, 1.22rem);
+  font-weight: 800;
+}
+
+.world-card-copy {
+  max-width: 13.4rem;
+  color: rgb(255 248 231 / 0.86);
+  font-size: 0.84rem;
+  font-weight: 650;
+}
+
+.world-card-meta-row {
+  display: flex;
+  min-height: 1.28rem;
+  align-items: center;
+  justify-content: center;
+  margin-top: auto;
+}
+
+.world-enter-button {
+  position: absolute;
+  left: 1.62rem;
+  right: 1.62rem;
+  bottom: 1.1rem;
+  z-index: 6;
+  min-height: 3.18rem;
+  width: auto;
+  margin: 0;
+  border-radius: 1.1rem;
+}
+
+.world-enter-button::before {
+  display: none;
+}
+
+.world-diorama-card:hover,
+.world-diorama-card.is-selected {
+  z-index: 8;
+}
+
+.world-diorama-card:hover .world-art-shell,
+.world-diorama-card.is-selected .world-art-shell {
+  transform: translateY(-0.88rem);
+}
+
+.game-bottom-hud {
+  width: min(94rem, calc(100% - 1.25rem));
+  border-radius: 2rem;
+  background:
+    radial-gradient(20rem 8rem at 10% 0%, rgb(97 220 161 / 0.18), transparent 70%),
+    linear-gradient(180deg, #273238 0%, #141d22 100%);
+}
+
+@media (max-width: 1279px) {
+  .game-world-stage {
+    width: min(58rem, calc(100% - 1rem));
+    margin-top: -4.8rem;
+  }
+
+  .game-world-shelf .shelf-track {
+    display: flex;
+    grid-template-columns: none;
+    gap: 1rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-padding-inline: 1rem;
+    scroll-snap-type: x mandatory;
+    padding: 1rem 0.7rem 1.35rem;
+    scrollbar-width: none;
+  }
+
+  .game-world-shelf .shelf-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .world-diorama-card,
+  .world-diorama-card:nth-child(1),
+  .world-diorama-card:nth-child(2),
+  .world-diorama-card:nth-child(3),
+  .world-diorama-card:nth-child(4),
+  .world-diorama-card:nth-child(5) {
+    flex: 0 0 min(21rem, 72vw);
+    min-height: 28rem;
+    scroll-snap-align: center;
+    transform: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .game-menu-home {
+    background:
+      linear-gradient(180deg, #10252d 0%, #143235 32rem, #2f1d14 32.1rem, #e5decf 44rem, #eef2e8 100%);
+  }
+
+  .game-opening-stage {
+    min-height: 38rem;
+  }
+
+  .game-world-stage {
+    width: calc(100% - 0.45rem);
+    margin-top: -2.65rem;
+    padding: 4.25rem 0 1.1rem;
+    border-radius: 2.4rem 2.4rem 1.7rem 1.7rem;
+  }
+
+  .game-world-shelf {
+    display: block;
+    overflow: hidden;
+  }
+
+  .game-world-shelf .shelf-arrow {
+    position: absolute;
+    top: 49%;
+    z-index: 12;
+    height: 3.15rem;
+    width: 3.15rem;
+    transform: translateY(-50%);
+  }
+
+  .game-world-shelf > .shelf-arrow:first-of-type {
+    left: 0.28rem;
+  }
+
+  .game-world-shelf > .shelf-arrow:last-of-type {
+    right: 0.28rem;
+  }
+
+  .game-world-shelf .shelf-track {
+    display: flex;
+    flex-wrap: nowrap;
+    grid-template-columns: none;
+    gap: 1rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-inline: max(2rem, calc((100vw - min(21rem, 82vw)) / 2));
+    padding-bottom: 1.5rem;
+  }
+
+  .world-diorama-card,
+  .world-diorama-card:nth-child(1),
+  .world-diorama-card:nth-child(2),
+  .world-diorama-card:nth-child(3),
+  .world-diorama-card:nth-child(4),
+  .world-diorama-card:nth-child(5) {
+    flex: 0 0 min(21rem, 82vw);
+    min-height: 27.2rem;
+    scroll-snap-align: center;
+    transform: none;
+  }
+
+  .world-art-shell {
+    height: 15rem;
+  }
+
+  .game-bottom-hud {
+    width: calc(100% - 0.75rem);
+    grid-template-columns: 1fr;
+    border-radius: 1.55rem;
+  }
+}
+
+/* Home rebuild: premium game menu and collectible mini-world pieces. */
+.game-menu-home {
+  --menu-ink: #fbf5df;
+  --menu-navy: #102632;
+  --menu-teal: #55dbc6;
+  --menu-wood: #5b3523;
+  --menu-wood-dark: #24140e;
+  min-height: 100dvh;
+  background:
+    radial-gradient(90rem 46rem at 50% -2rem, rgb(140 203 187 / 0.34), transparent 62%),
+    linear-gradient(180deg, #11262e 0%, #142c2f 33rem, #d9e6dc 33.1rem, #efe4d1 100%);
+}
+
+.game-opening-stage {
+  min-height: clamp(38rem, 65vw, 50rem);
+  border-bottom: 0;
+  box-shadow:
+    inset 0 -7rem 7rem rgb(22 12 7 / 0.42),
+    0 1.4rem 4rem rgb(20 14 10 / 0.24);
+}
+
+.game-opening-stage::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.1rem;
+  z-index: 2;
+  height: clamp(7rem, 12vw, 11rem);
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, transparent, rgb(40 24 15 / 0.68) 60%, rgb(40 24 15 / 0.96)),
+    radial-gradient(62% 70% at 50% 70%, rgb(255 219 146 / 0.18), transparent 70%);
+}
+
+.game-opening-bg::before {
+  background:
+    radial-gradient(38rem 30rem at 13% 46%, rgb(0 0 0 / 0.62), transparent 72%),
+    radial-gradient(42rem 26rem at 88% 46%, rgb(0 0 0 / 0.18), transparent 70%),
+    linear-gradient(90deg, rgb(5 18 21 / 0.82) 0%, rgb(5 18 21 / 0.5) 30%, rgb(5 18 21 / 0.07) 61%, rgb(5 18 21 / 0.16) 100%);
+}
+
+.game-topbar {
+  padding-inline: clamp(1rem, 2.8vw, 2.5rem);
+  border-bottom-color: rgb(255 255 255 / 0.12);
+  background:
+    linear-gradient(180deg, rgb(4 19 24 / 0.78), rgb(6 24 28 / 0.28)),
+    radial-gradient(30rem 5rem at 8% 0%, rgb(99 230 203 / 0.13), transparent 70%);
+}
+
+.game-brandmark,
+.game-hud-chip,
+.game-profile-chip,
+.game-settings-button {
+  border-color: rgb(255 238 192 / 0.32);
+  box-shadow:
+    inset 0 2px 0 rgb(255 255 255 / 0.3),
+    inset 0 -3px 0 rgb(0 0 0 / 0.18),
+    0 0.4rem 0 rgb(0 0 0 / 0.17),
+    0 1rem 1.8rem rgb(0 0 0 / 0.22);
+}
+
+.game-hud-chip,
+.game-profile-chip,
+.game-settings-button {
+  background:
+    radial-gradient(circle at 22% 18%, rgb(255 255 255 / 0.38), transparent 28%),
+    linear-gradient(180deg, rgb(255 255 255 / 0.86), rgb(224 235 225 / 0.78));
+}
+
+.game-hero-copy {
+  padding-top: clamp(4.8rem, 9vw, 8.4rem);
+}
+
+.game-hero-copy h1 {
+  max-width: 39rem;
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 900;
+  text-wrap: balance;
+}
+
+.game-hero-copy h1 strong,
+.game-hero-copy h1 span {
+  color: #95f2e1;
+}
+
+.game-play-cta {
+  border-radius: 1.6rem;
+  background:
+    radial-gradient(circle at 24% 20%, rgb(255 255 255 / 0.26), transparent 28%),
+    linear-gradient(180deg, #6fc28b 0%, #2c8b63 48%, #176044 100%);
+  box-shadow:
+    inset 0 3px 0 rgb(255 255 255 / 0.35),
+    inset 0 -5px 0 rgb(0 0 0 / 0.19),
+    0 0.55rem 0 #123e2f,
+    0 1.4rem 2.8rem rgb(0 0 0 / 0.4),
+    0 0 0 0.5rem rgb(90 174 119 / 0.22);
+}
+
+.game-world-stage {
+  width: min(98rem, calc(100% - 1.25rem));
+  margin-top: clamp(-10.5rem, -11vw, -7rem);
+  padding: clamp(4.8rem, 6.5vw, 5.8rem) clamp(0.65rem, 1.8vw, 1.6rem) 1.45rem;
+  border-radius: 4rem 4rem 2.2rem 2.2rem / 2.35rem 2.35rem 1.7rem 1.7rem;
+  background:
+    radial-gradient(90% 80% at 50% -18%, rgb(255 226 160 / 0.34), transparent 48%),
+    linear-gradient(180deg, #8b5a38 0%, #6d432d 28%, #3f261b 72%, #271711 100%);
+  box-shadow:
+    inset 0 0.28rem 0 rgb(255 234 184 / 0.24),
+    inset 0 -1.2rem 1.5rem rgb(10 5 3 / 0.34),
+    0 -2rem 4rem rgb(9 7 6 / 0.2),
+    0 2rem 4.5rem rgb(38 22 14 / 0.36);
+}
+
+.game-world-stage::before {
+  inset: 0.55rem 1rem auto;
+  height: 5.8rem;
+  border-radius: 999px 999px 45% 45%;
+  background:
+    linear-gradient(180deg, rgb(255 226 169 / 0.32), rgb(255 255 255 / 0)),
+    repeating-linear-gradient(96deg, rgb(255 255 255 / 0.06) 0 1px, transparent 1px 6.5rem);
+}
+
+.game-world-stage::after {
+  left: 1rem;
+  right: 1rem;
+  bottom: -1.05rem;
+  height: 2.25rem;
+  border-radius: 0 0 2.4rem 2.4rem;
+  background:
+    linear-gradient(180deg, #3a2117, #180d09);
+  box-shadow:
+    inset 0 0.35rem 0 rgb(255 255 255 / 0.05),
+    0 1.2rem 1.8rem rgb(0 0 0 / 0.26);
+}
+
+.game-world-plaque {
+  width: min(41rem, calc(100% - 1rem));
+  border: 2px solid rgb(199 148 88 / 0.65);
+  border-radius: 1.8rem 1.8rem 1.25rem 1.25rem;
+  background:
+    radial-gradient(circle at 50% -20%, rgb(255 227 160 / 0.36), transparent 48%),
+    linear-gradient(180deg, #7c5238 0%, #4a2c1d 58%, #25130d 100%);
+  box-shadow:
+    inset 0 0.18rem 0 rgb(255 240 199 / 0.26),
+    inset 0 -0.35rem 0 rgb(0 0 0 / 0.24),
+    0 0.55rem 0 #1b0e09,
+    0 1.3rem 2.4rem rgb(0 0 0 / 0.36);
+}
+
+.game-world-shelf {
+  gap: clamp(0.55rem, 1vw, 0.9rem);
+  perspective: 1200px;
+}
+
+.game-world-shelf .shelf-track {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(12.4rem, 1fr));
+  align-items: end;
+  gap: clamp(0.45rem, 0.9vw, 0.85rem);
+  padding: 0.35rem 0.15rem 1.1rem;
+  overflow: visible;
+}
+
+.game-world-shelf .shelf-track::after {
+  content: "";
+  position: absolute;
+  left: 0.5rem;
+  right: 0.5rem;
+  bottom: 0.65rem;
+  height: 2.3rem;
+  border-radius: 999px;
+  background: radial-gradient(closest-side, rgb(0 0 0 / 0.34), transparent 74%);
+  filter: blur(9px);
+  pointer-events: none;
+}
+
+.game-world-shelf .shelf-arrow {
+  border-color: rgb(255 218 143 / 0.46);
+  background:
+    radial-gradient(circle at 34% 24%, rgb(255 255 255 / 0.2), transparent 25%),
+    linear-gradient(180deg, #815332, #4c2d1d 55%, #24140d);
+  box-shadow:
+    inset 0 0.18rem 0 rgb(255 255 255 / 0.16),
+    inset 0 -0.22rem 0 rgb(0 0 0 / 0.26),
+    0 0.33rem 0 #1a0d07,
+    0 0.95rem 1.6rem rgb(0 0 0 / 0.28);
+}
+
+.world-tone-memory {
+  --world-card-accent: #8b6ef2;
+  --world-card-deep: #251b4a;
+  --world-card-mid: #4d3b8c;
+  --world-card-soft: #eee7ff;
+  --world-card-button: #7554c7;
+}
+
+.world-tone-route {
+  --world-card-accent: #5f9bd4;
+  --world-card-deep: #173653;
+  --world-card-mid: #2e638b;
+  --world-card-soft: #dff2ff;
+  --world-card-button: #3e7bb0;
+}
+
+.world-tone-commands {
+  --world-card-accent: #7faf66;
+  --world-card-deep: #263b24;
+  --world-card-mid: #557a48;
+  --world-card-soft: #e6f3d9;
+  --world-card-button: #6f9659;
+}
+
+.world-tone-logic {
+  --world-card-accent: #a76bd1;
+  --world-card-deep: #3f2250;
+  --world-card-mid: #74458c;
+  --world-card-soft: #f0e0ff;
+  --world-card-button: #8e51b4;
+}
+
+.world-tone-garden {
+  --world-card-accent: #93b65a;
+  --world-card-deep: #33451e;
+  --world-card-mid: #66833b;
+  --world-card-soft: #e9f3d3;
+  --world-card-button: #7e9d46;
+}
+
+.world-diorama-card {
+  position: relative;
+  display: block;
+  min-height: clamp(25rem, 31vw, 31rem);
+  min-width: 0;
+  overflow: visible;
+  padding: 0.3rem 0.1rem 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  isolation: isolate;
+  transform-style: preserve-3d;
+}
+
+.world-diorama-card:nth-child(1) {
+  transform: rotate(-1.6deg) translateY(0.3rem);
+}
+
+.world-diorama-card:nth-child(2) {
+  transform: rotate(-0.7deg) translateY(0.9rem);
+}
+
+.world-diorama-card:nth-child(3) {
+  transform: translateY(-0.25rem);
+}
+
+.world-diorama-card:nth-child(4) {
+  transform: rotate(0.7deg) translateY(0.75rem);
+}
+
+.world-diorama-card:nth-child(5) {
+  transform: rotate(1.4deg) translateY(0.45rem);
+}
+
+.world-piece-shadow,
+.world-object-aura,
+.world-piece-backplate,
+.world-piece-foot {
+  position: absolute;
+  pointer-events: none;
+}
+
+.world-piece-shadow {
+  left: 5%;
+  right: 5%;
+  bottom: 0.15rem;
+  z-index: -4;
+  height: 3.1rem;
+  border-radius: 999px;
+  background: radial-gradient(closest-side, rgb(0 0 0 / 0.52), transparent 78%);
+  filter: blur(10px);
+}
+
+.world-object-aura {
+  left: 7%;
+  right: 7%;
+  top: 1.4rem;
+  z-index: -3;
+  height: 14rem;
+  border-radius: 50%;
+  background:
+    radial-gradient(closest-side, color-mix(in srgb, var(--world-card-accent) 48%, #ffe3a3), transparent 76%);
+  opacity: 0.58;
+  filter: blur(5px);
+}
+
+.world-piece-backplate {
+  left: 4%;
+  right: 4%;
+  top: 7.6rem;
+  bottom: 1.25rem;
+  z-index: -2;
+  border-radius: 2.8rem 2.8rem 1.65rem 1.65rem / 2.1rem 2.1rem 1.3rem 1.3rem;
+  background:
+    radial-gradient(80% 55% at 50% 0%, color-mix(in srgb, var(--world-card-accent) 34%, #fff1c9), transparent 65%),
+    linear-gradient(180deg, color-mix(in srgb, var(--world-card-mid) 42%, #ffdba0), color-mix(in srgb, var(--world-card-deep) 86%, #5b3929) 66%, color-mix(in srgb, var(--world-card-deep) 92%, #000000));
+  box-shadow:
+    inset 0 0.25rem 0 rgb(255 255 255 / 0.28),
+    inset 0 -0.8rem 1rem rgb(0 0 0 / 0.28),
+    0 0.7rem 0 color-mix(in srgb, var(--world-card-deep) 82%, #000000);
+}
+
+.world-piece-foot {
+  left: 12%;
+  right: 12%;
+  bottom: 0.1rem;
+  z-index: -1;
+  height: 1.55rem;
+  border-radius: 0 0 999px 999px;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--world-card-button) 62%, #ffffff), color-mix(in srgb, var(--world-card-deep) 86%, #000000));
+  box-shadow:
+    inset 0 0.25rem 0 rgb(255 255 255 / 0.11),
+    0 0.48rem 0 rgb(0 0 0 / 0.22);
+}
+
+.world-stage-tab {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  width: 100%;
+  min-height: clamp(22.8rem, 28vw, 28rem);
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  overflow: visible;
+  border: 0;
+  border-radius: 2.6rem;
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  text-align: center;
+  box-shadow: none;
+}
+
+.world-stage-tab::before,
+.world-stage-tab::after {
+  display: none;
+}
+
+.world-stage-tab:focus-visible {
+  outline: 4px solid #93f5dd;
+  outline-offset: 0.3rem;
+}
+
+.world-art-shell {
+  position: relative;
+  z-index: 3;
+  display: block;
+  height: clamp(14rem, 17.5vw, 17.9rem);
+  margin-inline: 0.25rem;
+  transform: translateY(-0.45rem);
+  filter: drop-shadow(0 1rem 0.7rem rgb(0 0 0 / 0.28));
+}
+
+.world-card-media {
+  position: absolute;
+  inset: 0;
+  display: block;
+  height: auto;
+  margin: 0;
+  overflow: hidden;
+  border: 3px solid color-mix(in srgb, var(--world-card-accent) 28%, #ffe4b4);
+  border-radius: 2.3rem 2.3rem 1.45rem 1.45rem / 1.95rem 1.95rem 1.2rem 1.2rem;
+  background:
+    radial-gradient(70% 80% at 50% 18%, #fff9df, var(--world-card-soft) 58%, color-mix(in srgb, var(--world-card-accent) 32%, #ffffff));
+  clip-path: polygon(10% 0, 90% 0, 100% 11%, 96% 82%, 86% 100%, 14% 100%, 4% 82%, 0 11%);
+  box-shadow:
+    inset 0 0.25rem 0 rgb(255 255 255 / 0.62),
+    inset 0 -1rem 1.4rem rgb(0 0 0 / 0.18),
+    0 0.6rem 0 color-mix(in srgb, var(--world-card-deep) 66%, #000000),
+    0 1.5rem 2rem rgb(0 0 0 / 0.22);
+}
+
+.world-card-media::before {
+  content: "";
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  bottom: 1.1rem;
+  z-index: 2;
+  height: 1rem;
+  border-radius: 999px;
+  background: radial-gradient(closest-side, rgb(0 0 0 / 0.32), transparent 74%);
+  filter: blur(6px);
+  pointer-events: none;
+}
+
+.world-card-image {
+  object-fit: cover;
+  object-position: center;
+  transform: scale(1.1) translateY(-0.1rem);
+  filter: saturate(1.18) contrast(1.05);
+}
+
+.world-diorama-card:hover .world-card-image,
+.world-diorama-card.is-selected .world-card-image {
+  transform: scale(1.16) translateY(-0.35rem);
+}
+
+.world-card-inner-frame {
+  inset: 0.65rem;
+  border-radius: 1.7rem 1.7rem 1rem 1rem;
+  border: 1px solid rgb(255 247 218 / 0.4);
+  box-shadow:
+    inset 0 0 0 1px rgb(0 0 0 / 0.12),
+    inset 0 -1.5rem 2rem rgb(0 0 0 / 0.17);
+}
+
+.world-card-glow {
+  inset: auto 0 0;
+  height: 62%;
+  background:
+    linear-gradient(180deg, transparent 10%, color-mix(in srgb, var(--world-card-deep) 42%, transparent)),
+    radial-gradient(60% 56% at 50% 70%, color-mix(in srgb, var(--world-card-accent) 44%, transparent), transparent 74%);
+}
+
+.world-number-medal {
+  left: 0.85rem;
+  top: 0.8rem;
+  height: 3.25rem;
+  width: 3.25rem;
+  border: 3px solid rgb(255 247 217 / 0.76);
+  background:
+    radial-gradient(circle at 34% 24%, rgb(255 255 255 / 0.5), transparent 25%),
+    linear-gradient(180deg, color-mix(in srgb, var(--world-card-accent) 72%, #fff4c2), var(--world-card-deep));
+  color: #fff9e5;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.36rem;
+  text-shadow: 0 0.12rem 0 rgb(0 0 0 / 0.28);
+  box-shadow:
+    inset 0 0.18rem 0 rgb(255 255 255 / 0.34),
+    0 0.3rem 0 rgb(0 0 0 / 0.3),
+    0 0 0 0.42rem rgb(255 255 255 / 0.12);
+}
+
+.world-new-ribbon {
+  top: 1rem;
+  left: auto;
+  right: 1rem;
+  border: 2px solid rgb(255 255 255 / 0.45);
+  border-radius: 999px;
+  background: linear-gradient(180deg, #fff0a7, #d89d27);
+  color: #422b0c;
+  padding: 0.28rem 0.62rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  box-shadow:
+    inset 0 0.12rem 0 rgb(255 255 255 / 0.35),
+    0 0.22rem 0 rgb(0 0 0 / 0.22);
+}
+
+.world-pedestal-deck {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  min-height: 8rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.42rem;
+  margin: -1.35rem 0.58rem 3.85rem;
+  border: 2px solid color-mix(in srgb, var(--world-card-accent) 22%, #f5d8a9);
+  border-radius: 1.65rem 1.65rem 1.15rem 1.15rem / 1.2rem 1.2rem 1rem 1rem;
+  background:
+    radial-gradient(120% 80% at 50% -18%, color-mix(in srgb, var(--world-card-accent) 34%, transparent), transparent 62%),
+    linear-gradient(180deg, color-mix(in srgb, var(--world-card-mid) 52%, #f3ddaa) 0%, var(--world-card-deep) 48%, color-mix(in srgb, var(--world-card-deep) 88%, #000000) 100%);
+  color: #fffaf0;
+  padding: 1rem 0.8rem 0.78rem;
+  box-shadow:
+    inset 0 0.18rem 0 rgb(255 255 255 / 0.22),
+    inset 0 -0.4rem 0 rgb(0 0 0 / 0.22),
+    0 0.42rem 0 color-mix(in srgb, var(--world-card-deep) 86%, #000000),
+    0 0.85rem 1rem rgb(0 0 0 / 0.2);
+}
+
+.world-pedestal-deck::before,
+.world-pedestal-deck::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+.world-pedestal-deck::before {
+  left: 18%;
+  right: 18%;
+  top: -0.25rem;
+  height: 0.48rem;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.2);
+}
+
+.world-pedestal-deck::after {
+  left: 7%;
+  right: 7%;
+  bottom: -0.55rem;
+  height: 1.1rem;
+  border-radius: 0 0 999px 999px;
+  background: color-mix(in srgb, var(--world-card-deep) 76%, #000000);
+  filter: blur(0.4px);
+}
+
+.world-title-plaque {
+  min-height: 2.85rem;
+  width: min(100%, 13.8rem);
+  border: 1px solid rgb(255 255 255 / 0.18);
+  border-radius: 1rem;
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.14), rgb(255 255 255 / 0.035)),
+    color-mix(in srgb, var(--world-card-deep) 72%, #ffffff);
+  box-shadow:
+    inset 0 0.12rem 0 rgb(255 255 255 / 0.14),
+    0 0.24rem 0 rgb(0 0 0 / 0.14);
+}
+
+.world-card-title {
+  color: #fff9e7;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.06rem, 1.15vw, 1.22rem);
+  font-weight: 800;
+  line-height: 1.03;
+  letter-spacing: 0;
+  text-shadow: 0 0.14rem 0 rgb(0 0 0 / 0.22);
+}
+
+.world-card-copy {
+  display: -webkit-box;
+  max-width: 13.4rem;
+  min-height: 2.2rem;
+  overflow: hidden;
+  color: rgb(255 248 231 / 0.86);
+  font-size: 0.84rem;
+  font-weight: 650;
+  line-height: 1.28;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.world-card-meta-row {
+  display: flex;
+  min-height: 1.28rem;
+  align-items: center;
+  justify-content: center;
+  margin-top: auto;
+}
+
+.world-card-skill {
+  margin-top: 0;
+  border: 1px solid rgb(255 255 255 / 0.12);
+  background: rgb(255 255 255 / 0.075);
+  color: rgb(255 248 231 / 0.7);
+  font-size: 0.61rem;
+  letter-spacing: 0.05em;
+}
+
+.world-enter-button {
+  position: absolute;
+  left: 1.62rem;
+  right: 1.62rem;
+  bottom: 1.1rem;
+  z-index: 6;
+  min-height: 3.18rem;
+  width: auto;
+  margin: 0;
+  border-radius: 1.1rem;
+  border: 2px solid rgb(255 255 255 / 0.32);
+  background:
+    radial-gradient(circle at 24% 18%, rgb(255 255 255 / 0.22), transparent 26%),
+    linear-gradient(180deg, color-mix(in srgb, var(--world-card-button) 74%, #ffffff), var(--world-card-button) 52%, color-mix(in srgb, var(--world-card-button) 82%, #000000));
+  color: #fffdf2;
+  font-size: 1.02rem;
+  font-weight: 900;
+  letter-spacing: 0;
+  box-shadow:
+    inset 0 0.18rem 0 rgb(255 255 255 / 0.28),
+    inset 0 -0.25rem 0 rgb(0 0 0 / 0.24),
+    0 0.36rem 0 color-mix(in srgb, var(--world-card-deep) 88%, #000000),
+    0 0.85rem 1.2rem rgb(0 0 0 / 0.25);
+}
+
+.world-enter-button::before {
+  display: none;
+}
+
+.world-diorama-card:hover,
+.world-diorama-card.is-selected {
+  z-index: 8;
+}
+
+.world-diorama-card:hover .world-art-shell,
+.world-diorama-card.is-selected .world-art-shell {
+  transform: translateY(-0.88rem);
+}
+
+.world-diorama-card.is-selected .world-object-aura {
+  opacity: 0.82;
+  filter: blur(3px);
+}
+
+.world-diorama-card.is-selected .world-card-media {
+  border-color: #ffe199;
+  box-shadow:
+    inset 0 0.25rem 0 rgb(255 255 255 / 0.7),
+    inset 0 -1rem 1.4rem rgb(0 0 0 / 0.18),
+    0 0.62rem 0 color-mix(in srgb, var(--world-card-deep) 66%, #000000),
+    0 0 0 0.42rem rgb(255 224 137 / 0.18),
+    0 0 2.2rem color-mix(in srgb, var(--world-card-accent) 42%, transparent);
+}
+
+.world-diorama-card.is-selected .world-piece-backplate {
+  box-shadow:
+    inset 0 0.25rem 0 rgb(255 255 255 / 0.32),
+    inset 0 -0.8rem 1rem rgb(0 0 0 / 0.28),
+    0 0.7rem 0 color-mix(in srgb, var(--world-card-deep) 82%, #000000),
+    0 0 0 0.35rem rgb(255 226 137 / 0.16),
+    0 0 2.5rem color-mix(in srgb, var(--world-card-accent) 34%, transparent);
+}
+
+.world-diorama-card.is-selected .world-title-plaque,
+.world-diorama-card.is-selected .world-enter-button {
+  border-color: rgb(255 229 149 / 0.45);
+}
+
+.world-diorama-card.is-selected .world-enter-button {
+  box-shadow:
+    inset 0 0.18rem 0 rgb(255 255 255 / 0.3),
+    inset 0 -0.25rem 0 rgb(0 0 0 / 0.24),
+    0 0.36rem 0 color-mix(in srgb, var(--world-card-deep) 88%, #000000),
+    0 0 1.7rem color-mix(in srgb, var(--world-card-accent) 38%, transparent);
+}
+
+.game-bottom-hud {
+  width: min(94rem, calc(100% - 1.25rem));
+  margin-top: 0.95rem;
+  border-radius: 2rem;
+  border-color: rgb(190 242 218 / 0.18);
+  background:
+    radial-gradient(20rem 8rem at 10% 0%, rgb(97 220 161 / 0.18), transparent 70%),
+    linear-gradient(180deg, #273238 0%, #141d22 100%);
+  box-shadow:
+    inset 0 0.18rem 0 rgb(255 255 255 / 0.08),
+    inset 0 -0.45rem 0 rgb(0 0 0 / 0.28),
+    0 0.6rem 0 rgb(2 10 14 / 0.18),
+    0 1.4rem 2.6rem rgb(22 18 14 / 0.24);
+}
+
+@media (min-width: 1500px) {
+  .game-world-shelf .shelf-track {
+    grid-template-columns: repeat(5, minmax(13.4rem, 1fr));
+  }
+}
+
+@media (max-width: 1279px) {
+  .game-world-stage {
+    width: min(58rem, calc(100% - 1rem));
+    margin-top: -4.8rem;
+  }
+
+  .game-world-shelf {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+
+  .game-world-shelf .shelf-track {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-padding-inline: 1rem;
+    scroll-snap-type: x mandatory;
+    padding: 1rem 0.7rem 1.35rem;
+    scrollbar-width: none;
+  }
+
+  .game-world-shelf .shelf-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .world-diorama-card,
+  .world-diorama-card:nth-child(1),
+  .world-diorama-card:nth-child(2),
+  .world-diorama-card:nth-child(3),
+  .world-diorama-card:nth-child(4),
+  .world-diorama-card:nth-child(5) {
+    flex: 0 0 min(21rem, 72vw);
+    min-height: 28rem;
+    scroll-snap-align: center;
+    transform: none;
+  }
+
+  .world-art-shell {
+    height: 16.2rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .game-menu-home {
+    background:
+      linear-gradient(180deg, #10252d 0%, #143235 32rem, #2f1d14 32.1rem, #e5decf 44rem, #eef2e8 100%);
+  }
+
+  .game-opening-stage {
+    min-height: 38rem;
+  }
+
+  .game-topbar {
+    align-items: flex-start;
+    padding: 0.85rem;
+  }
+
+  .game-topbar-status {
+    max-width: 11.4rem;
+  }
+
+  .game-hud-chip {
+    min-height: 2.85rem;
+    padding: 0.4rem 0.52rem;
+  }
+
+  .game-hud-chip-icon,
+  .game-profile-chip > span:first-child {
+    height: 2.15rem;
+    width: 2.15rem;
+  }
+
+  .game-profile-chip {
+    padding: 0.35rem 0.52rem 0.35rem 0.35rem;
+  }
+
+  .game-settings-button {
+    min-height: 2.85rem;
+    width: 2.85rem;
+  }
+
+  .game-hero-copy {
+    width: calc(100% - 1.5rem);
+    margin-inline: 0.75rem;
+    padding-top: 4.9rem;
+  }
+
+  .game-hero-copy h1 {
+    max-width: 21rem;
+    font-size: clamp(2.55rem, 13.5vw, 4.1rem);
+  }
+
+  .game-hero-copy p {
+    max-width: 20rem;
+    font-size: 1.04rem;
+  }
+
+  .game-play-cta {
+    min-height: 4.25rem;
+    width: min(100%, 19rem);
+    font-size: 1.08rem;
+  }
+
+  .game-world-stage {
+    width: calc(100% - 0.45rem);
+    margin-top: -2.65rem;
+    padding: 4.25rem 0 1.1rem;
+    border-radius: 2.4rem 2.4rem 1.7rem 1.7rem;
+  }
+
+  .game-world-plaque {
+    width: calc(100% - 1rem);
+    padding: 0.72rem 0.9rem;
+  }
+
+  .game-world-plaque h2 {
+    font-size: 1.25rem;
+  }
+
+  .game-world-plaque p {
+    font-size: 0.78rem;
+  }
+
+  .game-world-shelf {
+    display: block;
+    overflow: hidden;
+    padding-inline: 0;
+  }
+
+  .game-world-shelf .shelf-arrow {
+    position: absolute;
+    top: 49%;
+    z-index: 12;
+    height: 3.15rem;
+    width: 3.15rem;
+    transform: translateY(-50%);
+  }
+
+  .game-world-shelf > .shelf-arrow:first-of-type {
+    left: 0.28rem;
+  }
+
+  .game-world-shelf > .shelf-arrow:last-of-type {
+    right: 0.28rem;
+  }
+
+  .game-world-shelf .shelf-track {
+    gap: 1rem;
+    padding-inline: max(2rem, calc((100vw - min(21rem, 82vw)) / 2));
+    padding-bottom: 1.5rem;
+  }
+
+  .world-diorama-card,
+  .world-diorama-card:nth-child(1),
+  .world-diorama-card:nth-child(2),
+  .world-diorama-card:nth-child(3),
+  .world-diorama-card:nth-child(4),
+  .world-diorama-card:nth-child(5) {
+    flex-basis: min(21rem, 82vw);
+    min-height: 27.2rem;
+  }
+
+  .world-art-shell {
+    height: 15rem;
+  }
+
+  .world-pedestal-deck {
+    margin-bottom: 3.72rem;
+  }
+
+  .world-card-title {
+    font-size: 1.1rem;
+  }
+
+  .world-card-copy {
+    font-size: 0.86rem;
+  }
+
+  .game-bottom-hud {
+    width: calc(100% - 0.75rem);
+    grid-template-columns: 1fr;
+    border-radius: 1.55rem;
+  }
+}
+
 /* ————————————————————————————————————————————————
    Home fidelity pass 2: collectible tabletop pieces.
    Behavior stays in React; this layer only improves the game-menu materiality.
@@ -5673,5 +7016,390 @@ button:disabled:focus-visible {
   .seed-orbit-pot-1.garden-pot-selected,
   .seed-orbit-pot-4.garden-pot-selected {
     transform: translate(-50%, -3px);
+  }
+}
+
+/* Final home cascade lock: this must remain after older home/game layers. */
+.game-opening-stage {
+  min-height: clamp(38rem, 65vw, 50rem);
+  border-bottom: 0;
+  box-shadow:
+    inset 0 -7rem 7rem rgb(22 12 7 / 0.42),
+    0 1.4rem 4rem rgb(20 14 10 / 0.24);
+}
+
+.game-opening-stage::before {
+  content: "";
+  position: absolute;
+  inset: auto 0 -0.1rem;
+  z-index: 2;
+  height: clamp(7rem, 12vw, 11rem);
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, transparent, rgb(40 24 15 / 0.68) 60%, rgb(40 24 15 / 0.96)),
+    radial-gradient(62% 70% at 50% 70%, rgb(255 219 146 / 0.18), transparent 70%);
+}
+
+.game-topbar {
+  background:
+    linear-gradient(180deg, rgb(4 19 24 / 0.78), rgb(6 24 28 / 0.28)),
+    radial-gradient(30rem 5rem at 8% 0%, rgb(99 230 203 / 0.13), transparent 70%);
+}
+
+.game-hud-chip,
+.game-profile-chip,
+.game-settings-button {
+  border-color: rgb(255 238 192 / 0.32);
+  background:
+    radial-gradient(circle at 22% 18%, rgb(255 255 255 / 0.38), transparent 28%),
+    linear-gradient(180deg, rgb(255 255 255 / 0.86), rgb(224 235 225 / 0.78));
+  box-shadow:
+    inset 0 2px 0 rgb(255 255 255 / 0.3),
+    inset 0 -3px 0 rgb(0 0 0 / 0.18),
+    0 0.4rem 0 rgb(0 0 0 / 0.17),
+    0 1rem 1.8rem rgb(0 0 0 / 0.22);
+}
+
+.game-play-cta {
+  border-radius: 1.6rem;
+  background:
+    radial-gradient(circle at 24% 20%, rgb(255 255 255 / 0.26), transparent 28%),
+    linear-gradient(180deg, #6fc28b 0%, #2c8b63 48%, #176044 100%);
+  box-shadow:
+    inset 0 3px 0 rgb(255 255 255 / 0.35),
+    inset 0 -5px 0 rgb(0 0 0 / 0.19),
+    0 0.55rem 0 #123e2f,
+    0 1.4rem 2.8rem rgb(0 0 0 / 0.4),
+    0 0 0 0.5rem rgb(90 174 119 / 0.22);
+}
+
+.game-world-stage {
+  width: min(98rem, calc(100% - 1.25rem));
+  margin-top: clamp(-10.5rem, -11vw, -7rem);
+  padding: clamp(4.8rem, 6.5vw, 5.8rem) clamp(0.65rem, 1.8vw, 1.6rem) 1.45rem;
+  border: 0;
+  border-radius: 4rem 4rem 2.2rem 2.2rem / 2.35rem 2.35rem 1.7rem 1.7rem;
+  background:
+    radial-gradient(90% 80% at 50% -18%, rgb(255 226 160 / 0.34), transparent 48%),
+    linear-gradient(180deg, #8b5a38 0%, #6d432d 28%, #3f261b 72%, #271711 100%);
+  box-shadow:
+    inset 0 0.28rem 0 rgb(255 234 184 / 0.24),
+    inset 0 -1.2rem 1.5rem rgb(10 5 3 / 0.34),
+    0 -2rem 4rem rgb(9 7 6 / 0.2),
+    0 2rem 4.5rem rgb(38 22 14 / 0.36);
+}
+
+.game-world-stage::before {
+  inset: 0.55rem 1rem auto;
+  height: 5.8rem;
+  border-radius: 999px 999px 45% 45%;
+  background:
+    linear-gradient(180deg, rgb(255 226 169 / 0.32), rgb(255 255 255 / 0)),
+    repeating-linear-gradient(96deg, rgb(255 255 255 / 0.06) 0 1px, transparent 1px 6.5rem);
+}
+
+.game-world-stage::after {
+  left: 1rem;
+  right: 1rem;
+  bottom: -1.05rem;
+  height: 2.25rem;
+  border-radius: 0 0 2.4rem 2.4rem;
+  background: linear-gradient(180deg, #3a2117, #180d09);
+}
+
+.game-world-shelf {
+  perspective: 1200px;
+}
+
+.game-world-shelf .shelf-track {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(12.4rem, 1fr));
+  align-items: end;
+  gap: clamp(0.45rem, 0.9vw, 0.85rem);
+  overflow: visible;
+  padding: 0.35rem 0.15rem 1.1rem;
+}
+
+.world-diorama-card {
+  position: relative;
+  display: block;
+  min-height: clamp(25rem, 31vw, 31rem);
+  overflow: visible;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  isolation: isolate;
+  transform-style: preserve-3d;
+}
+
+.world-diorama-card:nth-child(1) {
+  transform: rotate(-1.6deg) translateY(0.3rem);
+}
+
+.world-diorama-card:nth-child(2) {
+  transform: rotate(-0.7deg) translateY(0.9rem);
+}
+
+.world-diorama-card:nth-child(3) {
+  transform: translateY(-0.25rem);
+}
+
+.world-diorama-card:nth-child(4) {
+  transform: rotate(0.7deg) translateY(0.75rem);
+}
+
+.world-diorama-card:nth-child(5) {
+  transform: rotate(1.4deg) translateY(0.45rem);
+}
+
+.world-piece-shadow {
+  left: 5%;
+  right: 5%;
+  bottom: 0.15rem;
+  z-index: -4;
+  height: 3.1rem;
+  border-radius: 999px;
+  background: radial-gradient(closest-side, rgb(0 0 0 / 0.52), transparent 78%);
+  filter: blur(10px);
+}
+
+.world-object-aura {
+  left: 7%;
+  right: 7%;
+  top: 1.4rem;
+  z-index: -3;
+  height: 14rem;
+  border-radius: 50%;
+  background:
+    radial-gradient(closest-side, color-mix(in srgb, var(--world-card-accent) 48%, #ffe3a3), transparent 76%);
+  opacity: 0.58;
+  filter: blur(5px);
+}
+
+.world-piece-backplate {
+  left: 4%;
+  right: 4%;
+  top: 7.6rem;
+  bottom: 1.25rem;
+  z-index: -2;
+  border-radius: 2.8rem 2.8rem 1.65rem 1.65rem / 2.1rem 2.1rem 1.3rem 1.3rem;
+  background:
+    radial-gradient(80% 55% at 50% 0%, color-mix(in srgb, var(--world-card-accent) 34%, #fff1c9), transparent 65%),
+    linear-gradient(180deg, color-mix(in srgb, var(--world-card-mid) 42%, #ffdba0), color-mix(in srgb, var(--world-card-deep) 86%, #5b3929) 66%, color-mix(in srgb, var(--world-card-deep) 92%, #000000));
+}
+
+.world-stage-tab {
+  display: flex;
+  width: 100%;
+  min-height: clamp(22.8rem, 28vw, 28rem);
+  flex-direction: column;
+  overflow: visible;
+  border: 0;
+  border-radius: 2.6rem;
+  background: transparent;
+  padding: 0;
+  box-shadow: none;
+}
+
+.world-stage-tab::before,
+.world-stage-tab::after {
+  display: none;
+}
+
+.world-stage-tab:focus-visible {
+  outline: 4px solid #93f5dd;
+  outline-offset: 0.3rem;
+}
+
+.world-art-shell {
+  position: relative;
+  z-index: 3;
+  display: block;
+  height: clamp(14rem, 17.5vw, 17.9rem);
+  margin-inline: 0.25rem;
+  transform: translateY(-0.45rem);
+  filter: drop-shadow(0 1rem 0.7rem rgb(0 0 0 / 0.28));
+}
+
+.world-card-media {
+  position: absolute;
+  inset: 0;
+  display: block;
+  height: auto;
+  margin: 0;
+  overflow: hidden;
+  border: 3px solid color-mix(in srgb, var(--world-card-accent) 28%, #ffe4b4);
+  border-radius: 2.3rem 2.3rem 1.45rem 1.45rem / 1.95rem 1.95rem 1.2rem 1.2rem;
+  background:
+    radial-gradient(70% 80% at 50% 18%, #fff9df, var(--world-card-soft) 58%, color-mix(in srgb, var(--world-card-accent) 32%, #ffffff));
+  clip-path: polygon(10% 0, 90% 0, 100% 11%, 96% 82%, 86% 100%, 14% 100%, 4% 82%, 0 11%);
+  box-shadow:
+    inset 0 0.25rem 0 rgb(255 255 255 / 0.62),
+    inset 0 -1rem 1.4rem rgb(0 0 0 / 0.18),
+    0 0.6rem 0 color-mix(in srgb, var(--world-card-deep) 66%, #000000),
+    0 1.5rem 2rem rgb(0 0 0 / 0.22);
+}
+
+.world-card-image {
+  object-fit: cover;
+  transform: scale(1.1) translateY(-0.1rem);
+  filter: saturate(1.18) contrast(1.05);
+}
+
+.world-card-inner-frame {
+  inset: 0.65rem;
+  border-radius: 1.7rem 1.7rem 1rem 1rem;
+}
+
+.world-number-medal {
+  left: 0.85rem;
+  top: 0.8rem;
+  height: 3.25rem;
+  width: 3.25rem;
+  border: 3px solid rgb(255 247 217 / 0.76);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.36rem;
+}
+
+.world-new-ribbon {
+  top: 1rem;
+  left: auto;
+  right: 1rem;
+  font-size: 0.68rem;
+}
+
+.world-pedestal-deck {
+  position: relative;
+  z-index: 4;
+  min-height: 8rem;
+  margin: -1.35rem 0.58rem 3.85rem;
+  border: 2px solid color-mix(in srgb, var(--world-card-accent) 22%, #f5d8a9);
+  border-radius: 1.65rem 1.65rem 1.15rem 1.15rem / 1.2rem 1.2rem 1rem 1rem;
+  background:
+    radial-gradient(120% 80% at 50% -18%, color-mix(in srgb, var(--world-card-accent) 34%, transparent), transparent 62%),
+    linear-gradient(180deg, color-mix(in srgb, var(--world-card-mid) 52%, #f3ddaa) 0%, var(--world-card-deep) 48%, color-mix(in srgb, var(--world-card-deep) 88%, #000000) 100%);
+}
+
+.world-enter-button {
+  position: absolute;
+  left: 1.62rem;
+  right: 1.62rem;
+  bottom: 1.1rem;
+  z-index: 6;
+  min-height: 3.18rem;
+  width: auto;
+  margin: 0;
+  border-radius: 1.1rem;
+}
+
+.world-enter-button::before {
+  display: none;
+}
+
+@media (max-width: 1279px) {
+  .game-world-stage {
+    width: min(58rem, calc(100% - 1rem));
+    margin-top: -4.8rem;
+  }
+
+  .game-world-shelf .shelf-track {
+    display: flex;
+    grid-template-columns: none;
+    gap: 1rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-padding-inline: 1rem;
+    scroll-snap-type: x mandatory;
+    padding: 1rem 0.7rem 1.35rem;
+    scrollbar-width: none;
+  }
+
+  .game-world-shelf .shelf-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .world-diorama-card,
+  .world-diorama-card:nth-child(1),
+  .world-diorama-card:nth-child(2),
+  .world-diorama-card:nth-child(3),
+  .world-diorama-card:nth-child(4),
+  .world-diorama-card:nth-child(5) {
+    flex: 0 0 min(21rem, 72vw);
+    min-height: 28rem;
+    scroll-snap-align: center;
+    transform: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .game-opening-stage {
+    min-height: 38rem;
+  }
+
+  .game-world-stage {
+    width: calc(100% - 0.45rem);
+    margin-top: -2.65rem;
+    padding: 4.25rem 0 1.1rem;
+    border-radius: 2.4rem 2.4rem 1.7rem 1.7rem;
+  }
+
+  .game-world-shelf {
+    display: block;
+    overflow: hidden;
+  }
+
+  .game-world-shelf .shelf-arrow {
+    position: absolute;
+    top: 49%;
+    z-index: 12;
+    height: 3.15rem;
+    width: 3.15rem;
+    transform: translateY(-50%);
+  }
+
+  .game-world-shelf > .shelf-arrow:first-of-type {
+    left: 0.28rem;
+  }
+
+  .game-world-shelf > .shelf-arrow:last-of-type {
+    right: 0.28rem;
+  }
+
+  .game-world-shelf .shelf-track {
+    display: flex;
+    flex-wrap: nowrap;
+    grid-template-columns: none;
+    gap: 1rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-inline: max(2rem, calc((100vw - min(21rem, 82vw)) / 2));
+    padding-bottom: 1.5rem;
+  }
+
+  .world-diorama-card,
+  .world-diorama-card:nth-child(1),
+  .world-diorama-card:nth-child(2),
+  .world-diorama-card:nth-child(3),
+  .world-diorama-card:nth-child(4),
+  .world-diorama-card:nth-child(5) {
+    flex: 0 0 min(21rem, 82vw);
+    min-height: 27.2rem;
+    scroll-snap-align: center;
+    transform: none;
+  }
+
+  .world-art-shell {
+    height: 15rem;
+  }
+
+  .game-bottom-hud {
+    width: calc(100% - 0.75rem);
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 768px) {
+  .game-world-stage {
+    margin-top: clamp(-6.4rem, -6.6vw, -4.6rem);
   }
 }
