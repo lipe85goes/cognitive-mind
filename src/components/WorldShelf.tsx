@@ -4,7 +4,6 @@ import Image from "next/image";
 import { useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { ChevronLeft, ChevronRight, Play } from "lucide-react";
-import { GAME_INTROS } from "@/data/game-intros";
 import { getWorldMeta } from "@/data/worlds";
 import {
   getBestActivationSignalsForGame,
@@ -22,9 +21,9 @@ interface WorldShelfProps {
   onSelect: (activity: Activity) => void;
 }
 
-function SignalDots({ lit, className }: { lit: number; className: string }) {
+function SignalDots({ lit }: { lit: number }) {
   return (
-    <span className={className} aria-hidden>
+    <span className="world-card-signals" aria-hidden>
       {Array.from({ length: MAX_SIGNALS }, (_, index) => (
         <span key={index} className={index < lit ? "is-lit" : ""} />
       ))}
@@ -33,9 +32,8 @@ function SignalDots({ lit, className }: { lit: number; className: string }) {
 }
 
 /**
- * Cognitive World Shelf: a tactile row of world tiles (WAI-ARIA tabs) plus a
- * featured detail panel for the selected world. Browsing never starts a game —
- * only the explicit "Iniciar desafio" button does.
+ * Cognitive World Shelf: five tactile mini-world entries. The card surface
+ * selects/focuses a world; the explicit "Entrar" button starts the game.
  */
 export function WorldShelf({
   activities,
@@ -71,11 +69,6 @@ export function WorldShelf({
     }
   };
 
-  const stepSelection = (delta: number) => {
-    selectIndex(selectedIndex + delta);
-  };
-
-  /** Roving tabindex: arrows move both selection and focus inside the shelf. */
   const moveFocusTo = (index: number) => {
     const next = Math.min(Math.max(index, 0), worlds.length - 1);
     selectIndex(next);
@@ -98,44 +91,47 @@ export function WorldShelf({
     }
   };
 
-  const selectedMeta = selected
-    ? getWorldMeta(selected.gameId ?? selected.id)
-    : null;
-  const selectedIntro = selected?.gameId ? GAME_INTROS[selected.gameId] : null;
-  const selectedBest =
-    selected?.gameId !== undefined
-      ? getBestActivationSignalsForGame(recentResults, selected.gameId)
-      : 0;
+  const stepSelection = (delta: number) => {
+    moveFocusTo(selectedIndex + delta);
+  };
 
   return (
-    <div className="world-shelf-region min-w-0">
-      <div className="world-shelf">
-        <button
-          type="button"
-          className="shelf-arrow"
-          aria-label="Estação anterior"
-          disabled={selectedIndex === 0}
-          onClick={() => stepSelection(-1)}
-        >
-          <ChevronLeft strokeWidth={2.6} aria-hidden />
-        </button>
+    <div className="world-shelf-region game-world-shelf">
+      <button
+        type="button"
+        className="shelf-arrow"
+        aria-label="Estação anterior"
+        disabled={selectedIndex === 0}
+        onClick={() => stepSelection(-1)}
+      >
+        <ChevronLeft strokeWidth={2.8} aria-hidden />
+      </button>
 
-        <div
-          role="tablist"
-          aria-label="Estações cognitivas"
-          className="shelf-track"
-          onKeyDown={handleTablistKeyDown}
-        >
-          {worlds.map((activity, index) => {
-            const meta = getWorldMeta(activity.gameId ?? activity.id);
-            const best = activity.gameId
-              ? getBestActivationSignalsForGame(recentResults, activity.gameId)
-              : 0;
-            const isSelected = index === selectedIndex;
+      <div
+        role="tablist"
+        aria-label="Mundos de treino"
+        className="shelf-track"
+        onKeyDown={handleTablistKeyDown}
+      >
+        {worlds.map((activity, index) => {
+          const meta = getWorldMeta(activity.gameId ?? activity.id);
+          const best = activity.gameId
+            ? getBestActivationSignalsForGame(recentResults, activity.gameId)
+            : 0;
+          const isSelected = index === selectedIndex;
 
-            return (
+          return (
+            <motion.article
+              key={activity.id}
+              className={`world-diorama-card world-tone-${meta.world} ${
+                isSelected ? "is-selected" : ""
+              }`}
+              initial={reducedMotion ? false : { opacity: 0, y: 18 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-30px" }}
+              transition={{ duration: 0.32, delay: index * 0.035 }}
+            >
               <button
-                key={activity.id}
                 ref={(el) => {
                   tabRefs.current[index] = el;
                 }}
@@ -143,117 +139,69 @@ export function WorldShelf({
                 role="tab"
                 id={`world-tab-${activity.id}`}
                 aria-selected={isSelected}
-                aria-controls="world-detail"
                 tabIndex={isSelected ? 0 : -1}
                 onClick={() => selectIndex(index)}
-                className={`shelf-tile world-tone-${meta.world} ${
-                  isSelected ? "is-selected" : ""
-                }`}
+                className="world-stage-tab"
               >
-                <span className="shelf-tile-media" aria-hidden="true">
+                <span className="world-card-media" aria-hidden>
                   <Image
                     src={meta.image}
                     alt=""
                     fill
-                    sizes="(max-width: 767px) 30vw, 11vw"
-                    className="shelf-tile-image"
+                    sizes="(max-width: 767px) 82vw, (max-width: 1279px) 28vw, 17vw"
+                    className="world-card-image"
                   />
+                  <span className="world-card-glow" />
+                  <span className="world-number-medal">{index + 1}</span>
+                  {best === 0 && <span className="world-new-ribbon">Novo</span>}
                 </span>
-                <span className="shelf-tile-number">Estação {index + 1}</span>
-                <span className="shelf-tile-name">{meta.name}</span>
-                {best > 0 ? (
-                  <>
-                    <SignalDots lit={best} className="shelf-tile-signals" />
-                    <span className="sr-only">
-                      Visitada. Melhor resultado: {best} de {MAX_SIGNALS}{" "}
-                      sinais.
+                <span className="world-card-body">
+                  <span className="world-card-title">{meta.name}</span>
+                  <span className="world-card-copy">
+                    {meta.purpose}
+                  </span>
+                  {best > 0 ? (
+                    <span className="world-card-progress">
+                      <SignalDots lit={best} />
+                      <span className="sr-only">
+                        Melhor resultado: {best} de {MAX_SIGNALS} sinais.
+                      </span>
                     </span>
-                  </>
-                ) : (
-                  <span className="shelf-tile-new">Nova</span>
-                )}
+                  ) : (
+                    <span className="world-card-skill">{meta.skill}</span>
+                  )}
+                </span>
               </button>
-            );
-          })}
-        </div>
 
-        <button
-          type="button"
-          className="shelf-arrow"
-          aria-label="Próxima estação"
-          disabled={selectedIndex === worlds.length - 1}
-          onClick={() => stepSelection(1)}
-        >
-          <ChevronRight strokeWidth={2.6} aria-hidden />
-        </button>
+              <button
+                type="button"
+                onClick={() => onSelect(activity)}
+                aria-label={`Entrar em ${meta.name}`}
+                className="world-enter-button"
+              >
+                <Play className="h-5 w-5 fill-current" aria-hidden />
+                Entrar
+              </button>
+            </motion.article>
+          );
+        })}
       </div>
 
-      {selected && selectedMeta && (
-        <div
-          role="tabpanel"
-          id="world-detail"
-          aria-labelledby={`world-tab-${selected.id}`}
-          aria-live="polite"
-          className={`featured-world world-tone-${selectedMeta.world}`}
-        >
-          <motion.div
-            key={selected.id}
-            className="featured-grid"
-            initial={reducedMotion ? false : { opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.32, ease: "easeOut" }}
-          >
-            <div className="featured-media" aria-hidden="true">
-              <Image
-                src={selectedMeta.image}
-                alt=""
-                fill
-                sizes="(max-width: 767px) calc(100vw - 2rem), 38vw"
-                className="featured-image"
-              />
-              <span className="featured-badge">
-                Estação {selectedIndex + 1}
-              </span>
-            </div>
+      <button
+        type="button"
+        className="shelf-arrow"
+        aria-label="Próxima estação"
+        disabled={selectedIndex === worlds.length - 1}
+        onClick={() => stepSelection(1)}
+      >
+        <ChevronRight strokeWidth={2.8} aria-hidden />
+      </button>
 
-            <div className="featured-body">
-              <p className="featured-status">
-                {selectedBest > 0 ? "Estação visitada" : "Nova estação"}
-              </p>
-              <h3 className="featured-title">{selectedMeta.name}</h3>
-              <p className="featured-description">
-                {selectedIntro?.description ?? selectedMeta.purpose}
-              </p>
-
-              <div className="featured-skill">
-                <p>O que treina</p>
-                <strong>{selectedMeta.skill}</strong>
-              </div>
-
-              {selectedBest > 0 && (
-                <p className="featured-progress">
-                  <SignalDots
-                    lit={selectedBest}
-                    className="featured-progress-dots"
-                  />
-                  Melhor resultado: {selectedBest} de {MAX_SIGNALS} sinais
-                </p>
-              )}
-
-              <div className="featured-cta">
-                <button
-                  type="button"
-                  onClick={() => onSelect(selected)}
-                  aria-label={`Iniciar desafio: ${selectedMeta.name}`}
-                  className="btn-primary featured-start flex w-full items-center justify-center gap-2 text-lg"
-                >
-                  <Play className="h-6 w-6 fill-current" aria-hidden />
-                  Iniciar desafio
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        </div>
+      {selected?.gameId && (
+        <p className="world-shelf-status" aria-live="polite">
+          Mundo selecionado: {getWorldMeta(selected.gameId).name}. Use Entrar
+          para iniciar.
+        </p>
       )}
     </div>
   );

@@ -124,7 +124,7 @@ export default function HomePage() {
     );
   } else {
     content = (
-      <main className="mx-auto w-full min-w-0 max-w-[88rem] flex-1 overflow-x-hidden px-4 py-5 pb-12 sm:px-6 sm:py-6">
+      <main className="w-full min-w-0 flex-1 overflow-x-hidden">
         <GamifiedDashboard
           activities={ACTIVITIES}
           recentResults={recentResults}
