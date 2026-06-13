@@ -243,6 +243,98 @@ button:disabled:focus-visible {
   border-color: var(--world-border);
 }
 
+/* —— Shared game HUD: the calm "console frame" around every station —— */
+
+/* Top console bar: return to journey (left) + station status (right). */
+.console-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+.console-back {
+  /* Keeps the existing accessible btn-ghost styling; just anchors it left. */
+  flex-shrink: 0;
+}
+
+.console-tagline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  border: 2px solid var(--world-border);
+  border-radius: 9999px;
+  background:
+    radial-gradient(
+      circle at 12% 50%,
+      color-mix(in srgb, var(--world-accent) 14%, transparent),
+      transparent 60%
+    ),
+    color-mix(in srgb, var(--world-soft) 60%, #fffdf8);
+  padding: 0.45rem 0.95rem;
+  color: var(--world-accent-deep);
+  font-size: 0.9rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+/* Cognitive purpose line inside the station header. */
+.console-skill {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-top: 0.85rem;
+  color: var(--world-accent-deep);
+  font-size: 1.02rem;
+  font-weight: 700;
+}
+
+.console-skill span {
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--world-soft) 70%, #fffdf8);
+  padding: 0.18rem 0.6rem;
+  color: var(--world-accent-deep);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* The tabletop the game objects sit on. On mobile it stays edge-to-edge with
+   no side border/padding so 390px can never overflow; the full framed surface
+   appears from 640px up. */
+.world-stage {
+  position: relative;
+  border-radius: 1.5rem;
+  padding: 0.2rem 0 0;
+}
+
+@media (min-width: 640px) {
+  .world-stage {
+    border: 2px solid var(--world-border);
+    padding: 1.35rem;
+    background:
+      radial-gradient(
+        circle at 50% -10%,
+        color-mix(in srgb, var(--world-soft) 55%, transparent),
+        transparent 60%
+      ),
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--world-soft) 26%, #fffdf8),
+        #fffdf8 72%
+      );
+    background-color: #fffdf8;
+    box-shadow:
+      inset 0 2px 4px rgb(255 255 255 / 0.75),
+      inset 0 0 0 4px rgb(255 253 248 / 0.55),
+      0 7px 0 color-mix(in srgb, var(--world-accent) 16%, #d8d2c0),
+      0 18px 32px rgb(32 53 49 / 0.08);
+  }
+}
+
 /* Illustrated entrances to each cognitive mini-world */
 .game-intro {
   --intro-accent: #16877f;

@@ -7,16 +7,40 @@ import type { GameId } from "@/types/game";
  */
 export type WorldKey = "memory" | "route" | "commands" | "logic" | "garden";
 
-/** Icon and in-game board label for each visual world. */
+/**
+ * Per-world presentation for the shared game HUD.
+ * - `boardLabel`: the kind of board (eyebrow above the title).
+ * - `tagline`: calm station status / action language shown in the console bar.
+ */
 export const WORLDS: Record<
   WorldKey,
-  { icon: typeof Palette; boardLabel: string }
+  { icon: typeof Palette; boardLabel: string; tagline: string }
 > = {
-  memory: { icon: Palette, boardLabel: "Circuito de memória" },
-  route: { icon: Grid3x3, boardLabel: "Tabuleiro de rota" },
-  commands: { icon: LayoutGrid, boardLabel: "Console de comandos" },
-  logic: { icon: Hash, boardLabel: "Caminho lógico" },
-  garden: { icon: Sprout, boardLabel: "Tabuleiro de sementes" },
+  memory: {
+    icon: Palette,
+    boardLabel: "Circuito de memória",
+    tagline: "Circuito em andamento",
+  },
+  route: {
+    icon: Grid3x3,
+    boardLabel: "Tabuleiro de rota",
+    tagline: "Planeje sua rota",
+  },
+  commands: {
+    icon: LayoutGrid,
+    boardLabel: "Console de comandos",
+    tagline: "Ative os sistemas",
+  },
+  logic: {
+    icon: Hash,
+    boardLabel: "Caminho lógico",
+    tagline: "Ilumine a trilha",
+  },
+  garden: {
+    icon: Sprout,
+    boardLabel: "Tabuleiro de sementes",
+    tagline: "Equilibre o jardim",
+  },
 };
 
 /** Canonical presentation metadata for one cognitive mini-world. */
@@ -87,4 +111,12 @@ export const GAME_WORLDS: Record<GameId, WorldMeta> = {
  */
 export function getWorldMeta(gameId: string): WorldMeta {
   return GAME_WORLDS[gameId as GameId] ?? GAME_WORLDS["color-sequence"];
+}
+
+/**
+ * The cognitive skill line for a visual world, sourced from the game registry
+ * so the in-game HUD never diverges from the dashboard/intro skill text.
+ */
+export function skillForWorld(world: WorldKey): string {
+  return Object.values(GAME_WORLDS).find((meta) => meta.world === world)?.skill ?? "";
 }

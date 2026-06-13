@@ -1,6 +1,6 @@
 import { ArrowLeft } from "lucide-react";
 import type { ReactNode } from "react";
-import { WORLDS, type WorldKey } from "@/data/worlds";
+import { skillForWorld, WORLDS, type WorldKey } from "@/data/worlds";
 
 interface GameLayoutProps {
   title: string;
@@ -12,7 +12,14 @@ interface GameLayoutProps {
   footer?: ReactNode;
 }
 
-/** Shared shell for in-game screens (back nav + content area). */
+/**
+ * Shared shell for in-game screens: a single calm "console frame" that wraps
+ * every game so they read as cognitive stations, not web pages.
+ *
+ * It only frames the chrome (return bar, station header, tabletop stage). Each
+ * game keeps its own board, controls and live feedback (StatusBanner) inside
+ * `children` — this component never touches game logic.
+ */
 export function GameLayout({
   title,
   description,
@@ -24,24 +31,31 @@ export function GameLayout({
 }: GameLayoutProps) {
   const worldCopy = WORLDS[world];
   const WorldIcon = worldCopy.icon;
+  const skill = skillForWorld(world);
 
   return (
     <div
-      className={`game-world game-world-${world} mx-auto flex w-full min-w-0 flex-1 flex-col overflow-x-hidden px-4 pb-10 pt-4 sm:px-6 ${
+      className={`game-world game-console game-world-${world} mx-auto flex w-full min-w-0 flex-1 flex-col overflow-x-hidden px-4 pb-10 pt-4 sm:px-6 ${
         wide ? "game-world-wide max-w-[78rem]" : "max-w-xl"
       }`}
     >
-      <button
-        type="button"
-        onClick={onBack}
-        aria-label="Voltar à jornada cognitiva"
-        className="btn-ghost mb-5 inline-flex w-fit items-center gap-2"
-      >
-        <ArrowLeft className="h-5 w-5" aria-hidden />
-        Voltar à jornada
-      </button>
+      <div className="console-bar mb-4">
+        <button
+          type="button"
+          onClick={onBack}
+          aria-label="Voltar à jornada cognitiva"
+          className="btn-ghost console-back inline-flex items-center gap-2"
+        >
+          <ArrowLeft className="h-5 w-5" aria-hidden />
+          Voltar à jornada
+        </button>
+        <span className="console-tagline">
+          <WorldIcon className="h-4 w-4" strokeWidth={2.4} aria-hidden />
+          {worldCopy.tagline}
+        </span>
+      </div>
 
-      <div className="surface-game world-header mb-5">
+      <header className="surface-game world-header console-header mb-5">
         <div className="flex items-start gap-3">
           <div className="world-emblem" aria-hidden>
             <WorldIcon className="h-7 w-7" strokeWidth={2.2} />
@@ -54,11 +68,17 @@ export function GameLayout({
             {description && (
               <p className="text-muted mt-2 leading-relaxed">{description}</p>
             )}
+            {skill && (
+              <p className="console-skill">
+                <span>O que treina</span>
+                {skill}
+              </p>
+            )}
           </div>
         </div>
-      </div>
+      </header>
 
-      <div className="world-content flex min-w-0 w-full flex-1 flex-col">
+      <div className="world-content world-stage flex min-w-0 w-full flex-1 flex-col">
         {children}
       </div>
 
