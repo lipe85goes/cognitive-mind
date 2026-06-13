@@ -2948,7 +2948,7 @@ button:disabled:focus-visible {
   background: rgb(255 218 165 / 0.55);
 }
 
-.seed-orbit-pot > span:nth-of-type(2) {
+.seed-orbit-pot .seed-pot-count {
   position: relative;
   z-index: 1;
   color: #fffdf4;

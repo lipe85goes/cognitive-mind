@@ -283,10 +283,11 @@ export function SeedGardenGame({ onComplete, onExit }: GameComponentProps) {
     const targetCompleted = isTargetComplete(nextVases, puzzle);
     const movesExhausted = nextMovesUsed >= puzzle.maxMoves;
 
-    if (!targetCompleted && !movesExhausted) {
-      setReceivingIndices([...new Set(targets)]);
-      window.setTimeout(() => setReceivingIndices([]), 650);
-    }
+    setReceivingIndices([...new Set(targets)]);
+    window.setTimeout(
+      () => setReceivingIndices([]),
+      targetCompleted ? BLOOM_CELEBRATION_MS : 650,
+    );
     setVases(nextVases);
     setMovesUsed(nextMovesUsed);
     setSelectedIndex(null);
@@ -495,7 +496,7 @@ export function SeedGardenGame({ onComplete, onExit }: GameComponentProps) {
                     />
                   )}
                   <span className="sr-only">Vaso {index + 1}</span>
-                  <span className="mt-1 block text-5xl font-bold tabular-nums">
+                  <span className="seed-pot-count mt-1 block text-5xl font-bold tabular-nums">
                     {seedCount}
                   </span>
                   <SeedDots count={seedCount} />
