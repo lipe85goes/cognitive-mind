@@ -204,6 +204,10 @@ export function SecurityPanelGame({ onComplete, onExit }: GameComponentProps) {
   const [inputLocked, setInputLocked] = useState(false);
   const [roundMessage, setRoundMessage] = useState<string | null>(null);
   const [shakeToken, setShakeToken] = useState(0);
+  /** The system whose lamp just lit, so it can play a one-shot arrival glow. */
+  const [activatingSystem, setActivatingSystem] = useState<PanelTargetId | null>(
+    null,
+  );
 
   const reducedMotion = useReducedMotion();
 
@@ -270,6 +274,7 @@ export function SecurityPanelGame({ onComplete, onExit }: GameComponentProps) {
     setLastTapped(null);
     setRoundMessage(null);
     setInputLocked(false);
+    setActivatingSystem(null);
     setPhase("playing");
   }, []);
 
@@ -326,6 +331,8 @@ export function SecurityPanelGame({ onComplete, onExit }: GameComponentProps) {
 
     setInputLocked(true);
     setLastTapped(targetId);
+    // Clear any prior arrival so the next lamp can replay its glow.
+    setActivatingSystem(null);
 
     if (forbiddenRule && targetId === forbiddenRule.forbiddenId) {
       handleMistake(errors, {
@@ -353,6 +360,11 @@ export function SecurityPanelGame({ onComplete, onExit }: GameComponentProps) {
       setTapFeedback(null);
       setLastTapped(null);
       setRoundMessage(null);
+
+      // The signal reaches its system: light that lamp with an arrival glow.
+      if (targetId !== "confirm") {
+        setActivatingSystem(targetId);
+      }
 
       const nextIndex = inputIndex + 1;
       if (nextIndex < sequence.length) {
@@ -569,18 +581,25 @@ export function SecurityPanelGame({ onComplete, onExit }: GameComponentProps) {
             }
             key={shakeToken > 0 ? `panel-shake-${shakeToken}` : "panel"}
           >
-            <ul className="command-lamps" aria-hidden="true">
+            <ul
+              className={`command-lamps ${
+                phase === "round-complete" ? "is-connected" : ""
+              }`}
+              aria-hidden="true"
+            >
               {SYSTEM_IDS.map((systemId) => {
                 const system = PANEL_TARGETS[systemId];
                 const SystemIcon = system.icon;
                 const isOn =
                   activatedSystems.has(systemId) || phase === "round-complete";
+                const isArriving =
+                  !reducedMotion && activatingSystem === systemId;
                 return (
                   <li
                     key={systemId}
                     className={`command-lamp command-lamp-${system.lamp} ${
                       isOn ? "is-on" : ""
-                    }`}
+                    } ${isArriving ? "is-arriving" : ""}`}
                   >
                     <SystemIcon strokeWidth={2.3} aria-hidden />
                     <span>{system.label}</span>

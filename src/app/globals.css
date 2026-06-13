@@ -2508,6 +2508,7 @@ button:disabled:focus-visible {
 
 /* The "machine": station system lamps that light as the command advances */
 .command-lamps {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.5rem;
@@ -2520,7 +2521,30 @@ button:disabled:focus-visible {
     inset 0 -1px 0 rgb(255 255 255 / 0.08);
 }
 
+/* Conduit bus running behind the lamps; shows in the gaps between modules
+   and lights up when every system connects at completion. */
+.command-lamps::before {
+  content: "";
+  position: absolute;
+  left: 1rem;
+  right: 1rem;
+  top: 50%;
+  z-index: 0;
+  height: 3px;
+  border-radius: 9999px;
+  background: rgb(110 160 152 / 0.35);
+  transform: translateY(-50%);
+  transition: background 320ms ease, box-shadow 320ms ease;
+}
+
+.command-lamps.is-connected::before {
+  background: rgb(110 231 183 / 0.9);
+  box-shadow: 0 0 12px rgb(16 185 129 / 0.6);
+}
+
 .command-lamp {
+  position: relative;
+  z-index: 1;
   display: flex;
   min-height: 3.4rem;
   flex-direction: column;
@@ -2630,6 +2654,60 @@ button:disabled:focus-visible {
     0 0 34px rgb(16 185 129 / 0.35),
     0 7px 0 rgb(5 150 105 / 0.3),
     0 16px 29px rgb(28 47 44 / 0.11);
+}
+
+/* —— Flow: action → signal → consequence → activation —— */
+/* The visible pulse and arrival glow are enhancement only; the lamps still
+   light (via .is-on) and the game stays understandable without animation. */
+@media (prefers-reduced-motion: no-preference) {
+  /* A soft signal rises off a correctly tapped control toward the systems. */
+  .command-key.is-correct::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: -0.2rem;
+    height: 0.7rem;
+    width: 0.7rem;
+    border-radius: 9999px;
+    background: radial-gradient(
+      circle,
+      rgb(110 231 183 / 0.95),
+      rgb(110 231 183 / 0)
+    );
+    pointer-events: none;
+    animation: command-signal-rise 0.5s ease-out;
+  }
+
+  @keyframes command-signal-rise {
+    0% {
+      opacity: 0;
+      transform: translate(-50%, 0.4rem) scale(0.6);
+    }
+    30% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      transform: translate(-50%, -1.7rem) scale(1);
+    }
+  }
+
+  /* The matching lamp settles on with a gentle arrival, not a flash. */
+  .command-lamp.is-arriving {
+    animation: command-lamp-arrive 0.55s ease-out;
+  }
+
+  @keyframes command-lamp-arrive {
+    0% {
+      transform: scale(0.9);
+    }
+    45% {
+      transform: scale(1.08);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
 }
 
 .logic-guide-card {
