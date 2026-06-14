@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="120" viewBox="0 0 240 120">
+  <filter id="soften">
+    <feGaussianBlur stdDeviation="0.45" />
+  </filter>
+  <g fill="none" stroke-linecap="round" filter="url(#soften)">
+    <path d="M-12 23 C28 9, 51 36, 91 22 S165 10, 250 29" stroke="#ffd99a" stroke-opacity=".18" stroke-width="2.2"/>
+    <path d="M-8 58 C25 45, 69 67, 103 54 C137 41, 168 52, 247 46" stroke="#7a4327" stroke-opacity=".2" stroke-width="2.5"/>
+    <path d="M2 91 C37 76, 62 103, 106 88 S164 74, 238 95" stroke="#fff0c9" stroke-opacity=".11" stroke-width="2"/>
+    <path d="M16 36 C34 28, 48 42, 67 35 C83 30, 91 29, 109 34" stroke="#4b2618" stroke-opacity=".15" stroke-width="1.4"/>
+    <path d="M132 72 C151 63, 171 82, 192 72 C206 66, 219 66, 236 71" stroke="#4b2618" stroke-opacity=".14" stroke-width="1.45"/>
+    <ellipse cx="74" cy="76" rx="18" ry="6" stroke="#5e321f" stroke-opacity=".12" stroke-width="1.6"/>
+    <ellipse cx="184" cy="28" rx="25" ry="7" stroke="#fff0c9" stroke-opacity=".1" stroke-width="1.5"/>
+  </g>
+</svg>

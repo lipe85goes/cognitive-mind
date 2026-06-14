@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import { useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { ChevronLeft, ChevronRight, Play } from "lucide-react";
+import { WorldDioramaArt } from "@/components/WorldDioramaArt";
 import { getWorldMeta } from "@/data/worlds";
 import {
   getBestActivationSignalsForGame,
@@ -123,7 +123,7 @@ export function WorldShelf({
           return (
             <motion.article
               key={activity.id}
-              className={`world-diorama-card world-tone-${meta.world} ${
+              className={`world-game-piece world-tone-${meta.world} ${
                 isSelected ? "is-selected" : ""
               }`}
               initial={reducedMotion ? false : { opacity: 0, y: 18 }}
@@ -131,9 +131,8 @@ export function WorldShelf({
               viewport={{ once: true, margin: "-30px" }}
               transition={{ duration: 0.32, delay: index * 0.035 }}
             >
-              <span className="world-piece-shadow" aria-hidden />
-              <span className="world-object-aura" aria-hidden />
-              <span className="world-piece-backplate" aria-hidden />
+              <span className="world-piece-floor-shadow" aria-hidden />
+              <span className="world-piece-aura" aria-hidden />
               <button
                 ref={(el) => {
                   tabRefs.current[index] = el;
@@ -144,40 +143,30 @@ export function WorldShelf({
                 aria-selected={isSelected}
                 tabIndex={isSelected ? 0 : -1}
                 onClick={() => selectIndex(index)}
-                className="world-stage-tab"
+                className="world-piece-selector"
               >
-                <span className="world-art-shell" aria-hidden>
-                  <span className="world-card-media">
-                    <Image
-                      src={meta.image}
-                      alt=""
-                      fill
-                      sizes="(max-width: 767px) 82vw, (max-width: 1279px) 28vw, 17vw"
-                      className="world-card-image"
-                    />
-                    <span className="world-card-inner-frame" />
-                    <span className="world-card-glow" />
-                    <span className="world-number-medal">{index + 1}</span>
-                    {best === 0 && <span className="world-new-ribbon">Novo</span>}
-                  </span>
+                <span className="world-piece-medal" aria-hidden>
+                  {index + 1}
                 </span>
-                <span className="world-card-body world-pedestal-deck">
-                  <span className="world-title-plaque">
-                    <span className="world-card-title">{meta.name}</span>
-                  </span>
-                  <span className="world-card-copy">
-                    {meta.purpose}
-                  </span>
-                  <span className="world-card-meta-row">
+                {best === 0 && <span className="world-piece-new">Novo</span>}
+
+                <span className="world-piece-stage" aria-hidden>
+                  <WorldDioramaArt world={meta.world} />
+                </span>
+
+                <span className="world-piece-plaque">
+                  <span className="world-piece-title">{meta.name}</span>
+                  <span className="world-piece-copy">{meta.purpose}</span>
+                  <span className="world-piece-meta">
                     {best > 0 ? (
-                      <span className="world-card-progress">
+                      <>
                         <SignalDots lit={best} />
                         <span className="sr-only">
                           Melhor resultado: {best} de {MAX_SIGNALS} sinais.
                         </span>
-                      </span>
+                      </>
                     ) : (
-                      <span className="world-card-skill">{meta.skill}</span>
+                      <span className="world-piece-skill">{meta.skill}</span>
                     )}
                   </span>
                 </span>
@@ -187,12 +176,12 @@ export function WorldShelf({
                 type="button"
                 onClick={() => onSelect(activity)}
                 aria-label={`Entrar em ${meta.name}`}
-                className="world-enter-button"
+                className="world-piece-enter"
               >
                 <Play className="h-5 w-5 fill-current" aria-hidden />
                 Entrar
               </button>
-              <span className="world-piece-foot" aria-hidden />
+              <span className="world-piece-front-lip" aria-hidden />
             </motion.article>
           );
         })}
