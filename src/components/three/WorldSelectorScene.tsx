@@ -1,12 +1,7 @@
 "use client";
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import {
-  ContactShadows,
-  Environment,
-  Lightformer,
-  RoundedBox,
-} from "@react-three/drei";
+import { ContactShadows, Environment, Lightformer } from "@react-three/drei";
 import { MathUtils } from "three";
 import { WorldStage3D } from "@/components/three/WorldStage3D";
 import { WORLD_3D_PALETTE } from "@/components/three/world-palette";
@@ -29,12 +24,12 @@ function CameraRig({ reducedMotion }: { reducedMotion: boolean }) {
     const { camera, pointer, size } = state;
     const portrait = size.width / size.height < 0.85;
 
-    const baseX = portrait ? 0 : 0.28;
-    const baseY = portrait ? 2.4 : 2.2;
-    const baseZ = portrait ? 6.3 : 5.85;
-    const targetFov = portrait ? 42 : 36;
-    const lookX = portrait ? 0 : 0.55;
-    const lookY = portrait ? 0.4 : 0.58;
+    const baseX = portrait ? 0 : 0.24;
+    const baseY = portrait ? 2.4 : 2.05;
+    const baseZ = portrait ? 6.3 : 5.7;
+    const targetFov = portrait ? 42 : 37;
+    const lookX = portrait ? 0 : 0.42;
+    const lookY = portrait ? 0.4 : 0.45;
 
     const targetX = reducedMotion ? baseX : baseX + pointer.x * 0.32;
     const targetY = reducedMotion ? baseY : baseY + pointer.y * 0.16;
@@ -64,51 +59,60 @@ function TabletopWorlds({
 }: WorldSelectorSceneProps) {
   const { size } = useThree();
   const portrait = size.width / size.height < 0.85;
-  const stageX = portrait ? 0 : 1.08;
-  const stageY = portrait ? -0.1 : -0.22;
-  const stageScale = portrait ? 0.98 : 1.05;
+  const stageX = portrait ? 0 : 0.82;
+  const stageY = portrait ? -0.1 : 0.04;
+  const stageScale = portrait ? 0.98 : 1.12;
 
   return (
     <group position={[stageX, stageY, 0.05]} scale={stageScale}>
-      {/* Carved wooden table tray (raised rim + lighter inlay) */}
-      <RoundedBox
-        args={[11.5, 0.5, 6.6]}
-        radius={0.16}
-        smoothness={5}
-        position={[0, -0.66, -0.1]}
-        castShadow
-        receiveShadow
+      {/* Round carved wooden tabletop: the worlds sit on one premium board.
+          A wide cylinder scaled in X/Z reads as a circular board in
+          perspective while staying wide enough for the carousel and shallow
+          enough (in Z) to clear the camera. The surface stays at the same
+          Y as before, so the per-world glow disc/halo are untouched (no
+          z-fighting). */}
+      <mesh position={[0, -0.66, 0]} scale={[5.95, 1, 3.35]} castShadow receiveShadow>
+        <cylinderGeometry args={[1, 1.06, 0.5, 72]} />
+        <meshStandardMaterial color="#6b4327" roughness={0.8} metalness={0.06} />
+      </mesh>
+      {/* lighter inlay surface */}
+      <mesh position={[0, -0.4, 0]} scale={[5.5, 1, 3.0]} receiveShadow>
+        <cylinderGeometry args={[1, 1.02, 0.16, 72]} />
+        <meshStandardMaterial color="#875839" roughness={0.82} />
+      </mesh>
+      {/* brass band around the board edge */}
+      <mesh
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[0, -0.35, 0]}
+        scale={[5.74, 3.16, 1]}
       >
-        <meshStandardMaterial color="#6b4327" roughness={0.78} metalness={0.06} />
-      </RoundedBox>
-      <RoundedBox
-        args={[10.7, 0.16, 5.8]}
-        radius={0.1}
-        smoothness={4}
-        position={[0, -0.4, -0.1]}
-        receiveShadow
-      >
-        <meshStandardMaterial color="#835636" roughness={0.85} />
-      </RoundedBox>
-      {[-4.4, -3.2, -2, -0.8, 0.4, 1.6, 2.8, 4].map((x) => (
-        <mesh key={x} position={[x, -0.305, -0.08]} castShadow receiveShadow>
-          <boxGeometry args={[0.018, 0.03, 5.25]} />
-          <meshStandardMaterial color="#9b6742" roughness={0.84} />
-        </mesh>
-      ))}
-      {[-4.9, -2.5, 0, 2.5, 4.9].map((x) => (
-        <mesh key={x} position={[x, -0.29, 2.55]} castShadow receiveShadow>
-          <cylinderGeometry args={[0.08, 0.08, 0.12, 18]} />
-          <meshStandardMaterial color="#b8874f" roughness={0.46} metalness={0.32} />
+        <torusGeometry args={[1, 0.013, 18, 120]} />
+        <meshStandardMaterial
+          color="#cfa14e"
+          roughness={0.32}
+          metalness={0.9}
+          envMapIntensity={1.5}
+        />
+      </mesh>
+      {/* concentric carved grooves on the surface (flush, decorative) */}
+      {[0.55, 0.8].map((k) => (
+        <mesh
+          key={k}
+          rotation={[-Math.PI / 2, 0, 0]}
+          position={[0, -0.314, 0]}
+          scale={[5.5 * k, 3.0 * k, 1]}
+        >
+          <torusGeometry args={[1, 0.0045, 8, 120]} />
+          <meshStandardMaterial color="#5e3a23" roughness={0.85} />
         </mesh>
       ))}
       <ContactShadows
-        position={[0, -0.34, 0.1]}
-        opacity={0.62}
-        scale={10}
-        blur={2.6}
-        far={4.8}
-        color="#1a0e06"
+        position={[0, -0.33, 0.1]}
+        opacity={0.6}
+        scale={13}
+        blur={2.8}
+        far={5}
+        color="#160b04"
       />
 
       {worlds.map((world, index) => (
@@ -206,10 +210,11 @@ export function WorldSelectorScene({
       {/* Selected-world coloured accent glow, offset toward the tabletop stage. */}
       <pointLight position={[1.0, 0.9, 1.15]} intensity={1.22} distance={6.2} color={accent} />
 
-      {/* Ground that fades into the dark room */}
+      {/* Ground that fades into the dark room (kept deep so the round board
+          reads as the lit focus rather than a flat brown wall) */}
       <mesh receiveShadow rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.46, 0]}>
         <planeGeometry args={[46, 30]} />
-        <meshStandardMaterial color="#51321e" roughness={0.94} metalness={0.04} />
+        <meshStandardMaterial color="#341d0f" roughness={0.96} metalness={0.03} />
       </mesh>
 
       <TabletopWorlds
