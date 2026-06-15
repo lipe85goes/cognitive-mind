@@ -8672,6 +8672,113 @@ button:disabled:focus-visible {
   }
 }
 
+/* Rendered diorama asset pipeline for the production Home shelf. */
+.world-rendered-frame {
+  position: absolute;
+  inset: -0.35rem -0.1rem 0;
+  z-index: 1;
+  display: block;
+  pointer-events: none;
+}
+
+.world-rendered-inner {
+  position: absolute;
+  inset: 0;
+  display: block;
+  border-radius: 2.2rem 2.2rem 1.35rem 1.35rem;
+  overflow: visible;
+  background:
+    radial-gradient(circle at 50% 12%, rgb(255 255 255 / 0.34), transparent 28%),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--world-card-soft) 70%, #fff7de),
+      color-mix(in srgb, var(--world-card-mid) 46%, #fff1c4) 56%,
+      color-mix(in srgb, var(--world-card-deep) 68%, #4a2d22)
+    );
+  box-shadow:
+    inset 0 0.24rem 0 rgb(255 255 255 / 0.36),
+    inset 0 -0.45rem 0 rgb(0 0 0 / 0.2),
+    0 1.1rem 1.65rem rgb(0 0 0 / 0.28);
+}
+
+.world-rendered-frame.has-rendered-art .world-rendered-inner {
+  inset: -0.2rem -0.25rem 0.4rem;
+  overflow: hidden;
+  border: 3px solid color-mix(in srgb, var(--world-card-accent) 34%, #fff5cf);
+  box-shadow:
+    inset 0 0.28rem 0 rgb(255 255 255 / 0.42),
+    inset 0 -0.48rem 0 rgb(0 0 0 / 0.22),
+    0 0.45rem 0 color-mix(in srgb, var(--world-card-deep) 70%, #1b100d),
+    0 1.25rem 1.7rem rgb(0 0 0 / 0.32),
+    0 0 2.4rem color-mix(in srgb, var(--world-card-accent) 22%, transparent);
+}
+
+.world-rendered-frame.has-rendered-art .world-rendered-inner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.24), transparent 24%),
+    radial-gradient(circle at 50% 102%, rgb(0 0 0 / 0.28), transparent 42%);
+  mix-blend-mode: soft-light;
+}
+
+.world-rendered-frame.has-rendered-art .world-rendered-inner::after {
+  content: "";
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  bottom: 0.28rem;
+  z-index: 3;
+  height: 0.85rem;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.16);
+  filter: blur(0.4rem);
+}
+
+.world-rendered-image {
+  object-fit: contain;
+  object-position: center bottom;
+  padding: 0.45rem 0.45rem 0.25rem;
+  filter:
+    saturate(1.08)
+    contrast(1.04)
+    drop-shadow(0 1.05rem 0.95rem rgb(0 0 0 / 0.28));
+}
+
+.world-rendered-frame.is-fallback .world-rendered-inner {
+  background: transparent;
+  box-shadow: none;
+}
+
+.world-rendered-frame.is-fallback .world-mini-scene {
+  inset: 0;
+}
+
+.world-piece-stage:has(.world-rendered-frame.has-rendered-art)::after {
+  left: 8%;
+  right: 8%;
+  bottom: 0.55rem;
+  height: 2rem;
+  opacity: 0.82;
+}
+
+@media (max-width: 767px) {
+  .world-rendered-frame {
+    inset: -0.2rem 0 0;
+  }
+
+  .world-rendered-frame.has-rendered-art .world-rendered-inner {
+    inset: 0 0 0.45rem;
+  }
+
+  .world-rendered-image {
+    padding: 0.35rem 0.35rem 0.18rem;
+  }
+}
+
 /* ===== /lab/3d-home — isolated 3D world-selector prototype ===== */
 .lab3d-main {
   display: flex;

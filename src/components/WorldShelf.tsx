@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { ChevronLeft, ChevronRight, Play } from "lucide-react";
-import { WorldDioramaArt } from "@/components/WorldDioramaArt";
+import { WorldDioramaFrame } from "@/components/WorldDioramaFrame";
 import { getWorldMeta } from "@/data/worlds";
 import {
   getBestActivationSignalsForGame,
@@ -151,7 +151,10 @@ export function WorldShelf({
                 {best === 0 && <span className="world-piece-new">Novo</span>}
 
                 <span className="world-piece-stage" aria-hidden>
-                  <WorldDioramaArt world={meta.world} />
+                  <WorldDioramaFrame
+                    world={meta.world}
+                    imageSrc={meta.dioramaImage}
+                  />
                 </span>
 
                 <span className="world-piece-plaque">
