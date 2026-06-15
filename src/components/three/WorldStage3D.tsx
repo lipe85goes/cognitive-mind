@@ -12,7 +12,7 @@ import { LogicWorld3D } from "@/components/three/worlds/LogicWorld3D";
 import { GardenWorld3D } from "@/components/three/worlds/GardenWorld3D";
 import type { WorldKey } from "@/data/worlds";
 
-const SPACING = 2.35;
+const SPACING = 2.5;
 
 /**
  * The interchangeable model for a world. Today these are procedural primitives;
@@ -44,7 +44,7 @@ interface WorldStage3DProps {
 }
 
 /**
- * One world placed on a glowing pedestal. It carousels toward / away from the
+ * One world on a carved, glowing pedestal. It carousels toward / away from the
  * centre as the selection changes and lifts + glows when selected.
  */
 export function WorldStage3D({
@@ -57,6 +57,8 @@ export function WorldStage3D({
   const outerRef = useRef<Group>(null);
   const innerRef = useRef<Group>(null);
   const haloRef = useRef<MeshStandardMaterial>(null);
+  const discRef = useRef<MeshStandardMaterial>(null);
+  const rimRef = useRef<MeshStandardMaterial>(null);
   const palette = WORLD_3D_PALETTE[world];
 
   useFrame((state, delta) => {
@@ -67,13 +69,13 @@ export function WorldStage3D({
     const offset = index - selectedIndex;
     const isSelected = offset === 0;
     const dist = Math.abs(offset);
+    const lambda = 5;
 
     const targetX = offset * SPACING;
-    const targetZ = isSelected ? 0.5 : -0.55 - dist * 0.15;
-    const targetY = isSelected ? 0.16 : 0;
-    const targetScale = isSelected ? 1.12 : 0.82;
-    const targetRotY = isSelected ? 0 : -offset * 0.22;
-    const lambda = 5;
+    const targetZ = isSelected ? 0.55 : -0.55 - dist * 0.18;
+    const targetY = isSelected ? 0.18 : -0.05;
+    const targetScale = isSelected ? 1.14 : 0.78;
+    const targetRotY = isSelected ? 0 : -offset * 0.24;
 
     outer.position.x = MathUtils.damp(outer.position.x, targetX, lambda, delta);
     outer.position.y = MathUtils.damp(outer.position.y, targetY, lambda, delta);
@@ -85,8 +87,8 @@ export function WorldStage3D({
     // Gentle idle motion only for the focused world (skipped under reduced motion).
     if (isSelected && !reducedMotion) {
       const t = state.clock.elapsedTime;
-      inner.position.y = Math.sin(t * 1.4) * 0.04;
-      inner.rotation.y = Math.sin(t * 0.5) * 0.12;
+      inner.position.y = Math.sin(t * 1.3) * 0.045;
+      inner.rotation.y = Math.sin(t * 0.45) * 0.14;
     } else {
       inner.position.y = MathUtils.damp(inner.position.y, 0, lambda, delta);
       inner.rotation.y = MathUtils.damp(inner.rotation.y, 0, lambda, delta);
@@ -95,7 +97,23 @@ export function WorldStage3D({
     if (haloRef.current) {
       haloRef.current.emissiveIntensity = MathUtils.damp(
         haloRef.current.emissiveIntensity,
-        isSelected ? 1.8 : 0.12,
+        isSelected ? 2.4 : 0.1,
+        lambda,
+        delta,
+      );
+    }
+    if (discRef.current) {
+      discRef.current.opacity = MathUtils.damp(
+        discRef.current.opacity,
+        isSelected ? 0.5 : 0,
+        lambda,
+        delta,
+      );
+    }
+    if (rimRef.current) {
+      rimRef.current.emissiveIntensity = MathUtils.damp(
+        rimRef.current.emissiveIntensity,
+        isSelected ? 0.7 : 0.08,
         lambda,
         delta,
       );
@@ -119,37 +137,67 @@ export function WorldStage3D({
         document.body.style.cursor = "auto";
       }}
     >
-      {/* Selection halo on the table */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.41, 0]}>
-        <torusGeometry args={[1.0, 0.05, 16, 48]} />
+      {/* Glowing ground disc beneath the selected world */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.385, 0]}>
+        <circleGeometry args={[1.15, 48]} />
+        <meshStandardMaterial
+          ref={discRef}
+          color={palette.glow}
+          emissive={palette.glow}
+          emissiveIntensity={1}
+          transparent
+          opacity={0}
+          toneMapped={false}
+          depthWrite={false}
+        />
+      </mesh>
+
+      {/* Selection halo ring on the table */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.38, 0]}>
+        <torusGeometry args={[1.02, 0.045, 16, 56]} />
         <meshStandardMaterial
           ref={haloRef}
           color={palette.glow}
           emissive={palette.glow}
-          emissiveIntensity={0.12}
+          emissiveIntensity={0.1}
           toneMapped={false}
         />
       </mesh>
 
-      {/* Pedestal */}
+      {/* Pedestal: wide plinth + carved body + glowing rim inlay */}
       <RoundedBox
-        args={[1.7, 0.4, 1.35]}
-        radius={0.1}
+        args={[1.88, 0.14, 1.52]}
+        radius={0.06}
         smoothness={4}
-        position={[0, -0.2, 0]}
+        position={[0, -0.33, 0]}
         castShadow
         receiveShadow
       >
-        <meshStandardMaterial color={palette.base} roughness={0.6} metalness={0.1} />
+        <meshStandardMaterial color={palette.deep} roughness={0.7} metalness={0.1} />
       </RoundedBox>
-      {/* Pedestal inset top */}
-      <mesh position={[0, 0.005, 0]} receiveShadow>
-        <boxGeometry args={[1.5, 0.04, 1.15]} />
-        <meshStandardMaterial color={palette.deep} roughness={0.7} />
+      <RoundedBox
+        args={[1.66, 0.32, 1.3]}
+        radius={0.1}
+        smoothness={5}
+        position={[0, -0.12, 0]}
+        castShadow
+        receiveShadow
+      >
+        <meshStandardMaterial color={palette.base} roughness={0.55} metalness={0.12} />
+      </RoundedBox>
+      <mesh position={[0, 0.05, 0]} receiveShadow>
+        <boxGeometry args={[1.46, 0.05, 1.1]} />
+        <meshStandardMaterial
+          ref={rimRef}
+          color={palette.deep}
+          emissive={palette.glow}
+          emissiveIntensity={0.08}
+          roughness={0.5}
+        />
       </mesh>
 
       {/* The world model */}
-      <group ref={innerRef} position={[0, 0.02, 0]}>
+      <group ref={innerRef} position={[0, 0.08, 0]}>
         <WorldContent world={world} />
       </group>
     </group>

@@ -8723,6 +8723,24 @@ button:disabled:focus-visible {
   pointer-events: none;
 }
 
+/* Cinematic vignette over the canvas to focus the centred world. */
+.lab3d-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(122% 80% at 50% 42%, transparent 50%, rgb(8 5 3 / 0.58) 100%),
+    linear-gradient(180deg, rgb(10 7 4 / 0.45) 0%, transparent 20% 58%, rgb(10 7 4 / 0.55) 100%);
+}
+
+.lab3d-top {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  pointer-events: none;
+}
+
 .lab3d-topbar {
   display: flex;
   align-items: center;
@@ -8781,12 +8799,15 @@ button:disabled:focus-visible {
 
 .lab3d-headline {
   margin: 0;
-  color: #fdf6e7;
+  align-self: center;
+  max-width: 22rem;
+  color: #fef3dd;
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(1.4rem, 3.4vw, 2.1rem);
+  font-size: clamp(1.5rem, 3.6vw, 2.25rem);
   font-weight: 700;
+  line-height: 1.12;
   text-align: center;
-  text-shadow: 0 2px 12px rgb(0 0 0 / 0.5);
+  text-shadow: 0 2px 18px rgb(0 0 0 / 0.7);
 }
 
 .lab3d-panel {

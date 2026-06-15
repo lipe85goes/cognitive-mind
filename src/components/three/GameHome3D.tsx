@@ -82,6 +82,8 @@ export function GameHome3D({ worlds, onEnter }: GameHome3DProps) {
       </div>
 
       <div className="lab3d-overlay">
+        <span className="lab3d-vignette" aria-hidden />
+        <div className="lab3d-top">
         <header className="lab3d-topbar">
           <span className="lab3d-brand">
             <span className="lab3d-brandmark" aria-hidden>
@@ -93,10 +95,10 @@ export function GameHome3D({ worlds, onEnter }: GameHome3DProps) {
             </span>
           </span>
         </header>
+          <h1 className="lab3d-headline">Escolha seu mundo de treino</h1>
+        </div>
 
         <div className="lab3d-bottom">
-          <h1 className="lab3d-headline">Escolha seu mundo de treino</h1>
-
           <section className="lab3d-panel" aria-live="polite">
             <p className="lab3d-eyebrow">
               Estação {clampedIndex + 1} de {count}
