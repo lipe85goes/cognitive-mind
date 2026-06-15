@@ -244,11 +244,11 @@ export function GameHome3D({
           )}
         </section>
 
-        <div className="lab3d-world-sign" aria-hidden>
-          Escolha seu mundo de treino
-        </div>
-
         <div className="lab3d-bottom">
+          <div className="lab3d-world-sign" aria-hidden>
+            Escolha seu mundo de treino
+          </div>
+          <div className="lab3d-dock">
           <section className="lab3d-panel" aria-live="polite">
             <p className="lab3d-eyebrow">
               Estação {clampedIndex + 1} de {count}
@@ -320,6 +320,7 @@ export function GameHome3D({
               <Play className="h-6 w-6 fill-current" aria-hidden />
               Entrar
             </button>
+          </div>
           </div>
         </div>
       </div>

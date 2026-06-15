@@ -9973,3 +9973,89 @@ button:disabled:focus-visible {
     min-height: 3.55rem;
   }
 }
+
+/* ===== Composition pass v2: one cohesive bottom "selector dock" =====
+   Groups the wood plaque (now a caption), the selected-world panel and the
+   controls into a single centred dock at the bottom, so the HUD reads as one
+   game menu instead of pieces scattered to the corners. */
+
+/* The overlay grid inherited justify-content:space-between from the original
+   flex layout, which (with one implicit column) shrank every row to ~878px and
+   pinned it left. Force a single full-width column so the topbar reaches the
+   right edge and the hero/bottom rows can place their own content. */
+.lab3d-overlay {
+  grid-template-columns: 1fr;
+  justify-content: stretch;
+}
+
+.lab3d-bottom {
+  align-self: end;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7rem;
+  width: 100%;
+  pointer-events: none;
+}
+
+/* Plaque is no longer a floating mid-screen sign — it captions the dock. */
+.lab3d-world-sign {
+  position: static;
+  left: auto;
+  top: auto;
+  transform: none;
+  min-width: 0;
+  width: auto;
+  max-width: min(100%, 30rem);
+  padding: 0.46rem 1.5rem 0.52rem;
+  font-size: clamp(1.02rem, 1.5vw, 1.38rem);
+}
+
+.lab3d-dock {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 0.9rem;
+  width: min(100%, 60rem);
+  pointer-events: none;
+}
+
+.lab3d-panel {
+  flex: 1 1 auto;
+  max-width: 32rem;
+  text-align: left;
+}
+
+.lab3d-actions {
+  flex: 0 0 auto;
+  align-content: end;
+}
+
+/* Tame the hero headline so it owns a clean left column without sprawling
+   into the selected world. */
+.lab3d-headline {
+  max-width: 12ch;
+  font-size: clamp(2.4rem, 3.8vw, 3.9rem);
+}
+
+@media (max-width: 900px) {
+  /* On small screens the dock stacks: caption, panel, then controls + Entrar. */
+  .lab3d-dock {
+    flex-direction: column;
+    width: 100%;
+    gap: 0.55rem;
+  }
+
+  .lab3d-panel {
+    max-width: 100%;
+    text-align: center;
+  }
+
+  .lab3d-world-sign {
+    max-width: 100%;
+  }
+
+  .lab3d-headline {
+    max-width: 14ch;
+  }
+}
