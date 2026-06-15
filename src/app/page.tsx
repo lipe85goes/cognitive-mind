@@ -1,12 +1,14 @@
 "use client";
 
-import { useCallback, useEffect, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import { useReducedMotion } from "motion/react";
-import { GamifiedDashboard } from "@/components/GamifiedDashboard";
 import { GameScreen } from "@/components/GameScreen";
 import { RewardResultModal } from "@/components/RewardResultModal";
 import { WorldEntryTransition } from "@/components/WorldEntryTransition";
+import { GameHome3D, type World3DEntry } from "@/components/three/GameHome3D";
 import { ACTIVITIES } from "@/data/activities";
+import { getWorldMeta } from "@/data/worlds";
+import { PLAYABLE_STAGE_IDS } from "@/engine/stage-progress";
 import { getRecentResults, saveGameResult } from "@/engine/storage";
 import type {
   Activity,
@@ -16,7 +18,7 @@ import type {
 } from "@/types/game";
 
 /**
- * Main dashboard: activity grid, game routing, and recent results.
+ * Production home: 3D world selector, game routing, and recent results.
  * Game logic stays inside each game component under src/games/.
  */
 export default function HomePage() {
@@ -33,6 +35,26 @@ export default function HomePage() {
   const [gameSession, setGameSession] = useState(0);
 
   const reducedMotion = useReducedMotion();
+
+  const worlds = useMemo<World3DEntry[]>(
+    () =>
+      PLAYABLE_STAGE_IDS.map((id) => {
+        const activity = ACTIVITIES.find(
+          (item) => item.gameId === id && item.status === "available",
+        );
+        if (!activity?.gameId) return null;
+        const meta = getWorldMeta(activity.gameId);
+        return {
+          activity,
+          gameId: activity.gameId,
+          world: meta.world,
+          name: meta.name,
+          skill: meta.skill,
+          purpose: meta.purpose,
+        };
+      }).filter((entry): entry is World3DEntry => Boolean(entry)),
+    [],
+  );
 
   const refreshResults = useCallback(() => {
     const nextResults = getRecentResults();
@@ -124,14 +146,14 @@ export default function HomePage() {
     );
   } else {
     content = (
-      <main className="w-full min-w-0 flex-1 overflow-x-hidden">
-        <GamifiedDashboard
-          activities={ACTIVITIES}
+      <main className="lab3d-main">
+        <GameHome3D
+          worlds={worlds}
           recentResults={recentResults}
           selectedGameId={selectedDashboardGameId}
           statusMessage={dashboardNotice}
           onSelectedGameIdChange={setSelectedDashboardGameId}
-          onSelectActivity={openActivity}
+          onEnter={openActivity}
         />
       </main>
     );

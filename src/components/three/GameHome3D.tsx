@@ -1,11 +1,22 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useReducedMotion } from "motion/react";
-import { Brain, ChevronLeft, ChevronRight, Play } from "lucide-react";
+import {
+  Brain,
+  CalendarDays,
+  ChevronLeft,
+  ChevronRight,
+  Flame,
+  Play,
+  Settings,
+  Sparkles,
+  Star,
+} from "lucide-react";
 import type { WorldKey } from "@/data/worlds";
-import type { Activity, GameId } from "@/types/game";
+import { formatPlayedAt } from "@/engine/storage";
+import type { Activity, GameId, GameResult } from "@/types/game";
 
 export interface World3DEntry {
   activity: Activity;
@@ -14,6 +25,15 @@ export interface World3DEntry {
   name: string;
   skill: string;
   purpose: string;
+}
+
+interface GameHome3DProps {
+  worlds: World3DEntry[];
+  recentResults?: GameResult[];
+  selectedGameId?: GameId | null;
+  statusMessage?: string | null;
+  onSelectedGameIdChange?: (gameId: GameId) => void;
+  onEnter: (activity: Activity) => void;
 }
 
 /** WebGL is client-only: load the scene after mount with a calm fallback. */
@@ -25,31 +45,95 @@ const WorldSelectorScene = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="lab3d-scene-loading">Preparando o mundo 3D…</div>
+      <div className="lab3d-scene-loading">Preparando o mundo 3D...</div>
     ),
   },
 );
 
-interface GameHome3DProps {
-  worlds: World3DEntry[];
-  onEnter: (activity: Activity) => void;
+function countFocusDays(results: GameResult[]) {
+  return new Set(
+    results.map((result) => new Date(result.playedAt).toDateString()),
+  ).size;
+}
+
+function getSuggestedWorld(
+  worlds: World3DEntry[],
+  recentResults: GameResult[],
+): World3DEntry | undefined {
+  const first = worlds[0];
+  const lastGameId = recentResults[0]?.gameId;
+  if (!first || !lastGameId) return first;
+
+  const lastWorld = worlds.find((world) => world.gameId === lastGameId);
+  const playedIds = new Set(recentResults.map((result) => result.gameId));
+  const freshDifferentSkill = worlds.find(
+    (world) =>
+      world.gameId !== lastGameId &&
+      world.skill !== lastWorld?.skill &&
+      !playedIds.has(world.gameId),
+  );
+  if (freshDifferentSkill) return freshDifferentSkill;
+
+  const differentSkill = worlds.find(
+    (world) => world.gameId !== lastGameId && world.skill !== lastWorld?.skill,
+  );
+  if (differentSkill) return differentSkill;
+
+  const lastIndex = worlds.findIndex((world) => world.gameId === lastGameId);
+  return worlds[(lastIndex + 1) % worlds.length] ?? first;
 }
 
 /**
- * 3D game-menu home (prototype): a real WebGL world selector with an HTML
- * overlay for title, the selected world's details and the Entrar action.
+ * Production 3D game-menu home: real WebGL world selector with an accessible
+ * HTML HUD for navigation, continue journey and the Entrar action.
  */
-export function GameHome3D({ worlds, onEnter }: GameHome3DProps) {
+export function GameHome3D({
+  worlds,
+  recentResults = [],
+  selectedGameId,
+  statusMessage,
+  onSelectedGameIdChange,
+  onEnter,
+}: GameHome3DProps) {
   const reducedMotion = Boolean(useReducedMotion());
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const controlledIndex = selectedGameId
+    ? worlds.findIndex((world) => world.gameId === selectedGameId)
+    : -1;
+  const initialIndex = Math.max(
+    worlds.findIndex((world) => world.gameId === selectedGameId),
+    0,
+  );
+  const [internalSelectedIndex, setInternalSelectedIndex] =
+    useState(initialIndex);
   const count = worlds.length;
+  const selectedIndex =
+    controlledIndex >= 0 ? controlledIndex : internalSelectedIndex;
   const clampedIndex = Math.min(selectedIndex, Math.max(count - 1, 0));
   const selected = worlds[clampedIndex];
+  const lastResult = recentResults[0];
+  const continueWorld =
+    (lastResult
+      ? worlds.find((world) => world.gameId === lastResult.gameId)
+      : undefined) ?? worlds[0];
+  const suggestedWorld = useMemo(
+    () => getSuggestedWorld(worlds, recentResults),
+    [worlds, recentResults],
+  );
+  const focusDays = countFocusDays(recentResults);
+  const completedCount = recentResults.filter((result) =>
+    Boolean(result.details?.completed ?? result.details?.won ?? result.score > 0),
+  ).length;
 
   const select = useCallback(
-    (index: number) =>
-      setSelectedIndex(Math.min(Math.max(index, 0), Math.max(count - 1, 0))),
-    [count],
+    (index: number) => {
+      const next = Math.min(Math.max(index, 0), Math.max(count - 1, 0));
+      setInternalSelectedIndex(next);
+      const nextGameId = worlds[next]?.gameId;
+      if (nextGameId) {
+        onSelectedGameIdChange?.(nextGameId);
+      }
+    },
+    [count, onSelectedGameIdChange, worlds],
   );
 
   const handleControlsKeyDown = (event: React.KeyboardEvent) => {
@@ -68,6 +152,14 @@ export function GameHome3D({ worlds, onEnter }: GameHome3DProps) {
     }
   };
 
+  const selectSuggestedWorld = () => {
+    if (!suggestedWorld) return;
+    const next = worlds.findIndex(
+      (world) => world.gameId === suggestedWorld.gameId,
+    );
+    select(Math.max(next, 0));
+  };
+
   if (!selected) return null;
 
   return (
@@ -83,7 +175,7 @@ export function GameHome3D({ worlds, onEnter }: GameHome3DProps) {
 
       <div className="lab3d-overlay">
         <span className="lab3d-vignette" aria-hidden />
-        <div className="lab3d-top">
+
         <header className="lab3d-topbar">
           <span className="lab3d-brand">
             <span className="lab3d-brandmark" aria-hidden>
@@ -91,11 +183,69 @@ export function GameHome3D({ worlds, onEnter }: GameHome3DProps) {
             </span>
             <span className="lab3d-brand-text">
               <strong>MindFlow</strong>
-              <em>Protótipo 3D · seleção de mundos</em>
+              <em>Jornada cognitiva com calma</em>
             </span>
           </span>
+
+          <span className="lab3d-hud-tokens" aria-label="Resumo da jornada">
+            <span className="lab3d-hud-token">
+              <Star className="h-5 w-5" aria-hidden />
+              <strong>{completedCount}</strong>
+              <em>Conquistas</em>
+            </span>
+            <span className="lab3d-hud-token">
+              <Flame className="h-5 w-5" aria-hidden />
+              <strong>{focusDays}</strong>
+              <em>Dias de foco</em>
+            </span>
+            <span className="lab3d-profile-token">
+              <span>N</span>
+              <em>Explore com calma</em>
+            </span>
+            <button
+              type="button"
+              className="lab3d-settings"
+              aria-label="Configurações"
+            >
+              <Settings className="h-5 w-5" aria-hidden />
+            </button>
+          </span>
         </header>
-          <h1 className="lab3d-headline">Escolha seu mundo de treino</h1>
+
+        <section className="lab3d-hero-copy" aria-labelledby="home-3d-title">
+          <p className="lab3d-kicker">
+            <Sparkles className="h-5 w-5" aria-hidden />
+            Mundo de treino 3D
+          </p>
+          <h1 id="home-3d-title" className="lab3d-headline">
+            Sua mente é seu maior superpoder.
+          </h1>
+          <p className="lab3d-subtitle">
+            Treine com calma. Avance no seu ritmo.
+          </p>
+          <button
+            type="button"
+            className="lab3d-continue"
+            onClick={() => continueWorld && onEnter(continueWorld.activity)}
+            disabled={!continueWorld}
+          >
+            <Play className="h-7 w-7 fill-current" aria-hidden />
+            {lastResult ? "Continuar jornada" : "Começar jornada"}
+          </button>
+          <p className="lab3d-continue-hint">
+            {lastResult && continueWorld
+              ? `Último treino: ${continueWorld.name} · ${formatPlayedAt(lastResult.playedAt)}`
+              : "Comece pela estação Circuito de Memória."}
+          </p>
+          {statusMessage && (
+            <p className="lab3d-save-notice" role="status" aria-live="polite">
+              {statusMessage}. Jornada atualizada.
+            </p>
+          )}
+        </section>
+
+        <div className="lab3d-world-sign" aria-hidden>
+          Escolha seu mundo de treino
         </div>
 
         <div className="lab3d-bottom">
@@ -106,6 +256,16 @@ export function GameHome3D({ worlds, onEnter }: GameHome3DProps) {
             <h2 className="lab3d-world-name">{selected.name}</h2>
             <p className="lab3d-world-desc">{selected.purpose}</p>
             <p className="lab3d-world-skill">{selected.skill}</p>
+            {suggestedWorld && (
+              <button
+                type="button"
+                className="lab3d-suggestion"
+                onClick={selectSuggestedWorld}
+              >
+                <CalendarDays className="h-4 w-4" aria-hidden />
+                Sugestão: {suggestedWorld.name}
+              </button>
+            )}
           </section>
 
           <div className="lab3d-actions">
@@ -133,7 +293,9 @@ export function GameHome3D({ worlds, onEnter }: GameHome3DProps) {
                     aria-selected={index === clampedIndex}
                     aria-label={entry.name}
                     tabIndex={index === clampedIndex ? 0 : -1}
-                    className={`lab3d-dot ${index === clampedIndex ? "is-active" : ""}`}
+                    className={`lab3d-dot ${
+                      index === clampedIndex ? "is-active" : ""
+                    }`}
                     onClick={() => select(index)}
                   />
                 ))}

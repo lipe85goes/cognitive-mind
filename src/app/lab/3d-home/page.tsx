@@ -15,9 +15,9 @@ import type { Activity, GameId, GameResult } from "@/types/game";
 type View = "home" | "game" | "result";
 
 /**
- * Isolated 3D-home prototype. It reuses the real game flow (GameScreen, reward
+ * Isolated 3D-home lab route. It reuses the real game flow (GameScreen, reward
  * modal, storage, WorldEntryTransition) so "Entrar" plays the actual games,
- * while the production home at "/" stays untouched.
+ * while production "/" can evolve independently.
  */
 export default function Lab3DHomePage() {
   const reducedMotion = useReducedMotion();

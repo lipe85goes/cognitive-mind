@@ -12,7 +12,7 @@ import { LogicWorld3D } from "@/components/three/worlds/LogicWorld3D";
 import { GardenWorld3D } from "@/components/three/worlds/GardenWorld3D";
 import type { WorldKey } from "@/data/worlds";
 
-const SPACING = 2.5;
+const SPACING = 2.42;
 
 /**
  * The interchangeable model for a world. Today these are procedural primitives;
@@ -72,10 +72,10 @@ export function WorldStage3D({
     const lambda = 5;
 
     const targetX = offset * SPACING;
-    const targetZ = isSelected ? 0.55 : -0.55 - dist * 0.18;
-    const targetY = isSelected ? 0.18 : -0.05;
-    const targetScale = isSelected ? 1.14 : 0.78;
-    const targetRotY = isSelected ? 0 : -offset * 0.24;
+    const targetZ = isSelected ? 0.7 : -0.7 - dist * 0.2;
+    const targetY = isSelected ? 0.2 : -0.06;
+    const targetScale = isSelected ? 1.24 : 0.72;
+    const targetRotY = isSelected ? 0 : -offset * 0.28;
 
     outer.position.x = MathUtils.damp(outer.position.x, targetX, lambda, delta);
     outer.position.y = MathUtils.damp(outer.position.y, targetY, lambda, delta);
@@ -197,7 +197,7 @@ export function WorldStage3D({
       </mesh>
 
       {/* The world model */}
-      <group ref={innerRef} position={[0, 0.08, 0]}>
+      <group ref={innerRef} position={[0, 0.08, 0]} scale={1.08}>
         <WorldContent world={world} />
       </group>
     </group>

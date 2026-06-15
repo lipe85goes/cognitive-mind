@@ -1,7 +1,7 @@
 "use client";
 
 import { Canvas, useFrame } from "@react-three/fiber";
-import { RoundedBox } from "@react-three/drei";
+import { ContactShadows, RoundedBox } from "@react-three/drei";
 import { MathUtils } from "three";
 import { WorldStage3D } from "@/components/three/WorldStage3D";
 import { WORLD_3D_PALETTE } from "@/components/three/world-palette";
@@ -25,9 +25,9 @@ function CameraRig({ reducedMotion }: { reducedMotion: boolean }) {
     const portrait = size.width / size.height < 0.85;
 
     const baseX = 0;
-    const baseY = portrait ? 2.55 : 2.15;
-    const baseZ = portrait ? 6.9 : 5.7;
-    const targetFov = portrait ? 47 : 39;
+    const baseY = portrait ? 2.45 : 2.05;
+    const baseZ = portrait ? 6.65 : 5.35;
+    const targetFov = portrait ? 46 : 38;
 
     const targetX = reducedMotion ? baseX : baseX + pointer.x * 0.55;
     const targetY = reducedMotion ? baseY : baseY + pointer.y * 0.28;
@@ -43,7 +43,7 @@ function CameraRig({ reducedMotion }: { reducedMotion: boolean }) {
         camera.updateProjectionMatrix();
       }
     }
-    camera.lookAt(0, 0.35, 0);
+    camera.lookAt(0, 0.3, 0);
   });
 
   return null;
@@ -66,20 +66,20 @@ export function WorldSelectorScene({
     <Canvas
       shadows
       dpr={[1, 1.75]}
-      camera={{ position: [0, 2.15, 5.7], fov: 39 }}
-      gl={{ antialias: true }}
+      camera={{ position: [0, 2.05, 5.35], fov: 38 }}
+      gl={{ antialias: true, powerPreference: "high-performance" }}
     >
       {/* Cozy warm room: deep background + fog so edges fall into shadow */}
       <color attach="background" args={["#1a120c"]} />
       <fog attach="fog" args={["#1a120c", 7.5, 16]} />
 
       {/* Lighting: warm key (shadowed) + cool fill + soft hemisphere */}
-      <hemisphereLight args={["#ffe9c8", "#241a12", 0.45]} />
-      <ambientLight intensity={0.22} />
+      <hemisphereLight args={["#fff3d7", "#21160f", 0.42]} />
+      <ambientLight intensity={0.18} />
       <directionalLight
         castShadow
         position={[5, 8, 5]}
-        intensity={2.1}
+        intensity={2.25}
         color="#fff0d4"
         shadow-mapSize={[1024, 1024]}
         shadow-radius={5}
@@ -91,18 +91,18 @@ export function WorldSelectorScene({
         shadow-camera-near={1}
         shadow-camera-far={28}
       />
-      <directionalLight position={[-5, 3.5, -2]} intensity={0.5} color="#a8c4ff" />
+      <directionalLight position={[-5, 3.5, -2]} intensity={0.42} color="#9fb8ff" />
       {/* Warm spotlight pooling on the centred world */}
       <spotLight
         position={[0, 6.5, 3.2]}
         angle={0.55}
         penumbra={0.9}
-        intensity={1.5}
+        intensity={1.75}
         color="#ffdfae"
         distance={16}
       />
       {/* Selected-world coloured accent glow (centre, lit from within) */}
-      <pointLight position={[0, 1.0, 1.3]} intensity={0.9} distance={6} color={accent} />
+      <pointLight position={[0, 1.05, 1.15]} intensity={1.1} distance={6.2} color={accent} />
 
       {/* Ground that fades into the dark room */}
       <mesh receiveShadow rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.46, 0]}>
@@ -130,6 +130,19 @@ export function WorldSelectorScene({
       >
         <meshStandardMaterial color="#835636" roughness={0.85} />
       </RoundedBox>
+      {[-4.9, -2.5, 0, 2.5, 4.9].map((x) => (
+        <mesh key={x} position={[x, -0.29, 2.55]} castShadow receiveShadow>
+          <cylinderGeometry args={[0.08, 0.08, 0.12, 18]} />
+          <meshStandardMaterial color="#b8874f" roughness={0.46} metalness={0.32} />
+        </mesh>
+      ))}
+      <ContactShadows
+        position={[0, -0.34, 0.1]}
+        opacity={0.45}
+        scale={10}
+        blur={2.5}
+        far={4.5}
+      />
 
       {worlds.map((world, index) => (
         <WorldStage3D
