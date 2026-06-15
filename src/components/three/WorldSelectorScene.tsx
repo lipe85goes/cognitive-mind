@@ -65,55 +65,107 @@ function TabletopWorlds({
 
   return (
     <group position={[stageX, stageY, 0.05]} scale={stageScale}>
-      {/* Round carved wooden tabletop: the worlds sit on one premium board.
+      {/* ===== Premium round wooden tabletop =====
           A wide cylinder scaled in X/Z reads as a circular board in
-          perspective while staying wide enough for the carousel and shallow
-          enough (in Z) to clear the camera. The surface stays at the same
-          Y as before, so the per-world glow disc/halo are untouched (no
-          z-fighting). */}
-      <mesh position={[0, -0.66, 0]} scale={[5.95, 1, 3.35]} castShadow receiveShadow>
-        <cylinderGeometry args={[1, 1.06, 0.5, 72]} />
-        <meshStandardMaterial color="#6b4327" roughness={0.8} metalness={0.06} />
+          perspective. A dark carved side gives real thickness, a lighter
+          inset top is the play surface, and a brass band rims the stepped
+          edge. The play-surface Y and the worlds are unchanged, so the
+          per-world glow disc/halo are never hidden and never z-fight. */}
+      {/* darker carved side — physical board thickness */}
+      <mesh position={[0, -0.82, 0]} scale={[5.95, 1, 3.35]} castShadow receiveShadow>
+        <cylinderGeometry args={[1, 1.04, 0.8, 80]} />
+        <meshStandardMaterial color="#4f2f1b" roughness={0.85} metalness={0.05} />
       </mesh>
-      {/* lighter inlay surface */}
+      {/* lighter inset play surface (kept at the original Y level) */}
       <mesh position={[0, -0.4, 0]} scale={[5.5, 1, 3.0]} receiveShadow>
-        <cylinderGeometry args={[1, 1.02, 0.16, 72]} />
-        <meshStandardMaterial color="#875839" roughness={0.82} />
+        <cylinderGeometry args={[1, 1.02, 0.16, 80]} />
+        <meshStandardMaterial color="#8c5d3a" roughness={0.8} />
       </mesh>
-      {/* brass band around the board edge */}
-      <mesh
-        rotation={[-Math.PI / 2, 0, 0]}
-        position={[0, -0.35, 0]}
-        scale={[5.74, 3.16, 1]}
-      >
-        <torusGeometry args={[1, 0.013, 18, 120]} />
+      {/* brass band rimming the stepped edge */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.41, 0]} scale={[5.78, 3.2, 1]}>
+        <torusGeometry args={[1, 0.022, 22, 150]} />
         <meshStandardMaterial
-          color="#cfa14e"
-          roughness={0.32}
-          metalness={0.9}
-          envMapIntensity={1.5}
+          color="#d9ad58"
+          roughness={0.28}
+          metalness={0.94}
+          envMapIntensity={1.7}
         />
       </mesh>
+      {/* thin inner brass keyline just inside the rim */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.318, 0]} scale={[5.34, 2.9, 1]}>
+        <torusGeometry args={[1, 0.006, 12, 150]} />
+        <meshStandardMaterial color="#c9a049" roughness={0.34} metalness={0.9} />
+      </mesh>
       {/* concentric carved grooves on the surface (flush, decorative) */}
-      {[0.55, 0.8].map((k) => (
+      {[0.46, 0.66, 0.85].map((k) => (
         <mesh
           key={k}
           rotation={[-Math.PI / 2, 0, 0]}
           position={[0, -0.314, 0]}
           scale={[5.5 * k, 3.0 * k, 1]}
         >
-          <torusGeometry args={[1, 0.0045, 8, 120]} />
-          <meshStandardMaterial color="#5e3a23" roughness={0.85} />
+          <torusGeometry args={[1, 0.0042, 8, 150]} />
+          <meshStandardMaterial color="#5e3a23" roughness={0.86} />
         </mesh>
       ))}
+      {/* inner brass stage ring framing the selected world's resting spot
+          (radius 1.5 sits well outside the per-world glow disc, so it never
+          occludes the glow) */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.305, 0.45]}>
+        <torusGeometry args={[1.5, 0.024, 16, 110]} />
+        <meshStandardMaterial
+          color="#caa14d"
+          roughness={0.3}
+          metalness={0.92}
+          envMapIntensity={1.4}
+        />
+      </mesh>
+      {/* tighter, darker contact shadow grounds the worlds on the board */}
       <ContactShadows
-        position={[0, -0.33, 0.1]}
-        opacity={0.6}
+        position={[0, -0.31, 0.12]}
+        opacity={0.74}
         scale={13}
-        blur={2.8}
+        blur={2.4}
         far={5}
-        color="#160b04"
+        color="#140a03"
       />
+      {/* warm pool of light on the centred (selected) world; lives inside the
+          stage group so it always follows the selection on every viewport */}
+      <pointLight
+        position={[0, 1.55, 0.95]}
+        intensity={0.85}
+        distance={3.8}
+        decay={2}
+        color="#ffd9a0"
+      />
+
+      {/* small carved tabletop props (a stack of wooden tokens topped with a
+          brass piece) tucked into the empty foreground corners — kept well
+          clear of the carousel worlds so they never clip the figurines */}
+      {[-1, 1].map((side) => (
+        <group key={side} position={[side * 3.15, -0.29, 1.95]}>
+          {[0, 1, 2].map((i) => (
+            <mesh
+              key={i}
+              position={[0, i * 0.05, i * 0.014]}
+              rotation={[0, side * 0.4 + i * 0.22, 0]}
+              castShadow
+              receiveShadow
+            >
+              <cylinderGeometry args={[0.16 - i * 0.014, 0.17 - i * 0.014, 0.05, 24]} />
+              <meshStandardMaterial
+                color={i === 1 ? "#8c5d3a" : "#5e3a23"}
+                roughness={0.8}
+                metalness={0.05}
+              />
+            </mesh>
+          ))}
+          <mesh position={[0, 0.185, 0]} castShadow>
+            <torusGeometry args={[0.07, 0.02, 12, 30]} />
+            <meshStandardMaterial color="#caa14d" roughness={0.32} metalness={0.9} />
+          </mesh>
+        </group>
+      ))}
 
       {worlds.map((world, index) => (
         <WorldStage3D
@@ -212,7 +264,7 @@ export function WorldSelectorScene({
 
       {/* Ground that fades into the dark room (kept deep so the round board
           reads as the lit focus rather than a flat brown wall) */}
-      <mesh receiveShadow rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.46, 0]}>
+      <mesh receiveShadow rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.62, 0]}>
         <planeGeometry args={[46, 30]} />
         <meshStandardMaterial color="#341d0f" roughness={0.96} metalness={0.03} />
       </mesh>
