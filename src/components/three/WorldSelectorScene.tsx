@@ -1,7 +1,12 @@
 "use client";
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { ContactShadows, RoundedBox } from "@react-three/drei";
+import {
+  ContactShadows,
+  Environment,
+  Lightformer,
+  RoundedBox,
+} from "@react-three/drei";
 import { MathUtils } from "three";
 import { WorldStage3D } from "@/components/three/WorldStage3D";
 import { WORLD_3D_PALETTE } from "@/components/three/world-palette";
@@ -99,10 +104,11 @@ function TabletopWorlds({
       ))}
       <ContactShadows
         position={[0, -0.34, 0.1]}
-        opacity={0.52}
+        opacity={0.62}
         scale={10}
-        blur={2.25}
+        blur={2.6}
         far={4.8}
+        color="#1a0e06"
       />
 
       {worlds.map((world, index) => (
@@ -143,13 +149,37 @@ export function WorldSelectorScene({
       <color attach="background" args={["#24160e"]} />
       <fog attach="fog" args={["#24160e", 8.5, 18]} />
 
+      {/* Image-based lighting from procedural light panels (network-free) so
+          metal/ceramic/glass materials gain real reflections. Baked once. */}
+      <Environment frames={1} resolution={256}>
+        <Lightformer
+          intensity={2.2}
+          color="#fff0d4"
+          position={[0, 4, 3]}
+          scale={[8, 6, 1]}
+        />
+        <Lightformer
+          intensity={0.8}
+          color="#9fb8ff"
+          position={[-5, 2, -3]}
+          scale={[5, 5, 1]}
+        />
+        <Lightformer
+          form="ring"
+          intensity={0.7}
+          color={accent}
+          position={[2.5, 1.5, 2]}
+          scale={[3, 3, 1]}
+        />
+      </Environment>
+
       {/* Lighting: warm key (shadowed) + cool fill + soft hemisphere */}
-      <hemisphereLight args={["#fff3d7", "#2d1a0f", 0.5]} />
-      <ambientLight intensity={0.23} />
+      <hemisphereLight args={["#fff3d7", "#2d1a0f", 0.4]} />
+      <ambientLight intensity={0.16} />
       <directionalLight
         castShadow
         position={[5, 8, 5]}
-        intensity={2.45}
+        intensity={2.3}
         color="#fff0d4"
         shadow-mapSize={[1024, 1024]}
         shadow-radius={5}
@@ -161,7 +191,9 @@ export function WorldSelectorScene({
         shadow-camera-near={1}
         shadow-camera-far={28}
       />
-      <directionalLight position={[-5, 3.5, -2]} intensity={0.5} color="#9fb8ff" />
+      <directionalLight position={[-5, 3.5, -2]} intensity={0.45} color="#9fb8ff" />
+      {/* Cool back rim to separate the figurines from the dark room. */}
+      <directionalLight position={[0, 4, -6]} intensity={0.9} color="#dce8ff" />
       {/* Warm spotlight pooling on the centred world */}
       <spotLight
         position={[0, 6.5, 3.2]}
