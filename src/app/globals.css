@@ -10039,23 +10039,46 @@ button:disabled:focus-visible {
 }
 
 @media (max-width: 900px) {
-  /* On small screens the dock stacks: caption, panel, then controls + Entrar. */
+  /* Narrow viewport: compact the hero so the selected 3D world owns the
+     centre of the screen. Headline shrinks and tightens; the subtitle is
+     dropped on phones (the headline + CTA carry the message) so the world
+     band can grow. */
+  .lab3d-hero-copy {
+    width: min(100%, 22rem);
+    margin-top: clamp(0.5rem, 2vh, 1.2rem);
+  }
+
+  .lab3d-headline {
+    max-width: 20ch;
+    font-size: clamp(1.55rem, 6.8vw, 2.05rem);
+    line-height: 1;
+  }
+
+  .lab3d-subtitle {
+    display: none;
+  }
+
+  .lab3d-continue {
+    margin-top: 0.85rem;
+    min-height: 3.4rem;
+  }
+
+  /* The dock stays compact and pinned to the bottom so it never climbs over
+     the world: caption, panel, then controls + Entrar. */
   .lab3d-dock {
     flex-direction: column;
     width: 100%;
-    gap: 0.55rem;
-  }
-
-  .lab3d-panel {
-    max-width: 100%;
-    text-align: center;
+    gap: 0.5rem;
   }
 
   .lab3d-world-sign {
     max-width: 100%;
+    padding-block: 0.4rem 0.46rem;
   }
 
-  .lab3d-headline {
-    max-width: 14ch;
+  .lab3d-panel {
+    max-width: 100%;
+    padding: 0.62rem 0.85rem;
+    text-align: center;
   }
 }

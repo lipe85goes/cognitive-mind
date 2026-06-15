@@ -30,11 +30,11 @@ function CameraRig({ reducedMotion }: { reducedMotion: boolean }) {
     const portrait = size.width / size.height < 0.85;
 
     const baseX = portrait ? 0 : 0.28;
-    const baseY = portrait ? 2.62 : 2.2;
-    const baseZ = portrait ? 7.05 : 5.85;
-    const targetFov = portrait ? 43 : 36;
+    const baseY = portrait ? 2.4 : 2.2;
+    const baseZ = portrait ? 6.3 : 5.85;
+    const targetFov = portrait ? 42 : 36;
     const lookX = portrait ? 0 : 0.55;
-    const lookY = portrait ? 0.44 : 0.58;
+    const lookY = portrait ? 0.4 : 0.58;
 
     const targetX = reducedMotion ? baseX : baseX + pointer.x * 0.32;
     const targetY = reducedMotion ? baseY : baseY + pointer.y * 0.16;
@@ -65,8 +65,8 @@ function TabletopWorlds({
   const { size } = useThree();
   const portrait = size.width / size.height < 0.85;
   const stageX = portrait ? 0 : 1.08;
-  const stageY = portrait ? -0.28 : -0.22;
-  const stageScale = portrait ? 0.86 : 1.05;
+  const stageY = portrait ? -0.1 : -0.22;
+  const stageScale = portrait ? 0.98 : 1.05;
 
   return (
     <group position={[stageX, stageY, 0.05]} scale={stageScale}>
