@@ -54,6 +54,14 @@ export function CommandWorld3D({ palette }: { palette: World3DPalette }) {
             />
           </mesh>
         ))}
+        <mesh position={[0.26, 0.09, 0.372]} rotation={[Math.PI / 2, 0, 0]}>
+          <ringGeometry args={[0.055, 0.07, 24]} />
+          <meshStandardMaterial color="#d8f8b8" emissive="#84cc16" emissiveIntensity={0.72} toneMapped={false} />
+        </mesh>
+        <mesh position={[-0.26, 0.09, 0.372]}>
+          <boxGeometry args={[0.01, 0.18, 0.01]} />
+          <meshStandardMaterial color="#bbf7d0" emissive="#34d399" emissiveIntensity={0.7} toneMapped={false} />
+        </mesh>
       </group>
 
       <group position={[0, 0.25, 0.3]}>
@@ -117,6 +125,29 @@ export function CommandWorld3D({ palette }: { palette: World3DPalette }) {
           <meshStandardMaterial color={palette.accents[index % palette.accents.length]} roughness={0.38} metalness={0.4} />
         </mesh>
       ))}
+
+      {[
+        [-0.56, -0.25],
+        [0.56, -0.25],
+        [-0.52, 0.32],
+        [0.52, 0.32],
+      ].map(([x, z], index) => (
+        <mesh key={`command-rivet-${index}`} castShadow position={[x, 0.2, z]}>
+          <cylinderGeometry args={[0.03, 0.03, 0.018, 14]} />
+          <meshStandardMaterial color="#e7c16e" roughness={0.24} metalness={0.86} />
+        </mesh>
+      ))}
+
+      <group position={[-0.44, 0.31, 0.04]} rotation={[Math.PI / 2, 0, 0]}>
+        <mesh castShadow>
+          <torusGeometry args={[0.085, 0.014, 10, 30]} />
+          <meshStandardMaterial color="#d6bc75" roughness={0.26} metalness={0.8} />
+        </mesh>
+        <mesh position={[0, 0, 0.008]}>
+          <boxGeometry args={[0.012, 0.09, 0.012]} />
+          <meshStandardMaterial color="#ef4444" emissive="#ef4444" emissiveIntensity={0.38} />
+        </mesh>
+      </group>
 
       <group position={[0.49, 0.17, 0.42]}>
         <mesh castShadow>

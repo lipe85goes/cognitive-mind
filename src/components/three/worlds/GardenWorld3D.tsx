@@ -8,6 +8,13 @@ export function GardenWorld3D({ palette }: { palette: World3DPalette }) {
     { x: 0.02, z: -0.06, scale: 1.05 },
     { x: 0.42, z: 0.18, scale: 0.72 },
   ];
+  const pebbles: [number, number, number][] = [
+    [-0.22, 0.38, 0.025],
+    [0.28, 0.38, 0.02],
+    [-0.5, -0.05, 0.018],
+    [0.5, -0.08, 0.022],
+    [0.15, -0.42, 0.018],
+  ];
 
   return (
     <group>
@@ -19,6 +26,13 @@ export function GardenWorld3D({ palette }: { palette: World3DPalette }) {
         <cylinderGeometry args={[0.58, 0.6, 0.045, 56]} />
         <meshStandardMaterial color="#2d1c10" roughness={0.98} />
       </mesh>
+
+      {pebbles.map(([x, z, size], index) => (
+        <mesh key={`pebble-${index}`} castShadow position={[x, 0.205, z]} scale={[1.35, 0.58, 1]}>
+          <sphereGeometry args={[size, 10, 8]} />
+          <meshStandardMaterial color={index % 2 ? "#9b7b55" : "#d2b48a"} roughness={0.88} />
+        </mesh>
+      ))}
 
       {pots.map((pot, index) => (
         <group key={index} position={[pot.x, 0.19, pot.z]} scale={pot.scale}>
@@ -125,6 +139,28 @@ export function GardenWorld3D({ palette }: { palette: World3DPalette }) {
           />
         </mesh>
         <pointLight position={[0, 0.18, 0]} intensity={0.32} distance={0.9} color="#fbbf24" />
+      </group>
+
+      <group position={[-0.48, 0.24, 0.0]} rotation={[0, 0.18, 0]}>
+        {[-0.12, 0, 0.12].map((x) => (
+          <mesh key={`fence-post-${x}`} castShadow position={[x, 0.09, 0]}>
+            <boxGeometry args={[0.035, 0.24, 0.035]} />
+            <meshStandardMaterial color="#8b5a31" roughness={0.72} />
+          </mesh>
+        ))}
+        <mesh castShadow position={[0, 0.14, 0]}>
+          <boxGeometry args={[0.34, 0.035, 0.035]} />
+          <meshStandardMaterial color="#a06a3f" roughness={0.68} />
+        </mesh>
+      </group>
+
+      <group position={[0.33, 0.22, -0.38]}>
+        {[0, 1, 2].map((index) => (
+          <mesh key={`seed-${index}`} position={[-0.045 + index * 0.045, 0.015 * index, 0]}>
+            <sphereGeometry args={[0.025, 10, 8]} />
+            <meshStandardMaterial color="#9a6a35" roughness={0.72} />
+          </mesh>
+        ))}
       </group>
     </group>
   );

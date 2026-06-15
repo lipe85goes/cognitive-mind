@@ -9786,3 +9786,190 @@ button:disabled:focus-visible {
     top: 50dvh;
   }
 }
+
+/* Production 3D Home composition pass: keep copy readable and stage intentional. */
+.lab3d-root {
+  height: 100dvh;
+  min-height: 43.5rem;
+}
+
+.lab3d-scene::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(48% 50% at 22% 36%, rgb(8 12 9 / 0.78), transparent 72%),
+    linear-gradient(90deg, rgb(8 11 8 / 0.64), rgb(8 11 8 / 0.26) 28%, transparent 48%);
+}
+
+.lab3d-vignette {
+  background:
+    radial-gradient(circle at 56% 48%, transparent 0 39%, rgb(0 0 0 / 0.22) 74%, rgb(0 0 0 / 0.5) 100%),
+    linear-gradient(90deg, rgb(0 0 0 / 0.56), transparent 26%, transparent 84%, rgb(0 0 0 / 0.24));
+}
+
+.lab3d-overlay {
+  height: 100%;
+  min-height: 100%;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+}
+
+.lab3d-hero-copy {
+  position: relative;
+  z-index: 5;
+  align-self: start;
+  width: min(31.5rem, 42vw);
+  margin-left: clamp(1rem, 5vw, 5.4rem);
+  margin-top: clamp(1.1rem, 4vh, 2.6rem);
+}
+
+.lab3d-hero-copy::before {
+  content: "";
+  position: absolute;
+  inset: -1rem -1.2rem -1.15rem -1.05rem;
+  z-index: -1;
+  border-radius: 2rem;
+  background:
+    radial-gradient(120% 92% at 0% 42%, rgb(6 11 8 / 0.72), rgb(6 11 8 / 0.34) 56%, transparent 76%);
+  filter: blur(0.2px);
+}
+
+.lab3d-headline {
+  max-width: 10.5ch;
+  font-size: clamp(3.15rem, 5.85vw, 6.05rem);
+}
+
+.lab3d-world-sign {
+  top: clamp(25rem, 55dvh, 34.5rem);
+  z-index: 6;
+}
+
+.lab3d-bottom {
+  position: relative;
+  z-index: 6;
+}
+
+.lab3d-panel {
+  box-shadow:
+    inset 0 0.16rem 0 rgb(255 255 255 / 0.18),
+    inset 0 -0.32rem 0 rgb(0 0 0 / 0.24),
+    0 0.75rem 0 rgb(20 10 5 / 0.62),
+    0 1.35rem 2.2rem rgb(0 0 0 / 0.45);
+}
+
+@media (max-width: 900px) {
+  .lab3d-root {
+    height: 100svh;
+    min-height: 42rem;
+  }
+
+  .lab3d-scene::before {
+    background:
+      linear-gradient(180deg, rgb(7 10 7 / 0.66), transparent 28%, transparent 68%, rgb(7 4 3 / 0.52)),
+      radial-gradient(95% 38% at 50% 23%, rgb(7 10 7 / 0.54), transparent 72%);
+  }
+
+  .lab3d-vignette {
+    background:
+      radial-gradient(circle at 50% 48%, transparent 0 36%, rgb(0 0 0 / 0.22) 76%, rgb(0 0 0 / 0.58) 100%),
+      linear-gradient(180deg, rgb(0 0 0 / 0.28), transparent 32%, transparent 72%, rgb(0 0 0 / 0.5));
+  }
+
+  .lab3d-overlay {
+    grid-template-rows: auto minmax(0, 1fr) auto;
+  }
+
+  .lab3d-hero-copy {
+    width: min(100%, 20.5rem);
+    margin-top: clamp(1.2rem, 4vh, 2.1rem);
+  }
+
+  .lab3d-hero-copy::before {
+    inset: -0.75rem -0.75rem -0.85rem;
+    border-radius: 1.5rem;
+    background: rgb(5 10 8 / 0.54);
+  }
+
+  .lab3d-headline {
+    font-size: clamp(2.25rem, 11vw, 3.2rem);
+    line-height: 0.93;
+  }
+
+  .lab3d-subtitle {
+    margin-top: 0.8rem;
+  }
+
+  .lab3d-world-sign {
+    top: 46dvh;
+    font-size: clamp(1.25rem, 6vw, 1.55rem);
+  }
+
+  .lab3d-bottom {
+    gap: 0.55rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .lab3d-root {
+    min-height: 41rem;
+  }
+
+  .lab3d-hero-copy {
+    width: min(100%, 18.5rem);
+    margin-top: 1.45rem;
+  }
+
+  .lab3d-headline {
+    font-size: 2.45rem;
+  }
+
+  .lab3d-continue {
+    margin-top: 0.85rem;
+  }
+
+  .lab3d-world-sign {
+    top: 45.5dvh;
+  }
+}
+
+@media (max-width: 900px) {
+  .lab3d-hud-token,
+  .lab3d-profile-token {
+    display: none !important;
+  }
+
+  .lab3d-continue-hint {
+    display: none !important;
+  }
+
+  .lab3d-hud-tokens {
+    flex: 0 0 auto;
+  }
+
+  .lab3d-panel {
+    padding: 0.72rem 0.8rem;
+  }
+
+  .lab3d-world-desc,
+  .lab3d-suggestion {
+    display: none !important;
+  }
+
+  .lab3d-world-name {
+    font-size: 1.62rem;
+  }
+
+  .lab3d-actions {
+    gap: 0.48rem;
+  }
+
+  .lab3d-controls {
+    padding: 0.38rem;
+  }
+
+  .lab3d-enter {
+    min-height: 3.55rem;
+  }
+}

@@ -72,9 +72,9 @@ export function WorldStage3D({
     const lambda = 5;
 
     const targetX = offset * SPACING;
-    const targetZ = isSelected ? 0.7 : -0.7 - dist * 0.2;
-    const targetY = isSelected ? 0.2 : -0.06;
-    const targetScale = isSelected ? 1.24 : 0.72;
+    const targetZ = isSelected ? 0.45 : -0.75 - dist * 0.22;
+    const targetY = isSelected ? 0.08 : -0.08;
+    const targetScale = isSelected ? 1.15 : 0.69;
     const targetRotY = isSelected ? 0 : -offset * 0.28;
 
     outer.position.x = MathUtils.damp(outer.position.x, targetX, lambda, delta);
@@ -97,7 +97,7 @@ export function WorldStage3D({
     if (haloRef.current) {
       haloRef.current.emissiveIntensity = MathUtils.damp(
         haloRef.current.emissiveIntensity,
-        isSelected ? 2.4 : 0.1,
+        isSelected ? 2.15 : 0.1,
         lambda,
         delta,
       );
@@ -105,7 +105,7 @@ export function WorldStage3D({
     if (discRef.current) {
       discRef.current.opacity = MathUtils.damp(
         discRef.current.opacity,
-        isSelected ? 0.5 : 0,
+        isSelected ? 0.42 : 0,
         lambda,
         delta,
       );
@@ -197,7 +197,7 @@ export function WorldStage3D({
       </mesh>
 
       {/* The world model */}
-      <group ref={innerRef} position={[0, 0.08, 0]} scale={1.08}>
+      <group ref={innerRef} position={[0, 0.08, 0]} scale={1.04}>
         <WorldContent world={world} />
       </group>
     </group>

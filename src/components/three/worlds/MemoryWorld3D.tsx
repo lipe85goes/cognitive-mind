@@ -114,6 +114,66 @@ export function MemoryWorld3D({ palette }: { palette: World3DPalette }) {
           <meshStandardMaterial color="#d2a75e" roughness={0.34} metalness={0.68} />
         </mesh>
       ))}
+
+      {[
+        [-0.56, -0.39],
+        [0.56, -0.39],
+        [-0.56, 0.39],
+        [0.56, 0.39],
+      ].map(([x, z], index) => (
+        <mesh key={`rivet-${index}`} castShadow position={[x, 0.34, z]}>
+          <cylinderGeometry args={[0.035, 0.035, 0.025, 16]} />
+          <meshStandardMaterial color="#f6cf7a" roughness={0.28} metalness={0.82} />
+        </mesh>
+      ))}
+
+      {[-0.24, 0, 0.24].map((x) => (
+        <RoundedBox
+          key={`slot-${x}`}
+          args={[0.16, 0.022, 0.055]}
+          radius={0.012}
+          smoothness={2}
+          position={[x, 0.345, -0.43]}
+          castShadow
+        >
+          <meshStandardMaterial
+            color="#0f172a"
+            emissive={palette.glow}
+            emissiveIntensity={0.24}
+            roughness={0.35}
+            toneMapped={false}
+          />
+        </RoundedBox>
+      ))}
+
+      {[-0.48, 0.48].map((x, index) => (
+        <mesh
+          key={`side-cable-${index}`}
+          position={[x, 0.26, 0.06]}
+          rotation={[Math.PI / 2, 0, index === 0 ? 0.35 : -0.35]}
+        >
+          <torusGeometry args={[0.19, 0.018, 8, 28, Math.PI]} />
+          <meshStandardMaterial
+            color={palette.accents[index + 1]}
+            emissive={palette.accents[index + 1]}
+            emissiveIntensity={0.42}
+            roughness={0.32}
+            metalness={0.22}
+          />
+        </mesh>
+      ))}
+
+      <group position={[0, 0.37, 0.43]} rotation={[0, 0, 0]}>
+        <RoundedBox args={[0.28, 0.035, 0.14]} radius={0.018} smoothness={3} castShadow>
+          <meshStandardMaterial color="#ead7a8" roughness={0.72} />
+        </RoundedBox>
+        {[palette.accents[0], palette.accents[1], palette.accents[2]].map((color, index) => (
+          <mesh key={`card-dot-${index}`} position={[-0.08 + index * 0.08, 0.028, 0]}>
+            <cylinderGeometry args={[0.018, 0.018, 0.012, 12]} />
+            <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.35} />
+          </mesh>
+        ))}
+      </group>
     </group>
   );
 }

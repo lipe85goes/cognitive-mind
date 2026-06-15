@@ -1,6 +1,6 @@
 "use client";
 
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { ContactShadows, RoundedBox } from "@react-three/drei";
 import { MathUtils } from "three";
 import { WorldStage3D } from "@/components/three/WorldStage3D";
@@ -24,13 +24,15 @@ function CameraRig({ reducedMotion }: { reducedMotion: boolean }) {
     const { camera, pointer, size } = state;
     const portrait = size.width / size.height < 0.85;
 
-    const baseX = 0;
-    const baseY = portrait ? 2.45 : 2.05;
-    const baseZ = portrait ? 6.65 : 5.35;
-    const targetFov = portrait ? 46 : 38;
+    const baseX = portrait ? 0 : 0.28;
+    const baseY = portrait ? 2.62 : 2.2;
+    const baseZ = portrait ? 7.05 : 5.85;
+    const targetFov = portrait ? 43 : 36;
+    const lookX = portrait ? 0 : 0.55;
+    const lookY = portrait ? 0.44 : 0.58;
 
-    const targetX = reducedMotion ? baseX : baseX + pointer.x * 0.55;
-    const targetY = reducedMotion ? baseY : baseY + pointer.y * 0.28;
+    const targetX = reducedMotion ? baseX : baseX + pointer.x * 0.32;
+    const targetY = reducedMotion ? baseY : baseY + pointer.y * 0.16;
 
     camera.position.x = MathUtils.damp(camera.position.x, targetX, 3, delta);
     camera.position.y = MathUtils.damp(camera.position.y, targetY, 3, delta);
@@ -43,10 +45,78 @@ function CameraRig({ reducedMotion }: { reducedMotion: boolean }) {
         camera.updateProjectionMatrix();
       }
     }
-    camera.lookAt(0, 0.3, 0);
+    camera.lookAt(lookX, lookY, 0);
   });
 
   return null;
+}
+
+function TabletopWorlds({
+  worlds,
+  selectedIndex,
+  reducedMotion,
+  onSelect,
+}: WorldSelectorSceneProps) {
+  const { size } = useThree();
+  const portrait = size.width / size.height < 0.85;
+  const stageX = portrait ? 0 : 1.08;
+  const stageY = portrait ? -0.28 : -0.22;
+  const stageScale = portrait ? 0.86 : 1.05;
+
+  return (
+    <group position={[stageX, stageY, 0.05]} scale={stageScale}>
+      {/* Carved wooden table tray (raised rim + lighter inlay) */}
+      <RoundedBox
+        args={[11.5, 0.5, 6.6]}
+        radius={0.16}
+        smoothness={5}
+        position={[0, -0.66, -0.1]}
+        castShadow
+        receiveShadow
+      >
+        <meshStandardMaterial color="#6b4327" roughness={0.78} metalness={0.06} />
+      </RoundedBox>
+      <RoundedBox
+        args={[10.7, 0.16, 5.8]}
+        radius={0.1}
+        smoothness={4}
+        position={[0, -0.4, -0.1]}
+        receiveShadow
+      >
+        <meshStandardMaterial color="#835636" roughness={0.85} />
+      </RoundedBox>
+      {[-4.4, -3.2, -2, -0.8, 0.4, 1.6, 2.8, 4].map((x) => (
+        <mesh key={x} position={[x, -0.305, -0.08]} castShadow receiveShadow>
+          <boxGeometry args={[0.018, 0.03, 5.25]} />
+          <meshStandardMaterial color="#9b6742" roughness={0.84} />
+        </mesh>
+      ))}
+      {[-4.9, -2.5, 0, 2.5, 4.9].map((x) => (
+        <mesh key={x} position={[x, -0.29, 2.55]} castShadow receiveShadow>
+          <cylinderGeometry args={[0.08, 0.08, 0.12, 18]} />
+          <meshStandardMaterial color="#b8874f" roughness={0.46} metalness={0.32} />
+        </mesh>
+      ))}
+      <ContactShadows
+        position={[0, -0.34, 0.1]}
+        opacity={0.52}
+        scale={10}
+        blur={2.25}
+        far={4.8}
+      />
+
+      {worlds.map((world, index) => (
+        <WorldStage3D
+          key={world}
+          world={world}
+          index={index}
+          selectedIndex={selectedIndex}
+          reducedMotion={reducedMotion}
+          onSelect={onSelect}
+        />
+      ))}
+    </group>
+  );
 }
 
 /**
@@ -70,16 +140,16 @@ export function WorldSelectorScene({
       gl={{ antialias: true, powerPreference: "high-performance" }}
     >
       {/* Cozy warm room: deep background + fog so edges fall into shadow */}
-      <color attach="background" args={["#1a120c"]} />
-      <fog attach="fog" args={["#1a120c", 7.5, 16]} />
+      <color attach="background" args={["#24160e"]} />
+      <fog attach="fog" args={["#24160e", 8.5, 18]} />
 
       {/* Lighting: warm key (shadowed) + cool fill + soft hemisphere */}
-      <hemisphereLight args={["#fff3d7", "#21160f", 0.42]} />
-      <ambientLight intensity={0.18} />
+      <hemisphereLight args={["#fff3d7", "#2d1a0f", 0.5]} />
+      <ambientLight intensity={0.23} />
       <directionalLight
         castShadow
         position={[5, 8, 5]}
-        intensity={2.25}
+        intensity={2.45}
         color="#fff0d4"
         shadow-mapSize={[1024, 1024]}
         shadow-radius={5}
@@ -91,69 +161,31 @@ export function WorldSelectorScene({
         shadow-camera-near={1}
         shadow-camera-far={28}
       />
-      <directionalLight position={[-5, 3.5, -2]} intensity={0.42} color="#9fb8ff" />
+      <directionalLight position={[-5, 3.5, -2]} intensity={0.5} color="#9fb8ff" />
       {/* Warm spotlight pooling on the centred world */}
       <spotLight
         position={[0, 6.5, 3.2]}
         angle={0.55}
         penumbra={0.9}
-        intensity={1.75}
+        intensity={1.95}
         color="#ffdfae"
         distance={16}
       />
-      {/* Selected-world coloured accent glow (centre, lit from within) */}
-      <pointLight position={[0, 1.05, 1.15]} intensity={1.1} distance={6.2} color={accent} />
+      {/* Selected-world coloured accent glow, offset toward the tabletop stage. */}
+      <pointLight position={[1.0, 0.9, 1.15]} intensity={1.22} distance={6.2} color={accent} />
 
       {/* Ground that fades into the dark room */}
       <mesh receiveShadow rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.46, 0]}>
         <planeGeometry args={[46, 30]} />
-        <meshStandardMaterial color="#3a281b" roughness={0.95} metalness={0.04} />
+        <meshStandardMaterial color="#51321e" roughness={0.94} metalness={0.04} />
       </mesh>
 
-      {/* Carved wooden table tray (raised rim + lighter inlay) */}
-      <RoundedBox
-        args={[11.5, 0.5, 6.6]}
-        radius={0.16}
-        smoothness={5}
-        position={[0, -0.66, -0.1]}
-        castShadow
-        receiveShadow
-      >
-        <meshStandardMaterial color="#6b4327" roughness={0.78} metalness={0.06} />
-      </RoundedBox>
-      <RoundedBox
-        args={[10.7, 0.16, 5.8]}
-        radius={0.1}
-        smoothness={4}
-        position={[0, -0.4, -0.1]}
-        receiveShadow
-      >
-        <meshStandardMaterial color="#835636" roughness={0.85} />
-      </RoundedBox>
-      {[-4.9, -2.5, 0, 2.5, 4.9].map((x) => (
-        <mesh key={x} position={[x, -0.29, 2.55]} castShadow receiveShadow>
-          <cylinderGeometry args={[0.08, 0.08, 0.12, 18]} />
-          <meshStandardMaterial color="#b8874f" roughness={0.46} metalness={0.32} />
-        </mesh>
-      ))}
-      <ContactShadows
-        position={[0, -0.34, 0.1]}
-        opacity={0.45}
-        scale={10}
-        blur={2.5}
-        far={4.5}
+      <TabletopWorlds
+        worlds={worlds}
+        selectedIndex={selectedIndex}
+        reducedMotion={reducedMotion}
+        onSelect={onSelect}
       />
-
-      {worlds.map((world, index) => (
-        <WorldStage3D
-          key={world}
-          world={world}
-          index={index}
-          selectedIndex={selectedIndex}
-          reducedMotion={reducedMotion}
-          onSelect={onSelect}
-        />
-      ))}
 
       <CameraRig reducedMotion={reducedMotion} />
     </Canvas>

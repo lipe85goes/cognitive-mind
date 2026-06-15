@@ -13,6 +13,7 @@ export function LogicWorld3D({ palette }: { palette: World3DPalette }) {
     [-0.55, -0.25, 0.16],
     [0.48, 0.28, 0.2],
     [0.08, 0.39, 0.12],
+    [-0.26, -0.42, 0.1],
   ];
 
   return (
@@ -76,6 +77,18 @@ export function LogicWorld3D({ palette }: { palette: World3DPalette }) {
             <ringGeometry args={[0.045, 0.065, 18]} />
             <meshStandardMaterial color="#fff7c2" emissive="#fff7c2" emissiveIntensity={0.35} toneMapped={false} />
           </mesh>
+          {index === stones.length - 1 && (
+            <group position={[0.08, stone.h / 2 + 0.14, -0.08]}>
+              <mesh castShadow>
+                <cylinderGeometry args={[0.012, 0.014, 0.22, 8]} />
+                <meshStandardMaterial color="#f8e3a0" roughness={0.36} metalness={0.42} />
+              </mesh>
+              <mesh position={[0.05, 0.07, 0]} castShadow>
+                <boxGeometry args={[0.12, 0.07, 0.012]} />
+                <meshStandardMaterial color="#facc15" emissive="#facc15" emissiveIntensity={0.42} />
+              </mesh>
+            </group>
+          )}
         </group>
       ))}
 
@@ -126,6 +139,25 @@ export function LogicWorld3D({ palette }: { palette: World3DPalette }) {
           toneMapped={false}
         />
       </mesh>
+
+      {[
+        [-0.46, 0.03],
+        [-0.1, -0.32],
+        [0.34, 0.18],
+      ].map(([x, z], index) => (
+        <group key={`logic-node-${index}`} position={[x, 0.19, z]}>
+          <mesh>
+            <sphereGeometry args={[0.045, 16, 12]} />
+            <meshStandardMaterial
+              color={palette.glow}
+              emissive={palette.glow}
+              emissiveIntensity={0.9}
+              toneMapped={false}
+            />
+          </mesh>
+          <pointLight position={[0, 0.05, 0]} intensity={0.12} distance={0.55} color={palette.glow} />
+        </group>
+      ))}
     </group>
   );
 }
