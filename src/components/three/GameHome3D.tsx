@@ -8,6 +8,7 @@ import {
   CalendarDays,
   ChevronLeft,
   ChevronRight,
+  Compass,
   Flame,
   Play,
   Settings,
@@ -164,6 +165,11 @@ export function GameHome3D({
 
   return (
     <div className="lab3d-root">
+      {/* Cozy library/workshop atmosphere behind the transparent Canvas. Pure
+          CSS gradients + an SVG ambience layer (with a webp upgrade slot), so
+          the 3D worlds composite over a warm room instead of a flat fill. */}
+      <div className="lab3d-atmosphere" aria-hidden />
+
       <div className="lab3d-scene">
         <WorldSelectorScene
           worlds={worlds.map((entry) => entry.world)}
@@ -175,6 +181,15 @@ export function GameHome3D({
 
       <div className="lab3d-overlay">
         <span className="lab3d-vignette" aria-hidden />
+
+        {/* Ornate carved sign crowning the stage (desktop top-centre; hidden on
+            mobile, where the compact caption inside the dock is used instead). */}
+        <div className="lab3d-plaque" aria-hidden>
+          <span className="lab3d-plaque-medallion" aria-hidden>
+            <Compass className="h-6 w-6" strokeWidth={2} aria-hidden />
+          </span>
+          <span className="lab3d-plaque-text">Escolha seu mundo de treino</span>
+        </div>
 
         <header className="lab3d-topbar">
           <span className="lab3d-brand">

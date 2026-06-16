@@ -3,6 +3,7 @@
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { ContactShadows, Environment, Lightformer } from "@react-three/drei";
 import { MathUtils } from "three";
+import { RoomEnvironment } from "@/components/three/RoomEnvironment";
 import { WorldStage3D } from "@/components/three/WorldStage3D";
 import { WORLD_3D_PALETTE } from "@/components/three/world-palette";
 import type { WorldKey } from "@/data/worlds";
@@ -199,11 +200,12 @@ export function WorldSelectorScene({
       shadows
       dpr={[1, 1.75]}
       camera={{ position: [0, 2.05, 5.35], fov: 38 }}
-      gl={{ antialias: true, powerPreference: "high-performance" }}
+      gl={{ antialias: true, powerPreference: "high-performance", alpha: true }}
     >
-      {/* Cozy warm room: deep background + fog so edges fall into shadow */}
-      <color attach="background" args={["#24160e"]} />
-      <fog attach="fog" args={["#24160e", 8.5, 18]} />
+      {/* Transparent canvas: the cozy library/workshop atmosphere is an HTML
+          layer behind this, so the worlds composite over a warm room. Fog
+          (matched to that room's dark warmth) still fades the far worlds. */}
+      <fog attach="fog" args={["#1a1009", 9, 19]} />
 
       {/* Image-based lighting from procedural light panels (network-free) so
           metal/ceramic/glass materials gain real reflections. Baked once. */}
@@ -268,6 +270,10 @@ export function WorldSelectorScene({
         <planeGeometry args={[46, 30]} />
         <meshStandardMaterial color="#341d0f" roughness={0.96} metalness={0.03} />
       </mesh>
+
+      {/* Real 3D cozy room behind the stage (window, lanterns, dust, warm
+          light) — parallaxes with the camera instead of faking depth in CSS. */}
+      <RoomEnvironment accent={accent} />
 
       <TabletopWorlds
         worlds={worlds}

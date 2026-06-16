@@ -1,0 +1,76 @@
+<svg viewBox="0 0 1600 1000" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Atmosfera de biblioteca aconchegante">
+  <defs>
+    <linearGradient id="room" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2a1b10"/>
+      <stop offset="0.46" stop-color="#170d07"/>
+      <stop offset="1" stop-color="#090503"/>
+    </linearGradient>
+    <radialGradient id="hearth" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#ffcf85" stop-opacity="0.95"/>
+      <stop offset="0.42" stop-color="#d98a33" stop-opacity="0.42"/>
+      <stop offset="1" stop-color="#d98a33" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="window" cx="0.5" cy="0.42" r="0.6">
+      <stop offset="0" stop-color="#5e8f5e" stop-opacity="0.8"/>
+      <stop offset="0.5" stop-color="#274e34" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#0c1812" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="vignette" cx="0.52" cy="0.4" r="0.74">
+      <stop offset="0.4" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0.74"/>
+    </radialGradient>
+    <filter id="blurL" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="26"/></filter>
+    <filter id="blurS" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="7"/></filter>
+  </defs>
+
+  <rect width="1600" height="1000" fill="url(#room)"/>
+
+  <!-- Left wall of bookshelves, very low contrast so text reads over it -->
+  <g opacity="0.55">
+    <rect x="0" y="70" width="430" height="760" fill="#1d130b"/>
+    <g fill="#2c1d10">
+      <rect x="22" y="92" width="386" height="150" rx="6"/>
+      <rect x="22" y="266" width="386" height="150" rx="6"/>
+      <rect x="22" y="440" width="386" height="150" rx="6"/>
+      <rect x="22" y="614" width="386" height="150" rx="6"/>
+    </g>
+    <g fill="#3a2614" opacity="0.85">
+      <rect x="34" y="104" width="20" height="126"/><rect x="60" y="110" width="16" height="120"/>
+      <rect x="82" y="100" width="22" height="130"/><rect x="112" y="116" width="14" height="114"/>
+      <rect x="132" y="104" width="20" height="126"/><rect x="160" y="112" width="16" height="118"/>
+      <rect x="40" y="278" width="18" height="126"/><rect x="64" y="284" width="22" height="120"/>
+      <rect x="92" y="276" width="15" height="128"/><rect x="116" y="288" width="20" height="116"/>
+      <rect x="44" y="452" width="20" height="126"/><rect x="70" y="460" width="16" height="118"/>
+      <rect x="92" y="450" width="22" height="128"/><rect x="120" y="464" width="14" height="114"/>
+    </g>
+  </g>
+
+  <!-- Round garden window, right side -->
+  <circle cx="1352" cy="362" r="262" fill="url(#window)"/>
+  <circle cx="1352" cy="362" r="214" fill="none" stroke="#5a3d22" stroke-opacity="0.5" stroke-width="14"/>
+  <g stroke="#3a2614" stroke-opacity="0.55" stroke-width="7">
+    <line x1="1352" y1="150" x2="1352" y2="574"/>
+    <line x1="1140" y1="362" x2="1564" y2="362"/>
+  </g>
+
+  <!-- Hanging lantern glows -->
+  <ellipse cx="470" cy="232" rx="150" ry="150" fill="url(#hearth)" filter="url(#blurL)"/>
+  <ellipse cx="1180" cy="690" rx="180" ry="150" fill="url(#hearth)" opacity="0.7" filter="url(#blurL)"/>
+  <ellipse cx="250" cy="760" rx="150" ry="130" fill="url(#hearth)" opacity="0.55" filter="url(#blurL)"/>
+
+  <!-- Warm bokeh motes drifting in the air -->
+  <g filter="url(#blurS)">
+    <circle cx="560" cy="180" r="9" fill="#ffd98a" opacity="0.7"/>
+    <circle cx="690" cy="120" r="6" fill="#ffcf7e" opacity="0.55"/>
+    <circle cx="900" cy="170" r="11" fill="#ffe0a0" opacity="0.5"/>
+    <circle cx="1040" cy="120" r="7" fill="#ffcf7e" opacity="0.6"/>
+    <circle cx="1240" cy="220" r="9" fill="#ffd98a" opacity="0.45"/>
+    <circle cx="430" cy="430" r="8" fill="#ffcf7e" opacity="0.4"/>
+    <circle cx="1320" cy="560" r="10" fill="#ffe0a0" opacity="0.4"/>
+    <circle cx="780" cy="90" r="5" fill="#fff0c4" opacity="0.6"/>
+    <circle cx="1140" cy="300" r="6" fill="#ffd98a" opacity="0.5"/>
+    <circle cx="610" cy="300" r="5" fill="#ffcf7e" opacity="0.45"/>
+  </g>
+
+  <rect width="1600" height="1000" fill="url(#vignette)"/>
+</svg>
