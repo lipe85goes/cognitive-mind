@@ -165,10 +165,14 @@ export function GameHome3D({
 
   return (
     <div className="lab3d-root">
-      {/* Cozy library/workshop atmosphere behind the transparent Canvas. Pure
-          CSS gradients + an SVG ambience layer (with a webp upgrade slot), so
-          the 3D worlds composite over a warm room instead of a flat fill. */}
+      {/* Real cozy library/workshop photo (home-background-desktop.webp) behind
+          the transparent Canvas; the hand-authored SVG/CSS ambience is only the
+          fallback if the asset is missing, so the 3D worlds composite over a
+          real warm room instead of a flat fill. */}
       <div className="lab3d-atmosphere" aria-hidden />
+      {/* Warm stage glow (stage-glow-clean.webp, keyed transparent) pooled
+          behind the selected world. */}
+      <div className="lab3d-stage-glow" aria-hidden />
 
       <div className="lab3d-scene">
         <WorldSelectorScene
