@@ -2,8 +2,8 @@
 
 import { useRef } from "react";
 import { useFrame, type ThreeEvent } from "@react-three/fiber";
-import { RoundedBox } from "@react-three/drei";
-import { Group, MathUtils, MeshStandardMaterial } from "three";
+import { Billboard } from "@react-three/drei";
+import { Group, MathUtils, type Texture } from "three";
 import { WORLD_3D_PALETTE } from "@/components/three/world-palette";
 import { MemoryWorld3D } from "@/components/three/worlds/MemoryWorld3D";
 import { RouteWorld3D } from "@/components/three/worlds/RouteWorld3D";
@@ -41,11 +41,13 @@ interface WorldStage3DProps {
   selectedIndex: number;
   reducedMotion: boolean;
   onSelect: (index: number) => void;
+  stageTexture: Texture | null;
 }
 
 /**
- * One world on a carved, glowing pedestal. It carousels toward / away from the
- * centre as the selection changes and lifts + glows when selected.
+ * One world seated on the tabletop-stage asset via a small neutral foot. It
+ * carousels toward / away from the centre as the selection changes and lifts
+ * slightly when selected.
  */
 export function WorldStage3D({
   world,
@@ -53,13 +55,10 @@ export function WorldStage3D({
   selectedIndex,
   reducedMotion,
   onSelect,
+  stageTexture,
 }: WorldStage3DProps) {
   const outerRef = useRef<Group>(null);
   const innerRef = useRef<Group>(null);
-  const haloRef = useRef<MeshStandardMaterial>(null);
-  const discRef = useRef<MeshStandardMaterial>(null);
-  const rimRef = useRef<MeshStandardMaterial>(null);
-  const palette = WORLD_3D_PALETTE[world];
 
   useFrame((state, delta) => {
     const outer = outerRef.current;
@@ -93,31 +92,6 @@ export function WorldStage3D({
       inner.position.y = MathUtils.damp(inner.position.y, 0, lambda, delta);
       inner.rotation.y = MathUtils.damp(inner.rotation.y, 0, lambda, delta);
     }
-
-    if (haloRef.current) {
-      haloRef.current.emissiveIntensity = MathUtils.damp(
-        haloRef.current.emissiveIntensity,
-        isSelected ? 2.15 : 0.1,
-        lambda,
-        delta,
-      );
-    }
-    if (discRef.current) {
-      discRef.current.opacity = MathUtils.damp(
-        discRef.current.opacity,
-        isSelected ? 0.42 : 0,
-        lambda,
-        delta,
-      );
-    }
-    if (rimRef.current) {
-      rimRef.current.emissiveIntensity = MathUtils.damp(
-        rimRef.current.emissiveIntensity,
-        isSelected ? 0.7 : 0.08,
-        lambda,
-        delta,
-      );
-    }
   });
 
   const handleSelect = (event: ThreeEvent<MouseEvent>) => {
@@ -137,67 +111,27 @@ export function WorldStage3D({
         document.body.style.cursor = "auto";
       }}
     >
-      {/* Glowing ground disc beneath the selected world */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.385, 0]}>
-        <circleGeometry args={[1.15, 48]} />
-        <meshStandardMaterial
-          ref={discRef}
-          color={palette.glow}
-          emissive={palette.glow}
-          emissiveIntensity={1}
-          transparent
-          opacity={0}
-          toneMapped={false}
-          depthWrite={false}
-        />
-      </mesh>
-
-      {/* Selection halo ring on the table */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.38, 0]}>
-        <torusGeometry args={[1.02, 0.045, 16, 56]} />
-        <meshStandardMaterial
-          ref={haloRef}
-          color={palette.glow}
-          emissive={palette.glow}
-          emissiveIntensity={0.1}
-          toneMapped={false}
-        />
-      </mesh>
-
-      {/* Pedestal: wide plinth + carved body + glowing rim inlay */}
-      <RoundedBox
-        args={[1.88, 0.14, 1.52]}
-        radius={0.06}
-        smoothness={4}
-        position={[0, -0.33, 0]}
-        castShadow
-        receiveShadow
-      >
-        <meshStandardMaterial color={palette.deep} roughness={0.7} metalness={0.1} />
-      </RoundedBox>
-      <RoundedBox
-        args={[1.66, 0.32, 1.3]}
-        radius={0.1}
-        smoothness={5}
-        position={[0, -0.12, 0]}
-        castShadow
-        receiveShadow
-      >
-        <meshStandardMaterial color={palette.base} roughness={0.55} metalness={0.12} />
-      </RoundedBox>
-      <mesh position={[0, 0.05, 0]} receiveShadow>
-        <boxGeometry args={[1.46, 0.05, 1.1]} />
-        <meshStandardMaterial
-          ref={rimRef}
-          color={palette.deep}
-          emissive={palette.glow}
-          emissiveIntensity={0.08}
-          roughness={0.5}
-        />
-      </mesh>
+      {/* The pedestal IS the real tabletop-stage asset, billboarded so it always
+          presents the carved board squarely. It is a child of this group, so it
+          carousels and scales with the world (the selected world's base reads
+          larger; neighbours get smaller, coherent versions). No procedural base,
+          ring, disc or halo competes with it. */}
+      {stageTexture && (
+        <Billboard position={[0, -0.17, -0.12]}>
+          <mesh>
+            <planeGeometry args={[2.7, 2.7]} />
+            <meshBasicMaterial
+              map={stageTexture}
+              transparent
+              toneMapped={false}
+              depthWrite={false}
+            />
+          </mesh>
+        </Billboard>
+      )}
 
       {/* The world model */}
-      <group ref={innerRef} position={[0, 0.08, 0]} scale={1.04}>
+      <group ref={innerRef} position={[0, 0.1, 0]} scale={1.04}>
         <WorldContent world={world} />
       </group>
     </group>

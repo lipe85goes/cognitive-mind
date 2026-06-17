@@ -10244,6 +10244,10 @@ button:disabled:focus-visible {
   }
 }
 
+/* The tabletop board is no longer a floating HTML layer — it is now the real
+   3D per-world pedestal (the tabletop-stage asset billboarded under each world
+   in WorldStage3D), so the `.lab3d-stage-base` element was removed. */
+
 /* The 3D canvas composites over the atmosphere; retire the old scene scrims. */
 .lab3d-scene {
   z-index: 1;
@@ -10335,73 +10339,46 @@ button:disabled:focus-visible {
     0 1rem 1.6rem rgb(0 0 0 / 0.45);
 }
 
-/* --- 5. Compact carved sign crowning the stage (desktop) ------------
-   Transparency can't be cleanly keyed from the dark-on-dark plaque render,
-   so per the asset rules the wood image is used only as a *texture* on a real
-   CSS sign (clean rounded brass frame — no dark rectangular matte). Kept small
-   and high so it crowns the scene instead of covering the worlds. */
+/* --- 5. Carved sign crowning the stage (desktop) -------------------
+   Uses the real transparent wood-plaque.webp cutout (brass frame + compass
+   medallion baked in, no dark matte). Compact, top-centre, with the HTML
+   headline laid over the central wood field. */
 .lab3d-plaque {
   position: absolute;
-  /* Just below the HUD row (tokens end ~5.6rem) and well above the worlds
-     (which sit far lower in the canvas), so it crowns the stage centred without
-     colliding with the HUD or covering the worlds. */
-  top: clamp(6rem, 8vh, 7rem);
+  top: clamp(4.4rem, 7vh, 5.4rem);
   left: 50%;
   transform: translateX(-50%);
   z-index: 6;
   display: none;
-  align-items: center;
-  justify-content: center;
-  gap: 0.7rem;
-  max-width: min(24rem, 32vw);
-  padding: 0.62rem 1.5rem;
-  text-align: center;
-  border: 2px solid var(--mf-brass-deep);
-  border-radius: 1rem;
-  /* Real wood grain (tabletop-texture.webp) as a clean texture fill, warmed by
-     an overlay tint + top sheen. Rounded brass frame = no rectangular matte. */
-  background:
-    linear-gradient(180deg, rgb(255 244 205 / 0.14), transparent 42%),
-    linear-gradient(180deg, rgb(58 34 16 / 0.42), rgb(34 19 9 / 0.6)),
-    url("/illustrations/home/tabletop-texture.webp") center / cover;
-  box-shadow:
-    inset 0 0 0 1px rgb(231 192 116 / 0.42),
-    inset 0 0.14rem 0 rgb(255 240 200 / 0.2),
-    inset 0 -0.4rem 0.5rem rgb(0 0 0 / 0.45),
-    0 0.55rem 1.3rem rgb(0 0 0 / 0.5);
+  width: min(18.5rem, 24vw);
+  aspect-ratio: 577 / 433;
+  background: url("/illustrations/home/wood-plaque.webp") center / contain
+    no-repeat;
   pointer-events: none;
 }
 
 .lab3d-plaque-text {
+  /* laid over the central wood field, below the asset's baked medallion */
+  position: absolute;
+  left: 50%;
+  top: 57%;
+  transform: translate(-50%, -50%);
+  width: 64%;
+  text-align: center;
   font-family: Georgia, "Times New Roman", serif;
   font-weight: 900;
-  font-size: clamp(0.98rem, 1.25vw, 1.28rem);
-  line-height: 1.1;
+  font-size: clamp(0.86rem, 1.12vw, 1.12rem);
+  line-height: 1.14;
   color: #ffeec2;
   letter-spacing: 0.01em;
   text-shadow:
-    0 0.1rem 0.1rem rgb(0 0 0 / 0.7),
-    0 0 0.6rem rgb(255 198 110 / 0.28);
+    0 0.1rem 0.12rem rgb(40 18 6 / 0.9),
+    0 0 0.5rem rgb(0 0 0 / 0.5);
 }
 
+/* The transparent asset already carries the ornate brass compass medallion. */
 .lab3d-plaque-medallion {
-  display: grid;
-  place-items: center;
-  flex: none;
-  height: 1.9rem;
-  width: 1.9rem;
-  border-radius: 999px;
-  border: 2px solid var(--mf-brass);
-  background: radial-gradient(circle at 35% 30%, #fff3c4, #cf9a33 66%, #7c5415);
-  color: #422c0c;
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.6),
-    0 0.2rem 0.4rem rgb(0 0 0 / 0.5);
-}
-
-.lab3d-plaque-medallion svg {
-  height: 1.05rem;
-  width: 1.05rem;
+  display: none;
 }
 
 .lab3d-plaque::before,
@@ -10444,11 +10421,24 @@ button:disabled:focus-visible {
 /* Desktop: reveal the ornate top plaque, retire the bottom caption. */
 @media (min-width: 901px) {
   .lab3d-plaque {
-    display: inline-flex;
+    display: block;
   }
 
   .lab3d-world-sign {
     display: none;
+  }
+
+  /* Anchor the selected-world info card to the lower-left corner like a game
+     HUD panel — out of the centred dock so it never sits under the world. The
+     dock then carries only the controls + Entrar, centred below the stage. */
+  .lab3d-panel {
+    position: absolute;
+    left: clamp(1.25rem, 2.5vw, 2.75rem);
+    bottom: clamp(1.5rem, 4vh, 3rem);
+    width: min(23rem, 30vw);
+    max-width: none;
+    text-align: left;
+    z-index: 5;
   }
 }
 

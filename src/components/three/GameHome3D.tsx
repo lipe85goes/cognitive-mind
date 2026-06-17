@@ -171,7 +171,8 @@ export function GameHome3D({
           real warm room instead of a flat fill. */}
       <div className="lab3d-atmosphere" aria-hidden />
       {/* Warm stage glow (stage-glow-clean.webp, keyed transparent) pooled
-          behind the selected world. */}
+          behind the selected world. The tabletop board is no longer a floating
+          HTML layer — it is now the 3D per-world pedestal (see WorldStage3D). */}
       <div className="lab3d-stage-glow" aria-hidden />
 
       <div className="lab3d-scene">
