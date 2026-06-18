@@ -10,6 +10,8 @@ interface RouteTile3DProps {
   isWall: boolean;
   /** Adjacent walkable tile the player can step to (visual hint + click). */
   isMove: boolean;
+  /** Within the guardian's immediate reach — a calm danger preview. */
+  isDanger?: boolean;
   /** Provided only for move-target tiles; calls the existing tryMovePlayer. */
   onSelect?: () => void;
 }
@@ -26,6 +28,7 @@ export function RouteTile3D({
   cell,
   isWall,
   isMove,
+  isDanger = false,
   onSelect,
 }: RouteTile3DProps) {
   const handleClick = (event: ThreeEvent<MouseEvent>) => {
@@ -70,6 +73,21 @@ export function RouteTile3D({
             color="#5fce8b"
             emissive="#34d399"
             emissiveIntensity={1.1}
+            transparent
+            opacity={0.5}
+            toneMapped={false}
+            depthWrite={false}
+          />
+        </mesh>
+      )}
+
+      {isDanger && !isWall && (
+        <mesh position={[0, 0.108, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+          <ringGeometry args={[cell * 0.34, cell * 0.43, 30]} />
+          <meshStandardMaterial
+            color="#fbbf24"
+            emissive="#f59e0b"
+            emissiveIntensity={0.9}
             transparent
             opacity={0.5}
             toneMapped={false}

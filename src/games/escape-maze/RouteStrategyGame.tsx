@@ -15,7 +15,9 @@ import {
   Play,
   RotateCcw,
   Shield,
+  ShieldPlus,
   Sparkles,
+  TriangleAlert,
 } from "lucide-react";
 import { gentleShakeAnimate } from "@/lib/feedback-motion";
 import {
@@ -85,6 +87,10 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
     message,
     score,
     blockedShake,
+    triggeredTrapSet,
+    trapsTriggered,
+    shieldCollected,
+    shieldActive,
     startGame,
     restartGame,
     changeDifficulty,
@@ -114,14 +120,49 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
     );
   }, [status, player, mazeMap]);
 
-  const statusVariant: "neutral" | "info" | "success" | "error" =
-    status === "won" || message === "Luz coletada!"
+  // Tiles the guardian can step to next — a simple, calm danger radius derived
+  // purely from its position and the walls (never from the guardian AI).
+  const dangerTiles = useMemo(() => {
+    if (status !== "playing") return new Set<string>();
+    return new Set(
+      [
+        { row: guardian.row - 1, col: guardian.col },
+        { row: guardian.row + 1, col: guardian.col },
+        { row: guardian.row, col: guardian.col - 1 },
+        { row: guardian.row, col: guardian.col + 1 },
+      ]
+        .filter(
+          (p) =>
+            p.row >= 0 &&
+            p.row < ROWS &&
+            p.col >= 0 &&
+            p.col < COLS &&
+            !mazeMap.walls.has(posKey(p)),
+        )
+        .map(posKey),
+    );
+  }, [status, guardian, mazeMap]);
+
+  const positiveMessages = new Set([
+    "Você coletou uma luz.",
+    "Escudo coletado.",
+    "Escudo protegeu você.",
+  ]);
+  const warnMessages = new Set([
+    "Armadilha ativada. Planeje o próximo passo.",
+    "Cuidado: o guardião está perto.",
+    "Caminho bloqueado. Escolha outra direção.",
+  ]);
+  const statusVariant: "neutral" | "info" | "success" | "warn" | "error" =
+    status === "won" || positiveMessages.has(message)
       ? "success"
       : status === "lost"
         ? "error"
-        : status === "playing"
-          ? "info"
-          : "neutral";
+        : warnMessages.has(message)
+          ? "warn"
+          : status === "playing"
+            ? "info"
+            : "neutral";
 
   const moveIcons = {
     up: ChevronUp,
@@ -164,10 +205,22 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
             Voltar à jornada
           </button>
           {status === "playing" && (
-            <span className="rsg-difficulty-chip">
-              <Gauge className="h-4 w-4" aria-hidden />
-              {DIFFICULTY_TITLE[difficulty]}
-            </span>
+            <div className="rsg-chips">
+              {shieldCollected && (
+                <span
+                  className={`rsg-shield-chip ${
+                    shieldActive ? "is-active" : "is-used"
+                  }`}
+                >
+                  <ShieldPlus className="h-4 w-4" aria-hidden />
+                  Escudo: {shieldActive ? "ativo" : "usado"}
+                </span>
+              )}
+              <span className="rsg-difficulty-chip">
+                <Gauge className="h-4 w-4" aria-hidden />
+                {DIFFICULTY_TITLE[difficulty]}
+              </span>
+            </div>
           )}
         </header>
 
@@ -214,6 +267,11 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
                   player={player}
                   guardian={guardian}
                   moveTargets={moveTargets}
+                  traps={mazeMap.traps}
+                  triggeredTrapSet={triggeredTrapSet}
+                  shield={mazeMap.shield}
+                  shieldCollected={shieldCollected}
+                  dangerTiles={dangerTiles}
                   reducedMotion={Boolean(reducedMotion)}
                   onMove={tryMovePlayer}
                 />
@@ -236,6 +294,14 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
               <li>
                 <Sparkles className="h-4 w-4" aria-hidden />
                 Luz
+              </li>
+              <li>
+                <TriangleAlert className="h-4 w-4" aria-hidden />
+                Armadilha
+              </li>
+              <li>
+                <ShieldPlus className="h-4 w-4" aria-hidden />
+                Escudo
               </li>
             </ul>
           </div>
@@ -328,6 +394,14 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
                 <em>Erros</em>
                 <strong>{errors}</strong>
               </span>
+              <span
+                className={`rsg-stat ${trapsTriggered > 0 ? "is-danger" : ""}`}
+              >
+                <em>Armadilhas</em>
+                <strong>
+                  {trapsTriggered}/{mazeMap.traps.length}
+                </strong>
+              </span>
               <span className="rsg-stat rsg-stat-score">
                 <em>Pontuação</em>
                 <strong>{score}</strong>
@@ -355,7 +429,8 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
 
         <p className="rsg-footnote">
           Toque nos botões de direção ou use as setas do teclado para mover. O
-          guardião se move depois de você.
+          guardião se move depois de você; os contornos âmbar mostram até onde
+          ele pode chegar no próximo passo.
         </p>
       </div>
     </div>

@@ -11342,6 +11342,41 @@ button:disabled:focus-visible {
   color: var(--mf-brass);
 }
 
+.rsg-chips {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.45rem;
+}
+
+.rsg-shield-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.85rem;
+  border: 1px solid var(--mf-glass-border);
+  border-radius: 999px;
+  background: var(--mf-glass);
+  font-weight: 800;
+  font-size: 0.86rem;
+}
+.rsg-shield-chip.is-active {
+  border-color: rgb(56 189 248 / 0.55);
+  background: rgb(56 189 248 / 0.12);
+  color: #bae6fd;
+}
+.rsg-shield-chip.is-active svg {
+  color: #38bdf8;
+}
+.rsg-shield-chip.is-used {
+  color: var(--mf-cream-dim);
+  opacity: 0.7;
+}
+.rsg-shield-chip.is-used svg {
+  color: var(--mf-cream-dim);
+}
+
 .rsg-plaque {
   display: inline-flex;
   align-items: center;
@@ -11395,6 +11430,10 @@ button:disabled:focus-visible {
 .rsg-status-error {
   border-color: rgb(248 113 113 / 0.55);
   color: #ffd9d4;
+}
+.rsg-status-warn {
+  border-color: rgb(251 191 36 / 0.5);
+  color: #ffe6b0;
 }
 
 .rsg-layout {
@@ -11555,6 +11594,12 @@ button:disabled:focus-visible {
 .rsg-legend li:nth-child(4) svg {
   color: #fcd34d;
 }
+.rsg-legend li:nth-child(5) svg {
+  color: #f87171;
+}
+.rsg-legend li:nth-child(6) svg {
+  color: #7dd3fc;
+}
 
 .rsg-control-col {
   display: flex;
@@ -11687,13 +11732,17 @@ button:disabled:focus-visible {
 }
 
 .rsg-stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: clamp(0.4rem, 1.2vw, 0.6rem);
   width: 100%;
 }
 .rsg-stat {
   display: flex;
+  flex: 1 1 calc(33.333% - 0.6rem);
+  min-width: 4.4rem;
+  max-width: 9.5rem;
   flex-direction: column;
   align-items: center;
   gap: 0.1rem;

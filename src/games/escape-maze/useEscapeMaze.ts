@@ -88,6 +88,13 @@ const STAR_COUNT: Record<DifficultyLevel, number> = {
   hard: 2,
 };
 
+/** A small, calm number of trap tiles per difficulty (Gameplay 2.0). */
+const TRAP_COUNT: Record<DifficultyLevel, number> = {
+  easy: 2,
+  medium: 3,
+  hard: 3,
+};
+
 export interface MazeMap {
   grid: number[][];
   walls: Set<string>;
@@ -95,6 +102,10 @@ export interface MazeMap {
   guardianStart: GridPosition;
   exitPosition: GridPosition;
   collectibleStars: GridPosition[];
+  /** Walkable hazard tiles (Gameplay 2.0). Never affect path/guardian/walls. */
+  traps: GridPosition[];
+  /** Single walkable shield power-up tile, or null. Purely additive overlay. */
+  shield: GridPosition | null;
 }
 
 export type GameStatus = "setup" | "playing" | "won" | "lost";
@@ -273,6 +284,60 @@ function chooseStars(
   return chosen;
 }
 
+/**
+ * Place a few trap tiles and one shield on free walkable cells. Because these
+ * sit only on walkable tiles, they never change path validity, wall counts or
+ * the guardian AI — they are purely additive overlays on the finished maze.
+ */
+function chooseTrapsAndShield(
+  walls: Set<string>,
+  playerStart: GridPosition,
+  guardianStart: GridPosition,
+  exitPosition: GridPosition,
+  stars: GridPosition[],
+  difficulty: DifficultyLevel,
+): { traps: GridPosition[]; shield: GridPosition | null } {
+  const blocked = new Set<string>([
+    posKey(playerStart),
+    posKey(guardianStart),
+    posKey(exitPosition),
+    ...stars.map(posKey),
+  ]);
+
+  const free: GridPosition[] = [];
+  for (let row = 0; row < ROWS; row++) {
+    for (let col = 0; col < COLS; col++) {
+      const pos = { row, col };
+      const key = posKey(pos);
+      if (walls.has(key) || blocked.has(key)) continue;
+      // Never place a hazard right next to the start, so turn 1 is always safe.
+      if (manhattanDistance(pos, playerStart) < 2) continue;
+      free.push(pos);
+    }
+  }
+
+  const shuffled = [...free].sort(() => Math.random() - 0.5);
+
+  const traps: GridPosition[] = [];
+  for (const cell of shuffled) {
+    if (traps.length >= TRAP_COUNT[difficulty]) break;
+    // Keep traps from clumping together so the board stays readable.
+    if (traps.every((trap) => manhattanDistance(trap, cell) >= 2)) {
+      traps.push(cell);
+    }
+  }
+
+  const trapKeys = new Set(traps.map(posKey));
+  const shield =
+    shuffled.find(
+      (cell) =>
+        !trapKeys.has(posKey(cell)) &&
+        findPathLength(playerStart, cell, walls) !== null,
+    ) ?? null;
+
+  return { traps, shield };
+}
+
 function isValidMap(map: MazeMap, difficulty: DifficultyLevel): boolean {
   const pathLength = findPathLength(
     map.playerStart,
@@ -356,6 +421,14 @@ export function generateMaze(difficulty: DifficultyLevel): MazeMap {
       exitPosition,
       difficulty,
     );
+    const { traps, shield } = chooseTrapsAndShield(
+      walls,
+      PLAYER_START,
+      guardianStart,
+      exitPosition,
+      collectibleStars,
+      difficulty,
+    );
     const map = {
       grid,
       walls,
@@ -363,6 +436,8 @@ export function generateMaze(difficulty: DifficultyLevel): MazeMap {
       guardianStart,
       exitPosition,
       collectibleStars,
+      traps,
+      shield,
     };
 
     if (isValidMap(map, difficulty)) return map;
@@ -375,19 +450,31 @@ export function generateMaze(difficulty: DifficultyLevel): MazeMap {
   walls.delete(posKey(exitPosition));
   walls.delete(posKey(guardianStart));
 
+  const collectibleStars = chooseStars(
+    walls,
+    PLAYER_START,
+    guardianStart,
+    exitPosition,
+    difficulty,
+  );
+  const { traps, shield } = chooseTrapsAndShield(
+    walls,
+    PLAYER_START,
+    guardianStart,
+    exitPosition,
+    collectibleStars,
+    difficulty,
+  );
+
   return {
     grid: FALLBACK_GRID,
     walls,
     playerStart: PLAYER_START,
     guardianStart,
     exitPosition,
-    collectibleStars: chooseStars(
-      walls,
-      PLAYER_START,
-      guardianStart,
-      exitPosition,
-      difficulty,
-    ),
+    collectibleStars,
+    traps,
+    shield,
   };
 }
 
@@ -407,8 +494,17 @@ export function useEscapeMaze(onComplete: CompleteFn) {
   const [message, setMessage] = useState("Escolha a dificuldade e inicie.");
   const [blockedShake, setBlockedShake] = useState(0);
   const [moveTick, setMoveTick] = useState(0);
+  // Gameplay 2.0 state — lives here in the brain, not in the Canvas.
+  const [triggeredTraps, setTriggeredTraps] = useState<string[]>([]);
+  const [shieldCollected, setShieldCollected] = useState(false);
+  const [shieldUsed, setShieldUsed] = useState(false);
 
   const collectedSet = useMemo(() => new Set(collectedStars), [collectedStars]);
+  const triggeredTrapSet = useMemo(
+    () => new Set(triggeredTraps),
+    [triggeredTraps],
+  );
+  const shieldActive = shieldCollected && !shieldUsed;
 
   const score = calculateEscapeMazeScore({
     won: status === "won",
@@ -431,10 +527,13 @@ export function useEscapeMaze(onComplete: CompleteFn) {
       setErrors(0);
       setBlockedShake(0);
       setMoveTick(0);
+      setTriggeredTraps([]);
+      setShieldCollected(false);
+      setShieldUsed(false);
       setStatus(nextStatus);
       setMessage(
         nextStatus === "playing"
-          ? "Chegue até a saída. Colete luzes se quiser ampliar a rota."
+          ? "Chegue até a saída. Pegue o escudo, colete luzes e evite as armadilhas."
           : "Escolha a dificuldade e inicie.",
       );
     },
@@ -451,6 +550,9 @@ export function useEscapeMaze(onComplete: CompleteFn) {
         difficulty: DifficultyLevel;
         starsCollected: number;
         totalStars: number;
+        trapsTriggered: number;
+        shieldCollected: boolean;
+        shieldUsed: boolean;
       },
     ) => {
       setStatus(won ? "won" : "lost");
@@ -487,6 +589,10 @@ export function useEscapeMaze(onComplete: CompleteFn) {
           blockedMoves: finalStats.blockedMoves,
           errors: finalStats.errors,
           difficulty: finalStats.difficulty,
+          // Additive optional fields (Gameplay 2.0); old results simply omit them.
+          trapsTriggered: finalStats.trapsTriggered,
+          shieldCollected: finalStats.shieldCollected,
+          shieldUsed: finalStats.shieldUsed,
         },
       });
     },
@@ -529,42 +635,73 @@ export function useEscapeMaze(onComplete: CompleteFn) {
     }
 
     const nextTurn = turns + 1;
-    const nextErrors = positionsEqual(next, guardian) ? errors + 1 : errors;
-    const starKey = posKey(next);
+    const nextKey = posKey(next);
+    const stepOnGuardian = positionsEqual(next, guardian);
+
+    // --- Gameplay 2.0 overlays (walkable, never alter maze rules) ---
+    // A trap only matters when we aren't already losing to the guardian.
+    const isUntriggeredTrap =
+      !stepOnGuardian &&
+      mazeMap.traps.some((trap) => positionsEqual(trap, next)) &&
+      !triggeredTrapSet.has(nextKey);
+    const shieldAbsorbs = isUntriggeredTrap && shieldActive;
+    const trapHurts = isUntriggeredTrap && !shieldAbsorbs;
+    const collectShield =
+      mazeMap.shield !== null &&
+      positionsEqual(next, mazeMap.shield) &&
+      !shieldCollected;
+
+    // Errors = the existing guardian-step error, plus an unshielded trap.
+    const errorsAfterStep =
+      errors + (stepOnGuardian ? 1 : 0) + (trapHurts ? 1 : 0);
+
     const collectedStar =
       mazeMap.collectibleStars.some((star) => positionsEqual(star, next)) &&
-      !collectedSet.has(starKey);
+      !collectedSet.has(nextKey);
     const nextCollectedStars = collectedStar
-      ? [...collectedStars, starKey]
+      ? [...collectedStars, nextKey]
       : collectedStars;
+
+    // Post-step snapshots for the completion result (state updates are async).
+    const finalStats = (finalTurns: number, finalErrors: number) => ({
+      turns: finalTurns,
+      blockedMoves,
+      errors: finalErrors,
+      difficulty,
+      starsCollected: nextCollectedStars.length,
+      totalStars: mazeMap.collectibleStars.length,
+      trapsTriggered: triggeredTraps.length + (isUntriggeredTrap ? 1 : 0),
+      shieldCollected: shieldCollected || collectShield,
+      shieldUsed: shieldUsed || shieldAbsorbs,
+    });
 
     setTurns(nextTurn);
     setPlayer(next);
     setCollectedStars(nextCollectedStars);
     setMoveTick((t) => t + 1);
+    if (isUntriggeredTrap) {
+      setTriggeredTraps((prev) => [...prev, nextKey]);
+    }
+    if (collectShield) {
+      setShieldCollected(true);
+    }
+    if (shieldAbsorbs) {
+      setShieldUsed(true);
+    }
+    if (trapHurts) {
+      setErrors(errorsAfterStep);
+      setBlockedShake((n) => n + 1);
+      playGentleErrorTone();
+    }
 
-    if (positionsEqual(next, guardian)) {
-      setErrors(nextErrors);
-      endGame(false, {
-        turns: nextTurn,
-        blockedMoves,
-        errors: nextErrors,
-        difficulty,
-        starsCollected: nextCollectedStars.length,
-        totalStars: mazeMap.collectibleStars.length,
-      });
+    if (stepOnGuardian) {
+      setErrors(errorsAfterStep);
+      endGame(false, finalStats(nextTurn, errorsAfterStep));
       return;
     }
 
     if (positionsEqual(next, mazeMap.exitPosition)) {
-      endGame(true, {
-        turns: nextTurn,
-        blockedMoves,
-        errors,
-        difficulty,
-        starsCollected: nextCollectedStars.length,
-        totalStars: mazeMap.collectibleStars.length,
-      });
+      endGame(true, finalStats(nextTurn, errorsAfterStep));
       return;
     }
 
@@ -578,23 +715,29 @@ export function useEscapeMaze(onComplete: CompleteFn) {
     setGuardian(nextGuardian);
 
     if (positionsEqual(nextGuardian, next)) {
-      const caughtErrors = errors + 1;
+      const caughtErrors = errorsAfterStep + 1;
       setErrors(caughtErrors);
-      endGame(false, {
-        turns: nextTurn,
-        blockedMoves,
-        errors: caughtErrors,
-        difficulty,
-        starsCollected: nextCollectedStars.length,
-        totalStars: mazeMap.collectibleStars.length,
-      });
+      endGame(false, finalStats(nextTurn, caughtErrors));
       return;
     }
 
+    const guardianClose = manhattanDistance(nextGuardian, next) <= 2;
+    const exitClose = manhattanDistance(next, mazeMap.exitPosition) <= 2;
+
     setMessage(
-      collectedStar
-        ? "Luz coletada!"
-        : "Boa jogada. Escolha o próximo passo com calma.",
+      shieldAbsorbs
+        ? "Escudo protegeu você."
+        : trapHurts
+          ? "Armadilha ativada. Planeje o próximo passo."
+          : collectShield
+            ? "Escudo coletado."
+            : collectedStar
+              ? "Você coletou uma luz."
+              : guardianClose
+                ? "Cuidado: o guardião está perto."
+                : exitClose
+                  ? "A saída está próxima."
+                  : "Boa jogada. O guardião se moveu.",
     );
   };
 
@@ -629,6 +772,12 @@ export function useEscapeMaze(onComplete: CompleteFn) {
     score,
     blockedShake,
     moveTick,
+    // Gameplay 2.0 — read-only views for the HUD and the 3D board.
+    triggeredTrapSet,
+    trapsTriggered: triggeredTraps.length,
+    shieldCollected,
+    shieldUsed,
+    shieldActive,
     startGame,
     restartGame,
     changeDifficulty,

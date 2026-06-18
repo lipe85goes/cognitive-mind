@@ -18,6 +18,8 @@ import {
 import { RouteTile3D } from "@/components/three/route/RouteTile3D";
 import { RouteToken3D } from "@/components/three/route/RouteToken3D";
 import { RouteCollectible3D } from "@/components/three/route/RouteCollectible3D";
+import { RouteTrap3D } from "@/components/three/route/RouteTrap3D";
+import { RouteShield3D } from "@/components/three/route/RouteShield3D";
 import type { GridPosition } from "@/types/game";
 
 const CELL = 0.6;
@@ -39,6 +41,14 @@ interface RouteBoardSceneProps {
   guardian: GridPosition;
   /** Adjacent walkable cells, as "row,col" keys (purely visual + click). */
   moveTargets: Set<string>;
+  /** Trap tiles (Gameplay 2.0); spent ones are read from `triggeredTrapSet`. */
+  traps: GridPosition[];
+  triggeredTrapSet: Set<string>;
+  /** The single shield power-up, hidden once collected. */
+  shield: GridPosition | null;
+  shieldCollected: boolean;
+  /** Tiles within the guardian's reach, as "row,col" keys (danger preview). */
+  dangerTiles: Set<string>;
   reducedMotion: boolean;
   /** The hook's tryMovePlayer — the single source of movement. */
   onMove: (delta: GridPosition) => void;
@@ -116,12 +126,18 @@ export function RouteBoardScene({
   player,
   guardian,
   moveTargets,
+  traps,
+  triggeredTrapSet,
+  shield,
+  shieldCollected,
+  dangerTiles,
   reducedMotion,
   onMove,
 }: RouteBoardSceneProps) {
   const [px, pz] = toXZ(player.row, player.col);
   const [gx, gz] = toXZ(guardian.row, guardian.col);
   const [ex, ez] = toXZ(exitPosition.row, exitPosition.col);
+  const shieldXZ = shield ? toXZ(shield.row, shield.col) : null;
 
   const visibleStars = stars.filter(
     (star) =>
@@ -221,6 +237,7 @@ export function RouteBoardScene({
               cell={CELL}
               isWall={walls.has(key)}
               isMove={isMove}
+              isDanger={dangerTiles.has(key)}
               onSelect={
                 isMove
                   ? () =>
@@ -250,6 +267,30 @@ export function RouteBoardScene({
           />
         );
       })}
+
+      {traps.map((trap, index) => {
+        const [tx, tz] = toXZ(trap.row, trap.col);
+        return (
+          <RouteTrap3D
+            key={posKey(trap)}
+            x={tx}
+            z={tz}
+            baseY={TILE_TOP}
+            triggered={triggeredTrapSet.has(posKey(trap))}
+            seed={index * 2.1}
+            reducedMotion={reducedMotion}
+          />
+        );
+      })}
+
+      {shieldXZ && !shieldCollected && (
+        <RouteShield3D
+          x={shieldXZ[0]}
+          z={shieldXZ[1]}
+          baseY={TILE_TOP}
+          reducedMotion={reducedMotion}
+        />
+      )}
 
       <RouteToken3D
         kind="player"
