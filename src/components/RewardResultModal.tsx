@@ -20,7 +20,9 @@ interface RewardResultModalProps {
 }
 
 /**
- * Friendly post-game reward screen with circuit progress, encouragement, and actions.
+ * Premium post-game "journey result" screen: the cozy dark MindFlow atmosphere
+ * wrapping a wood/brass result card. Pure presentation restyle — all result
+ * data, copy, details, actions and a11y are unchanged.
  */
 export function RewardResultModal({
   result,
@@ -47,98 +49,88 @@ export function RewardResultModal({
   }, [success]);
 
   return (
-    <motion.div
-      ref={containerRef}
-      tabIndex={-1}
-      className="mx-auto w-full min-w-0 max-w-xl outline-none"
-      role="dialog"
-      aria-labelledby="reward-title"
-      aria-describedby="reward-summary"
-      initial={reducedMotion ? false : "hidden"}
-      animate="visible"
-      variants={fadeSlideUp}
-    >
-      <div className={`reward-surface reward-world-${result.gameId} ${success ? "is-success" : "is-attempt"}`}>
-        <div className="reward-hero">
-          <div className="reward-emblem" aria-hidden>
-            <WorldIcon className="h-8 w-8" strokeWidth={2.2} />
-          </div>
-          <p className="reward-world-label">{world.name}</p>
-          <h2
-            id="reward-title"
-            className="mt-2 text-3xl font-bold text-slate-900 sm:text-4xl"
-          >
-            {copy.title}
-          </h2>
-          <p className="reward-subtitle">{copy.subtitle}</p>
+    <div className="prm-shell">
+      <div className="prm-atmosphere" aria-hidden />
+      <span className="prm-vignette" aria-hidden />
+
+      <motion.div
+        ref={containerRef}
+        tabIndex={-1}
+        className={`prm-card ${success ? "is-success" : "is-attempt"}`}
+        role="dialog"
+        aria-labelledby="reward-title"
+        aria-describedby="reward-summary"
+        initial={reducedMotion ? false : "hidden"}
+        animate="visible"
+        variants={fadeSlideUp}
+      >
+        <div className="prm-emblem" aria-hidden>
+          <WorldIcon className="h-8 w-8" strokeWidth={2.2} />
         </div>
+        <p className="prm-world">{world.name}</p>
+        <h2 id="reward-title" className="prm-title">
+          {copy.title}
+        </h2>
+        <p className="prm-subtitle">{copy.subtitle}</p>
 
-        <div className="reward-body">
-          <section className="reward-practice" aria-label="Habilidade praticada">
-            <p className="reward-section-label">
-              <CircleCheck className="h-5 w-5" aria-hidden />
-              Habilidade praticada
-            </p>
-            <strong>{world.skill}</strong>
-            <p id="reward-summary">{result.summary}</p>
-          </section>
-
-          <div className="reward-record-grid">
-            <section className="reward-register">
-              <p>Registro da jornada</p>
-              <strong>{copy.progressLine}</strong>
-            </section>
-            <section className="reward-score">
-              <p>Pontuação</p>
-              <strong>{result.score}</strong>
-            </section>
-          </div>
-
-          <p className="reward-encouragement">
-            {copy.encouragement}
+        <section className="prm-practice" aria-label="Habilidade praticada">
+          <p className="prm-practice-label">
+            <CircleCheck className="h-5 w-5" aria-hidden />
+            Habilidade praticada
           </p>
+          <strong>{world.skill}</strong>
+          <p id="reward-summary">{result.summary}</p>
+        </section>
 
-          {detailEntries.length > 0 && (
-            <dl className="reward-details">
-              {detailEntries.map(([key, value]) => (
-                <div key={key} className="surface-stat min-w-0 text-left">
-                  <dt className="text-sm font-bold text-slate-600">
-                    {formatDetailKeyPt(key)}
-                  </dt>
-                  <dd className="mt-1 text-lg font-bold text-slate-900">
-                    {formatDetailValuePt(value)}
-                  </dd>
-                </div>
-              ))}
-            </dl>
-          )}
-
-          <div className="mt-8 flex min-w-0 flex-col gap-3 sm:flex-row">
-            <motion.button
-              type="button"
-              onClick={onPlayAgain}
-              aria-label="Tentar este desafio novamente"
-              whileHover={reducedMotion ? undefined : { y: -2 }}
-              whileTap={reducedMotion ? undefined : { y: 1, scale: 0.98 }}
-              className="btn-primary flex min-h-[3.25rem] flex-1 items-center justify-center gap-2 text-lg"
-            >
-              <RotateCcw className="h-6 w-6" aria-hidden />
-              Tentar novamente
-            </motion.button>
-            <motion.button
-              type="button"
-              onClick={onDashboard}
-              aria-label="Continuar na jornada cognitiva"
-              whileHover={reducedMotion ? undefined : { y: -1 }}
-              whileTap={reducedMotion ? undefined : { scale: 0.99 }}
-              className="btn-secondary flex min-h-[3.25rem] flex-1 items-center justify-center gap-2 text-lg"
-            >
-              <ArrowLeft className="h-6 w-6" aria-hidden />
-              Continuar jornada
-            </motion.button>
-          </div>
+        <div className="prm-record">
+          <section className="prm-record-card">
+            <p>Registro da jornada</p>
+            <strong>{copy.progressLine}</strong>
+          </section>
+          <section className="prm-score-card">
+            <p>Pontuação</p>
+            <strong>{result.score}</strong>
+          </section>
         </div>
-      </div>
-    </motion.div>
+
+        <p className="prm-encouragement">{copy.encouragement}</p>
+
+        {detailEntries.length > 0 && (
+          <dl className="prm-details">
+            {detailEntries.map(([key, value]) => (
+              <div key={key} className="prm-detail">
+                <dt>{formatDetailKeyPt(key)}</dt>
+                <dd>{formatDetailValuePt(value)}</dd>
+              </div>
+            ))}
+          </dl>
+        )}
+
+        <div className="prm-actions">
+          <motion.button
+            type="button"
+            onClick={onPlayAgain}
+            aria-label="Tentar este desafio novamente"
+            whileHover={reducedMotion ? undefined : { y: -2 }}
+            whileTap={reducedMotion ? undefined : { y: 1, scale: 0.98 }}
+            className="prm-cta"
+          >
+            <RotateCcw className="h-6 w-6" aria-hidden />
+            Tentar novamente
+          </motion.button>
+          <motion.button
+            type="button"
+            onClick={onDashboard}
+            aria-label="Continuar na jornada cognitiva"
+            whileHover={reducedMotion ? undefined : { y: -1 }}
+            whileTap={reducedMotion ? undefined : { scale: 0.99 }}
+            className="prm-btn"
+          >
+            <ArrowLeft className="h-6 w-6" aria-hidden />
+            Continuar jornada
+          </motion.button>
+        </div>
+      </motion.div>
+    </div>
   );
 }
