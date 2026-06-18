@@ -12068,4 +12068,28 @@ button:disabled:focus-visible {
   }
 }
 
+/* Rota Estratégica 3D board canvas (Mission 2) — a square viewport inside the
+   wooden board panel; the R3F scene composites over the panel's warm wood. */
+.rsg-canvas {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+.rsg-canvas canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  touch-action: manipulation;
+}
+.rsg-canvas-loading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--mf-cream-dim);
+  font-weight: 700;
+}
+
 

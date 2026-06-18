@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useMemo } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import {
@@ -20,7 +21,6 @@ import { gentleShakeAnimate } from "@/lib/feedback-motion";
 import {
   COLS,
   posKey,
-  positionsEqual,
   ROWS,
   useEscapeMaze,
 } from "@/games/escape-maze/useEscapeMaze";
@@ -29,6 +29,20 @@ import type {
   GameComponentProps,
   GridPosition,
 } from "@/types/game";
+
+/** WebGL is client-only: load the 3D board after mount with a calm fallback. */
+const RouteBoardScene = dynamic(
+  () =>
+    import("@/components/three/route/RouteBoardScene").then(
+      (mod) => mod.RouteBoardScene,
+    ),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="rsg-canvas-loading">Preparando o tabuleiro 3D…</div>
+    ),
+  },
+);
 
 const DIFFICULTY_LABELS: Record<DifficultyLevel, string> = {
   easy: "Mais aberto",
@@ -71,7 +85,6 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
     message,
     score,
     blockedShake,
-    moveTick,
     startGame,
     restartGame,
     changeDifficulty,
@@ -109,81 +122,6 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
         : status === "playing"
           ? "info"
           : "neutral";
-
-  const renderCell = (row: number, col: number) => {
-    const pos = { row, col };
-    const key = posKey(pos);
-    const isWall = mazeMap.walls.has(key);
-    const isPlayer = positionsEqual(pos, player);
-    const isGuardian = positionsEqual(pos, guardian);
-    const isExit = positionsEqual(pos, mazeMap.exitPosition);
-    const isStar =
-      mazeMap.collectibleStars.some((star) => positionsEqual(star, pos)) &&
-      !collectedSet.has(key);
-    const isMove =
-      moveTargets.has(key) && !isPlayer && !isGuardian && !isExit && !isStar;
-
-    const cellClass = [
-      "rsg-cell",
-      isWall ? "is-wall" : "",
-      isPlayer ? "is-player" : "",
-      !isPlayer && isGuardian ? "is-guardian" : "",
-      !isPlayer && !isGuardian && isExit ? "is-exit" : "",
-      isStar ? "is-star" : "",
-      isMove ? "is-move" : "",
-    ]
-      .filter(Boolean)
-      .join(" ");
-
-    return (
-      <div
-        key={`${row}-${col}`}
-        className={cellClass}
-        aria-label={
-          isWall
-            ? "Parede"
-            : isPlayer
-              ? "Você"
-              : isGuardian
-                ? "Guardião"
-                : isExit
-                  ? "Saída"
-                  : isStar
-                    ? "Luz"
-                    : "Caminho livre"
-        }
-      >
-        {isWall && <span className="rsg-wall-block" aria-hidden />}
-        {isStar && !isPlayer && !isGuardian && (
-          <span className="rsg-token rsg-token-star" aria-hidden>
-            <Sparkles className="h-5 w-5 sm:h-6 sm:w-6" strokeWidth={2.4} />
-          </span>
-        )}
-        {isPlayer && (
-          <motion.span
-            key={moveTick}
-            className="rsg-token rsg-token-player"
-            initial={reducedMotion ? false : { scale: 0.7, opacity: 0.7 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: "spring", stiffness: 380, damping: 20 }}
-            aria-hidden
-          >
-            <CircleUserRound className="h-6 w-6 sm:h-7 sm:w-7" strokeWidth={2.6} />
-          </motion.span>
-        )}
-        {!isPlayer && isGuardian && (
-          <span className="rsg-token rsg-token-guardian" aria-hidden>
-            <Shield className="h-6 w-6 sm:h-7 sm:w-7" strokeWidth={2.6} />
-          </span>
-        )}
-        {!isPlayer && !isGuardian && isExit && (
-          <span className="rsg-token rsg-token-exit" aria-hidden>
-            <DoorOpen className="h-6 w-6 sm:h-7 sm:w-7" strokeWidth={2.4} />
-          </span>
-        )}
-      </div>
-    );
-  };
 
   const moveIcons = {
     up: ChevronUp,
@@ -264,16 +202,21 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
               key={blockedShake > 0 ? `board-${blockedShake}` : "board"}
             >
               <div
-                className="rsg-board"
-                style={{
-                  gridTemplateColumns: `repeat(${COLS}, minmax(0, 1fr))`,
-                }}
+                className="rsg-canvas"
                 role="img"
-                aria-label="Rota estratégica: o explorador é você, o escudo é o guardião, a porta é a saída, as faíscas são luzes e os blocos são paredes."
+                aria-label="Tabuleiro 3D da rota: o explorador é você, o guardião é o sentinela encapuzado, o portal verde é a saída e as luzes douradas são coletáveis."
               >
-                {Array.from({ length: ROWS }, (_, row) =>
-                  Array.from({ length: COLS }, (_, col) => renderCell(row, col)),
-                )}
+                <RouteBoardScene
+                  walls={mazeMap.walls}
+                  exitPosition={mazeMap.exitPosition}
+                  stars={mazeMap.collectibleStars}
+                  collectedSet={collectedSet}
+                  player={player}
+                  guardian={guardian}
+                  moveTargets={moveTargets}
+                  reducedMotion={Boolean(reducedMotion)}
+                  onMove={tryMovePlayer}
+                />
               </div>
             </motion.div>
 
