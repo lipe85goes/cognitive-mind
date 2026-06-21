@@ -46,6 +46,21 @@ const RouteBoardScene = dynamic(
   },
 );
 
+const RouteBabylonBoard = dynamic(
+  () =>
+    import("@/games/escape-maze/RouteBabylonBoard").then(
+      (mod) => mod.RouteBabylonBoard,
+    ),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="rsg-canvas-loading">Preparando o tabuleiro Babylon…</div>
+    ),
+  },
+);
+
+const USE_BABYLON_ROUTE_BOARD = true;
+
 const DIFFICULTY_LABELS: Record<DifficultyLevel, string> = {
   easy: "Mais aberto",
   medium: "Equilibrado",
@@ -259,22 +274,38 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
                 role="img"
                 aria-label="Tabuleiro 3D da rota: o explorador é você, o guardião é o sentinela encapuzado, o portal verde é a saída e as luzes douradas são coletáveis."
               >
-                <RouteBoardScene
-                  walls={mazeMap.walls}
-                  exitPosition={mazeMap.exitPosition}
-                  stars={mazeMap.collectibleStars}
-                  collectedSet={collectedSet}
-                  player={player}
-                  guardian={guardian}
-                  moveTargets={moveTargets}
-                  traps={mazeMap.traps}
-                  triggeredTrapSet={triggeredTrapSet}
-                  shield={mazeMap.shield}
-                  shieldCollected={shieldCollected}
-                  dangerTiles={dangerTiles}
-                  reducedMotion={Boolean(reducedMotion)}
-                  onMove={tryMovePlayer}
-                />
+                {USE_BABYLON_ROUTE_BOARD ? (
+                  <RouteBabylonBoard
+                    mazeMap={mazeMap}
+                    collectedSet={collectedSet}
+                    player={player}
+                    guardian={guardian}
+                    moveTargets={moveTargets}
+                    triggeredTrapSet={triggeredTrapSet}
+                    shieldCollected={shieldCollected}
+                    dangerTiles={dangerTiles}
+                    reducedMotion={Boolean(reducedMotion)}
+                    status={status}
+                    onMove={tryMovePlayer}
+                  />
+                ) : (
+                  <RouteBoardScene
+                    walls={mazeMap.walls}
+                    exitPosition={mazeMap.exitPosition}
+                    stars={mazeMap.collectibleStars}
+                    collectedSet={collectedSet}
+                    player={player}
+                    guardian={guardian}
+                    moveTargets={moveTargets}
+                    traps={mazeMap.traps}
+                    triggeredTrapSet={triggeredTrapSet}
+                    shield={mazeMap.shield}
+                    shieldCollected={shieldCollected}
+                    dangerTiles={dangerTiles}
+                    reducedMotion={Boolean(reducedMotion)}
+                    onMove={tryMovePlayer}
+                  />
+                )}
               </div>
             </motion.div>
 

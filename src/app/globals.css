@@ -12132,6 +12132,13 @@ button:disabled:focus-visible {
   height: 100% !important;
   touch-action: manipulation;
 }
+.route-babylon-board {
+  display: block;
+  width: 100%;
+  height: 100%;
+  outline: none;
+  touch-action: manipulation;
+}
 .rsg-canvas-loading {
   position: absolute;
   inset: 0;
