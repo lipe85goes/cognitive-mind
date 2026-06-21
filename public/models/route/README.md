@@ -27,6 +27,12 @@ Optional preview render:
 blender --background --python tools/blender/create_route_board_glb.py -- --preview
 ```
 
+That command writes both:
+
+- `board-preview.png` - cinematic 3/4 preview with the full board visible.
+- `board-preview-top.png` - top/near-top preview for checking all 49 tiles and
+  the full outer frame.
+
 ## Coordinate and orientation contract
 
 The generated GLB is exported as Y-up glTF:

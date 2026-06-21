@@ -18,6 +18,7 @@ from math import radians
 from pathlib import Path
 
 import bpy
+from mathutils import Vector
 
 
 CELL_SIZE = 1.0
@@ -55,6 +56,17 @@ def parse_args() -> argparse.Namespace:
             project_root() / "public" / "models" / "route" / "board-preview.png"
         ),
         help="Optional preview PNG path.",
+    )
+    parser.add_argument(
+        "--top-preview-output",
+        default=str(
+            project_root()
+            / "public"
+            / "models"
+            / "route"
+            / "board-preview-top.png"
+        ),
+        help="Optional top/near-top preview PNG path.",
     )
     return parser.parse_args(script_args)
 
@@ -348,12 +360,36 @@ def add_rivets(materials: dict[str, bpy.types.Material]) -> None:
         )
 
 
-def add_camera_and_lights() -> None:
+def point_camera_at(
+    camera: bpy.types.Object,
+    target: tuple[float, float, float],
+) -> None:
+    direction = Vector(target) - camera.location
+    camera.rotation_euler = direction.to_track_quat("-Z", "Y").to_euler()
+
+
+def add_preview_camera(
+    name: str,
+    location: tuple[float, float, float],
+    target: tuple[float, float, float],
+    ortho_scale: float,
+) -> bpy.types.Object:
+    bpy.ops.object.camera_add(location=location)
+    camera = bpy.context.object
+    camera.name = name
+    camera.data.type = "ORTHO"
+    camera.data.ortho_scale = ortho_scale
+    camera.data.lens = 55
+    point_camera_at(camera, target)
+    return camera
+
+
+def add_camera_and_lights() -> dict[str, bpy.types.Object]:
     bpy.ops.object.light_add(type="AREA", location=(-3.5, -4.2, 7.0))
     key = bpy.context.object
     key.name = "Preview_Key_Light"
-    key.data.energy = 520
-    key.data.size = 4.5
+    key.data.energy = 620
+    key.data.size = 5.2
 
     bpy.ops.object.light_add(type="POINT", location=(3.5, 2.8, 2.5))
     rim = bpy.context.object
@@ -361,11 +397,20 @@ def add_camera_and_lights() -> None:
     rim.data.energy = 80
     rim.data.color = (1.0, 0.74, 0.38)
 
-    bpy.ops.object.camera_add(location=(6.2, -7.0, 5.2), rotation=(radians(61), 0, radians(42)))
-    camera = bpy.context.object
-    bpy.context.scene.camera = camera
-    camera.name = "Preview_Camera"
-    camera.data.lens = 42
+    preview_camera = add_preview_camera(
+        "Preview_Camera",
+        location=(6.6, -7.4, 5.9),
+        target=(0.0, 0.0, 0.02),
+        ortho_scale=10.8,
+    )
+    top_camera = add_preview_camera(
+        "Preview_Top_Camera",
+        location=(0.0, 0.0, 12.0),
+        target=(0.0, 0.0, 0.0),
+        ortho_scale=10.35,
+    )
+    bpy.context.scene.camera = preview_camera
+    return {"preview": preview_camera, "top": top_camera}
 
 
 def configure_scene() -> None:
@@ -389,8 +434,16 @@ def export_glb(output_path: Path) -> None:
     )
 
 
-def render_preview(output_path: Path) -> None:
+def render_preview(
+    output_path: Path,
+    camera: bpy.types.Object,
+    resolution: tuple[int, int] | None = None,
+) -> None:
     output_path.parent.mkdir(parents=True, exist_ok=True)
+    bpy.context.scene.camera = camera
+    if resolution:
+        bpy.context.scene.render.resolution_x = resolution[0]
+        bpy.context.scene.render.resolution_y = resolution[1]
     bpy.context.scene.render.filepath = str(output_path)
     bpy.ops.render.render(write_still=True)
 
@@ -399,6 +452,7 @@ def main() -> None:
     args = parse_args()
     output_path = Path(args.output).resolve()
     preview_path = Path(args.preview_output).resolve()
+    top_preview_path = Path(args.top_preview_output).resolve()
 
     clear_scene()
     materials = create_materials()
@@ -406,16 +460,18 @@ def main() -> None:
     add_tiles_and_grid(materials)
     add_outer_frame(materials)
     add_rivets(materials)
-    add_camera_and_lights()
+    cameras = add_camera_and_lights()
     configure_scene()
 
     export_glb(output_path)
     if args.preview:
-        render_preview(preview_path)
+        render_preview(preview_path, cameras["preview"], (1400, 1000))
+        render_preview(top_preview_path, cameras["top"], (1200, 1200))
 
     print(f"Exported {output_path}")
     if args.preview:
         print(f"Rendered {preview_path}")
+        print(f"Rendered {top_preview_path}")
 
 
 if __name__ == "__main__":
