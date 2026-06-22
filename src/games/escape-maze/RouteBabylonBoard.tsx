@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef } from "react";
+import { LocateFixed } from "lucide-react";
 import {
   COLS,
   posKey,
@@ -97,8 +98,9 @@ export function RouteBabylonBoard({
       const canvas = canvasRef.current;
       if (!canvas || controllerRef.current) return;
 
-      const [Babylon, sceneModule] = await Promise.all([
+      const [Babylon, , sceneModule] = await Promise.all([
         import("@babylonjs/core"),
+        import("@babylonjs/loaders/glTF"),
         import("@/games/escape-maze/routeBabylonScene"),
       ]);
       if (cancelled || !canvasRef.current) return;
@@ -134,16 +136,27 @@ export function RouteBabylonBoard({
   }, []);
 
   return (
-    <canvas
-      ref={canvasRef}
-      className="route-babylon-board"
-      data-player-cell={posKey(player)}
-      data-guardian-cell={posKey(guardian)}
-      data-exit-cell={posKey(mazeMap.exitPosition)}
-      data-wall-cells={state.walls.join(" ")}
-      data-move-targets={state.moveTargets.join(" ")}
-      data-status={status}
-      aria-hidden="true"
-    />
+    <div className="route-babylon-wrap">
+      <canvas
+        ref={canvasRef}
+        className="route-babylon-board"
+        data-player-cell={posKey(player)}
+        data-guardian-cell={posKey(guardian)}
+        data-exit-cell={posKey(mazeMap.exitPosition)}
+        data-wall-cells={state.walls.join(" ")}
+        data-move-targets={state.moveTargets.join(" ")}
+        data-status={status}
+        aria-hidden="true"
+      />
+      <button
+        type="button"
+        className="route-babylon-reset"
+        onClick={() => controllerRef.current?.resetView()}
+        aria-label="Centralizar a visão do tabuleiro"
+      >
+        <LocateFixed className="h-4 w-4" aria-hidden />
+        Centralizar
+      </button>
+    </div>
   );
 }

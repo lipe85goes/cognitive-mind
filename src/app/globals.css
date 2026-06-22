@@ -11438,7 +11438,7 @@ button:disabled:focus-visible {
 
 .rsg-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  grid-template-columns: minmax(0, 1.42fr) minmax(0, 0.72fr);
   gap: clamp(0.85rem, 2vw, 1.5rem);
   width: 100%;
   align-items: start;
@@ -11453,24 +11453,22 @@ button:disabled:focus-visible {
 }
 
 .rsg-board-panel {
-  width: min(100%, 30rem);
-  padding: clamp(0.5rem, 1.5vw, 0.9rem);
-  border: 2px solid var(--mf-brass-deep);
-  border-radius: 1.3rem;
-  background:
-    linear-gradient(180deg, rgb(255 244 205 / 0.08), transparent 30%),
-    linear-gradient(180deg, #3a2616, #1c120a);
-  box-shadow:
-    inset 0 0 0 1px rgb(231 192 116 / 0.32),
-    inset 0 0.16rem 0 rgb(255 240 200 / 0.14),
-    var(--mf-shadow-deep);
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 1.2rem;
+  /* Soft grounding vignette under the board — no rectangular panel fill. */
+  background: radial-gradient(
+    ellipse 76% 58% at 50% 56%,
+    rgb(0 0 0 / 0.45),
+    transparent 72%
+  );
 }
-.rsg-board-panel.is-won {
-  border-color: var(--mf-green-hi);
-  box-shadow: 0 0 0 2px var(--mf-green-hi), var(--mf-shadow-deep);
+.rsg-board-panel.is-won .rsg-canvas {
+  box-shadow: 0 0 2.4rem rgb(95 206 139 / 0.34);
 }
-.rsg-board-panel.is-lost {
-  border-color: #f4b14a;
+.rsg-board-panel.is-lost .rsg-canvas {
+  box-shadow: 0 0 2rem rgb(244 177 74 / 0.26);
 }
 
 .rsg-board {
@@ -11816,6 +11814,9 @@ button:disabled:focus-visible {
   .rsg-control-col {
     order: 2;
   }
+  .rsg-canvas {
+    aspect-ratio: 5 / 4;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -12122,7 +12123,7 @@ button:disabled:focus-visible {
 .rsg-canvas {
   position: relative;
   width: 100%;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 4 / 3;
   border-radius: 1rem;
   overflow: hidden;
 }
@@ -12132,12 +12133,47 @@ button:disabled:focus-visible {
   height: 100% !important;
   touch-action: manipulation;
 }
+.route-babylon-wrap {
+  position: absolute;
+  inset: 0;
+}
 .route-babylon-board {
   display: block;
   width: 100%;
   height: 100%;
   outline: none;
-  touch-action: manipulation;
+  /* Board gestures (orbit/pinch) stay on the canvas and never scroll the page;
+     page scroll outside the board is unaffected. */
+  touch-action: none;
+}
+.route-babylon-reset {
+  position: absolute;
+  right: 0.6rem;
+  bottom: 0.6rem;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.7rem;
+  border: 1px solid var(--mf-glass-border);
+  border-radius: 0.7rem;
+  background: rgb(20 12 7 / 0.62);
+  backdrop-filter: blur(6px);
+  color: var(--mf-cream);
+  font-size: 0.78rem;
+  font-weight: 800;
+  cursor: pointer;
+  opacity: 0.78;
+  transition:
+    opacity 0.15s ease,
+    border-color 0.15s ease;
+}
+.route-babylon-reset svg {
+  color: var(--mf-brass);
+}
+.route-babylon-reset:hover {
+  opacity: 1;
+  border-color: var(--mf-brass-mid);
 }
 .rsg-canvas-loading {
   position: absolute;

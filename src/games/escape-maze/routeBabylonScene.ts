@@ -27,6 +27,8 @@ export interface RouteBabylonBridge {
 export interface RouteBabylonController {
   updateBoard: (state: RouteBabylonState) => void;
   resize: () => void;
+  /** Snap the camera back to the default safe inspection view. */
+  resetView: () => void;
   dispose: () => void;
 }
 
@@ -37,6 +39,7 @@ type RouteMaterials = Record<
   | "stoneAlt"
   | "brass"
   | "wall"
+  | "hit"
   | "player"
   | "playerGlow"
   | "guardian"
@@ -55,6 +58,34 @@ type RouteMaterials = Record<
 const CELL = 1;
 const TILE_HEIGHT = 0.12;
 const BOARD_TOP = 0;
+const BOARD_GLB_PATH = "/models/route/board.glb";
+
+// --- Board model placement -------------------------------------------------
+// The GLB grid is authored at exactly the same coordinates as `cellToPosition`
+// (tiles at x = col-3, z = row-3, CELL = 1), so scale 1 keeps pieces aligned.
+const BOARD_SCALE = 1;
+const BOARD_Y_OFFSET = 0;
+const BOARD_MODEL_OFFSET = { x: 0, y: BOARD_Y_OFFSET, z: 0 };
+const BOARD_MODEL_ROTATION_Y = 0;
+/** Top of the GLB stone tiles — every gameplay piece rests on this surface. */
+const BOARD_SURFACE_Y = 0.2;
+
+// --- Camera composition (cinematic 3/4 premium tabletop) -------------------
+const DEFAULT_CAMERA_ALPHA = -Math.PI / 2.16;
+const DEFAULT_CAMERA_BETA = Math.PI / 3.1;
+const DEFAULT_CAMERA_RADIUS = 11.5;
+const DEFAULT_CAMERA_RADIUS_MOBILE = 12;
+const DEFAULT_CAMERA_TARGET = { x: -0.24, y: 0.0, z: 0.05 };
+
+// --- Tablet camera clamps: inspect freely, never flip / never lose the board.
+const MIN_CAMERA_ALPHA = DEFAULT_CAMERA_ALPHA - 0.5; // ~28 deg of side orbit
+const MAX_CAMERA_ALPHA = DEFAULT_CAMERA_ALPHA + 0.5;
+const MIN_CAMERA_BETA = 0.82; // ~47 deg — not too top-down
+const MAX_CAMERA_BETA = 1.35; // ~77 deg — stays above the board (never upside down)
+const MIN_CAMERA_RADIUS = 9; // closest inspect distance (no extreme crop)
+const MAX_CAMERA_RADIUS = 15.5; // farthest (board still clearly visible)
+
+type BoardAssetStatus = "pending" | "loaded" | "failed";
 
 function keyOf(pos: GridPosition): string {
   return `${pos.row},${pos.col}`;
@@ -106,6 +137,10 @@ function createMaterials(
     }),
     wall: makeMaterial(B, scene, "route-wall", "#4d3a2a", {
       specular: "#a98249",
+    }),
+    hit: makeMaterial(B, scene, "route-hit-tile", "#000000", {
+      alpha: 0.001,
+      specular: "#000000",
     }),
     player: makeMaterial(B, scene, "route-player", "#37d9ea", {
       emissive: "#0f8491",
@@ -169,17 +204,50 @@ export function createRouteBabylonController(
   });
   const scene = new B.Scene(engine);
   scene.clearColor = new B.Color4(0, 0, 0, 0);
-  scene.ambientColor = B.Color3.FromHexString("#3a281a");
+  scene.ambientColor = B.Color3.FromHexString("#43301d");
+
+  // Warm cinematic grade: tone map + lift exposure/contrast so the dark wood
+  // and brass read richly without washing out.
+  scene.imageProcessingConfiguration.toneMappingEnabled = true;
+  scene.imageProcessingConfiguration.toneMappingType =
+    B.ImageProcessingConfiguration.TONEMAPPING_ACES;
+  scene.imageProcessingConfiguration.exposure = 1.25;
+  scene.imageProcessingConfiguration.contrast = 1.28;
+  scene.imageProcessingConfiguration.vignetteEnabled = true;
+  scene.imageProcessingConfiguration.vignetteWeight = 2.4;
+  scene.imageProcessingConfiguration.vignetteColor = new B.Color4(0, 0, 0, 0);
 
   const camera = new B.ArcRotateCamera(
     "route-camera",
-    -Math.PI / 2.25,
-    Math.PI / 3.05,
-    9.1,
-    new B.Vector3(0, 0.2, 0.15),
+    DEFAULT_CAMERA_ALPHA,
+    DEFAULT_CAMERA_BETA,
+    DEFAULT_CAMERA_RADIUS,
+    new B.Vector3(
+      DEFAULT_CAMERA_TARGET.x,
+      DEFAULT_CAMERA_TARGET.y,
+      DEFAULT_CAMERA_TARGET.z,
+    ),
     scene,
   );
+  // Controlled tablet inspection: pointer orbit + pinch + wheel only. The
+  // keyboard input is intentionally NOT added so the arrow keys stay owned by
+  // the game (useEscapeMaze) and never orbit the camera.
   camera.inputs.clear();
+  camera.inputs.addPointers();
+  camera.inputs.addMouseWheel();
+  camera.attachControl(canvas, true);
+  camera.panningSensibility = 0; // no panning — orbit + zoom only
+  camera.lowerAlphaLimit = MIN_CAMERA_ALPHA;
+  camera.upperAlphaLimit = MAX_CAMERA_ALPHA;
+  camera.lowerBetaLimit = MIN_CAMERA_BETA;
+  camera.upperBetaLimit = MAX_CAMERA_BETA;
+  camera.lowerRadiusLimit = MIN_CAMERA_RADIUS;
+  camera.upperRadiusLimit = MAX_CAMERA_RADIUS;
+  camera.angularSensibilityX = 1500; // higher = slower, calmer orbit
+  camera.angularSensibilityY = 1500;
+  camera.wheelPrecision = 38;
+  camera.pinchPrecision = 90;
+  camera.inertia = 0.72;
   camera.minZ = 0.05;
   camera.maxZ = 60;
   camera.fov = 0.72;
@@ -189,31 +257,43 @@ export function createRouteBabylonController(
     new B.Vector3(-0.45, -1, -0.35),
     scene,
   );
-  warmKey.position = new B.Vector3(5, 8, 6);
-  warmKey.intensity = 2.15;
-  warmKey.diffuse = B.Color3.FromHexString("#ffdfae");
+  warmKey.position = new B.Vector3(5, 8.5, 6);
+  warmKey.intensity = 2.6;
+  warmKey.diffuse = B.Color3.FromHexString("#ffe1b0");
+  warmKey.specular = B.Color3.FromHexString("#fff1cf");
 
   const fill = new B.HemisphericLight(
     "route-fill-light",
     new B.Vector3(0, 1, 0),
     scene,
   );
-  fill.intensity = 0.42;
-  fill.diffuse = B.Color3.FromHexString("#f8e2bd");
-  fill.groundColor = B.Color3.FromHexString("#120805");
+  fill.intensity = 0.52;
+  fill.diffuse = B.Color3.FromHexString("#fbe6c2");
+  fill.groundColor = B.Color3.FromHexString("#160a05");
+  fill.specular = B.Color3.FromHexString("#caa264");
 
+  // Cool back rim separates the board silhouette from the dark background.
   const rim = new B.PointLight(
     "route-rim-light",
-    new B.Vector3(-3.9, 2.6, -4),
+    new B.Vector3(-4.2, 3.0, -4.4),
     scene,
   );
-  rim.intensity = 0.62;
-  rim.diffuse = B.Color3.FromHexString("#78e0ff");
+  rim.intensity = 0.7;
+  rim.diffuse = B.Color3.FromHexString("#86e3ff");
+
+  // Warm front-right glint that makes the aged brass frame pop.
+  const brassGlint = new B.PointLight(
+    "route-brass-glint",
+    new B.Vector3(4.6, 2.4, 4.2),
+    scene,
+  );
+  brassGlint.intensity = 0.62;
+  brassGlint.diffuse = B.Color3.FromHexString("#ffcf83");
 
   const glow = new B.GlowLayer("route-glow-layer", scene, {
-    mainTextureSamples: 2,
+    mainTextureSamples: 4,
   });
-  glow.intensity = 0.42;
+  glow.intensity = 0.55;
 
   const shadowGenerator = new B.ShadowGenerator(1024, warmKey);
   shadowGenerator.useBlurExponentialShadowMap = true;
@@ -221,12 +301,23 @@ export function createRouteBabylonController(
   shadowGenerator.bias = 0.0008;
 
   const materials = createMaterials(B, scene);
+  materials.hit.disableDepthWrite = true;
   let state = initialState;
   let boardRoot: BABYLON.TransformNode | null = null;
+  let boardAssetRoot: BABYLON.TransformNode | null = null;
+  let boardAssetStatus: BoardAssetStatus = "pending";
+  let boardAssetWarningLogged = false;
+  let disposed = false;
 
+  // Visual cell -> world position. Columns map straight to +X (col 0 left ->
+  // col 6 right). Rows map to -Z so that row 0 sits at the FAR/back edge and
+  // row 6 (the player's start side) sits at the NEAR/front edge for the
+  // intended 3/4 camera. This is a pure visual mapping shared by the rendered
+  // pieces, the invisible pick tiles and the projection, so hitboxes always
+  // stay aligned with what is drawn.
   function cellToPosition(row: number, col: number) {
     const x = (col - (state.cols - 1) / 2) * CELL;
-    const z = (row - (state.rows - 1) / 2) * CELL;
+    const z = ((state.rows - 1) / 2 - row) * CELL;
     return new B.Vector3(x, BOARD_TOP, z);
   }
 
@@ -308,6 +399,64 @@ export function createRouteBabylonController(
     return mesh;
   }
 
+  async function loadBoardAssetOnce() {
+    if (boardAssetStatus !== "pending") return;
+
+    try {
+      const result = await B.SceneLoader.ImportMeshAsync(
+        "",
+        "",
+        BOARD_GLB_PATH,
+        scene,
+      );
+      if (disposed) {
+        result.meshes.forEach((mesh) => mesh.dispose(false, true));
+        result.transformNodes.forEach((node) => node.dispose(false, true));
+        return;
+      }
+
+      const root = new B.TransformNode("route-board-glb-root", scene);
+      root.position = new B.Vector3(
+        BOARD_MODEL_OFFSET.x,
+        BOARD_MODEL_OFFSET.y,
+        BOARD_MODEL_OFFSET.z,
+      );
+      root.scaling.setAll(BOARD_SCALE);
+      root.rotation.y = BOARD_MODEL_ROTATION_Y;
+
+      const importedNodes = [
+        ...result.meshes,
+        ...result.transformNodes,
+      ] as BABYLON.Node[];
+      const importedNodeSet = new Set<BABYLON.Node>(importedNodes);
+
+      importedNodes.forEach((node) => {
+        if (!node.parent || !importedNodeSet.has(node.parent)) {
+          node.parent = root;
+        }
+      });
+
+      result.meshes.forEach((mesh) => {
+        mesh.isPickable = false;
+        mesh.receiveShadows = true;
+        shadowGenerator.addShadowCaster(mesh);
+      });
+
+      boardAssetRoot = root;
+      boardAssetStatus = "loaded";
+      renderBoard();
+    } catch (error) {
+      boardAssetStatus = "failed";
+      if (!boardAssetWarningLogged) {
+        boardAssetWarningLogged = true;
+        console.warn(
+          "[MindFlow] Failed to load route board GLB; using procedural fallback.",
+          error,
+        );
+      }
+    }
+  }
+
   function renderBase(parent: BABYLON.TransformNode) {
     const boardWidth = state.cols * CELL + 1.1;
     const boardDepth = state.rows * CELL + 1.1;
@@ -372,6 +521,7 @@ export function createRouteBabylonController(
     const wallKeys = new Set(state.walls);
     const moveKeys = new Set(state.moveTargets);
     const dangerKeys = new Set(state.dangerTiles);
+    const useInvisibleHitTiles = boardAssetStatus === "loaded";
 
     for (let row = 0; row < state.rows; row += 1) {
       for (let col = 0; col < state.cols; col += 1) {
@@ -380,10 +530,14 @@ export function createRouteBabylonController(
         const tile = box(
           "route-tile",
           0.86,
-          TILE_HEIGHT,
+          useInvisibleHitTiles ? 0.08 : TILE_HEIGHT,
           0.86,
-          new B.Vector3(pos.x, 0.08, pos.z),
-          (row + col) % 2 === 0 ? materials.stone : materials.stoneAlt,
+          new B.Vector3(pos.x, useInvisibleHitTiles ? 0.26 : 0.08, pos.z),
+          useInvisibleHitTiles
+            ? materials.hit
+            : (row + col) % 2 === 0
+              ? materials.stone
+              : materials.stoneAlt,
           parent,
           false,
         );
@@ -395,7 +549,11 @@ export function createRouteBabylonController(
             "route-danger-ring",
             0.58,
             0.026,
-            new B.Vector3(pos.x, 0.18, pos.z),
+            new B.Vector3(
+              pos.x,
+              useInvisibleHitTiles ? BOARD_SURFACE_Y + 0.02 : 0.18,
+              pos.z,
+            ),
             materials.danger,
             parent,
           );
@@ -406,7 +564,11 @@ export function createRouteBabylonController(
             "route-move-ring",
             0.48,
             0.02,
-            new B.Vector3(pos.x, 0.2, pos.z),
+            new B.Vector3(
+              pos.x,
+              useInvisibleHitTiles ? BOARD_SURFACE_Y + 0.028 : 0.2,
+              pos.z,
+            ),
             materials.move,
             parent,
           );
@@ -422,9 +584,9 @@ export function createRouteBabylonController(
       box(
         "route-wall-base",
         0.72,
-        0.58,
+        0.52,
         0.72,
-        new B.Vector3(pos.x, 0.42, pos.z),
+        new B.Vector3(pos.x, BOARD_SURFACE_Y + 0.26, pos.z),
         materials.wall,
         parent,
       );
@@ -433,7 +595,7 @@ export function createRouteBabylonController(
         0.62,
         0.14,
         0.62,
-        new B.Vector3(pos.x, 0.79, pos.z),
+        new B.Vector3(pos.x, BOARD_SURFACE_Y + 0.59, pos.z),
         materials.brass,
         parent,
       );
@@ -533,7 +695,7 @@ export function createRouteBabylonController(
         },
         scene,
       );
-      crystal.position = new B.Vector3(pos.x, 0.5, pos.z);
+      crystal.position = new B.Vector3(pos.x, BOARD_SURFACE_Y + 0.26, pos.z);
       crystal.rotation.y = Math.PI / 5;
       crystal.material = spent ? materials.trapSpent : materials.trap;
       crystal.parent = parent;
@@ -546,7 +708,7 @@ export function createRouteBabylonController(
         "route-shield-token",
         0.46,
         0.08,
-        new B.Vector3(pos.x, 0.38, pos.z),
+        new B.Vector3(pos.x, BOARD_SURFACE_Y + 0.06, pos.z),
         materials.shield,
         parent,
         6,
@@ -556,7 +718,7 @@ export function createRouteBabylonController(
         0.25,
         0.18,
         0.06,
-        new B.Vector3(pos.x, 0.53, pos.z),
+        new B.Vector3(pos.x, BOARD_SURFACE_Y + 0.22, pos.z),
         materials.shield,
         parent,
       );
@@ -567,7 +729,9 @@ export function createRouteBabylonController(
     boardRoot?.dispose(false, false);
     boardRoot = new B.TransformNode("route-board-root", scene);
 
-    renderBase(boardRoot);
+    if (boardAssetStatus !== "loaded") {
+      renderBase(boardRoot);
+    }
     renderTiles(boardRoot);
     renderPickups(boardRoot);
     renderWalls(boardRoot);
@@ -577,10 +741,21 @@ export function createRouteBabylonController(
     writeProjectedCellCenters();
   }
 
+  // Default safe framing — also used by resetView(). Snaps alpha/beta/radius/
+  // target back inside the clamps for the current canvas width.
   function fitCamera() {
-    const width = engine.getRenderWidth();
-    camera.radius = width < 520 ? 10.4 : 9.1;
-    camera.beta = width < 520 ? Math.PI / 3.35 : Math.PI / 3.05;
+    const width = canvas.clientWidth || engine.getRenderWidth();
+    const isNarrow = width < 520;
+    camera.alpha = DEFAULT_CAMERA_ALPHA;
+    camera.radius = isNarrow
+      ? DEFAULT_CAMERA_RADIUS_MOBILE
+      : DEFAULT_CAMERA_RADIUS;
+    camera.beta = isNarrow ? DEFAULT_CAMERA_BETA - 0.06 : DEFAULT_CAMERA_BETA;
+    camera.target.set(
+      DEFAULT_CAMERA_TARGET.x,
+      DEFAULT_CAMERA_TARGET.y,
+      DEFAULT_CAMERA_TARGET.z,
+    );
   }
 
   function writeProjectedCellCenters() {
@@ -612,12 +787,60 @@ export function createRouteBabylonController(
     canvas.dataset.cellCenters = JSON.stringify(centers);
   }
 
-  scene.onPointerObservable.add((pointerInfo) => {
-    if (pointerInfo.type !== B.PointerEventTypes.POINTERDOWN) return;
+  // Tap vs drag/pinch — robust, device-independent detection from the raw
+  // pointer coordinates. A move only fires when a single pointer is released
+  // near where it started, quickly, with no second finger involved during the
+  // gesture. One-finger orbit drags exceed the distance threshold and
+  // two-finger pinches raise the multi-touch flag, so neither moves a piece.
+  // The camera's own pointer input still handles the orbit/pinch in parallel.
+  const TAP_MOVE_THRESHOLD_PX = 14;
+  const TAP_MAX_DURATION_MS = 650;
+  let pointersDown = 0;
+  let gestureMultiTouch = false;
+  let tapPointerId = -1;
+  let tapStartX = 0;
+  let tapStartY = 0;
+  let tapStartTime = 0;
 
-    const pick = scene.pick(scene.pointerX, scene.pointerY, (mesh) => {
-      return Boolean(mesh.metadata?.routeTile);
-    });
+  scene.onPointerObservable.add((pointerInfo) => {
+    const event = pointerInfo.event as PointerEvent;
+
+    if (pointerInfo.type === B.PointerEventTypes.POINTERDOWN) {
+      pointersDown += 1;
+      if (pointersDown > 1) {
+        gestureMultiTouch = true;
+      } else {
+        gestureMultiTouch = false;
+        tapPointerId = event.pointerId;
+        tapStartX = event.clientX;
+        tapStartY = event.clientY;
+        tapStartTime = performance.now();
+      }
+      return;
+    }
+
+    if (pointerInfo.type !== B.PointerEventTypes.POINTERUP) return;
+
+    pointersDown = Math.max(0, pointersDown - 1);
+    if (pointersDown > 0) return; // wait for every finger to lift
+
+    const wasMultiTouch = gestureMultiTouch;
+    gestureMultiTouch = false;
+    if (wasMultiTouch || event.pointerId !== tapPointerId) return;
+
+    const moved = Math.hypot(
+      event.clientX - tapStartX,
+      event.clientY - tapStartY,
+    );
+    const duration = performance.now() - tapStartTime;
+    if (moved > TAP_MOVE_THRESHOLD_PX || duration > TAP_MAX_DURATION_MS) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const pick = scene.pick(
+      event.clientX - rect.left,
+      event.clientY - rect.top,
+      (mesh) => Boolean(mesh.metadata?.routeTile),
+    );
     const metadata = pick?.pickedMesh?.metadata as
       | { row: number; col: number; key: string }
       | undefined;
@@ -631,6 +854,7 @@ export function createRouteBabylonController(
 
   fitCamera();
   renderBoard();
+  void loadBoardAssetOnce();
   engine.runRenderLoop(() => {
     scene.render();
   });
@@ -645,9 +869,15 @@ export function createRouteBabylonController(
       fitCamera();
       writeProjectedCellCenters();
     },
+    resetView() {
+      fitCamera();
+      writeProjectedCellCenters();
+    },
     dispose() {
+      disposed = true;
       engine.stopRenderLoop();
       boardRoot?.dispose(false, false);
+      boardAssetRoot?.dispose(false, true);
       glow.dispose();
       scene.dispose();
       engine.dispose();
