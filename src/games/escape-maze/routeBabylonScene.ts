@@ -77,13 +77,20 @@ const DEFAULT_CAMERA_RADIUS = 11.5;
 const DEFAULT_CAMERA_RADIUS_MOBILE = 12;
 const DEFAULT_CAMERA_TARGET = { x: -0.24, y: 0.0, z: 0.05 };
 
-// --- Tablet camera clamps: inspect freely, never flip / never lose the board.
-const MIN_CAMERA_ALPHA = DEFAULT_CAMERA_ALPHA - 0.5; // ~28 deg of side orbit
-const MAX_CAMERA_ALPHA = DEFAULT_CAMERA_ALPHA + 0.5;
-const MIN_CAMERA_BETA = 0.82; // ~47 deg — not too top-down
-const MAX_CAMERA_BETA = 1.35; // ~77 deg — stays above the board (never upside down)
-const MIN_CAMERA_RADIUS = 9; // closest inspect distance (no extreme crop)
-const MAX_CAMERA_RADIUS = 15.5; // farthest (board still clearly visible)
+// --- Tight tablet inspection clamps. Small left/right orbit + a touch of tilt;
+// never enough to swap front/back, go top-down, flip, or hit an extreme side
+// view. The default view stays the main play view.
+const MIN_CAMERA_ALPHA = DEFAULT_CAMERA_ALPHA - 0.3; // ~17 deg left
+const MAX_CAMERA_ALPHA = DEFAULT_CAMERA_ALPHA + 0.3; // ~17 deg right
+const MIN_CAMERA_BETA = 0.92; // ~53 deg — never top-down
+const MAX_CAMERA_BETA = 1.2; // ~69 deg — stays well above the board (no flip)
+const MIN_CAMERA_RADIUS = 9.5; // closest inspect distance
+const MAX_CAMERA_RADIUS = 14.5; // farthest (board still clearly visible)
+
+// Custom two-finger gesture sensitivities (one finger never orbits).
+const ORBIT_ALPHA_SENSITIVITY = 0.005;
+const ORBIT_BETA_SENSITIVITY = 0.004;
+const WHEEL_ZOOM_STEP = 0.6;
 
 type BoardAssetStatus = "pending" | "loaded" | "failed";
 
@@ -229,25 +236,19 @@ export function createRouteBabylonController(
     ),
     scene,
   );
-  // Controlled tablet inspection: pointer orbit + pinch + wheel only. The
-  // keyboard input is intentionally NOT added so the arrow keys stay owned by
-  // the game (useEscapeMaze) and never orbit the camera.
+  // Camera interaction is a fully custom two-finger gesture layer (see below),
+  // so NO Babylon pointer/keyboard inputs are attached. Consequences:
+  //  - a single-finger drag can never orbit the camera (one finger is reserved
+  //    for tile taps),
+  //  - the arrow keys stay owned by the game (useEscapeMaze), never the camera.
+  // The arc-rotate limits below back up the manual clamps in the gesture layer.
   camera.inputs.clear();
-  camera.inputs.addPointers();
-  camera.inputs.addMouseWheel();
-  camera.attachControl(canvas, true);
-  camera.panningSensibility = 0; // no panning — orbit + zoom only
   camera.lowerAlphaLimit = MIN_CAMERA_ALPHA;
   camera.upperAlphaLimit = MAX_CAMERA_ALPHA;
   camera.lowerBetaLimit = MIN_CAMERA_BETA;
   camera.upperBetaLimit = MAX_CAMERA_BETA;
   camera.lowerRadiusLimit = MIN_CAMERA_RADIUS;
   camera.upperRadiusLimit = MAX_CAMERA_RADIUS;
-  camera.angularSensibilityX = 1500; // higher = slower, calmer orbit
-  camera.angularSensibilityY = 1500;
-  camera.wheelPrecision = 38;
-  camera.pinchPrecision = 90;
-  camera.inertia = 0.72;
   camera.minZ = 0.05;
   camera.maxZ = 60;
   camera.fov = 0.72;
@@ -787,46 +788,99 @@ export function createRouteBabylonController(
     canvas.dataset.cellCenters = JSON.stringify(centers);
   }
 
-  // Tap vs drag/pinch — robust, device-independent detection from the raw
-  // pointer coordinates. A move only fires when a single pointer is released
-  // near where it started, quickly, with no second finger involved during the
-  // gesture. One-finger orbit drags exceed the distance threshold and
-  // two-finger pinches raise the multi-touch flag, so neither moves a piece.
-  // The camera's own pointer input still handles the orbit/pinch in parallel.
+  // --- Custom tablet gesture layer ---------------------------------------
+  // Policy (raw pointer events so a single pointer can never reach the camera):
+  //   - one short single-finger tap on a move tile  -> move the piece
+  //   - a single-finger drag                         -> nothing (no orbit/move)
+  //   - two fingers                                  -> orbit + pinch-zoom
+  //   - mouse wheel (desktop)                        -> zoom
+  // All within the tight clamps; the default view stays the main play view.
   const TAP_MOVE_THRESHOLD_PX = 14;
   const TAP_MAX_DURATION_MS = 650;
-  let pointersDown = 0;
+  const clampValue = (value: number, lo: number, hi: number) =>
+    Math.min(hi, Math.max(lo, value));
+
+  const gesturePointers = new Map<number, { x: number; y: number }>();
   let gestureMultiTouch = false;
   let tapPointerId = -1;
   let tapStartX = 0;
   let tapStartY = 0;
   let tapStartTime = 0;
+  let twoFingerCentroidX = 0;
+  let twoFingerCentroidY = 0;
+  let twoFingerDistance = 0;
 
-  scene.onPointerObservable.add((pointerInfo) => {
-    const event = pointerInfo.event as PointerEvent;
+  function readTwoFingers() {
+    const points = Array.from(gesturePointers.values());
+    return {
+      cx: (points[0].x + points[1].x) / 2,
+      cy: (points[0].y + points[1].y) / 2,
+      dist: Math.hypot(points[0].x - points[1].x, points[0].y - points[1].y),
+    };
+  }
 
-    if (pointerInfo.type === B.PointerEventTypes.POINTERDOWN) {
-      pointersDown += 1;
-      if (pointersDown > 1) {
-        gestureMultiTouch = true;
-      } else {
-        gestureMultiTouch = false;
-        tapPointerId = event.pointerId;
-        tapStartX = event.clientX;
-        tapStartY = event.clientY;
-        tapStartTime = performance.now();
-      }
-      return;
+  function handlePointerDown(event: PointerEvent) {
+    gesturePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    try {
+      canvas.setPointerCapture(event.pointerId);
+    } catch {
+      /* pointer capture is best-effort */
     }
+    if (gesturePointers.size >= 2) {
+      gestureMultiTouch = true;
+      const two = readTwoFingers();
+      twoFingerCentroidX = two.cx;
+      twoFingerCentroidY = two.cy;
+      twoFingerDistance = two.dist;
+    } else {
+      gestureMultiTouch = false;
+      tapPointerId = event.pointerId;
+      tapStartX = event.clientX;
+      tapStartY = event.clientY;
+      tapStartTime = performance.now();
+    }
+  }
 
-    if (pointerInfo.type !== B.PointerEventTypes.POINTERUP) return;
+  function handlePointerMove(event: PointerEvent) {
+    if (!gesturePointers.has(event.pointerId)) return;
+    gesturePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    // Orbit + zoom happen only with exactly two active fingers.
+    if (gesturePointers.size !== 2) return;
+    const two = readTwoFingers();
+    camera.alpha = clampValue(
+      camera.alpha - (two.cx - twoFingerCentroidX) * ORBIT_ALPHA_SENSITIVITY,
+      MIN_CAMERA_ALPHA,
+      MAX_CAMERA_ALPHA,
+    );
+    camera.beta = clampValue(
+      camera.beta - (two.cy - twoFingerCentroidY) * ORBIT_BETA_SENSITIVITY,
+      MIN_CAMERA_BETA,
+      MAX_CAMERA_BETA,
+    );
+    if (twoFingerDistance > 0 && two.dist > 0) {
+      camera.radius = clampValue(
+        camera.radius * (twoFingerDistance / two.dist),
+        MIN_CAMERA_RADIUS,
+        MAX_CAMERA_RADIUS,
+      );
+    }
+    twoFingerCentroidX = two.cx;
+    twoFingerCentroidY = two.cy;
+    twoFingerDistance = two.dist;
+  }
 
-    pointersDown = Math.max(0, pointersDown - 1);
-    if (pointersDown > 0) return; // wait for every finger to lift
+  function handlePointerUp(event: PointerEvent) {
+    const wasTapCandidate =
+      gesturePointers.size === 1 &&
+      !gestureMultiTouch &&
+      event.pointerId === tapPointerId;
+    gesturePointers.delete(event.pointerId);
+    if (gesturePointers.size < 2) twoFingerDistance = 0;
+    if (gesturePointers.size > 0) return; // wait for the last finger to lift
 
     const wasMultiTouch = gestureMultiTouch;
     gestureMultiTouch = false;
-    if (wasMultiTouch || event.pointerId !== tapPointerId) return;
+    if (wasMultiTouch || !wasTapCandidate) return;
 
     const moved = Math.hypot(
       event.clientX - tapStartX,
@@ -850,7 +904,22 @@ export function createRouteBabylonController(
       row: metadata.row - state.player.row,
       col: metadata.col - state.player.col,
     });
-  });
+  }
+
+  function handleWheel(event: WheelEvent) {
+    event.preventDefault();
+    camera.radius = clampValue(
+      camera.radius + Math.sign(event.deltaY) * WHEEL_ZOOM_STEP,
+      MIN_CAMERA_RADIUS,
+      MAX_CAMERA_RADIUS,
+    );
+  }
+
+  canvas.addEventListener("pointerdown", handlePointerDown);
+  canvas.addEventListener("pointermove", handlePointerMove);
+  canvas.addEventListener("pointerup", handlePointerUp);
+  canvas.addEventListener("pointercancel", handlePointerUp);
+  canvas.addEventListener("wheel", handleWheel, { passive: false });
 
   fitCamera();
   renderBoard();
@@ -875,6 +944,11 @@ export function createRouteBabylonController(
     },
     dispose() {
       disposed = true;
+      canvas.removeEventListener("pointerdown", handlePointerDown);
+      canvas.removeEventListener("pointermove", handlePointerMove);
+      canvas.removeEventListener("pointerup", handlePointerUp);
+      canvas.removeEventListener("pointercancel", handlePointerUp);
+      canvas.removeEventListener("wheel", handleWheel);
       engine.stopRenderLoop();
       boardRoot?.dispose(false, false);
       boardAssetRoot?.dispose(false, true);
