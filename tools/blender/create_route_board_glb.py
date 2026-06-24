@@ -93,6 +93,19 @@ def clear_scene() -> None:
     bpy.ops.object.delete()
 
 
+def _set_bsdf_input(node: bpy.types.Node, identifier: str, value) -> None:
+    """Set a Principled BSDF input by its (locale-independent) identifier.
+
+    Blender socket display names are localised, so a Portuguese (or any
+    non-English) Blender exposes e.g. "Cor base" instead of "Base Color". The
+    socket `.identifier` stays English, so we match on that.
+    """
+    for socket in node.inputs:
+        if socket.identifier == identifier:
+            socket.default_value = value
+            return
+
+
 def make_material(
     name: str,
     color: tuple[float, float, float, float],
@@ -103,19 +116,24 @@ def make_material(
 ) -> bpy.types.Material:
     material = bpy.data.materials.new(name)
     material.use_nodes = True
-    bsdf = material.node_tree.nodes.get("Principled BSDF")
+    # Find the Principled BSDF by node TYPE (not its localised display name) so
+    # this works on a non-English Blender, where "Principled BSDF" is renamed
+    # and a name lookup would return None — silently leaving every material grey.
+    bsdf = next(
+        (n for n in material.node_tree.nodes if n.type == "BSDF_PRINCIPLED"),
+        None,
+    )
     if bsdf:
-        bsdf.inputs["Base Color"].default_value = color
-        bsdf.inputs["Metallic"].default_value = metallic
-        bsdf.inputs["Roughness"].default_value = roughness
-        if emission and "Emission Color" in bsdf.inputs:
-            bsdf.inputs["Emission Color"].default_value = (
-                emission[0],
-                emission[1],
-                emission[2],
-                1.0,
+        _set_bsdf_input(bsdf, "Base Color", color)
+        _set_bsdf_input(bsdf, "Metallic", metallic)
+        _set_bsdf_input(bsdf, "Roughness", roughness)
+        if emission:
+            _set_bsdf_input(
+                bsdf,
+                "Emission Color",
+                (emission[0], emission[1], emission[2], 1.0),
             )
-            bsdf.inputs["Emission Strength"].default_value = emission_strength
+            _set_bsdf_input(bsdf, "Emission Strength", emission_strength)
     material.diffuse_color = color
     return material
 
