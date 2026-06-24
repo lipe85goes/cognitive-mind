@@ -59,6 +59,7 @@ const CELL = 1;
 const TILE_HEIGHT = 0.12;
 const BOARD_TOP = 0;
 const BOARD_GLB_PATH = "/models/route/board.glb";
+const WALL_GLB_PATH = "/models/route/wall.glb";
 
 // --- Board model placement -------------------------------------------------
 // The GLB grid is authored at exactly the same coordinates as `cellToPosition`
@@ -69,6 +70,14 @@ const BOARD_MODEL_OFFSET = { x: 0, y: BOARD_Y_OFFSET, z: 0 };
 const BOARD_MODEL_ROTATION_Y = 0;
 /** Top of the GLB stone tiles — every gameplay piece rests on this surface. */
 const BOARD_SURFACE_Y = 0.2;
+
+// --- Wall model placement --------------------------------------------------
+// wall.glb follows the same Y-up contract as board.glb: centered in X/Z, base
+// resting on local Y = 0, footprint ~0.84 and height ~0.60. Scale 1 keeps the
+// block inside a single 0.86 tile (margin on every side) and short enough not
+// to hide the player/guardian/portal pieces. Each clone's root sits at
+// BOARD_SURFACE_Y so the base rests flat on the stone tile — no sink, no float.
+const WALL_SCALE = 1;
 
 // --- Camera composition (cinematic 3/4 premium tabletop) -------------------
 const DEFAULT_CAMERA_ALPHA = -Math.PI / 2.16;
@@ -308,6 +317,10 @@ export function createRouteBabylonController(
   let boardAssetRoot: BABYLON.TransformNode | null = null;
   let boardAssetStatus: BoardAssetStatus = "pending";
   let boardAssetWarningLogged = false;
+  // Loaded-once wall.glb prototype; cloned onto every wall cell each render.
+  let wallAssetProto: BABYLON.TransformNode | null = null;
+  let wallAssetStatus: BoardAssetStatus = "pending";
+  let wallAssetWarningLogged = false;
   let disposed = false;
 
   // Visual cell -> world position. Columns map straight to +X (col 0 left ->
@@ -458,6 +471,58 @@ export function createRouteBabylonController(
     }
   }
 
+  // Load wall.glb once into a disabled, never-rendered prototype. renderWalls()
+  // then clones that prototype onto every wall cell. If the import fails we keep
+  // the procedural wall blocks (renderWalls falls back automatically).
+  async function loadWallAssetOnce() {
+    if (wallAssetStatus !== "pending") return;
+
+    try {
+      const result = await B.SceneLoader.ImportMeshAsync(
+        "",
+        "",
+        WALL_GLB_PATH,
+        scene,
+      );
+      if (disposed) {
+        result.meshes.forEach((mesh) => mesh.dispose(false, true));
+        result.transformNodes.forEach((node) => node.dispose(false, true));
+        return;
+      }
+
+      const proto = new B.TransformNode("route-wall-glb-proto", scene);
+      const importedNodes = [
+        ...result.meshes,
+        ...result.transformNodes,
+      ] as BABYLON.Node[];
+      const importedNodeSet = new Set<BABYLON.Node>(importedNodes);
+
+      // Re-root only the top-level imported nodes so the glTF __root__
+      // (handedness conversion) stays intact above the wall meshes — the same
+      // approach board.glb uses, which keeps the grid alignment correct.
+      importedNodes.forEach((node) => {
+        if (!node.parent || !importedNodeSet.has(node.parent)) {
+          node.parent = proto;
+        }
+      });
+
+      // The prototype is never drawn; only its per-cell clones are.
+      proto.setEnabled(false);
+      wallAssetProto = proto;
+      wallAssetStatus = "loaded";
+      renderBoard();
+    } catch (error) {
+      wallAssetStatus = "failed";
+      if (!wallAssetWarningLogged) {
+        wallAssetWarningLogged = true;
+        console.warn(
+          "[MindFlow] Failed to load route wall GLB; using procedural fallback.",
+          error,
+        );
+      }
+    }
+  }
+
   function renderBase(parent: BABYLON.TransformNode) {
     const boardWidth = state.cols * CELL + 1.1;
     const boardDepth = state.rows * CELL + 1.1;
@@ -579,9 +644,42 @@ export function createRouteBabylonController(
   }
 
   function renderWalls(parent: BABYLON.TransformNode) {
+    const useWallAsset = wallAssetStatus === "loaded" && wallAssetProto !== null;
+
     state.walls.forEach((key) => {
       const [row, col] = key.split(",").map(Number);
       const pos = cellToPosition(row, col);
+
+      if (useWallAsset && wallAssetProto) {
+        // Clone the loaded prototype onto this cell. Clones share the GLB's
+        // geometry and materials, so one clone per wall stays cheap.
+        const clone = wallAssetProto.clone(
+          `route-wall-glb-${key}`,
+          parent,
+          false,
+        );
+        if (clone) {
+          // Centered on the tile, base resting on the stone surface. The block
+          // is 4-fold symmetric, so the fixed board orientation needs no extra
+          // rotation here.
+          clone.position.set(pos.x, BOARD_SURFACE_Y, pos.z);
+          clone.scaling.setAll(WALL_SCALE);
+          clone.rotation.y = 0;
+          clone.setEnabled(true);
+          // The prototype was disabled, so re-enable the whole clone subtree and
+          // make sure none of its meshes intercept tile taps or skip shadows.
+          clone.getDescendants(false).forEach((node) => node.setEnabled(true));
+          clone.getChildMeshes(false).forEach((mesh) => {
+            mesh.isPickable = false;
+            mesh.receiveShadows = true;
+            shadowGenerator.addShadowCaster(mesh);
+          });
+          return;
+        }
+      }
+
+      // Procedural fallback block — used until the GLB finishes loading and
+      // whenever the GLB fails to load.
       box(
         "route-wall-base",
         0.72,
@@ -924,6 +1022,7 @@ export function createRouteBabylonController(
   fitCamera();
   renderBoard();
   void loadBoardAssetOnce();
+  void loadWallAssetOnce();
   engine.runRenderLoop(() => {
     scene.render();
   });
@@ -952,6 +1051,7 @@ export function createRouteBabylonController(
       engine.stopRenderLoop();
       boardRoot?.dispose(false, false);
       boardAssetRoot?.dispose(false, true);
+      wallAssetProto?.dispose(false, true);
       glow.dispose();
       scene.dispose();
       engine.dispose();

@@ -60,9 +60,10 @@ No external texture files are required.
 
 ## Wall / obstacle asset (`wall.glb`)
 
-`wall.glb` is a single premium tabletop **obstacle block** meant to later
-replace the procedural wall placeholders on wall cells. It is a standalone
-asset and is **not** wired into the game yet.
+`wall.glb` is a single premium tabletop **obstacle block** used by the Babylon
+renderer for every wall cell on the Rota board — it replaced the procedural
+wall placeholders. It remains a self-contained asset that can also be previewed
+in isolation.
 
 It is built from these named objects:
 
@@ -125,12 +126,17 @@ Exported as Y-up glTF, matching `board.glb` and the Babylon grid:
 - `WallEdgeHighlight` — subtle bright crown rim
 - `WarmRivet` — warm brass bolt heads
 
-### Future Babylon usage
+### Babylon usage (integrated)
 
-Later, the Babylon renderer can import `wall.glb` once and **clone/instance** it
-onto each wall cell (centered on the cell, sitting on the board surface), in
-place of the current procedural wall meshes. Keep gameplay state in
-React/`useEscapeMaze`; the GLB is purely visual.
+`src/games/escape-maze/routeBabylonScene.ts` imports `wall.glb` once into a
+disabled prototype (`loadWallAssetOnce`) and **clones** that prototype onto each
+wall cell in `renderWalls` — centered on the tile, base resting on the stone
+surface (`BOARD_SURFACE_Y`), at scale 1 so it fits inside a single tile and
+stays short enough not to hide the player/guardian/portal. Clones share the
+GLB's geometry and materials and are non-pickable, so they never intercept tile
+taps. If the import fails the renderer silently falls back to the procedural
+wall blocks. Gameplay state stays in React/`useEscapeMaze`; the GLB is purely
+visual.
 
 ## Current local status
 
