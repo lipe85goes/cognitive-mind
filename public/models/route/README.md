@@ -138,6 +138,147 @@ taps. If the import fails the renderer silently falls back to the procedural
 wall blocks. Gameplay state stays in React/`useEscapeMaze`; the GLB is purely
 visual.
 
+## Player asset (`player.glb`)
+
+`player.glb` is the premium **player pawn** — a friendly teal/cyan glowing game
+piece meant to later replace the procedural player meshes. It is a standalone
+asset and is **not** wired into the game yet.
+
+It is built from these named objects:
+
+- `Player_Shadow` — subtle baked contact disc (optional; integration may drop it
+  if Babylon supplies its own shadows).
+- `Player_Base` — dark circular plinth.
+- `Player_Base_Step` — stepped rim on top of the plinth.
+- `Player_Base_Ring` — soft teal glow ring (player identity at the base).
+- `Player_Body` — glowing teal flared pawn body.
+- `Player_Collar` — glass highlight ring between body and head.
+- `Player_Core` — bright cyan core "head" orb.
+- `Player_Crest` — tiny glass crest gem on top.
+
+### How it was generated / how to regenerate
+
+```powershell
+& "C:\Program Files\Blender Foundation\Blender 5.1\blender.exe" --background --python tools\blender\create_route_player_glb.py
+```
+
+Optional preview render (also writes the two PNGs):
+
+```powershell
+& "C:\Program Files\Blender Foundation\Blender 5.1\blender.exe" --background --python tools\blender\create_route_player_glb.py -- --preview
+```
+
+That writes:
+
+- `player.glb` — the exported pawn (GLB only contains the pawn meshes; the
+  preview cameras/lights are added **after** export).
+- `player-preview.png` — 3/4 preview.
+- `player-preview-top.png` — top/near-top preview.
+
+> The generator looks the Principled BSDF up by node **type** and sets inputs by
+> their **identifier**, not by display name, so it works on a non-English (e.g.
+> Portuguese) Blender where the node/socket labels are localised.
+
+### Coordinate / orientation contract
+
+Exported as Y-up glTF, matching `board.glb` / `wall.glb` and the Babylon grid:
+
+- centered on the world origin in X/Z
+- bottom rests on `Y = 0` (sits on the tile surface)
+- `Y` is vertical height, `X` = width, `Z` = depth
+- the pawn is radially symmetric, so it has no strong front
+
+### Footprint and height
+
+- footprint ≈ `0.54 × 0.54` units (well inside the 1.0-unit tile)
+- height ≈ `0.71` units (reads clearly without hiding walls or the portal)
+- file size ≈ 149 KB (lightweight; safe to clone on the player cell)
+
+### Materials (procedural, no external textures)
+
+- `PlayerBaseDark` — dark plinth
+- `PlayerCyanGlow` — emissive teal body + base ring
+- `PlayerCyanCore` — bright emissive cyan head orb
+- `PlayerGlassHighlight` — glossy collar + crest accents
+- `PlayerShadow` — matte dark contact disc (optional)
+
+## Guardian asset (`guardian.glb`)
+
+`guardian.glb` is the premium **guardian piece** — a dark amber/bronze hooded
+game piece with glowing eyes, meant to later replace the procedural guardian
+meshes. It is taller / more imposing than the player but still a tabletop piece.
+It is a standalone asset and is **not** wired into the game yet.
+
+It is built from these named objects:
+
+- `Guardian_Shadow` — subtle baked contact disc (optional).
+- `Guardian_Base` — dark circular plinth.
+- `Guardian_Base_Step` — stepped rim on top of the plinth.
+- `Guardian_Base_Ring` — warm amber aura ring (enemy identity).
+- `Guardian_Cloak` — tapered dark robed body (a strong silhouette, not a cone).
+- `Guardian_Cloak_Hem` — aged amber hem near the base.
+- `Guardian_Cloak_Trim` — amber clasp band higher up the cloak.
+- `Guardian_Hood` — rounded dark hood dome.
+- `Guardian_Face` — dark recessed face area (sets the eyes in shadow).
+- `Guardian_Hood_Trim` — amber ring framing the face opening.
+- `Guardian_Eye_Left` / `Guardian_Eye_Right` — small glowing amber eyes.
+
+### How it was generated / how to regenerate
+
+```powershell
+& "C:\Program Files\Blender Foundation\Blender 5.1\blender.exe" --background --python tools\blender\create_route_guardian_glb.py
+```
+
+Optional preview render (also writes the two PNGs):
+
+```powershell
+& "C:\Program Files\Blender Foundation\Blender 5.1\blender.exe" --background --python tools\blender\create_route_guardian_glb.py -- --preview
+```
+
+That writes:
+
+- `guardian.glb` — the exported piece (GLB only contains the guardian meshes;
+  the preview cameras/lights are added **after** export).
+- `guardian-preview.png` — 3/4 preview.
+- `guardian-preview-top.png` — top/near-top preview.
+
+> Same locale-proof material approach as the other generators (Principled BSDF
+> by node type, inputs by identifier).
+
+### Coordinate / orientation contract
+
+Exported as Y-up glTF, matching the rest of the route assets:
+
+- centered on the world origin in X/Z
+- bottom rests on `Y = 0` (sits on the tile surface)
+- `Y` is vertical height, `X` = width, `Z` = depth
+- **front** (hood opening / glowing eyes) faces target **−Z** by default
+
+### Footprint and height
+
+- footprint ≈ `0.60 × 0.60` units (inside the 1.0-unit tile)
+- height ≈ `0.84` units (taller / more imposing than the player's `0.71`)
+- file size ≈ 217 KB (lightweight)
+
+### Materials (procedural, no external textures)
+
+- `GuardianBaseDark` — dark plinth + recessed face
+- `GuardianCloakDark` — dark robed cloak + hood
+- `GuardianAmberTrim` — aged amber/bronze hem, clasp and hood ring (metallic)
+- `GuardianEyeGlow` — strongly emissive amber eyes
+- `GuardianWarmGlow` — emissive warm amber base aura ring
+- `GuardianShadow` — matte dark contact disc (optional)
+
+### Future Babylon usage (player + guardian)
+
+Later, the Babylon renderer can import `player.glb` and `guardian.glb` once each
+and **clone/instance** them onto the player and guardian cells (centered on the
+cell, base on the board surface), in place of the current procedural piece
+meshes — the same load-once-then-clone pattern already used for `wall.glb`.
+Orient the guardian so its front (−Z) faces the intended direction. Keep
+gameplay state (movement, turns, win/loss) in React/`useEscapeMaze`; these GLBs
+are purely visual.
+
 ## Current local status
 
 During the asset-factory pass, Blender was not found on this machine. The
