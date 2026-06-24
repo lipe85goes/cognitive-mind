@@ -58,6 +58,80 @@ The Blender generator creates named procedural materials:
 
 No external texture files are required.
 
+## Wall / obstacle asset (`wall.glb`)
+
+`wall.glb` is a single premium tabletop **obstacle block** meant to later
+replace the procedural wall placeholders on wall cells. It is a standalone
+asset and is **not** wired into the game yet.
+
+It is built from these named objects:
+
+- `Wall_Base` — wide stone plinth so the block sits naturally on its tile.
+- `Wall_Seam` — thin dark recess between plinth and body (a seam shadow).
+- `Wall_Body` — tapered (frustum) dark-stone main body.
+- `Wall_Trim_Lower` / `Wall_Trim_Upper` — aged-brass straps.
+- `Wall_Top_Cap` — raised aged-brass cap.
+- `Wall_Cap_Crown` — subtle bright crown highlight on the cap.
+- `Wall_Rivet_Front` / `_Back` / `_Left` / `_Right` — warm brass bolt heads.
+
+### How it was generated / how to regenerate
+
+```powershell
+& "C:\Program Files\Blender Foundation\Blender 5.1\blender.exe" --background --python tools\blender\create_route_wall_glb.py
+```
+
+Optional preview render (also writes the two PNGs):
+
+```powershell
+& "C:\Program Files\Blender Foundation\Blender 5.1\blender.exe" --background --python tools\blender\create_route_wall_glb.py -- --preview
+```
+
+That writes:
+
+- `wall.glb` — the exported obstacle (GLB only contains the wall meshes; the
+  preview cameras/lights are added **after** export).
+- `wall-preview.png` — 3/4 preview.
+- `wall-preview-top.png` — top/near-top preview.
+
+> Note: the generator looks the Principled BSDF up by node **type** and sets
+> inputs by their **identifier**, not by display name, so it works on a
+> non-English (e.g. Portuguese) Blender where the node/socket labels are
+> localised. Setting colours by localised name silently leaves every material
+> the default grey.
+
+### Coordinate / orientation contract
+
+Exported as Y-up glTF, matching `board.glb` and the Babylon grid:
+
+- centered on the world origin in X/Z
+- bottom rests on `Y = 0` (sits on the tile surface)
+- `Y` is vertical height
+- X = width, Z = depth
+
+### Footprint and height
+
+- footprint ≈ `0.84 × 0.84` units (the 1.0-unit Babylon tile, with margin so
+  it never covers neighbouring tiles)
+- height ≈ `0.60` units (tall enough to read as an obstacle, short enough not
+  to hide the player/guardian pieces)
+- file size ≈ 88 KB (lightweight; safe to clone on every wall cell)
+
+### Materials (procedural, no external textures)
+
+- `WallDarkStone` — dark stone body
+- `WallSideStone` — slightly lighter stone plinth
+- `AgedBrass` — caps and trim straps (metallic, not too bright)
+- `DeepShadow` — recessed seam
+- `WallEdgeHighlight` — subtle bright crown rim
+- `WarmRivet` — warm brass bolt heads
+
+### Future Babylon usage
+
+Later, the Babylon renderer can import `wall.glb` once and **clone/instance** it
+onto each wall cell (centered on the cell, sitting on the board surface), in
+place of the current procedural wall meshes. Keep gameplay state in
+React/`useEscapeMaze`; the GLB is purely visual.
+
 ## Current local status
 
 During the asset-factory pass, Blender was not found on this machine. The
