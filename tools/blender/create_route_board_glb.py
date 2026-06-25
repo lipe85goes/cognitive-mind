@@ -9,6 +9,19 @@ public/models/route/board.glb
 
 Optional preview render:
 blender --background --python tools/blender/create_route_board_glb.py -- --preview
+
+This is an "ancient tactical board": a dark-wood body with a darker grain inlay
+band, a recessed dark-slate play bed framed by a bronze inner ledge + polished
+brass bead, a sculpted three-tier aged-brass outer frame, tiered decorative
+corner caps with crown rivets, a brass lattice of tile separators, domed brass
+rivets, and subtle brass rune inlays on a few perimeter tiles.
+
+Contract preserved for the live Babylon scene (do not break these):
+- 7x7 grid, CELL_SIZE = 1.0, tile centres at x = col-3, z = row-3
+- centred on the world origin in X/Z
+- play surface (tile tops) stays at ~Y = 0.185 so pieces placed at the scene's
+  fixed BOARD_SURFACE_Y keep resting on the tiles (no sink / no float)
+- same general orientation and overall footprint
 """
 
 from __future__ import annotations
@@ -26,6 +39,10 @@ GRID_SIZE = 7
 TILE_SIZE = 0.86
 BOARD_WIDTH = 8.65
 BOARD_DEPTH = 8.65
+
+# Top of the slate tiles. The Babylon scene rests every gameplay piece on its
+# own fixed BOARD_SURFACE_Y (~0.2), so this MUST stay put across upgrades.
+TILE_TOP_Y = 0.185
 
 
 def project_root() -> Path:
@@ -140,23 +157,40 @@ def make_material(
 
 def create_materials() -> dict[str, bpy.types.Material]:
     return {
-        "DarkWood": make_material("DarkWood", (0.12, 0.065, 0.035, 1), 0.04, 0.82),
-        "DarkStone": make_material("DarkStone", (0.08, 0.085, 0.078, 1), 0.02, 0.9),
-        "AgedBrass": make_material("AgedBrass", (0.68, 0.43, 0.16, 1), 0.68, 0.28),
-        "DeepShadow": make_material("DeepShadow", (0.025, 0.018, 0.014, 1), 0.0, 0.95),
+        # Two-tone dark wood body (richer, with a darker grain inlay band).
+        "DarkWood": make_material("DarkWood", (0.165, 0.094, 0.05, 1), 0.06, 0.62),
+        "WoodGrainDark": make_material(
+            "WoodGrainDark", (0.095, 0.052, 0.028, 1), 0.06, 0.72
+        ),
+        # Recessed slate play bed — lifted, cool-neutral so it reads as stone.
+        "DarkStone": make_material("DarkStone", (0.105, 0.112, 0.118, 1), 0.04, 0.7),
+        # Aged-brass / bronze metal family — warmer, more luxurious, glossier.
+        "AgedBrass": make_material("AgedBrass", (0.82, 0.55, 0.22, 1), 0.86, 0.22),
+        "BronzeDark": make_material("BronzeDark", (0.44, 0.27, 0.115, 1), 0.82, 0.34),
+        "BrassPolished": make_material(
+            "BrassPolished", (0.98, 0.76, 0.36, 1), 0.92, 0.12
+        ),
+        "DeepShadow": make_material("DeepShadow", (0.022, 0.018, 0.015, 1), 0.0, 0.9),
+        # Three slate tile variations — lifted with a wider tonal spread (more
+        # depth, clearer checker, subtle sheen) but still dark slate.
         "TileVariationA": make_material(
-            "TileVariationA", (0.13, 0.135, 0.125, 1), 0.02, 0.88
+            "TileVariationA", (0.175, 0.184, 0.196, 1), 0.05, 0.6
         ),
         "TileVariationB": make_material(
-            "TileVariationB", (0.105, 0.11, 0.105, 1), 0.02, 0.92
+            "TileVariationB", (0.132, 0.14, 0.152, 1), 0.05, 0.66
         ),
+        "TileVariationC": make_material(
+            "TileVariationC", (0.108, 0.122, 0.14, 1), 0.05, 0.72
+        ),
+        # Brass rune inlay (metallic catch-light, not emissive — stays subtle).
+        "RuneInlay": make_material("RuneInlay", (0.84, 0.6, 0.3, 1), 0.84, 0.18),
         "WarmRivet": make_material(
             "WarmRivet",
-            (0.95, 0.68, 0.26, 1),
-            0.55,
-            0.25,
-            emission=(0.45, 0.23, 0.05),
-            emission_strength=0.18,
+            (0.98, 0.74, 0.32, 1),
+            0.64,
+            0.22,
+            emission=(0.5, 0.27, 0.08),
+            emission_strength=0.2,
         ),
     }
 
@@ -196,6 +230,7 @@ def add_cylinder(
     material: bpy.types.Material,
     vertices: int = 20,
     bevel: float = 0.005,
+    rotation_y_degrees: float = 0.0,
 ) -> bpy.types.Object:
     bpy.ops.mesh.primitive_cylinder_add(
         vertices=vertices,
@@ -206,7 +241,9 @@ def add_cylinder(
     obj = bpy.context.object
     obj.name = name
     obj.data.name = f"{name}_Mesh"
+    obj.rotation_euler[2] = radians(rotation_y_degrees)
     obj.data.materials.append(material)
+    bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
 
     if bevel > 0:
         bevel_modifier = obj.modifiers.new(f"{name}_Bevel", "BEVEL")
@@ -217,6 +254,55 @@ def add_cylinder(
     return obj
 
 
+def add_dome_rivet(
+    name: str,
+    location: tuple[float, float, float],
+    radius: float,
+    material: bpy.types.Material,
+    height_scale: float = 0.6,
+) -> bpy.types.Object:
+    """A flattened sphere whose centre sits on the surface -> a domed bolt head."""
+    bpy.ops.mesh.primitive_uv_sphere_add(
+        radius=radius,
+        segments=16,
+        ring_count=9,
+        location=target_to_blender(location),
+    )
+    obj = bpy.context.object
+    obj.name = name
+    obj.data.name = f"{name}_Mesh"
+    # target scale (width, vertical, depth) -> Blender (width, depth, vertical)
+    obj.scale = (1.0, 1.0, height_scale)
+    obj.data.materials.append(material)
+    bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
+    bpy.ops.object.shade_smooth()
+    return obj
+
+
+# Simple angular glyphs: lists of (dx, dz, length, angle_degrees) brass strokes.
+RUNE_PATTERNS = [
+    [(0.0, 0.0, 0.32, 90), (0.0, 0.07, 0.16, 38), (0.0, -0.07, 0.16, -38)],
+    [(0.0, 0.0, 0.30, 45), (0.0, 0.0, 0.30, -45)],
+    [(0.0, 0.0, 0.32, 90), (0.0, 0.10, 0.18, 0)],
+    [(0.0, 0.0, 0.32, 90), (0.06, 0.0, 0.14, 0), (0.06, -0.09, 0.13, 38)],
+    [(-0.06, 0.0, 0.24, 65), (0.06, 0.0, 0.24, -65)],
+]
+
+
+def add_rune(name: str, x: float, z: float, material: bpy.types.Material, index: int) -> None:
+    """A subtle flush brass rune inlay, sitting just proud of the tile top."""
+    pattern = RUNE_PATTERNS[index % len(RUNE_PATTERNS)]
+    for i, (dx, dz, length, angle) in enumerate(pattern):
+        add_box(
+            f"{name}_{i}",
+            (x + dx, TILE_TOP_Y + 0.012, z + dz),
+            (length, 0.016, 0.034),
+            material,
+            bevel=0.004,
+            rotation_y_degrees=angle,
+        )
+
+
 def add_crack(
     name: str,
     x: float,
@@ -225,10 +311,11 @@ def add_crack(
     angle: float,
     length: float,
 ) -> bpy.types.Object:
+    """A thin recessed line that reads as a hairline crack / wear on a tile."""
     return add_box(
         name,
-        (x, 0.205, z),
-        (length, 0.012, 0.018),
+        (x, TILE_TOP_Y + 0.004, z),
+        (length, 0.01, 0.016),
         material,
         bevel=0.002,
         rotation_y_degrees=angle,
@@ -236,13 +323,15 @@ def add_crack(
 
 
 def add_board_base(materials: dict[str, bpy.types.Material]) -> None:
+    # Dark-wood body.
     add_box(
         "Board_Base",
         (0, -0.42, 0),
         (BOARD_WIDTH, 0.72, BOARD_DEPTH),
         materials["DarkWood"],
-        bevel=0.09,
+        bevel=0.10,
     )
+    # Soft contact shadow slab under the body.
     add_box(
         "Board_Underside_Shadow",
         (0, -0.82, 0),
@@ -250,54 +339,169 @@ def add_board_base(materials: dict[str, bpy.types.Material]) -> None:
         materials["DeepShadow"],
         bevel=0.08,
     )
+    # Darker grain inlay band wrapping the body sides (separates body from frame).
+    add_box(
+        "Board_Body_Band",
+        (0, -0.18, 0),
+        (BOARD_WIDTH + 0.05, 0.12, BOARD_DEPTH + 0.05),
+        materials["WoodGrainDark"],
+        bevel=0.03,
+    )
+    # Recessed dark-slate play bed.
     add_box(
         "Board_Inset_Bed",
         (0, -0.05, 0),
-        (7.58, 0.12, 7.58),
+        (7.66, 0.14, 7.66),
         materials["DarkStone"],
         bevel=0.035,
     )
 
 
+def add_inner_border(materials: dict[str, bpy.types.Material]) -> None:
+    """Bronze ledge + polished brass bead + dark moat framing the 7x7 field.
+
+    Kept low (top ~0.245, only ~0.06 above the tiles) so it reads as a recessed
+    arena rim without occluding pieces from the game camera.
+    """
+    inner = 3.72
+    span = 7.66
+    sides = (
+        ("Front", (0, 0, inner), (span, 0, 0.17)),
+        ("Back", (0, 0, -inner), (span, 0, 0.17)),
+        ("Left", (-inner, 0, 0), (0.17, 0, span)),
+        ("Right", (inner, 0, 0), (0.17, 0, span)),
+    )
+    for label, (lx, _ly, lz), (dw, _dh, dd) in sides:
+        # Bronze ledge.
+        add_box(
+            f"Inner_Border_{label}",
+            (lx, 0.13, lz),
+            (dw, 0.17, dd),
+            materials["BronzeDark"],
+            bevel=0.025,
+        )
+        # Polished brass bead on top of the ledge.
+        bead_w = dw - 0.12 if dw > dd else 0.09
+        bead_d = 0.09 if dw > dd else dd - 0.12
+        add_box(
+            f"Inner_Bead_{label}",
+            (lx, 0.225, lz),
+            (bead_w, 0.035, bead_d),
+            materials["BrassPolished"],
+            bevel=0.012,
+        )
+    # Dark moat line just inside the ledge (a recess shadow around the field).
+    moat = 3.55
+    for label, loc, dims in (
+        ("Front", (0, 0.11, moat), (7.3, 0.06, 0.05)),
+        ("Back", (0, 0.11, -moat), (7.3, 0.06, 0.05)),
+        ("Left", (-moat, 0.11, 0), (0.05, 0.06, 7.3)),
+        ("Right", (moat, 0.11, 0), (0.05, 0.06, 7.3)),
+    ):
+        add_box(f"Inner_Moat_{label}", loc, dims, materials["DeepShadow"], bevel=0.01)
+    # Small brass corner studs where the ledge meets at the field corners.
+    for sx in (-inner, inner):
+        for sz in (-inner, inner):
+            add_dome_rivet(
+                f"Inner_Stud_{'L' if sx < 0 else 'R'}_{'B' if sz < 0 else 'F'}",
+                (sx, 0.22, sz),
+                0.07,
+                materials["BrassPolished"],
+            )
+
+
 def add_outer_frame(materials: dict[str, bpy.types.Material]) -> None:
-    rail_y = 0.24
-    edge = BOARD_WIDTH / 2 - 0.19
-    add_box("Board_Frame_Front", (0, rail_y, edge), (BOARD_WIDTH, 0.45, 0.32), materials["AgedBrass"], bevel=0.07)
-    add_box("Board_Frame_Back", (0, rail_y, -edge), (BOARD_WIDTH, 0.45, 0.32), materials["AgedBrass"], bevel=0.07)
-    add_box("Board_Frame_Left", (-edge, rail_y, 0), (0.32, 0.45, BOARD_DEPTH), materials["AgedBrass"], bevel=0.07)
-    add_box("Board_Frame_Right", (edge, rail_y, 0), (0.32, 0.45, BOARD_DEPTH), materials["AgedBrass"], bevel=0.07)
+    """Sculpted three-tier outer frame: bronze skirt, brass rail, brass bead."""
+    edge = BOARD_WIDTH / 2 - 0.19  # 4.135 — keep the overall footprint unchanged
+    rails = (
+        ("Front", (0, 0, edge), "x"),
+        ("Back", (0, 0, -edge), "x"),
+        ("Left", (-edge, 0, 0), "z"),
+        ("Right", (edge, 0, 0), "z"),
+    )
+    for label, (lx, _ly, lz), axis in rails:
+        # Lower bronze skirt (wider, anchors the frame to the body).
+        skirt = (BOARD_WIDTH, 0.30, 0.42) if axis == "x" else (0.42, 0.30, BOARD_DEPTH)
+        add_box(f"Frame_Skirt_{label}", (lx, 0.07, lz), skirt, materials["BronzeDark"], bevel=0.05)
+        # Main aged-brass rail (slightly inset, taller).
+        rail = (BOARD_WIDTH, 0.34, 0.32) if axis == "x" else (0.32, 0.34, BOARD_DEPTH)
+        add_box(f"Frame_Rail_{label}", (lx, 0.31, lz), rail, materials["AgedBrass"], bevel=0.06)
+        # Polished brass crown bead along the top of the rail.
+        bead = (BOARD_WIDTH, 0.06, 0.20) if axis == "x" else (0.20, 0.06, BOARD_DEPTH)
+        add_box(f"Frame_Bead_{label}", (lx, 0.51, lz), bead, materials["BrassPolished"], bevel=0.025)
 
-    add_box("Board_Inner_Lip_Front", (0, 0.42, edge - 0.24), (7.7, 0.12, 0.08), materials["DeepShadow"], bevel=0.018)
-    add_box("Board_Inner_Lip_Back", (0, 0.42, -edge + 0.24), (7.7, 0.12, 0.08), materials["DeepShadow"], bevel=0.018)
-    add_box("Board_Inner_Lip_Left", (-edge + 0.24, 0.42, 0), (0.08, 0.12, 7.7), materials["DeepShadow"], bevel=0.018)
-    add_box("Board_Inner_Lip_Right", (edge - 0.24, 0.42, 0), (0.08, 0.12, 7.7), materials["DeepShadow"], bevel=0.018)
+    # Thin dark inner lip = shadow gap between the frame and the play field.
+    lip = edge - 0.30
+    for label, loc, dims in (
+        ("Front", (0, 0.40, lip), (7.74, 0.12, 0.07)),
+        ("Back", (0, 0.40, -lip), (7.74, 0.12, 0.07)),
+        ("Left", (-lip, 0.40, 0), (0.07, 0.12, 7.74)),
+        ("Right", (lip, 0.40, 0), (0.07, 0.12, 7.74)),
+    ):
+        add_box(f"Frame_Inner_Lip_{label}", loc, dims, materials["DeepShadow"], bevel=0.015)
 
+    # Tiered decorative corner caps + crown rivets.
     for x_name, x in (("Left", -edge), ("Right", edge)):
         for z_name, z in (("Back", -edge), ("Front", edge)):
             add_box(
-                f"Board_Corner_{x_name}_{z_name}",
-                (x, 0.33, z),
-                (0.68, 0.56, 0.68),
+                f"Corner_Plate_{x_name}_{z_name}",
+                (x, 0.10, z),
+                (0.82, 0.42, 0.82),
                 materials["AgedBrass"],
-                bevel=0.095,
+                bevel=0.07,
             )
+            add_box(
+                f"Corner_Block_{x_name}_{z_name}",
+                (x, 0.42, z),
+                (0.66, 0.30, 0.66),
+                materials["BronzeDark"],
+                bevel=0.06,
+            )
+            # Octagonal polished cap.
             add_cylinder(
-                f"Rivet_Corner_{x_name}_{z_name}",
+                f"Corner_Cap_{x_name}_{z_name}",
+                (x, 0.60, z),
+                0.33,
+                0.10,
+                materials["BrassPolished"],
+                vertices=8,
+                bevel=0.02,
+                rotation_y_degrees=22.5,
+            )
+            # Domed crown rivet.
+            add_dome_rivet(
+                f"Corner_Crown_{x_name}_{z_name}",
                 (x, 0.66, z),
-                0.085,
-                0.055,
+                0.13,
                 materials["WarmRivet"],
-                vertices=18,
+                height_scale=0.7,
             )
 
 
 def add_tiles_and_grid(materials: dict[str, bpy.types.Material]) -> None:
     first = -(GRID_SIZE - 1) / 2
+    tile_variations = ("TileVariationA", "TileVariationB", "TileVariationC")
+    # Controlled set of perimeter tiles that carry a brass rune inlay (keeps the
+    # inner 5x5 play area clean for pieces and hazards).
+    rune_tiles = {
+        (0, 0): 0,
+        (0, 6): 1,
+        (6, 0): 2,
+        (6, 6): 3,
+        (0, 3): 4,
+        (3, 0): 0,
+        (3, 6): 1,
+        (6, 3): 2,
+    }
     for row in range(GRID_SIZE):
         for col in range(GRID_SIZE):
             x = (col + first) * CELL_SIZE
             z = (row + first) * CELL_SIZE
-            material_name = "TileVariationA" if (row + col) % 2 == 0 else "TileVariationB"
+            # Subtle 3-way slate variation (checker base + an occasional 3rd tone).
+            if (row * 7 + col) % 11 == 0:
+                material_name = "TileVariationC"
+            else:
+                material_name = tile_variations[(row + col) % 2]
             add_box(
                 f"Tile_{row}_{col}",
                 (x, 0.12, z),
@@ -306,76 +510,54 @@ def add_tiles_and_grid(materials: dict[str, bpy.types.Material]) -> None:
                 bevel=0.035,
             )
 
-            if (row * 7 + col) % 5 == 0:
-                add_crack(
-                    f"Tile_Crack_{row}_{col}_A",
-                    x - 0.08,
-                    z + 0.04,
-                    materials["DeepShadow"],
-                    angle=18 + row * 4,
-                    length=0.34,
+            if (row, col) in rune_tiles:
+                add_rune(
+                    f"Tile_Rune_{row}_{col}",
+                    x,
+                    z,
+                    materials["RuneInlay"],
+                    rune_tiles[(row, col)],
                 )
-            if (row * 7 + col) % 9 == 0:
+            elif (row * 7 + col) % 6 == 0:
+                # A light scattering of hairline cracks for age (not on runes).
                 add_crack(
-                    f"Tile_Crack_{row}_{col}_B",
-                    x + 0.12,
-                    z - 0.11,
+                    f"Tile_Crack_{row}_{col}",
+                    x - 0.07,
+                    z + 0.05,
                     materials["DeepShadow"],
-                    angle=-32 + col * 3,
-                    length=0.22,
+                    angle=18 + row * 5,
+                    length=0.32,
                 )
 
-    separator_length = GRID_SIZE * CELL_SIZE - 0.14
+    # More prominent brass lattice separators between the tiles.
+    separator_length = GRID_SIZE * CELL_SIZE - 0.12
     for index in range(1, GRID_SIZE):
         offset = (index - GRID_SIZE / 2) * CELL_SIZE
         add_box(
             f"Grid_Separator_X_{index}",
-            (offset, 0.19, 0),
-            (0.045, 0.07, separator_length),
+            (offset, 0.195, 0),
+            (0.05, 0.085, separator_length),
             materials["AgedBrass"],
-            bevel=0.008,
+            bevel=0.01,
         )
         add_box(
             f"Grid_Separator_Z_{index}",
-            (0, 0.19, offset),
-            (separator_length, 0.07, 0.045),
+            (0, 0.195, offset),
+            (separator_length, 0.085, 0.05),
             materials["AgedBrass"],
-            bevel=0.008,
+            bevel=0.01,
         )
 
 
 def add_rivets(materials: dict[str, bpy.types.Material]) -> None:
+    """Domed brass rivets along the frame, aligned with the grid columns/rows."""
     edge = BOARD_WIDTH / 2 - 0.19
     for index in range(GRID_SIZE):
         pos = (index - (GRID_SIZE - 1) / 2) * CELL_SIZE
-        add_cylinder(
-            f"Rivet_Front_{index}",
-            (pos, 0.52, edge),
-            0.055,
-            0.045,
-            materials["WarmRivet"],
-        )
-        add_cylinder(
-            f"Rivet_Back_{index}",
-            (pos, 0.52, -edge),
-            0.055,
-            0.045,
-            materials["WarmRivet"],
-        )
-        add_cylinder(
-            f"Rivet_Left_{index}",
-            (-edge, 0.52, pos),
-            0.055,
-            0.045,
-            materials["WarmRivet"],
-        )
-        add_cylinder(
-            f"Rivet_Right_{index}",
-            (edge, 0.52, pos),
-            0.055,
-            0.045,
-            materials["WarmRivet"],
-        )
+        add_dome_rivet(f"Rivet_Front_{index}", (pos, 0.55, edge), 0.07, materials["WarmRivet"])
+        add_dome_rivet(f"Rivet_Back_{index}", (pos, 0.55, -edge), 0.07, materials["WarmRivet"])
+        add_dome_rivet(f"Rivet_Left_{index}", (-edge, 0.55, pos), 0.07, materials["WarmRivet"])
+        add_dome_rivet(f"Rivet_Right_{index}", (edge, 0.55, pos), 0.07, materials["WarmRivet"])
 
 
 def point_camera_at(
@@ -417,9 +599,9 @@ def add_camera_and_lights() -> dict[str, bpy.types.Object]:
 
     preview_camera = add_preview_camera(
         "Preview_Camera",
-        location=(6.6, -7.4, 5.9),
-        target=(0.0, 0.0, 0.02),
-        ortho_scale=10.8,
+        location=(6.7, -7.5, 5.6),
+        target=(0.0, 0.0, 0.12),
+        ortho_scale=10.9,
     )
     top_camera = add_preview_camera(
         "Preview_Top_Camera",
@@ -475,6 +657,7 @@ def main() -> None:
     clear_scene()
     materials = create_materials()
     add_board_base(materials)
+    add_inner_border(materials)
     add_tiles_and_grid(materials)
     add_outer_frame(materials)
     add_rivets(materials)
