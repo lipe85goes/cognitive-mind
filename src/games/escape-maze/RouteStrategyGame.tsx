@@ -5,19 +5,26 @@ import { useMemo } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import {
   ArrowLeft,
+  Box,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
   ChevronUp,
+  CircleCheck,
   CircleUserRound,
+  CircleX,
   DoorOpen,
   Gauge,
+  Hourglass,
   Play,
   RotateCcw,
   Shield,
   ShieldPlus,
   Sparkles,
+  Sun,
   TriangleAlert,
+  Trophy,
+  type LucideIcon,
 } from "lucide-react";
 import { gentleShakeAnimate } from "@/lib/feedback-motion";
 import {
@@ -179,6 +186,15 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
             ? "info"
             : "neutral";
 
+  const statusIcons: Record<typeof statusVariant, LucideIcon> = {
+    neutral: Sparkles,
+    info: Sparkles,
+    success: CircleCheck,
+    warn: TriangleAlert,
+    error: CircleX,
+  };
+  const StatusIcon = statusIcons[statusVariant];
+
   const moveIcons = {
     up: ChevronUp,
     down: ChevronDown,
@@ -202,6 +218,58 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
       </motion.button>
     );
   };
+
+  const statItems: Array<{
+    key: string;
+    label: string;
+    value: string | number;
+    Icon: LucideIcon;
+    className?: string;
+    danger?: boolean;
+  }> = [
+    { key: "turnos", label: "Turnos", value: turns, Icon: Hourglass },
+    {
+      key: "luzes",
+      label: "Luzes",
+      value: `${collectedCount}/${mazeMap.collectibleStars.length}`,
+      Icon: Sun,
+      className: "rsg-stat-stars",
+    },
+    {
+      key: "bloqueios",
+      label: "Bloqueios",
+      value: blockedMoves,
+      Icon: Box,
+      danger: blockedMoves > 0,
+    },
+    {
+      key: "erros",
+      label: "Erros",
+      value: errors,
+      Icon: CircleX,
+      danger: errors > 0,
+    },
+    {
+      key: "armadilhas",
+      label: "Armadilhas",
+      value: `${trapsTriggered}/${mazeMap.traps.length}`,
+      Icon: TriangleAlert,
+      danger: trapsTriggered > 0,
+    },
+    {
+      key: "pontuacao",
+      label: "Pontuação",
+      value: score,
+      Icon: Trophy,
+      className: "rsg-stat-score",
+    },
+    {
+      key: "dificuldade",
+      label: "Dificuldade",
+      value: DIFFICULTY_TITLE[difficulty],
+      Icon: Gauge,
+    },
+  ];
 
   return (
     <div className="rsg-shell">
@@ -248,7 +316,8 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
           role="status"
           aria-live="polite"
         >
-          {message}
+          <StatusIcon className="rsg-status-icon" aria-hidden />
+          <span>{message}</span>
         </p>
 
         <div className="rsg-layout">
@@ -407,40 +476,18 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
             )}
 
             <div className="rsg-stats" aria-label="Progresso da rota">
-              <span className="rsg-stat">
-                <em>Turnos</em>
-                <strong>{turns}</strong>
-              </span>
-              <span className="rsg-stat rsg-stat-stars">
-                <em>Luzes</em>
-                <strong>
-                  {collectedCount}/{mazeMap.collectibleStars.length}
-                </strong>
-              </span>
-              <span className={`rsg-stat ${blockedMoves > 0 ? "is-danger" : ""}`}>
-                <em>Bloqueios</em>
-                <strong>{blockedMoves}</strong>
-              </span>
-              <span className={`rsg-stat ${errors > 0 ? "is-danger" : ""}`}>
-                <em>Erros</em>
-                <strong>{errors}</strong>
-              </span>
-              <span
-                className={`rsg-stat ${trapsTriggered > 0 ? "is-danger" : ""}`}
-              >
-                <em>Armadilhas</em>
-                <strong>
-                  {trapsTriggered}/{mazeMap.traps.length}
-                </strong>
-              </span>
-              <span className="rsg-stat rsg-stat-score">
-                <em>Pontuação</em>
-                <strong>{score}</strong>
-              </span>
-              <span className="rsg-stat">
-                <em>Dificuldade</em>
-                <strong>{DIFFICULTY_TITLE[difficulty]}</strong>
-              </span>
+              {statItems.map(({ key, label, value, Icon, className, danger }) => (
+                <span
+                  key={key}
+                  className={`rsg-stat ${className ?? ""} ${
+                    danger ? "is-danger" : ""
+                  }`}
+                >
+                  <Icon className="rsg-stat-icon" aria-hidden />
+                  <em>{label}</em>
+                  <strong>{value}</strong>
+                </span>
+              ))}
             </div>
 
             {status !== "setup" && (
