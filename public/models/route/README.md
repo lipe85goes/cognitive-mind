@@ -141,8 +141,7 @@ visual.
 ## Player asset (`player.glb`)
 
 `player.glb` is the premium **player pawn** — a friendly teal/cyan glowing game
-piece meant to later replace the procedural player meshes. It is a standalone
-asset and is **not** wired into the game yet.
+piece that replaces the procedural player meshes in the Babylon renderer.
 
 It is built from these named objects:
 
@@ -205,9 +204,9 @@ Exported as Y-up glTF, matching `board.glb` / `wall.glb` and the Babylon grid:
 ## Guardian asset (`guardian.glb`)
 
 `guardian.glb` is the premium **guardian piece** — a dark amber/bronze hooded
-game piece with glowing eyes, meant to later replace the procedural guardian
-meshes. It is taller / more imposing than the player but still a tabletop piece.
-It is a standalone asset and is **not** wired into the game yet.
+game piece with glowing eyes that replaces the procedural guardian meshes in the
+Babylon renderer. It is taller / more imposing than the player but still a
+tabletop piece.
 
 It is built from these named objects:
 
@@ -269,15 +268,15 @@ Exported as Y-up glTF, matching the rest of the route assets:
 - `GuardianWarmGlow` — emissive warm amber base aura ring
 - `GuardianShadow` — matte dark contact disc (optional)
 
-### Future Babylon usage (player + guardian)
+### Babylon usage (player + guardian)
 
-Later, the Babylon renderer can import `player.glb` and `guardian.glb` once each
-and **clone/instance** them onto the player and guardian cells (centered on the
-cell, base on the board surface), in place of the current procedural piece
-meshes — the same load-once-then-clone pattern already used for `wall.glb`.
-Orient the guardian so its front (−Z) faces the intended direction. Keep
-gameplay state (movement, turns, win/loss) in React/`useEscapeMaze`; these GLBs
-are purely visual.
+The Babylon renderer imports `player.glb` and `guardian.glb` once each into
+disabled prototypes and clones them onto the current player and guardian cells
+(centered on the cell, base resting on `BOARD_SURFACE_Y`). The character meshes
+are non-pickable so invisible tile hitboxes continue to own tap/click movement.
+If either import fails, the renderer falls back to the original procedural piece.
+Gameplay state (movement, turns, win/loss) remains in React/`useEscapeMaze`;
+these GLBs are purely visual.
 
 ## Current local status
 
