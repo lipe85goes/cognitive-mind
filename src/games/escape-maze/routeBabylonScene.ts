@@ -60,6 +60,8 @@ const TILE_HEIGHT = 0.12;
 const BOARD_TOP = 0;
 const BOARD_GLB_PATH = "/models/route/board.glb";
 const WALL_GLB_PATH = "/models/route/wall.glb";
+const PLAYER_GLB_PATH = "/models/route/player.glb";
+const GUARDIAN_GLB_PATH = "/models/route/guardian.glb";
 
 // --- Board model placement -------------------------------------------------
 // The GLB grid is authored at exactly the same coordinates as `cellToPosition`
@@ -79,11 +81,23 @@ const BOARD_SURFACE_Y = 0.2;
 // BOARD_SURFACE_Y so the base rests flat on the stone tile — no sink, no float.
 const WALL_SCALE = 1;
 
+// --- Character model placement --------------------------------------------
+// Both character assets are authored centered on X/Z, bottom at local Y = 0 and
+// small enough to fit inside one tile. Scale 1 keeps their authored visual
+// proportion: player ~0.71 high, guardian ~0.84 high.
+const PLAYER_SCALE = 1.12;
+const GUARDIAN_SCALE = 1.2;
+const PLAYER_Y_OFFSET = 0;
+const GUARDIAN_Y_OFFSET = 0;
+// guardian.glb faces -Z by default; a small rightward turn makes the face/eyes
+// read better from the fixed 3/4 camera without changing grid alignment.
+const GUARDIAN_ROTATION_Y = -0.16;
+
 // --- Camera composition (cinematic 3/4 premium tabletop) -------------------
 const DEFAULT_CAMERA_ALPHA = -Math.PI / 2.16;
 const DEFAULT_CAMERA_BETA = Math.PI / 3.1;
-const DEFAULT_CAMERA_RADIUS = 11.5;
-const DEFAULT_CAMERA_RADIUS_MOBILE = 12;
+const DEFAULT_CAMERA_RADIUS = 10.65;
+const DEFAULT_CAMERA_RADIUS_MOBILE = 11.2;
 const DEFAULT_CAMERA_TARGET = { x: -0.24, y: 0.0, z: 0.05 };
 
 // --- Tight tablet inspection clamps. Small left/right orbit + a touch of tilt;
@@ -142,17 +156,17 @@ function createMaterials(
     wood: makeMaterial(B, scene, "route-wood", "#2a1710", {
       specular: "#76552d",
     }),
-    stone: makeMaterial(B, scene, "route-stone", "#1f2425", {
-      specular: "#5e5646",
+    stone: makeMaterial(B, scene, "route-stone", "#50584b", {
+      specular: "#a89867",
     }),
-    stoneAlt: makeMaterial(B, scene, "route-stone-alt", "#2a2d2b", {
-      specular: "#6e6049",
+    stoneAlt: makeMaterial(B, scene, "route-stone-alt", "#5e654f", {
+      specular: "#b6a76f",
     }),
-    brass: makeMaterial(B, scene, "route-brass", "#b98532", {
-      specular: "#ffd98b",
+    brass: makeMaterial(B, scene, "route-brass", "#d8a449", {
+      specular: "#fff0a8",
     }),
-    wall: makeMaterial(B, scene, "route-wall", "#4d3a2a", {
-      specular: "#a98249",
+    wall: makeMaterial(B, scene, "route-wall", "#725636", {
+      specular: "#e0b05e",
     }),
     hit: makeMaterial(B, scene, "route-hit-tile", "#000000", {
       alpha: 0.001,
@@ -227,10 +241,10 @@ export function createRouteBabylonController(
   scene.imageProcessingConfiguration.toneMappingEnabled = true;
   scene.imageProcessingConfiguration.toneMappingType =
     B.ImageProcessingConfiguration.TONEMAPPING_ACES;
-  scene.imageProcessingConfiguration.exposure = 1.25;
-  scene.imageProcessingConfiguration.contrast = 1.28;
+  scene.imageProcessingConfiguration.exposure = 1.32;
+  scene.imageProcessingConfiguration.contrast = 1.14;
   scene.imageProcessingConfiguration.vignetteEnabled = true;
-  scene.imageProcessingConfiguration.vignetteWeight = 2.4;
+  scene.imageProcessingConfiguration.vignetteWeight = 1.35;
   scene.imageProcessingConfiguration.vignetteColor = new B.Color4(0, 0, 0, 0);
 
   const camera = new B.ArcRotateCamera(
@@ -268,7 +282,7 @@ export function createRouteBabylonController(
     scene,
   );
   warmKey.position = new B.Vector3(5, 8.5, 6);
-  warmKey.intensity = 2.6;
+  warmKey.intensity = 2.9;
   warmKey.diffuse = B.Color3.FromHexString("#ffe1b0");
   warmKey.specular = B.Color3.FromHexString("#fff1cf");
 
@@ -277,10 +291,10 @@ export function createRouteBabylonController(
     new B.Vector3(0, 1, 0),
     scene,
   );
-  fill.intensity = 0.52;
-  fill.diffuse = B.Color3.FromHexString("#fbe6c2");
-  fill.groundColor = B.Color3.FromHexString("#160a05");
-  fill.specular = B.Color3.FromHexString("#caa264");
+  fill.intensity = 0.78;
+  fill.diffuse = B.Color3.FromHexString("#fff0cc");
+  fill.groundColor = B.Color3.FromHexString("#4a2c17");
+  fill.specular = B.Color3.FromHexString("#f0c170");
 
   // Cool back rim separates the board silhouette from the dark background.
   const rim = new B.PointLight(
@@ -288,7 +302,7 @@ export function createRouteBabylonController(
     new B.Vector3(-4.2, 3.0, -4.4),
     scene,
   );
-  rim.intensity = 0.7;
+  rim.intensity = 0.92;
   rim.diffuse = B.Color3.FromHexString("#86e3ff");
 
   // Warm front-right glint that makes the aged brass frame pop.
@@ -297,13 +311,13 @@ export function createRouteBabylonController(
     new B.Vector3(4.6, 2.4, 4.2),
     scene,
   );
-  brassGlint.intensity = 0.62;
+  brassGlint.intensity = 0.88;
   brassGlint.diffuse = B.Color3.FromHexString("#ffcf83");
 
   const glow = new B.GlowLayer("route-glow-layer", scene, {
     mainTextureSamples: 4,
   });
-  glow.intensity = 0.55;
+  glow.intensity = 0.68;
 
   const shadowGenerator = new B.ShadowGenerator(1024, warmKey);
   shadowGenerator.useBlurExponentialShadowMap = true;
@@ -321,6 +335,12 @@ export function createRouteBabylonController(
   let wallAssetProto: BABYLON.TransformNode | null = null;
   let wallAssetStatus: BoardAssetStatus = "pending";
   let wallAssetWarningLogged = false;
+  let playerAssetProto: BABYLON.TransformNode | null = null;
+  let playerAssetStatus: BoardAssetStatus = "pending";
+  let playerAssetWarningLogged = false;
+  let guardianAssetProto: BABYLON.TransformNode | null = null;
+  let guardianAssetStatus: BoardAssetStatus = "pending";
+  let guardianAssetWarningLogged = false;
   let disposed = false;
 
   // Visual cell -> world position. Columns map straight to +X (col 0 left ->
@@ -413,6 +433,164 @@ export function createRouteBabylonController(
     return mesh;
   }
 
+  function isBakedShadowNode(node: BABYLON.Node) {
+    return node.name.toLowerCase().includes("shadow");
+  }
+
+  type TunableAssetMaterial = BABYLON.Material & {
+    albedoColor?: BABYLON.Color3;
+    diffuseColor?: BABYLON.Color3;
+    emissiveColor?: BABYLON.Color3;
+    emissiveIntensity?: number;
+    metallic?: number;
+    roughness?: number;
+    specularColor?: BABYLON.Color3;
+  };
+
+  function setMaterialColor(
+    material: TunableAssetMaterial,
+    color: BABYLON.Color3,
+  ) {
+    material.albedoColor = color;
+    material.diffuseColor = color;
+  }
+
+  function tuneBoardGameMaterial(mesh: BABYLON.AbstractMesh) {
+    const material = mesh.material as TunableAssetMaterial | null;
+    if (!material) return;
+
+    const materialName = material.name.toLowerCase();
+    if (materialName.includes("darkwood")) {
+      setMaterialColor(material, B.Color3.FromHexString("#7a4a28"));
+      if (material.roughness !== undefined) material.roughness = 0.48;
+    } else if (
+      materialName.includes("darkstone") ||
+      materialName.includes("tilevariationa")
+    ) {
+      setMaterialColor(material, B.Color3.FromHexString("#5f7164"));
+      if (material.roughness !== undefined) material.roughness = 0.62;
+    } else if (materialName.includes("tilevariationb")) {
+      setMaterialColor(material, B.Color3.FromHexString("#53675d"));
+      if (material.roughness !== undefined) material.roughness = 0.64;
+    } else if (
+      materialName.includes("agedbrass") ||
+      materialName.includes("warmrivet") ||
+      materialName.includes("walledgehighlight")
+    ) {
+      setMaterialColor(material, B.Color3.FromHexString("#dfa84a"));
+      material.emissiveColor = B.Color3.FromHexString("#2a1705");
+      if (material.metallic !== undefined) material.metallic = 0.78;
+      if (material.roughness !== undefined) material.roughness = 0.32;
+    } else if (materialName.includes("deepshadow")) {
+      setMaterialColor(material, B.Color3.FromHexString("#4f321e"));
+      if (material.roughness !== undefined) material.roughness = 0.76;
+    } else if (
+      materialName.includes("walldarkstone") ||
+      materialName.includes("wallsidestone")
+    ) {
+      setMaterialColor(material, B.Color3.FromHexString("#7d6742"));
+      if (material.roughness !== undefined) material.roughness = 0.58;
+    }
+  }
+
+  function tuneCharacterMaterial(mesh: BABYLON.AbstractMesh) {
+    const material = mesh.material as
+      | TunableAssetMaterial
+      | null;
+    if (!material) return;
+
+    const materialName = material.name.toLowerCase();
+    if (materialName.includes("playercyanglow")) {
+      material.emissiveColor = B.Color3.FromHexString("#19d2e5");
+      if (material.emissiveIntensity !== undefined) {
+        material.emissiveIntensity = 0.5;
+      }
+    } else if (materialName.includes("playercyancore")) {
+      material.emissiveColor = B.Color3.FromHexString("#8ef9ff");
+      if (material.emissiveIntensity !== undefined) {
+        material.emissiveIntensity = 0.7;
+      }
+    } else if (materialName.includes("guardiancloakdark")) {
+      material.albedoColor = B.Color3.FromHexString("#3b2414");
+      material.diffuseColor = B.Color3.FromHexString("#3b2414");
+      if (material.roughness !== undefined) material.roughness = 0.72;
+    } else if (materialName.includes("guardianbasedark")) {
+      material.albedoColor = B.Color3.FromHexString("#2d2117");
+      material.diffuseColor = B.Color3.FromHexString("#2d2117");
+    } else if (materialName.includes("guardianambertrim")) {
+      material.albedoColor = B.Color3.FromHexString("#d98b2c");
+      material.diffuseColor = B.Color3.FromHexString("#d98b2c");
+      if (material.metallic !== undefined) material.metallic = 0.78;
+      if (material.roughness !== undefined) material.roughness = 0.38;
+    } else if (materialName.includes("guardianeyeglow")) {
+      material.emissiveColor = B.Color3.FromHexString("#ffb01f");
+      if (material.emissiveIntensity !== undefined) {
+        material.emissiveIntensity = 1.2;
+      }
+    } else if (materialName.includes("guardianwarmglow")) {
+      material.emissiveColor = B.Color3.FromHexString("#f59e0b");
+      if (material.emissiveIntensity !== undefined) {
+        material.emissiveIntensity = 0.78;
+      }
+    }
+  }
+
+  async function importPrototypeAsset(
+    path: string,
+    rootName: string,
+  ) {
+    const result = await B.SceneLoader.ImportMeshAsync("", "", path, scene);
+    if (disposed) {
+      result.meshes.forEach((mesh) => mesh.dispose(false, true));
+      result.transformNodes.forEach((node) => node.dispose(false, true));
+      return null;
+    }
+
+    const proto = new B.TransformNode(rootName, scene);
+    const importedNodes = [
+      ...result.meshes,
+      ...result.transformNodes,
+    ] as BABYLON.Node[];
+    const importedNodeSet = new Set<BABYLON.Node>(importedNodes);
+
+    importedNodes.forEach((node) => {
+      if (!node.parent || !importedNodeSet.has(node.parent)) {
+        node.parent = proto;
+      }
+    });
+
+    result.meshes.forEach((mesh) => {
+      mesh.isPickable = false;
+      if (isBakedShadowNode(mesh)) {
+        mesh.setEnabled(false);
+        return;
+      }
+      tuneCharacterMaterial(mesh);
+      mesh.receiveShadows = true;
+      shadowGenerator.addShadowCaster(mesh);
+    });
+
+    proto.setEnabled(false);
+    return proto;
+  }
+
+  function configureVisualClone(root: BABYLON.TransformNode) {
+    root.setEnabled(true);
+    root.getDescendants(false).forEach((node) => {
+      if (!isBakedShadowNode(node)) node.setEnabled(true);
+    });
+    root.getChildMeshes(false).forEach((mesh) => {
+      mesh.isPickable = false;
+      if (isBakedShadowNode(mesh)) {
+        mesh.setEnabled(false);
+        return;
+      }
+      tuneCharacterMaterial(mesh);
+      mesh.receiveShadows = true;
+      shadowGenerator.addShadowCaster(mesh);
+    });
+  }
+
   async function loadBoardAssetOnce() {
     if (boardAssetStatus !== "pending") return;
 
@@ -452,6 +630,7 @@ export function createRouteBabylonController(
 
       result.meshes.forEach((mesh) => {
         mesh.isPickable = false;
+        tuneBoardGameMaterial(mesh);
         mesh.receiveShadows = true;
         shadowGenerator.addShadowCaster(mesh);
       });
@@ -507,6 +686,12 @@ export function createRouteBabylonController(
       });
 
       // The prototype is never drawn; only its per-cell clones are.
+      result.meshes.forEach((mesh) => {
+        mesh.isPickable = false;
+        tuneBoardGameMaterial(mesh);
+        mesh.receiveShadows = true;
+        shadowGenerator.addShadowCaster(mesh);
+      });
       proto.setEnabled(false);
       wallAssetProto = proto;
       wallAssetStatus = "loaded";
@@ -517,6 +702,54 @@ export function createRouteBabylonController(
         wallAssetWarningLogged = true;
         console.warn(
           "[MindFlow] Failed to load route wall GLB; using procedural fallback.",
+          error,
+        );
+      }
+    }
+  }
+
+  async function loadPlayerAssetOnce() {
+    if (playerAssetStatus !== "pending") return;
+
+    try {
+      const proto = await importPrototypeAsset(
+        PLAYER_GLB_PATH,
+        "route-player-glb-proto",
+      );
+      if (!proto) return;
+      playerAssetProto = proto;
+      playerAssetStatus = "loaded";
+      renderBoard();
+    } catch (error) {
+      playerAssetStatus = "failed";
+      if (!playerAssetWarningLogged) {
+        playerAssetWarningLogged = true;
+        console.warn(
+          "[MindFlow] Failed to load route player GLB; using procedural fallback.",
+          error,
+        );
+      }
+    }
+  }
+
+  async function loadGuardianAssetOnce() {
+    if (guardianAssetStatus !== "pending") return;
+
+    try {
+      const proto = await importPrototypeAsset(
+        GUARDIAN_GLB_PATH,
+        "route-guardian-glb-proto",
+      );
+      if (!proto) return;
+      guardianAssetProto = proto;
+      guardianAssetStatus = "loaded";
+      renderBoard();
+    } catch (error) {
+      guardianAssetStatus = "failed";
+      if (!guardianAssetWarningLogged) {
+        guardianAssetWarningLogged = true;
+        console.warn(
+          "[MindFlow] Failed to load route guardian GLB; using procedural fallback.",
           error,
         );
       }
@@ -671,6 +904,7 @@ export function createRouteBabylonController(
           clone.getDescendants(false).forEach((node) => node.setEnabled(true));
           clone.getChildMeshes(false).forEach((mesh) => {
             mesh.isPickable = false;
+            tuneBoardGameMaterial(mesh);
             mesh.receiveShadows = true;
             shadowGenerator.addShadowCaster(mesh);
           });
@@ -703,6 +937,31 @@ export function createRouteBabylonController(
 
   function renderPlayer(parent: BABYLON.TransformNode) {
     const pos = cellToPosition(state.player.row, state.player.col);
+
+    if (playerAssetStatus === "loaded" && playerAssetProto) {
+      const clone = playerAssetProto.clone("route-player-glb", parent, false);
+      if (clone) {
+        clone.position.set(
+          pos.x,
+          BOARD_SURFACE_Y + PLAYER_Y_OFFSET,
+          pos.z,
+        );
+        clone.scaling.setAll(PLAYER_SCALE);
+        clone.rotation.y = 0;
+        configureVisualClone(clone);
+        const light = new B.PointLight(
+          "route-player-light",
+          new B.Vector3(pos.x, BOARD_SURFACE_Y + 0.62, pos.z),
+          scene,
+        );
+        light.diffuse = B.Color3.FromHexString("#38e8ff");
+        light.intensity = 0.22;
+        light.range = 1.7;
+        light.parent = parent;
+        return;
+      }
+    }
+
     cylinder("route-player-base", 0.48, 0.12, new B.Vector3(pos.x, 0.28, pos.z), materials.player, parent);
     sphere("route-player-body", 0.46, new B.Vector3(pos.x, 0.58, pos.z), materials.player, parent);
     sphere("route-player-head", 0.34, new B.Vector3(pos.x, 0.93, pos.z), materials.player, parent);
@@ -723,6 +982,43 @@ export function createRouteBabylonController(
 
   function renderGuardian(parent: BABYLON.TransformNode) {
     const pos = cellToPosition(state.guardian.row, state.guardian.col);
+
+    if (guardianAssetStatus === "loaded" && guardianAssetProto) {
+      const clone = guardianAssetProto.clone(
+        "route-guardian-glb",
+        parent,
+        false,
+      );
+      if (clone) {
+        clone.position.set(
+          pos.x,
+          BOARD_SURFACE_Y + GUARDIAN_Y_OFFSET,
+          pos.z,
+        );
+        clone.scaling.setAll(GUARDIAN_SCALE);
+        clone.rotation.y = GUARDIAN_ROTATION_Y;
+        configureVisualClone(clone);
+        torus(
+          "route-guardian-alert-ring",
+          0.8,
+          0.035,
+          new B.Vector3(pos.x, BOARD_SURFACE_Y + 0.03, pos.z),
+          materials.guardianGlow,
+          parent,
+        );
+        const light = new B.PointLight(
+          "route-guardian-light",
+          new B.Vector3(pos.x, BOARD_SURFACE_Y + 0.74, pos.z - 0.06),
+          scene,
+        );
+        light.diffuse = B.Color3.FromHexString("#f59e0b");
+        light.intensity = 0.48;
+        light.range = 2.05;
+        light.parent = parent;
+        return;
+      }
+    }
+
     cylinder("route-guardian-base", 0.56, 0.13, new B.Vector3(pos.x, 0.29, pos.z), materials.guardianGlow, parent);
     cylinder("route-guardian-body", 0.44, 0.66, new B.Vector3(pos.x, 0.61, pos.z), materials.guardian, parent, 18);
     const hood = B.MeshBuilder.CreateCylinder(
@@ -1023,6 +1319,8 @@ export function createRouteBabylonController(
   renderBoard();
   void loadBoardAssetOnce();
   void loadWallAssetOnce();
+  void loadPlayerAssetOnce();
+  void loadGuardianAssetOnce();
   engine.runRenderLoop(() => {
     scene.render();
   });
@@ -1052,6 +1350,8 @@ export function createRouteBabylonController(
       boardRoot?.dispose(false, false);
       boardAssetRoot?.dispose(false, true);
       wallAssetProto?.dispose(false, true);
+      playerAssetProto?.dispose(false, true);
+      guardianAssetProto?.dispose(false, true);
       glow.dispose();
       scene.dispose();
       engine.dispose();
