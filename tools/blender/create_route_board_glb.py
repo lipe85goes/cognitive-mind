@@ -157,40 +157,50 @@ def make_material(
 
 def create_materials() -> dict[str, bpy.types.Material]:
     return {
-        # Two-tone dark wood body (richer, with a darker grain inlay band).
-        "DarkWood": make_material("DarkWood", (0.165, 0.094, 0.05, 1), 0.06, 0.62),
+        # Warm dark-wood body (richer brown) + darker grain inlay band.
+        "DarkWood": make_material("DarkWood", (0.18, 0.105, 0.058, 1), 0.06, 0.6),
         "WoodGrainDark": make_material(
-            "WoodGrainDark", (0.095, 0.052, 0.028, 1), 0.06, 0.72
+            "WoodGrainDark", (0.1, 0.056, 0.03, 1), 0.06, 0.7
         ),
-        # Recessed slate play bed — lifted, cool-neutral so it reads as stone.
-        "DarkStone": make_material("DarkStone", (0.105, 0.112, 0.118, 1), 0.04, 0.7),
-        # Aged-brass / bronze metal family — warmer, more luxurious, glossier.
-        "AgedBrass": make_material("AgedBrass", (0.82, 0.55, 0.22, 1), 0.86, 0.22),
-        "BronzeDark": make_material("BronzeDark", (0.44, 0.27, 0.115, 1), 0.82, 0.34),
+        # Recessed sage/teal slate play bed.
+        "DarkStone": make_material("DarkStone", (0.11, 0.138, 0.137, 1), 0.04, 0.66),
+        # Clean warm brass / bronze metal family (premium gold, not dirty bronze).
+        "AgedBrass": make_material("AgedBrass", (0.86, 0.6, 0.26, 1), 0.9, 0.2),
+        "BronzeDark": make_material("BronzeDark", (0.5, 0.32, 0.14, 1), 0.85, 0.32),
         "BrassPolished": make_material(
-            "BrassPolished", (0.98, 0.76, 0.36, 1), 0.92, 0.12
+            "BrassPolished", (1.0, 0.82, 0.42, 1), 0.95, 0.1
         ),
-        "DeepShadow": make_material("DeepShadow", (0.022, 0.018, 0.015, 1), 0.0, 0.9),
-        # Three slate tile variations — lifted with a wider tonal spread (more
-        # depth, clearer checker, subtle sheen) but still dark slate.
+        "DeepShadow": make_material("DeepShadow", (0.022, 0.02, 0.018, 1), 0.0, 0.9),
+        # Three sage/teal slate tile variations — brighter, cleaner, toy-like,
+        # still readable under the bright emissive game pieces.
         "TileVariationA": make_material(
-            "TileVariationA", (0.175, 0.184, 0.196, 1), 0.05, 0.6
+            "TileVariationA", (0.205, 0.245, 0.232, 1), 0.04, 0.56
         ),
         "TileVariationB": make_material(
-            "TileVariationB", (0.132, 0.14, 0.152, 1), 0.05, 0.66
+            "TileVariationB", (0.16, 0.205, 0.198, 1), 0.04, 0.62
         ),
         "TileVariationC": make_material(
-            "TileVariationC", (0.108, 0.122, 0.14, 1), 0.05, 0.72
+            "TileVariationC", (0.135, 0.178, 0.182, 1), 0.04, 0.66
         ),
         # Brass rune inlay (metallic catch-light, not emissive — stays subtle).
-        "RuneInlay": make_material("RuneInlay", (0.84, 0.6, 0.3, 1), 0.84, 0.18),
+        "RuneInlay": make_material("RuneInlay", (0.9, 0.66, 0.34, 1), 0.88, 0.16),
+        # Signature blue gemstone for the corner caps — glossy dielectric with a
+        # soft cyan glow so it reads from the game camera without overexposing.
+        "CornerGem": make_material(
+            "CornerGem",
+            (0.1, 0.34, 0.74, 1),
+            0.0,
+            0.1,
+            emission=(0.05, 0.22, 0.5),
+            emission_strength=0.55,
+        ),
         "WarmRivet": make_material(
             "WarmRivet",
-            (0.98, 0.74, 0.32, 1),
-            0.64,
-            0.22,
-            emission=(0.5, 0.27, 0.08),
-            emission_strength=0.2,
+            (1.0, 0.78, 0.36, 1),
+            0.7,
+            0.18,
+            emission=(0.5, 0.28, 0.08),
+            emission_strength=0.18,
         ),
     }
 
@@ -276,6 +286,30 @@ def add_dome_rivet(
     obj.data.materials.append(material)
     bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
     bpy.ops.object.shade_smooth()
+    return obj
+
+
+def add_gem(
+    name: str,
+    location: tuple[float, float, float],
+    radius: float,
+    material: bpy.types.Material,
+    height_scale: float = 1.0,
+) -> bpy.types.Object:
+    """A flat-shaded icosphere — reads as a faceted cut gemstone."""
+    bpy.ops.mesh.primitive_ico_sphere_add(
+        subdivisions=1,
+        radius=radius,
+        location=target_to_blender(location),
+    )
+    obj = bpy.context.object
+    obj.name = name
+    obj.data.name = f"{name}_Mesh"
+    # target scale (width, vertical, depth) -> Blender (width, depth, vertical)
+    obj.scale = (1.0, 1.0, height_scale)
+    obj.data.materials.append(material)
+    bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
+    # Left flat-shaded on purpose so each facet catches light like a cut gem.
     return obj
 
 
@@ -468,13 +502,24 @@ def add_outer_frame(materials: dict[str, bpy.types.Material]) -> None:
                 bevel=0.02,
                 rotation_y_degrees=22.5,
             )
-            # Domed crown rivet.
-            add_dome_rivet(
-                f"Corner_Crown_{x_name}_{z_name}",
-                (x, 0.66, z),
-                0.13,
-                materials["WarmRivet"],
-                height_scale=0.7,
+            # Octagonal brass bezel that "sets" the gemstone.
+            add_cylinder(
+                f"Corner_Bezel_{x_name}_{z_name}",
+                (x, 0.67, z),
+                0.2,
+                0.07,
+                materials["AgedBrass"],
+                vertices=8,
+                bevel=0.012,
+                rotation_y_degrees=22.5,
+            )
+            # Signature faceted blue gemstone corner cap (matches the mockup).
+            add_gem(
+                f"Corner_Gem_{x_name}_{z_name}",
+                (x, 0.74, z),
+                0.16,
+                materials["CornerGem"],
+                height_scale=0.9,
             )
 
 

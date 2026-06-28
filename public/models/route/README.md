@@ -48,15 +48,21 @@ The generated GLB is exported as Y-up glTF:
 
 The Blender generator creates named procedural materials:
 
-- `DarkWood`
-- `DarkStone`
-- `AgedBrass`
-- `DeepShadow`
-- `TileVariationA`
-- `TileVariationB`
-- `WarmRivet`
+- `DarkWood` / `WoodGrainDark` — warm dark-wood body + grain inlay band
+- `DarkStone` — recessed sage/teal slate play bed
+- `TileVariationA` / `TileVariationB` / `TileVariationC` — sage/teal slate tiles
+  (brighter, cleaner, toy-like; readable under the game pieces)
+- `AgedBrass` / `BronzeDark` / `BrassPolished` — clean warm brass/gold frame,
+  bronze two-tone and polished gold highlights
+- `RuneInlay` — subtle brass rune engravings on selected tiles
+- `CornerGem` — signature faceted blue gemstone set into the four corner caps
+  (glossy dielectric with a soft cyan glow; not overexposed)
+- `WarmRivet` — warm brass domed rivets
+- `DeepShadow` — recessed seams / contact shadow
 
-No external texture files are required.
+No external texture files are required. The four corners are octagonal brass
+caps each set with a faceted blue gemstone (`Corner_Gem_*`), matching the board
+concept sheet; the 7x7 grid, tile centres and surface height are unchanged.
 
 ## Wall / obstacle asset (`wall.glb`)
 
