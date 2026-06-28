@@ -219,7 +219,7 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
     );
   };
 
-  const statItems: Array<{
+  const topHudItems: Array<{
     key: string;
     label: string;
     value: string | number;
@@ -243,18 +243,35 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
       danger: blockedMoves > 0,
     },
     {
-      key: "erros",
-      label: "Erros",
-      value: errors,
-      Icon: CircleX,
-      danger: errors > 0,
-    },
-    {
       key: "armadilhas",
       label: "Armadilhas",
       value: `${trapsTriggered}/${mazeMap.traps.length}`,
       Icon: TriangleAlert,
       danger: trapsTriggered > 0,
+    },
+    {
+      key: "escudo",
+      label: "Escudo",
+      value: shieldActive ? "Ativo" : shieldCollected ? "Usado" : "No mapa",
+      Icon: ShieldPlus,
+      className: shieldActive ? "rsg-hud-shield-active" : undefined,
+    },
+  ];
+
+  const sideStatItems: Array<{
+    key: string;
+    label: string;
+    value: string | number;
+    Icon: LucideIcon;
+    className?: string;
+    danger?: boolean;
+  }> = [
+    {
+      key: "erros",
+      label: "Erros",
+      value: errors,
+      Icon: CircleX,
+      danger: errors > 0,
     },
     {
       key: "pontuacao",
@@ -269,6 +286,16 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
       value: DIFFICULTY_TITLE[difficulty],
       Icon: Gauge,
     },
+  ];
+
+  const legendItems: Array<{ label: string; Icon: LucideIcon }> = [
+    { label: "Você", Icon: CircleUserRound },
+    { label: "Guardião", Icon: Shield },
+    { label: "Saída", Icon: DoorOpen },
+    { label: "Luz", Icon: Sun },
+    { label: "Armadilha", Icon: TriangleAlert },
+    { label: "Escudo", Icon: ShieldPlus },
+    { label: "Bloqueio", Icon: Box },
   ];
 
   return (
@@ -287,24 +314,24 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
             <ArrowLeft className="h-5 w-5" aria-hidden />
             Voltar à jornada
           </button>
-          {status === "playing" && (
-            <div className="rsg-chips">
-              {shieldCollected && (
-                <span
-                  className={`rsg-shield-chip ${
-                    shieldActive ? "is-active" : "is-used"
-                  }`}
-                >
-                  <ShieldPlus className="h-4 w-4" aria-hidden />
-                  Escudo: {shieldActive ? "ativo" : "usado"}
-                </span>
-              )}
-              <span className="rsg-difficulty-chip">
-                <Gauge className="h-4 w-4" aria-hidden />
-                {DIFFICULTY_TITLE[difficulty]}
+          <div className="rsg-top-hud" aria-label="Status da rota">
+            {topHudItems.map(({ key, label, value, Icon, className, danger }) => (
+              <span
+                key={key}
+                className={`rsg-hud-token ${className ?? ""} ${
+                  danger ? "is-danger" : ""
+                }`}
+              >
+                <Icon className="rsg-hud-icon" aria-hidden />
+                <em>{label}</em>
+                <strong>{value}</strong>
               </span>
-            </div>
-          )}
+            ))}
+          </div>
+          <span className="rsg-difficulty-chip">
+            <Gauge className="h-4 w-4" aria-hidden />
+            {DIFFICULTY_TITLE[difficulty]}
+          </span>
         </header>
 
         <div className="rsg-plaque">
@@ -321,6 +348,50 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
         </p>
 
         <div className="rsg-layout">
+          <aside className="rsg-info-col" aria-label="Missão e legenda">
+            <section className="rsg-panel rsg-mission-panel">
+              <p className="rsg-panel-title rsg-panel-title-left">
+                <Shield className="h-5 w-5" aria-hidden />
+                Rota Estratégica
+              </p>
+              <p className="rsg-mission-copy">
+                Chegue até a saída, colete luzes e evite armadilhas.
+              </p>
+              <div className="rsg-mission-steps" aria-label="Como jogar">
+                <span>
+                  <Sun className="h-4 w-4" aria-hidden />
+                  Passe pelas luzes para coletá-las.
+                </span>
+                <span>
+                  <TriangleAlert className="h-4 w-4" aria-hidden />
+                  Evite armadilhas e bloqueios.
+                </span>
+                <span>
+                  <ShieldPlus className="h-4 w-4" aria-hidden />
+                  Use o escudo para se proteger uma vez.
+                </span>
+              </div>
+            </section>
+
+            <section className="rsg-panel rsg-legend-panel">
+              <p className="rsg-panel-title rsg-panel-title-left">
+                <Sparkles className="h-5 w-5" aria-hidden />
+                Legenda
+              </p>
+              <ul
+                className="rsg-legend rsg-legend-panel-list"
+                aria-label="Legenda do tabuleiro"
+              >
+                {legendItems.map(({ label, Icon }) => (
+                  <li key={label}>
+                    <Icon className="h-4 w-4" aria-hidden />
+                    {label}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          </aside>
+
           <div className="rsg-board-col">
             <motion.div
               className={`rsg-board-panel ${
@@ -378,7 +449,7 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
               </div>
             </motion.div>
 
-            <ul className="rsg-legend" aria-label="Legenda do tabuleiro">
+            <ul className="rsg-legend rsg-board-legend" aria-label="Legenda do tabuleiro">
               <li>
                 <CircleUserRound className="h-4 w-4" aria-hidden />
                 Você
@@ -476,7 +547,7 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
             )}
 
             <div className="rsg-stats" aria-label="Progresso da rota">
-              {statItems.map(({ key, label, value, Icon, className, danger }) => (
+              {sideStatItems.map(({ key, label, value, Icon, className, danger }) => (
                 <span
                   key={key}
                   className={`rsg-stat ${className ?? ""} ${
