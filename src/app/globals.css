@@ -11290,9 +11290,10 @@ button:disabled:focus-visible {
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background-color: #0c0805;
+  background-color: #241910;
   background-image:
-    radial-gradient(44% 46% at 50% 30%, rgb(255 198 112 / 0.16), transparent 70%),
+    radial-gradient(62% 58% at 50% 34%, rgb(255 208 138 / 0.42), transparent 72%),
+    radial-gradient(120% 120% at 50% 6%, rgb(92 60 30 / 0.5), transparent 60%),
     url("/illustrations/home/home-background-desktop.webp");
   background-size: cover;
   background-position: center;
@@ -11303,9 +11304,13 @@ button:disabled:focus-visible {
   inset: 0;
   z-index: 1;
   pointer-events: none;
+  /* Gentle WARM vignette (was a heavy black crush). Lifts the centre and only
+     softly settles the far edges, so the scene reads as a warm-lit library
+     instead of an oppressive dark void. */
   background:
-    radial-gradient(120% 84% at 50% 42%, transparent 42%, rgb(4 2 1 / 0.84) 100%),
-    linear-gradient(180deg, rgb(8 5 3 / 0.5), transparent 16% 58%, rgb(8 5 3 / 0.74));
+    radial-gradient(120% 100% at 50% 40%, rgb(255 214 150 / 0.12), transparent 46%),
+    radial-gradient(125% 95% at 50% 46%, transparent 64%, rgb(14 8 4 / 0.46) 100%),
+    linear-gradient(180deg, rgb(16 10 5 / 0.22), transparent 24% 72%, rgb(16 10 5 / 0.4));
 }
 
 .rsg-frame {
@@ -12552,11 +12557,11 @@ button:disabled:focus-visible {
   border-radius: 1rem;
   overflow: hidden;
   background:
-    radial-gradient(ellipse at 50% 52%, rgb(255 205 110 / 0.08), transparent 62%),
-    rgb(8 5 3 / 0.56);
+    radial-gradient(ellipse 78% 58% at 50% 60%, rgb(0 0 0 / 0.24), transparent 72%),
+    radial-gradient(ellipse 68% 46% at 50% 46%, rgb(255 205 110 / 0.08), transparent 70%);
   box-shadow:
     inset 0 0 0 1px rgb(231 192 116 / 0.16),
-    inset 0 0 2rem rgb(0 0 0 / 0.35);
+    inset 0 0 1.4rem rgb(0 0 0 / 0.18);
 }
 .rsg-canvas canvas {
   display: block;

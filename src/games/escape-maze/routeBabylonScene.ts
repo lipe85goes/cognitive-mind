@@ -96,9 +96,9 @@ const GUARDIAN_ROTATION_Y = -0.16;
 // --- Camera composition (cinematic 3/4 premium tabletop) -------------------
 const DEFAULT_CAMERA_ALPHA = -Math.PI / 2.16;
 const DEFAULT_CAMERA_BETA = Math.PI / 3.1;
-const DEFAULT_CAMERA_RADIUS = 10.65;
-const DEFAULT_CAMERA_RADIUS_MOBILE = 11.2;
-const DEFAULT_CAMERA_TARGET = { x: -0.24, y: 0.0, z: 0.05 };
+const DEFAULT_CAMERA_RADIUS = 9.8;
+const DEFAULT_CAMERA_RADIUS_MOBILE = 10.5;
+const DEFAULT_CAMERA_TARGET = { x: -0.24, y: 0.08, z: 0.05 };
 
 // --- Tight tablet inspection clamps. Small left/right orbit + a touch of tilt;
 // never enough to swap front/back, go top-down, flip, or hit an extreme side
@@ -230,22 +230,25 @@ export function createRouteBabylonController(
     antialias: true,
     powerPreference: "high-performance",
     preserveDrawingBuffer: false,
+    premultipliedAlpha: false,
     stencil: true,
   });
   const scene = new B.Scene(engine);
   scene.clearColor = new B.Color4(0, 0, 0, 0);
-  scene.ambientColor = B.Color3.FromHexString("#43301d");
+  scene.ambientColor = B.Color3.FromHexString("#6c5635");
 
-  // Warm cinematic grade: tone map + lift exposure/contrast so the dark wood
-  // and brass read richly without washing out.
+  // Bright, warm "premium toy board" grade. ACES tone-mapping keeps the brass
+  // and emissive pieces from blowing out, but exposure is lifted and contrast
+  // relaxed so the board reads as a brightly-lit stage object, not a dark
+  // render test. The heavy vignette that used to crush the board edges into
+  // black is removed — the warmth now comes from lights + the table, not from
+  // drowning everything in shadow.
   scene.imageProcessingConfiguration.toneMappingEnabled = true;
   scene.imageProcessingConfiguration.toneMappingType =
     B.ImageProcessingConfiguration.TONEMAPPING_ACES;
-  scene.imageProcessingConfiguration.exposure = 1.32;
-  scene.imageProcessingConfiguration.contrast = 1.14;
-  scene.imageProcessingConfiguration.vignetteEnabled = true;
-  scene.imageProcessingConfiguration.vignetteWeight = 1.35;
-  scene.imageProcessingConfiguration.vignetteColor = new B.Color4(0, 0, 0, 0);
+  scene.imageProcessingConfiguration.exposure = 1.34;
+  scene.imageProcessingConfiguration.contrast = 1.06;
+  scene.imageProcessingConfiguration.vignetteEnabled = false;
 
   const camera = new B.ArcRotateCamera(
     "route-camera",
@@ -282,19 +285,21 @@ export function createRouteBabylonController(
     scene,
   );
   warmKey.position = new B.Vector3(5, 8.5, 6);
-  warmKey.intensity = 2.9;
-  warmKey.diffuse = B.Color3.FromHexString("#ffe1b0");
-  warmKey.specular = B.Color3.FromHexString("#fff1cf");
+  warmKey.intensity = 2.85;
+  warmKey.diffuse = B.Color3.FromHexString("#ffe7bd");
+  warmKey.specular = B.Color3.FromHexString("#fff4d6");
 
+  // Strong warm sky fill lifts the whole board out of the muddy shadows so the
+  // sage tiles and gold frame read brightly at gameplay distance.
   const fill = new B.HemisphericLight(
     "route-fill-light",
     new B.Vector3(0, 1, 0),
     scene,
   );
-  fill.intensity = 0.78;
-  fill.diffuse = B.Color3.FromHexString("#fff0cc");
-  fill.groundColor = B.Color3.FromHexString("#4a2c17");
-  fill.specular = B.Color3.FromHexString("#f0c170");
+  fill.intensity = 0.92;
+  fill.diffuse = B.Color3.FromHexString("#fff4dd");
+  fill.groundColor = B.Color3.FromHexString("#56391f");
+  fill.specular = B.Color3.FromHexString("#f4c97e");
 
   // Cool back rim separates the board silhouette from the dark background.
   const rim = new B.PointLight(
@@ -313,16 +318,53 @@ export function createRouteBabylonController(
   );
   brassGlint.intensity = 0.88;
   brassGlint.diffuse = B.Color3.FromHexString("#ffcf83");
+  brassGlint.setEnabled(false);
+
+  // Warm overhead "table lamp" pool that makes the board the lit hero of the
+  // composition and warms the tabletop directly under it.
+  const tableLamp = new B.PointLight(
+    "route-table-lamp",
+    new B.Vector3(0, 6.5, 1.6),
+    scene,
+  );
+  tableLamp.intensity = 0.42;
+  tableLamp.diffuse = B.Color3.FromHexString("#ffdca6");
+  tableLamp.range = 24;
+  tableLamp.setEnabled(false);
 
   const glow = new B.GlowLayer("route-glow-layer", scene, {
     mainTextureSamples: 4,
   });
-  glow.intensity = 0.68;
+  glow.intensity = 0.55;
 
   const shadowGenerator = new B.ShadowGenerator(1024, warmKey);
   shadowGenerator.useBlurExponentialShadowMap = true;
   shadowGenerator.blurKernel = 24;
   shadowGenerator.bias = 0.0008;
+
+  // --- Soft grounding pool ----------------------------------------------------
+  // The previous 34x34 ground caught shadows, but its square silhouette read as
+  // a flat backplate inside the canvas. Keep a grounding shape under the board,
+  // but make it an oval transparent shadow pool so the canvas blends with the
+  // CSS library/table atmosphere.
+  const shadowPool = B.MeshBuilder.CreateCylinder(
+    "route-shadow-pool",
+    { diameter: 11.8, height: 0.025, tessellation: 96 },
+    scene,
+  );
+  shadowPool.position.y = -0.93;
+  shadowPool.scaling.z = 0.72;
+  shadowPool.isPickable = false;
+  shadowPool.receiveShadows = true;
+  const shadowPoolMat = new B.StandardMaterial("route-shadow-pool-mat", scene);
+  shadowPoolMat.diffuseColor = B.Color3.FromHexString("#1b1008");
+  shadowPoolMat.specularColor = B.Color3.FromHexString("#000000");
+  shadowPoolMat.emissiveColor = B.Color3.FromHexString("#120a06");
+  shadowPoolMat.alpha = 0.22;
+  shadowPoolMat.disableLighting = true;
+  shadowPoolMat.backFaceCulling = false;
+  shadowPoolMat.transparencyMode = B.Material.MATERIAL_ALPHABLEND;
+  shadowPool.material = shadowPoolMat;
 
   const materials = createMaterials(B, scene);
   materials.hit.disableDepthWrite = true;
@@ -442,6 +484,7 @@ export function createRouteBabylonController(
     diffuseColor?: BABYLON.Color3;
     emissiveColor?: BABYLON.Color3;
     emissiveIntensity?: number;
+    maxSimultaneousLights?: number;
     metallic?: number;
     roughness?: number;
     specularColor?: BABYLON.Color3;
@@ -458,31 +501,76 @@ export function createRouteBabylonController(
   function tuneBoardGameMaterial(mesh: BABYLON.AbstractMesh) {
     const material = mesh.material as TunableAssetMaterial | null;
     if (!material) return;
+    if (material.maxSimultaneousLights !== undefined) {
+      material.maxSimultaneousLights = 3;
+    }
 
     const materialName = material.name.toLowerCase();
     if (materialName.includes("darkwood")) {
-      setMaterialColor(material, B.Color3.FromHexString("#7a4a28"));
-      if (material.roughness !== undefined) material.roughness = 0.48;
+      setMaterialColor(material, B.Color3.FromHexString("#6b3f20"));
+      if (material.roughness !== undefined) material.roughness = 0.58;
+    } else if (materialName.includes("woodgraindark")) {
+      setMaterialColor(material, B.Color3.FromHexString("#2f1a0d"));
+      if (material.roughness !== undefined) material.roughness = 0.74;
+    } else if (materialName.includes("woodgrainwarm")) {
+      setMaterialColor(material, B.Color3.FromHexString("#875028"));
+      if (material.roughness !== undefined) material.roughness = 0.68;
+    } else if (materialName.includes("woodgrainsoft")) {
+      setMaterialColor(material, B.Color3.FromHexString("#a86a34"));
+      if (material.roughness !== undefined) material.roughness = 0.68;
     } else if (
       materialName.includes("darkstone") ||
       materialName.includes("tilevariationa")
     ) {
-      setMaterialColor(material, B.Color3.FromHexString("#5f7164"));
-      if (material.roughness !== undefined) material.roughness = 0.62;
+      setMaterialColor(material, B.Color3.FromHexString("#4b625f"));
+      if (material.roughness !== undefined) material.roughness = 0.68;
     } else if (materialName.includes("tilevariationb")) {
-      setMaterialColor(material, B.Color3.FromHexString("#53675d"));
-      if (material.roughness !== undefined) material.roughness = 0.64;
+      setMaterialColor(material, B.Color3.FromHexString("#405754"));
+      if (material.roughness !== undefined) material.roughness = 0.72;
+    } else if (materialName.includes("tilevariationc")) {
+      setMaterialColor(material, B.Color3.FromHexString("#596b5b"));
+      if (material.roughness !== undefined) material.roughness = 0.7;
+    } else if (materialName.includes("tilemarkdark")) {
+      setMaterialColor(material, B.Color3.FromHexString("#1b2725"));
+      if (material.roughness !== undefined) material.roughness = 0.84;
+    } else if (materialName.includes("tilemarklight")) {
+      setMaterialColor(material, B.Color3.FromHexString("#879782"));
+      if (material.roughness !== undefined) material.roughness = 0.8;
+    } else if (materialName.includes("tileedgewear")) {
+      setMaterialColor(material, B.Color3.FromHexString("#74836f"));
+      if (material.roughness !== undefined) material.roughness = 0.82;
     } else if (
       materialName.includes("agedbrass") ||
       materialName.includes("warmrivet") ||
       materialName.includes("walledgehighlight")
     ) {
-      setMaterialColor(material, B.Color3.FromHexString("#dfa84a"));
-      material.emissiveColor = B.Color3.FromHexString("#2a1705");
+      setMaterialColor(material, B.Color3.FromHexString("#a86f31"));
+      material.emissiveColor = B.Color3.FromHexString("#1a0d03");
+      if (material.metallic !== undefined) material.metallic = 0.72;
+      if (material.roughness !== undefined) material.roughness = 0.44;
+    } else if (materialName.includes("bronzedark")) {
+      setMaterialColor(material, B.Color3.FromHexString("#70431f"));
+      material.emissiveColor = B.Color3.FromHexString("#120803");
+      if (material.metallic !== undefined) material.metallic = 0.74;
+      if (material.roughness !== undefined) material.roughness = 0.56;
+    } else if (
+      materialName.includes("brasspolished") ||
+      materialName.includes("runeinlay")
+    ) {
+      setMaterialColor(material, B.Color3.FromHexString("#bd873c"));
+      material.emissiveColor = B.Color3.FromHexString("#190c03");
       if (material.metallic !== undefined) material.metallic = 0.78;
-      if (material.roughness !== undefined) material.roughness = 0.32;
+      if (material.roughness !== undefined) material.roughness = 0.34;
+    } else if (materialName.includes("cornergemhighlight")) {
+      setMaterialColor(material, B.Color3.FromHexString("#9ad7ff"));
+      material.emissiveColor = B.Color3.FromHexString("#2364b8");
+      if (material.roughness !== undefined) material.roughness = 0.1;
+    } else if (materialName.includes("cornergem")) {
+      setMaterialColor(material, B.Color3.FromHexString("#1666c8"));
+      material.emissiveColor = B.Color3.FromHexString("#072a72");
+      if (material.roughness !== undefined) material.roughness = 0.12;
     } else if (materialName.includes("deepshadow")) {
-      setMaterialColor(material, B.Color3.FromHexString("#4f321e"));
+      setMaterialColor(material, B.Color3.FromHexString("#2c2118"));
       if (material.roughness !== undefined) material.roughness = 0.76;
     } else if (
       materialName.includes("walldarkstone") ||
@@ -498,6 +586,9 @@ export function createRouteBabylonController(
       | TunableAssetMaterial
       | null;
     if (!material) return;
+    if (material.maxSimultaneousLights !== undefined) {
+      material.maxSimultaneousLights = 3;
+    }
 
     const materialName = material.name.toLowerCase();
     if (materialName.includes("playercyanglow")) {
