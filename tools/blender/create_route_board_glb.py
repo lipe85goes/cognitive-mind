@@ -27,6 +27,7 @@ Contract preserved for the live Babylon scene (do not break these):
 from __future__ import annotations
 
 import argparse
+import importlib.util
 from math import radians
 from pathlib import Path
 
@@ -44,9 +45,26 @@ BOARD_DEPTH = 8.65
 # own fixed BOARD_SURFACE_Y (~0.2), so this MUST stay put across upgrades.
 TILE_TOP_Y = 0.185
 
+REQUIRED_TEXTURES = (
+    "route_tile_slate_a.png",
+    "route_tile_slate_b.png",
+    "route_tile_slate_c.png",
+    "route_wood_painted.png",
+    "route_bronze_brushed.png",
+    "route_gem_blue.png",
+)
+
 
 def project_root() -> Path:
     return Path(__file__).resolve().parents[2]
+
+
+def texture_dir() -> Path:
+    return project_root() / "public" / "models" / "route" / "textures"
+
+
+def texture_script() -> Path:
+    return project_root() / "tools" / "assets" / "generate_route_board_textures.py"
 
 
 def parse_args() -> argparse.Namespace:
@@ -123,6 +141,61 @@ def _set_bsdf_input(node: bpy.types.Node, identifier: str, value) -> None:
             return
 
 
+def _get_bsdf_input(node: bpy.types.Node, identifier: str):
+    for socket in node.inputs:
+        if socket.identifier == identifier:
+            return socket
+    return None
+
+
+def ensure_texture_assets() -> None:
+    directory = texture_dir()
+    missing = [name for name in REQUIRED_TEXTURES if not (directory / name).exists()]
+    if not missing:
+        return
+
+    generator = texture_script()
+    if not generator.exists():
+        raise FileNotFoundError(
+            f"Missing texture generator: {generator}. Missing maps: {missing}"
+        )
+
+    spec = importlib.util.spec_from_file_location(
+        "generate_route_board_textures", generator
+    )
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"Could not load texture generator: {generator}")
+
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    module.generate_all(project_root())
+
+    still_missing = [
+        name for name in REQUIRED_TEXTURES if not (directory / name).exists()
+    ]
+    if still_missing:
+        raise RuntimeError(f"Texture generation failed. Missing: {still_missing}")
+
+
+def load_texture_node(
+    material: bpy.types.Material,
+    bsdf: bpy.types.Node,
+    texture_name: str,
+) -> None:
+    image = bpy.data.images.load(str(texture_dir() / texture_name), check_existing=True)
+    image.colorspace_settings.name = "sRGB"
+
+    tex = material.node_tree.nodes.new("ShaderNodeTexImage")
+    tex.name = f"{texture_name}_Texture"
+    tex.image = image
+    tex.extension = "REPEAT"
+    tex.interpolation = "Linear"
+
+    base_color_socket = _get_bsdf_input(bsdf, "Base Color")
+    if base_color_socket:
+        material.node_tree.links.new(tex.outputs["Color"], base_color_socket)
+
+
 def make_material(
     name: str,
     color: tuple[float, float, float, float],
@@ -130,6 +203,7 @@ def make_material(
     roughness: float,
     emission: tuple[float, float, float] | None = None,
     emission_strength: float = 0.0,
+    texture_name: str | None = None,
 ) -> bpy.types.Material:
     material = bpy.data.materials.new(name)
     material.use_nodes = True
@@ -144,6 +218,8 @@ def make_material(
         _set_bsdf_input(bsdf, "Base Color", color)
         _set_bsdf_input(bsdf, "Metallic", metallic)
         _set_bsdf_input(bsdf, "Roughness", roughness)
+        if texture_name:
+            load_texture_node(material, bsdf, texture_name)
         if emission:
             _set_bsdf_input(
                 bsdf,
@@ -156,34 +232,85 @@ def make_material(
 
 
 def create_materials() -> dict[str, bpy.types.Material]:
+    ensure_texture_assets()
     return {
         # Warm dark-wood body (richer brown) + darker grain inlay band.
-        "DarkWood": make_material("DarkWood", (0.18, 0.105, 0.058, 1), 0.06, 0.6),
+        "DarkWood": make_material(
+            "DarkWood",
+            (0.22, 0.13, 0.07, 1),
+            0.05,
+            0.62,
+            texture_name="route_wood_painted.png",
+        ),
         "WoodGrainDark": make_material(
-            "WoodGrainDark", (0.1, 0.056, 0.03, 1), 0.06, 0.7
+            "WoodGrainDark",
+            (0.12, 0.07, 0.035, 1),
+            0.05,
+            0.72,
+            texture_name="route_wood_painted.png",
         ),
         # Recessed sage/teal slate play bed.
-        "DarkStone": make_material("DarkStone", (0.11, 0.138, 0.137, 1), 0.04, 0.66),
+        "DarkStone": make_material(
+            "DarkStone",
+            (0.13, 0.16, 0.15, 1),
+            0.03,
+            0.68,
+            texture_name="route_tile_slate_b.png",
+        ),
         # Clean warm brass / bronze metal family (premium gold, not dirty bronze).
-        "AgedBrass": make_material("AgedBrass", (0.86, 0.6, 0.26, 1), 0.9, 0.2),
-        "BronzeDark": make_material("BronzeDark", (0.5, 0.32, 0.14, 1), 0.85, 0.32),
+        "AgedBrass": make_material(
+            "AgedBrass",
+            (0.66, 0.43, 0.18, 1),
+            0.86,
+            0.31,
+            texture_name="route_bronze_brushed.png",
+        ),
+        "BronzeDark": make_material(
+            "BronzeDark",
+            (0.37, 0.23, 0.11, 1),
+            0.78,
+            0.44,
+            texture_name="route_bronze_brushed.png",
+        ),
         "BrassPolished": make_material(
-            "BrassPolished", (1.0, 0.82, 0.42, 1), 0.95, 0.1
+            "BrassPolished",
+            (0.88, 0.62, 0.27, 1),
+            0.92,
+            0.2,
+            texture_name="route_bronze_brushed.png",
         ),
         "DeepShadow": make_material("DeepShadow", (0.022, 0.02, 0.018, 1), 0.0, 0.9),
         # Three sage/teal slate tile variations — brighter, cleaner, toy-like,
         # still readable under the bright emissive game pieces.
         "TileVariationA": make_material(
-            "TileVariationA", (0.205, 0.245, 0.232, 1), 0.04, 0.56
+            "TileVariationA",
+            (0.28, 0.35, 0.34, 1),
+            0.03,
+            0.58,
+            texture_name="route_tile_slate_a.png",
         ),
         "TileVariationB": make_material(
-            "TileVariationB", (0.16, 0.205, 0.198, 1), 0.04, 0.62
+            "TileVariationB",
+            (0.24, 0.31, 0.3, 1),
+            0.03,
+            0.63,
+            texture_name="route_tile_slate_b.png",
         ),
         "TileVariationC": make_material(
-            "TileVariationC", (0.135, 0.178, 0.182, 1), 0.04, 0.66
+            "TileVariationC",
+            (0.31, 0.36, 0.32, 1),
+            0.03,
+            0.6,
+            texture_name="route_tile_slate_c.png",
         ),
         # Brass rune inlay (metallic catch-light, not emissive — stays subtle).
-        "RuneInlay": make_material("RuneInlay", (0.9, 0.66, 0.34, 1), 0.88, 0.16),
+        "RuneInlay": make_material(
+            "RuneInlay",
+            (0.72, 0.52, 0.25, 1),
+            0.84,
+            0.28,
+            texture_name="route_bronze_brushed.png",
+        ),
         # Signature blue gemstone for the corner caps — glossy dielectric with a
         # soft cyan glow so it reads from the game camera without overexposing.
         "CornerGem": make_material(
@@ -193,16 +320,33 @@ def create_materials() -> dict[str, bpy.types.Material]:
             0.1,
             emission=(0.05, 0.22, 0.5),
             emission_strength=0.55,
+            texture_name="route_gem_blue.png",
         ),
         "WarmRivet": make_material(
             "WarmRivet",
-            (1.0, 0.78, 0.36, 1),
+            (0.9, 0.63, 0.28, 1),
             0.7,
             0.18,
             emission=(0.5, 0.28, 0.08),
             emission_strength=0.18,
+            texture_name="route_bronze_brushed.png",
         ),
     }
+
+
+def add_box_uv(obj: bpy.types.Object) -> None:
+    previous_active = bpy.context.view_layer.objects.active
+    try:
+        bpy.ops.object.select_all(action="DESELECT")
+        bpy.context.view_layer.objects.active = obj
+        obj.select_set(True)
+        bpy.ops.object.mode_set(mode="EDIT")
+        bpy.ops.mesh.select_all(action="SELECT")
+        bpy.ops.uv.cube_project(cube_size=1.0)
+        bpy.ops.object.mode_set(mode="OBJECT")
+    finally:
+        obj.select_set(False)
+        bpy.context.view_layer.objects.active = previous_active
 
 
 def add_box(
@@ -221,6 +365,7 @@ def add_box(
     obj.rotation_euler[2] = radians(rotation_y_degrees)
     obj.data.materials.append(material)
     bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
+    add_box_uv(obj)
 
     if bevel > 0:
         bevel_modifier = obj.modifiers.new(f"{name}_Bevel", "BEVEL")
