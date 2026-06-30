@@ -164,20 +164,28 @@ visual.
 
 ## Player asset (`player.glb`)
 
-`player.glb` is the premium **player pawn** — a friendly teal/cyan glowing game
-piece that replaces the procedural player meshes in the Babylon renderer.
+`player.glb` is the premium **player miniature** — a friendly blue/cyan
+character piece that replaces the procedural player meshes in the Babylon
+renderer.
 
 It is built from these named objects:
 
 - `Player_Shadow` — subtle baked contact disc (optional; integration may drop it
   if Babylon supplies its own shadows).
-- `Player_Base` — dark circular plinth.
-- `Player_Base_Step` — stepped rim on top of the plinth.
-- `Player_Base_Ring` — soft teal glow ring (player identity at the base).
-- `Player_Body` — glowing teal flared pawn body.
-- `Player_Collar` — glass highlight ring between body and head.
-- `Player_Core` — bright cyan core "head" orb.
-- `Player_Crest` — tiny glass crest gem on top.
+- `Player_Base` / `Player_Base_Step` / `Player_Base_Ring` — compact tabletop
+  base with cyan identity glow.
+- `Player_Boot_Left` / `Player_Boot_Right` — rounded toy boots.
+- `Player_Leg_Left` / `Player_Leg_Right` — small blue legs.
+- `Player_Torso` / `Player_Chest_Panel` — compact blue suit body.
+- `Player_Belt` / `Player_Belt_Buckle` — dark belt and small gold accent.
+- `Player_Arm_Left` / `Player_Arm_Right` — simple readable arms.
+- `Player_Hand_Left` / `Player_Hand_Right` — small hands.
+- `Player_Head` — oversized friendly head.
+- `Player_Eye_Left` / `Player_Eye_Right` — simple dark eyes.
+- `Player_Hair_Cap`, `Player_Hair_Front`, `Player_Hair_Left`,
+  `Player_Hair_Right`, `Player_Hair_Back` — stylized blue hair masses visible
+  from 3/4 and top camera.
+- `Player_Collar` / `Player_Crest` — cyan/glass identity accents.
 
 ### How it was generated / how to regenerate
 
@@ -193,7 +201,7 @@ Optional preview render (also writes the two PNGs):
 
 That writes:
 
-- `player.glb` — the exported pawn (GLB only contains the pawn meshes; the
+- `player.glb` — the exported miniature (GLB only contains the character meshes; the
   preview cameras/lights are added **after** export).
 - `player-preview.png` — 3/4 preview.
 - `player-preview-top.png` — top/near-top preview.
@@ -209,28 +217,34 @@ Exported as Y-up glTF, matching `board.glb` / `wall.glb` and the Babylon grid:
 - centered on the world origin in X/Z
 - bottom rests on `Y = 0` (sits on the tile surface)
 - `Y` is vertical height, `X` = width, `Z` = depth
-- the pawn is radially symmetric, so it has no strong front
+- front / face points toward target `-Z`
 
 ### Footprint and height
 
-- footprint ≈ `0.54 × 0.54` units (well inside the 1.0-unit tile)
-- height ≈ `0.71` units (reads clearly without hiding walls or the portal)
-- file size ≈ 149 KB (lightweight; safe to clone on the player cell)
+- footprint ≈ `0.68 × 0.68` units (inside the 1.0-unit tile)
+- height ≈ `0.86` units (reads as a miniature without hiding walls or the portal)
+- file size remains lightweight enough to clone on the player cell
 
 ### Materials (procedural, no external textures)
 
 - `PlayerBaseDark` — dark plinth
-- `PlayerCyanGlow` — emissive teal body + base ring
-- `PlayerCyanCore` — bright emissive cyan head orb
-- `PlayerGlassHighlight` — glossy collar + crest accents
+- `PlayerSuitBlue` — blue suit body and limbs
+- `PlayerSuitTrim` — cyan chest panel
+- `PlayerSkin` — warm stylized skin
+- `PlayerHairBlue` — bright blue/cyan hair
+- `PlayerEyeDark` — simple dark eyes
+- `PlayerBootDark` — boots and belt
+- `PlayerGoldBuckle` — small warm metallic accent
+- `PlayerCyanGlow` — emissive base ring
+- `PlayerCyanCore` / `PlayerGlassHighlight` — small cyan crest/collar accents
 - `PlayerShadow` — matte dark contact disc (optional)
 
 ## Guardian asset (`guardian.glb`)
 
-`guardian.glb` is the premium **guardian piece** — a dark amber/bronze hooded
-game piece with glowing eyes that replaces the procedural guardian meshes in the
-Babylon renderer. It is taller / more imposing than the player but still a
-tabletop piece.
+`guardian.glb` is the premium **guardian miniature** — a dark amber/bronze
+hooded enemy character with glowing eyes that replaces the procedural guardian
+meshes in the Babylon renderer. It is taller / more imposing than the player but
+still a tabletop piece.
 
 It is built from these named objects:
 
@@ -238,13 +252,18 @@ It is built from these named objects:
 - `Guardian_Base` — dark circular plinth.
 - `Guardian_Base_Step` — stepped rim on top of the plinth.
 - `Guardian_Base_Ring` — warm amber aura ring (enemy identity).
-- `Guardian_Cloak` — tapered dark robed body (a strong silhouette, not a cone).
-- `Guardian_Cloak_Hem` — aged amber hem near the base.
-- `Guardian_Cloak_Trim` — amber clasp band higher up the cloak.
-- `Guardian_Hood` — rounded dark hood dome.
-- `Guardian_Face` — dark recessed face area (sets the eyes in shadow).
-- `Guardian_Hood_Trim` — amber ring framing the face opening.
-- `Guardian_Eye_Left` / `Guardian_Eye_Right` — small glowing amber eyes.
+- `Guardian_Cloak_Skirt` / `Guardian_Torso` — flared cloak and compact robed
+  body.
+- `Guardian_Cloak_Hem` — glowing warm hem near the base.
+- `Guardian_Belt_Trim` / `Guardian_Belt_Buckle` — amber belt details.
+- `Guardian_Sleeve_Left` / `Guardian_Sleeve_Right` — visible sleeves for a more
+  character-like pose.
+- `Guardian_Hand_Left` / `Guardian_Hand_Right` — small amber hands.
+- `Guardian_Hood` / `Guardian_Hood_Back` — oversized hood silhouette.
+- `Guardian_Face` — dark recessed face area.
+- `Guardian_Hood_Trim` / `Guardian_Hood_Collar` — amber hood/collar framing.
+- `Guardian_Brow` — glowing brow bar.
+- `Guardian_Eye_Left` / `Guardian_Eye_Right` — bright glowing amber eyes.
 
 ### How it was generated / how to regenerate
 
@@ -279,14 +298,16 @@ Exported as Y-up glTF, matching the rest of the route assets:
 
 ### Footprint and height
 
-- footprint ≈ `0.60 × 0.60` units (inside the 1.0-unit tile)
-- height ≈ `0.84` units (taller / more imposing than the player's `0.71`)
-- file size ≈ 217 KB (lightweight)
+- footprint ≈ `0.75 × 0.75` units (inside the 1.0-unit tile)
+- height ≈ `0.93` units (taller / more imposing than the player)
+- file size remains lightweight enough for one guardian clone
 
 ### Materials (procedural, no external textures)
 
-- `GuardianBaseDark` — dark plinth + recessed face
-- `GuardianCloakDark` — dark robed cloak + hood
+- `GuardianBaseDark` — dark plinth
+- `GuardianCloakDark` — dark robed cloak
+- `GuardianHoodSoft` — warmer hood and sleeves
+- `GuardianFaceVoid` — dark recessed face
 - `GuardianAmberTrim` — aged amber/bronze hem, clasp and hood ring (metallic)
 - `GuardianEyeGlow` — strongly emissive amber eyes
 - `GuardianWarmGlow` — emissive warm amber base aura ring

@@ -10,11 +10,11 @@ public/models/route/player.glb
 Optional preview render:
 blender --background --python tools/blender/create_route_player_glb.py -- --preview
 
-The player is a friendly premium tabletop pawn: a dark plinth with a glowing
-teal/cyan emissive body, a glass collar and a bright cyan core "head" orb. It is
-centered on the world origin, sits on Y = 0, fits comfortably inside one
-1.0-unit board tile, and uses only procedural materials (no external textures).
-It is NOT wired into the game by this script.
+The player is a friendly premium tabletop miniature: a small blue character with
+an oversized head, stylized hair, simple body, arms, boots and a cyan identity
+base. It is centered on the world origin, sits on Y = 0, fits comfortably inside
+one 1.0-unit board tile, and uses only procedural materials (no external
+textures). It is NOT wired into the game by this script.
 """
 
 from __future__ import annotations
@@ -131,10 +131,46 @@ def make_material(
 
 
 def create_materials() -> dict[str, bpy.types.Material]:
-    """Procedural friendly teal/cyan pawn set (no external textures)."""
+    """Procedural friendly blue character set (no external textures)."""
     return {
         "PlayerBaseDark": make_material(
             "PlayerBaseDark", (0.035, 0.05, 0.06, 1), 0.2, 0.55
+        ),
+        "PlayerSuitBlue": make_material(
+            "PlayerSuitBlue", (0.025, 0.23, 0.42, 1), 0.05, 0.42
+        ),
+        "PlayerSuitTrim": make_material(
+            "PlayerSuitTrim",
+            (0.04, 0.48, 0.72, 1),
+            0.0,
+            0.36,
+            emission=(0.02, 0.18, 0.28),
+            emission_strength=0.28,
+        ),
+        "PlayerSkin": make_material(
+            "PlayerSkin", (0.93, 0.64, 0.43, 1), 0.0, 0.46
+        ),
+        "PlayerHairBlue": make_material(
+            "PlayerHairBlue",
+            (0.0, 0.44, 0.68, 1),
+            0.0,
+            0.34,
+            emission=(0.0, 0.07, 0.12),
+            emission_strength=0.22,
+        ),
+        "PlayerEyeDark": make_material(
+            "PlayerEyeDark", (0.015, 0.024, 0.032, 1), 0.0, 0.25
+        ),
+        "PlayerBootDark": make_material(
+            "PlayerBootDark", (0.025, 0.045, 0.07, 1), 0.08, 0.48
+        ),
+        "PlayerGoldBuckle": make_material(
+            "PlayerGoldBuckle",
+            (0.9, 0.56, 0.2, 1),
+            0.65,
+            0.32,
+            emission=(0.22, 0.1, 0.02),
+            emission_strength=0.18,
         ),
         "PlayerCyanGlow": make_material(
             "PlayerCyanGlow",
@@ -243,6 +279,62 @@ def add_sphere(
     return obj
 
 
+def add_rounded_box(
+    name: str,
+    location: tuple[float, float, float],
+    size: tuple[float, float, float],
+    material: bpy.types.Material,
+    bevel: float = 0.035,
+    rotation: tuple[float, float, float] = (0.0, 0.0, 0.0),
+) -> bpy.types.Object:
+    bpy.ops.mesh.primitive_cube_add(
+        size=1,
+        location=target_to_blender(location),
+        rotation=(rotation[0], rotation[2], rotation[1]),
+    )
+    obj = bpy.context.object
+    obj.name = name
+    obj.data.name = f"{name}_Mesh"
+    sx, sy, sz = size
+    obj.dimensions = (sx, sz, sy)
+    bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
+    obj.data.materials.append(material)
+    if bevel > 0:
+        modifier = obj.modifiers.new(f"{name}_Bevel", "BEVEL")
+        modifier.width = bevel
+        modifier.segments = 4
+        modifier.affect = "EDGES"
+        obj.modifiers.new(f"{name}_WeightedNormals", "WEIGHTED_NORMAL")
+    return obj
+
+
+def add_cylinder_between(
+    name: str,
+    start: tuple[float, float, float],
+    end: tuple[float, float, float],
+    radius: float,
+    material: bpy.types.Material,
+    vertices: int = 24,
+) -> bpy.types.Object:
+    start_v = Vector(target_to_blender(start))
+    end_v = Vector(target_to_blender(end))
+    midpoint = (start_v + end_v) * 0.5
+    direction = end_v - start_v
+    bpy.ops.mesh.primitive_cylinder_add(
+        vertices=vertices,
+        radius=radius,
+        depth=direction.length,
+        location=midpoint,
+    )
+    obj = bpy.context.object
+    obj.name = name
+    obj.data.name = f"{name}_Mesh"
+    obj.rotation_euler = direction.to_track_quat("Z", "Y").to_euler()
+    obj.data.materials.append(material)
+    bpy.ops.object.shade_smooth()
+    return obj
+
+
 def add_torus(
     name: str,
     location: tuple[float, float, float],
@@ -273,72 +365,230 @@ def add_torus(
 
 
 def build_player(materials: dict[str, bpy.types.Material]) -> None:
-    """All heights are in target Y (vertical); bottom rests on Y = 0."""
+    """All heights are in target Y (vertical); bottom rests on Y = 0.
+
+    Front / face points toward target -Z.
+    """
     # Subtle baked contact disc (optional, separately named so integration can
     # drop it if Babylon supplies its own shadows).
     add_cylinder(
         "Player_Shadow",
         (0.0, 0.006, 0.0),
-        0.27,
+        0.31,
         0.012,
         materials["PlayerShadow"],
         vertices=48,
     )
-    # Dark plinth.
+    # Small tabletop base: still a game piece, but no longer only a pawn.
     add_cylinder(
         "Player_Base",
         (0.0, 0.04, 0.0),
-        0.255,
+        0.27,
         0.07,
         materials["PlayerBaseDark"],
     )
-    # Stepped rim on top of the plinth.
     add_cylinder(
         "Player_Base_Step",
         (0.0, 0.083, 0.0),
-        0.205,
+        0.218,
         0.02,
         materials["PlayerBaseDark"],
     )
-    # Soft teal glow ring around the step (player identity at the base).
     add_torus(
         "Player_Base_Ring",
         (0.0, 0.078, 0.0),
-        0.225,
+        0.237,
         0.016,
         materials["PlayerCyanGlow"],
     )
-    # Glowing teal body (a friendly flared pawn stem).
-    add_cone(
-        "Player_Body",
-        (0.0, 0.245, 0.0),
-        0.165,
-        0.10,
-        0.33,
-        materials["PlayerCyanGlow"],
+
+    # Boots and legs. The footprint remains inside a single tile.
+    add_rounded_box(
+        "Player_Boot_Left",
+        (-0.075, 0.125, -0.02),
+        (0.105, 0.085, 0.17),
+        materials["PlayerBootDark"],
+        bevel=0.025,
     )
-    # Glass collar between body and head.
+    add_rounded_box(
+        "Player_Boot_Right",
+        (0.075, 0.125, -0.02),
+        (0.105, 0.085, 0.17),
+        materials["PlayerBootDark"],
+        bevel=0.025,
+    )
+    add_cylinder_between(
+        "Player_Leg_Left",
+        (-0.065, 0.165, 0.0),
+        (-0.07, 0.32, 0.0),
+        0.038,
+        materials["PlayerSuitBlue"],
+    )
+    add_cylinder_between(
+        "Player_Leg_Right",
+        (0.065, 0.165, 0.0),
+        (0.07, 0.32, 0.0),
+        0.038,
+        materials["PlayerSuitBlue"],
+    )
+
+    # Compact blue suit torso with a readable front at -Z.
+    add_sphere(
+        "Player_Torso",
+        (0.0, 0.405, 0.0),
+        0.17,
+        materials["PlayerSuitBlue"],
+        target_scale=(0.92, 1.18, 0.72),
+        segments=32,
+        rings=16,
+    )
+    add_rounded_box(
+        "Player_Chest_Panel",
+        (0.0, 0.43, -0.108),
+        (0.14, 0.16, 0.025),
+        materials["PlayerSuitTrim"],
+        bevel=0.018,
+    )
+    add_rounded_box(
+        "Player_Belt",
+        (0.0, 0.305, -0.005),
+        (0.25, 0.038, 0.18),
+        materials["PlayerBootDark"],
+        bevel=0.012,
+    )
+    add_rounded_box(
+        "Player_Belt_Buckle",
+        (0.0, 0.31, -0.105),
+        (0.055, 0.045, 0.028),
+        materials["PlayerGoldBuckle"],
+        bevel=0.01,
+    )
+
+    # Arms use simple cylinder capsules; readable but not over-detailed.
+    add_cylinder_between(
+        "Player_Arm_Left",
+        (-0.13, 0.47, -0.005),
+        (-0.245, 0.34, -0.045),
+        0.034,
+        materials["PlayerSuitBlue"],
+    )
+    add_cylinder_between(
+        "Player_Arm_Right",
+        (0.13, 0.47, -0.005),
+        (0.245, 0.34, -0.045),
+        0.034,
+        materials["PlayerSuitBlue"],
+    )
+    add_sphere(
+        "Player_Hand_Left",
+        (-0.255, 0.325, -0.05),
+        0.045,
+        materials["PlayerSkin"],
+        target_scale=(0.9, 0.9, 0.9),
+        segments=20,
+        rings=12,
+    )
+    add_sphere(
+        "Player_Hand_Right",
+        (0.255, 0.325, -0.05),
+        0.045,
+        materials["PlayerSkin"],
+        target_scale=(0.9, 0.9, 0.9),
+        segments=20,
+        rings=12,
+    )
+
+    # Oversized friendly head: strongest change versus the old pawn.
+    add_sphere(
+        "Player_Head",
+        (0.0, 0.64, -0.01),
+        0.155,
+        materials["PlayerSkin"],
+        target_scale=(0.95, 1.05, 0.9),
+        segments=40,
+        rings=18,
+    )
+    add_sphere(
+        "Player_Eye_Left",
+        (-0.055, 0.655, -0.145),
+        0.019,
+        materials["PlayerEyeDark"],
+        target_scale=(1.0, 1.0, 0.42),
+        segments=16,
+        rings=8,
+    )
+    add_sphere(
+        "Player_Eye_Right",
+        (0.055, 0.655, -0.145),
+        0.019,
+        materials["PlayerEyeDark"],
+        target_scale=(1.0, 1.0, 0.42),
+        segments=16,
+        rings=8,
+    )
+
+    # Blue stylized hair masses: visible from 3/4 and top cameras.
+    add_sphere(
+        "Player_Hair_Cap",
+        (0.0, 0.725, 0.005),
+        0.165,
+        materials["PlayerHairBlue"],
+        target_scale=(1.04, 0.72, 0.98),
+        segments=32,
+        rings=14,
+    )
+    add_sphere(
+        "Player_Hair_Front",
+        (-0.045, 0.725, -0.13),
+        0.075,
+        materials["PlayerHairBlue"],
+        target_scale=(1.45, 0.82, 0.68),
+        segments=24,
+        rings=12,
+    )
+    add_sphere(
+        "Player_Hair_Left",
+        (-0.13, 0.695, -0.035),
+        0.075,
+        materials["PlayerHairBlue"],
+        target_scale=(0.78, 1.0, 0.78),
+        segments=24,
+        rings=12,
+    )
+    add_sphere(
+        "Player_Hair_Right",
+        (0.13, 0.695, -0.035),
+        0.075,
+        materials["PlayerHairBlue"],
+        target_scale=(0.78, 1.0, 0.78),
+        segments=24,
+        rings=12,
+    )
+    add_sphere(
+        "Player_Hair_Back",
+        (0.0, 0.69, 0.13),
+        0.075,
+        materials["PlayerHairBlue"],
+        target_scale=(1.35, 0.85, 0.75),
+        segments=24,
+        rings=12,
+    )
+
+    # Small cyan crest and collar keep the old blue identity but no longer define
+    # the whole asset.
     add_torus(
         "Player_Collar",
-        (0.0, 0.40, 0.0),
+        (0.0, 0.515, 0.0),
         0.105,
-        0.02,
+        0.015,
         materials["PlayerGlassHighlight"],
     )
-    # Bright cyan core "head" orb.
-    add_sphere(
-        "Player_Core",
-        (0.0, 0.52, 0.0),
-        0.135,
-        materials["PlayerCyanCore"],
-        target_scale=(1.0, 1.06, 1.0),
-    )
-    # Tiny glass crest gem on top.
     add_sphere(
         "Player_Crest",
-        (0.0, 0.665, 0.0),
-        0.045,
-        materials["PlayerGlassHighlight"],
+        (0.0, 0.825, -0.025),
+        0.035,
+        materials["PlayerCyanCore"],
+        target_scale=(1.0, 0.85, 1.0),
     )
 
 

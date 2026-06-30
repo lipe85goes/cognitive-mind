@@ -10,13 +10,12 @@ public/models/route/guardian.glb
 Optional preview render:
 blender --background --python tools/blender/create_route_guardian_glb.py -- --preview
 
-The guardian is a dark hooded board-game piece: a dark plinth with a warm amber
-aura ring, a tapered dark cloak with aged amber/bronze trim, a rounded hood with
-an amber-framed face opening and two small glowing eyes. It faces target -Z, is
-centered on the world origin, sits on Y = 0, fits inside one 1.0-unit board
-tile, and uses only procedural materials (no external textures). It is taller /
-more imposing than the player but stays a tabletop piece. It is NOT wired into
-the game by this script.
+The guardian is a dark hooded tabletop miniature: a compact enemy character with
+a flared cloak, oversized hood silhouette, visible sleeves, amber glowing eyes
+and warm hem light. It faces target -Z, is centered on the world origin, sits on
+Y = 0, fits inside one 1.0-unit board tile, and uses only procedural materials
+(no external textures). It is taller / more imposing than the player but stays a
+tabletop piece. It is NOT wired into the game by this script.
 """
 
 from __future__ import annotations
@@ -137,13 +136,19 @@ def make_material(
 
 
 def create_materials() -> dict[str, bpy.types.Material]:
-    """Procedural dark hooded guardian set with amber trim (no textures)."""
+    """Procedural dark hooded guardian character set with amber trim."""
     return {
         "GuardianBaseDark": make_material(
             "GuardianBaseDark", (0.02, 0.018, 0.015, 1), 0.1, 0.7
         ),
         "GuardianCloakDark": make_material(
-            "GuardianCloakDark", (0.06, 0.05, 0.04, 1), 0.0, 0.85
+            "GuardianCloakDark", (0.065, 0.052, 0.04, 1), 0.0, 0.82
+        ),
+        "GuardianHoodSoft": make_material(
+            "GuardianHoodSoft", (0.11, 0.085, 0.065, 1), 0.0, 0.7
+        ),
+        "GuardianFaceVoid": make_material(
+            "GuardianFaceVoid", (0.006, 0.004, 0.002, 1), 0.0, 0.92
         ),
         "GuardianAmberTrim": make_material(
             "GuardianAmberTrim",
@@ -155,11 +160,11 @@ def create_materials() -> dict[str, bpy.types.Material]:
         ),
         "GuardianEyeGlow": make_material(
             "GuardianEyeGlow",
-            (0.98, 0.66, 0.22, 1),
+            (1.0, 0.68, 0.18, 1),
             0.0,
             0.2,
-            emission=(0.95, 0.55, 0.12),
-            emission_strength=5.0,
+            emission=(1.0, 0.55, 0.08),
+            emission_strength=6.5,
         ),
         "GuardianWarmGlow": make_material(
             "GuardianWarmGlow",
@@ -252,6 +257,62 @@ def add_sphere(
     return obj
 
 
+def add_rounded_box(
+    name: str,
+    location: tuple[float, float, float],
+    size: tuple[float, float, float],
+    material: bpy.types.Material,
+    bevel: float = 0.035,
+    rotation: tuple[float, float, float] = (0.0, 0.0, 0.0),
+) -> bpy.types.Object:
+    bpy.ops.mesh.primitive_cube_add(
+        size=1,
+        location=target_to_blender(location),
+        rotation=(rotation[0], rotation[2], rotation[1]),
+    )
+    obj = bpy.context.object
+    obj.name = name
+    obj.data.name = f"{name}_Mesh"
+    sx, sy, sz = size
+    obj.dimensions = (sx, sz, sy)
+    bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
+    obj.data.materials.append(material)
+    if bevel > 0:
+        modifier = obj.modifiers.new(f"{name}_Bevel", "BEVEL")
+        modifier.width = bevel
+        modifier.segments = 4
+        modifier.affect = "EDGES"
+        obj.modifiers.new(f"{name}_WeightedNormals", "WEIGHTED_NORMAL")
+    return obj
+
+
+def add_cylinder_between(
+    name: str,
+    start: tuple[float, float, float],
+    end: tuple[float, float, float],
+    radius: float,
+    material: bpy.types.Material,
+    vertices: int = 24,
+) -> bpy.types.Object:
+    start_v = Vector(target_to_blender(start))
+    end_v = Vector(target_to_blender(end))
+    midpoint = (start_v + end_v) * 0.5
+    direction = end_v - start_v
+    bpy.ops.mesh.primitive_cylinder_add(
+        vertices=vertices,
+        radius=radius,
+        depth=direction.length,
+        location=midpoint,
+    )
+    obj = bpy.context.object
+    obj.name = name
+    obj.data.name = f"{name}_Mesh"
+    obj.rotation_euler = direction.to_track_quat("Z", "Y").to_euler()
+    obj.data.materials.append(material)
+    bpy.ops.object.shade_smooth()
+    return obj
+
+
 def add_torus(
     name: str,
     location: tuple[float, float, float],
@@ -290,102 +351,186 @@ def build_guardian(materials: dict[str, bpy.types.Material]) -> None:
     add_cylinder(
         "Guardian_Shadow",
         (0.0, 0.006, 0.0),
-        0.30,
+        0.33,
         0.012,
         materials["GuardianShadow"],
         vertices=48,
     )
-    # Dark plinth.
+    # Dark plinth, kept compact so the tile hitbox remains visually clear.
     add_cylinder(
         "Guardian_Base",
         (0.0, 0.04, 0.0),
-        0.285,
+        0.30,
         0.08,
         materials["GuardianBaseDark"],
     )
-    # Stepped rim on top of the plinth.
     add_cylinder(
         "Guardian_Base_Step",
         (0.0, 0.093, 0.0),
-        0.235,
+        0.245,
         0.02,
         materials["GuardianBaseDark"],
     )
-    # Warm amber aura ring at the base (enemy identity).
     add_torus(
         "Guardian_Base_Ring",
         (0.0, 0.086, 0.0),
-        0.255,
+        0.27,
         0.018,
         materials["GuardianWarmGlow"],
     )
-    # Tapered dark cloak (a strong robed silhouette, not a plain cone).
+
+    # Flared cloak skirt and torso. It should read as a hooded miniature, not a
+    # pawn/cone, while still staying inside one tile.
     add_cone(
-        "Guardian_Cloak",
-        (0.0, 0.33, 0.0),
-        0.265,
-        0.145,
-        0.50,
+        "Guardian_Cloak_Skirt",
+        (0.0, 0.31, 0.02),
+        0.285,
+        0.18,
+        0.42,
         materials["GuardianCloakDark"],
     )
-    # Aged amber hem near the base of the cloak.
-    add_torus(
-        "Guardian_Cloak_Hem",
-        (0.0, 0.14, 0.0),
-        0.25,
-        0.02,
-        materials["GuardianAmberTrim"],
-    )
-    # Amber strap higher up the cloak (a clasp band).
-    add_torus(
-        "Guardian_Cloak_Trim",
-        (0.0, 0.46, 0.0),
-        0.172,
-        0.016,
-        materials["GuardianAmberTrim"],
-    )
-    # Rounded hood dome (egg-shaped, taller than wide).
     add_sphere(
-        "Guardian_Hood",
-        (0.0, 0.63, 0.0),
+        "Guardian_Torso",
+        (0.0, 0.48, -0.005),
         0.175,
         materials["GuardianCloakDark"],
-        target_scale=(1.0, 1.18, 1.05),
+        target_scale=(0.95, 1.22, 0.72),
+        segments=32,
+        rings=16,
     )
-    # Dark recessed face area at the front of the hood (sets the eyes in shadow).
+    add_torus(
+        "Guardian_Cloak_Hem",
+        (0.0, 0.135, 0.0),
+        0.272,
+        0.022,
+        materials["GuardianWarmGlow"],
+    )
+    add_torus(
+        "Guardian_Belt_Trim",
+        (0.0, 0.385, 0.0),
+        0.18,
+        0.014,
+        materials["GuardianAmberTrim"],
+    )
+    add_rounded_box(
+        "Guardian_Belt_Buckle",
+        (0.0, 0.385, -0.122),
+        (0.055, 0.05, 0.026),
+        materials["GuardianAmberTrim"],
+        bevel=0.009,
+    )
+
+    # Sleeves give the piece a character pose and widen the silhouette just
+    # enough to read at gameplay distance.
+    add_cylinder_between(
+        "Guardian_Sleeve_Left",
+        (-0.13, 0.505, -0.01),
+        (-0.255, 0.31, -0.04),
+        0.046,
+        materials["GuardianHoodSoft"],
+    )
+    add_cylinder_between(
+        "Guardian_Sleeve_Right",
+        (0.13, 0.505, -0.01),
+        (0.255, 0.31, -0.04),
+        0.046,
+        materials["GuardianHoodSoft"],
+    )
+    add_sphere(
+        "Guardian_Hand_Left",
+        (-0.27, 0.295, -0.045),
+        0.04,
+        materials["GuardianAmberTrim"],
+        target_scale=(0.8, 0.8, 0.8),
+        segments=18,
+        rings=10,
+    )
+    add_sphere(
+        "Guardian_Hand_Right",
+        (0.27, 0.295, -0.045),
+        0.04,
+        materials["GuardianAmberTrim"],
+        target_scale=(0.8, 0.8, 0.8),
+        segments=18,
+        rings=10,
+    )
+
+    # Oversized hood: iconic enemy read from 3/4 and top.
+    add_sphere(
+        "Guardian_Hood",
+        (0.0, 0.675, 0.0),
+        0.205,
+        materials["GuardianHoodSoft"],
+        target_scale=(1.05, 1.0, 0.98),
+        segments=40,
+        rings=18,
+    )
+    # Back hood mass makes the top view recognisably hooded.
+    add_sphere(
+        "Guardian_Hood_Back",
+        (0.0, 0.635, 0.12),
+        0.14,
+        materials["GuardianCloakDark"],
+        target_scale=(1.16, 0.85, 0.78),
+        segments=28,
+        rings=12,
+    )
+    # Face cavity + eyes are lifted to the UPPER-front of the hood so the
+    # elevated 3/4 game camera looks straight at the glowing eyes instead of the
+    # hood brow occluding them. A larger dark void makes the amber eyes pop.
     add_sphere(
         "Guardian_Face",
-        (0.0, 0.645, -0.115),
-        0.105,
-        materials["GuardianBaseDark"],
-        target_scale=(1.0, 1.05, 0.45),
+        (0.0, 0.765, -0.165),
+        0.14,
+        materials["GuardianFaceVoid"],
+        target_scale=(1.25, 1.05, 0.42),
+        segments=28,
+        rings=12,
     )
-    # Amber ring framing the face opening (strongly reads as a hood).
     add_torus(
         "Guardian_Hood_Trim",
-        (0.0, 0.645, -0.15),
-        0.115,
-        0.015,
+        (0.0, 0.775, -0.195),
+        0.15,
+        0.017,
         materials["GuardianAmberTrim"],
         face_front=True,
     )
-    # Two small glowing eyes set at the front of the hood opening so they stay
-    # readable from a high 3/4 camera (not buried under the hood overhang).
+    # Brow + eyes: the strongest guardian readability markers — bigger, brighter
+    # and raised to the part of the hood the camera actually sees.
+    add_rounded_box(
+        "Guardian_Brow",
+        (0.0, 0.83, -0.2),
+        (0.19, 0.03, 0.024),
+        materials["GuardianWarmGlow"],
+        bevel=0.009,
+    )
+    # Large, bright eyes placed high on the front of the hood — the part the
+    # elevated 3/4 game camera looks straight at — so they read unmistakably as
+    # glowing enemy eyes even at gameplay distance and on far cells.
     add_sphere(
         "Guardian_Eye_Left",
-        (-0.05, 0.655, -0.165),
-        0.027,
+        (-0.063, 0.775, -0.216),
+        0.058,
         materials["GuardianEyeGlow"],
-        segments=20,
-        rings=12,
+        target_scale=(1.0, 0.88, 0.66),
+        segments=22,
+        rings=14,
     )
     add_sphere(
         "Guardian_Eye_Right",
-        (0.05, 0.655, -0.165),
-        0.027,
+        (0.063, 0.775, -0.216),
+        0.058,
         materials["GuardianEyeGlow"],
-        segments=20,
-        rings=12,
+        target_scale=(1.0, 0.88, 0.66),
+        segments=22,
+        rings=14,
+    )
+    add_torus(
+        "Guardian_Hood_Collar",
+        (0.0, 0.535, -0.015),
+        0.17,
+        0.017,
+        materials["GuardianAmberTrim"],
     )
 
 

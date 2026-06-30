@@ -85,13 +85,17 @@ const WALL_SCALE = 1;
 // Both character assets are authored centered on X/Z, bottom at local Y = 0 and
 // small enough to fit inside one tile. Scale 1 keeps their authored visual
 // proportion: player ~0.71 high, guardian ~0.84 high.
-const PLAYER_SCALE = 1.12;
-const GUARDIAN_SCALE = 1.2;
-const PLAYER_Y_OFFSET = 0;
+// Player is enlarged a touch and lifted slightly so the friendly blue piece
+// reads as clearly "Você" from the default camera. Guardian is made noticeably
+// taller/more imposing than the player so the enemy reads at gameplay distance.
+const PLAYER_SCALE = 1.22;
+const GUARDIAN_SCALE = 1.32;
+const PLAYER_Y_OFFSET = 0.02;
 const GUARDIAN_Y_OFFSET = 0;
-// guardian.glb faces -Z by default; a small rightward turn makes the face/eyes
-// read better from the fixed 3/4 camera without changing grid alignment.
-const GUARDIAN_ROTATION_Y = -0.16;
+// guardian.glb faces -Z by default; the camera sits on the -Z side ~6.7° toward
+// +X, so -0.12 points the (now upper-front) glowing eyes almost straight at the
+// camera without changing grid alignment.
+const GUARDIAN_ROTATION_Y = -0.12;
 
 // --- Camera composition (cinematic 3/4 premium tabletop) -------------------
 const DEFAULT_CAMERA_ALPHA = -Math.PI / 2.16;
@@ -582,29 +586,70 @@ export function createRouteBabylonController(
   }
 
   function tuneCharacterMaterial(mesh: BABYLON.AbstractMesh) {
-    const material = mesh.material as
-      | TunableAssetMaterial
-      | null;
+    const material = mesh.material as TunableAssetMaterial | null;
     if (!material) return;
     if (material.maxSimultaneousLights !== undefined) {
       material.maxSimultaneousLights = 3;
     }
 
     const materialName = material.name.toLowerCase();
-    if (materialName.includes("playercyanglow")) {
-      material.emissiveColor = B.Color3.FromHexString("#19d2e5");
+    if (materialName.includes("playersuitblue")) {
+      material.albedoColor = B.Color3.FromHexString("#075f91");
+      material.diffuseColor = B.Color3.FromHexString("#075f91");
+      if (material.roughness !== undefined) material.roughness = 0.44;
+    } else if (materialName.includes("playersuittrim")) {
+      material.albedoColor = B.Color3.FromHexString("#1ba5cf");
+      material.diffuseColor = B.Color3.FromHexString("#1ba5cf");
+      material.emissiveColor = B.Color3.FromHexString("#0b4f66");
       if (material.emissiveIntensity !== undefined) {
-        material.emissiveIntensity = 0.5;
+        material.emissiveIntensity = 0.28;
+      }
+    } else if (materialName.includes("playerhairblue")) {
+      material.albedoColor = B.Color3.FromHexString("#0394bf");
+      material.diffuseColor = B.Color3.FromHexString("#0394bf");
+      material.emissiveColor = B.Color3.FromHexString("#01202c");
+      if (material.roughness !== undefined) material.roughness = 0.36;
+    } else if (materialName.includes("playerskin")) {
+      material.albedoColor = B.Color3.FromHexString("#d9a077");
+      material.diffuseColor = B.Color3.FromHexString("#d9a077");
+      if (material.roughness !== undefined) material.roughness = 0.52;
+    } else if (materialName.includes("playereyedark")) {
+      material.albedoColor = B.Color3.FromHexString("#07111a");
+      material.diffuseColor = B.Color3.FromHexString("#07111a");
+      if (material.roughness !== undefined) material.roughness = 0.24;
+    } else if (materialName.includes("playerbootdark")) {
+      material.albedoColor = B.Color3.FromHexString("#081725");
+      material.diffuseColor = B.Color3.FromHexString("#081725");
+      if (material.roughness !== undefined) material.roughness = 0.5;
+    } else if (materialName.includes("playergoldbuckle")) {
+      material.albedoColor = B.Color3.FromHexString("#d28a2c");
+      material.diffuseColor = B.Color3.FromHexString("#d28a2c");
+      if (material.metallic !== undefined) material.metallic = 0.65;
+      if (material.roughness !== undefined) material.roughness = 0.36;
+    } else if (materialName.includes("playercyanglow")) {
+      material.emissiveColor = B.Color3.FromHexString("#1fdcef");
+      if (material.emissiveIntensity !== undefined) {
+        material.emissiveIntensity = 0.78;
       }
     } else if (materialName.includes("playercyancore")) {
-      material.emissiveColor = B.Color3.FromHexString("#8ef9ff");
+      material.emissiveColor = B.Color3.FromHexString("#9efbff");
       if (material.emissiveIntensity !== undefined) {
-        material.emissiveIntensity = 0.7;
+        material.emissiveIntensity = 0.95;
       }
     } else if (materialName.includes("guardiancloakdark")) {
-      material.albedoColor = B.Color3.FromHexString("#3b2414");
-      material.diffuseColor = B.Color3.FromHexString("#3b2414");
-      if (material.roughness !== undefined) material.roughness = 0.72;
+      // Dark silhouette so the guardian never reads like the tan wall blocks.
+      material.albedoColor = B.Color3.FromHexString("#221308");
+      material.diffuseColor = B.Color3.FromHexString("#221308");
+      if (material.roughness !== undefined) material.roughness = 0.74;
+    } else if (materialName.includes("guardianhoodsoft")) {
+      material.albedoColor = B.Color3.FromHexString("#2c1c10");
+      material.diffuseColor = B.Color3.FromHexString("#2c1c10");
+      if (material.roughness !== undefined) material.roughness = 0.7;
+    } else if (materialName.includes("guardianfacevoid")) {
+      material.albedoColor = B.Color3.FromHexString("#070302");
+      material.diffuseColor = B.Color3.FromHexString("#070302");
+      material.emissiveColor = B.Color3.FromHexString("#120500");
+      if (material.roughness !== undefined) material.roughness = 0.9;
     } else if (materialName.includes("guardianbasedark")) {
       material.albedoColor = B.Color3.FromHexString("#2d2117");
       material.diffuseColor = B.Color3.FromHexString("#2d2117");
@@ -614,14 +659,15 @@ export function createRouteBabylonController(
       if (material.metallic !== undefined) material.metallic = 0.78;
       if (material.roughness !== undefined) material.roughness = 0.38;
     } else if (materialName.includes("guardianeyeglow")) {
-      material.emissiveColor = B.Color3.FromHexString("#ffb01f");
+      // Hot amber eyes — the primary "danger" read against the dark hood.
+      material.emissiveColor = B.Color3.FromHexString("#ffc740");
       if (material.emissiveIntensity !== undefined) {
-        material.emissiveIntensity = 1.2;
+        material.emissiveIntensity = 5.0;
       }
     } else if (materialName.includes("guardianwarmglow")) {
-      material.emissiveColor = B.Color3.FromHexString("#f59e0b");
+      material.emissiveColor = B.Color3.FromHexString("#f9a417");
       if (material.emissiveIntensity !== undefined) {
-        material.emissiveIntensity = 0.78;
+        material.emissiveIntensity = 1.15;
       }
     }
   }
@@ -1046,8 +1092,8 @@ export function createRouteBabylonController(
           scene,
         );
         light.diffuse = B.Color3.FromHexString("#38e8ff");
-        light.intensity = 0.22;
-        light.range = 1.7;
+        light.intensity = 0.32;
+        light.range = 1.85;
         light.parent = parent;
         return;
       }
@@ -1097,14 +1143,16 @@ export function createRouteBabylonController(
           materials.guardianGlow,
           parent,
         );
+        // Warm light pushed to the camera side and up to the hooded face so the
+        // dark hood and amber eyes read clearly from the default camera.
         const light = new B.PointLight(
           "route-guardian-light",
-          new B.Vector3(pos.x, BOARD_SURFACE_Y + 0.74, pos.z - 0.06),
+          new B.Vector3(pos.x, BOARD_SURFACE_Y + 0.86, pos.z - 0.34),
           scene,
         );
-        light.diffuse = B.Color3.FromHexString("#f59e0b");
-        light.intensity = 0.48;
-        light.range = 2.05;
+        light.diffuse = B.Color3.FromHexString("#f7a417");
+        light.intensity = 0.72;
+        light.range = 2.2;
         light.parent = parent;
         return;
       }
