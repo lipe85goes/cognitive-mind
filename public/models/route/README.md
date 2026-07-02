@@ -323,19 +323,60 @@ If either import fails, the renderer falls back to the original procedural piece
 Gameplay state (movement, turns, win/loss) remains in React/`useEscapeMaze`;
 these GLBs are purely visual.
 
-## Current local status
+## Gameplay prop assets
 
-During the asset-factory pass, Blender was not found on this machine. The
-generator script was created, but `board.glb` and `board-preview.png` were not
-exported in this run.
+V05 adds a small self-contained prop pack for the Rota board:
 
-Install Blender or point directly to `blender.exe`, then run the command above
-from the repository root.
+- `portal.glb` - green magical exit doorway/shrine.
+- `light.glb` - collectible warm light orb on a small base.
+- `trap.glb` - red crystal/spike danger marker.
+- `shield.glb` - blue protection pickup with a glowing shield emblem.
 
-## Future Babylon usage
+Each prop also has a 3/4 preview and a top/near-top preview:
 
-When integrated later, the Babylon renderer should import `board.glb` as the
-board base/frame asset and keep gameplay objects, tile picking, movement logic,
-and result flow separate from the static board model.
+- `portal-preview.png` / `portal-preview-top.png`
+- `light-preview.png` / `light-preview-top.png`
+- `trap-preview.png` / `trap-preview-top.png`
+- `shield-preview.png` / `shield-preview-top.png`
 
-Do not encode gameplay state into this GLB.
+The generators are:
+
+```powershell
+& "C:\Program Files\Blender Foundation\Blender 5.1\blender.exe" --background --python tools\blender\create_route_portal_glb.py -- --preview
+& "C:\Program Files\Blender Foundation\Blender 5.1\blender.exe" --background --python tools\blender\create_route_light_glb.py -- --preview
+& "C:\Program Files\Blender Foundation\Blender 5.1\blender.exe" --background --python tools\blender\create_route_trap_glb.py -- --preview
+& "C:\Program Files\Blender Foundation\Blender 5.1\blender.exe" --background --python tools\blender\create_route_shield_glb.py -- --preview
+```
+
+All four scripts share `tools/blender/route_prop_asset_utils.py` for
+locale-safe material creation, Y-up export, preview cameras and render/export
+helpers.
+
+### Prop coordinate / bounds contract
+
+All prop GLBs follow the same contract as the board, wall and characters:
+
+- centered on the world origin in X/Z
+- bottom rests on `Y = 0`
+- footprint stays inside one 1.0-unit tile
+- `Y` is vertical height, `X` = width, `Z` = depth
+- no external texture dependencies
+- named meshes and named materials
+
+### Babylon usage (props)
+
+`src/games/escape-maze/routeBabylonScene.ts` imports each prop GLB once into a
+disabled prototype and clones it onto the relevant board cells:
+
+- `portal.glb` for the exit cell
+- `light.glb` for uncollected collectible lights
+- `trap.glb` for untriggered traps
+- `shield.glb` for the available shield pickup
+
+All cloned prop meshes are non-pickable, so invisible tile hitboxes remain the
+only movement/input target. If any prop import fails, the renderer keeps the
+procedural fallback for that prop. Triggered traps intentionally keep the darker
+procedural fallback so the spent/triggered state stays visually distinct without
+mutating shared GLB materials.
+
+Do not encode gameplay state into these GLBs.

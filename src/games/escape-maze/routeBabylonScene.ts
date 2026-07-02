@@ -62,6 +62,13 @@ const BOARD_GLB_PATH = "/models/route/board.glb";
 const WALL_GLB_PATH = "/models/route/wall.glb";
 const PLAYER_GLB_PATH = "/models/route/player.glb";
 const GUARDIAN_GLB_PATH = "/models/route/guardian.glb";
+const ROUTE_PROP_ASSET_PATHS = {
+  portal: "/models/route/portal.glb",
+  light: "/models/route/light.glb",
+  trap: "/models/route/trap.glb",
+  shield: "/models/route/shield.glb",
+} as const;
+type RoutePropAssetKey = keyof typeof ROUTE_PROP_ASSET_PATHS;
 
 // --- Board model placement -------------------------------------------------
 // The GLB grid is authored at exactly the same coordinates as `cellToPosition`
@@ -80,6 +87,10 @@ const BOARD_SURFACE_Y = 0.2;
 // to hide the player/guardian/portal pieces. Each clone's root sits at
 // BOARD_SURFACE_Y so the base rests flat on the stone tile — no sink, no float.
 const WALL_SCALE = 1;
+const PORTAL_SCALE = 1;
+const LIGHT_SCALE = 1;
+const TRAP_SCALE = 1;
+const SHIELD_SCALE = 1;
 
 // --- Character model placement --------------------------------------------
 // Both character assets are authored centered on X/Z, bottom at local Y = 0 and
@@ -387,6 +398,19 @@ export function createRouteBabylonController(
   let guardianAssetProto: BABYLON.TransformNode | null = null;
   let guardianAssetStatus: BoardAssetStatus = "pending";
   let guardianAssetWarningLogged = false;
+  const propAssets: Record<
+    RoutePropAssetKey,
+    {
+      proto: BABYLON.TransformNode | null;
+      status: BoardAssetStatus;
+      warningLogged: boolean;
+    }
+  > = {
+    portal: { proto: null, status: "pending", warningLogged: false },
+    light: { proto: null, status: "pending", warningLogged: false },
+    trap: { proto: null, status: "pending", warningLogged: false },
+    shield: { proto: null, status: "pending", warningLogged: false },
+  };
   let disposed = false;
 
   // Visual cell -> world position. Columns map straight to +X (col 0 left ->
@@ -576,12 +600,12 @@ export function createRouteBabylonController(
     } else if (materialName.includes("deepshadow")) {
       setMaterialColor(material, B.Color3.FromHexString("#2c2118"));
       if (material.roughness !== undefined) material.roughness = 0.76;
-    } else if (
-      materialName.includes("walldarkstone") ||
-      materialName.includes("wallsidestone")
-    ) {
-      setMaterialColor(material, B.Color3.FromHexString("#7d6742"));
-      if (material.roughness !== undefined) material.roughness = 0.58;
+    } else if (materialName.includes("walldarkstone")) {
+      setMaterialColor(material, B.Color3.FromHexString("#5d625c"));
+      if (material.roughness !== undefined) material.roughness = 0.66;
+    } else if (materialName.includes("wallsidestone")) {
+      setMaterialColor(material, B.Color3.FromHexString("#74736a"));
+      if (material.roughness !== undefined) material.roughness = 0.62;
     }
   }
 
@@ -672,9 +696,80 @@ export function createRouteBabylonController(
     }
   }
 
+  function tunePropMaterial(mesh: BABYLON.AbstractMesh) {
+    const material = mesh.material as TunableAssetMaterial | null;
+    if (!material) return;
+    if (material.maxSimultaneousLights !== undefined) {
+      material.maxSimultaneousLights = 3;
+    }
+
+    const materialName = material.name.toLowerCase();
+    if (materialName.includes("portalstone")) {
+      setMaterialColor(material, B.Color3.FromHexString("#615943"));
+      if (material.roughness !== undefined) material.roughness = 0.72;
+    } else if (
+      materialName.includes("portalbronze") ||
+      materialName.includes("lightbronze") ||
+      materialName.includes("trapbronze") ||
+      materialName.includes("shieldbronze")
+    ) {
+      setMaterialColor(material, B.Color3.FromHexString("#a86d2f"));
+      material.emissiveColor = B.Color3.FromHexString("#170b03");
+      if (material.metallic !== undefined) material.metallic = 0.72;
+      if (material.roughness !== undefined) material.roughness = 0.4;
+    } else if (
+      materialName.includes("portalgreenglow") ||
+      materialName.includes("portalglasscore")
+    ) {
+      material.emissiveColor = B.Color3.FromHexString("#32f17a");
+      if (material.emissiveIntensity !== undefined) {
+        material.emissiveIntensity = 1.85;
+      }
+    } else if (materialName.includes("portalbluegem")) {
+      setMaterialColor(material, B.Color3.FromHexString("#1976d2"));
+      material.emissiveColor = B.Color3.FromHexString("#0c3a8f");
+      if (material.roughness !== undefined) material.roughness = 0.12;
+    } else if (
+      materialName.includes("lightwarmorb") ||
+      materialName.includes("lightglasshighlight")
+    ) {
+      material.emissiveColor = B.Color3.FromHexString("#ffd84a");
+      if (material.emissiveIntensity !== undefined) {
+        material.emissiveIntensity = 1.35;
+      }
+    } else if (
+      materialName.includes("lightdarkbase") ||
+      materialName.includes("trapdarkbase") ||
+      materialName.includes("shielddarkbase")
+    ) {
+      setMaterialColor(material, B.Color3.FromHexString("#2a1b10"));
+      if (material.roughness !== undefined) material.roughness = 0.68;
+    } else if (
+      materialName.includes("trapcrystalred") ||
+      materialName.includes("trapcrystalhighlight")
+    ) {
+      setMaterialColor(material, B.Color3.FromHexString("#f0463e"));
+      material.emissiveColor = B.Color3.FromHexString("#7a0d0b");
+      if (material.emissiveIntensity !== undefined) {
+        material.emissiveIntensity = 0.95;
+      }
+      if (material.roughness !== undefined) material.roughness = 0.28;
+    } else if (materialName.includes("shieldblue")) {
+      setMaterialColor(material, B.Color3.FromHexString("#2782e6"));
+      material.emissiveColor = B.Color3.FromHexString("#0b2a78");
+      if (material.roughness !== undefined) material.roughness = 0.28;
+    } else if (materialName.includes("shieldcyanglow")) {
+      material.emissiveColor = B.Color3.FromHexString("#57dbff");
+      if (material.emissiveIntensity !== undefined) {
+        material.emissiveIntensity = 1.55;
+      }
+    }
+  }
+
   async function importPrototypeAsset(
     path: string,
     rootName: string,
+    tuneMesh: (mesh: BABYLON.AbstractMesh) => void = tuneCharacterMaterial,
   ) {
     const result = await B.SceneLoader.ImportMeshAsync("", "", path, scene);
     if (disposed) {
@@ -702,7 +797,7 @@ export function createRouteBabylonController(
         mesh.setEnabled(false);
         return;
       }
-      tuneCharacterMaterial(mesh);
+      tuneMesh(mesh);
       mesh.receiveShadows = true;
       shadowGenerator.addShadowCaster(mesh);
     });
@@ -711,7 +806,10 @@ export function createRouteBabylonController(
     return proto;
   }
 
-  function configureVisualClone(root: BABYLON.TransformNode) {
+  function configureVisualClone(
+    root: BABYLON.TransformNode,
+    tuneMesh: (mesh: BABYLON.AbstractMesh) => void = tuneCharacterMaterial,
+  ) {
     root.setEnabled(true);
     root.getDescendants(false).forEach((node) => {
       if (!isBakedShadowNode(node)) node.setEnabled(true);
@@ -722,7 +820,7 @@ export function createRouteBabylonController(
         mesh.setEnabled(false);
         return;
       }
-      tuneCharacterMaterial(mesh);
+      tuneMesh(mesh);
       mesh.receiveShadows = true;
       shadowGenerator.addShadowCaster(mesh);
     });
@@ -891,6 +989,50 @@ export function createRouteBabylonController(
         );
       }
     }
+  }
+
+  async function loadPropAssetOnce(kind: RoutePropAssetKey) {
+    const asset = propAssets[kind];
+    if (asset.status !== "pending") return;
+
+    try {
+      const proto = await importPrototypeAsset(
+        ROUTE_PROP_ASSET_PATHS[kind],
+        `route-${kind}-glb-proto`,
+        tunePropMaterial,
+      );
+      if (!proto) return;
+      asset.proto = proto;
+      asset.status = "loaded";
+      renderBoard();
+    } catch (error) {
+      asset.status = "failed";
+      if (!asset.warningLogged) {
+        asset.warningLogged = true;
+        console.warn(
+          `[MindFlow] Failed to load route ${kind} GLB; using procedural fallback.`,
+          error,
+        );
+      }
+    }
+  }
+
+  function clonePropAsset(
+    kind: RoutePropAssetKey,
+    name: string,
+    parent: BABYLON.TransformNode,
+    position: BABYLON.Vector3,
+    scale: number,
+  ) {
+    const asset = propAssets[kind];
+    if (asset.status !== "loaded" || !asset.proto) return null;
+
+    const clone = asset.proto.clone(name, parent, false);
+    if (!clone) return null;
+    clone.position.copyFrom(position);
+    clone.scaling.setAll(scale);
+    configureVisualClone(clone, tunePropMaterial);
+    return clone;
   }
 
   function renderBase(parent: BABYLON.TransformNode) {
@@ -1175,6 +1317,26 @@ export function createRouteBabylonController(
 
   function renderPortal(parent: BABYLON.TransformNode) {
     const pos = cellToPosition(state.exitPosition.row, state.exitPosition.col);
+    const clone = clonePropAsset(
+      "portal",
+      "route-portal-glb",
+      parent,
+      new B.Vector3(pos.x, BOARD_SURFACE_Y, pos.z),
+      PORTAL_SCALE,
+    );
+    if (clone) {
+      const light = new B.PointLight(
+        "route-portal-light",
+        new B.Vector3(pos.x, BOARD_SURFACE_Y + 0.72, pos.z),
+        scene,
+      );
+      light.diffuse = B.Color3.FromHexString("#5cff87");
+      light.intensity = 0.76;
+      light.range = 2.1;
+      light.parent = parent;
+      return;
+    }
+
     box("route-portal-step", 0.78, 0.12, 0.68, new B.Vector3(pos.x, 0.26, pos.z), materials.portal, parent);
     cylinder("route-portal-left", 0.16, 0.72, new B.Vector3(pos.x - 0.3, 0.68, pos.z), materials.portal, parent, 16);
     cylinder("route-portal-right", 0.16, 0.72, new B.Vector3(pos.x + 0.3, 0.68, pos.z), materials.portal, parent, 16);
@@ -1208,6 +1370,26 @@ export function createRouteBabylonController(
         return;
       }
       const pos = cellToPosition(lightCell.row, lightCell.col);
+      const clone = clonePropAsset(
+        "light",
+        `route-light-glb-${keyOf(lightCell)}`,
+        parent,
+        new B.Vector3(pos.x, BOARD_SURFACE_Y, pos.z),
+        LIGHT_SCALE,
+      );
+      if (clone) {
+        const light = new B.PointLight(
+          "route-light-glow",
+          new B.Vector3(pos.x, BOARD_SURFACE_Y + 0.46, pos.z),
+          scene,
+        );
+        light.diffuse = B.Color3.FromHexString("#facc15");
+        light.intensity = 0.28;
+        light.range = 1.45;
+        light.parent = parent;
+        return;
+      }
+
       sphere("route-light-orb", 0.3, new B.Vector3(pos.x, 0.48, pos.z), materials.light, parent, false);
       const light = new B.PointLight("route-light-glow", new B.Vector3(pos.x, 0.52, pos.z), scene);
       light.diffuse = B.Color3.FromHexString("#facc15");
@@ -1219,6 +1401,17 @@ export function createRouteBabylonController(
     state.traps.forEach((trap) => {
       const pos = cellToPosition(trap.row, trap.col);
       const spent = triggeredTrapKeys.has(keyOf(trap));
+      if (!spent) {
+        const clone = clonePropAsset(
+          "trap",
+          `route-trap-glb-${keyOf(trap)}`,
+          parent,
+          new B.Vector3(pos.x, BOARD_SURFACE_Y, pos.z),
+          TRAP_SCALE,
+        );
+        if (clone) return;
+      }
+
       const crystal = B.MeshBuilder.CreateCylinder(
         "route-trap-crystal",
         {
@@ -1238,6 +1431,26 @@ export function createRouteBabylonController(
 
     if (state.shield && !state.shieldCollected) {
       const pos = cellToPosition(state.shield.row, state.shield.col);
+      const clone = clonePropAsset(
+        "shield",
+        "route-shield-glb",
+        parent,
+        new B.Vector3(pos.x, BOARD_SURFACE_Y, pos.z),
+        SHIELD_SCALE,
+      );
+      if (clone) {
+        const light = new B.PointLight(
+          "route-shield-light",
+          new B.Vector3(pos.x, BOARD_SURFACE_Y + 0.55, pos.z),
+          scene,
+        );
+        light.diffuse = B.Color3.FromHexString("#54cfff");
+        light.intensity = 0.24;
+        light.range = 1.55;
+        light.parent = parent;
+        return;
+      }
+
       cylinder(
         "route-shield-token",
         0.46,
@@ -1460,6 +1673,10 @@ export function createRouteBabylonController(
   void loadWallAssetOnce();
   void loadPlayerAssetOnce();
   void loadGuardianAssetOnce();
+  void loadPropAssetOnce("portal");
+  void loadPropAssetOnce("light");
+  void loadPropAssetOnce("trap");
+  void loadPropAssetOnce("shield");
   engine.runRenderLoop(() => {
     scene.render();
   });
@@ -1491,6 +1708,9 @@ export function createRouteBabylonController(
       wallAssetProto?.dispose(false, true);
       playerAssetProto?.dispose(false, true);
       guardianAssetProto?.dispose(false, true);
+      Object.values(propAssets).forEach((asset) => {
+        asset.proto?.dispose(false, true);
+      });
       glow.dispose();
       scene.dispose();
       engine.dispose();
