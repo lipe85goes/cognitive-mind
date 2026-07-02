@@ -91,6 +91,13 @@ const PORTAL_SCALE = 1;
 const LIGHT_SCALE = 1;
 const TRAP_SCALE = 1;
 const SHIELD_SCALE = 1;
+// Props are authored with their front on target -Z. The portal arch just needs a
+// small turn toward the camera's azimuth. The shield is a FLAT face, so besides
+// facing the camera it is tilted back so the star reads from the elevated 3/4
+// camera instead of appearing edge-on like a sideways plaque.
+const PORTAL_ROTATION_Y = -0.1;
+const SHIELD_ROTATION_Y = -0.1;
+const SHIELD_TILT_X = 0.34;
 
 // --- Character model placement --------------------------------------------
 // Both character assets are authored centered on X/Z, bottom at local Y = 0 and
@@ -721,9 +728,9 @@ export function createRouteBabylonController(
       materialName.includes("portalgreenglow") ||
       materialName.includes("portalglasscore")
     ) {
-      material.emissiveColor = B.Color3.FromHexString("#32f17a");
+      material.emissiveColor = B.Color3.FromHexString("#3bf07f");
       if (material.emissiveIntensity !== undefined) {
-        material.emissiveIntensity = 1.85;
+        material.emissiveIntensity = 1.25;
       }
     } else if (materialName.includes("portalbluegem")) {
       setMaterialColor(material, B.Color3.FromHexString("#1976d2"));
@@ -733,9 +740,9 @@ export function createRouteBabylonController(
       materialName.includes("lightwarmorb") ||
       materialName.includes("lightglasshighlight")
     ) {
-      material.emissiveColor = B.Color3.FromHexString("#ffd84a");
+      material.emissiveColor = B.Color3.FromHexString("#ffcf3a");
       if (material.emissiveIntensity !== undefined) {
-        material.emissiveIntensity = 1.35;
+        material.emissiveIntensity = 0.85;
       }
     } else if (
       materialName.includes("lightdarkbase") ||
@@ -1325,14 +1332,15 @@ export function createRouteBabylonController(
       PORTAL_SCALE,
     );
     if (clone) {
+      clone.rotation.y = PORTAL_ROTATION_Y;
       const light = new B.PointLight(
         "route-portal-light",
         new B.Vector3(pos.x, BOARD_SURFACE_Y + 0.72, pos.z),
         scene,
       );
       light.diffuse = B.Color3.FromHexString("#5cff87");
-      light.intensity = 0.76;
-      light.range = 2.1;
+      light.intensity = 0.58;
+      light.range = 2.0;
       light.parent = parent;
       return;
     }
@@ -1384,8 +1392,8 @@ export function createRouteBabylonController(
           scene,
         );
         light.diffuse = B.Color3.FromHexString("#facc15");
-        light.intensity = 0.28;
-        light.range = 1.45;
+        light.intensity = 0.2;
+        light.range = 1.3;
         light.parent = parent;
         return;
       }
@@ -1439,6 +1447,10 @@ export function createRouteBabylonController(
         SHIELD_SCALE,
       );
       if (clone) {
+        // Tilt the flat shield toward the elevated camera so the blue star face
+        // reads as a shield instead of a sideways plaque.
+        clone.rotation.x = SHIELD_TILT_X;
+        clone.rotation.y = SHIELD_ROTATION_Y;
         const light = new B.PointLight(
           "route-shield-light",
           new B.Vector3(pos.x, BOARD_SURFACE_Y + 0.55, pos.z),
