@@ -4,14 +4,14 @@ import type { DifficultyLevel } from "@/types/game";
 export const DETAIL_LABELS: Record<string, string> = {
   level: "Etapa",
   sequenceLength: "Sequência",
-  errors: "Erros",
-  maxErrors: "Máx. erros",
+  errors: "Tentativas",
+  maxErrors: "Limite da sessão",
   turns: "Turnos",
   won: "Vitória",
   starsCollected: "Luzes coletadas",
   totalStars: "Total de luzes",
   blockedMoves: "Bloqueios",
-  difficulty: "Dificuldade",
+  difficulty: "Modo",
   trapsTriggered: "Armadilhas ativadas",
   shieldCollected: "Escudo coletado",
   shieldUsed: "Escudo usado",
@@ -26,9 +26,9 @@ export const DETAIL_LABELS: Record<string, string> = {
 };
 
 export const DIFFICULTY_PT: Record<DifficultyLevel, string> = {
-  easy: "Fácil",
-  medium: "Médio",
-  hard: "Difícil",
+  easy: "Aberto",
+  medium: "Equilibrado",
+  hard: "Desafiador",
 };
 
 export function formatDetailKeyPt(key: string): string {

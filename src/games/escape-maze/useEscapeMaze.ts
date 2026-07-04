@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getPredatorNextPosition, manhattanDistance } from "@/engine/difficulty";
 import { calculateEscapeMazeScore } from "@/engine/scoring";
 import { playGentleErrorTone, playSuccessChime } from "@/lib/game-sounds";
@@ -75,6 +75,15 @@ const ARROW_DELTAS: Record<string, GridPosition> = {
   ArrowLeft: { row: 0, col: -1 },
   ArrowRight: { row: 0, col: 1 },
 };
+
+/**
+ * Janela mínima entre duas ações de movimento aceitas (ms). "Pensar em paz"
+ * exige que um único gesto do Explorador conte como UMA ação: isto absorve
+ * despachos duplicados do mesmo gesto (eventos enfileirados, cliques
+ * fantasmas, toque+teclado no mesmo instante) sem travar o jogo — a janela é
+ * curta demais para ser percebida num jogo por turnos.
+ */
+const MOVE_INPUT_GUARD_MS = 150;
 
 const WALL_LIMITS: Record<DifficultyLevel, { min: number; max: number }> = {
   easy: { min: 8, max: 11 },
@@ -499,12 +508,19 @@ export function useEscapeMaze(onComplete: CompleteFn) {
   const [shieldCollected, setShieldCollected] = useState(false);
   const [shieldUsed, setShieldUsed] = useState(false);
 
+  // Carimbo do último input de movimento processado (teclado, D-pad ou toque).
+  // Ref (não estado): nunca re-renderiza e se solta sozinho com o tempo.
+  const lastMoveInputAtRef = useRef(0);
+
   const collectedSet = useMemo(() => new Set(collectedStars), [collectedStars]);
   const triggeredTrapSet = useMemo(
     () => new Set(triggeredTraps),
     [triggeredTraps],
   );
   const shieldActive = shieldCollected && !shieldUsed;
+  const totalLights = mazeMap.collectibleStars.length;
+  const collectedCount = collectedStars.length;
+  const portalActive = totalLights === 0 || collectedCount >= totalLights;
 
   const score = calculateEscapeMazeScore({
     won: status === "won",
@@ -533,7 +549,7 @@ export function useEscapeMaze(onComplete: CompleteFn) {
       setStatus(nextStatus);
       setMessage(
         nextStatus === "playing"
-          ? "Chegue até a saída. Pegue o escudo, colete luzes e evite as armadilhas."
+          ? "Colete todas as luzes para ativar o portal."
           : "Escolha a dificuldade e inicie.",
       );
     },
@@ -615,6 +631,13 @@ export function useEscapeMaze(onComplete: CompleteFn) {
   const tryMovePlayer = (delta: GridPosition) => {
     if (status !== "playing") return;
 
+    // Um gesto = uma ação: ignora um segundo disparo do MESMO gesto chegando
+    // logo atrás do primeiro (qualquer origem de input). Nunca trava: a janela
+    // expira sozinha em MOVE_INPUT_GUARD_MS.
+    const now = Date.now();
+    if (now - lastMoveInputAtRef.current < MOVE_INPUT_GUARD_MS) return;
+    lastMoveInputAtRef.current = now;
+
     const next: GridPosition = {
       row: player.row + delta.row,
       col: player.col + delta.col,
@@ -661,6 +684,9 @@ export function useEscapeMaze(onComplete: CompleteFn) {
     const nextCollectedStars = collectedStar
       ? [...collectedStars, nextKey]
       : collectedStars;
+    const nextTotalLights = mazeMap.collectibleStars.length;
+    const nextPortalActive =
+      nextTotalLights === 0 || nextCollectedStars.length >= nextTotalLights;
 
     // Post-step snapshots for the completion result (state updates are async).
     const finalStats = (finalTurns: number, finalErrors: number) => ({
@@ -700,7 +726,7 @@ export function useEscapeMaze(onComplete: CompleteFn) {
       return;
     }
 
-    if (positionsEqual(next, mazeMap.exitPosition)) {
+    if (positionsEqual(next, mazeMap.exitPosition) && nextPortalActive) {
       endGame(true, finalStats(nextTurn, errorsAfterStep));
       return;
     }
@@ -728,15 +754,21 @@ export function useEscapeMaze(onComplete: CompleteFn) {
       shieldAbsorbs
         ? "Escudo protegeu você."
         : trapHurts
-          ? "Armadilha ativada. Planeje o próximo passo."
+          ? "Este caminho tem um obstáculo. Observe o próximo passo."
           : collectShield
             ? "Escudo coletado."
             : collectedStar
-              ? "Você coletou uma luz."
+              ? nextPortalActive
+                ? "Portal ativado! Vá até a saída."
+                : "Luz-chave coletada."
+              : positionsEqual(next, mazeMap.exitPosition)
+                ? "O portal ainda precisa das luzes da rota."
               : guardianClose
-                ? "Cuidado: o guardião está perto."
+                ? "O guardião está próximo. Pense no próximo caminho."
                 : exitClose
-                  ? "A saída está próxima."
+                  ? portalActive
+                    ? "A saída está próxima."
+                    : "O portal ainda precisa de todas as luzes."
                   : "Boa jogada. O guardião se moveu.",
     );
   };
@@ -750,6 +782,10 @@ export function useEscapeMaze(onComplete: CompleteFn) {
       const delta = ARROW_DELTAS[event.key];
       if (!delta) return;
       event.preventDefault();
+      // Tecla segurada dispara auto-repetição do sistema (~30 eventos/s).
+      // No MindFlow, um gesto = um passo: repetições automáticas são
+      // ignoradas; para andar de novo, solte e pressione de novo.
+      if (event.repeat) return;
       tryMovePlayer(delta);
     };
 
@@ -763,7 +799,9 @@ export function useEscapeMaze(onComplete: CompleteFn) {
     player,
     guardian,
     collectedSet,
-    collectedCount: collectedStars.length,
+    collectedCount,
+    totalLights,
+    portalActive,
     turns,
     blockedMoves,
     errors,

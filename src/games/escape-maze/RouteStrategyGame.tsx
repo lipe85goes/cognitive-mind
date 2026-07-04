@@ -75,9 +75,9 @@ const DIFFICULTY_LABELS: Record<DifficultyLevel, string> = {
 };
 
 const DIFFICULTY_TITLE: Record<DifficultyLevel, string> = {
-  easy: "Fácil",
-  medium: "Médio",
-  hard: "Difícil",
+  easy: "Aberto",
+  medium: "Equilibrado",
+  hard: "Desafiador",
 };
 
 const MOVE_DELTAS: Record<"up" | "down" | "left" | "right", GridPosition> = {
@@ -102,6 +102,8 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
     guardian,
     collectedSet,
     collectedCount,
+    totalLights,
+    portalActive,
     turns,
     blockedMoves,
     errors,
@@ -166,14 +168,17 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
   }, [status, guardian, mazeMap]);
 
   const positiveMessages = new Set([
-    "Você coletou uma luz.",
+    "Luz-chave coletada.",
+    "Portal ativado! Vá até a saída.",
     "Escudo coletado.",
     "Escudo protegeu você.",
   ]);
   const warnMessages = new Set([
-    "Armadilha ativada. Planeje o próximo passo.",
-    "Cuidado: o guardião está perto.",
+    "Este caminho tem um obstáculo. Observe o próximo passo.",
+    "O guardião está próximo. Pense no próximo caminho.",
     "Caminho bloqueado. Escolha outra direção.",
+    "O portal ainda precisa das luzes da rota.",
+    "O portal ainda precisa de todas as luzes.",
   ]);
   const statusVariant: "neutral" | "info" | "success" | "warn" | "error" =
     status === "won" || positiveMessages.has(message)
@@ -231,9 +236,16 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
     {
       key: "luzes",
       label: "Luzes",
-      value: `${collectedCount}/${mazeMap.collectibleStars.length}`,
+      value: `${collectedCount}/${totalLights}`,
       Icon: Sun,
       className: "rsg-stat-stars",
+    },
+    {
+      key: "portal",
+      label: "Portal",
+      value: portalActive ? "Ativo" : "Bloqueado",
+      Icon: DoorOpen,
+      className: portalActive ? "rsg-hud-portal-active" : "rsg-hud-portal-locked",
     },
     {
       key: "bloqueios",
@@ -268,21 +280,21 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
   }> = [
     {
       key: "erros",
-      label: "Erros",
+      label: "Tentativas",
       value: errors,
       Icon: CircleX,
       danger: errors > 0,
     },
     {
       key: "pontuacao",
-      label: "Pontuação",
+      label: "Registro",
       value: score,
       Icon: Trophy,
       className: "rsg-stat-score",
     },
     {
       key: "dificuldade",
-      label: "Dificuldade",
+      label: "Modo",
       value: DIFFICULTY_TITLE[difficulty],
       Icon: Gauge,
     },
@@ -355,12 +367,12 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
                 Rota Estratégica
               </p>
               <p className="rsg-mission-copy">
-                Chegue até a saída, colete luzes e evite armadilhas.
+                Colete todas as luzes para ativar o portal.
               </p>
               <div className="rsg-mission-steps" aria-label="Como jogar">
                 <span>
                   <Sun className="h-4 w-4" aria-hidden />
-                  Passe pelas luzes para coletá-las.
+                  Passe pelas luzes para abrir o portal.
                 </span>
                 <span>
                   <TriangleAlert className="h-4 w-4" aria-hidden />
@@ -412,7 +424,7 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
               <div
                 className="rsg-canvas"
                 role="img"
-                aria-label="Tabuleiro 3D da rota: o explorador é você, o guardião é o sentinela encapuzado, o portal verde é a saída e as luzes douradas são coletáveis."
+                aria-label="Tabuleiro 3D da rota: o explorador é você, o guardião é o sentinela encapuzado, o portal é a saída e as luzes douradas ativam o portal."
               >
                 {USE_BABYLON_ROUTE_BOARD ? (
                   <RouteBabylonBoard
@@ -482,7 +494,7 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
               <section className="rsg-panel rsg-setup">
                 <p className="rsg-panel-title">
                   <Gauge className="h-5 w-5" aria-hidden />
-                  Escolha a dificuldade
+                  Escolha o modo
                 </p>
                 <div className="rsg-difficulty-grid">
                   {(["easy", "medium", "hard"] as DifficultyLevel[]).map(
@@ -491,7 +503,7 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
                         key={level}
                         type="button"
                         onClick={() => changeDifficulty(level)}
-                        aria-label={`Dificuldade ${DIFFICULTY_TITLE[level]}: ${DIFFICULTY_LABELS[level]}`}
+                        aria-label={`Modo ${DIFFICULTY_TITLE[level]}: ${DIFFICULTY_LABELS[level]}`}
                         aria-pressed={difficulty === level}
                         className={`rsg-difficulty-btn ${
                           difficulty === level ? "is-active" : ""
@@ -566,11 +578,11 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
                 type="button"
                 onClick={restartGame}
                 disabled={status === "won" || status === "lost"}
-                aria-label="Reiniciar rota"
+                aria-label="Começar outra rota"
                 className="rsg-btn"
               >
                 <RotateCcw className="h-5 w-5" aria-hidden />
-                Reiniciar
+                Começar outra rota
               </button>
             )}
           </div>

@@ -88,7 +88,7 @@ export function RewardResultModal({
             <strong>{copy.progressLine}</strong>
           </section>
           <section className="prm-score-card">
-            <p>Pontuação</p>
+            <p>Registro da prática</p>
             <strong>{result.score}</strong>
           </section>
         </div>
@@ -110,13 +110,13 @@ export function RewardResultModal({
           <motion.button
             type="button"
             onClick={onPlayAgain}
-            aria-label="Tentar este desafio novamente"
+            aria-label="Praticar este desafio outra vez"
             whileHover={reducedMotion ? undefined : { y: -2 }}
             whileTap={reducedMotion ? undefined : { y: 1, scale: 0.98 }}
             className="prm-cta"
           >
             <RotateCcw className="h-6 w-6" aria-hidden />
-            Tentar novamente
+            Praticar outra vez
           </motion.button>
           <motion.button
             type="button"

@@ -236,7 +236,7 @@ export function useColorSequenceGame(onComplete: CompleteFn) {
       return "Circuito ativado!";
     }
     if (tapFeedback === "correct") {
-      return inputIndex % 2 === 0 ? "Comando correto!" : "Boa memória!";
+      return inputIndex % 2 === 0 ? "Boa lembrança." : "Boa memória!";
     }
     if (phase === "input") {
       return sequence.length > 0

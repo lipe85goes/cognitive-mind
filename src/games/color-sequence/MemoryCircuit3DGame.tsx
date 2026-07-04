@@ -24,7 +24,7 @@ const MemoryConsoleScene = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="mfg-scene-loading">Preparando o console 3D…</div>
+      <div className="mfg-scene-loading">Preparando o circuito…</div>
     ),
   },
 );
@@ -185,21 +185,21 @@ export function MemoryCircuit3DGame({ onComplete, onExit }: GameComponentProps) 
               type="button"
               onClick={restartSession}
               disabled={phase === "showing"}
-              aria-label="Reiniciar"
+              aria-label="Começar outro circuito"
               className="mfg-btn"
             >
               <RotateCcw className="h-5 w-5" aria-hidden />
-              Reiniciar
+              Começar outro circuito
             </button>
             <button
               type="button"
               onClick={endSession}
               disabled={phase === "showing"}
-              aria-label="Encerrar sessão"
+              aria-label="Finalizar por agora"
               className="mfg-btn mfg-btn-ghost"
             >
               <Square className="h-4 w-4" aria-hidden />
-              Encerrar sessão
+              Finalizar por agora
             </button>
           </div>
         )}
@@ -214,20 +214,20 @@ export function MemoryCircuit3DGame({ onComplete, onExit }: GameComponentProps) 
             <strong>{sequence.length > 0 ? `${sequence.length} sinais` : "—"}</strong>
           </span>
           <span className={`mfg-stat ${errors > 0 ? "is-danger" : ""}`}>
-            <em>Erros</em>
+            <em>Tentativas</em>
             <strong>
               {errors}/{maxErrors}
             </strong>
           </span>
           <span className="mfg-stat mfg-stat-score">
-            <em>Pontuação</em>
+            <em>Registro</em>
             <strong>{score}</strong>
           </span>
         </div>
 
         <p className="mfg-footnote">
-          As cores ficam bloqueadas enquanto o circuito aparece. {maxErrors} erros
-          encerram a atividade.
+          Enquanto o circuito aparece, observe com calma. Depois de algumas
+          tentativas, a sessão é registrada.
         </p>
       </div>
     </div>
