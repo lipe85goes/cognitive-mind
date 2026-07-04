@@ -29,12 +29,13 @@ const INTRO_COPY: Record<
   },
   "escape-maze": {
     originalName: "Labirinto de Fuga",
-    description: "Escolha caminhos em um pequeno tabuleiro e encontre a saída.",
+    description:
+      "Escolha caminhos, colete todas as luzes e ative o portal de saída.",
     reassurance: "Cada movimento pode ser pensado com calma.",
     steps: [
-      "Leve seu explorador até a saída.",
+      "Colete todas as luzes do tabuleiro.",
       "O guardião se move depois de você.",
-      "Colete luzes se desejar ampliar sua rota.",
+      "Quando o portal ativar, leve seu explorador até a saída.",
     ],
   },
   "security-panel": {

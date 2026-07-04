@@ -12,7 +12,6 @@ import {
   ChevronUp,
   CircleCheck,
   CircleUserRound,
-  CircleX,
   DoorOpen,
   Gauge,
   Hourglass,
@@ -186,7 +185,7 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
       : status === "lost"
         ? "error"
         : warnMessages.has(message)
-          ? "warn"
+          ? "info"
           : status === "playing"
             ? "info"
             : "neutral";
@@ -195,8 +194,7 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
     neutral: Sparkles,
     info: Sparkles,
     success: CircleCheck,
-    warn: TriangleAlert,
-    error: CircleX,
+    error: Sparkles,
   };
   const StatusIcon = statusIcons[statusVariant];
 
@@ -232,7 +230,6 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
     className?: string;
     danger?: boolean;
   }> = [
-    { key: "turnos", label: "Turnos", value: turns, Icon: Hourglass },
     {
       key: "luzes",
       label: "Luzes",
@@ -276,30 +273,45 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
     value: string | number;
     Icon: LucideIcon;
     className?: string;
-    danger?: boolean;
   }> = [
     {
-      key: "erros",
-      label: "Tentativas",
-      value: errors,
-      Icon: CircleX,
-      danger: errors > 0,
+      key: "turnos",
+      label: "Turnos",
+      value: turns,
+      Icon: Hourglass,
     },
     {
-      key: "pontuacao",
+      key: "modo",
+      label: "Modo",
+      value: DIFFICULTY_TITLE[difficulty],
+      Icon: Gauge,
+    },
+    {
+      key: "tentativas",
+      label: "Tentativas",
+      value: errors,
+      Icon: Sparkles,
+    },
+    {
+      key: "bloqueios",
+      label: "Caminhos fechados",
+      value: blockedMoves,
+      Icon: Box,
+    },
+    {
+      key: "obstaculos",
+      label: "Obstáculos",
+      value: `${trapsTriggered}/${mazeMap.traps.length}`,
+      Icon: TriangleAlert,
+    },
+    {
+      key: "registro",
       label: "Registro",
       value: score,
       Icon: Trophy,
       className: "rsg-stat-score",
     },
-    {
-      key: "dificuldade",
-      label: "Modo",
-      value: DIFFICULTY_TITLE[difficulty],
-      Icon: Gauge,
-    },
   ];
-
   const legendItems: Array<{ label: string; Icon: LucideIcon }> = [
     { label: "Você", Icon: CircleUserRound },
     { label: "Guardião", Icon: Shield },
@@ -384,24 +396,6 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
                 </span>
               </div>
             </section>
-
-            <section className="rsg-panel rsg-legend-panel">
-              <p className="rsg-panel-title rsg-panel-title-left">
-                <Sparkles className="h-5 w-5" aria-hidden />
-                Legenda
-              </p>
-              <ul
-                className="rsg-legend rsg-legend-panel-list"
-                aria-label="Legenda do tabuleiro"
-              >
-                {legendItems.map(({ label, Icon }) => (
-                  <li key={label}>
-                    <Icon className="h-4 w-4" aria-hidden />
-                    {label}
-                  </li>
-                ))}
-              </ul>
-            </section>
           </aside>
 
           <div className="rsg-board-col">
@@ -462,32 +456,13 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
             </motion.div>
 
             <ul className="rsg-legend rsg-board-legend" aria-label="Legenda do tabuleiro">
-              <li>
-                <CircleUserRound className="h-4 w-4" aria-hidden />
-                Você
-              </li>
-              <li>
-                <Shield className="h-4 w-4" aria-hidden />
-                Guardião
-              </li>
-              <li>
-                <DoorOpen className="h-4 w-4" aria-hidden />
-                Saída
-              </li>
-              <li>
-                <Sparkles className="h-4 w-4" aria-hidden />
-                Luz
-              </li>
-              <li>
-                <TriangleAlert className="h-4 w-4" aria-hidden />
-                Armadilha
-              </li>
-              <li>
-                <ShieldPlus className="h-4 w-4" aria-hidden />
-                Escudo
-              </li>
-            </ul>
-          </div>
+              {legendItems.map(({ label, Icon }) => (
+                <li key={label}>
+                  <Icon className="h-4 w-4" aria-hidden />
+                  {label}
+                </li>
+              ))}
+            </ul>          </div>
 
           <div className="rsg-control-col">
             {status === "setup" && (
@@ -558,13 +533,11 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
               </motion.section>
             )}
 
-            <div className="rsg-stats" aria-label="Progresso da rota">
-              {sideStatItems.map(({ key, label, value, Icon, className, danger }) => (
+            <div className="rsg-stats rsg-secondary-stats" aria-label="Informações da rota">
+              {sideStatItems.map(({ key, label, value, Icon, className }) => (
                 <span
                   key={key}
-                  className={`rsg-stat ${className ?? ""} ${
-                    danger ? "is-danger" : ""
-                  }`}
+                  className={`rsg-stat ${className ?? ""}`}
                 >
                   <Icon className="rsg-stat-icon" aria-hidden />
                   <em>{label}</em>

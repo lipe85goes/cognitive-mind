@@ -46,6 +46,8 @@ type RouteMaterials = Record<
   | "guardianGlow"
   | "portal"
   | "portalGlow"
+  | "portalLocked"
+  | "portalGlowLocked"
   | "light"
   | "trap"
   | "trapSpent"
@@ -107,13 +109,12 @@ const SHIELD_TILT_X = 0.34;
 // reads as clearly "Você" from the default camera. Guardian is made noticeably
 // taller/more imposing than the player so the enemy reads at gameplay distance.
 const PLAYER_SCALE = 1.22;
-const GUARDIAN_SCALE = 1.32;
+const GUARDIAN_SCALE = 1.42;
 const PLAYER_Y_OFFSET = 0.02;
-const GUARDIAN_Y_OFFSET = 0;
-// guardian.glb faces -Z by default; the camera sits on the -Z side ~6.7° toward
-// +X, so -0.12 points the (now upper-front) glowing eyes almost straight at the
-// camera without changing grid alignment.
-const GUARDIAN_ROTATION_Y = -0.12;
+const GUARDIAN_Y_OFFSET = 0.02;
+// guardian.glb currently reads back-facing from the gameplay camera unless turned 180°.
+// Keep the cell alignment but bias the hood/eyes toward the default camera.
+const GUARDIAN_ROTATION_Y = Math.PI - 0.12;
 
 // --- Camera composition (cinematic 3/4 premium tabletop) -------------------
 const DEFAULT_CAMERA_ALPHA = -Math.PI / 2.16;
@@ -215,6 +216,20 @@ function createMaterials(
       emissive: "#22c55e",
       alpha: 0.72,
     }),
+    portalLocked: makeMaterial(B, scene, "route-portal-locked", "#394338", {
+      emissive: "#071108",
+      specular: "#6f866f",
+    }),
+    portalGlowLocked: makeMaterial(
+      B,
+      scene,
+      "route-portal-glow-locked",
+      "#5f7661",
+      {
+        emissive: "#12351a",
+        alpha: 0.34,
+      },
+    ),
     light: makeMaterial(B, scene, "route-light", "#f6c447", {
       emissive: "#facc15",
       specular: "#fff4b0",
@@ -391,7 +406,9 @@ export function createRouteBabylonController(
   const materials = createMaterials(B, scene);
   materials.hit.disableDepthWrite = true;
   let state = initialState;
-  let boardRoot: BABYLON.TransformNode | null = null;
+  let staticBoardRoot: BABYLON.TransformNode | null = null;
+  let dynamicBoardRoot: BABYLON.TransformNode | null = null;
+  let staticBoardSignature = "";
   let boardAssetRoot: BABYLON.TransformNode | null = null;
   let boardAssetStatus: BoardAssetStatus = "pending";
   let boardAssetWarningLogged = false;
@@ -515,6 +532,7 @@ export function createRouteBabylonController(
   }
 
   type TunableAssetMaterial = BABYLON.Material & {
+    alpha?: number;
     albedoColor?: BABYLON.Color3;
     diffuseColor?: BABYLON.Color3;
     emissiveColor?: BABYLON.Color3;
@@ -693,12 +711,12 @@ export function createRouteBabylonController(
       // Hot amber eyes — the primary "danger" read against the dark hood.
       material.emissiveColor = B.Color3.FromHexString("#ffc740");
       if (material.emissiveIntensity !== undefined) {
-        material.emissiveIntensity = 5.0;
+        material.emissiveIntensity = 6.2;
       }
     } else if (materialName.includes("guardianwarmglow")) {
       material.emissiveColor = B.Color3.FromHexString("#f9a417");
       if (material.emissiveIntensity !== undefined) {
-        material.emissiveIntensity = 1.15;
+        material.emissiveIntensity = 1.45;
       }
     }
   }
@@ -771,6 +789,58 @@ export function createRouteBabylonController(
         material.emissiveIntensity = 1.55;
       }
     }
+  }
+
+  function applyPortalActivationVisual(
+    root: BABYLON.TransformNode,
+    active: boolean,
+  ) {
+    root.getChildMeshes(false).forEach((mesh) => {
+      const material = mesh.material as TunableAssetMaterial | null;
+      if (!material || isBakedShadowNode(mesh)) return;
+
+      const materialClone = material.clone(
+        `${material.name}-${active ? "active" : "locked"}-${root.name}`,
+      ) as TunableAssetMaterial | null;
+      if (!materialClone) return;
+
+      mesh.material = materialClone;
+      const materialName = material.name.toLowerCase();
+
+      if (materialName.includes("portalstone")) {
+        setMaterialColor(
+          materialClone,
+          B.Color3.FromHexString(active ? "#665d43" : "#42483e"),
+        );
+      } else if (materialName.includes("portalbronze")) {
+        setMaterialColor(
+          materialClone,
+          B.Color3.FromHexString(active ? "#b17634" : "#6b5a3a"),
+        );
+        materialClone.emissiveColor = B.Color3.FromHexString(
+          active ? "#1c0d03" : "#080704",
+        );
+      } else if (
+        materialName.includes("portalgreenglow") ||
+        materialName.includes("portalglasscore")
+      ) {
+        materialClone.emissiveColor = B.Color3.FromHexString(
+          active ? "#48ff8b" : "#174421",
+        );
+        if (materialClone.emissiveIntensity !== undefined) {
+          materialClone.emissiveIntensity = active ? 1.65 : 0.22;
+        }
+        materialClone.alpha = active ? 0.86 : 0.42;
+      } else if (materialName.includes("portalbluegem")) {
+        setMaterialColor(
+          materialClone,
+          B.Color3.FromHexString(active ? "#2489ef" : "#24445e"),
+        );
+        materialClone.emissiveColor = B.Color3.FromHexString(
+          active ? "#0f4fbd" : "#071525",
+        );
+      }
+    });
   }
 
   async function importPrototypeAsset(
@@ -1102,10 +1172,7 @@ export function createRouteBabylonController(
     }
   }
 
-  function renderTiles(parent: BABYLON.TransformNode) {
-    const wallKeys = new Set(state.walls);
-    const moveKeys = new Set(state.moveTargets);
-    const dangerKeys = new Set(state.dangerTiles);
+  function renderStaticTiles(parent: BABYLON.TransformNode) {
     const useInvisibleHitTiles = boardAssetStatus === "loaded";
 
     for (let row = 0; row < state.rows; row += 1) {
@@ -1128,6 +1195,20 @@ export function createRouteBabylonController(
         );
         tile.metadata = { routeTile: true, row, col, key };
         tile.isPickable = true;
+      }
+    }
+  }
+
+  function renderTileOverlays(parent: BABYLON.TransformNode) {
+    const wallKeys = new Set(state.walls);
+    const moveKeys = new Set(state.moveTargets);
+    const dangerKeys = new Set(state.dangerTiles);
+    const useInvisibleHitTiles = boardAssetStatus === "loaded";
+
+    for (let row = 0; row < state.rows; row += 1) {
+      for (let col = 0; col < state.cols; col += 1) {
+        const key = `${row},${col}`;
+        const pos = cellToPosition(row, col);
 
         if (dangerKeys.has(key) && !wallKeys.has(key)) {
           torus(
@@ -1161,7 +1242,6 @@ export function createRouteBabylonController(
       }
     }
   }
-
   function renderWalls(parent: BABYLON.TransformNode) {
     const useWallAsset = wallAssetStatus === "loaded" && wallAssetProto !== null;
 
@@ -1324,6 +1404,10 @@ export function createRouteBabylonController(
 
   function renderPortal(parent: BABYLON.TransformNode) {
     const pos = cellToPosition(state.exitPosition.row, state.exitPosition.col);
+    const collectedKeys = new Set(state.collectedKeys);
+    const portalActive =
+      state.lights.length === 0 ||
+      state.lights.every((lightCell) => collectedKeys.has(keyOf(lightCell)));
     const clone = clonePropAsset(
       "portal",
       "route-portal-glb",
@@ -1333,35 +1417,44 @@ export function createRouteBabylonController(
     );
     if (clone) {
       clone.rotation.y = PORTAL_ROTATION_Y;
+      applyPortalActivationVisual(clone, portalActive);
       const light = new B.PointLight(
         "route-portal-light",
         new B.Vector3(pos.x, BOARD_SURFACE_Y + 0.72, pos.z),
         scene,
       );
-      light.diffuse = B.Color3.FromHexString("#5cff87");
-      light.intensity = 0.58;
-      light.range = 2.0;
+      light.diffuse = B.Color3.FromHexString(
+        portalActive ? "#5cff87" : "#6e8b72",
+      );
+      light.intensity = portalActive ? 0.72 : 0.12;
+      light.range = portalActive ? 2.2 : 1.05;
       light.parent = parent;
       return;
     }
 
-    box("route-portal-step", 0.78, 0.12, 0.68, new B.Vector3(pos.x, 0.26, pos.z), materials.portal, parent);
-    cylinder("route-portal-left", 0.16, 0.72, new B.Vector3(pos.x - 0.3, 0.68, pos.z), materials.portal, parent, 16);
-    cylinder("route-portal-right", 0.16, 0.72, new B.Vector3(pos.x + 0.3, 0.68, pos.z), materials.portal, parent, 16);
+    const portalMaterial = portalActive ? materials.portal : materials.portalLocked;
+    const portalGlowMaterial = portalActive
+      ? materials.portalGlow
+      : materials.portalGlowLocked;
+    box("route-portal-step", 0.78, 0.12, 0.68, new B.Vector3(pos.x, 0.26, pos.z), portalMaterial, parent);
+    cylinder("route-portal-left", 0.16, 0.72, new B.Vector3(pos.x - 0.3, 0.68, pos.z), portalMaterial, parent, 16);
+    cylinder("route-portal-right", 0.16, 0.72, new B.Vector3(pos.x + 0.3, 0.68, pos.z), portalMaterial, parent, 16);
     const gate = torus(
       "route-portal-ring",
       0.72,
       0.065,
       new B.Vector3(pos.x, 0.86, pos.z),
-      materials.portalGlow,
+      portalGlowMaterial,
       parent,
     );
     gate.rotation.x = 0;
-    box("route-portal-glow-plane", 0.42, 0.54, 0.025, new B.Vector3(pos.x, 0.8, pos.z + 0.01), materials.portalGlow, parent, false);
+    box("route-portal-glow-plane", 0.42, 0.54, 0.025, new B.Vector3(pos.x, 0.8, pos.z + 0.01), portalGlowMaterial, parent, false);
     const light = new B.PointLight("route-portal-light", new B.Vector3(pos.x, 0.9, pos.z), scene);
-    light.diffuse = B.Color3.FromHexString("#5cff87");
-    light.intensity = 0.92;
-    light.range = 2.4;
+    light.diffuse = B.Color3.FromHexString(
+      portalActive ? "#5cff87" : "#6e8b72",
+    );
+    light.intensity = portalActive ? 0.92 : 0.14;
+    light.range = portalActive ? 2.4 : 1.15;
     light.parent = parent;
   }
 
@@ -1484,19 +1577,52 @@ export function createRouteBabylonController(
     }
   }
 
-  function renderBoard() {
-    boardRoot?.dispose(false, false);
-    boardRoot = new B.TransformNode("route-board-root", scene);
+  function getStaticBoardSignature() {
+    return [
+      state.rows,
+      state.cols,
+      boardAssetStatus,
+      wallAssetStatus,
+      state.walls.slice().sort().join("|"),
+    ].join(";");
+  }
+
+  function renderStaticBoard() {
+    const nextRoot = new B.TransformNode("route-static-board-root", scene);
 
     if (boardAssetStatus !== "loaded") {
-      renderBase(boardRoot);
+      renderBase(nextRoot);
     }
-    renderTiles(boardRoot);
-    renderPickups(boardRoot);
-    renderWalls(boardRoot);
-    renderPortal(boardRoot);
-    renderPlayer(boardRoot);
-    renderGuardian(boardRoot);
+    renderStaticTiles(nextRoot);
+    renderWalls(nextRoot);
+
+    const previousRoot = staticBoardRoot;
+    staticBoardRoot = nextRoot;
+    staticBoardSignature = getStaticBoardSignature();
+    previousRoot?.dispose(false, false);
+  }
+
+  function renderDynamicBoard() {
+    const nextRoot = new B.TransformNode("route-dynamic-board-root", scene);
+
+    renderTileOverlays(nextRoot);
+    renderPickups(nextRoot);
+    renderPortal(nextRoot);
+    renderPlayer(nextRoot);
+    renderGuardian(nextRoot);
+
+    const previousRoot = dynamicBoardRoot;
+    dynamicBoardRoot = nextRoot;
+    previousRoot?.dispose(false, false);
+  }
+
+  function renderBoard() {
+    const nextStaticSignature = getStaticBoardSignature();
+
+    if (!staticBoardRoot || staticBoardSignature !== nextStaticSignature) {
+      renderStaticBoard();
+    }
+    renderDynamicBoard();
     writeProjectedCellCenters();
   }
 
@@ -1715,7 +1841,8 @@ export function createRouteBabylonController(
       canvas.removeEventListener("pointercancel", handlePointerUp);
       canvas.removeEventListener("wheel", handleWheel);
       engine.stopRenderLoop();
-      boardRoot?.dispose(false, false);
+      staticBoardRoot?.dispose(false, false);
+      dynamicBoardRoot?.dispose(false, false);
       boardAssetRoot?.dispose(false, true);
       wallAssetProto?.dispose(false, true);
       playerAssetProto?.dispose(false, true);
