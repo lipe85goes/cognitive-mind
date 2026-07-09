@@ -12,6 +12,8 @@ export const DETAIL_LABELS: Record<string, string> = {
   totalStars: "Total de luzes",
   blockedMoves: "Bloqueios",
   difficulty: "Modo",
+  routeNumber: "Rota",
+  routeStage: "Etapa da rota",
   trapsTriggered: "Armadilhas ativadas",
   shieldCollected: "Escudo coletado",
   shieldUsed: "Escudo usado",

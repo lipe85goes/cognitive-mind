@@ -24,11 +24,23 @@ export const COLS = 7;
 const MAX_GENERATION_ATTEMPTS = 40;
 
 const PLAYER_START: GridPosition = { row: 6, col: 0 };
+const START_OPENING: GridPosition = { row: 6, col: 1 };
 const EXIT_CANDIDATES: GridPosition[] = [
   { row: 0, col: 6 },
   { row: 1, col: 6 },
   { row: 0, col: 5 },
 ];
+const ROUTE_STAGE_EXIT_CANDIDATES: Record<RouteStage, GridPosition[]> = {
+  1: [
+    { row: 1, col: 6 },
+    { row: 0, col: 5 },
+  ],
+  2: EXIT_CANDIDATES,
+  3: [
+    { row: 0, col: 6 },
+    { row: 0, col: 5 },
+  ],
+};
 const GUARDIAN_CANDIDATES: GridPosition[] = [
   { row: 0, col: 3 },
   { row: 1, col: 5 },
@@ -85,24 +97,100 @@ const ARROW_DELTAS: Record<string, GridPosition> = {
  */
 const MOVE_INPUT_GUARD_MS = 150;
 
+type RouteStage = 1 | 2 | 3;
+
+export interface RouteProgression {
+  routeNumber: number;
+  stage: RouteStage;
+  label: string;
+  description: string;
+}
+
+const ROUTE_STAGE_COPY: Record<
+  RouteStage,
+  Pick<RouteProgression, "label" | "description">
+> = {
+  1: {
+    label: "Explora\u00e7\u00e3o inicial",
+    description: "Um mapa mais aberto para observar a rota.",
+  },
+  2: {
+    label: "Novas escolhas",
+    description: "Mais caminhos pedem uma decis\u00e3o por vez.",
+  },
+  3: {
+    label: "Portal distante",
+    description: "A rota pede planejamento com calma.",
+  },
+};
+
 const WALL_LIMITS: Record<DifficultyLevel, { min: number; max: number }> = {
   easy: { min: 8, max: 11 },
   medium: { min: 11, max: 14 },
   hard: { min: 14, max: 17 },
 };
 
-const STAR_COUNT: Record<DifficultyLevel, number> = {
+const BASE_STAR_COUNT: Record<DifficultyLevel, number> = {
   easy: 3,
   medium: 3,
   hard: 2,
 };
 
 /** A small, calm number of trap tiles per difficulty (Gameplay 2.0). */
-const TRAP_COUNT: Record<DifficultyLevel, number> = {
+const BASE_TRAP_COUNT: Record<DifficultyLevel, number> = {
   easy: 2,
   medium: 3,
   hard: 3,
 };
+
+function getRouteStage(routeNumber: number): RouteStage {
+  return (((Math.max(1, routeNumber) - 1) % 3) + 1) as RouteStage;
+}
+
+function getRouteProgression(routeNumber: number): RouteProgression {
+  const stage = getRouteStage(routeNumber);
+  return {
+    routeNumber,
+    stage,
+    ...ROUTE_STAGE_COPY[stage],
+  };
+}
+
+function getWallLimits(
+  difficulty: DifficultyLevel,
+  stage: RouteStage,
+): { min: number; max: number } {
+  const base = WALL_LIMITS[difficulty];
+  if (stage === 1) {
+    return {
+      min: Math.max(6, base.min - 2),
+      max: Math.max(8, base.max - 2),
+    };
+  }
+  if (stage === 3) {
+    return {
+      min: base.min + 1,
+      max: base.max + 1,
+    };
+  }
+  return base;
+}
+
+function getStarCount(difficulty: DifficultyLevel, stage: RouteStage): number {
+  if (stage === 1) return Math.max(2, BASE_STAR_COUNT[difficulty] - 1);
+  if (stage === 3) return Math.min(3, BASE_STAR_COUNT[difficulty] + 1);
+  return BASE_STAR_COUNT[difficulty];
+}
+
+function getTrapCount(difficulty: DifficultyLevel, stage: RouteStage): number {
+  if (stage === 1) return Math.max(1, BASE_TRAP_COUNT[difficulty] - 1);
+  if (stage === 3) return Math.min(4, BASE_TRAP_COUNT[difficulty] + 1);
+  return BASE_TRAP_COUNT[difficulty];
+}
+
+function getMinimumPathLength(stage: RouteStage): number {
+  return stage === 1 ? 7 : stage === 2 ? 8 : 10;
+}
 
 export interface MazeMap {
   grid: number[][];
@@ -209,6 +297,7 @@ function protectedKeys(
     posKey(playerStart),
     posKey(guardianStart),
     posKey(exitPosition),
+    posKey(START_OPENING),
   ]);
 }
 
@@ -230,12 +319,14 @@ function chooseGuardianStart(
 function randomizeWalls(
   baseGrid: number[][],
   difficulty: DifficultyLevel,
+  routeStage: RouteStage,
   playerStart: GridPosition,
   guardianStart: GridPosition,
   exitPosition: GridPosition,
 ): number[][] {
   const grid = cloneGrid(baseGrid);
-  const limits = WALL_LIMITS[difficulty];
+  grid[START_OPENING.row][START_OPENING.col] = 0;
+  const limits = getWallLimits(difficulty, routeStage);
   const protectedCells = protectedKeys(playerStart, guardianStart, exitPosition);
 
   for (let attempt = 0; attempt < 18; attempt++) {
@@ -261,6 +352,7 @@ function chooseStars(
   guardianStart: GridPosition,
   exitPosition: GridPosition,
   difficulty: DifficultyLevel,
+  routeStage: RouteStage,
 ): GridPosition[] {
   const blocked = protectedKeys(playerStart, guardianStart, exitPosition);
   const candidates: GridPosition[] = [];
@@ -287,7 +379,7 @@ function chooseStars(
       chosen.push(candidate);
     }
 
-    if (chosen.length >= STAR_COUNT[difficulty]) break;
+    if (chosen.length >= getStarCount(difficulty, routeStage)) break;
   }
 
   return chosen;
@@ -305,6 +397,7 @@ function chooseTrapsAndShield(
   exitPosition: GridPosition,
   stars: GridPosition[],
   difficulty: DifficultyLevel,
+  routeStage: RouteStage,
 ): { traps: GridPosition[]; shield: GridPosition | null } {
   const blocked = new Set<string>([
     posKey(playerStart),
@@ -329,7 +422,7 @@ function chooseTrapsAndShield(
 
   const traps: GridPosition[] = [];
   for (const cell of shuffled) {
-    if (traps.length >= TRAP_COUNT[difficulty]) break;
+    if (traps.length >= getTrapCount(difficulty, routeStage)) break;
     // Keep traps from clumping together so the board stays readable.
     if (traps.every((trap) => manhattanDistance(trap, cell) >= 2)) {
       traps.push(cell);
@@ -347,7 +440,11 @@ function chooseTrapsAndShield(
   return { traps, shield };
 }
 
-function isValidMap(map: MazeMap, difficulty: DifficultyLevel): boolean {
+function isValidMap(
+  map: MazeMap,
+  difficulty: DifficultyLevel,
+  routeStage: RouteStage,
+): boolean {
   const pathLength = findPathLength(
     map.playerStart,
     map.exitPosition,
@@ -355,15 +452,17 @@ function isValidMap(map: MazeMap, difficulty: DifficultyLevel): boolean {
   );
   const guardianDistance = manhattanDistance(map.playerStart, map.guardianStart);
   const wallCount = countWalls(map.grid);
-  const limits = WALL_LIMITS[difficulty];
+  const limits = getWallLimits(difficulty, routeStage);
+  const firstChoices = getNeighbors(map.playerStart, map.walls).length;
 
   return (
     pathLength !== null &&
-    pathLength >= 8 &&
+    pathLength >= getMinimumPathLength(routeStage) &&
     guardianDistance >= 6 &&
+    firstChoices >= 2 &&
     wallCount >= limits.min &&
     wallCount <= limits.max &&
-    map.collectibleStars.length >= Math.min(2, STAR_COUNT[difficulty])
+    map.collectibleStars.length >= Math.min(2, getStarCount(difficulty, routeStage))
   );
 }
 
@@ -405,15 +504,22 @@ function chooseGuardianMove(
   return randomItem(best);
 }
 
-export function generateMaze(difficulty: DifficultyLevel): MazeMap {
+export function generateMaze(
+  difficulty: DifficultyLevel,
+  routeNumber = 1,
+): MazeMap {
+  const routeStage = getRouteStage(routeNumber);
+  const exitCandidates = ROUTE_STAGE_EXIT_CANDIDATES[routeStage];
+
   for (let attempt = 0; attempt < MAX_GENERATION_ATTEMPTS; attempt++) {
     const template = randomItem(MAZE_TEMPLATES);
-    const exitPosition = randomItem(EXIT_CANDIDATES);
+    const exitPosition = randomItem(exitCandidates);
     const preliminaryWalls = gridToWalls(template);
     const guardianStart = chooseGuardianStart(preliminaryWalls, exitPosition);
     const grid = randomizeWalls(
       template,
       difficulty,
+      routeStage,
       PLAYER_START,
       guardianStart,
       exitPosition,
@@ -429,6 +535,7 @@ export function generateMaze(difficulty: DifficultyLevel): MazeMap {
       guardianStart,
       exitPosition,
       difficulty,
+      routeStage,
     );
     const { traps, shield } = chooseTrapsAndShield(
       walls,
@@ -437,6 +544,7 @@ export function generateMaze(difficulty: DifficultyLevel): MazeMap {
       exitPosition,
       collectibleStars,
       difficulty,
+      routeStage,
     );
     const map = {
       grid,
@@ -449,10 +557,12 @@ export function generateMaze(difficulty: DifficultyLevel): MazeMap {
       shield,
     };
 
-    if (isValidMap(map, difficulty)) return map;
+    if (isValidMap(map, difficulty, routeStage)) return map;
   }
 
-  const walls = gridToWalls(FALLBACK_GRID);
+  const fallbackGrid = cloneGrid(FALLBACK_GRID);
+  fallbackGrid[START_OPENING.row][START_OPENING.col] = 0;
+  const walls = gridToWalls(fallbackGrid);
   const exitPosition = EXIT_CANDIDATES[0];
   const guardianStart = { row: 0, col: 3 };
   walls.delete(posKey(PLAYER_START));
@@ -465,6 +575,7 @@ export function generateMaze(difficulty: DifficultyLevel): MazeMap {
     guardianStart,
     exitPosition,
     difficulty,
+    routeStage,
   );
   const { traps, shield } = chooseTrapsAndShield(
     walls,
@@ -473,10 +584,11 @@ export function generateMaze(difficulty: DifficultyLevel): MazeMap {
     exitPosition,
     collectibleStars,
     difficulty,
+    routeStage,
   );
 
   return {
-    grid: FALLBACK_GRID,
+    grid: fallbackGrid,
     walls,
     playerStart: PLAYER_START,
     guardianStart,
@@ -492,7 +604,8 @@ type CompleteFn = (result: Omit<GameResult, "id" | "playedAt">) => void;
 /** Turn-based maze escape: reach the exit before the guardian catches you. */
 export function useEscapeMaze(onComplete: CompleteFn) {
   const [difficulty, setDifficulty] = useState<DifficultyLevel>("easy");
-  const [mazeMap, setMazeMap] = useState<MazeMap>(() => generateMaze("easy"));
+  const [routeNumber, setRouteNumber] = useState(1);
+  const [mazeMap, setMazeMap] = useState<MazeMap>(() => generateMaze("easy", 1));
   const [player, setPlayer] = useState<GridPosition>(mazeMap.playerStart);
   const [guardian, setGuardian] = useState<GridPosition>(mazeMap.guardianStart);
   const [collectedStars, setCollectedStars] = useState<string[]>([]);
@@ -521,6 +634,10 @@ export function useEscapeMaze(onComplete: CompleteFn) {
   const totalLights = mazeMap.collectibleStars.length;
   const collectedCount = collectedStars.length;
   const portalActive = totalLights === 0 || collectedCount >= totalLights;
+  const routeProgression = useMemo(
+    () => getRouteProgression(routeNumber),
+    [routeNumber],
+  );
 
   const score = calculateEscapeMazeScore({
     won: status === "won",
@@ -532,8 +649,12 @@ export function useEscapeMaze(onComplete: CompleteFn) {
   });
 
   const startNewMaze = useCallback(
-    (nextDifficulty: DifficultyLevel, nextStatus: GameStatus) => {
-      const nextMap = generateMaze(nextDifficulty);
+    (
+      nextDifficulty: DifficultyLevel,
+      nextStatus: GameStatus,
+      nextRouteNumber = routeNumber,
+    ) => {
+      const nextMap = generateMaze(nextDifficulty, nextRouteNumber);
       setMazeMap(nextMap);
       setPlayer(nextMap.playerStart);
       setGuardian(nextMap.guardianStart);
@@ -549,13 +670,12 @@ export function useEscapeMaze(onComplete: CompleteFn) {
       setStatus(nextStatus);
       setMessage(
         nextStatus === "playing"
-          ? "Colete todas as luzes para ativar o portal."
-          : "Escolha a dificuldade e inicie.",
+          ? `${getRouteProgression(nextRouteNumber).label}: observe a rota e colete as luzes.`
+          : "Escolha o modo e inicie no seu ritmo.",
       );
     },
-    [],
+    [routeNumber],
   );
-
   const endGame = useCallback(
     (
       won: boolean,
@@ -564,6 +684,8 @@ export function useEscapeMaze(onComplete: CompleteFn) {
         blockedMoves: number;
         errors: number;
         difficulty: DifficultyLevel;
+        routeNumber: number;
+        routeStageLabel: string;
         starsCollected: number;
         totalStars: number;
         trapsTriggered: number;
@@ -593,10 +715,10 @@ export function useEscapeMaze(onComplete: CompleteFn) {
           difficulty: finalStats.difficulty,
         }),
         summary: won
-          ? `Você chegou à saída em ${finalStats.turns} turnos e coletou ${finalStats.starsCollected} ${
+          ? `Voc\u00ea concluiu a Rota ${finalStats.routeNumber} em ${finalStats.turns} turnos e coletou ${finalStats.starsCollected} ${
               finalStats.starsCollected === 1 ? "luz" : "luzes"
             }.`
-          : "Boa tentativa! Tente outra rota com calma.",
+          : `A Rota ${finalStats.routeNumber} foi registrada. Observe outra rota quando quiser praticar de novo.`,
         details: {
           turns: finalStats.turns,
           won,
@@ -605,6 +727,8 @@ export function useEscapeMaze(onComplete: CompleteFn) {
           blockedMoves: finalStats.blockedMoves,
           errors: finalStats.errors,
           difficulty: finalStats.difficulty,
+          routeNumber: finalStats.routeNumber,
+          routeStage: finalStats.routeStageLabel,
           // Additive optional fields (Gameplay 2.0); old results simply omit them.
           trapsTriggered: finalStats.trapsTriggered,
           shieldCollected: finalStats.shieldCollected,
@@ -623,11 +747,17 @@ export function useEscapeMaze(onComplete: CompleteFn) {
     startNewMaze(difficulty, "playing");
   };
 
-  const changeDifficulty = (nextDifficulty: DifficultyLevel) => {
-    setDifficulty(nextDifficulty);
-    startNewMaze(nextDifficulty, "setup");
+  const continueJourney = () => {
+    const nextRouteNumber = routeNumber + 1;
+    setRouteNumber(nextRouteNumber);
+    startNewMaze(difficulty, "playing", nextRouteNumber);
   };
 
+  const changeDifficulty = (nextDifficulty: DifficultyLevel) => {
+    setDifficulty(nextDifficulty);
+    setRouteNumber(1);
+    startNewMaze(nextDifficulty, "setup", 1);
+  };
   const tryMovePlayer = (delta: GridPosition) => {
     if (status !== "playing") return;
 
@@ -694,6 +824,8 @@ export function useEscapeMaze(onComplete: CompleteFn) {
       blockedMoves,
       errors: finalErrors,
       difficulty,
+      routeNumber,
+      routeStageLabel: routeProgression.label,
       starsCollected: nextCollectedStars.length,
       totalStars: mazeMap.collectibleStars.length,
       trapsTriggered: triggeredTraps.length + (isUntriggeredTrap ? 1 : 0),
@@ -795,6 +927,8 @@ export function useEscapeMaze(onComplete: CompleteFn) {
 
   return {
     difficulty,
+    routeNumber,
+    routeProgression,
     mazeMap,
     player,
     guardian,
@@ -818,6 +952,7 @@ export function useEscapeMaze(onComplete: CompleteFn) {
     shieldActive,
     startGame,
     restartGame,
+    continueJourney,
     changeDifficulty,
     tryMovePlayer,
   };

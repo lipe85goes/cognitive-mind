@@ -96,6 +96,8 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
   const game = useEscapeMaze(onComplete);
   const {
     difficulty,
+    routeNumber,
+    routeProgression,
     mazeMap,
     player,
     guardian,
@@ -116,6 +118,7 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
     shieldActive,
     startGame,
     restartGame,
+    continueJourney,
     changeDifficulty,
     tryMovePlayer,
   } = game;
@@ -202,24 +205,24 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
     if (status === "won") {
       return {
         Icon: CircleCheck,
-        title: "Rota concluída",
-        detail: "Você chegou ao portal com calma.",
+        title: `Rota ${routeNumber} concluída`,
+        detail: "Você pode explorar a próxima rota quando quiser.",
         className: "is-complete",
       };
     }
     if (status === "lost") {
       return {
         Icon: Sparkles,
-        title: "Sessão registrada",
-        detail: "Observe outra rota quando quiser praticar de novo.",
+        title: `Rota ${routeNumber} registrada`,
+        detail: "Você pode observar uma nova rota no seu ritmo.",
         className: "is-resting",
       };
     }
     if (status !== "playing") {
       return {
         Icon: Gauge,
-        title: "Escolha um modo",
-        detail: "Comece quando estiver confortável.",
+        title: `Rota ${routeNumber}: ${routeProgression.label}`,
+        detail: routeProgression.description,
         className: "is-setup",
       };
     }
@@ -230,14 +233,14 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
           remainingLights === 1
             ? "Colete 1 luz para acordar o portal"
             : `Colete ${remainingLights} luzes para acordar o portal`,
-        detail: "As luzes douradas mostram o caminho da rota.",
+        detail: `${routeProgression.label}. As luzes douradas mostram o caminho.`,
         className: "is-lights",
       };
     }
     return {
       Icon: DoorOpen,
       title: "Siga até o portal verde",
-      detail: "Agora a saída está pronta para receber você.",
+      detail: `${routeProgression.label}. Agora a saída está pronta para receber você.`,
       className: "is-portal",
     };
   })();
@@ -275,6 +278,12 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
     className?: string;
     danger?: boolean;
   }> = [
+    {
+      key: "rota",
+      label: "Rota",
+      value: routeNumber,
+      Icon: Sparkles,
+    },
     {
       key: "luzes",
       label: "Luzes",
@@ -450,7 +459,7 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
                 Rota Estratégica
               </p>
               <p className="rsg-mission-copy">
-                Colete todas as luzes para ativar o portal.
+                Rota {routeNumber}: {routeProgression.description}
               </p>
               <div className="rsg-mission-steps" aria-label="Como jogar">
                 <span>
@@ -615,16 +624,27 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
               ))}
             </div>
 
-            {status !== "setup" && (
+            {status === "playing" && (
               <button
                 type="button"
                 onClick={restartGame}
-                disabled={status === "won" || status === "lost"}
                 aria-label="Começar outra rota"
                 className="rsg-btn"
               >
                 <RotateCcw className="h-5 w-5" aria-hidden />
                 Começar outra rota
+              </button>
+            )}
+
+            {(status === "won" || status === "lost") && (
+              <button
+                type="button"
+                onClick={continueJourney}
+                aria-label="Explorar próxima rota"
+                className="rsg-btn rsg-next-route-btn"
+              >
+                <Sparkles className="h-5 w-5" aria-hidden />
+                {status === "won" ? "Explorar próxima rota" : "Começar uma nova rota"}
               </button>
             )}
           </div>
