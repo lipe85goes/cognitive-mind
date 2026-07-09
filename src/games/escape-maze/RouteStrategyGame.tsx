@@ -413,7 +413,6 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
                   ? undefined
                   : gentleShakeAnimate
               }
-              key={blockedShake > 0 ? `board-${blockedShake}` : "board"}
             >
               <div
                 className="rsg-canvas"
@@ -513,7 +512,6 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
                     ? undefined
                     : gentleShakeAnimate
                 }
-                key={blockedShake > 0 ? `dpad-${blockedShake}` : "dpad"}
               >
                 <p className="rsg-panel-title">
                   <Sparkles className="h-5 w-5" aria-hidden />
