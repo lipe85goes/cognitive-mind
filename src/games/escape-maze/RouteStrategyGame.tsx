@@ -197,6 +197,51 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
     error: Sparkles,
   };
   const StatusIcon = statusIcons[statusVariant];
+  const remainingLights = Math.max(totalLights - collectedCount, 0);
+  const currentObjective = (() => {
+    if (status === "won") {
+      return {
+        Icon: CircleCheck,
+        title: "Rota concluída",
+        detail: "Você chegou ao portal com calma.",
+        className: "is-complete",
+      };
+    }
+    if (status === "lost") {
+      return {
+        Icon: Sparkles,
+        title: "Sessão registrada",
+        detail: "Observe outra rota quando quiser praticar de novo.",
+        className: "is-resting",
+      };
+    }
+    if (status !== "playing") {
+      return {
+        Icon: Gauge,
+        title: "Escolha um modo",
+        detail: "Comece quando estiver confortável.",
+        className: "is-setup",
+      };
+    }
+    if (!portalActive) {
+      return {
+        Icon: Sun,
+        title:
+          remainingLights === 1
+            ? "Colete 1 luz para acordar o portal"
+            : `Colete ${remainingLights} luzes para acordar o portal`,
+        detail: "As luzes douradas mostram o caminho da rota.",
+        className: "is-lights",
+      };
+    }
+    return {
+      Icon: DoorOpen,
+      title: "Siga até o portal verde",
+      detail: "Agora a saída está pronta para receber você.",
+      className: "is-portal",
+    };
+  })();
+  const CurrentObjectiveIcon = currentObjective.Icon;
 
   const moveIcons = {
     up: ChevronUp,
@@ -370,6 +415,32 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
           <StatusIcon className="rsg-status-icon" aria-hidden />
           <span>{message}</span>
         </p>
+        <section
+          className={`rsg-current-objective ${currentObjective.className}`}
+          aria-label="Objetivo atual da rota"
+        >
+          <CurrentObjectiveIcon className="rsg-current-objective-icon" aria-hidden />
+          <span>
+            <em>Objetivo atual</em>
+            <strong>{currentObjective.title}</strong>
+            <small>{currentObjective.detail}</small>
+          </span>
+          {status === "playing" && totalLights > 0 && !portalActive && (
+            <div
+              className="rsg-current-objective-progress"
+              aria-hidden="true"
+            >
+              <i
+                style={{
+                  width: `${Math.min(
+                    100,
+                    Math.max(0, (collectedCount / totalLights) * 100),
+                  )}%`,
+                }}
+              />
+            </div>
+          )}
+        </section>
 
         <div className="rsg-layout">
           <aside className="rsg-info-col" aria-label="Missão e legenda">
