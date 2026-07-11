@@ -91,9 +91,13 @@ const MOVE_DELTAS: Record<"up" | "down" | "left" | "right", GridPosition> = {
  * guardian, movement, win/loss, scoring, completion) lives in `useEscapeMaze`,
  * extracted verbatim from the original; this component is a pure premium view.
  */
-export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
+export function RouteStrategyGame({
+  onComplete,
+  onExit,
+  initialRouteNumber,
+}: GameComponentProps) {
   const reducedMotion = useReducedMotion();
-  const game = useEscapeMaze(onComplete);
+  const game = useEscapeMaze(onComplete, initialRouteNumber);
   const {
     difficulty,
     routeNumber,
@@ -201,12 +205,13 @@ export function RouteStrategyGame({ onComplete, onExit }: GameComponentProps) {
   };
   const StatusIcon = statusIcons[statusVariant];
   const remainingLights = Math.max(totalLights - collectedCount, 0);
+  const nextRouteNumber = routeNumber + 1;
   const currentObjective = (() => {
     if (status === "won") {
       return {
         Icon: CircleCheck,
         title: `Rota ${routeNumber} concluída`,
-        detail: "Você pode explorar a próxima rota quando quiser.",
+        detail: `A Rota ${nextRouteNumber} fica dispon\u00edvel quando quiser continuar.`,
         className: "is-complete",
       };
     }

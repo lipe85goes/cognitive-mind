@@ -9,6 +9,7 @@ import type { GameComponentProps, GameId } from "@/types/game";
 interface GameScreenProps extends GameComponentProps {
   gameId: GameId;
   sessionKey: number;
+  skipIntro?: boolean;
 }
 
 /** Renders intro then the active game; remounts when sessionKey changes. */
@@ -17,14 +18,16 @@ export function GameScreen({
   sessionKey,
   onComplete,
   onExit,
+  initialRouteNumber,
+  skipIntro = false,
 }: GameScreenProps) {
-  const [showIntro, setShowIntro] = useState(true);
+  const [showIntro, setShowIntro] = useState(!skipIntro);
   const intro = GAME_INTROS[gameId];
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- reset intro each new session
-    setShowIntro(true);
-  }, [sessionKey]);
+    setShowIntro(!skipIntro);
+  }, [sessionKey, skipIntro]);
 
   if (showIntro) {
     return (
@@ -39,5 +42,12 @@ export function GameScreen({
   const ActiveGame = GAME_COMPONENTS[gameId];
   if (!ActiveGame) return null;
 
-  return <ActiveGame key={sessionKey} onComplete={onComplete} onExit={onExit} />;
+  return (
+    <ActiveGame
+      key={sessionKey}
+      onComplete={onComplete}
+      onExit={onExit}
+      initialRouteNumber={initialRouteNumber}
+    />
+  );
 }

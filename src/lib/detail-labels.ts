@@ -14,6 +14,8 @@ export const DETAIL_LABELS: Record<string, string> = {
   difficulty: "Modo",
   routeNumber: "Rota",
   routeStage: "Etapa da rota",
+  nextRouteNumber: "Pr\u00f3xima rota",
+  nextRouteStage: "Pr\u00f3xima etapa",
   trapsTriggered: "Armadilhas ativadas",
   shieldCollected: "Escudo coletado",
   shieldUsed: "Escudo usado",

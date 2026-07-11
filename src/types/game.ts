@@ -46,6 +46,8 @@ export type DashboardView = "home" | "game" | "result";
 export interface GameComponentProps {
   onComplete: (result: Omit<GameResult, "id" | "playedAt">) => void;
   onExit: () => void;
+  /** Optional continuation hook for games with internal route/session progression. */
+  initialRouteNumber?: number;
 }
 
 /** Escape Maze game stats tracked during play. */

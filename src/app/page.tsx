@@ -33,6 +33,8 @@ export default function HomePage() {
   const [enteringGameId, setEnteringGameId] = useState<GameId | null>(null);
   /** Bumped to remount game components on each new session. */
   const [gameSession, setGameSession] = useState(0);
+  const [initialRouteNumber, setInitialRouteNumber] = useState<number | undefined>();
+  const [skipGameIntro, setSkipGameIntro] = useState(false);
 
   const reducedMotion = useReducedMotion();
 
@@ -83,6 +85,8 @@ export default function HomePage() {
     setDashboardNotice(null);
     setSelectedDashboardGameId(activity.gameId);
     setActiveGameId(activity.gameId);
+    setInitialRouteNumber(undefined);
+    setSkipGameIntro(false);
     setGameSession((n) => n + 1);
     setView("game");
     if (!reducedMotion) setEnteringGameId(activity.gameId);
@@ -114,8 +118,16 @@ export default function HomePage() {
   const playAgain = () => {
     if (lastResult?.gameId) {
       setDashboardNotice(null);
+      const nextRouteNumber =
+        lastResult.gameId === "escape-maze" &&
+        typeof lastResult.details.nextRouteNumber === "number"
+          ? lastResult.details.nextRouteNumber
+          : undefined;
+
       setSelectedDashboardGameId(lastResult.gameId);
       setActiveGameId(lastResult.gameId);
+      setInitialRouteNumber(nextRouteNumber);
+      setSkipGameIntro(Boolean(nextRouteNumber));
       setGameSession((n) => n + 1);
       setView("game");
       if (!reducedMotion) setEnteringGameId(lastResult.gameId);
@@ -129,6 +141,8 @@ export default function HomePage() {
         <GameScreen
           gameId={activeGameId}
           sessionKey={gameSession}
+          initialRouteNumber={initialRouteNumber}
+          skipIntro={skipGameIntro}
           onComplete={handleGameComplete}
           onExit={returnHome}
         />

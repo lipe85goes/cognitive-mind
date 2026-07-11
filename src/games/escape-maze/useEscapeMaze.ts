@@ -602,10 +602,16 @@ export function generateMaze(
 type CompleteFn = (result: Omit<GameResult, "id" | "playedAt">) => void;
 
 /** Turn-based maze escape: reach the exit before the guardian catches you. */
-export function useEscapeMaze(onComplete: CompleteFn) {
+export function useEscapeMaze(onComplete: CompleteFn, initialRouteNumber = 1) {
+  const normalizedInitialRouteNumber = Math.max(
+    1,
+    Math.floor(initialRouteNumber),
+  );
   const [difficulty, setDifficulty] = useState<DifficultyLevel>("easy");
-  const [routeNumber, setRouteNumber] = useState(1);
-  const [mazeMap, setMazeMap] = useState<MazeMap>(() => generateMaze("easy", 1));
+  const [routeNumber, setRouteNumber] = useState(normalizedInitialRouteNumber);
+  const [mazeMap, setMazeMap] = useState<MazeMap>(() =>
+    generateMaze("easy", normalizedInitialRouteNumber),
+  );
   const [player, setPlayer] = useState<GridPosition>(mazeMap.playerStart);
   const [guardian, setGuardian] = useState<GridPosition>(mazeMap.guardianStart);
   const [collectedStars, setCollectedStars] = useState<string[]>([]);
@@ -694,14 +700,16 @@ export function useEscapeMaze(onComplete: CompleteFn) {
       },
     ) => {
       setStatus(won ? "won" : "lost");
+      const nextRouteNumber = finalStats.routeNumber + 1;
+      const nextRouteProgression = getRouteProgression(nextRouteNumber);
+
       if (won) {
         playSuccessChime();
-        setMessage("Rota concluída! Você chegou à saída.");
+        setMessage("O caminho foi aberto. A pr\u00f3xima rota fica dispon\u00edvel quando quiser.");
       } else {
         playGentleErrorTone();
-        setMessage("Boa tentativa! Tente outra rota com calma.");
+        setMessage("Rota registrada. Voc\u00ea pode observar outro caminho com calma.");
       }
-
       onComplete({
         activityId: "escape-maze",
         activityTitle: "Rota Estratégica",
@@ -715,10 +723,10 @@ export function useEscapeMaze(onComplete: CompleteFn) {
           difficulty: finalStats.difficulty,
         }),
         summary: won
-          ? `Voc\u00ea concluiu a Rota ${finalStats.routeNumber} em ${finalStats.turns} turnos e coletou ${finalStats.starsCollected} ${
+          ? `Voc\u00ea abriu o caminho da Rota ${finalStats.routeNumber} em ${finalStats.turns} turnos e coletou ${finalStats.starsCollected} ${
               finalStats.starsCollected === 1 ? "luz" : "luzes"
-            }.`
-          : `A Rota ${finalStats.routeNumber} foi registrada. Observe outra rota quando quiser praticar de novo.`,
+            }. A Rota ${nextRouteNumber} espera por voc\u00ea no seu ritmo.`
+          : `A Rota ${finalStats.routeNumber} foi registrada. A Rota ${nextRouteNumber} pode ser explorada com calma quando voc\u00ea quiser.`,
         details: {
           turns: finalStats.turns,
           won,
@@ -729,6 +737,8 @@ export function useEscapeMaze(onComplete: CompleteFn) {
           difficulty: finalStats.difficulty,
           routeNumber: finalStats.routeNumber,
           routeStage: finalStats.routeStageLabel,
+          nextRouteNumber,
+          nextRouteStage: nextRouteProgression.label,
           // Additive optional fields (Gameplay 2.0); old results simply omit them.
           trapsTriggered: finalStats.trapsTriggered,
           shieldCollected: finalStats.shieldCollected,
