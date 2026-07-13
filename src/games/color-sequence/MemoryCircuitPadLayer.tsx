@@ -33,6 +33,7 @@ export function MemoryCircuitPadLayer({
             disabled={!canTap}
             aria-pressed={isLit}
             aria-label={`Ativar ${pad.name}, símbolo ${pad.symbol}`}
+            data-pad={pad.element}
             style={
               {
                 "--pad": pad.swatch,
@@ -42,6 +43,11 @@ export function MemoryCircuitPadLayer({
             }
             className={`mfg-board-pad-hitbox ${feedbackClass}`.trim()}
           >
+            <span className="mfg-pad-sprite" aria-hidden>
+              <span className="mfg-pad-sprite-aura" />
+              <span className="mfg-pad-sprite-symbol" />
+              <span className="mfg-pad-sprite-touch" />
+            </span>
             <span className="sr-only">{pad.name}</span>
           </button>
         );

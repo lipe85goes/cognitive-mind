@@ -27,7 +27,11 @@ export function MemoryCircuitStage({
   onBegin,
 }: MemoryCircuitStageProps) {
   return (
-    <div className="mfg-stage mfg-illustrated-stage" aria-busy={phase === "showing"}>
+    <div
+      className="mfg-stage mfg-illustrated-stage mfg-sprite-stage"
+      aria-busy={phase === "showing"}
+      data-phase={phase}
+    >
       <Image
         src={MEMORY_CIRCUIT_BOARD_IMAGE}
         alt="Tabuleiro ilustrado do Circuito de Memória com quatro símbolos: chama, onda, folha e sol."
@@ -37,6 +41,11 @@ export function MemoryCircuitStage({
         sizes="(max-width: 900px) 100vw, 108rem"
         draggable={false}
       />
+
+      <div className="mfg-sprite-stage-lightmap" aria-hidden />
+      <div className="mfg-sprite-core" aria-hidden>
+        <span />
+      </div>
 
       <MemoryCircuitPadLayer
         activeColor={activeColor}
