@@ -10683,6 +10683,12 @@ button:disabled:focus-visible {
   touch-action: manipulation;
 }
 
+.mfg-babylon-canvas {
+  position: absolute;
+  inset: 0;
+  outline: none;
+}
+
 .mfg-scene-loading {
   position: absolute;
   inset: 0;
@@ -10796,8 +10802,8 @@ button:disabled:focus-visible {
 }
 
 .mfg-pad-btn.is-wrong {
-  border-color: #f87171;
-  box-shadow: 0 0 0 2px #f87171;
+  border-color: #f6c177;
+  box-shadow: 0 0 0 2px #f6c177;
 }
 
 .mfg-pad-btn:disabled {
@@ -10879,7 +10885,7 @@ button:disabled:focus-visible {
 }
 
 .mfg-stat.is-danger strong {
-  color: #ff9d96;
+  color: #f6c177;
 }
 
 .mfg-footnote {
@@ -10909,6 +10915,316 @@ button:disabled:focus-visible {
   }
 }
 
+
+/* E8B — Circuito de Memória premium altar pass. Scoped to this game. */
+.mfg-frame {
+  max-width: min(94rem, 100%);
+  gap: clamp(0.55rem, 1.3vh, 0.95rem);
+}
+
+.mfg-memory-hud {
+  display: grid;
+  grid-template-columns: minmax(13rem, 0.82fr) minmax(16rem, 1.25fr) minmax(13rem, 0.82fr);
+  align-items: center;
+  gap: clamp(0.7rem, 1.8vw, 1.25rem);
+  width: 100%;
+}
+
+.mfg-memory-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+  color: #ffeec2;
+  text-shadow: 0 0.16rem 0.2rem rgb(0 0 0 / 0.72);
+}
+
+.mfg-memory-title h1 {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.65rem, 3.3vw, 3.1rem);
+  line-height: 0.92;
+  letter-spacing: 0;
+}
+
+.mfg-memory-title p {
+  margin: 0.28rem 0 0;
+  color: #d7b47a;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1rem, 1.45vw, 1.3rem);
+}
+
+.mfg-memory-glyph {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: clamp(2.6rem, 4vw, 3.6rem);
+  height: clamp(2.6rem, 4vw, 3.6rem);
+  border: 1px solid rgb(232 190 112 / 0.5);
+  border-radius: 1rem;
+  background:
+    radial-gradient(circle at 42% 28%, rgb(255 236 170 / 0.45), transparent 45%),
+    linear-gradient(180deg, rgb(22 38 42 / 0.82), rgb(9 18 20 / 0.88));
+  color: #f2d27a;
+  font-size: clamp(1.4rem, 2.5vw, 2rem);
+  box-shadow:
+    inset 0 0 0 1px rgb(255 243 200 / 0.12),
+    0 0.7rem 1.2rem rgb(0 0 0 / 0.45);
+}
+
+.mfg-memory-state {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.9rem;
+  min-height: clamp(3.6rem, 7vh, 4.8rem);
+  padding: 0.65rem clamp(0.9rem, 2vw, 1.45rem);
+  border: 1.5px solid rgb(226 174 88 / 0.5);
+  border-radius: 1.35rem;
+  background:
+    linear-gradient(180deg, rgb(255 243 202 / 0.1), transparent 42%),
+    linear-gradient(180deg, rgb(16 18 21 / 0.88), rgb(8 9 12 / 0.9));
+  color: #fff1cb;
+  box-shadow:
+    inset 0 0 0 1px rgb(255 236 180 / 0.12),
+    0 0.9rem 1.8rem rgb(0 0 0 / 0.48);
+  backdrop-filter: blur(12px);
+}
+
+.mfg-memory-state strong {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.25rem, 2.2vw, 2rem);
+  font-weight: 850;
+  line-height: 1;
+}
+
+.mfg-memory-state span {
+  max-width: 18rem;
+  color: #d8c6a4;
+  font-weight: 750;
+  font-size: clamp(0.82rem, 1vw, 0.98rem);
+  line-height: 1.25;
+  text-align: right;
+}
+
+.mfg-memory-state.mfg-status-info {
+  border-color: rgb(104 199 255 / 0.5);
+}
+
+.mfg-memory-state.mfg-status-success {
+  border-color: rgb(140 232 107 / 0.52);
+}
+
+.mfg-memory-state.mfg-status-error {
+  border-color: rgb(246 193 119 / 0.56);
+  color: #ffe4bd;
+}
+
+.mfg-memory-path {
+  justify-self: end;
+  min-width: min(16rem, 100%);
+  padding: 0.72rem 0.85rem;
+  border: 1px solid rgb(226 174 88 / 0.34);
+  border-radius: 1.15rem;
+  background: rgb(9 10 12 / 0.68);
+  color: #f7e3b3;
+  box-shadow:
+    inset 0 0 0 1px rgb(255 236 180 / 0.08),
+    0 0.65rem 1.35rem rgb(0 0 0 / 0.42);
+  backdrop-filter: blur(12px);
+}
+
+.mfg-memory-path > span {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: #e8d5ad;
+  font-size: 0.82rem;
+  font-weight: 850;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.mfg-memory-path strong {
+  display: inline-flex;
+  margin-bottom: 0.48rem;
+  color: #ffeec2;
+  font-size: 1rem;
+}
+
+.mfg-memory-path small {
+  display: block;
+  margin-top: 0.45rem;
+  color: #c7b58e;
+  font-weight: 750;
+}
+
+.mfg-memory-path-dots {
+  display: flex;
+  gap: 0.38rem;
+}
+
+.mfg-memory-path-dots i {
+  display: block;
+  width: 1.12rem;
+  height: 1.12rem;
+  border-radius: 999px;
+  border: 1px solid rgb(255 235 190 / 0.38);
+  background: radial-gradient(circle at 34% 25%, rgb(255 255 255 / 0.62), var(--pad) 64%);
+  box-shadow:
+    inset 0 0.08rem 0.1rem rgb(255 255 255 / 0.28),
+    0 0 0.7rem color-mix(in srgb, var(--pad) 42%, transparent);
+}
+
+.mfg-stage {
+  min-height: clamp(22rem, 56vh, 43rem);
+  border-radius: 2rem;
+}
+
+.mfg-stage::before {
+  content: "";
+  position: absolute;
+  inset: 4% 5% 0;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: 999px;
+  background: radial-gradient(ellipse at 50% 58%, rgb(255 190 91 / 0.14), transparent 64%);
+}
+
+.mfg-babylon-canvas {
+  z-index: 1;
+}
+
+.mfg-scene-loading,
+.mfg-stage-overlay {
+  z-index: 2;
+}
+
+.mfg-stage-hint {
+  padding: 0.45rem 0.85rem;
+  border: 1px solid rgb(246 193 119 / 0.28);
+  border-radius: 999px;
+  background: rgb(9 10 12 / 0.58);
+  backdrop-filter: blur(8px);
+}
+
+.mfg-cta {
+  min-width: min(24rem, calc(100vw - 3rem));
+  min-height: 4rem;
+  border-radius: 1.35rem;
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.22), transparent 42%),
+    linear-gradient(180deg, #1f5f71, #0f4d56 55%, #0a3237);
+  color: #fff2ca;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.2rem, 2vw, 1.65rem);
+  box-shadow:
+    inset 0 0 0 1px rgb(255 235 190 / 0.25),
+    inset 0 0.22rem 0 rgb(255 255 255 / 0.18),
+    0 0.42rem 0 #071f24,
+    0 1rem 1.8rem rgb(0 0 0 / 0.5);
+}
+
+.mfg-pads {
+  max-width: 50rem;
+}
+
+.mfg-pad-btn {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-areas:
+    "dot name"
+    "dot symbol";
+  align-items: center;
+  justify-content: start;
+  text-align: left;
+  min-height: 3.75rem;
+  padding: 0.58rem 0.7rem;
+}
+
+.mfg-pad-dot {
+  grid-area: dot;
+  margin-right: 0.3rem;
+}
+
+.mfg-pad-name {
+  grid-area: name;
+  line-height: 1.05;
+}
+
+.mfg-pad-symbol {
+  grid-area: symbol;
+  color: #cdbb95;
+  font-size: 0.68rem;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.mfg-stats {
+  max-width: 50rem;
+  opacity: 0.82;
+}
+
+.mfg-stat {
+  background: rgb(9 10 12 / 0.48);
+}
+
+@media (max-width: 900px) {
+  .mfg-memory-hud {
+    grid-template-columns: 1fr;
+  }
+
+  .mfg-memory-title {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .mfg-memory-state {
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.35rem;
+    text-align: center;
+  }
+
+  .mfg-memory-state span {
+    text-align: center;
+  }
+
+  .mfg-memory-path {
+    justify-self: stretch;
+    text-align: center;
+  }
+
+  .mfg-memory-path-dots {
+    justify-content: center;
+  }
+
+  .mfg-stage {
+    min-height: clamp(20rem, 48vh, 30rem);
+  }
+}
+
+@media (max-width: 560px) {
+  .mfg-frame {
+    padding-inline: 0.7rem;
+  }
+
+  .mfg-topbar {
+    align-items: stretch;
+  }
+
+  .mfg-back,
+  .mfg-sound {
+    flex: 1;
+    justify-content: center;
+    font-size: 0.82rem;
+  }
+
+  .mfg-pads,
+  .mfg-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
 /* ============================================================
    PREMIUM GAME INTRO — shared "station briefing" (all games)
    Restyles the GameHowToPlay screen to the cozy library/workshop language:
@@ -12834,3 +13150,526 @@ button:disabled:focus-visible {
 }
 
 
+
+/* E8D/E8E — Circuito de Memória illustrated board layer.
+   The board artwork carries the premium shape language; transparent hitboxes keep
+   the original game logic and keyboard-accessible buttons intact. */
+.mfg-illustrated-stage {
+  flex: 0 0 auto;
+  aspect-ratio: 16 / 9;
+  min-height: unset;
+  width: min(100%, 82rem);
+  max-height: min(65vh, 50rem);
+  border-radius: clamp(1.25rem, 2.2vw, 2.1rem);
+  border: 1px solid rgb(226 174 88 / 0.32);
+  background: #070503;
+  box-shadow:
+    inset 0 0 0 1px rgb(255 238 194 / 0.08),
+    0 1.2rem 3rem rgb(0 0 0 / 0.48);
+}
+
+.mfg-illustrated-stage::before {
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  background:
+    radial-gradient(ellipse at 50% 48%, transparent 52%, rgb(5 3 2 / 0.38) 100%),
+    linear-gradient(180deg, rgb(255 221 150 / 0.05), transparent 26% 72%, rgb(0 0 0 / 0.22));
+}
+
+.mfg-board-image {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.mfg-board-hitboxes {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+}
+
+.mfg-board-pad-hitbox {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: clamp(5.25rem, 15.5vw, 13.5rem);
+  height: clamp(5.25rem, 15.5vw, 13.5rem);
+  min-width: 4.8rem;
+  min-height: 4.8rem;
+  transform: translate(-50%, -50%);
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  cursor: pointer;
+  transition:
+    box-shadow 0.18s ease,
+    border-color 0.18s ease,
+    transform 0.18s ease,
+    background-color 0.18s ease;
+}
+
+.mfg-board-pad-hitbox:disabled {
+  cursor: default;
+}
+
+.mfg-board-pad-hitbox:focus-visible {
+  outline: none;
+  border-color: #fff2b8;
+  background: color-mix(in srgb, var(--pad) 12%, transparent);
+  box-shadow:
+    0 0 0 0.28rem rgb(255 242 184 / 0.38),
+    0 0 2rem color-mix(in srgb, var(--pad) 46%, transparent);
+}
+
+.mfg-board-pad-hitbox.is-lit,
+.mfg-board-pad-hitbox.is-correct {
+  border-color: color-mix(in srgb, var(--pad) 72%, #fff3bf);
+  background: color-mix(in srgb, var(--pad) 10%, transparent);
+  box-shadow:
+    inset 0 0 2.4rem color-mix(in srgb, var(--pad) 18%, transparent),
+    0 0 0 0.18rem color-mix(in srgb, var(--pad) 56%, transparent),
+    0 0 2.3rem color-mix(in srgb, var(--pad) 64%, transparent);
+  transform: translate(-50%, -50%) scale(1.035);
+}
+
+.mfg-board-pad-hitbox.is-wrong {
+  border-color: #f6c177;
+  background: rgb(246 193 119 / 0.1);
+  box-shadow:
+    0 0 0 0.2rem rgb(246 193 119 / 0.36),
+    0 0 1.8rem rgb(246 193 119 / 0.42);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .mfg-board-image {
+    animation: mfg-board-breathe 9s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes mfg-board-breathe {
+  from {
+    transform: scale(1.002) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1.018) translate3d(0, -0.25%, 0);
+  }
+}
+
+@media (max-width: 900px) {
+  .mfg-illustrated-stage {
+    width: 100%;
+    max-height: none;
+  }
+
+  .mfg-board-pad-hitbox {
+    width: clamp(4.9rem, 22vw, 8.6rem);
+    height: clamp(4.9rem, 22vw, 8.6rem);
+  }
+}
+
+@media (max-width: 560px) {
+  .mfg-illustrated-stage {
+    border-radius: 1.15rem;
+  }
+
+  .mfg-board-pad-hitbox {
+    width: clamp(4.2rem, 24vw, 6.6rem);
+    height: clamp(4.2rem, 24vw, 6.6rem);
+  }
+}
+
+/* ============================================================
+   E8F — Circuito de Memória playable hero stage
+   Keeps the static premium board artwork as the stage, but integrates HUD,
+   hitboxes and support controls so it reads as a game screen, not an image card.
+   ============================================================ */
+.mfg-shell {
+  min-height: 100svh;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.mfg-frame-hero {
+  max-width: none;
+  min-height: 100svh;
+  justify-content: center;
+  gap: clamp(0.4rem, 1vh, 0.7rem);
+  padding: clamp(0.55rem, 1.4vw, 1rem) clamp(0.55rem, 1.8vw, 1.15rem)
+    calc(clamp(0.75rem, 1.8vw, 1.25rem) + env(safe-area-inset-bottom, 0px));
+}
+
+.mfg-frame-hero .mfg-topbar {
+  position: absolute;
+  top: clamp(0.75rem, 1.7vw, 1.35rem);
+  left: clamp(0.75rem, 2vw, 1.8rem);
+  right: clamp(0.75rem, 2vw, 1.8rem);
+  z-index: 12;
+  pointer-events: none;
+}
+
+.mfg-frame-hero .mfg-back,
+.mfg-frame-hero .mfg-sound {
+  pointer-events: auto;
+  background: rgb(6 7 9 / 0.62);
+  border-color: rgb(235 190 102 / 0.5);
+  box-shadow:
+    inset 0 0 0 1px rgb(255 241 198 / 0.08),
+    0 0.75rem 1.55rem rgb(0 0 0 / 0.42);
+  backdrop-filter: blur(14px);
+}
+
+.mfg-frame-hero .mfg-memory-hud {
+  position: absolute;
+  top: clamp(4.35rem, 8vh, 6rem);
+  left: clamp(1rem, 4vw, 5.5rem);
+  right: clamp(1rem, 4vw, 5.5rem);
+  z-index: 11;
+  pointer-events: none;
+}
+
+.mfg-frame-hero .mfg-memory-title,
+.mfg-frame-hero .mfg-memory-state,
+.mfg-frame-hero .mfg-memory-path {
+  pointer-events: auto;
+}
+
+.mfg-frame-hero .mfg-memory-title h1 {
+  font-size: clamp(2rem, 4.1vw, 4.2rem);
+}
+
+.mfg-frame-hero .mfg-memory-state {
+  min-height: clamp(3.2rem, 6vh, 4.4rem);
+  background:
+    linear-gradient(180deg, rgb(255 243 202 / 0.08), transparent 42%),
+    linear-gradient(180deg, rgb(8 9 12 / 0.86), rgb(5 6 8 / 0.9));
+}
+
+.mfg-frame-hero .mfg-memory-path {
+  background: rgb(5 6 8 / 0.64);
+}
+
+.mfg-frame-hero .mfg-illustrated-stage {
+  width: min(100%, 108rem);
+  aspect-ratio: 16 / 9;
+  min-height: 0;
+  max-height: none;
+  border: 0;
+  border-radius: clamp(0.65rem, 1.4vw, 1.6rem);
+  background: transparent;
+  box-shadow: none;
+}
+
+.mfg-frame-hero .mfg-illustrated-stage::before {
+  z-index: 2;
+  background:
+    radial-gradient(ellipse at 50% 48%, transparent 58%, rgb(5 3 2 / 0.26) 100%),
+    linear-gradient(180deg, rgb(0 0 0 / 0.18), transparent 22% 70%, rgb(0 0 0 / 0.28));
+}
+
+.mfg-frame-hero .mfg-board-image {
+  object-fit: contain;
+  object-position: center;
+  animation: none;
+  transform: none;
+}
+
+.mfg-frame-hero .mfg-stage-overlay {
+  z-index: 10;
+  padding-bottom: clamp(1.1rem, 6vh, 3.6rem);
+}
+
+.mfg-frame-hero .mfg-stage-hint {
+  max-width: min(30rem, calc(100vw - 2rem));
+  color: #fff3cf;
+  background: rgb(6 7 9 / 0.56);
+  border-color: rgb(246 193 119 / 0.34);
+}
+
+.mfg-frame-hero .mfg-cta {
+  min-height: clamp(3.4rem, 6vh, 4.4rem);
+  min-width: min(27rem, calc(100vw - 2rem));
+  border-radius: 1.45rem;
+}
+
+.mfg-frame-hero .mfg-board-pad-hitbox {
+  z-index: 4;
+  overflow: visible;
+}
+
+.mfg-frame-hero .mfg-board-pad-hitbox::before,
+.mfg-frame-hero .mfg-board-pad-hitbox::after {
+  content: "";
+  position: absolute;
+  inset: 10%;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.mfg-frame-hero .mfg-board-pad-hitbox::before {
+  border: 2px solid color-mix(in srgb, var(--pad) 48%, #fff2bf);
+  transform: scale(0.92);
+}
+
+.mfg-frame-hero .mfg-board-pad-hitbox::after {
+  inset: -8%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--pad) 24%, transparent) 0 34%, transparent 70%);
+  filter: blur(0.1rem);
+  transform: scale(0.88);
+}
+
+.mfg-frame-hero .mfg-board-pad-hitbox:not(:disabled)::before {
+  opacity: 0.42;
+  box-shadow: 0 0 1.15rem color-mix(in srgb, var(--pad) 34%, transparent);
+}
+
+.mfg-frame-hero .mfg-board-pad-hitbox:not(:disabled):hover::before,
+.mfg-frame-hero .mfg-board-pad-hitbox:focus-visible::before {
+  opacity: 0.74;
+  transform: scale(1);
+}
+
+.mfg-frame-hero .mfg-board-pad-hitbox.is-lit::before,
+.mfg-frame-hero .mfg-board-pad-hitbox.is-correct::before {
+  opacity: 0.95;
+  transform: scale(1.04);
+  box-shadow:
+    0 0 0 0.18rem color-mix(in srgb, var(--pad) 46%, transparent),
+    0 0 2.8rem color-mix(in srgb, var(--pad) 72%, transparent);
+}
+
+.mfg-frame-hero .mfg-board-pad-hitbox.is-lit::after,
+.mfg-frame-hero .mfg-board-pad-hitbox.is-correct::after {
+  opacity: 0.95;
+  transform: scale(1.08);
+}
+
+.mfg-frame-hero .mfg-board-pad-hitbox.is-wrong::before {
+  opacity: 0.94;
+  border-color: #f6c177;
+  box-shadow:
+    0 0 0 0.22rem rgb(246 193 119 / 0.3),
+    0 0 2rem rgb(246 193 119 / 0.46);
+}
+
+.mfg-frame-hero .mfg-pads {
+  position: relative;
+  z-index: 9;
+  max-width: min(58rem, calc(100vw - 1.4rem));
+  margin-top: clamp(-3rem, -4vh, -1.15rem);
+  padding: 0.45rem;
+  border: 1px solid rgb(226 174 88 / 0.24);
+  border-radius: 1.1rem;
+  background: rgb(7 7 8 / 0.52);
+  box-shadow:
+    inset 0 0 0 1px rgb(255 236 180 / 0.06),
+    0 0.85rem 1.8rem rgb(0 0 0 / 0.34);
+  backdrop-filter: blur(12px);
+}
+
+.mfg-frame-hero .mfg-pad-btn {
+  min-height: 3.05rem;
+  padding: 0.42rem 0.62rem;
+  border-color: rgb(226 174 88 / 0.2);
+  background: rgb(8 9 11 / 0.52);
+  box-shadow: inset 0 0 0 1px rgb(255 236 180 / 0.05);
+}
+
+.mfg-frame-hero .mfg-pad-symbol {
+  font-size: 0.62rem;
+}
+
+.mfg-frame-hero .mfg-actions {
+  position: relative;
+  z-index: 8;
+  margin-top: 0.15rem;
+}
+
+.mfg-frame-hero .mfg-btn {
+  min-height: 2.75rem;
+  background: rgb(7 7 8 / 0.5);
+  backdrop-filter: blur(10px);
+}
+
+.mfg-frame-hero .mfg-stats {
+  position: relative;
+  z-index: 7;
+  max-width: min(48rem, calc(100vw - 1.4rem));
+  opacity: 0.72;
+}
+
+.mfg-frame-hero .mfg-stat {
+  padding: 0.36rem 0.42rem;
+  background: rgb(7 7 8 / 0.36);
+}
+
+.mfg-frame-hero .mfg-stat em {
+  font-size: 0.62rem;
+}
+
+.mfg-frame-hero .mfg-stat strong {
+  font-size: clamp(0.9rem, 1.1vw, 1rem);
+}
+
+.mfg-frame-hero .mfg-footnote {
+  position: relative;
+  z-index: 7;
+  max-width: min(42rem, calc(100vw - 1.4rem));
+  opacity: 0.66;
+  font-size: 0.76rem;
+}
+
+@media (max-width: 900px) {
+  .mfg-frame-hero {
+    justify-content: flex-start;
+    gap: 0.55rem;
+    min-height: 100svh;
+    padding-top: 0.65rem;
+  }
+
+  .mfg-frame-hero .mfg-topbar,
+  .mfg-frame-hero .mfg-memory-hud {
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    width: 100%;
+    pointer-events: auto;
+  }
+
+  .mfg-frame-hero .mfg-memory-hud {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .mfg-frame-hero .mfg-memory-title {
+    justify-content: center;
+  }
+
+  .mfg-frame-hero .mfg-memory-title h1 {
+    font-size: clamp(1.65rem, 7vw, 2.35rem);
+  }
+
+  .mfg-frame-hero .mfg-memory-title p {
+    font-size: 0.98rem;
+  }
+
+  .mfg-frame-hero .mfg-memory-state {
+    min-height: 3.2rem;
+    padding: 0.55rem 0.75rem;
+  }
+
+  .mfg-frame-hero .mfg-memory-state strong {
+    font-size: clamp(1.05rem, 5vw, 1.45rem);
+  }
+
+  .mfg-frame-hero .mfg-memory-state span {
+    max-width: 100%;
+    font-size: 0.78rem;
+  }
+
+  .mfg-frame-hero .mfg-memory-path {
+    min-width: 0;
+    padding: 0.48rem 0.65rem;
+  }
+
+  .mfg-frame-hero .mfg-illustrated-stage {
+    width: min(100%, 46rem);
+    border-radius: 0.95rem;
+  }
+
+  .mfg-frame-hero .mfg-pads {
+    margin-top: -0.35rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .mfg-frame-hero {
+    padding-inline: 0.5rem;
+  }
+
+  .mfg-frame-hero .mfg-topbar {
+    gap: 0.45rem;
+  }
+
+  .mfg-frame-hero .mfg-back,
+  .mfg-frame-hero .mfg-sound {
+    min-height: 2.75rem;
+    padding-inline: 0.75rem;
+  }
+
+  .mfg-frame-hero .mfg-sound span {
+    display: none;
+  }
+
+  .mfg-frame-hero .mfg-memory-glyph {
+    width: 2.35rem;
+    height: 2.35rem;
+    border-radius: 0.75rem;
+  }
+
+  .mfg-frame-hero .mfg-memory-state span {
+    display: none;
+  }
+
+  .mfg-frame-hero .mfg-memory-path > span,
+  .mfg-frame-hero .mfg-memory-path small {
+    display: none;
+  }
+
+  .mfg-frame-hero .mfg-memory-path {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.7rem;
+  }
+
+  .mfg-frame-hero .mfg-memory-path strong {
+    margin: 0;
+  }
+
+  .mfg-frame-hero .mfg-memory-path-dots {
+    justify-content: center;
+  }
+
+  .mfg-frame-hero .mfg-board-pad-hitbox {
+    width: clamp(4rem, 25vw, 6.1rem);
+    height: clamp(4rem, 25vw, 6.1rem);
+  }
+
+  .mfg-frame-hero .mfg-pads,
+  .mfg-frame-hero .mfg-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mfg-frame-hero .mfg-pad-btn {
+    min-height: 3rem;
+  }
+
+  .mfg-frame-hero .mfg-actions {
+    gap: 0.45rem;
+  }
+
+  .mfg-frame-hero .mfg-btn {
+    flex: 1 1 10rem;
+    justify-content: center;
+    padding-inline: 0.85rem;
+    font-size: 0.82rem;
+  }
+
+  .mfg-frame-hero .mfg-footnote {
+    display: none;
+  }
+}
