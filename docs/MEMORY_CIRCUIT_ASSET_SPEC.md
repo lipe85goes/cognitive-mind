@@ -15,7 +15,7 @@ The current full-board image is temporary and should only remain as a bridge unt
 | Asset path | Function | Format | Priority | Integration note |
 | --- | --- | --- | --- | --- |
 | `public/illustrations/memory-circuit/memory-room-bg.webp` | Atmospheric background behind the board: books, candle, plants, soft room lighting. | WebP image | High | Should render as the stage background layer. Must not contain interactive pads or stateful UI. |
-| `public/assets/memory-circuit/memory-board.png` | Main circular board/altar surface, without active pad effects baked into gameplay state. | PNG image with transparency when possible | High | Should sit above the room background and below pads/core/path overlays. |
+| `public/assets/memory-circuit/memory-board-floating.png` | Main floating circular board/altar surface, without active pad effects baked into gameplay state. | PNG image with transparency | High | Should sit above the room background and below pads/core/path overlays. |
 | `public/assets/memory-circuit/core-crystal.png` | Central crystal/core visual. | PNG image with transparency | High | Can receive glow/active overlays from React/CSS without changing game logic. |
 | `public/assets/memory-circuit/pad-flame.png` | Red/flame memory pad visual. | PNG image with transparency | High | Button/hitbox must remain separate and accessible. Visual state should be controlled by props from the game hook. |
 | `public/assets/memory-circuit/pad-wave.png` | Blue/wave memory pad visual. | PNG image with transparency | High | Same integration contract as other pads. |
@@ -48,7 +48,7 @@ This file is useful for visual direction validation, but it should not become th
 ## Suggested Future Implementation Order
 
 1. Add `memory-room-bg.webp` as the background layer.
-2. Add `memory-board.png` as the board layer.
+2. Add `memory-board-floating.png` as the board layer.
 3. Add the four pad PNGs with existing hitboxes from `MemoryCircuitPadLayer`.
 4. Add `core-crystal.png` and connect it to existing phase/feedback state.
 5. Add optional path/light overlays using CSS or SVG, driven by existing game state.
