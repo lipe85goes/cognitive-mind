@@ -1,4 +1,4 @@
-# Rota Estrategica board asset contract
+﻿# Rota Estrategica board asset contract
 
 This folder is the asset drop point for the Babylon renderer used by Rota
 Estrategica.
@@ -39,6 +39,11 @@ That command writes both:
 - `board-preview.png` - cinematic 3/4 preview with the full board visible.
 - `board-preview-top.png` - top/near-top preview for checking all 49 tiles and
   the full outer frame.
+
+Committed preview PNGs are archived outside `public/` at
+`docs/archive/route-previews/` (CLEAN-05). Runtime loads only the GLB assets;
+running a `--preview` generator can recreate previews under
+`public/models/route/` when needed.
 
 ## Coordinate and orientation contract
 
@@ -332,7 +337,7 @@ V05 adds a small self-contained prop pack for the Rota board:
 - `trap.glb` - red crystal/spike danger marker.
 - `shield.glb` - blue protection pickup with a glowing shield emblem.
 
-Each prop also has a 3/4 preview and a top/near-top preview:
+Each prop generator can also write a 3/4 preview and a top/near-top preview. Committed copies live in `docs/archive/route-previews/`, not in `public/`:
 
 - `portal-preview.png` / `portal-preview-top.png`
 - `light-preview.png` / `light-preview-top.png`
@@ -380,3 +385,6 @@ procedural fallback so the spent/triggered state stays visually distinct without
 mutating shared GLB materials.
 
 Do not encode gameplay state into these GLBs.
+
+
+

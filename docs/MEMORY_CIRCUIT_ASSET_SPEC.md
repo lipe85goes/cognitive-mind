@@ -1,4 +1,4 @@
-# Memory Circuit Asset Spec (RESET-CIRCUIT-MAX)
+﻿# Memory Circuit Asset Spec (RESET-CIRCUIT-MAX)
 
 A lógica ativa do jogo permanece em `src/games/color-sequence/useColorSequenceGame.ts`. Não altere geração de sequência, timing, limite de tentativas, scoring, progressão, reward ou localStorage ao integrar assets.
 
@@ -32,13 +32,23 @@ O script imprime as coordenadas projetadas dos hitboxes (% da imagem) — cole-a
 | `public/assets/memory-circuit/overlay-leaf-active.png` | Estado aceso do pad folha (esquerda) + trilha. |
 | `public/assets/memory-circuit/overlay-sun-active.png` | Estado aceso do pad sol (baixo) + trilha. |
 | `public/assets/memory-circuit/overlay-core-pulse.png` | Pulso do núcleo (cristal + halo contido). |
-| `public/assets/memory-circuit/memory-kit-review.png` | Composição de revisão (board + chama acesa + núcleo) — só documentação. |
 
 Mapeamento congelado: **flame = topo, wave = direita, leaf = esquerda, sun = baixo.**
 
-## Legado (mantido no repositório, fora do caminho ativo)
+## Arquivo visual fora de `public/`
 
-`memory-board-floating.png`, `core-crystal.png`, `pad-*.png` e `memory-circuit-board-v1.png` não comandam mais a tela ativa. Não os use em código novo.
+Os assets abaixo são referência histórica/revisão e não comandam mais a tela ativa. Eles foram removidos de `public/` na CLEAN-05 para não serem servidos pelo app:
+
+- `docs/archive/memory-circuit/memory-kit-review.png`
+- `docs/archive/memory-circuit/memory-circuit-board-v1.png`
+- `docs/archive/memory-circuit/legacy-separated-assets/memory-board-floating.png`
+- `docs/archive/memory-circuit/legacy-separated-assets/core-crystal.png`
+- `docs/archive/memory-circuit/legacy-separated-assets/pad-flame.png`
+- `docs/archive/memory-circuit/legacy-separated-assets/pad-wave.png`
+- `docs/archive/memory-circuit/legacy-separated-assets/pad-leaf.png`
+- `docs/archive/memory-circuit/legacy-separated-assets/pad-sun.png`
+
+Não use esses arquivos em código novo.
 
 ## Regras de integração
 
@@ -49,3 +59,4 @@ Mapeamento congelado: **flame = topo, wave = direita, leaf = esquerda, sun = bai
 5. Estados visuais do pad: repouso (board mestre), aceso (`overlay is-on`), toque correto (mesmo overlay, eco curto), engano (`is-wrong` = tinta âmbar suave via CSS, sem vermelho duro).
 6. Texto, HUD, pontuação e progresso ficam em React — nunca dentro de imagem.
 7. Tudo deve continuar calmo e legível: "Pensar em paz".
+
