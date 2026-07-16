@@ -1,10 +1,6 @@
 import type { ComponentType } from "react";
 import type { GameComponentProps, GameId } from "@/types/game";
-// MemoryCircuit3DGame is the active premium 3D Circuito de Memória. The original
-// ColorSequenceGame (same logic) is kept on disk as a fallback reference.
 import { MemoryCircuit3DGame } from "@/games/color-sequence/MemoryCircuit3DGame";
-// RouteStrategyGame is the active premium Rota Estratégica. The original
-// EscapeMazeGame (same logic) is kept on disk as a fallback reference.
 import { RouteStrategyGame } from "@/games/escape-maze/RouteStrategyGame";
 import { NumberTrailGame } from "@/games/number-trail/NumberTrailGame";
 import { SeedGardenGame } from "@/games/seed-garden/SeedGardenGame";
