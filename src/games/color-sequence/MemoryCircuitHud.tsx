@@ -1,5 +1,9 @@
 import type { CSSProperties } from "react";
-import { MEMORY_PAD_LAYOUTS } from "@/games/color-sequence/memoryCircuitLayout";
+import {
+  formatMemorySignalCount,
+  MEMORY_PAD_LAYOUTS,
+  normalizeMemorySignalText,
+} from "@/games/color-sequence/memoryCircuitLayout";
 import type { StatusVariant } from "@/games/color-sequence/useColorSequenceGame";
 
 interface MemoryCircuitHudProps {
@@ -17,6 +21,8 @@ export function MemoryCircuitHud({
   statusMessage,
   statusVariant,
 }: MemoryCircuitHudProps) {
+  const calmStatusMessage = normalizeMemorySignalText(statusMessage);
+
   return (
     <section className="mfg-memory-hud" aria-label="Circuito de Memória">
       <div className="mfg-memory-title">
@@ -35,7 +41,7 @@ export function MemoryCircuitHud({
         aria-live="polite"
       >
         <strong>{stateLabel}</strong>
-        <span>{statusMessage}</span>
+        <span>{calmStatusMessage}</span>
       </div>
 
       <div className="mfg-memory-path" aria-label="Percurso do circuito">
@@ -51,7 +57,7 @@ export function MemoryCircuitHud({
         </div>
         <small>
           {sequenceLength > 0
-            ? `${sequenceLength} sinais`
+            ? formatMemorySignalCount(sequenceLength)
             : "Pronto para ativar"}
         </small>
       </div>

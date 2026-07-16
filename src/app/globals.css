@@ -14081,3 +14081,1867 @@ button:disabled:focus-visible {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ============================================================
+   E8I - Circuito de Memoria modular asset stage
+   Active path: room background, floating board, dynamic trails, core image,
+   pad sprites and semantic hitboxes. The old full mockup image is no longer
+   the board source for gameplay.
+   ============================================================ */
+.mfg-shell .mfg-atmosphere {
+  background-color: #0b0704;
+  background-image:
+    radial-gradient(54% 58% at 50% 48%, rgb(255 202 128 / 0.18), transparent 70%),
+    url("/illustrations/memory-circuit/memory-room-bg.webp");
+  background-size: cover;
+  background-position: center;
+  filter: saturate(1.04) brightness(0.72);
+}
+
+.mfg-frame-hero .mfg-modular-stage {
+  position: relative;
+  width: min(100%, 112rem);
+  aspect-ratio: 16 / 9;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: clamp(0.7rem, 1.4vw, 1.7rem);
+  background: #090604;
+  box-shadow:
+    inset 0 0 0 1px rgb(255 236 178 / 0.08),
+    0 1.2rem 3rem rgb(0 0 0 / 0.36);
+}
+
+.mfg-frame-hero .mfg-modular-stage::before {
+  z-index: 8;
+  background:
+    radial-gradient(ellipse at 50% 50%, transparent 45%, rgb(4 2 1 / 0.36) 100%),
+    linear-gradient(180deg, rgb(0 0 0 / 0.1), transparent 24% 68%, rgb(0 0 0 / 0.24));
+}
+
+.mfg-memory-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  user-select: none;
+  -webkit-user-drag: none;
+  filter: saturate(1.08) contrast(1.02) brightness(0.9);
+}
+
+.mfg-memory-stage-shade {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 50% 61%, rgb(255 207 124 / 0.2), transparent 0 32%, transparent 52%),
+    linear-gradient(180deg, rgb(6 4 3 / 0.34), transparent 25% 65%, rgb(5 3 2 / 0.34));
+}
+
+.mfg-floating-board {
+  position: absolute;
+  left: 50%;
+  top: 57%;
+  z-index: 3;
+  width: min(82vw, 68rem);
+  aspect-ratio: 1024 / 792;
+  transform: translate(-50%, -50%);
+  isolation: isolate;
+}
+
+.mfg-floating-board-shadow {
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  bottom: 4%;
+  z-index: 0;
+  height: 16%;
+  border-radius: 999px;
+  background: radial-gradient(ellipse, rgb(0 0 0 / 0.54), transparent 70%);
+  filter: blur(1.1rem);
+  transform: translateY(22%);
+  pointer-events: none;
+}
+
+.mfg-floating-board .mfg-board-image {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  user-select: none;
+  -webkit-user-drag: none;
+  filter:
+    drop-shadow(0 1.1rem 1.1rem rgb(0 0 0 / 0.38))
+    drop-shadow(0 0 1.5rem rgb(60 210 220 / 0.08));
+}
+
+.mfg-circuit-trails {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.mfg-circuit-trail {
+  stroke: rgb(247 215 143 / 0.42);
+  stroke-width: 0.68rem;
+  stroke-linecap: round;
+  stroke-dasharray: 0.15 2.1;
+  filter: url("#memory-trail-glow");
+  opacity: 0.64;
+  transition:
+    opacity 0.2s ease,
+    stroke 0.2s ease,
+    stroke-width 0.2s ease;
+}
+
+.mfg-circuit-trail.is-lit,
+.mfg-circuit-trail.is-correct {
+  stroke: color-mix(in srgb, var(--pad) 70%, #fff3c7);
+  stroke-width: 1rem;
+  opacity: 0.96;
+}
+
+.mfg-circuit-trail.is-wrong {
+  stroke: #f6c177;
+  stroke-width: 0.9rem;
+  opacity: 0.92;
+}
+
+.mfg-modular-stage .mfg-sprite-core {
+  left: 50%;
+  top: 50%;
+  z-index: 5;
+  width: clamp(4rem, 14%, 8.5rem);
+  opacity: 0.94;
+  filter:
+    drop-shadow(0 0 1.2rem rgb(111 225 255 / 0.42))
+    drop-shadow(0 0 1.8rem rgb(255 218 129 / 0.3));
+}
+
+.mfg-modular-stage .mfg-sprite-core img {
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.mfg-modular-stage[data-phase="showing"] .mfg-sprite-core,
+.mfg-modular-stage[data-phase="round-complete"] .mfg-sprite-core {
+  filter:
+    drop-shadow(0 0 1rem rgb(138 232 255 / 0.7))
+    drop-shadow(0 0 2.1rem rgb(255 220 139 / 0.62));
+  transform: translate(-50%, -50%) scale(1.04);
+}
+
+.mfg-modular-stage .mfg-board-hitboxes {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+}
+
+.mfg-modular-stage .mfg-board-pad-hitbox {
+  left: var(--x);
+  top: var(--y);
+  width: var(--pad-size);
+  height: auto;
+  min-width: clamp(4.6rem, 12vw, 8.2rem);
+  min-height: 0;
+  aspect-ratio: 1;
+  border-width: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--pad);
+  transform: translate(-50%, -50%);
+}
+
+.mfg-modular-stage .mfg-board-pad-hitbox::before {
+  inset: 14%;
+  border-width: 2px;
+  border-color: transparent;
+}
+
+.mfg-modular-stage .mfg-board-pad-hitbox::after {
+  inset: 2%;
+}
+
+.mfg-modular-stage .mfg-board-pad-hitbox:focus-visible {
+  background: transparent;
+  box-shadow:
+    0 0 0 0.25rem rgb(255 242 184 / 0.35),
+    0 0 2.2rem color-mix(in srgb, var(--pad) 46%, transparent);
+}
+
+.mfg-modular-stage .mfg-board-pad-hitbox.is-lit,
+.mfg-modular-stage .mfg-board-pad-hitbox.is-correct,
+.mfg-modular-stage .mfg-board-pad-hitbox.is-wrong {
+  background: transparent;
+  transform: translate(-50%, -50%) scale(1.035);
+}
+
+.mfg-modular-stage .mfg-pad-sprite {
+  inset: -7%;
+  opacity: 0.96;
+  transform: scale(0.98);
+}
+
+.mfg-modular-stage .mfg-board-pad-hitbox .mfg-pad-sprite,
+.mfg-modular-stage .mfg-board-pad-hitbox:not(:disabled) .mfg-pad-sprite {
+  opacity: 0.96;
+  transform: scale(0.98);
+}
+
+.mfg-pad-art {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+  filter:
+    drop-shadow(0 0.8rem 0.8rem rgb(0 0 0 / 0.34))
+    drop-shadow(0 0 0.55rem color-mix(in srgb, var(--pad) 22%, transparent));
+  transition:
+    filter 0.18s ease,
+    transform 0.18s ease,
+    opacity 0.18s ease;
+}
+
+.mfg-modular-stage .mfg-pad-sprite-aura {
+  inset: 8%;
+  z-index: 1;
+  opacity: 0.38;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--pad) 32%, #fff1bc) 0 18%,
+    color-mix(in srgb, var(--pad) 18%, transparent) 46%,
+    transparent 72%
+  );
+  filter: blur(0.35rem);
+}
+
+.mfg-modular-stage .mfg-pad-sprite-touch {
+  inset: 18%;
+  z-index: 3;
+  border-width: 2px;
+}
+
+.mfg-modular-stage .mfg-board-pad-hitbox:not(:disabled):hover .mfg-pad-art,
+.mfg-modular-stage .mfg-board-pad-hitbox:focus-visible .mfg-pad-art {
+  filter:
+    drop-shadow(0 0.9rem 0.85rem rgb(0 0 0 / 0.34))
+    drop-shadow(0 0 1rem color-mix(in srgb, var(--pad) 46%, transparent));
+  transform: translateY(-1.5%) scale(1.015);
+}
+
+.mfg-modular-stage .mfg-board-pad-hitbox.is-lit .mfg-pad-art,
+.mfg-modular-stage .mfg-board-pad-hitbox.is-correct .mfg-pad-art {
+  filter:
+    drop-shadow(0 0.9rem 0.85rem rgb(0 0 0 / 0.34))
+    drop-shadow(0 0 0.85rem #fff0bc)
+    drop-shadow(0 0 1.8rem color-mix(in srgb, var(--pad) 72%, transparent));
+  transform: translateY(-2.5%) scale(1.05);
+}
+
+.mfg-modular-stage .mfg-board-pad-hitbox.is-wrong .mfg-pad-art {
+  filter:
+    drop-shadow(0 0.8rem 0.85rem rgb(0 0 0 / 0.34))
+    drop-shadow(0 0 1.15rem rgb(246 193 119 / 0.66));
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .mfg-floating-board {
+    animation: mfg-floating-board-breathe 7.5s ease-in-out infinite alternate;
+  }
+
+  .mfg-modular-stage .mfg-board-pad-hitbox.is-lit .mfg-pad-art,
+  .mfg-modular-stage .mfg-board-pad-hitbox.is-correct .mfg-pad-art {
+    animation: mfg-pad-art-glow 0.9s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes mfg-floating-board-breathe {
+  from {
+    transform: translate(-50%, -50%) translateY(0) scale(1);
+  }
+  to {
+    transform: translate(-50%, -50%) translateY(-0.6%) scale(1.006);
+  }
+}
+
+@keyframes mfg-pad-art-glow {
+  from {
+    opacity: 0.96;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 900px) {
+  .mfg-floating-board {
+    top: 57%;
+    width: min(102vw, 50rem);
+  }
+
+  .mfg-modular-stage .mfg-sprite-core {
+    width: clamp(3rem, 15%, 5.4rem);
+  }
+}
+
+@media (max-width: 560px) {
+  .mfg-frame-hero .mfg-modular-stage {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    min-height: clamp(23rem, 64svh, 34rem);
+  }
+
+  .mfg-memory-bg {
+    object-position: center;
+  }
+
+  .mfg-floating-board {
+    top: 56%;
+    width: min(112vw, 31rem);
+  }
+
+  .mfg-modular-stage .mfg-board-pad-hitbox {
+    min-width: clamp(4rem, 21vw, 5.8rem);
+  }
+
+  .mfg-modular-stage .mfg-sprite-core {
+    width: clamp(2.6rem, 15%, 4rem);
+  }
+}
+
+/* ============================================================
+   E8J - Circuito de Memoria stage composition
+   Keeps the modular assets but makes the screen behave like a single game
+   stage instead of a long page with stacked controls.
+   ============================================================ */
+.mfg-shell {
+  min-height: 100svh;
+  overflow: hidden;
+}
+
+.mfg-frame-hero {
+  position: relative;
+  display: block;
+  height: 100svh;
+  min-height: 100svh;
+  padding: 0;
+  overflow: hidden;
+}
+
+.mfg-frame-hero .mfg-topbar {
+  top: clamp(0.75rem, 1.5vw, 1.15rem);
+  left: clamp(0.75rem, 1.8vw, 1.6rem);
+  right: clamp(0.75rem, 1.8vw, 1.6rem);
+}
+
+.mfg-frame-hero .mfg-back,
+.mfg-frame-hero .mfg-sound {
+  min-height: 3rem;
+  border-radius: 0.95rem;
+  background: rgb(6 7 9 / 0.68);
+}
+
+.mfg-frame-hero .mfg-memory-hud {
+  top: clamp(4.7rem, 8.3vh, 6.1rem);
+  left: clamp(1rem, 3.8vw, 4.5rem);
+  right: clamp(1rem, 3.8vw, 4.5rem);
+  grid-template-columns: minmax(11rem, 0.62fr) minmax(18rem, 1.2fr) minmax(10rem, 0.54fr);
+  align-items: start;
+}
+
+.mfg-frame-hero .mfg-memory-title {
+  align-items: flex-start;
+}
+
+.mfg-frame-hero .mfg-memory-title h1 {
+  font-size: clamp(1.9rem, 3.55vw, 3.7rem);
+}
+
+.mfg-frame-hero .mfg-memory-title p {
+  margin-top: 0.12rem;
+}
+
+.mfg-frame-hero .mfg-memory-state {
+  min-height: clamp(3.15rem, 5.8vh, 4rem);
+  padding: 0.55rem clamp(0.9rem, 1.6vw, 1.25rem);
+  border-radius: 1.2rem;
+}
+
+.mfg-frame-hero .mfg-memory-state strong {
+  font-size: clamp(1.25rem, 2vw, 1.85rem);
+}
+
+.mfg-frame-hero .mfg-memory-state span {
+  max-width: 15rem;
+  font-size: clamp(0.78rem, 0.92vw, 0.92rem);
+}
+
+.mfg-frame-hero .mfg-memory-path {
+  min-width: 0;
+  padding: 0.62rem 0.75rem;
+  border-radius: 1rem;
+  background: rgb(5 6 8 / 0.58);
+}
+
+.mfg-frame-hero .mfg-modular-stage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  border-radius: 0;
+  border: 0;
+  box-shadow: none;
+}
+
+.mfg-frame-hero .mfg-modular-stage::before {
+  background:
+    radial-gradient(ellipse at 50% 51%, transparent 36%, rgb(4 2 1 / 0.26) 73%, rgb(4 2 1 / 0.52) 100%),
+    linear-gradient(180deg, rgb(0 0 0 / 0.16), transparent 22% 68%, rgb(0 0 0 / 0.34));
+}
+
+.mfg-memory-stage-shade {
+  background:
+    radial-gradient(ellipse at 50% 58%, rgb(255 207 124 / 0.16), transparent 0 27%, transparent 50%),
+    linear-gradient(180deg, rgb(6 4 3 / 0.32), transparent 25% 63%, rgb(5 3 2 / 0.5));
+}
+
+.mfg-floating-board {
+  top: 55%;
+  width: min(72vw, 56rem);
+}
+
+.mfg-floating-board-shadow {
+  left: 16%;
+  right: 16%;
+  bottom: 2%;
+  height: 13%;
+  background: radial-gradient(ellipse, rgb(0 0 0 / 0.64), transparent 72%);
+  filter: blur(1.25rem);
+}
+
+.mfg-floating-board .mfg-board-image {
+  filter:
+    drop-shadow(0 1.25rem 1rem rgb(0 0 0 / 0.42))
+    drop-shadow(0 0 1.2rem rgb(60 210 220 / 0.08));
+}
+
+.mfg-circuit-trail {
+  stroke: rgb(247 215 143 / 0.34);
+  stroke-width: 0.48rem;
+  stroke-dasharray: 0.1 1.9;
+  opacity: 0.5;
+}
+
+.mfg-circuit-trail.is-lit,
+.mfg-circuit-trail.is-correct {
+  stroke-width: 0.74rem;
+  opacity: 0.9;
+}
+
+.mfg-circuit-trail.is-wrong {
+  stroke-width: 0.62rem;
+  opacity: 0.78;
+}
+
+.mfg-modular-stage .mfg-sprite-core {
+  width: clamp(4.5rem, 16%, 8.25rem);
+}
+
+.mfg-modular-stage .mfg-board-pad-hitbox {
+  min-width: clamp(4.4rem, 10vw, 7.2rem);
+}
+
+.mfg-modular-stage .mfg-pad-sprite {
+  inset: -5%;
+}
+
+.mfg-pad-art {
+  filter:
+    drop-shadow(0 0.75rem 0.75rem rgb(0 0 0 / 0.34))
+    drop-shadow(0 0 0.36rem color-mix(in srgb, var(--pad) 18%, transparent));
+}
+
+.mfg-modular-stage .mfg-pad-sprite-aura {
+  opacity: 0.24;
+  filter: blur(0.3rem);
+}
+
+.mfg-modular-stage .mfg-board-pad-hitbox.is-lit .mfg-pad-art,
+.mfg-modular-stage .mfg-board-pad-hitbox.is-correct .mfg-pad-art {
+  filter:
+    drop-shadow(0 0.75rem 0.75rem rgb(0 0 0 / 0.34))
+    drop-shadow(0 0 0.65rem #fff0bc)
+    drop-shadow(0 0 1.25rem color-mix(in srgb, var(--pad) 58%, transparent));
+  transform: translateY(-1.4%) scale(1.035);
+}
+
+.mfg-modular-stage .mfg-board-pad-hitbox.is-wrong .mfg-pad-art {
+  filter:
+    drop-shadow(0 0.75rem 0.75rem rgb(0 0 0 / 0.34))
+    drop-shadow(0 0 0.9rem rgb(246 193 119 / 0.48));
+}
+
+.mfg-frame-hero .mfg-stage-overlay {
+  z-index: 13;
+  justify-content: flex-end;
+  padding-bottom: clamp(7.5rem, 15vh, 10.5rem);
+}
+
+.mfg-support-dock {
+  position: absolute;
+  left: 50%;
+  bottom: max(0.55rem, env(safe-area-inset-bottom, 0px));
+  z-index: 14;
+  display: grid;
+  grid-template-columns: minmax(18rem, 1.35fr) minmax(12rem, 0.8fr);
+  grid-template-areas:
+    "pads stats"
+    "actions actions";
+  align-items: center;
+  gap: 0.45rem 0.65rem;
+  width: min(58rem, calc(100vw - 2rem));
+  padding: 0.48rem;
+  border: 1px solid rgb(226 174 88 / 0.24);
+  border-radius: 1.15rem;
+  background:
+    linear-gradient(180deg, rgb(255 239 190 / 0.07), transparent 46%),
+    rgb(5 6 8 / 0.58);
+  box-shadow:
+    inset 0 0 0 1px rgb(255 236 180 / 0.06),
+    0 0.9rem 2rem rgb(0 0 0 / 0.36);
+  transform: translateX(-50%);
+  backdrop-filter: blur(14px);
+}
+
+.mfg-support-dock .mfg-pads {
+  grid-area: pads;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.mfg-support-dock .mfg-pad-btn {
+  min-height: 3rem;
+  padding: 0.42rem 0.58rem;
+  border-radius: 0.78rem;
+  background: rgb(8 9 11 / 0.54);
+}
+
+.mfg-support-dock .mfg-actions {
+  grid-area: actions;
+  justify-content: center;
+  margin: 0;
+}
+
+.mfg-support-dock .mfg-btn {
+  min-height: 3rem;
+  padding-inline: 1rem;
+}
+
+.mfg-support-dock .mfg-stats {
+  grid-area: stats;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  max-width: none;
+  margin: 0;
+  opacity: 0.6;
+}
+
+.mfg-support-dock .mfg-stat {
+  padding: 0.34rem 0.38rem;
+}
+
+.mfg-support-dock .mfg-stat em {
+  font-size: 0.56rem;
+}
+
+.mfg-support-dock .mfg-stat strong {
+  font-size: 0.92rem;
+}
+
+.mfg-support-dock .mfg-footnote {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .mfg-frame-hero {
+    padding: 0;
+  }
+
+  .mfg-frame-hero .mfg-topbar {
+    position: absolute;
+    top: 0.6rem;
+    left: 0.6rem;
+    right: 0.6rem;
+  }
+
+  .mfg-frame-hero .mfg-memory-hud {
+    position: absolute;
+    top: 4.1rem;
+    left: 0.7rem;
+    right: 0.7rem;
+    grid-template-columns: 1fr;
+    gap: 0.45rem;
+  }
+
+  .mfg-frame-hero .mfg-memory-title {
+    justify-content: flex-start;
+    text-align: left;
+  }
+
+  .mfg-frame-hero .mfg-memory-title h1 {
+    font-size: clamp(1.45rem, 6vw, 2.25rem);
+  }
+
+  .mfg-frame-hero .mfg-memory-title p {
+    font-size: 0.9rem;
+  }
+
+  .mfg-frame-hero .mfg-memory-state {
+    flex-direction: row;
+    min-height: 3rem;
+    padding: 0.48rem 0.65rem;
+  }
+
+  .mfg-frame-hero .mfg-memory-state strong {
+    font-size: clamp(1.05rem, 4.7vw, 1.35rem);
+  }
+
+  .mfg-frame-hero .mfg-memory-path {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    justify-self: stretch;
+    padding: 0.46rem 0.6rem;
+  }
+
+  .mfg-frame-hero .mfg-memory-path > span,
+  .mfg-frame-hero .mfg-memory-path small {
+    display: none;
+  }
+
+  .mfg-frame-hero .mfg-memory-path strong {
+    margin: 0;
+  }
+
+  .mfg-floating-board {
+    top: 53%;
+    width: min(104vw, 44rem);
+  }
+
+  .mfg-support-dock {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "pads"
+      "actions";
+    width: min(37rem, calc(100vw - 1rem));
+    padding: 0.42rem;
+  }
+
+  .mfg-support-dock .mfg-stats {
+    display: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .mfg-frame-hero .mfg-back {
+    flex: 0 1 auto;
+  }
+
+  .mfg-frame-hero .mfg-sound {
+    flex: 0 0 3rem;
+  }
+
+  .mfg-frame-hero .mfg-memory-hud {
+    top: 3.95rem;
+  }
+
+  .mfg-frame-hero .mfg-memory-title {
+    display: none;
+  }
+
+  .mfg-frame-hero .mfg-memory-state span {
+    display: none;
+  }
+
+  .mfg-floating-board {
+    top: 49%;
+    width: min(122vw, 29rem);
+  }
+
+  .mfg-modular-stage .mfg-sprite-core {
+    width: clamp(2.8rem, 16%, 4rem);
+  }
+
+  .mfg-support-dock {
+    width: calc(100vw - 0.8rem);
+    gap: 0.36rem;
+    border-radius: 0.95rem;
+  }
+
+  .mfg-support-dock .mfg-pads {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.36rem;
+  }
+
+  .mfg-support-dock .mfg-pad-btn {
+    min-height: 2.9rem;
+    padding: 0.36rem 0.5rem;
+  }
+
+  .mfg-support-dock .mfg-actions {
+    gap: 0.36rem;
+  }
+
+  .mfg-support-dock .mfg-btn {
+    flex: 1 1 9.2rem;
+    min-height: 2.85rem;
+    padding-inline: 0.7rem;
+    font-size: 0.78rem;
+  }
+}
+
+/* ============================================================
+   E8J-FIX - Circuito de Memoria composition corrections
+   Scope: visual fit, HUD safe area, dock hierarchy, pad seating and trails.
+   ============================================================ */
+.mfg-frame-hero .mfg-topbar {
+  left: max(clamp(0.75rem, 1.8vw, 1.6rem), env(safe-area-inset-left, 0px));
+  right: max(clamp(0.95rem, 2.1vw, 2rem), env(safe-area-inset-right, 0px));
+}
+
+.mfg-frame-hero .mfg-sound {
+  max-width: min(11.5rem, calc(100vw - 2rem));
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.mfg-frame-hero .mfg-sound span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mfg-frame-hero .mfg-memory-hud {
+  left: max(clamp(1rem, 3vw, 3.6rem), env(safe-area-inset-left, 0px));
+  right: max(clamp(1.25rem, 4.4vw, 5.1rem), env(safe-area-inset-right, 0px));
+  grid-template-columns: minmax(10rem, 0.56fr) minmax(18rem, 1.05fr) minmax(9rem, 0.44fr);
+  column-gap: clamp(0.6rem, 1.3vw, 1.2rem);
+}
+
+.mfg-frame-hero .mfg-memory-path {
+  justify-self: end;
+  width: min(14rem, 100%);
+  box-sizing: border-box;
+}
+
+.mfg-floating-board {
+  top: 54%;
+  width: min(69vw, 53rem);
+}
+
+.mfg-floating-board-shadow {
+  left: 13%;
+  right: 13%;
+  bottom: -1.5%;
+  height: 20%;
+  background:
+    radial-gradient(ellipse at 50% 42%, rgb(0 0 0 / 0.72), rgb(0 0 0 / 0.34) 44%, transparent 74%);
+  filter: blur(1.65rem);
+  transform: translateY(35%) scaleX(1.08);
+}
+
+.mfg-floating-board .mfg-board-image {
+  filter:
+    drop-shadow(0 1.55rem 1.3rem rgb(0 0 0 / 0.48))
+    drop-shadow(0 0.45rem 0.45rem rgb(0 0 0 / 0.22))
+    drop-shadow(0 0 1.35rem rgb(60 210 220 / 0.08));
+}
+
+.mfg-circuit-trail {
+  stroke-width: 0.54rem;
+  opacity: 0.58;
+}
+
+.mfg-circuit-trail.is-lit,
+.mfg-circuit-trail.is-correct {
+  stroke-width: 0.96rem;
+  stroke-dasharray: 0.2 1.35;
+  opacity: 1;
+}
+
+.mfg-circuit-trail.is-wrong {
+  stroke-width: 0.72rem;
+  opacity: 0.82;
+}
+
+.mfg-modular-stage .mfg-board-pad-hitbox {
+  min-width: clamp(4.25rem, 9.25vw, 6.75rem);
+}
+
+.mfg-modular-stage .mfg-pad-sprite {
+  inset: -2%;
+  transform: scale(0.94);
+}
+
+.mfg-modular-stage .mfg-pad-sprite::before {
+  content: "";
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  bottom: 9%;
+  z-index: 0;
+  height: 34%;
+  border-radius: 999px;
+  background: radial-gradient(ellipse, rgb(0 0 0 / 0.48), transparent 72%);
+  filter: blur(0.28rem);
+  transform: translateY(16%) scaleX(1.12);
+  pointer-events: none;
+}
+
+.mfg-modular-stage .mfg-pad-sprite-aura {
+  inset: 12%;
+  opacity: 0.18;
+}
+
+.mfg-pad-art {
+  z-index: 2;
+  transform: translateY(1.2%);
+  filter:
+    drop-shadow(0 0.62rem 0.62rem rgb(0 0 0 / 0.34))
+    drop-shadow(0 0 0.3rem color-mix(in srgb, var(--pad) 18%, transparent));
+}
+
+.mfg-modular-stage .mfg-board-pad-hitbox:not(:disabled):hover .mfg-pad-art,
+.mfg-modular-stage .mfg-board-pad-hitbox:focus-visible .mfg-pad-art {
+  transform: translateY(-0.3%) scale(1.01);
+}
+
+.mfg-modular-stage .mfg-board-pad-hitbox.is-lit .mfg-pad-art,
+.mfg-modular-stage .mfg-board-pad-hitbox.is-correct .mfg-pad-art {
+  transform: translateY(-1.1%) scale(1.035);
+  filter:
+    drop-shadow(0 0.7rem 0.7rem rgb(0 0 0 / 0.34))
+    drop-shadow(0 0 0.74rem #fff0bc)
+    drop-shadow(0 0 1.35rem color-mix(in srgb, var(--pad) 64%, transparent));
+}
+
+.mfg-support-dock {
+  bottom: max(0.42rem, env(safe-area-inset-bottom, 0px));
+  grid-template-columns: minmax(17rem, 1.3fr) minmax(10rem, 0.64fr);
+  gap: 0.36rem 0.5rem;
+  width: min(50rem, calc(100vw - 2rem));
+  padding: 0.36rem;
+  border-color: rgb(226 174 88 / 0.18);
+  background:
+    linear-gradient(180deg, rgb(255 239 190 / 0.05), transparent 52%),
+    rgb(5 6 8 / 0.48);
+}
+
+.mfg-support-dock .mfg-pad-btn {
+  min-height: 3rem;
+  padding: 0.34rem 0.52rem;
+}
+
+.mfg-support-dock .mfg-actions {
+  opacity: 0.78;
+}
+
+.mfg-support-dock[data-phase="showing"] .mfg-actions,
+.mfg-support-dock[data-phase="input"] .mfg-actions {
+  opacity: 0.62;
+}
+
+.mfg-support-dock .mfg-btn-secondary {
+  border-color: rgb(226 174 88 / 0.34);
+  background:
+    linear-gradient(180deg, rgb(255 238 180 / 0.05), transparent),
+    rgb(7 7 8 / 0.42);
+  color: #e6d5b5;
+  box-shadow:
+    inset 0 0 0 1px rgb(255 235 176 / 0.04),
+    0 0.35rem 0.8rem rgb(0 0 0 / 0.16);
+}
+
+.mfg-support-dock .mfg-btn-ghost {
+  color: #d7c8ad;
+}
+
+@media (max-width: 900px) {
+  .mfg-frame-hero .mfg-memory-hud {
+    left: 0.8rem;
+    right: 0.8rem;
+  }
+
+  .mfg-floating-board {
+    top: 52%;
+    width: min(98vw, 41rem);
+  }
+
+  .mfg-support-dock {
+    width: min(34rem, calc(100vw - 1rem));
+  }
+}
+
+@media (max-width: 560px) {
+  .mfg-frame-hero .mfg-topbar {
+    left: 0.55rem;
+    right: 0.55rem;
+  }
+
+  .mfg-frame-hero .mfg-memory-hud {
+    top: 3.85rem;
+    left: 0.55rem;
+    right: 0.55rem;
+  }
+
+  .mfg-frame-hero .mfg-memory-path {
+    width: 100%;
+  }
+
+  .mfg-floating-board {
+    top: 49.5%;
+    width: min(110vw, 28.5rem);
+  }
+
+  .mfg-modular-stage .mfg-board-pad-hitbox {
+    min-width: clamp(3.85rem, 20vw, 5.35rem);
+  }
+
+  .mfg-support-dock {
+    width: calc(100vw - 0.75rem);
+    padding: 0.32rem;
+    background:
+      linear-gradient(180deg, rgb(255 239 190 / 0.04), transparent 52%),
+      rgb(5 6 8 / 0.42);
+  }
+
+  .mfg-support-dock .mfg-pad-btn {
+    min-height: 3rem;
+  }
+
+  .mfg-support-dock .mfg-actions {
+    opacity: 0.72;
+  }
+
+  .mfg-support-dock .mfg-btn {
+    min-height: 3rem;
+  }
+}
+
+/* ============================================================
+   E8K - Circuito de Memoria composition closeout
+   Makes the modular board the protagonist while keeping the interface calm.
+   ============================================================ */
+.mfg-frame-hero .mfg-modular-stage::before {
+  background:
+    radial-gradient(ellipse at 50% 52%, transparent 42%, rgb(4 2 1 / 0.2) 76%, rgb(4 2 1 / 0.34) 100%),
+    linear-gradient(180deg, rgb(0 0 0 / 0.1), transparent 25% 70%, rgb(0 0 0 / 0.25));
+}
+
+.mfg-memory-stage-shade {
+  background:
+    radial-gradient(ellipse at 50% 56%, rgb(255 211 134 / 0.18), transparent 0 31%, transparent 55%),
+    linear-gradient(180deg, rgb(6 4 3 / 0.2), transparent 28% 67%, rgb(5 3 2 / 0.32));
+}
+
+.mfg-frame-hero .mfg-memory-hud {
+  top: clamp(4.45rem, 7.4vh, 5.65rem);
+  left: max(clamp(0.9rem, 2.4vw, 3rem), env(safe-area-inset-left, 0px));
+  right: max(clamp(1.1rem, 3.8vw, 4.5rem), env(safe-area-inset-right, 0px));
+  grid-template-columns: minmax(9.5rem, 0.52fr) minmax(17rem, 0.96fr) minmax(8.5rem, 0.4fr);
+}
+
+.mfg-frame-hero .mfg-memory-title h1 {
+  font-size: clamp(1.65rem, 3vw, 3.05rem);
+}
+
+.mfg-frame-hero .mfg-memory-glyph {
+  width: clamp(2.35rem, 3.4vw, 3.15rem);
+  height: clamp(2.35rem, 3.4vw, 3.15rem);
+}
+
+.mfg-frame-hero .mfg-memory-state {
+  min-height: clamp(2.9rem, 5vh, 3.55rem);
+  background:
+    linear-gradient(180deg, rgb(255 239 190 / 0.06), transparent),
+    rgb(4 5 7 / 0.56);
+}
+
+.mfg-frame-hero .mfg-memory-state strong {
+  font-size: clamp(1.12rem, 1.76vw, 1.58rem);
+}
+
+.mfg-frame-hero .mfg-memory-state span {
+  font-size: clamp(0.74rem, 0.86vw, 0.88rem);
+  opacity: 0.82;
+}
+
+.mfg-frame-hero .mfg-memory-path {
+  width: min(12.6rem, 100%);
+  padding: 0.52rem 0.66rem;
+  background: rgb(5 6 8 / 0.48);
+}
+
+.mfg-floating-board {
+  top: 52.4%;
+  width: min(73vw, 56.5rem);
+}
+
+.mfg-floating-board-shadow {
+  left: 10.5%;
+  right: 10.5%;
+  bottom: -2.8%;
+  height: 23%;
+  background:
+    radial-gradient(ellipse at 50% 38%, rgb(0 0 0 / 0.62), rgb(0 0 0 / 0.3) 48%, transparent 76%);
+  filter: blur(1.45rem);
+}
+
+.mfg-floating-board .mfg-board-image {
+  filter:
+    drop-shadow(0 1.35rem 1.12rem rgb(0 0 0 / 0.42))
+    drop-shadow(0 0.35rem 0.35rem rgb(0 0 0 / 0.18))
+    drop-shadow(0 0 1rem rgb(60 210 220 / 0.06));
+}
+
+.mfg-modular-stage .mfg-sprite-core {
+  width: clamp(3.7rem, 13.5%, 7.2rem);
+  opacity: 0.9;
+  filter:
+    drop-shadow(0 0 0.72rem rgb(111 225 255 / 0.34))
+    drop-shadow(0 0 1.15rem rgb(255 218 129 / 0.22));
+}
+
+.mfg-modular-stage[data-phase="showing"] .mfg-sprite-core,
+.mfg-modular-stage[data-phase="round-complete"] .mfg-sprite-core {
+  filter:
+    drop-shadow(0 0 0.8rem rgb(138 232 255 / 0.48))
+    drop-shadow(0 0 1.45rem rgb(255 220 139 / 0.4));
+  transform: translate(-50%, -50%) scale(1.025);
+}
+
+.mfg-circuit-trail {
+  stroke: rgb(247 215 143 / 0.3);
+  stroke-width: 0.46rem;
+  stroke-dasharray: 0.16 1.72;
+  opacity: 0.5;
+}
+
+.mfg-circuit-trail.is-lit,
+.mfg-circuit-trail.is-correct {
+  stroke: color-mix(in srgb, var(--pad) 52%, #fff3c7);
+  stroke-width: 0.78rem;
+  stroke-dasharray: 0.22 1.28;
+  opacity: 0.86;
+}
+
+.mfg-circuit-trail.is-wrong {
+  stroke: #edbd7b;
+  stroke-width: 0.64rem;
+  opacity: 0.76;
+}
+
+.mfg-modular-stage .mfg-board-pad-hitbox {
+  min-width: clamp(4rem, 8.4vw, 6.2rem);
+}
+
+.mfg-modular-stage .mfg-pad-sprite {
+  inset: -1%;
+  transform: scale(0.91);
+}
+
+.mfg-modular-stage .mfg-pad-sprite::before {
+  left: 20%;
+  right: 20%;
+  bottom: 11%;
+  height: 31%;
+  opacity: 0.82;
+  filter: blur(0.24rem);
+}
+
+.mfg-modular-stage .mfg-pad-sprite-aura {
+  inset: 16%;
+  opacity: 0.12;
+  filter: blur(0.24rem);
+}
+
+.mfg-pad-art {
+  transform: translateY(2.2%) scale(0.985);
+  filter:
+    drop-shadow(0 0.54rem 0.52rem rgb(0 0 0 / 0.32))
+    drop-shadow(0 0 0.22rem color-mix(in srgb, var(--pad) 14%, transparent));
+}
+
+.mfg-modular-stage .mfg-board-pad-hitbox:not(:disabled):hover .mfg-pad-art,
+.mfg-modular-stage .mfg-board-pad-hitbox:focus-visible .mfg-pad-art {
+  transform: translateY(0.8%) scale(0.995);
+  filter:
+    drop-shadow(0 0.58rem 0.56rem rgb(0 0 0 / 0.32))
+    drop-shadow(0 0 0.62rem color-mix(in srgb, var(--pad) 32%, transparent));
+}
+
+.mfg-modular-stage .mfg-board-pad-hitbox.is-lit .mfg-pad-art,
+.mfg-modular-stage .mfg-board-pad-hitbox.is-correct .mfg-pad-art {
+  transform: translateY(0%) scale(1.012);
+  filter:
+    drop-shadow(0 0.58rem 0.56rem rgb(0 0 0 / 0.32))
+    drop-shadow(0 0 0.46rem #fff0bc)
+    drop-shadow(0 0 0.9rem color-mix(in srgb, var(--pad) 48%, transparent));
+}
+
+.mfg-modular-stage .mfg-board-pad-hitbox.is-wrong .mfg-pad-art {
+  transform: translateY(1.5%) scale(0.995);
+  filter:
+    drop-shadow(0 0.54rem 0.56rem rgb(0 0 0 / 0.32))
+    drop-shadow(0 0 0.72rem rgb(237 189 123 / 0.42));
+}
+
+.mfg-support-dock {
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    "pads"
+    "actions";
+  width: min(42rem, calc(100vw - 2rem));
+  padding: 0.3rem;
+  gap: 0.3rem;
+  border-color: rgb(226 174 88 / 0.14);
+  border-radius: 1rem;
+  background:
+    linear-gradient(180deg, rgb(255 239 190 / 0.035), transparent 54%),
+    rgb(5 6 8 / 0.36);
+  box-shadow:
+    inset 0 0 0 1px rgb(255 236 180 / 0.04),
+    0 0.55rem 1.35rem rgb(0 0 0 / 0.26);
+  backdrop-filter: blur(10px);
+}
+
+.mfg-support-dock .mfg-pads {
+  gap: 0.34rem;
+}
+
+.mfg-support-dock .mfg-pad-btn {
+  min-height: 2.9rem;
+  padding: 0.3rem 0.48rem;
+  background: rgb(8 9 11 / 0.42);
+}
+
+.mfg-support-dock .mfg-actions {
+  gap: 0.36rem;
+  opacity: 0.62;
+}
+
+.mfg-support-dock .mfg-btn {
+  min-height: 2.8rem;
+  padding-inline: 0.82rem;
+  font-size: 0.82rem;
+}
+
+.mfg-support-dock .mfg-stats {
+  display: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .mfg-modular-stage .mfg-board-pad-hitbox.is-lit .mfg-pad-art,
+  .mfg-modular-stage .mfg-board-pad-hitbox.is-correct .mfg-pad-art {
+    animation-duration: 1.35s;
+  }
+}
+
+@media (max-width: 900px) {
+  .mfg-frame-hero .mfg-memory-hud {
+    top: 3.95rem;
+    left: 0.7rem;
+    right: 0.7rem;
+  }
+
+  .mfg-floating-board {
+    top: 51%;
+    width: min(104vw, 43rem);
+  }
+
+  .mfg-support-dock {
+    width: min(31rem, calc(100vw - 1rem));
+  }
+}
+
+@media (max-width: 560px) {
+  .mfg-frame-hero .mfg-memory-state {
+    min-height: 2.75rem;
+  }
+
+  .mfg-floating-board {
+    top: 49%;
+    width: min(116vw, 29.25rem);
+  }
+
+  .mfg-modular-stage .mfg-board-pad-hitbox {
+    min-width: clamp(3.72rem, 19vw, 5.05rem);
+  }
+
+  .mfg-modular-stage .mfg-sprite-core {
+    width: clamp(2.45rem, 13.2%, 3.65rem);
+  }
+
+  .mfg-support-dock {
+    width: calc(100vw - 0.7rem);
+    bottom: max(0.32rem, env(safe-area-inset-bottom, 0px));
+  }
+
+  .mfg-support-dock .mfg-pad-btn {
+    min-height: 2.85rem;
+  }
+
+  .mfg-support-dock .mfg-btn {
+    min-height: 2.85rem;
+    font-size: 0.76rem;
+  }
+}
+
+/* ============================================================
+   E8L-MAX - Circuito de Memoria unified playable stage
+   Consolidates the modular assets into a single board shell so the board,
+   pads, core, trails and hitboxes scale as one game object.
+   ============================================================ */
+.mfg-frame-hero .mfg-modular-stage {
+  --memory-board-width: min(82vw, 63.5rem, 124svh);
+  --memory-board-top: 51%;
+  --memory-pad-min: clamp(4.6rem, 8.6vw, 6.9rem);
+  --memory-core-size: clamp(4.15rem, 16.4%, 7.4rem);
+}
+
+.mfg-frame-hero .mfg-topbar,
+.mfg-frame-hero .mfg-memory-hud {
+  width: auto;
+  box-sizing: border-box;
+}
+
+.mfg-frame-hero .mfg-modular-stage::before {
+  background:
+    radial-gradient(ellipse at 50% 52%, transparent 45%, rgb(4 2 1 / 0.14) 77%, rgb(4 2 1 / 0.26) 100%),
+    linear-gradient(180deg, rgb(0 0 0 / 0.06), transparent 28% 72%, rgb(0 0 0 / 0.2));
+}
+
+.mfg-memory-bg {
+  transform: scale(1.025);
+  filter: saturate(1.08) contrast(1.02) brightness(0.96);
+}
+
+.mfg-memory-stage-shade {
+  background:
+    radial-gradient(ellipse at 50% 55%, rgb(255 216 143 / 0.16), transparent 0 33%, transparent 58%),
+    linear-gradient(180deg, rgb(6 4 3 / 0.12), transparent 28% 68%, rgb(5 3 2 / 0.26));
+}
+
+.mfg-board-shell {
+  position: absolute;
+  left: 50%;
+  top: var(--memory-board-top);
+  z-index: 4;
+  width: var(--memory-board-width);
+  max-width: calc(100vw - 1.25rem);
+  aspect-ratio: 1024 / 792;
+  transform: translate(-50%, -50%);
+  isolation: isolate;
+}
+
+.mfg-board-shell::before,
+.mfg-board-shell::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  border-radius: 50%;
+}
+
+.mfg-board-shell::before {
+  inset: auto 15% -4% 15%;
+  z-index: 0;
+  height: 28%;
+  background:
+    radial-gradient(ellipse at 50% 45%, rgb(0 0 0 / 0.42), rgb(0 0 0 / 0.18) 48%, transparent 74%);
+  filter: blur(1.35rem);
+  opacity: 0.76;
+}
+
+.mfg-board-shell::after {
+  inset: 7% 9% 10%;
+  z-index: 2;
+  border: 0;
+  box-shadow: none;
+}
+
+.mfg-board-art-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.mfg-board-shell .mfg-board-image {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  transform: none;
+  filter:
+    drop-shadow(0 1.85rem 1.25rem rgb(0 0 0 / 0.42))
+    drop-shadow(0 0.45rem 0.38rem rgb(0 0 0 / 0.22))
+    drop-shadow(0 0 1.05rem rgb(75 215 230 / 0.08));
+}
+
+.mfg-board-shell .mfg-floating-board-shadow {
+  left: 8%;
+  right: 8%;
+  bottom: -3.8%;
+  z-index: 0;
+  height: 26%;
+  background:
+    radial-gradient(ellipse at 50% 40%, rgb(0 0 0 / 0.6), rgb(0 0 0 / 0.28) 50%, transparent 77%);
+  filter: blur(1.65rem);
+  transform: translateY(34%) scaleX(1.12);
+}
+
+.mfg-board-shell .mfg-circuit-trails {
+  z-index: 3;
+  overflow: visible;
+  mix-blend-mode: screen;
+}
+
+.mfg-board-shell .mfg-circuit-trail {
+  stroke: rgb(249 219 151 / 0.34);
+  stroke-width: 0.42rem;
+  stroke-dasharray: 0.12 1.62;
+  opacity: 0.54;
+}
+
+.mfg-board-shell .mfg-circuit-trail.is-lit,
+.mfg-board-shell .mfg-circuit-trail.is-correct {
+  stroke: color-mix(in srgb, var(--pad) 58%, #fff4c6);
+  stroke-width: 0.86rem;
+  stroke-dasharray: 0.22 1.08;
+  opacity: 0.9;
+}
+
+.mfg-board-shell .mfg-circuit-trail.is-wrong {
+  stroke: #edbd7b;
+  stroke-width: 0.68rem;
+  opacity: 0.78;
+}
+
+.mfg-modular-stage .mfg-board-shell .mfg-sprite-core {
+  left: 50%;
+  top: 50%;
+  z-index: 5;
+  width: var(--memory-core-size);
+  opacity: 0.92;
+  filter:
+    drop-shadow(0 0 0.62rem rgb(127 230 255 / 0.32))
+    drop-shadow(0 0 1rem rgb(255 220 139 / 0.24));
+}
+
+.mfg-modular-stage[data-phase="showing"] .mfg-board-shell .mfg-sprite-core,
+.mfg-modular-stage[data-phase="round-complete"] .mfg-board-shell .mfg-sprite-core {
+  filter:
+    drop-shadow(0 0 0.78rem rgb(138 232 255 / 0.5))
+    drop-shadow(0 0 1.35rem rgb(255 220 139 / 0.42));
+  transform: translate(-50%, -50%) scale(1.025);
+}
+
+.mfg-board-shell .mfg-board-hitboxes {
+  z-index: 7;
+}
+
+.mfg-board-shell .mfg-board-pad-hitbox {
+  left: var(--x);
+  top: var(--y);
+  width: var(--pad-size);
+  min-width: var(--memory-pad-min);
+  min-height: 0;
+  aspect-ratio: 1;
+  display: block;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  overflow: visible;
+  transform: translate(-50%, -50%);
+}
+
+.mfg-board-shell .mfg-board-pad-hitbox::before,
+.mfg-board-shell .mfg-board-pad-hitbox::after {
+  content: none;
+  display: none;
+}
+
+.mfg-board-shell .mfg-board-pad-hitbox:focus-visible {
+  outline: none;
+  background: transparent;
+  box-shadow:
+    0 0 0 0.22rem rgb(255 241 190 / 0.34),
+    0 0 1.45rem color-mix(in srgb, var(--pad) 34%, transparent);
+}
+
+.mfg-pad-seat,
+.mfg-pad-feedback {
+  position: absolute;
+  border-radius: 999px;
+  pointer-events: none;
+}
+
+.mfg-board-shell .mfg-pad-seat {
+  left: 12%;
+  right: 12%;
+  bottom: 7%;
+  z-index: 0;
+  height: 38%;
+  background:
+    radial-gradient(ellipse at 50% 45%, rgb(255 230 171 / 0.2), transparent 58%),
+    radial-gradient(ellipse, rgb(0 0 0 / 0.44), transparent 70%);
+  filter: blur(0.2rem);
+  opacity: 0.78;
+  transform: translateY(12%);
+}
+
+.mfg-board-shell .mfg-pad-sprite {
+  inset: -3%;
+  z-index: 2;
+  opacity: 0.98;
+  transform: translateY(1.8%) scale(0.94);
+}
+
+.mfg-board-shell .mfg-pad-sprite-aura {
+  inset: 14%;
+  opacity: 0.14;
+  filter: blur(0.24rem);
+}
+
+.mfg-board-shell .mfg-pad-sprite-touch {
+  inset: 15%;
+  z-index: 4;
+  opacity: 0;
+  border-width: 2px;
+  box-shadow:
+    inset 0 0 0.85rem color-mix(in srgb, var(--pad) 16%, transparent),
+    0 0 0.95rem color-mix(in srgb, var(--pad) 28%, transparent);
+}
+
+.mfg-board-shell .mfg-pad-art {
+  transform: translateY(2.2%) scale(0.99);
+  filter:
+    drop-shadow(0 0.72rem 0.58rem rgb(0 0 0 / 0.34))
+    drop-shadow(0 0 0.2rem color-mix(in srgb, var(--pad) 18%, transparent));
+}
+
+.mfg-board-shell .mfg-pad-feedback {
+  inset: 13%;
+  z-index: 1;
+  opacity: 0;
+  background:
+    radial-gradient(circle, color-mix(in srgb, var(--pad) 20%, #fff0bd) 0 22%, transparent 62%);
+  filter: blur(0.24rem);
+  transform: scale(0.82);
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease;
+}
+
+.mfg-board-shell .mfg-board-pad-hitbox:not(:disabled):hover .mfg-pad-art,
+.mfg-board-shell .mfg-board-pad-hitbox:focus-visible .mfg-pad-art {
+  transform: translateY(0.6%) scale(1);
+  filter:
+    drop-shadow(0 0.76rem 0.62rem rgb(0 0 0 / 0.34))
+    drop-shadow(0 0 0.55rem color-mix(in srgb, var(--pad) 35%, transparent));
+}
+
+.mfg-board-shell .mfg-board-pad-hitbox.is-lit,
+.mfg-board-shell .mfg-board-pad-hitbox.is-correct,
+.mfg-board-shell .mfg-board-pad-hitbox.is-wrong {
+  background: transparent;
+  box-shadow: none;
+  transform: translate(-50%, -50%) scale(1.015);
+}
+
+.mfg-board-shell .mfg-board-pad-hitbox.is-lit .mfg-pad-art,
+.mfg-board-shell .mfg-board-pad-hitbox.is-correct .mfg-pad-art {
+  transform: translateY(0%) scale(1.018);
+  filter:
+    drop-shadow(0 0.75rem 0.62rem rgb(0 0 0 / 0.34))
+    drop-shadow(0 0 0.44rem #fff0bc)
+    drop-shadow(0 0 0.9rem color-mix(in srgb, var(--pad) 48%, transparent));
+}
+
+.mfg-board-shell .mfg-board-pad-hitbox.is-lit .mfg-pad-sprite-touch,
+.mfg-board-shell .mfg-board-pad-hitbox.is-correct .mfg-pad-sprite-touch {
+  opacity: 0.28;
+  transform: scale(0.94);
+}
+
+.mfg-board-shell .mfg-board-pad-hitbox.is-lit .mfg-pad-feedback,
+.mfg-board-shell .mfg-board-pad-hitbox.is-correct .mfg-pad-feedback {
+  opacity: 0.32;
+  transform: scale(0.92);
+}
+
+.mfg-board-shell .mfg-board-pad-hitbox.is-wrong .mfg-pad-art {
+  transform: translateY(1.2%) scale(1);
+  filter:
+    drop-shadow(0 0.68rem 0.58rem rgb(0 0 0 / 0.32))
+    drop-shadow(0 0 0.65rem rgb(237 189 123 / 0.42));
+}
+
+.mfg-board-shell .mfg-board-pad-hitbox.is-wrong .mfg-pad-feedback {
+  opacity: 0.38;
+  background: radial-gradient(circle, rgb(237 189 123 / 0.3) 0 24%, transparent 64%);
+}
+
+.mfg-frame-hero .mfg-memory-hud {
+  top: clamp(4rem, 6.6vh, 5.25rem);
+  left: max(clamp(0.8rem, 2vw, 2.4rem), env(safe-area-inset-left, 0px));
+  right: max(clamp(0.8rem, 2.3vw, 2.8rem), env(safe-area-inset-right, 0px));
+  grid-template-columns: minmax(8.2rem, 0.48fr) minmax(16rem, 0.92fr) minmax(7.8rem, 0.34fr);
+  column-gap: clamp(0.5rem, 1vw, 0.95rem);
+}
+
+.mfg-frame-hero .mfg-memory-title h1 {
+  font-size: clamp(1.45rem, 2.65vw, 2.7rem);
+  line-height: 0.92;
+}
+
+.mfg-frame-hero .mfg-memory-title p {
+  font-size: clamp(0.86rem, 1.04vw, 1rem);
+}
+
+.mfg-frame-hero .mfg-memory-state {
+  min-height: clamp(2.65rem, 4.6vh, 3.25rem);
+  border-radius: 1.05rem;
+  background:
+    linear-gradient(180deg, rgb(255 239 190 / 0.055), transparent 55%),
+    rgb(4 5 7 / 0.48);
+}
+
+.mfg-frame-hero .mfg-memory-state strong {
+  font-size: clamp(1.05rem, 1.58vw, 1.42rem);
+}
+
+.mfg-frame-hero .mfg-memory-state span {
+  max-width: 14rem;
+  opacity: 0.78;
+}
+
+.mfg-frame-hero .mfg-memory-path {
+  width: min(11.5rem, 100%);
+  padding: 0.48rem 0.56rem;
+  background: rgb(5 6 8 / 0.42);
+  border-color: rgb(226 174 88 / 0.22);
+  box-shadow:
+    inset 0 0 0 1px rgb(255 236 180 / 0.035),
+    0 0.45rem 1.05rem rgb(0 0 0 / 0.22);
+}
+
+.mfg-support-dock {
+  width: min(34rem, calc(100vw - 1.5rem));
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    "pads"
+    "actions";
+  padding: 0.24rem;
+  gap: 0.22rem;
+  border-radius: 0.86rem;
+  border-color: rgb(226 174 88 / 0.11);
+  background:
+    linear-gradient(180deg, rgb(255 239 190 / 0.026), transparent 58%),
+    rgb(5 6 8 / 0.28);
+  box-shadow:
+    inset 0 0 0 1px rgb(255 236 180 / 0.03),
+    0 0.42rem 1rem rgb(0 0 0 / 0.22);
+  backdrop-filter: blur(8px);
+}
+
+.mfg-support-dock .mfg-pads {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.22rem;
+}
+
+.mfg-support-dock .mfg-pad-btn {
+  min-height: 2.52rem;
+  padding: 0.22rem 0.34rem;
+  gap: 0.18rem;
+  border-radius: 0.66rem;
+  border-color: rgb(226 174 88 / 0.14);
+  background: rgb(8 9 11 / 0.28);
+  font-size: 0.72rem;
+}
+
+.mfg-support-dock .mfg-pad-dot {
+  width: 1.02rem;
+  height: 1.02rem;
+}
+
+.mfg-support-dock .mfg-pad-symbol {
+  font-size: 0.56rem;
+  opacity: 0.7;
+}
+
+.mfg-support-dock .mfg-actions {
+  gap: 0.25rem;
+  opacity: 0.54;
+}
+
+.mfg-support-dock .mfg-btn {
+  min-height: 2.38rem;
+  padding-inline: 0.64rem;
+  border-width: 1px;
+  border-radius: 0.66rem;
+  font-size: 0.74rem;
+}
+
+.mfg-frame-hero .mfg-stage-overlay {
+  z-index: 13;
+  justify-content: center;
+  padding-top: clamp(11rem, 22vh, 14rem);
+  padding-bottom: clamp(5.2rem, 10vh, 7.2rem);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .mfg-board-shell {
+    animation-duration: 9s;
+  }
+
+  .mfg-board-shell .mfg-board-pad-hitbox.is-lit .mfg-pad-art,
+  .mfg-board-shell .mfg-board-pad-hitbox.is-correct .mfg-pad-art {
+    animation-duration: 1.55s;
+  }
+}
+
+@media (max-width: 900px) {
+  .mfg-frame-hero .mfg-modular-stage {
+    --memory-board-width: min(112vw, 47.5rem, 108svh);
+    --memory-board-top: 51%;
+    --memory-pad-min: clamp(3.95rem, 17vw, 5.9rem);
+    --memory-core-size: clamp(3.2rem, 16%, 5.25rem);
+  }
+
+  .mfg-frame-hero .mfg-memory-hud {
+    top: 3.82rem;
+    left: 0.62rem;
+    right: 0.62rem;
+    gap: 0.36rem;
+  }
+
+  .mfg-frame-hero .mfg-memory-state {
+    justify-self: stretch;
+  }
+
+  .mfg-support-dock {
+    width: min(28.5rem, calc(100vw - 0.8rem));
+  }
+}
+
+@media (max-width: 560px) {
+  .mfg-frame-hero .mfg-topbar {
+    top: 0.48rem;
+    left: 0.48rem;
+    right: 0.48rem;
+  }
+
+  .mfg-frame-hero .mfg-back,
+  .mfg-frame-hero .mfg-sound {
+    min-height: 2.72rem;
+    border-radius: 0.8rem;
+  }
+
+  .mfg-frame-hero .mfg-modular-stage {
+    --memory-board-width: min(126vw, 32rem);
+    --memory-board-top: 48.2%;
+    --memory-pad-min: clamp(3.58rem, 18.5vw, 4.72rem);
+    --memory-core-size: clamp(2.65rem, 15.8%, 3.75rem);
+  }
+
+  .mfg-frame-hero .mfg-memory-hud {
+    top: 3.58rem;
+    left: 0.5rem;
+    right: 0.5rem;
+  }
+
+  .mfg-frame-hero .mfg-memory-state {
+    min-height: 2.52rem;
+    padding: 0.38rem 0.52rem;
+  }
+
+  .mfg-frame-hero .mfg-memory-state strong {
+    font-size: clamp(1rem, 4.8vw, 1.28rem);
+  }
+
+  .mfg-board-shell .mfg-pad-seat {
+    opacity: 0.66;
+  }
+
+  .mfg-support-dock {
+    width: calc(100vw - 0.55rem);
+    bottom: max(0.22rem, env(safe-area-inset-bottom, 0px));
+    padding: 0.2rem;
+  }
+
+  .mfg-support-dock .mfg-pads {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.18rem;
+  }
+
+  .mfg-support-dock .mfg-pad-btn {
+    min-height: 2.34rem;
+    padding: 0.18rem 0.2rem;
+    font-size: 0.66rem;
+  }
+
+  .mfg-support-dock .mfg-pad-symbol {
+    display: none;
+  }
+
+  .mfg-support-dock .mfg-actions {
+    gap: 0.2rem;
+  }
+
+  .mfg-support-dock .mfg-btn {
+    min-height: 2.32rem;
+    padding-inline: 0.5rem;
+    font-size: 0.7rem;
+  }
+}
+
+/* ============================================================
+   MEMORY CIRCUIT — RESET-CIRCUIT-MAX (caminho ativo)
+   Board MESTRE 2.5D único + overlays transparentes alinhados (mesma câmera,
+   mesma resolução) + hitboxes reais. Escopo .mfg-master-*.
+   ============================================================ */
+.mfg-master-stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: clamp(19rem, 52vh, 33rem);
+  padding: clamp(0.6rem, 1.6vh, 1.2rem);
+  border-radius: 1.4rem;
+  overflow: hidden;
+}
+
+.mfg-master-stage .mfg-memory-bg {
+  object-fit: cover;
+  z-index: 0;
+}
+.mfg-master-stage .mfg-memory-stage-shade {
+  z-index: 1;
+}
+
+.mfg-master-board {
+  position: relative;
+  z-index: 2;
+  width: min(94%, 42rem);
+  aspect-ratio: 5 / 4;
+}
+
+.mfg-master-board-shadow {
+  position: absolute;
+  left: 50%;
+  bottom: 4%;
+  width: 64%;
+  height: 10%;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: radial-gradient(ellipse at center, rgb(10 6 3 / 0.55), transparent 70%);
+  filter: blur(10px);
+  pointer-events: none;
+}
+
+.mfg-master-board-art,
+.mfg-master-overlay {
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+}
+
+.mfg-master-overlay {
+  opacity: 0;
+  transition: opacity 0.22s ease-out;
+}
+.mfg-master-overlay.is-on {
+  opacity: 1;
+  transition-duration: 0.12s;
+}
+/* Engano: o mesmo overlay do pad, tingido para âmbar suave — sem vermelho duro. */
+.mfg-master-overlay.is-wrong {
+  opacity: 0.82;
+  filter: sepia(1) saturate(2.1) hue-rotate(-12deg) brightness(0.92);
+  transition-duration: 0.12s;
+}
+.mfg-master-core.is-soft {
+  opacity: 0.32;
+}
+
+.mfg-master-hitboxes {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+}
+
+.mfg-master-hitbox {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: var(--pad-size);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.mfg-master-hitbox:disabled {
+  cursor: default;
+}
+.mfg-master-hitbox:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--pad) 65%, white);
+  outline-offset: 4px;
+}
+.mfg-master-hitbox:not(:disabled):hover,
+.mfg-master-hitbox:not(:disabled):active {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--pad) 45%, transparent);
+}
+
+@media (max-width: 640px) {
+  .mfg-master-stage {
+    min-height: clamp(16rem, 46vh, 26rem);
+  }
+  .mfg-master-board {
+    width: min(100%, 28rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mfg-master-overlay {
+    transition: none;
+  }
+}

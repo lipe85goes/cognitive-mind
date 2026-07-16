@@ -1,55 +1,51 @@
-# Memory Circuit Asset Spec
+# Memory Circuit Asset Spec (RESET-CIRCUIT-MAX)
 
-This document defines the separated asset structure for the modular rebuild of Circuito de Memoria.
+A lógica ativa do jogo permanece em `src/games/color-sequence/useColorSequenceGame.ts`. Não altere geração de sequência, timing, limite de tentativas, scoring, progressão, reward ou localStorage ao integrar assets.
 
-The active game logic must remain in `src/games/color-sequence/useColorSequenceGame.ts`. Do not change sequence generation, playback timing, attempt limit, scoring, progression, reward flow, or localStorage behavior while integrating these assets.
+## Decisão visual oficial
 
-## Product Direction
+O caminho de **pads físicos separados foi abandonado** (as peças coladas nunca encaixaram em perspectiva/iluminação). O caminho ativo é:
 
-Circuito de Memoria should become a calm playable memory stage, not a full mockup image placed inside the page. The final implementation should be modular: background, board, pads, core, symbols, hitboxes, HUD, and accessibility controls should be independently replaceable.
+1. **Board mestre único 2.5D** com os 4 pads, trilhas e núcleo integrados na mesma cena;
+2. **Overlays transparentes de estado**, todos com o MESMO enquadramento/resolução do board (alinhamento pixel-perfeito por construção);
+3. **Hitboxes reais** (botões acessíveis) posicionados por % sobre os pads;
+4. Background e HUD separados (nunca cozidos na arte).
 
-The current full-board image is temporary and should only remain as a bridge until the separated assets below are ready.
+## Pipeline de geração
 
-## Official Asset List
+Todos os PNGs abaixo são gerados por **`tools/blender/create_memory_circuit_board.py`** (Blender headless, mesma câmera ortográfica 2.5D, film transparente, 1500×1200):
 
-| Asset path | Function | Format | Priority | Integration note |
-| --- | --- | --- | --- | --- |
-| `public/illustrations/memory-circuit/memory-room-bg.webp` | Atmospheric background behind the board: books, candle, plants, soft room lighting. | WebP image | High | Should render as the stage background layer. Must not contain interactive pads or stateful UI. |
-| `public/assets/memory-circuit/memory-board-floating.png` | Main floating circular board/altar surface, without active pad effects baked into gameplay state. | PNG image with transparency | High | Should sit above the room background and below pads/core/path overlays. |
-| `public/assets/memory-circuit/core-crystal.png` | Central crystal/core visual. | PNG image with transparency | High | Can receive glow/active overlays from React/CSS without changing game logic. |
-| `public/assets/memory-circuit/pad-flame.png` | Red/flame memory pad visual. | PNG image with transparency | High | Button/hitbox must remain separate and accessible. Visual state should be controlled by props from the game hook. |
-| `public/assets/memory-circuit/pad-wave.png` | Blue/wave memory pad visual. | PNG image with transparency | High | Same integration contract as other pads. |
-| `public/assets/memory-circuit/pad-leaf.png` | Green/leaf memory pad visual. | PNG image with transparency | High | Same integration contract as other pads. |
-| `public/assets/memory-circuit/pad-sun.png` | Yellow/sun memory pad visual. | PNG image with transparency | High | Same integration contract as other pads. |
-| `public/icons/memory-circuit/symbol-flame.svg` | Flame symbol overlay/icon for labels, fallback UI, or pad detail. | SVG | Medium | Should be decorative unless used inside an accessible button label. |
-| `public/icons/memory-circuit/symbol-wave.svg` | Wave symbol overlay/icon for labels, fallback UI, or pad detail. | SVG | Medium | Should be decorative unless used inside an accessible button label. |
-| `public/icons/memory-circuit/symbol-leaf.svg` | Leaf symbol overlay/icon for labels, fallback UI, or pad detail. | SVG | Medium | Should be decorative unless used inside an accessible button label. |
-| `public/icons/memory-circuit/symbol-sun.svg` | Sun symbol overlay/icon for labels, fallback UI, or pad detail. | SVG | Medium | Should be decorative unless used inside an accessible button label. |
+```powershell
+& "C:\Program Files\Blender Foundation\Blender 5.1\blender.exe" --background --python tools\blender\create_memory_circuit_board.py
+```
 
-## Integration Rules
+O script imprime as coordenadas projetadas dos hitboxes (% da imagem) — cole-as em `memoryCircuitLayout.ts`.
 
-1. Do not alter `useColorSequenceGame.ts` for visual asset integration.
-2. Keep gameplay state as the single source of truth: `activeColor`, `lastTapped`, `tapFeedback`, `phase`, `canTap`, `level`, `sequence`, `errors`, and `score` should continue to drive the visual layer.
-3. Keep accessible controls and real buttons. Visual images must not replace keyboard-accessible hitboxes.
-4. Keep hitbox positions in a layout/config file, not hardcoded across multiple components.
-5. Pad visuals should support at least four visual states: idle, active/playback, correct tap, and gentle retry feedback.
-6. Avoid baking text, HUD, score, attempt count, or progress into image files. Those belong in React so they remain readable, localizable, and accessible.
-7. Avoid creating low-quality placeholders. If final artwork is not available, keep using the current temporary full-board image until proper assets exist.
-8. The final game should remain calm, readable, and aligned with "Pensar em paz".
+## Assets ativos
 
-## Current Temporary Bridge
+| Asset | Função |
+| --- | --- |
+| `public/illustrations/memory-circuit/memory-room-bg.webp` | Fundo atmosférico (preservado). |
+| `public/assets/memory-circuit/memory-board-master.png` | Board mestre 2.5D completo (plataforma + 4 pads + trilhas + núcleo). |
+| `public/assets/memory-circuit/overlay-flame-active.png` | Estado aceso do pad chama (topo) + trilha até o núcleo. |
+| `public/assets/memory-circuit/overlay-wave-active.png` | Estado aceso do pad onda (direita) + trilha. |
+| `public/assets/memory-circuit/overlay-leaf-active.png` | Estado aceso do pad folha (esquerda) + trilha. |
+| `public/assets/memory-circuit/overlay-sun-active.png` | Estado aceso do pad sol (baixo) + trilha. |
+| `public/assets/memory-circuit/overlay-core-pulse.png` | Pulso do núcleo (cristal + halo contido). |
+| `public/assets/memory-circuit/memory-kit-review.png` | Composição de revisão (board + chama acesa + núcleo) — só documentação. |
 
-The current active visual bridge is:
+Mapeamento congelado: **flame = topo, wave = direita, leaf = esquerda, sun = baixo.**
 
-`public/illustrations/memory-circuit/memory-circuit-board-v1.png`
+## Legado (mantido no repositório, fora do caminho ativo)
 
-This file is useful for visual direction validation, but it should not become the final architecture because it combines background, board, pads, core, lighting, and composition into one image. The modular rebuild should progressively replace it with the official separated assets above.
+`memory-board-floating.png`, `core-crystal.png`, `pad-*.png` e `memory-circuit-board-v1.png` não comandam mais a tela ativa. Não os use em código novo.
 
-## Suggested Future Implementation Order
+## Regras de integração
 
-1. Add `memory-room-bg.webp` as the background layer.
-2. Add `memory-board-floating.png` as the board layer.
-3. Add the four pad PNGs with existing hitboxes from `MemoryCircuitPadLayer`.
-4. Add `core-crystal.png` and connect it to existing phase/feedback state.
-5. Add optional path/light overlays using CSS or SVG, driven by existing game state.
-6. Keep accessible controls in `MemoryCircuitAccessibleControls` throughout the migration.
+1. Não alterar `useColorSequenceGame.ts` por motivo visual.
+2. Estado do jogo é a única fonte da verdade: `phase`, `activeColor`, `lastTapped`, `tapFeedback`, `canTap` dirigem overlays e hitboxes (ver `memoryCircuitVisualState.ts`).
+3. Hitboxes reais e acessíveis sempre (`MemoryCircuitPadLayer` = só botões; foco visível; `aria-label` com cor + símbolo).
+4. Posições de hitbox vivem em `memoryCircuitLayout.ts` (x/y/size em %), nunca hardcoded em componentes.
+5. Estados visuais do pad: repouso (board mestre), aceso (`overlay is-on`), toque correto (mesmo overlay, eco curto), engano (`is-wrong` = tinta âmbar suave via CSS, sem vermelho duro).
+6. Texto, HUD, pontuação e progresso ficam em React — nunca dentro de imagem.
+7. Tudo deve continuar calmo e legível: "Pensar em paz".

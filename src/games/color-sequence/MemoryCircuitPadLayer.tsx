@@ -11,6 +11,11 @@ interface MemoryCircuitPadLayerProps {
   onPadPress: (id: number) => void;
 }
 
+/**
+ * Caminho ativo (RESET-CIRCUIT-MAX): esta camada contém APENAS os hitboxes
+ * reais, posicionados sobre os pads que já fazem parte do board mestre. Toda a
+ * arte (pads, trilhas, núcleo, estados acesos) vive no PNG mestre + overlays.
+ */
 export function MemoryCircuitPadLayer({
   activeColor,
   lastTapped,
@@ -19,7 +24,7 @@ export function MemoryCircuitPadLayer({
   onPadPress,
 }: MemoryCircuitPadLayerProps) {
   return (
-    <div className="mfg-board-hitboxes" aria-label="Pads do Circuito de Memória">
+    <div className="mfg-master-hitboxes" aria-label="Pads do Circuito de Memória">
       {MEMORY_PAD_LAYOUTS.map((pad) => {
         const isLit = activeColor === pad.id;
         const feedback = lastTapped === pad.id ? tapFeedback : null;
@@ -39,15 +44,11 @@ export function MemoryCircuitPadLayer({
                 "--pad": pad.swatch,
                 "--x": pad.x,
                 "--y": pad.y,
+                "--pad-size": pad.size,
               } as CSSProperties
             }
-            className={`mfg-board-pad-hitbox ${feedbackClass}`.trim()}
+            className={`mfg-master-hitbox ${feedbackClass}`.trim()}
           >
-            <span className="mfg-pad-sprite" aria-hidden>
-              <span className="mfg-pad-sprite-aura" />
-              <span className="mfg-pad-sprite-symbol" />
-              <span className="mfg-pad-sprite-touch" />
-            </span>
             <span className="sr-only">{pad.name}</span>
           </button>
         );
