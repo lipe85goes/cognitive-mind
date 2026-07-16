@@ -190,7 +190,7 @@ Preserve obrigatoriamente:
 
 ## Dívidas restantes
 
-- `globals.css` ainda tem CSS legado misturado com CSS ativo. Limpar apenas com busca de referência e validação visual.
+- `globals.css` ainda tem CSS legado misturado com CSS ativo. Use `docs/CSS_CLEANUP_MAP.md` antes de qualquer limpeza e remova apenas com busca de referência e validação visual.
 - `security-panel`, `number-trail` e `seed-garden` continuam ativos, mas ainda devem ser recriados no padrão visual atual em missões futuras.
 - Home/Jornada ainda pode receber refinamento visual, mas sem quebrar o fluxo de entrada dos mundos.
 - Rota Estratégica ainda tem dívidas de evolução visual e possíveis expansões futuras como 9x9/armadilha ativa, fora do escopo atual.

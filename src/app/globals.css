@@ -1,5 +1,31 @@
 @import "tailwindcss";
 
+/* ============================================================
+   CLEAN-07 CSS MAP - read before editing this file.
+
+   Active runtime blocks to preserve:
+   - Global base/tokens/reset and shared game shell utilities.
+   - Active 3D Home: .lab3d-* production styles.
+   - WorldEntryTransition and entry overlays.
+   - Rota Estrategica: .rsg-* premium route shell/canvas/HUD.
+   - Result modal: .prm-* premium reward/result flow.
+   - Circuito de Memoria current stage: .mfg-master-*.
+   - Legacy active games: shared GameLayout/Card/Status styles plus
+     Security Panel, Number Trail and Seed Garden styles.
+
+   Legacy/prototype blocks still exist by design:
+   - Older 2D Home and world shelf passes.
+   - Older Memory Circuit prototype stages before .mfg-master-*.
+   - Lab-only 3D Home prototype under /lab/3d-home.
+
+   Do not remove selectors from this file without checking src/ with rg.
+   ============================================================ */
+
+/* ============================================================
+   GLOBAL BASE / TOKENS - ACTIVE
+   Shared color tokens, safe-area variables, world palettes and app reset.
+   ============================================================ */
+
 /* Calm tabletop theme for accessible cognitive mini-worlds */
 :root {
   --background: #edf3ef;
@@ -1049,6 +1075,13 @@ button:disabled:focus-visible {
 }
 
 /* —— Cognitive World Shelf —— */
+/* ============================================================
+   LEGACY HOME / WORLD SHELF ERA - RETAINED TEMPORARILY
+   These classes belong to the old 2D dashboard/shelf experiments.
+   They are not the current production Home direction, but remain in
+   the cascade until a selector-level cleanup proves they are unused.
+   ============================================================ */
+
 /* Per-world tones for shelf tiles and the featured panel. Calibrated to the
    station illustrations (so the memory tone is green like its tree art). */
 .world-tone-memory {
@@ -2793,6 +2826,13 @@ button:disabled:focus-visible {
     transform: translate(-50%, -3px);
   }
 }
+
+/* ============================================================
+   HOME 2D CASCADE HISTORY - LEGACY / INVESTIGATE BEFORE REMOVAL
+   Multiple dashboard rebuild passes live here. They are intentionally
+   left intact because later Home selectors may depend on cascade order.
+   The production 3D Home block starts later at .lab3d-*.
+   ============================================================ */
 
 /* Final home cascade lock: keeps the rebuilt selector above older fidelity layers. */
 .game-opening-stage {
@@ -6924,6 +6964,12 @@ button:disabled:focus-visible {
   }
 }
 
+/* ============================================================
+   3D HOME LAB - LAB ONLY, NOT PRODUCTION ROUTE
+   Keep available for comparison and experiments. Do not remove while
+   /lab/3d-home remains documented as an intentional prototype.
+   ============================================================ */
+
 /* ===== /lab/3d-home — isolated 3D world-selector prototype ===== */
 .lab3d-main {
   display: flex;
@@ -7214,6 +7260,12 @@ button:disabled:focus-visible {
     gap: 1.05rem;
   }
 }
+
+/* ============================================================
+   ACTIVE HOME 3D - PRODUCTION
+   Main / experience: game-menu HUD, tabletop world selector, keyboard
+   navigation and WorldEntryTransition integration.
+   ============================================================ */
 
 /* Production 3D Home: game-menu HUD and tabletop world selector. */
 .lab3d-main {
@@ -9586,6 +9638,11 @@ button:disabled:focus-visible {
 }
 
 /* ============================================================
+   ROTA ESTRATEGICA - ACTIVE
+   Preserve the .rsg-* shell, HUD, canvas frame and accessibility controls.
+   This block supports the current Babylon board runtime and must not be
+   cleaned together with old 2D route experiments.
+
    PREMIUM GAME — Rota Estratégica (escape-maze, premium 2D board)
    Cozy dark library shell + wooden tabletop board with brass tiles, glowing
    explorer/guardian/exit/light tokens, premium HUD/D-pad/stats. Scoped .rsg-*.
@@ -10800,6 +10857,10 @@ button:disabled:focus-visible {
 }
 
 /* ============================================================
+   RESULT MODAL - ACTIVE
+   Premium reward/result flow scoped to .prm-*. Preserve while all games
+   still report completion through RewardResultModal.
+
    PREMIUM GAME RESULT — shared RewardResultModal ("journey result")
    Cozy dark atmosphere overlay wrapping a wood/brass result card with a
    prominent score, premium stat chips and green CTA. Scoped .prm-*.
@@ -11176,6 +11237,14 @@ button:disabled:focus-visible {
 }
 
 
+
+/* ============================================================
+   MEMORY CIRCUIT LEGACY PROTOTYPES - RETAINED TEMPORARILY
+   Older illustrated/sprite/modular passes live below. The current active
+   runtime is the .mfg-master-* block near the end of the file. Keep these
+   until CSS-CLEAN can prove each selector is unused or no longer affects
+   the active Circuito de Memoria composition.
+   ============================================================ */
 
 /* E8D/E8E — Circuito de Memória illustrated board layer.
    The board artwork carries the premium shape language; transparent hitboxes keep
@@ -13448,6 +13517,11 @@ button:disabled:focus-visible {
 }
 
 /* ============================================================
+   MEMORY CIRCUIT ACTIVE - RESET-CIRCUIT-MAX
+   Current runtime path for Circuito de Memoria. It uses one master 2.5D
+   board image, aligned transparent overlays and real hitboxes.
+   Preserve with MemoryCircuitStage/PadLayer/Hud and memoryCircuitLayout.
+
    MEMORY CIRCUIT — RESET-CIRCUIT-MAX (caminho ativo)
    Board MESTRE 2.5D único + overlays transparentes alinhados (mesma câmera,
    mesma resolução) + hitboxes reais. Escopo .mfg-master-*.
