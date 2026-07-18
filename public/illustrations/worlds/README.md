@@ -14,9 +14,9 @@ Current asset sources:
 - `route-diorama.webp`: rendered attachment provided in the visual target set.
 - `command-diorama.webp`: rendered attachment provided in the visual target set.
 - `garden-diorama.webp`: rendered attachment provided in the visual target set.
-- `logic-diorama.webp`: temporary WebP generated from the existing local
-  `station-logic.png` asset because no dedicated rendered logic-world image was
-  included in the attachment set.
+- `logic-diorama.webp`: temporary WebP generated from the archived
+  `docs/archive/home-station-masters/station-logic.png` master because no
+  dedicated rendered logic-world image was included in the attachment set.
 
 Recommended art direction:
 

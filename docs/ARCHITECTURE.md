@@ -66,7 +66,7 @@ Assets ativos da Home:
 
 - `public/illustrations/home/*`
 - `public/illustrations/worlds/*-diorama.webp`
-- `public/illustrations/station-*.png`
+- `public/illustrations/station-*.webp`
 - `public/illustrations/ui/*.svg`
 
 `/lab/3d-home` continua existindo como rota de laboratório, mas a Home de produção está em `/`.

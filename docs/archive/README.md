@@ -8,6 +8,8 @@ Esta pasta guarda assets históricos, previews e materiais de revisão que não 
 - `memory-circuit/` — protótipos visuais antigos do Circuito de Memória.
 - `home-legacy/` — assets antigos da Home antes da Home 3D atual.
 
+- `home-station-masters/` - PNG masters pesados das estacoes da Home; runtime usa WebP em `public/illustrations/`.
+
 ## Regras
 
 - Não importe arquivos de `docs/archive/` no código do app.
