@@ -9,6 +9,47 @@ It is a safety map, not a redesign plan.
 - CLEAN-07 intentionally changed comments/documentation only.
 - No selectors, declarations, game logic, assets, registry entries, hooks or runtime components were changed.
 
+## CLEAN-08 Surgical Removal
+
+- `globals.css` line count before CLEAN-08: 13,639 lines.
+- `globals.css` line count after CLEAN-08: 12,635 lines.
+- CLEAN-08 removed only selectors with zero active references outside `src/app/globals.css`.
+- No Home 3D, Rota Babylon canvas, Circuito `.mfg-master-*`, result modal, game hooks, assets or registry entries were changed.
+
+Exact searches used before removal:
+
+```bash
+rg "\bmfg-modular\b" src --glob "!src/app/globals.css"
+rg "\bmfg-board-pad-hitbox\b" src --glob "!src/app/globals.css"
+rg "\bmfg-circuit-trail\b" src --glob "!src/app/globals.css"
+rg "\bmfg-pad-sprite\b" src --glob "!src/app/globals.css"
+rg "\bmfg-sprite\b" src --glob "!src/app/globals.css"
+rg "\brsg-cell\b" src --glob "!src/app/globals.css"
+rg "\brsg-token\b" src --glob "!src/app/globals.css"
+rg "\bmfg-modular-stage\b" src --glob "!src/app/globals.css"
+rg "\bmfg-circuit-trails\b" src --glob "!src/app/globals.css"
+rg "\bmfg-sprite-core\b" src --glob "!src/app/globals.css"
+rg "\bmfg-board-hitboxes\b" src --glob "!src/app/globals.css"
+rg "\bmfg-board-shell\b" src --glob "!src/app/globals.css"
+rg "\bmfg-pad-art\b" src --glob "!src/app/globals.css"
+rg "\bmfg-pad-sprite-aura\b" src --glob "!src/app/globals.css"
+rg "\bmfg-pad-sprite-touch\b" src --glob "!src/app/globals.css"
+rg "\bmfg-pad-feedback\b" src --glob "!src/app/globals.css"
+rg "\brsg-wall-block\b" src --glob "!src/app/globals.css"
+rg "\brsg-token-player\b|\brsg-token-guardian\b|\brsg-token-exit\b|\brsg-token-star\b" src --glob "!src/app/globals.css"
+rg "\brsg-star-pulse\b" src --glob "!src/app/globals.css"
+```
+
+Removed groups:
+
+- Old Rota 2D grid/token leftovers: `.rsg-board`, `.rsg-cell*`, `.rsg-wall-block`, `.rsg-token*`, `rsg-star-pulse`.
+- Old Memory Circuit prototype hitbox/sprite/trail leftovers: `.mfg-board-pad-hitbox*`, `.mfg-modular-stage*`, `.mfg-circuit-trail*`, `.mfg-circuit-trails`, `.mfg-pad-sprite*`, `.mfg-sprite-core`, `.mfg-board-hitboxes`, `.mfg-board-shell`, `.mfg-pad-art`, `.mfg-pad-feedback`.
+
+Preserved by risk:
+
+- `.rsg-board-col`, `.rsg-board-panel`, `.rsg-board-legend`, `.rsg-canvas` because they are active in `RouteStrategyGame.tsx`.
+- `.mfg-frame-hero`, `.mfg-illustrated-stage`, `.mfg-memory-*`, `.mfg-support-*`, `.mfg-master-*` because they are active in the current Circuito de Memoria components.
+
 ## Active Blocks To Preserve
 
 ### Global Base / Tokens
@@ -97,7 +138,7 @@ Future cleanup requirement:
 
 ### Memory Circuit Prototype History
 
-Older `.mfg-*` blocks from E8D/E8F/E8I/E8J/E8K/E8L remain below the Rota section. The active path is `.mfg-master-*`, but older classes should only be removed after checking the current Circuit components and cascade order.
+Some older `.mfg-*` wrapper and shell blocks from E8D/E8F/E8I/E8J/E8K/E8L remain below the Rota section. CLEAN-08 removed the dead hitbox/sprite/trail selectors, but wrapper classes still used by the active Circuit should stay.
 
 Future cleanup requirement:
 
@@ -112,7 +153,7 @@ Security Panel, Number Trail and Seed Garden still depend on older shared surfac
 ## Future CSS-CLEAN Candidates
 
 1. Remove old 2D Home selectors after confirming production Home no longer imports/renders those classes.
-2. Remove Memory Circuit prototype selectors that predate `.mfg-master-*`.
+2. Continue removing Memory Circuit prototype wrappers only after confirming they are no longer rendered by the current components.
 3. Split `globals.css` into scoped CSS modules or route-level CSS once the visual system stabilizes.
 4. Re-audit shared game UI after rebuilding the three older games.
 5. Replace broad cascade locks with smaller route-scoped selectors where possible.
