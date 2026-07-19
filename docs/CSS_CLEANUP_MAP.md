@@ -3,6 +3,9 @@
 This document records the current `src/app/globals.css` structure after CLEAN-07.
 It is a safety map, not a redesign plan.
 
+Visual-system rule: new feature CSS should not be added to `src/app/globals.css`.
+Use `docs/MINDFLOW_VISUAL_SYSTEM.md` before creating or moving visual styles.
+
 ## CLEAN-07 Baseline
 
 - `globals.css` line count before CLEAN-07 comments: 13,565 lines.

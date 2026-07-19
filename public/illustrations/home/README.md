@@ -2,6 +2,7 @@
 
 The production Home now uses `src/components/home/HomeStage.tsx` and `src/styles/home.css`.
 It is a lightweight 2.5D HTML/CSS stage called "O Ateliê dos Mundos".
+See `docs/MINDFLOW_VISUAL_SYSTEM.md` for the official visual direction.
 
 Runtime contract:
 
