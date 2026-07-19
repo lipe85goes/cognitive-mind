@@ -9,7 +9,7 @@ Regra de produto: leia `docs/MINDFLOW_EXPERIENCE_BOOK.md` antes de qualquer miss
 O app roda em uma única rota (`src/app/page.tsx`) e alterna entre três estados:
 
 ```text
-home (GameHome3D)
+home (HomeStage)
   -> game (GameScreen)
        -> GameHowToPlay
        -> GAME_COMPONENTS[gameId]
@@ -54,22 +54,37 @@ Os jogos legados continuam compilando e aparecem no registry. Não remova `GameL
 
 ## Home ativa
 
-A Home de produção é a experiência 3D em:
+A Home de produção é a experiência 2.5D leve "O Ateliê dos Mundos" em:
 
-- `src/components/three/GameHome3D.tsx`
-- `src/components/three/WorldSelectorScene.tsx`
-- `src/components/three/WorldStage3D.tsx`
-- `src/components/three/worlds/*World3D.tsx`
+- `src/components/home/HomeStage.tsx`
+- `src/components/home/HomeGreeting.tsx`
+- `src/components/home/WorldObject.tsx`
+- `src/components/home/homeLayout.ts`
+- `src/styles/home.css`
 - `src/components/WorldEntryTransition.tsx`
 
-Assets ativos da Home:
+Contrato da Home:
+
+- `/` não usa Three, R3F, Canvas, `requestAnimationFrame` ou render loop contínuo.
+- O CSS novo da Home fica isolado em `src/styles/home.css` e usa prefixo `.hj-*`.
+- `Rota Estratégica` e `Circuito de Memória` são mundos-herói.
+- `Central de Comandos`, `Trilha Numérica` e `Jardim de Sementes` continuam acessíveis como mundos secundários.
+
+Assets ativos/permitidos da Home:
 
 - `public/illustrations/home/*`
 - `public/illustrations/worlds/*-diorama.webp`
 - `public/illustrations/station-*.webp`
 - `public/illustrations/ui/*.svg`
 
-`/lab/3d-home` continua existindo como rota de laboratório, mas a Home de produção está em `/`.
+A Home 3D antiga permanece no disco para referência e laboratório:
+
+- `src/components/three/GameHome3D.tsx`
+- `src/components/three/WorldSelectorScene.tsx`
+- `src/components/three/WorldStage3D.tsx`
+- `src/components/three/worlds/*World3D.tsx`
+
+`/lab/3d-home` continua existindo como rota de laboratório, mas a Home de produção está em `/` com `HomeStage`.
 
 ## Rota Estratégica
 

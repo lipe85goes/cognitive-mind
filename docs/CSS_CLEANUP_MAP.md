@@ -62,20 +62,26 @@ Preserve shared game layout/button/status classes while `security-panel`, `numbe
 
 Risk of removing now: breaking the three older active games before they are rebuilt.
 
-### Active 3D Home
+### Active 2.5D Home
 
-The production Home uses `.lab3d-*` styles for the game-menu HUD, tabletop selector, world navigation and entry transition integration.
+The production Home uses `src/styles/home.css` for the 2.5D "O Atelie dos Mundos" stage.
+All new production Home selectors are prefixed with `.hj-*` and are intentionally outside `src/app/globals.css`.
 
 Preserve:
 
-- `.lab3d-main`
-- `.lab3d-root`
-- `.lab3d-scene`
-- `.lab3d-hud-*`
-- `.lab3d-world-*`
-- related responsive/mobile rules
+- `.hj-main`
+- `.hj-stage`
+- `.hj-greeting-*`
+- `.hj-world-*`
+- `.hj-panel-*`
+- related responsive/mobile rules in `src/styles/home.css`
 
-### `/lab/3d-home`
+Do not add new Home CSS to `globals.css`.
+
+### Old 3D Home / `/lab/3d-home`
+
+The old 3D Home implementation remains on disk and may still be used by `/lab/3d-home` or future visual comparison work.
+Treat `.lab3d-*` as lab/legacy CSS until HOME-02 or a dedicated teardown mission confirms it is safe to remove.
 
 The lab prototype is intentionally kept for comparison and experiments. It is not the production Home route, but should not be deleted while it remains documented.
 

@@ -3,9 +3,10 @@
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import { useReducedMotion } from "motion/react";
 import { GameScreen } from "@/components/GameScreen";
+import { HomeStage } from "@/components/home/HomeStage";
+import type { HomeWorldEntry } from "@/components/home/WorldObject";
 import { RewardResultModal } from "@/components/RewardResultModal";
 import { WorldEntryTransition } from "@/components/WorldEntryTransition";
-import { GameHome3D, type World3DEntry } from "@/components/three/GameHome3D";
 import { ACTIVITIES } from "@/data/activities";
 import { getWorldMeta } from "@/data/worlds";
 import { PLAYABLE_STAGE_IDS } from "@/engine/stage-progress";
@@ -18,7 +19,7 @@ import type {
 } from "@/types/game";
 
 /**
- * Production home: 3D world selector, game routing, and recent results.
+ * Production home: 2.5D world atelier, game routing, and recent results.
  * Game logic stays inside each game component under src/games/.
  */
 export default function HomePage() {
@@ -38,7 +39,7 @@ export default function HomePage() {
 
   const reducedMotion = useReducedMotion();
 
-  const worlds = useMemo<World3DEntry[]>(
+  const worlds = useMemo<HomeWorldEntry[]>(
     () =>
       PLAYABLE_STAGE_IDS.map((id) => {
         const activity = ACTIVITIES.find(
@@ -54,7 +55,7 @@ export default function HomePage() {
           skill: meta.skill,
           purpose: meta.purpose,
         };
-      }).filter((entry): entry is World3DEntry => Boolean(entry)),
+      }).filter((entry): entry is HomeWorldEntry => Boolean(entry)),
     [],
   );
 
@@ -160,8 +161,8 @@ export default function HomePage() {
     );
   } else {
     content = (
-      <main className="lab3d-main">
-        <GameHome3D
+      <main className="hj-main">
+        <HomeStage
           worlds={worlds}
           recentResults={recentResults}
           selectedGameId={selectedDashboardGameId}
