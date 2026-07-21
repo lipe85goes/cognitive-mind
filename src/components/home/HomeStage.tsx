@@ -1,15 +1,13 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { Play, Sparkles } from "lucide-react";
-import { formatPlayedAt } from "@/engine/storage";
+import type { KeyboardEvent } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import Image from "next/image";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { Activity, GameId, GameResult } from "@/types/game";
 import { HomeGreeting } from "./HomeGreeting";
-import {
-  HOME_WORLD_LAYOUT,
-  getHomeWorldLayout,
-  type HomeWorldLayout,
-} from "./homeLayout";
+import { getWorldVisual } from "@/components/worlds/worldVisuals";
+import { HOME_WORLD_LAYOUT, getHomeWorldLayout } from "./homeLayout";
 import { WorldObject, type HomeWorldEntry } from "./WorldObject";
 
 interface HomeStageProps {
@@ -17,6 +15,7 @@ interface HomeStageProps {
   recentResults: GameResult[];
   selectedGameId: GameId | null;
   statusMessage?: string | null;
+  isEntering?: boolean;
   onSelectedGameIdChange: (gameId: GameId) => void;
   onEnter: (activity: Activity) => void;
 }
@@ -25,11 +24,31 @@ function sortWorlds(a: HomeWorldEntry, b: HomeWorldEntry) {
   return HOME_WORLD_LAYOUT[a.gameId].navOrder - HOME_WORLD_LAYOUT[b.gameId].navOrder;
 }
 
+function getCircularOffset(index: number, activeIndex: number, total: number) {
+  if (total <= 0) {
+    return 0;
+  }
+
+  let offset = index - activeIndex;
+  const half = Math.floor(total / 2);
+
+  if (offset > half) {
+    offset -= total;
+  }
+
+  if (offset < -half) {
+    offset += total;
+  }
+
+  return offset;
+}
+
 export function HomeStage({
   worlds,
   recentResults,
   selectedGameId,
   statusMessage,
+  isEntering = false,
   onSelectedGameIdChange,
   onEnter,
 }: HomeStageProps) {
@@ -48,91 +67,172 @@ export function HomeStage({
 
   const [internalSelectedGameId, setInternalSelectedGameId] =
     useState<GameId | null>(initialGameId);
+  const worldRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   const activeGameId = selectedGameId ?? internalSelectedGameId ?? initialGameId;
   const activeWorld =
     orderedWorlds.find((world) => world.gameId === activeGameId) ?? orderedWorlds[0];
-  const activeLayout: HomeWorldLayout | null = activeWorld
-    ? getHomeWorldLayout(activeWorld.gameId)
-    : null;
-
-  const lastWorld = recentResult
-    ? orderedWorlds.find((world) => world.gameId === recentResult.gameId)
-    : undefined;
+  const activeIndex = Math.max(
+    0,
+    orderedWorlds.findIndex((world) => world.gameId === activeWorld?.gameId),
+  );
 
   const selectWorld = (gameId: GameId) => {
+    if (isEntering) return;
     setInternalSelectedGameId(gameId);
     onSelectedGameIdChange(gameId);
   };
 
+  const selectWorldAt = (index: number) => {
+    const total = orderedWorlds.length;
+
+    if (total === 0) {
+      return;
+    }
+
+    const nextIndex = (index + total) % total;
+    selectWorld(orderedWorlds[nextIndex].gameId);
+  };
+
   const enterWorld = (entry: HomeWorldEntry) => {
+    if (isEntering) return;
     selectWorld(entry.gameId);
     onEnter(entry.activity);
   };
 
+  useEffect(() => {
+    if (!activeWorld) {
+      return;
+    }
+
+    const activeNode = worldRefs.current[activeWorld.gameId];
+
+    if (!activeNode || !window.matchMedia("(max-width: 899px)").matches) {
+      return;
+    }
+
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    activeNode.scrollIntoView({
+      behavior: prefersReducedMotion ? "auto" : "smooth",
+      block: "nearest",
+      inline: "center",
+    });
+  }, [activeWorld]);
+
+  const handleStageKeyDown = (event: KeyboardEvent<HTMLElement>) => {
+    if (isEntering) return;
+    if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      selectWorldAt(activeIndex - 1);
+      return;
+    }
+
+    if (event.key === "ArrowRight") {
+      event.preventDefault();
+      selectWorldAt(activeIndex + 1);
+      return;
+    }
+
+    if (event.key === "Enter" && event.target === event.currentTarget && activeWorld) {
+      event.preventDefault();
+      enterWorld(activeWorld);
+    }
+  };
+
   return (
-    <section className="hj-stage" aria-labelledby="hj-home-title">
+    <section
+      className="hj-stage"
+      aria-labelledby="hj-home-title"
+      tabIndex={0}
+      onKeyDown={handleStageKeyDown}
+      aria-busy={isEntering}
+      data-entering={isEntering ? "true" : undefined}
+    >
       <div className="hj-atmosphere" aria-hidden="true">
         <span className="hj-haze hj-haze-a" />
-        <span className="hj-haze hj-haze-b" />
-        <span className="hj-plane hj-plane-back" />
-        <span className="hj-plane hj-plane-front" />
         <span className="hj-light hj-light-a" />
         <span className="hj-light hj-light-b" />
       </div>
 
-      <HomeGreeting recentResult={recentResult} statusMessage={statusMessage} />
+      <HomeGreeting statusMessage={statusMessage} />
 
       <div className="hj-explorer" aria-hidden="true">
-        <span className="hj-explorer-glow" />
-        <span className="hj-explorer-body" />
-        <span className="hj-explorer-head" />
-        <span className="hj-explorer-shadow" />
+        <Image
+          className="hj-explorer-sprite"
+          src="/illustrations/home/explorer-marker.webp"
+          alt=""
+          width={360}
+          height={430}
+          sizes="(max-width: 899px) 4.5rem, 6rem"
+          priority
+          draggable={false}
+        />
       </div>
 
-        <div className="hj-world-field" aria-label="Mundos disponíveis">
-        {orderedWorlds.map((entry) => {
+      <div className="hj-world-field" aria-label="Galeria de mundos">
+        {orderedWorlds.map((entry, index) => {
           const layout = getHomeWorldLayout(entry.gameId);
+          const offset = getCircularOffset(index, activeIndex, orderedWorlds.length);
           return (
             <WorldObject
               key={entry.gameId}
               entry={entry}
               layout={layout}
+              offset={offset}
               selected={entry.gameId === activeWorld?.gameId}
-              onPreview={() => selectWorld(entry.gameId)}
+              disabled={isEntering}
+              setNode={(node) => {
+                worldRefs.current[entry.gameId] = node;
+              }}
+              onSelect={() => selectWorld(entry.gameId)}
               onEnter={() => enterWorld(entry)}
             />
           );
         })}
       </div>
 
-      {activeWorld && activeLayout ? (
-        <aside
-          className={`hj-world-panel hj-world-panel-${activeLayout.kind}`}
-          aria-live="polite"
+      <nav className="hj-gallery-controls" aria-label="Navegar pelos mundos">
+        <button
+          type="button"
+          className="hj-gallery-arrow"
+          onClick={() => selectWorldAt(activeIndex - 1)}
+          aria-label="Ver mundo anterior"
+          disabled={isEntering}
         >
-          <p className="hj-panel-kicker">
-            <Sparkles size={15} aria-hidden="true" />
-            Mundo em foco
-          </p>
-          <h2>{activeLayout.title}</h2>
-          <p>{activeLayout.description}</p>
-          {lastWorld ? (
-            <p className="hj-panel-memory">
-              Último treino: {lastWorld.name} em {formatPlayedAt(recentResult.playedAt)}
-            </p>
-          ) : null}
-          <button
-            type="button"
-            className="hj-panel-enter"
-            onClick={() => enterWorld(activeWorld)}
-            aria-label={`Entrar em ${activeLayout.title}`}
-          >
-            <Play size={18} fill="currentColor" aria-hidden="true" />
-            Entrar
-          </button>
-        </aside>
-      ) : null}
+          <ChevronLeft size={25} aria-hidden="true" />
+        </button>
+        <div className="hj-gallery-pips" aria-label="Mundos">
+          {orderedWorlds.map((entry) => {
+            const visual = getWorldVisual(entry.gameId);
+            const selected = entry.gameId === activeWorld?.gameId;
+            return (
+              <button
+                key={entry.gameId}
+                type="button"
+                className={
+                  selected ? "hj-gallery-pip hj-gallery-pip-active" : "hj-gallery-pip"
+                }
+                onClick={() => selectWorld(entry.gameId)}
+                aria-label={`Selecionar ${visual.visualName}`}
+                aria-current={selected ? "true" : undefined}
+                disabled={isEntering}
+              />
+            );
+          })}
+        </div>
+        <button
+          type="button"
+          className="hj-gallery-arrow"
+          onClick={() => selectWorldAt(activeIndex + 1)}
+          aria-label="Ver próximo mundo"
+          disabled={isEntering}
+        >
+          <ChevronRight size={25} aria-hidden="true" />
+        </button>
+      </nav>
     </section>
   );
 }

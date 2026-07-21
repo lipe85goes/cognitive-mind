@@ -1,16 +1,13 @@
 "use client";
 
 import type { CSSProperties } from "react";
-import {
-  Hash,
-  Map,
-  Play,
-  SlidersHorizontal,
-  Sparkles,
-  Sprout,
-} from "lucide-react";
+import Image from "next/image";
+import { Play } from "lucide-react";
 import type { Activity, GameId } from "@/types/game";
 import type { WorldKey } from "@/data/worlds";
+import { getWorldVisual } from "@/components/worlds/worldVisuals";
+import { WorldDiorama } from "@/components/worlds/diorama/WorldDiorama";
+import { hasWorldDiorama } from "@/components/worlds/diorama/worldDioramaLayout";
 import type { HomeWorldLayout } from "./homeLayout";
 
 export interface HomeWorldEntry {
@@ -25,79 +22,140 @@ export interface HomeWorldEntry {
 interface WorldObjectProps {
   entry: HomeWorldEntry;
   layout: HomeWorldLayout;
+  offset: number;
   selected: boolean;
-  onPreview: () => void;
+  disabled?: boolean;
+  setNode: (node: HTMLDivElement | null) => void;
+  onSelect: () => void;
   onEnter: () => void;
 }
 
-const WORLD_ICONS = {
-  route: Map,
-  memory: Sparkles,
-  commands: SlidersHorizontal,
-  logic: Hash,
-  garden: Sprout,
-} as const;
+function getOffsetClass(offset: number) {
+  if (offset < 0) {
+    return `hj-world-offset-neg-${Math.abs(offset)}`;
+  }
+
+  return `hj-world-offset-pos-${offset}`;
+}
 
 export function WorldObject({
   entry,
   layout,
+  offset,
   selected,
-  onPreview,
+  disabled = false,
+  setNode,
+  onSelect,
   onEnter,
 }: WorldObjectProps) {
-  const Icon = WORLD_ICONS[layout.kind];
+  const visual = getWorldVisual(entry.gameId);
+  const usesDiorama = hasWorldDiorama(entry.gameId);
+  /**
+   * Layered dioramas are complete transparent maquettes and must keep their
+   * real silhouette; only the flat baked-background heroes still need the
+   * cover + ellipse-mask treatment from `.hj-world-art-rendered`.
+   */
+  const artModeClass = usesDiorama
+    ? "hj-world-art-diorama"
+    : `hj-world-art-${visual.artMode}`;
   const style = {
-    "--hj-x": `${layout.desktop.x}%`,
-    "--hj-y": `${layout.desktop.y}%`,
     "--hj-size": `${layout.desktop.sizeRem}rem`,
     "--hj-mobile-order": layout.mobileOrder,
+    "--hj-world-accent": visual.accent,
+    "--hj-world-glow": visual.accentSoft,
+    "--hj-world-plaque": visual.accentDeep,
   } as CSSProperties;
 
+  const selectOrEnter = () => {
+    if (selected) {
+      onEnter();
+      return;
+    }
+
+    onSelect();
+  };
+
   return (
-    <button
-      type="button"
+    <div
+      ref={setNode}
       className={[
         "hj-world-object",
         `hj-world-${layout.kind}`,
         `hj-world-${layout.tier}`,
+        artModeClass,
+        getOffsetClass(offset),
         selected ? "hj-world-selected" : "",
       ].join(" ")}
       style={style}
-      aria-label={`Entrar em ${layout.title}`}
       aria-current={selected ? "true" : undefined}
-      onClick={onEnter}
-      onFocus={onPreview}
-      onPointerEnter={onPreview}
     >
-      <span className="hj-world-shadow" aria-hidden="true" />
-      <span className="hj-world-aura" aria-hidden="true" />
-      <span className="hj-world-diorama" aria-hidden="true">
-        <span className="hj-world-dish">
-          <span className="hj-world-rim" />
-          <span className="hj-world-scene">
-            <span className="hj-world-icon">
-              <Icon size={34} strokeWidth={2.4} />
-            </span>
-            <span className="hj-world-prop hj-world-prop-a" />
-            <span className="hj-world-prop hj-world-prop-b" />
-            <span className="hj-world-prop hj-world-prop-c" />
-            <span className="hj-world-line hj-world-line-a" />
-            <span className="hj-world-line hj-world-line-b" />
+      <button
+        type="button"
+        className="hj-world-select"
+        aria-label={
+          selected
+            ? `Entrar em ${visual.visualName}`
+            : `Selecionar ${visual.visualName}`
+        }
+        disabled={disabled}
+        onClick={selectOrEnter}
+        onFocus={onSelect}
+        onPointerEnter={onSelect}
+      >
+        <span className="hj-world-shadow" aria-hidden="true" />
+        <span className="hj-world-aura" aria-hidden="true" />
+        <span className="hj-world-diorama" aria-hidden="true">
+          <span className="hj-world-art">
+            {usesDiorama ? (
+              <WorldDiorama
+                gameId={entry.gameId}
+                state={selected ? "focused" : "idle"}
+                sizes={
+                  selected
+                    ? "(max-width: 899px) 82vw, 34rem"
+                    : "(max-width: 899px) 66vw, 20rem"
+                }
+              />
+            ) : (
+              <Image
+                className="hj-world-sprite"
+                src={visual.homeArt}
+                alt=""
+                width={visual.artMode === "rendered" ? 1040 : 720}
+                height={visual.artMode === "rendered" ? 780 : 560}
+                sizes={
+                  selected
+                    ? "(max-width: 899px) 82vw, 34rem"
+                    : "(max-width: 899px) 66vw, 20rem"
+                }
+                priority={layout.tier === "hero"}
+                draggable={false}
+              />
+            )}
           </span>
         </span>
-      </span>
-      <span className="hj-world-plaque">
-        <span className="hj-world-number">{layout.navOrder}</span>
+      </button>
+
+      <div className="hj-world-plaque">
         <span className="hj-world-copy">
-          <strong>{layout.title}</strong>
-          <span>{layout.description}</span>
+          <strong>{visual.visualName}</strong>
+          <span>{visual.homeDescription}</span>
         </span>
-        <span className="hj-world-enter">
-          <Play size={16} fill="currentColor" aria-hidden="true" />
-          Entrar
-        </span>
-      </span>
+        {selected ? (
+          <button
+            type="button"
+            className="hj-world-enter"
+            onClick={onEnter}
+            aria-label={`Entrar em ${visual.visualName}`}
+            disabled={disabled}
+          >
+            <Play size={17} fill="currentColor" aria-hidden="true" />
+            Entrar
+          </button>
+        ) : null}
+      </div>
+
       <span className="hj-world-sr-detail">{entry.skill}</span>
-    </button>
+    </div>
   );
 }

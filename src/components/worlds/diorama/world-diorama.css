@@ -1,0 +1,218 @@
+.wd-shell {
+  --wd-accent: #63ddca;
+  --wd-accent-soft: rgba(99, 221, 202, 0.22);
+  --wd-accent-deep: #0d4c4a;
+  display: block;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transform: translateZ(0);
+}
+
+.wd-stage {
+  display: block;
+  position: absolute;
+  inset: 0;
+  isolation: isolate;
+  transform-origin: 50% 62%;
+  transition:
+    transform 320ms ease,
+    filter 320ms ease;
+}
+
+.wd-depth-plane {
+  position: absolute;
+  z-index: 0;
+  right: 8%;
+  bottom: 8%;
+  left: 8%;
+  height: 28%;
+  border-radius: 50%;
+  background:
+    radial-gradient(ellipse at center, rgba(0, 0, 0, 0.42), transparent 68%),
+    radial-gradient(ellipse at center, var(--wd-accent-soft), transparent 76%);
+  filter: blur(0.45rem);
+  opacity: 0.64;
+  transform: translateY(8%);
+}
+
+.wd-layer {
+  position: absolute;
+  z-index: calc(var(--wd-depth) + 1);
+  inset: 0;
+  opacity: var(--wd-opacity);
+  transform:
+    translate3d(
+      calc(var(--wd-x) * var(--wd-depth-shift, 1)),
+      calc(var(--wd-y) * var(--wd-depth-shift, 1)),
+      0
+    )
+    scale(var(--wd-scale));
+  transform-origin: 50% 58%;
+  transition:
+    opacity 260ms ease,
+    transform 320ms ease,
+    filter 320ms ease;
+}
+
+.wd-layer-image {
+  object-fit: contain;
+  user-select: none;
+}
+
+.wd-layer-shadow {
+  opacity: 0.72;
+  filter: blur(0.05rem);
+}
+
+.wd-layer-base {
+  filter: drop-shadow(0 1.4rem 1.1rem rgba(0, 0, 0, 0.26));
+}
+
+.wd-layer-back {
+  opacity: 0.9;
+}
+
+.wd-layer-board {
+  filter:
+    drop-shadow(0 1rem 0.9rem rgba(0, 0, 0, 0.24))
+    saturate(1.02);
+}
+
+.wd-layer-energy,
+.wd-layer-focus {
+  filter:
+    drop-shadow(0 0 0.42rem var(--wd-accent-soft))
+    saturate(1.05);
+}
+
+.wd-layer-front {
+  filter: drop-shadow(0 0.55rem 0.45rem rgba(0, 0, 0, 0.16));
+}
+
+.wd-shell[data-state="focused"] .wd-stage {
+  filter: saturate(1.07) brightness(1.02);
+  transform: translateY(-0.28rem) scale(1.012);
+}
+
+.wd-shell[data-state="focused"] .wd-layer {
+  --wd-depth-shift: 1.9;
+}
+
+.wd-shell[data-state="focused"] .wd-layer-shadow {
+  opacity: 0.56;
+  transform: translateY(4%) scale(0.96);
+}
+
+.wd-shell[data-state="focused"] .wd-layer-back {
+  transform: translateY(-0.32rem) scale(1.006);
+}
+
+.wd-shell[data-state="focused"] .wd-layer-front {
+  transform: translateY(0.32rem) scale(1.012);
+}
+
+.wd-shell[data-state="focused"] .wd-layer-focus,
+.wd-shell[data-state="entering"] .wd-layer-focus {
+  opacity: 1;
+  filter:
+    drop-shadow(0 0 0.7rem color-mix(in srgb, var(--wd-accent) 54%, transparent))
+    drop-shadow(0 0 1.3rem var(--wd-accent-soft))
+    saturate(1.12);
+}
+
+.wd-shell[data-state="entering"] .wd-stage {
+  filter: saturate(1.12) brightness(1.06);
+  transform: translateY(-0.55rem) scale(1.055);
+}
+
+.wd-shell[data-state="entering"] .wd-layer-back {
+  opacity: 0.72;
+  transform: translateY(-0.7rem) scale(0.99);
+}
+
+.wd-shell[data-state="entering"] .wd-layer-front {
+  transform: translateY(0.7rem) scale(1.035);
+}
+
+.wd-shell[data-world="route"][data-state="focused"] .wd-layer-portal,
+.wd-shell[data-world="route"][data-state="entering"] .wd-layer-portal {
+  filter:
+    drop-shadow(0 0 0.95rem rgba(99, 221, 202, 0.78))
+    drop-shadow(0 0 1.9rem rgba(99, 221, 202, 0.32))
+    saturate(1.16);
+}
+
+.wd-shell[data-world="route"][data-state="focused"] .wd-layer-lights,
+.wd-shell[data-world="route"][data-state="entering"] .wd-layer-lights {
+  opacity: 1;
+  filter:
+    drop-shadow(0 0 0.55rem rgba(244, 210, 94, 0.7))
+    drop-shadow(0 0 1.1rem rgba(244, 210, 94, 0.24));
+}
+
+.wd-shell[data-world="circuit"][data-state="focused"] .wd-layer-core,
+.wd-shell[data-world="circuit"][data-state="entering"] .wd-layer-core {
+  filter:
+    drop-shadow(0 0 0.75rem rgba(248, 214, 122, 0.75))
+    drop-shadow(0 0 1.4rem rgba(248, 214, 122, 0.28))
+    saturate(1.12);
+}
+
+.wd-shell[data-world="circuit"][data-state="focused"] .wd-layer-circuit-energy,
+.wd-shell[data-world="circuit"][data-state="entering"] .wd-layer-circuit-energy {
+  opacity: 0.94;
+  filter:
+    drop-shadow(0 0 0.52rem rgba(255, 224, 126, 0.55))
+    saturate(1.12);
+}
+
+.wd-shell[data-variant="transition"] {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 4 / 3;
+}
+
+.wd-shell[data-variant="transition"] .wd-stage {
+  transform: scale(1.035);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .wd-shell[data-state="idle"] .wd-layer-energy,
+  .wd-shell[data-state="idle"] .wd-layer-focus {
+    animation: wd-soft-breathe 2.9s ease-in-out infinite alternate;
+  }
+
+  .wd-shell[data-state="focused"] .wd-layer-energy,
+  .wd-shell[data-state="entering"] .wd-layer-energy {
+    animation: wd-soft-breathe 1.55s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes wd-soft-breathe {
+  from {
+    opacity: 0.72;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 899px) {
+  .wd-shell[data-state="focused"] .wd-layer,
+  .wd-shell[data-state="entering"] .wd-layer {
+    --wd-depth-shift: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wd-stage,
+  .wd-layer {
+    transition: none;
+  }
+
+  .wd-layer {
+    animation: none !important;
+  }
+}

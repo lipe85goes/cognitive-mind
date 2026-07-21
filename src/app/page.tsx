@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
-import { useReducedMotion } from "motion/react";
 import { GameScreen } from "@/components/GameScreen";
 import { HomeStage } from "@/components/home/HomeStage";
 import type { HomeWorldEntry } from "@/components/home/WorldObject";
@@ -36,8 +35,6 @@ export default function HomePage() {
   const [gameSession, setGameSession] = useState(0);
   const [initialRouteNumber, setInitialRouteNumber] = useState<number | undefined>();
   const [skipGameIntro, setSkipGameIntro] = useState(false);
-
-  const reducedMotion = useReducedMotion();
 
   const worlds = useMemo<HomeWorldEntry[]>(
     () =>
@@ -82,15 +79,20 @@ export default function HomePage() {
   }, [view, activeGameId, gameSession]);
 
   const openActivity = (activity: Activity) => {
-    if (activity.status !== "available" || !activity.gameId) return;
+    if (
+      enteringGameId ||
+      activity.status !== "available" ||
+      !activity.gameId
+    ) {
+      return;
+    }
     setDashboardNotice(null);
     setSelectedDashboardGameId(activity.gameId);
     setActiveGameId(activity.gameId);
     setInitialRouteNumber(undefined);
     setSkipGameIntro(false);
     setGameSession((n) => n + 1);
-    setView("game");
-    if (!reducedMotion) setEnteringGameId(activity.gameId);
+    setEnteringGameId(activity.gameId);
   };
 
   const handleGameComplete = (
@@ -130,10 +132,17 @@ export default function HomePage() {
       setInitialRouteNumber(nextRouteNumber);
       setSkipGameIntro(Boolean(nextRouteNumber));
       setGameSession((n) => n + 1);
-      setView("game");
-      if (!reducedMotion) setEnteringGameId(lastResult.gameId);
+      setEnteringGameId(lastResult.gameId);
     }
   };
+
+  const revealEnteredWorld = useCallback(() => {
+    setView("game");
+  }, []);
+
+  const finishWorldEntry = useCallback(() => {
+    setEnteringGameId(null);
+  }, []);
 
   let content: ReactNode;
   if (view === "game" && activeGameId) {
@@ -167,6 +176,7 @@ export default function HomePage() {
           recentResults={recentResults}
           selectedGameId={selectedDashboardGameId}
           statusMessage={dashboardNotice}
+          isEntering={Boolean(enteringGameId)}
           onSelectedGameIdChange={setSelectedDashboardGameId}
           onEnter={openActivity}
         />
@@ -181,7 +191,8 @@ export default function HomePage() {
         <WorldEntryTransition
           key={`${enteringGameId}-${gameSession}`}
           gameId={enteringGameId}
-          onDone={() => setEnteringGameId(null)}
+          onCovered={revealEnteredWorld}
+          onDone={finishWorldEntry}
         />
       )}
     </>

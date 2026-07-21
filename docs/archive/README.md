@@ -9,6 +9,7 @@ Esta pasta guarda assets históricos, previews e materiais de revisão que não 
 - `home-legacy/` — assets antigos da Home antes da Home 3D atual.
 
 - `home-station-masters/` - PNG masters pesados das estacoes da Home; runtime usa WebP em `public/illustrations/`.
+- `world-diorama-2_5d-01/legacy-prop-layers/` — camadas de props V01 (`route-back-props`, `route-front-foliage`, `circuit-back-props`, `circuit-front-props`) removidas de `public/` na MINDFLOW-UNIFIED-VISUAL-01 por não terem nenhuma referência de código.
 
 ## Regras
 

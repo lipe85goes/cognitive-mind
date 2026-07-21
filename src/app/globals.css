@@ -77,20 +77,22 @@
   --garden-border: #b7d39f;
 }
 
-/* —— Tabletop atmosphere ——
-   The whole app sits on a warm, softly-lit play surface so every panel reads
-   as an object on a table rather than a section on a web page. Two fixed
-   layers: a base wash with an overhead "lamp" glow, and a felt texture +
-   edge vignette for depth. Static (no animation) and very low-contrast, so
-   text on the backdrop stays fully readable. */
+/* —— Atelier atmosphere (UNIFIED-VISUAL-01) ——
+   The whole app now sits on the same dark, warmly-lit atelier as the Home,
+   Rota, Circuito, intros, transitions and result flow. This is the base
+   canvas: any frame where a screen has not painted yet (first load, view
+   swap, canvas init, overscroll) shows this wash instead of a light flash.
+   Two fixed layers: a warm overhead "lamp" over deep wood/green tones, and a
+   subtle grain + edge vignette for depth. Static — no animation. Legacy
+   stations keep their own light parchment sheet via `.game-console`. */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   z-index: -2;
   background:
-    radial-gradient(135% 78% at 50% -14%, #fdf8ec 0%, rgb(253 248 236 / 0) 52%),
-    linear-gradient(177deg, #f4eddd 0%, #eceee2 47%, #e3edef 100%);
+    radial-gradient(135% 78% at 50% -14%, rgb(255 214 137 / 0.16) 0%, rgb(255 214 137 / 0) 52%),
+    linear-gradient(177deg, #14100b 0%, #0e1310 47%, #0a0f0d 100%);
   pointer-events: none;
 }
 
@@ -100,8 +102,8 @@ body::after {
   inset: 0;
   z-index: -1;
   background:
-    radial-gradient(rgb(124 98 67 / 0.05) 1px, transparent 1.7px),
-    radial-gradient(125% 100% at 50% 40%, transparent 56%, rgb(58 48 33 / 0.07) 100%);
+    radial-gradient(rgb(255 226 168 / 0.03) 1px, transparent 1.7px),
+    radial-gradient(125% 100% at 50% 40%, transparent 56%, rgb(0 0 0 / 0.44) 100%);
   background-size: 22px 22px, 100% 100%;
   pointer-events: none;
 }
@@ -261,6 +263,23 @@ button:disabled:focus-visible {
 }
 
 /* —— Shared game HUD: the calm "console frame" around every station —— */
+
+/* UNIFIED-VISUAL-01 bridge: the app base is now the dark atelier, so the
+   legacy stations (Security Panel, Number Trail, Seed Garden) carry their own
+   warm parchment sheet — a light console resting on the dark table — until
+   GAME-BRIDGE-01 rebuilds them in the current visual system. */
+.game-console {
+  margin-top: 1rem;
+  margin-bottom: 2.25rem;
+  border: 1px solid rgba(255, 236, 180, 0.32);
+  border-radius: 1.6rem;
+  background:
+    radial-gradient(135% 70% at 50% -12%, #fdf8ec 0%, rgb(253 248 236 / 0) 54%),
+    linear-gradient(177deg, #f4eddd 0%, #eceee2 47%, #e3edef 100%);
+  box-shadow:
+    inset 0 0.1rem 0 rgba(255, 255, 255, 0.6),
+    0 1.6rem 3rem rgba(0, 0, 0, 0.42);
+}
 
 /* Top console bar: return to journey (left) + station status (right). */
 .console-bar {

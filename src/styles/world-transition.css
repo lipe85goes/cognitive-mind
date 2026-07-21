@@ -1,0 +1,265 @@
+.wtx-shell {
+  --wtx-accent: #63ddca;
+  --wtx-accent-soft: rgba(99, 221, 202, 0.24);
+  --wtx-accent-deep: #0d4c4a;
+  position: fixed;
+  z-index: 220;
+  inset: 0;
+  display: grid;
+  min-width: 0;
+  overflow: hidden;
+  place-items: center;
+  background: #0a100e;
+  color: #fff5d8;
+  isolation: isolate;
+}
+
+.wtx-atmosphere {
+  position: absolute;
+  z-index: -3;
+  inset: -3%;
+  background-image:
+    linear-gradient(90deg, rgba(6, 11, 9, 0.88), rgba(6, 11, 9, 0.24) 48%, rgba(6, 11, 9, 0.68)),
+    linear-gradient(0deg, rgba(5, 8, 7, 0.76), transparent 54%),
+    var(--wtx-atmosphere);
+  background-position: center;
+  background-size: cover;
+  filter: saturate(0.78) brightness(0.64);
+  transform: scale(1.04);
+}
+
+.wtx-shell::before,
+.wtx-shell::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+.wtx-shell::before {
+  z-index: -2;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 48%, var(--wtx-accent-soft), transparent 34rem),
+    radial-gradient(circle at 50% 94%, rgba(220, 170, 82, 0.2), transparent 32rem);
+}
+
+.wtx-shell::after {
+  z-index: -1;
+  right: -12%;
+  bottom: -20%;
+  left: -12%;
+  height: 42%;
+  border-radius: 50% 50% 0 0;
+  background:
+    repeating-linear-gradient(92deg, transparent 0 6rem, rgba(255, 228, 164, 0.025) 6rem 6.1rem),
+    linear-gradient(180deg, rgba(102, 58, 31, 0.5), rgba(31, 18, 14, 0.88));
+  box-shadow: inset 0 0.35rem rgba(255, 223, 151, 0.08);
+}
+
+.wtx-world {
+  position: relative;
+  width: min(88vw, 58rem);
+  min-width: 0;
+  padding-bottom: 5.5rem;
+}
+
+.wtx-aura {
+  position: absolute;
+  inset: 8% 9% 19%;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--wtx-accent-soft), transparent 68%);
+  filter: blur(1.2rem);
+}
+
+.wtx-media {
+  display: block;
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+}
+
+.wtx-world-rendered .wtx-media {
+  mask-image: radial-gradient(ellipse 70% 65% at center, #000 54%, transparent 90%);
+}
+
+.wtx-image {
+  object-fit: contain;
+  filter:
+    saturate(1.02)
+    drop-shadow(0 2rem 1.8rem rgba(0, 0, 0, 0.48));
+}
+
+.wtx-world-sprite .wtx-media {
+  margin: 0 auto;
+  width: min(76%, 35rem);
+}
+
+.wtx-motion-mark {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.wtx-motion-mark i {
+  position: absolute;
+  width: 0.8rem;
+  height: 0.8rem;
+  border: 2px solid rgba(255, 250, 224, 0.8);
+  border-radius: 999px;
+  background: var(--wtx-accent);
+  box-shadow: 0 0 1.15rem var(--wtx-accent);
+}
+
+.wtx-motion-mark i:nth-child(1) { top: 33%; left: 34%; }
+.wtx-motion-mark i:nth-child(2) { top: 31%; right: 34%; }
+.wtx-motion-mark i:nth-child(3) { right: 38%; bottom: 31%; }
+.wtx-motion-mark i:nth-child(4) { bottom: 31%; left: 38%; }
+
+.wtx-shell[data-motion="portal"] .wtx-motion-mark::before,
+.wtx-shell[data-motion="portal"] .wtx-motion-mark::after {
+  content: "";
+  position: absolute;
+  top: 28%;
+  right: 22%;
+  width: 8rem;
+  height: 8rem;
+  border: 0.16rem solid color-mix(in srgb, var(--wtx-accent) 72%, transparent);
+  border-radius: 999px;
+  box-shadow: 0 0 1.8rem var(--wtx-accent-soft);
+}
+
+.wtx-shell[data-motion="portal"] .wtx-motion-mark::after {
+  inset: calc(28% + 1rem) calc(22% + 1rem) auto auto;
+  width: 6rem;
+  height: 6rem;
+  opacity: 0.7;
+}
+
+.wtx-shell[data-motion="portal"] .wtx-motion-mark i {
+  display: none;
+}
+
+.wtx-plaque {
+  display: grid;
+  position: absolute;
+  z-index: 3;
+  right: 8%;
+  bottom: 1rem;
+  left: 8%;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.9rem;
+  max-width: 42rem;
+  min-height: 5.2rem;
+  margin: 0 auto;
+  padding: 0.8rem 1rem;
+  border: 1px solid color-mix(in srgb, var(--wtx-accent) 52%, #d7ab54);
+  border-radius: 1.35rem;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 42%),
+    linear-gradient(150deg, rgba(12, 20, 18, 0.96), color-mix(in srgb, var(--wtx-accent-deep) 54%, #090d0c));
+  box-shadow:
+    inset 0 0.1rem rgba(255, 255, 255, 0.12),
+    0 1.2rem 2.8rem rgba(0, 0, 0, 0.48);
+}
+
+.wtx-emblem {
+  display: grid;
+  width: 3.45rem;
+  height: 3.45rem;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--wtx-accent) 70%, #fff2c6);
+  border-radius: 999px;
+  background: var(--wtx-accent-soft);
+  color: var(--wtx-accent);
+  box-shadow: inset 0 0 0.85rem rgba(255, 255, 255, 0.08);
+}
+
+.wtx-plaque > span:last-child {
+  display: grid;
+  gap: 0.12rem;
+  min-width: 0;
+}
+
+.wtx-plaque small {
+  color: var(--wtx-accent);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.wtx-plaque strong {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.45rem, 2.5vw, 2.15rem);
+  line-height: 1.05;
+}
+
+.wtx-plaque span span {
+  color: rgba(255, 247, 222, 0.78);
+  font-size: clamp(0.82rem, 1vw, 0.98rem);
+  font-weight: 650;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .wtx-motion-mark i {
+    animation: wtx-circuit-breathe 880ms ease-in-out infinite alternate;
+  }
+
+  .wtx-motion-mark i:nth-child(2) { animation-delay: 120ms; }
+  .wtx-motion-mark i:nth-child(3) { animation-delay: 240ms; }
+  .wtx-motion-mark i:nth-child(4) { animation-delay: 360ms; }
+}
+
+@keyframes wtx-circuit-breathe {
+  to { opacity: 0.48; transform: scale(0.76); }
+}
+
+@media (max-width: 640px) {
+  .wtx-world {
+    width: min(100vw, 32rem);
+    padding-bottom: 7.2rem;
+  }
+
+  .wtx-media {
+    aspect-ratio: 1 / 1;
+  }
+
+  .wtx-image {
+    object-fit: cover;
+  }
+
+  .wtx-world-sprite .wtx-image {
+    object-fit: contain;
+  }
+
+  .wtx-plaque {
+    right: 0.75rem;
+    bottom: 1rem;
+    left: 0.75rem;
+    min-height: 5rem;
+  }
+
+  .wtx-plaque span span {
+    display: none;
+  }
+
+  .wtx-shell[data-motion="portal"] .wtx-motion-mark::before {
+    top: 24%;
+    right: 17%;
+    width: 5.5rem;
+    height: 5.5rem;
+  }
+
+  .wtx-shell[data-motion="portal"] .wtx-motion-mark::after {
+    inset: calc(24% + 0.75rem) calc(17% + 0.75rem) auto auto;
+    width: 4rem;
+    height: 4rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wtx-motion-mark i {
+    animation: none;
+  }
+}

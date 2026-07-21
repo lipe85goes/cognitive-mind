@@ -53,6 +53,24 @@ Preserved by risk:
 - `.rsg-board-col`, `.rsg-board-panel`, `.rsg-board-legend`, `.rsg-canvas` because they are active in `RouteStrategyGame.tsx`.
 - `.mfg-frame-hero`, `.mfg-illustrated-stage`, `.mfg-memory-*`, `.mfg-support-*`, `.mfg-master-*` because they are active in the current Circuito de Memoria components.
 
+## MINDFLOW-UNIFIED-VISUAL-01 Base Canvas Change
+
+The app base canvas (`body::before` / `body::after` in `globals.css`) was repainted
+from the old light cream tabletop to the dark atelier wash used by every active
+runtime surface (Home, Rota, Circuito, intro, transition, result modal).
+
+Why: every active screen is dark, so the light base showed through as a white
+flash on first paint, view swaps and overscroll.
+
+Paired changes:
+
+- `viewport.themeColor` and `manifest.ts` colors moved to `#0b120f`.
+- `.game-console` gained its own warm parchment sheet so the three legacy games
+  (Security Panel, Number Trail, Seed Garden) stay readable on the dark base.
+  Remove that sheet only when GAME-BRIDGE-01 rebuilds those games.
+
+Do not revert the base to a light wash while the active screens are dark.
+
 ## Active Blocks To Preserve
 
 ### Global Base / Tokens
@@ -69,6 +87,12 @@ Risk of removing now: breaking the three older active games before they are rebu
 
 The production Home uses `src/styles/home.css` for the 2.5D "O Atelie dos Mundos" stage.
 All new production Home selectors are prefixed with `.hj-*` and are intentionally outside `src/app/globals.css`.
+
+MINDFLOW-UNIFIED-VISUAL-01 consolidated this file: it previously held a full
+light-stage design plus a dark WORLD-COHESION-01 override block that won the
+cascade. It is now a single dark design, and the dead light rules plus the
+unused `.hj-plane-*` / `.hj-haze-b` noise layers were removed together with
+their spans in `HomeStage.tsx`.
 
 Preserve:
 

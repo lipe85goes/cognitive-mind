@@ -33,7 +33,8 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#eef4f9",
+  // Matches the dark atelier base so browser chrome never flashes light.
+  themeColor: "#0b120f",
 };
 
 export default function RootLayout({

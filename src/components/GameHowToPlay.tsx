@@ -1,12 +1,16 @@
 "use client";
 
 import Image from "next/image";
+import type { CSSProperties } from "react";
 import { ArrowLeft, BookOpen, Play } from "lucide-react";
+import { getWorldVisual } from "@/components/worlds/worldVisuals";
 import type { GameIntroContent } from "@/data/game-intros";
-import { WORLDS } from "@/data/worlds";
+import type { GameId } from "@/types/game";
+import "@/styles/world-intro.css";
 
 interface GameHowToPlayProps {
   intro: GameIntroContent;
+  gameId: GameId;
   onStart: () => void;
   onBackToMap: () => void;
 }
@@ -19,13 +23,26 @@ interface GameHowToPlayProps {
  */
 export function GameHowToPlay({
   intro,
+  gameId,
   onStart,
   onBackToMap,
 }: GameHowToPlayProps) {
-  const IntroIcon = WORLDS[intro.world].icon;
+  const visual = getWorldVisual(gameId);
+  const IntroIcon = visual.symbol;
+  const style = {
+    "--wintro-accent": visual.accent,
+    "--wintro-accent-soft": visual.accentSoft,
+    "--wintro-accent-deep": visual.accentDeep,
+    "--wintro-atmosphere": `url(${visual.atmosphere})`,
+  } as CSSProperties;
 
   return (
-    <div className={`pgi-shell pgi-${intro.world}`}>
+    <div
+      className={`pgi-shell pgi-${intro.world} wintro-shell`}
+      data-world={visual.world}
+      data-art-mode={visual.artMode}
+      style={style}
+    >
       {/* Cozy dark library/workshop atmosphere, matching the Home + game. */}
       <div className="pgi-atmosphere" aria-hidden />
       <span className="pgi-vignette" aria-hidden />
@@ -58,14 +75,16 @@ export function GameHowToPlay({
             className="pgi-preview"
             aria-label={`Boas-vindas a ${intro.title}`}
           >
-            <div className="pgi-preview-media" aria-hidden="true">
+            <div className="pgi-preview-media wintro-preview-media" aria-hidden="true">
               <Image
-                src={intro.image}
+                src={visual.introArt}
                 alt=""
                 fill
                 sizes="(max-width: 767px) calc(100vw - 2rem), 40vw"
                 className="pgi-preview-image"
+                priority
               />
+              <span className="wintro-art-glow" />
             </div>
             <div className="pgi-skill">
               <p>Você vai praticar</p>

@@ -1,0 +1,92 @@
+.wintro-shell {
+  --wintro-accent: #63ddca;
+  --wintro-accent-soft: rgba(99, 221, 202, 0.24);
+  --wintro-accent-deep: #0d4c4a;
+  background: #090e0c;
+}
+
+.wintro-shell .pgi-atmosphere {
+  background-image:
+    linear-gradient(90deg, rgba(6, 11, 9, 0.88), rgba(6, 11, 9, 0.28) 54%, rgba(6, 11, 9, 0.7)),
+    linear-gradient(0deg, rgba(5, 8, 7, 0.72), transparent 56%),
+    var(--wintro-atmosphere);
+  background-position: center;
+  background-size: cover;
+  filter: saturate(0.82) brightness(0.72);
+}
+
+.wintro-shell .pgi-vignette {
+  background:
+    radial-gradient(circle at 36% 44%, var(--wintro-accent-soft), transparent 31rem),
+    linear-gradient(180deg, rgba(4, 7, 6, 0.12), rgba(4, 7, 6, 0.72));
+}
+
+.wintro-shell .pgi-back,
+.wintro-shell .pgi-kicker,
+.wintro-shell .pgi-preview,
+.wintro-shell .pgi-briefing {
+  border-color: color-mix(in srgb, var(--wintro-accent) 32%, #a77b3e);
+  background-color: rgba(10, 16, 14, 0.82);
+  backdrop-filter: blur(0.65rem);
+}
+
+.wintro-shell .pgi-plaque {
+  border-color: color-mix(in srgb, var(--wintro-accent) 45%, #d2a34e);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.07), transparent 42%),
+    linear-gradient(145deg, rgba(36, 24, 16, 0.96), color-mix(in srgb, var(--wintro-accent-deep) 38%, #160d09));
+}
+
+.wintro-shell .pgi-kicker,
+.wintro-shell .pgi-original,
+.wintro-shell .pgi-skill p {
+  color: var(--wintro-accent);
+}
+
+.wintro-shell .pgi-preview-media {
+  overflow: hidden;
+  border-color: color-mix(in srgb, var(--wintro-accent) 48%, #d3a652);
+  background: radial-gradient(circle, var(--wintro-accent-soft), rgba(5, 9, 8, 0.94) 72%);
+}
+
+.wintro-shell[data-art-mode="rendered"] .pgi-preview-image {
+  object-fit: cover;
+  mask-image: radial-gradient(ellipse 78% 72% at center, #000 62%, transparent 97%);
+}
+
+.wintro-shell[data-art-mode="sprite"] .pgi-preview-image {
+  object-fit: contain;
+  padding: 0.75rem;
+}
+
+.wintro-art-glow {
+  position: absolute;
+  inset: 8%;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--wintro-accent-soft), transparent 70%);
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+.wintro-shell .pgi-cta {
+  border-color: color-mix(in srgb, var(--wintro-accent) 58%, #f1d891);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent 38%),
+    linear-gradient(180deg, color-mix(in srgb, var(--wintro-accent) 68%, #187565), var(--wintro-accent-deep));
+}
+
+.wintro-shell .pgi-steps li span {
+  border-color: color-mix(in srgb, var(--wintro-accent) 62%, #f0d489);
+  background: var(--wintro-accent-soft);
+  color: #fff3cc;
+}
+
+@media (max-width: 760px) {
+  .wintro-shell .pgi-atmosphere {
+    background-position: 62% center;
+  }
+
+  .wintro-shell .pgi-preview-media {
+    min-height: 13.5rem;
+  }
+}

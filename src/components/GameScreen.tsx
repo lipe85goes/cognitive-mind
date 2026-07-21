@@ -32,6 +32,7 @@ export function GameScreen({
   if (showIntro) {
     return (
       <GameHowToPlay
+        gameId={gameId}
         intro={intro}
         onStart={() => setShowIntro(false)}
         onBackToMap={onExit}

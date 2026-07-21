@@ -9,8 +9,9 @@ export default function manifest(): MetadataRoute.Manifest {
       "Exercícios cognitivos leves para praticar memória, planejamento e foco.",
     start_url: "/",
     display: "standalone",
-    background_color: "#eef4f9",
-    theme_color: "#eef4f9",
+    // Dark atelier base — the installed-app splash must not flash light.
+    background_color: "#0b120f",
+    theme_color: "#0b120f",
     lang: "pt-BR",
     orientation: "portrait",
     icons: [
