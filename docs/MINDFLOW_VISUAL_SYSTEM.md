@@ -1,5 +1,8 @@
 # MindFlow Visual System
 
+O contrato de continuidade entre Home, transicao, intro, setup e game shell
+dos mundos principais esta em `docs/MINDFLOW_WORLD_MASTER_SCENES.md`.
+
 Este documento consolida o sistema visual oficial do MindFlow. Ele não cria uma nova direção. Ele organiza as decisões já aprovadas para orientar Home, Rota Estratégica, Circuito de Memória, jogos legados, modal e próximas missões visuais.
 
 Regra central: toda decisão visual deve ajudar o Explorador a **pensar em paz**.

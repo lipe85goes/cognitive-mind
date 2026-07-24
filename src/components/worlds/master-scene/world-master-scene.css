@@ -1,0 +1,272 @@
+.wms-scene {
+  --wms-accent: #63ddca;
+  --wms-accent-soft: rgba(99, 221, 202, 0.24);
+  --wms-accent-deep: #0d4c4a;
+  --wms-warm-light: #e1b45e;
+  --wms-scene-scale: 1;
+  --wms-scene-x: 0%;
+  --wms-scene-y: 0%;
+  display: block;
+  position: absolute;
+  inset: 0;
+  min-width: 0;
+  pointer-events: none;
+  isolation: isolate;
+}
+
+.wms-scene-crop {
+  display: block;
+  position: absolute;
+  inset: 0;
+  transform:
+    translate3d(var(--wms-scene-x), var(--wms-scene-y), 0)
+    scale(var(--wms-scene-scale));
+  transform-origin: 50% 58%;
+  transition:
+    transform 420ms ease,
+    filter 320ms ease;
+}
+
+.wms-scene-ground {
+  position: absolute;
+  z-index: -1;
+  right: 8%;
+  bottom: 5%;
+  left: 8%;
+  height: 31%;
+  border-radius: 50%;
+  background:
+    radial-gradient(ellipse, rgba(0, 0, 0, 0.48), transparent 69%),
+    radial-gradient(ellipse, var(--wms-accent-soft), transparent 78%);
+  filter: blur(0.55rem);
+  opacity: 0.8;
+}
+
+.wms-circuit-stack {
+  display: block;
+  position: absolute;
+  inset: 0;
+  filter:
+    drop-shadow(0 1.45rem 1.15rem rgba(0, 0, 0, 0.42))
+    saturate(0.96);
+}
+
+.wms-circuit-board,
+.wms-circuit-overlay {
+  object-fit: contain;
+  user-select: none;
+}
+
+.wms-circuit-overlay {
+  opacity: 0.12;
+  filter: saturate(0.95);
+  transition:
+    opacity 260ms ease,
+    filter 260ms ease;
+}
+
+.wms-circuit-core {
+  opacity: 0.54;
+  filter:
+    drop-shadow(0 0 0.5rem rgba(242, 198, 90, 0.48))
+    saturate(1.04);
+}
+
+.wms-scene[data-state="focused"] .wms-circuit-stack,
+.wms-scene[data-state="entering"] .wms-circuit-stack {
+  filter:
+    drop-shadow(0 1.55rem 1.25rem rgba(0, 0, 0, 0.46))
+    saturate(1.02)
+    brightness(1.025);
+}
+
+.wms-scene[data-state="focused"] .wms-circuit-core,
+.wms-scene[data-state="entering"] .wms-circuit-core {
+  opacity: 0.84;
+  filter:
+    drop-shadow(0 0 0.65rem rgba(242, 198, 90, 0.62))
+    drop-shadow(0 0 1.25rem rgba(99, 221, 202, 0.2))
+    saturate(1.08);
+}
+
+.wms-scene[data-context="transition"] .wms-circuit-pad {
+  opacity: 0.38;
+}
+
+.wms-scene[data-context="intro"] .wms-circuit-pad {
+  opacity: 0.22;
+}
+
+.wms-scene[data-context="transition"] .wms-circuit-core {
+  opacity: 0.94;
+}
+
+/* Shared physical plate language. Existing components keep their layout. */
+.wms-plate {
+  border-color: color-mix(in srgb, var(--wms-accent, #63ddca) 42%, #b88a42) !important;
+  background:
+    linear-gradient(180deg, rgba(255, 249, 222, 0.1), transparent 38%),
+    linear-gradient(
+      150deg,
+      color-mix(in srgb, var(--wms-accent-deep, #0d4c4a) 34%, #332013),
+      rgba(12, 15, 13, 0.96)
+    ) !important;
+  box-shadow:
+    inset 0 1px rgba(255, 246, 214, 0.18),
+    inset 0 -0.28rem rgba(0, 0, 0, 0.22),
+    0 0.8rem 1.7rem rgba(0, 0, 0, 0.36) !important;
+}
+
+.wms-button-primary {
+  min-height: 3rem;
+  border-color: color-mix(in srgb, var(--wms-accent, #63ddca) 62%, #e5bd69) !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.2), transparent 40%),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--wms-accent, #63ddca) 64%, #26796e),
+      var(--wms-accent-deep, #0d4c4a)
+    ) !important;
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.24),
+    inset 0 -0.25rem rgba(0, 0, 0, 0.22),
+    0 0.45rem 0 color-mix(in srgb, var(--wms-accent-deep, #0d4c4a) 78%, #050706),
+    0 0.85rem 1.45rem rgba(0, 0, 0, 0.32) !important;
+}
+
+.wms-button-primary:active {
+  transform: translateY(0.18rem);
+}
+
+.wms-button-primary:focus-visible,
+.wms-button-secondary:focus-visible {
+  outline: 0.2rem solid #fff0b8;
+  outline-offset: 0.22rem;
+}
+
+.wms-button-secondary {
+  min-height: 2.75rem;
+  border-color: color-mix(in srgb, var(--wms-accent, #63ddca) 34%, #a57b3e) !important;
+}
+
+.wms-world-shell {
+  --wms-accent: #63ddca;
+  --wms-accent-soft: rgba(99, 221, 202, 0.24);
+  --wms-accent-deep: #0d4c4a;
+  --wms-warm-light: #e1b45e;
+}
+
+.wms-world-shell[data-world-scene="route"] .rsg-atmosphere {
+  background-image:
+    radial-gradient(62% 58% at 52% 35%, rgba(255, 208, 138, 0.36), transparent 72%),
+    radial-gradient(36% 42% at 74% 40%, rgba(99, 221, 202, 0.14), transparent 72%),
+    var(--wms-atmosphere);
+}
+
+.wms-world-shell[data-world-scene="circuit"] .mfg-atmosphere {
+  background-image:
+    linear-gradient(90deg, rgba(8, 11, 9, 0.5), rgba(8, 11, 9, 0.08) 52%, rgba(8, 11, 9, 0.42)),
+    radial-gradient(circle at 50% 42%, var(--wms-accent-soft), transparent 34rem),
+    var(--wms-atmosphere);
+  background-position: center;
+  background-size: cover;
+}
+
+.wintro-shell[data-master-scene="true"] .pgi-grid {
+  grid-template-columns: minmax(0, 1.08fr) minmax(18rem, 0.92fr);
+}
+
+.wintro-shell[data-master-scene="true"] .pgi-preview {
+  background:
+    linear-gradient(180deg, rgba(255, 248, 218, 0.06), transparent 32%),
+    rgba(8, 14, 12, 0.76);
+}
+
+.wintro-shell[data-master-scene="true"] .wintro-preview-media {
+  aspect-ratio: 4 / 3;
+  border-color: color-mix(in srgb, var(--wms-accent) 48%, #b88a42);
+  background:
+    radial-gradient(circle at 50% 48%, var(--wms-accent-soft), transparent 58%),
+    linear-gradient(180deg, rgba(28, 24, 17, 0.72), rgba(7, 10, 9, 0.94));
+  box-shadow:
+    inset 0 1px rgba(255, 246, 214, 0.15),
+    inset 0 -2.5rem 3.5rem rgba(0, 0, 0, 0.34),
+    0 0.85rem 1.8rem rgba(0, 0, 0, 0.36);
+}
+
+.wintro-shell[data-master-scene="true"] .wintro-art-glow {
+  opacity: 0.42;
+}
+
+.wtx-world-diorama .wtx-media {
+  overflow: visible;
+}
+
+.wms-secondary-shell {
+  position: relative;
+  isolation: isolate;
+}
+
+.wms-secondary-shell .world-header {
+  border-color: color-mix(in srgb, var(--world-accent, #63a99a) 28%, #c89b55);
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.18),
+    0 0.7rem 1.5rem rgba(24, 39, 34, 0.12);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .wms-scene[data-state="entering"] .wms-circuit-pad {
+    animation: wms-circuit-pad-response 1.8s ease-in-out infinite;
+  }
+
+  .wms-scene[data-state="entering"] .wms-circuit-pad[data-pad="1"] {
+    animation-delay: 160ms;
+  }
+
+  .wms-scene[data-state="entering"] .wms-circuit-pad[data-pad="2"] {
+    animation-delay: 320ms;
+  }
+
+  .wms-scene[data-state="entering"] .wms-circuit-pad[data-pad="3"] {
+    animation-delay: 480ms;
+  }
+}
+
+@keyframes wms-circuit-pad-response {
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 0.56;
+  }
+}
+
+@media (max-width: 640px) {
+  .wms-scene-crop {
+    transform:
+      translate3d(var(--wms-scene-x), var(--wms-scene-y), 0)
+      scale(calc(var(--wms-scene-scale) * 0.96));
+  }
+}
+
+@media (max-width: 760px) {
+  .wintro-shell[data-master-scene="true"] .pgi-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .wintro-shell[data-master-scene="true"] .wintro-preview-media {
+    min-height: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wms-scene-crop,
+  .wms-circuit-overlay {
+    transition: none;
+  }
+
+  .wms-circuit-pad {
+    animation: none !important;
+  }
+}

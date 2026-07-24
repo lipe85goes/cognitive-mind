@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { useReducedMotion } from "motion/react";
 import { GameHome3D, type World3DEntry } from "@/components/three/GameHome3D";
 import { GameScreen } from "@/components/GameScreen";
 import { RewardResultModal } from "@/components/RewardResultModal";
 import { WorldEntryTransition } from "@/components/WorldEntryTransition";
+import { useWorldEntryController } from "@/components/world-entry/useWorldEntryController";
 import { ACTIVITIES } from "@/data/activities";
 import { getWorldMeta } from "@/data/worlds";
 import { PLAYABLE_STAGE_IDS } from "@/engine/stage-progress";
@@ -20,12 +20,21 @@ type View = "home" | "game" | "result";
  * while production "/" can evolve independently.
  */
 export default function Lab3DHomePage() {
-  const reducedMotion = useReducedMotion();
   const [view, setView] = useState<View>("home");
   const [activeGameId, setActiveGameId] = useState<GameId | null>(null);
   const [lastResult, setLastResult] = useState<GameResult | null>(null);
-  const [enteringGameId, setEnteringGameId] = useState<GameId | null>(null);
   const [gameSession, setGameSession] = useState(0);
+  const {
+    state: entryState,
+    isActive: isEntryActive,
+    start: startWorldEntry,
+    covered: markWorldCovered,
+    markReady: markWorldReady,
+    fail: failWorldEntry,
+    retry: retryWorldEntry,
+    complete: completeWorldEntry,
+    reset: resetWorldEntry,
+  } = useWorldEntryController();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -53,10 +62,9 @@ export default function Lab3DHomePage() {
 
   const openActivity = (activity: Activity) => {
     if (activity.status !== "available" || !activity.gameId) return;
+    if (!startWorldEntry(activity.gameId)) return;
     setActiveGameId(activity.gameId);
     setGameSession((n) => n + 1);
-    setView("game");
-    if (!reducedMotion) setEnteringGameId(activity.gameId);
   };
 
   const handleGameComplete = (partial: Omit<GameResult, "id" | "playedAt">) => {
@@ -68,14 +76,14 @@ export default function Lab3DHomePage() {
   const returnHome = () => {
     setActiveGameId(null);
     setView("home");
+    resetWorldEntry();
   };
 
   const playAgain = () => {
     if (!lastResult?.gameId) return;
+    if (!startWorldEntry(lastResult.gameId)) return;
     setActiveGameId(lastResult.gameId);
     setGameSession((n) => n + 1);
-    setView("game");
-    if (!reducedMotion) setEnteringGameId(lastResult.gameId);
   };
 
   let content: ReactNode;
@@ -83,10 +91,13 @@ export default function Lab3DHomePage() {
     content = (
       <main className="flex min-h-full min-w-0 flex-1 flex-col overflow-x-hidden">
         <GameScreen
+          key={`${activeGameId}-${gameSession}`}
           gameId={activeGameId}
           sessionKey={gameSession}
           onComplete={handleGameComplete}
           onExit={returnHome}
+          onEntryReady={markWorldReady}
+          onEntryError={failWorldEntry}
         />
       </main>
     );
@@ -111,11 +122,20 @@ export default function Lab3DHomePage() {
   return (
     <>
       {content}
-      {enteringGameId && (
+      {isEntryActive && entryState.gameId && (
         <WorldEntryTransition
-          key={`${enteringGameId}-${gameSession}`}
-          gameId={enteringGameId}
-          onDone={() => setEnteringGameId(null)}
+          gameId={entryState.gameId}
+          phase={entryState.phase}
+          onCovered={() => {
+            setView("game");
+            markWorldCovered();
+          }}
+          onDone={completeWorldEntry}
+          onRetry={() => {
+            setGameSession((session) => session + 1);
+            retryWorldEntry();
+          }}
+          onBack={returnHome}
         />
       )}
     </>

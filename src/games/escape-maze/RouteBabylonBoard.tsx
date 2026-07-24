@@ -27,6 +27,8 @@ interface RouteBabylonBoardProps {
   reducedMotion: boolean;
   status: GameStatus;
   onMove: (delta: GridPosition) => void;
+  onReady?: () => void;
+  onError?: (error: Error) => void;
 }
 
 export function RouteBabylonBoard({
@@ -41,10 +43,14 @@ export function RouteBabylonBoard({
   reducedMotion,
   status,
   onMove,
+  onReady,
+  onError,
 }: RouteBabylonBoardProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const controllerRef = useRef<RouteBabylonController | null>(null);
   const onMoveRef = useRef(onMove);
+  const onReadyRef = useRef(onReady);
+  const onErrorRef = useRef(onError);
 
   const state = useMemo<RouteBabylonState>(
     () => ({
@@ -86,6 +92,11 @@ export function RouteBabylonBoard({
   }, [onMove]);
 
   useEffect(() => {
+    onReadyRef.current = onReady;
+    onErrorRef.current = onError;
+  }, [onError, onReady]);
+
+  useEffect(() => {
     stateRef.current = state;
     controllerRef.current?.updateBoard(state);
   }, [state]);
@@ -95,33 +106,46 @@ export function RouteBabylonBoard({
     let resizeObserver: ResizeObserver | null = null;
 
     async function mountBabylon() {
-      const canvas = canvasRef.current;
-      if (!canvas || controllerRef.current) return;
+      try {
+        const canvas = canvasRef.current;
+        if (!canvas || controllerRef.current) return;
 
-      const [Babylon, , sceneModule] = await Promise.all([
-        import("@babylonjs/core"),
-        import("@babylonjs/loaders/glTF"),
-        import("@/games/escape-maze/routeBabylonScene"),
-      ]);
-      if (cancelled || !canvasRef.current) return;
+        const [Babylon, , sceneModule] = await Promise.all([
+          import("@babylonjs/core"),
+          import("@babylonjs/loaders/glTF"),
+          import("@/games/escape-maze/routeBabylonScene"),
+        ]);
+        if (cancelled || !canvasRef.current) return;
 
-      const controller = sceneModule.createRouteBabylonController(
-        Babylon,
-        canvas,
-        stateRef.current,
-        {
-          onMove: (delta) => onMoveRef.current(delta),
-        },
-      );
-      controllerRef.current = controller;
+        const controller = sceneModule.createRouteBabylonController(
+          Babylon,
+          canvas,
+          stateRef.current,
+          {
+            onMove: (delta) => onMoveRef.current(delta),
+          },
+        );
+        controllerRef.current = controller;
 
-      resizeObserver = new ResizeObserver(() => controller.resize());
-      resizeObserver.observe(canvas);
-      window.addEventListener("resize", controller.resize);
-      controller.resize();
+        resizeObserver = new ResizeObserver(() => controller.resize());
+        resizeObserver.observe(canvas);
+        window.addEventListener("resize", controller.resize);
+        controller.resize();
+
+        await controller.ready;
+        if (!cancelled) onReadyRef.current?.();
+      } catch (error) {
+        if (cancelled) return;
+        const entryError =
+          error instanceof Error
+            ? error
+            : new Error("Unknown error while preparing the Route scene.");
+        console.error("[MindFlow] Route Babylon entry failed.", entryError);
+        onErrorRef.current?.(entryError);
+      }
     }
 
-    mountBabylon();
+    void mountBabylon();
 
     return () => {
       cancelled = true;

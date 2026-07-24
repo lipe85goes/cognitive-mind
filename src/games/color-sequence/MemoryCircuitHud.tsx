@@ -36,7 +36,7 @@ export function MemoryCircuitHud({
       </div>
 
       <div
-        className={`mfg-memory-state mfg-status-${statusVariant}`}
+        className={`mfg-memory-state mfg-status-${statusVariant} wms-plate`}
         role="status"
         aria-live="polite"
       >

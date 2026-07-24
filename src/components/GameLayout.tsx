@@ -1,6 +1,7 @@
 import { ArrowLeft } from "lucide-react";
 import type { ReactNode } from "react";
 import { skillForWorld, WORLDS, type WorldKey } from "@/data/worlds";
+import "@/components/worlds/master-scene/world-master-scene.css";
 
 interface GameLayoutProps {
   title: string;
@@ -35,7 +36,7 @@ export function GameLayout({
 
   return (
     <div
-      className={`game-world game-console game-world-${world} mx-auto flex w-full min-w-0 flex-1 flex-col overflow-x-hidden px-4 pb-10 pt-4 sm:px-6 ${
+      className={`game-world game-console game-world-${world} wms-secondary-shell mx-auto flex w-full min-w-0 flex-1 flex-col overflow-x-hidden px-4 pb-10 pt-4 sm:px-6 ${
         wide ? "game-world-wide max-w-[78rem]" : "max-w-xl"
       }`}
     >

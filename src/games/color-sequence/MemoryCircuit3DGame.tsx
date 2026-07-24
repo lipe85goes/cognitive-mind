@@ -8,7 +8,9 @@ import { MemoryCircuitStage } from "@/games/color-sequence/MemoryCircuitStage";
 import { getMemoryCircuitStateLabel } from "@/games/color-sequence/memoryCircuitVisualState";
 import { isSoundEnabled, setSoundEnabled } from "@/lib/game-sounds";
 import { useColorSequenceGame } from "@/games/color-sequence/useColorSequenceGame";
+import { getWorldMasterSceneStyle } from "@/components/worlds/master-scene/worldMasterSceneConfig";
 import type { GameComponentProps } from "@/types/game";
+import "@/components/worlds/master-scene/world-master-scene.css";
 
 function PremiumSoundToggle() {
   const [on, setOn] = useState(false);
@@ -38,7 +40,12 @@ function PremiumSoundToggle() {
   );
 }
 
-export function MemoryCircuit3DGame({ onComplete, onExit }: GameComponentProps) {
+export function MemoryCircuit3DGame({
+  onComplete,
+  onExit,
+  onEntryReady,
+  onEntryError,
+}: GameComponentProps) {
   const game = useColorSequenceGame(onComplete);
   const {
     sequence,
@@ -62,7 +69,11 @@ export function MemoryCircuit3DGame({ onComplete, onExit }: GameComponentProps) 
   const stateLabel = getMemoryCircuitStateLabel(phase);
 
   return (
-    <div className="mfg-shell">
+    <div
+      className="mfg-shell wms-world-shell"
+      data-world-scene="circuit"
+      style={getWorldMasterSceneStyle("color-sequence", "game-shell")}
+    >
       <div className="mfg-atmosphere" aria-hidden />
       <span className="mfg-vignette" aria-hidden />
 
@@ -96,6 +107,8 @@ export function MemoryCircuit3DGame({ onComplete, onExit }: GameComponentProps) 
           canTap={canTap}
           onPadPress={handleColorPress}
           onBegin={beginGame}
+          onReady={onEntryReady}
+          onError={onEntryError}
         />
 
         <MemoryCircuitAccessibleControls

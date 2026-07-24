@@ -79,7 +79,7 @@ export function MemoryCircuitAccessibleControls({
             onClick={onRestart}
             disabled={phase === "showing"}
             aria-label="Começar outro circuito"
-            className="mfg-btn mfg-btn-secondary"
+            className="mfg-btn mfg-btn-secondary wms-button-secondary"
           >
             <RotateCcw className="h-5 w-5" aria-hidden />
             Começar outro circuito
@@ -89,7 +89,7 @@ export function MemoryCircuitAccessibleControls({
             onClick={onEnd}
             disabled={phase === "showing"}
             aria-label="Finalizar por agora"
-            className="mfg-btn mfg-btn-ghost"
+            className="mfg-btn mfg-btn-ghost wms-button-secondary"
           >
             <Square className="h-4 w-4" aria-hidden />
             Finalizar por agora

@@ -25,6 +25,8 @@ export interface RouteBabylonBridge {
 }
 
 export interface RouteBabylonController {
+  /** Resolves only after essential assets/fallbacks and one complete frame. */
+  ready: Promise<void>;
   updateBoard: (state: RouteBabylonState) => void;
   resize: () => void;
   /** Snap the camera back to the default safe inspection view. */
@@ -1807,19 +1809,46 @@ export function createRouteBabylonController(
 
   fitCamera();
   renderBoard();
-  void loadBoardAssetOnce();
-  void loadWallAssetOnce();
-  void loadPlayerAssetOnce();
-  void loadGuardianAssetOnce();
-  void loadPropAssetOnce("portal");
-  void loadPropAssetOnce("light");
-  void loadPropAssetOnce("trap");
-  void loadPropAssetOnce("shield");
+  const essentialAssetLoads = Promise.all([
+    loadBoardAssetOnce(),
+    loadWallAssetOnce(),
+    loadPlayerAssetOnce(),
+    loadGuardianAssetOnce(),
+    loadPropAssetOnce("portal"),
+    loadPropAssetOnce("light"),
+    loadPropAssetOnce("trap"),
+    loadPropAssetOnce("shield"),
+  ]);
   engine.runRenderLoop(() => {
     scene.render();
   });
 
+  const ready = essentialAssetLoads.then(() => {
+    if (disposed) {
+      throw new Error("Route scene was disposed before entry readiness.");
+    }
+
+    // Apply the final mix of loaded assets and valid procedural fallbacks,
+    // then settle the real canvas size/camera before observing the first
+    // complete frame that may be revealed to the Explorer.
+    renderBoard();
+    engine.resize();
+    fitCamera();
+    writeProjectedCellCenters();
+
+    return new Promise<void>((resolve, reject) => {
+      scene.onAfterRenderObservable.addOnce(() => {
+        if (disposed) {
+          reject(new Error("Route scene was disposed before its ready frame."));
+          return;
+        }
+        resolve();
+      });
+    });
+  });
+
   return {
+    ready,
     updateBoard(nextState: RouteBabylonState) {
       state = nextState;
       renderBoard();

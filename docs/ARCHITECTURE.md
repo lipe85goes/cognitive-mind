@@ -4,6 +4,16 @@ Este documento descreve o estado real do projeto após as limpezas CLEAN-02, CLE
 
 Regra de produto: leia `docs/MINDFLOW_EXPERIENCE_BOOK.md` antes de qualquer missão. A direção central é **Pensar em paz**. Para decisões visuais, use também `docs/MINDFLOW_VISUAL_SYSTEM.md`.
 
+## Continuidade visual dos mundos
+
+A Rota Estrategica e o Circuito de Memoria compartilham um contrato de cena
+mestre entre Home, transicao, intro, setup e game shell. A implementacao fica
+em `src/components/worlds/master-scene/` e o contrato completo esta em
+`docs/MINDFLOW_WORLD_MASTER_SCENES.md`.
+
+Esse sistema e exclusivamente visual. Ele nao altera hooks, regras, mapas,
+sequencias, timing, scoring, persistencia ou registry.
+
 ## Fluxo principal
 
 O app roda em uma única rota (`src/app/page.tsx`) e alterna entre três estados:

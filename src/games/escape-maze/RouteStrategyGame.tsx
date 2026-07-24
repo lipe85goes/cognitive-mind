@@ -32,11 +32,13 @@ import {
   ROWS,
   useEscapeMaze,
 } from "@/games/escape-maze/useEscapeMaze";
+import { getWorldMasterSceneStyle } from "@/components/worlds/master-scene/worldMasterSceneConfig";
 import type {
   DifficultyLevel,
   GameComponentProps,
   GridPosition,
 } from "@/types/game";
+import "@/components/worlds/master-scene/world-master-scene.css";
 
 /** WebGL is client-only: load the 3D board after mount with a calm fallback. */
 const RouteBoardScene = dynamic(
@@ -95,6 +97,8 @@ export function RouteStrategyGame({
   onComplete,
   onExit,
   initialRouteNumber,
+  onEntryReady,
+  onEntryError,
 }: GameComponentProps) {
   const reducedMotion = useReducedMotion();
   const game = useEscapeMaze(onComplete, initialRouteNumber);
@@ -382,7 +386,11 @@ export function RouteStrategyGame({
   ];
 
   return (
-    <div className="rsg-shell">
+    <div
+      className="rsg-shell wms-world-shell"
+      data-world-scene="route"
+      style={getWorldMasterSceneStyle("escape-maze", "game-shell")}
+    >
       <div className="rsg-atmosphere" aria-hidden />
       <span className="rsg-vignette" aria-hidden />
 
@@ -417,7 +425,7 @@ export function RouteStrategyGame({
           </span>
         </header>
 
-        <div className="rsg-plaque">
+        <div className="rsg-plaque wms-plate">
           <h1 className="rsg-plaque-text">Rota Estratégica</h1>
         </div>
 
@@ -517,6 +525,8 @@ export function RouteStrategyGame({
                     reducedMotion={Boolean(reducedMotion)}
                     status={status}
                     onMove={tryMovePlayer}
+                    onReady={onEntryReady}
+                    onError={onEntryError}
                   />
                 ) : (
                   <RouteBoardScene
@@ -578,7 +588,7 @@ export function RouteStrategyGame({
                   type="button"
                   onClick={startGame}
                   aria-label="Iniciar rota com a dificuldade selecionada"
-                  className="rsg-cta"
+                  className="rsg-cta wms-button-primary"
                 >
                   <Play className="h-6 w-6 fill-current" aria-hidden />
                   Iniciar rota
@@ -634,7 +644,7 @@ export function RouteStrategyGame({
                 type="button"
                 onClick={restartGame}
                 aria-label="Começar outra rota"
-                className="rsg-btn"
+                className="rsg-btn wms-button-secondary"
               >
                 <RotateCcw className="h-5 w-5" aria-hidden />
                 Começar outra rota
@@ -646,7 +656,7 @@ export function RouteStrategyGame({
                 type="button"
                 onClick={continueJourney}
                 aria-label="Explorar próxima rota"
-                className="rsg-btn rsg-next-route-btn"
+                className="rsg-btn rsg-next-route-btn wms-button-secondary"
               >
                 <Sparkles className="h-5 w-5" aria-hidden />
                 {status === "won" ? "Explorar próxima rota" : "Começar uma nova rota"}

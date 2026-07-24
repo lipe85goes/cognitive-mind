@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { useCallback, useEffect, useRef } from "react";
 import { Play } from "lucide-react";
 import {
   MEMORY_CIRCUIT_ASSETS,
@@ -19,7 +20,11 @@ interface MemoryCircuitStageProps {
   canTap: boolean;
   onPadPress: (id: number) => void;
   onBegin: () => void;
+  onReady?: () => void;
+  onError?: (error: Error) => void;
 }
+
+const MEMORY_STAGE_ASSET_COUNT = 7;
 
 /**
  * Palco ativo (RESET-CIRCUIT-MAX): board MESTRE 2.5D único + overlays
@@ -35,13 +40,57 @@ export function MemoryCircuitStage({
   canTap,
   onPadPress,
   onBegin,
+  onReady,
+  onError,
 }: MemoryCircuitStageProps) {
+  const loadedAssetsRef = useRef(new Set<string>());
+  const readyReportedRef = useRef(false);
+  const firstPaintFrameRef = useRef<number | null>(null);
+  const settledPaintFrameRef = useRef<number | null>(null);
   const corePulseClass =
     phase === "round-complete"
       ? "is-on"
       : phase === "showing"
         ? "is-soft"
         : "";
+
+  const markAssetLoaded = useCallback(
+    (asset: string) => {
+      if (readyReportedRef.current) return;
+      loadedAssetsRef.current.add(asset);
+      if (loadedAssetsRef.current.size !== MEMORY_STAGE_ASSET_COUNT) return;
+
+      firstPaintFrameRef.current = window.requestAnimationFrame(() => {
+        settledPaintFrameRef.current = window.requestAnimationFrame(() => {
+          if (readyReportedRef.current) return;
+          readyReportedRef.current = true;
+          onReady?.();
+        });
+      });
+    },
+    [onReady],
+  );
+
+  const reportAssetError = useCallback(
+    (asset: string) => {
+      onError?.(
+        new Error(`Failed to load essential Memory Circuit asset: ${asset}`),
+      );
+    },
+    [onError],
+  );
+
+  useEffect(
+    () => () => {
+      if (firstPaintFrameRef.current !== null) {
+        window.cancelAnimationFrame(firstPaintFrameRef.current);
+      }
+      if (settledPaintFrameRef.current !== null) {
+        window.cancelAnimationFrame(settledPaintFrameRef.current);
+      }
+    },
+    [],
+  );
 
   return (
     <div
@@ -57,6 +106,8 @@ export function MemoryCircuitStage({
         priority
         sizes="100vw"
         draggable={false}
+        onLoad={() => markAssetLoaded(MEMORY_CIRCUIT_ASSETS.background)}
+        onError={() => reportAssetError(MEMORY_CIRCUIT_ASSETS.background)}
       />
       <div className="mfg-memory-stage-shade" aria-hidden />
 
@@ -71,6 +122,8 @@ export function MemoryCircuitStage({
           priority
           sizes="(max-width: 900px) 96vw, 44rem"
           draggable={false}
+          onLoad={() => markAssetLoaded(MEMORY_CIRCUIT_ASSETS.board)}
+          onError={() => reportAssetError(MEMORY_CIRCUIT_ASSETS.board)}
         />
 
         {MEMORY_PAD_LAYOUTS.map((pad) => {
@@ -90,8 +143,11 @@ export function MemoryCircuitStage({
                 state === "on" ? "is-on" : state === "wrong" ? "is-wrong" : ""
               }`.trim()}
               fill
+              priority
               sizes="(max-width: 900px) 96vw, 44rem"
               draggable={false}
+              onLoad={() => markAssetLoaded(pad.overlay)}
+              onError={() => reportAssetError(pad.overlay)}
             />
           );
         })}
@@ -102,8 +158,11 @@ export function MemoryCircuitStage({
           aria-hidden
           className={`mfg-master-overlay mfg-master-core ${corePulseClass}`.trim()}
           fill
+          priority
           sizes="(max-width: 900px) 96vw, 44rem"
           draggable={false}
+          onLoad={() => markAssetLoaded(MEMORY_CIRCUIT_ASSETS.corePulse)}
+          onError={() => reportAssetError(MEMORY_CIRCUIT_ASSETS.corePulse)}
         />
 
         <MemoryCircuitPadLayer
@@ -124,7 +183,7 @@ export function MemoryCircuitStage({
             type="button"
             onClick={onBegin}
             aria-label="Ativar circuito"
-            className="mfg-cta"
+            className="mfg-cta wms-button-primary"
           >
             <Play className="h-6 w-6 fill-current" aria-hidden />
             Ativar circuito

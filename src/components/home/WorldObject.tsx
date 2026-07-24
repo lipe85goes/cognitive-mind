@@ -6,8 +6,8 @@ import { Play } from "lucide-react";
 import type { Activity, GameId } from "@/types/game";
 import type { WorldKey } from "@/data/worlds";
 import { getWorldVisual } from "@/components/worlds/worldVisuals";
-import { WorldDiorama } from "@/components/worlds/diorama/WorldDiorama";
-import { hasWorldDiorama } from "@/components/worlds/diorama/worldDioramaLayout";
+import { WorldMasterScene } from "@/components/worlds/master-scene/WorldMasterScene";
+import { hasWorldMasterScene } from "@/components/worlds/master-scene/worldMasterSceneConfig";
 import type { HomeWorldLayout } from "./homeLayout";
 
 export interface HomeWorldEntry {
@@ -49,13 +49,13 @@ export function WorldObject({
   onEnter,
 }: WorldObjectProps) {
   const visual = getWorldVisual(entry.gameId);
-  const usesDiorama = hasWorldDiorama(entry.gameId);
+  const usesMasterScene = hasWorldMasterScene(entry.gameId);
   /**
    * Layered dioramas are complete transparent maquettes and must keep their
    * real silhouette; only the flat baked-background heroes still need the
    * cover + ellipse-mask treatment from `.hj-world-art-rendered`.
    */
-  const artModeClass = usesDiorama
+  const artModeClass = usesMasterScene
     ? "hj-world-art-diorama"
     : `hj-world-art-${visual.artMode}`;
   const style = {
@@ -64,6 +64,9 @@ export function WorldObject({
     "--hj-world-accent": visual.accent,
     "--hj-world-glow": visual.accentSoft,
     "--hj-world-plaque": visual.accentDeep,
+    "--wms-accent": visual.accent,
+    "--wms-accent-soft": visual.accentSoft,
+    "--wms-accent-deep": visual.accentDeep,
   } as CSSProperties;
 
   const selectOrEnter = () => {
@@ -106,9 +109,10 @@ export function WorldObject({
         <span className="hj-world-aura" aria-hidden="true" />
         <span className="hj-world-diorama" aria-hidden="true">
           <span className="hj-world-art">
-            {usesDiorama ? (
-              <WorldDiorama
+            {hasWorldMasterScene(entry.gameId) ? (
+              <WorldMasterScene
                 gameId={entry.gameId}
+                context="home"
                 state={selected ? "focused" : "idle"}
                 sizes={
                   selected
@@ -136,7 +140,7 @@ export function WorldObject({
         </span>
       </button>
 
-      <div className="hj-world-plaque">
+      <div className="hj-world-plaque wms-plate">
         <span className="hj-world-copy">
           <strong>{visual.visualName}</strong>
           <span>{visual.homeDescription}</span>
@@ -144,10 +148,11 @@ export function WorldObject({
         {selected ? (
           <button
             type="button"
-            className="hj-world-enter"
+            className="hj-world-enter wms-button-primary"
             onClick={onEnter}
             aria-label={`Entrar em ${visual.visualName}`}
             disabled={disabled}
+            data-world-entry-return="true"
           >
             <Play size={17} fill="currentColor" aria-hidden="true" />
             Entrar

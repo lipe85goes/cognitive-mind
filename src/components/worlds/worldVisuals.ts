@@ -69,7 +69,7 @@ export const WORLD_VISUALS: Record<GameId, WorldVisualContract> = {
     accent: "#f2c65a",
     accentSoft: "rgba(242, 198, 90, 0.22)",
     accentDeep: "#5c3a18",
-    atmosphere: "/illustrations/home/home-background-desktop.webp",
+    atmosphere: "/illustrations/memory-circuit/memory-room-bg.webp",
     homeArt: "/illustrations/home/world-circuit-hero.webp",
     transitionArt: "/illustrations/home/world-circuit-hero.webp",
     introArt: "/illustrations/home/world-circuit-hero.webp",

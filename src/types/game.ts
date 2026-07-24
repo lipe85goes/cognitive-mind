@@ -48,6 +48,10 @@ export interface GameComponentProps {
   onExit: () => void;
   /** Optional continuation hook for games with internal route/session progression. */
   initialRouteNumber?: number;
+  /** Entry shell callback after essential visual assets have painted. */
+  onEntryReady?: () => void;
+  /** Entry shell callback for failures that would expose an incomplete world. */
+  onEntryError?: (error: Error) => void;
 }
 
 /** Escape Maze game stats tracked during play. */

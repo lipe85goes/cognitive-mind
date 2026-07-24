@@ -1,11 +1,18 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
 import { GameScreen } from "@/components/GameScreen";
 import { HomeStage } from "@/components/home/HomeStage";
 import type { HomeWorldEntry } from "@/components/home/WorldObject";
 import { RewardResultModal } from "@/components/RewardResultModal";
 import { WorldEntryTransition } from "@/components/WorldEntryTransition";
+import { useWorldEntryController } from "@/components/world-entry/useWorldEntryController";
 import { ACTIVITIES } from "@/data/activities";
 import { getWorldMeta } from "@/data/worlds";
 import { PLAYABLE_STAGE_IDS } from "@/engine/stage-progress";
@@ -29,12 +36,21 @@ export default function HomePage() {
   const [selectedDashboardGameId, setSelectedDashboardGameId] =
     useState<GameId | null>(null);
   const [dashboardNotice, setDashboardNotice] = useState<string | null>(null);
-  /** World whose entry threshold is currently playing (null = none). */
-  const [enteringGameId, setEnteringGameId] = useState<GameId | null>(null);
   /** Bumped to remount game components on each new session. */
   const [gameSession, setGameSession] = useState(0);
   const [initialRouteNumber, setInitialRouteNumber] = useState<number | undefined>();
   const [skipGameIntro, setSkipGameIntro] = useState(false);
+  const {
+    state: entryState,
+    isActive: isEntryActive,
+    start: startWorldEntry,
+    covered: markWorldCovered,
+    markReady: markWorldReady,
+    fail: failWorldEntry,
+    retry: retryEntry,
+    complete: completeWorldEntry,
+    reset: resetWorldEntry,
+  } = useWorldEntryController();
 
   const worlds = useMemo<HomeWorldEntry[]>(
     () =>
@@ -79,20 +95,17 @@ export default function HomePage() {
   }, [view, activeGameId, gameSession]);
 
   const openActivity = (activity: Activity) => {
-    if (
-      enteringGameId ||
-      activity.status !== "available" ||
-      !activity.gameId
-    ) {
+    if (activity.status !== "available" || !activity.gameId) {
       return;
     }
+    if (!startWorldEntry(activity.gameId)) return;
+
     setDashboardNotice(null);
     setSelectedDashboardGameId(activity.gameId);
     setActiveGameId(activity.gameId);
     setInitialRouteNumber(undefined);
     setSkipGameIntro(false);
     setGameSession((n) => n + 1);
-    setEnteringGameId(activity.gameId);
   };
 
   const handleGameComplete = (
@@ -116,10 +129,13 @@ export default function HomePage() {
 
     setActiveGameId(null);
     setView("home");
+    resetWorldEntry();
   };
 
   const playAgain = () => {
     if (lastResult?.gameId) {
+      if (!startWorldEntry(lastResult.gameId)) return;
+
       setDashboardNotice(null);
       const nextRouteNumber =
         lastResult.gameId === "escape-maze" &&
@@ -132,29 +148,55 @@ export default function HomePage() {
       setInitialRouteNumber(nextRouteNumber);
       setSkipGameIntro(Boolean(nextRouteNumber));
       setGameSession((n) => n + 1);
-      setEnteringGameId(lastResult.gameId);
     }
   };
 
   const revealEnteredWorld = useCallback(() => {
     setView("game");
-  }, []);
+    markWorldCovered();
+  }, [markWorldCovered]);
 
   const finishWorldEntry = useCallback(() => {
-    setEnteringGameId(null);
-  }, []);
+    completeWorldEntry();
+    window.requestAnimationFrame(() => {
+      document
+        .querySelector<HTMLElement>('[data-world-entry-focus="true"]')
+        ?.focus();
+    });
+  }, [completeWorldEntry]);
+
+  const retryWorldEntry = useCallback(() => {
+    setGameSession((session) => session + 1);
+    retryEntry();
+  }, [retryEntry]);
+
+  const cancelWorldEntry = useCallback(() => {
+    setActiveGameId(null);
+    setView("home");
+    resetWorldEntry();
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        document
+          .querySelector<HTMLElement>('[data-world-entry-return="true"]')
+          ?.focus();
+      });
+    });
+  }, [resetWorldEntry]);
 
   let content: ReactNode;
   if (view === "game" && activeGameId) {
     content = (
       <main className="flex min-h-full min-w-0 flex-1 flex-col overflow-x-hidden">
         <GameScreen
+          key={`${activeGameId}-${gameSession}`}
           gameId={activeGameId}
           sessionKey={gameSession}
           initialRouteNumber={initialRouteNumber}
           skipIntro={skipGameIntro}
           onComplete={handleGameComplete}
           onExit={returnHome}
+          onEntryReady={markWorldReady}
+          onEntryError={failWorldEntry}
         />
       </main>
     );
@@ -176,7 +218,7 @@ export default function HomePage() {
           recentResults={recentResults}
           selectedGameId={selectedDashboardGameId}
           statusMessage={dashboardNotice}
-          isEntering={Boolean(enteringGameId)}
+          isEntering={isEntryActive}
           onSelectedGameIdChange={setSelectedDashboardGameId}
           onEnter={openActivity}
         />
@@ -187,12 +229,14 @@ export default function HomePage() {
   return (
     <>
       {content}
-      {enteringGameId && (
+      {isEntryActive && entryState.gameId && (
         <WorldEntryTransition
-          key={`${enteringGameId}-${gameSession}`}
-          gameId={enteringGameId}
+          gameId={entryState.gameId}
+          phase={entryState.phase}
           onCovered={revealEnteredWorld}
           onDone={finishWorldEntry}
+          onRetry={retryWorldEntry}
+          onBack={cancelWorldEntry}
         />
       )}
     </>

@@ -149,6 +149,7 @@ export function HomeStage({
       tabIndex={0}
       onKeyDown={handleStageKeyDown}
       aria-busy={isEntering}
+      inert={isEntering ? true : undefined}
       data-entering={isEntering ? "true" : undefined}
     >
       <div className="hj-atmosphere" aria-hidden="true">
