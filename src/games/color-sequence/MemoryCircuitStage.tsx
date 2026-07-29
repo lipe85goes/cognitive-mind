@@ -24,7 +24,7 @@ interface MemoryCircuitStageProps {
   onError?: (error: Error) => void;
 }
 
-const MEMORY_STAGE_ASSET_COUNT = 7;
+const MEMORY_STAGE_ESSENTIAL_ASSET_COUNT = 7;
 
 /**
  * Palco ativo (RESET-CIRCUIT-MAX): board MESTRE 2.5D único + overlays
@@ -48,17 +48,24 @@ export function MemoryCircuitStage({
   const firstPaintFrameRef = useRef<number | null>(null);
   const settledPaintFrameRef = useRef<number | null>(null);
   const corePulseClass =
-    phase === "round-complete"
-      ? "is-on"
-      : phase === "showing"
-        ? "is-soft"
-        : "";
+    phase === "showing"
+      ? "is-soft"
+      : tapFeedback === "correct"
+        ? "is-response"
+        : phase === "input"
+          ? "is-ready"
+          : "";
+  const completeClass = phase === "round-complete" ? "is-on" : "";
 
   const markAssetLoaded = useCallback(
     (asset: string) => {
       if (readyReportedRef.current) return;
       loadedAssetsRef.current.add(asset);
-      if (loadedAssetsRef.current.size !== MEMORY_STAGE_ASSET_COUNT) return;
+      if (
+        loadedAssetsRef.current.size !== MEMORY_STAGE_ESSENTIAL_ASSET_COUNT
+      ) {
+        return;
+      }
 
       firstPaintFrameRef.current = window.requestAnimationFrame(() => {
         settledPaintFrameRef.current = window.requestAnimationFrame(() => {
@@ -97,6 +104,7 @@ export function MemoryCircuitStage({
       className="mfg-stage mfg-illustrated-stage mfg-master-stage"
       aria-busy={phase === "showing"}
       data-phase={phase}
+      data-feedback={tapFeedback ?? "none"}
     >
       <Image
         src={MEMORY_CIRCUIT_ASSETS.background}
@@ -165,6 +173,18 @@ export function MemoryCircuitStage({
           onError={() => reportAssetError(MEMORY_CIRCUIT_ASSETS.corePulse)}
         />
 
+        <Image
+          src={MEMORY_CIRCUIT_ASSETS.complete}
+          alt=""
+          aria-hidden
+          className={`mfg-master-overlay mfg-master-complete ${completeClass}`.trim()}
+          fill
+          priority
+          sizes="(max-width: 900px) 96vw, 44rem"
+          draggable={false}
+          onError={() => reportAssetError(MEMORY_CIRCUIT_ASSETS.complete)}
+        />
+
         <MemoryCircuitPadLayer
           activeColor={activeColor}
           lastTapped={lastTapped}
@@ -177,7 +197,7 @@ export function MemoryCircuitStage({
       {phase === "idle" && (
         <div className="mfg-stage-overlay">
           <p className="mfg-stage-hint">
-            Observe as luzes do circuito e repita a sequência.
+            Observe os sinais do circuito e repita no seu ritmo.
           </p>
           <button
             type="button"

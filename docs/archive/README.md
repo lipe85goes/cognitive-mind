@@ -6,6 +6,7 @@ Esta pasta guarda assets históricos, previews e materiais de revisão que não 
 
 - `route-previews/` — PNGs de preview dos GLBs da Rota Estratégica.
 - `memory-circuit/` — protótipos visuais antigos do Circuito de Memória.
+- `memory-circuit/legacy-kit-v1/` — kit PNG do primeiro board mestre (1500×1200), substituído pelo kit V2 WebP em `public/assets/memory-circuit/v2/` (CIRCUIT-MASTER-FINAL-01).
 - `home-legacy/` — assets antigos da Home antes da Home 3D atual.
 
 - `home-station-masters/` - PNG masters pesados das estacoes da Home; runtime usa WebP em `public/illustrations/`.

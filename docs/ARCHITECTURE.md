@@ -137,14 +137,19 @@ Arquivos principais:
 Runtime visual ativo:
 
 - `public/illustrations/memory-circuit/memory-room-bg.webp`
-- `public/assets/memory-circuit/memory-board-master.png`
-- `public/assets/memory-circuit/overlay-flame-active.png`
-- `public/assets/memory-circuit/overlay-wave-active.png`
-- `public/assets/memory-circuit/overlay-leaf-active.png`
-- `public/assets/memory-circuit/overlay-sun-active.png`
-- `public/assets/memory-circuit/overlay-core-pulse.png`
+- `public/assets/memory-circuit/v2/memory-board.webp`
+- `public/assets/memory-circuit/v2/overlay-flame.webp`
+- `public/assets/memory-circuit/v2/overlay-wave.webp`
+- `public/assets/memory-circuit/v2/overlay-leaf.webp`
+- `public/assets/memory-circuit/v2/overlay-sun.webp`
+- `public/assets/memory-circuit/v2/overlay-core.webp`
+- `public/assets/memory-circuit/v2/overlay-complete.webp`
+- `src/games/color-sequence/memory-circuit-visual.css`
+- `src/games/color-sequence/MemoryCircuitWorldMark.tsx` (emblema SVG inline do mundo)
 
-O contrato oficial do asset kit fica em `docs/MEMORY_CIRCUIT_ASSET_SPEC.md`. O caminho ativo é board mestre 2.5D + overlays transparentes + hitboxes reais. Assets antigos separados foram arquivados em `docs/archive/memory-circuit/`.
+O contrato oficial do asset kit fica em `docs/MEMORY_CIRCUIT_ASSET_SPEC.md`. O caminho ativo é board mestre 2.5D + overlays transparentes + hitboxes reais. Assets antigos separados foram arquivados em `docs/archive/memory-circuit/`; o primeiro kit PNG (V1) está em `docs/archive/memory-circuit/legacy-kit-v1/`.
+
+A cena mestre do Circuito (Home, transição, introdução, preparação) carrega os MESMOS arquivos de `public/assets/memory-circuit/v2/` que o jogo ativo — não há cópia derivada. Ver `docs/MEMORY_CIRCUIT_ASSET_SPEC.md` para a regra de fonte única e o motivo.
 
 `useColorSequenceGame.ts` é regra de jogo. Não altere sequência, timing, tentativas, scoring, progressão, reward ou localStorage por motivo visual.
 
@@ -180,6 +185,7 @@ Não importe nada de `docs/archive/` no app. Se um asset voltar a ser runtime, m
 Scripts ativos de geração visual:
 
 - `tools/blender/create_memory_circuit_board.py`
+- `tools/blender/create_memory_circuit_visual_v2.py`
 - `tools/blender/create_route_board_glb.py`
 - `tools/blender/create_route_wall_glb.py`
 - `tools/blender/create_route_player_glb.py`

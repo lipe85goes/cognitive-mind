@@ -6,11 +6,13 @@ import { MemoryCircuitAccessibleControls } from "@/games/color-sequence/MemoryCi
 import { MemoryCircuitHud } from "@/games/color-sequence/MemoryCircuitHud";
 import { MemoryCircuitStage } from "@/games/color-sequence/MemoryCircuitStage";
 import { getMemoryCircuitStateLabel } from "@/games/color-sequence/memoryCircuitVisualState";
+import { useCircuitSceneParallax } from "@/games/color-sequence/useCircuitSceneParallax";
 import { isSoundEnabled, setSoundEnabled } from "@/lib/game-sounds";
 import { useColorSequenceGame } from "@/games/color-sequence/useColorSequenceGame";
 import { getWorldMasterSceneStyle } from "@/components/worlds/master-scene/worldMasterSceneConfig";
 import type { GameComponentProps } from "@/types/game";
 import "@/components/worlds/master-scene/world-master-scene.css";
+import "@/games/color-sequence/memory-circuit-visual.css";
 
 function PremiumSoundToggle() {
   const [on, setOn] = useState(false);
@@ -67,10 +69,12 @@ export function MemoryCircuit3DGame({
   } = game;
 
   const stateLabel = getMemoryCircuitStateLabel(phase);
+  const sceneRef = useCircuitSceneParallax<HTMLDivElement>();
 
   return (
     <div
-      className="mfg-shell wms-world-shell"
+      ref={sceneRef}
+      className="mfg-shell mfg-visual-v2 wms-world-shell"
       data-world-scene="circuit"
       style={getWorldMasterSceneStyle("color-sequence", "game-shell")}
     >

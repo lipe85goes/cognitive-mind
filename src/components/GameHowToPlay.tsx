@@ -128,7 +128,7 @@ export function GameHowToPlay({
                   gameId={gameId}
                   context="intro"
                   state="focused"
-                  sizes="(max-width: 767px) calc(100vw - 2rem), 40vw"
+                  sizes="(max-width: 767px) 100vw, 52rem"
                   priority
                   onReady={reportReadyAfterPaint}
                   onError={onError}

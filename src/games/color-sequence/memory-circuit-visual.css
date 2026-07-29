@@ -1,0 +1,1054 @@
+/* Circuit Visual 01: isolated presentation layer for the active 2.5D game. */
+
+.mfg-shell.mfg-visual-v2 {
+  min-height: 100svh;
+  overflow-x: clip;
+  color: #fff7df;
+  background: #10201f;
+}
+
+.mfg-shell.mfg-visual-v2 .mfg-frame.mfg-frame-hero {
+  display: grid;
+  /* O legado `.mfg-frame` centralizava o conteúdo numa coluna de ~1000px:
+     a borda dessa coluna era metade da leitura de "painel". A cena agora
+     ocupa a largura toda; quem limita a si mesmo é o HUD. */
+  justify-content: stretch;
+  justify-items: stretch;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  gap: clamp(0.35rem, 1vh, 0.7rem);
+  width: 100%;
+  min-height: 100svh !important;
+  height: 100svh !important;
+  max-height: 100svh;
+  max-width: none;
+  padding:
+    max(0.65rem, env(safe-area-inset-top))
+    clamp(0.75rem, 2vw, 2rem)
+    max(0.55rem, env(safe-area-inset-bottom));
+  overflow: hidden;
+}
+
+/* A vinheta da shell não fecha a cena: só apoia as bordas da tela. */
+.mfg-visual-v2 .mfg-vignette {
+  z-index: 2;
+  background:
+    linear-gradient(90deg, rgba(5, 15, 14, 0.24), transparent 20%, transparent 80%, rgba(5, 15, 14, 0.22)),
+    linear-gradient(180deg, rgba(4, 12, 11, 0.2), transparent 22%, transparent 74%, rgba(4, 12, 11, 0.28));
+}
+
+.mfg-visual-v2 .mfg-topbar {
+  position: relative;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 3rem;
+  padding: 0;
+  inset: auto;
+}
+
+.mfg-visual-v2 .mfg-back,
+.mfg-visual-v2 .mfg-sound {
+  min-height: 2.75rem;
+  border: 1px solid rgba(202, 157, 82, 0.48);
+  border-radius: 0.9rem;
+  color: #fff4d3;
+  background:
+    linear-gradient(180deg, rgba(20, 40, 38, 0.88), rgba(9, 24, 23, 0.9));
+  box-shadow:
+    inset 0 1px rgba(255, 246, 210, 0.14),
+    0 5px 16px rgba(4, 12, 11, 0.2);
+  backdrop-filter: blur(12px);
+}
+
+.mfg-visual-v2 .mfg-back:hover,
+.mfg-visual-v2 .mfg-sound:hover {
+  border-color: rgba(232, 190, 111, 0.72);
+  background:
+    linear-gradient(180deg, rgba(27, 53, 50, 0.94), rgba(11, 31, 29, 0.94));
+}
+
+.mfg-visual-v2 .mfg-back:focus-visible,
+.mfg-visual-v2 .mfg-sound:focus-visible,
+.mfg-visual-v2 .mfg-support-toggle:focus-visible,
+.mfg-visual-v2 .mfg-master-hitbox:focus-visible {
+  outline: 3px solid #9fe1d3;
+  outline-offset: 3px;
+}
+
+.mfg-visual-v2 .mfg-memory-hud {
+  position: relative;
+  z-index: 22;
+  display: grid;
+  grid-template-columns: minmax(20.5rem, 0.95fr) minmax(17rem, 1.45fr) minmax(8.75rem, 0.5fr);
+  align-items: center;
+  gap: clamp(0.55rem, 1.4vw, 1.1rem);
+  width: min(100%, 78rem);
+  margin: 0 auto;
+  inset: auto;
+}
+
+/* Lockup do mundo: emblema + nome + assinatura em uma placa de pedra. */
+.mfg-visual-v2 .mfg-memory-title {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  min-width: 0;
+  min-height: 3.4rem;
+  padding: 0.45rem 0.85rem 0.45rem 0.6rem;
+  border: 1px solid rgba(202, 157, 82, 0.42);
+  border-radius: 1rem;
+  color: #fff2ce;
+  background:
+    linear-gradient(180deg, rgba(24, 46, 43, 0.9), rgba(10, 26, 24, 0.92));
+  box-shadow:
+    inset 0 1px rgba(255, 246, 210, 0.12),
+    0 7px 22px rgba(4, 13, 13, 0.22);
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.48);
+  backdrop-filter: blur(12px);
+}
+
+.mfg-visual-v2 .mfg-memory-mark {
+  flex: 0 0 auto;
+  width: 2.8rem;
+  height: 2.8rem;
+  filter: drop-shadow(0 3px 8px rgba(3, 15, 13, 0.5));
+}
+
+.mfg-visual-v2 .mfg-memory-lockup {
+  display: grid;
+  gap: 0.14rem;
+  min-width: 0;
+}
+
+.mfg-visual-v2 .mfg-memory-lockup h1 {
+  margin: 0;
+  font-size: clamp(1.22rem, 1.62vw, 1.68rem);
+  line-height: 0.95;
+  letter-spacing: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.mfg-visual-v2 .mfg-memory-lockup p {
+  margin: 0;
+  overflow: hidden;
+  color: #d9bc7a;
+  font-size: clamp(0.72rem, 0.85vw, 0.86rem);
+  font-weight: 650;
+  letter-spacing: 0.015em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Placa de estado: a instrução atual é a informação principal do HUD. */
+.mfg-visual-v2 .mfg-memory-state {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 3.4rem;
+  padding: 0.5rem 0.95rem 0.5rem 0.6rem;
+  border: 1px solid rgba(108, 177, 173, 0.45);
+  border-radius: 1rem;
+  background:
+    linear-gradient(180deg, rgba(10, 27, 28, 0.9), rgba(5, 19, 20, 0.9));
+  box-shadow:
+    inset 0 1px rgba(255, 246, 217, 0.1),
+    0 7px 22px rgba(4, 13, 13, 0.22);
+  backdrop-filter: blur(12px);
+  transition: border-color 220ms ease;
+}
+
+.mfg-visual-v2 .mfg-memory-state-icon {
+  display: grid;
+  width: 2.35rem;
+  height: 2.35rem;
+  place-items: center;
+  border: 1px solid rgba(130, 209, 193, 0.5);
+  border-radius: 999px;
+  color: #9fe1d3;
+  background: rgba(12, 38, 35, 0.85);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.12);
+}
+
+.mfg-visual-v2 .mfg-memory-state-copy {
+  display: grid;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.mfg-visual-v2 .mfg-memory-state-copy strong {
+  color: #fff1cb;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.05rem, 1.6vw, 1.4rem);
+  line-height: 1.05;
+}
+
+.mfg-visual-v2 .mfg-memory-state-copy span {
+  display: -webkit-box;
+  overflow: hidden;
+  min-width: 0;
+  color: #dbe9e4;
+  font-size: clamp(0.78rem, 1vw, 0.94rem);
+  line-height: 1.25;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+/* Variantes calmas: teal para observação, verde-teal para acerto,
+   âmbar acolhedor para "vamos tentar de novo" — nunca vermelho duro. */
+.mfg-visual-v2 .mfg-memory-state.mfg-status-info {
+  border-color: rgba(108, 177, 173, 0.6);
+}
+
+.mfg-visual-v2 .mfg-memory-state.mfg-status-success {
+  border-color: rgba(126, 201, 156, 0.62);
+}
+
+.mfg-visual-v2 .mfg-memory-state.mfg-status-success .mfg-memory-state-icon {
+  border-color: rgba(126, 201, 156, 0.6);
+  color: #a9e6c3;
+}
+
+.mfg-visual-v2 .mfg-memory-state.mfg-status-error {
+  border-color: rgba(226, 178, 94, 0.66);
+}
+
+.mfg-visual-v2 .mfg-memory-state.mfg-status-error .mfg-memory-state-icon {
+  border-color: rgba(226, 178, 94, 0.62);
+  color: #f2cf8e;
+}
+
+/* Marcador de etapa: progresso essencial como pequeno artefato de bronze. */
+.mfg-visual-v2 .mfg-memory-path {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 0.28rem;
+  justify-self: end;
+  min-width: 8.6rem;
+  min-height: 3.4rem;
+  padding: 0.45rem 0.85rem;
+  border: 1px solid rgba(202, 157, 82, 0.48);
+  border-radius: 1rem;
+  color: #fff0c7;
+  background:
+    linear-gradient(180deg, rgba(28, 46, 42, 0.88), rgba(10, 26, 24, 0.9));
+  box-shadow:
+    inset 0 1px rgba(255, 246, 210, 0.12),
+    0 7px 22px rgba(4, 13, 13, 0.2);
+  backdrop-filter: blur(12px);
+}
+
+.mfg-visual-v2 .mfg-memory-path > strong {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.mfg-visual-v2 .mfg-memory-path-dots {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.mfg-visual-v2 .mfg-memory-path-dots i {
+  width: 0.66rem;
+  height: 0.66rem;
+  border: 1px solid rgba(255, 244, 210, 0.72);
+  border-radius: 50%;
+  background: var(--pad);
+  box-shadow: 0 0 7px color-mix(in srgb, var(--pad) 45%, transparent);
+}
+
+.mfg-visual-v2 .mfg-memory-path small {
+  color: #c3d6cf;
+  font-size: 0.68rem;
+  line-height: 1;
+}
+
+/* ============================================================
+   CIRCUIT-FREE-SCENE-01 — o artefato solto no espaço.
+
+   O palco deixou de ser um painel. Todo o chrome de cartão foi
+   removido (borda, raio, fundo, sombra externa, recorte), inclusive
+   o legado de `.mfg-stage` / `.mfg-illustrated-stage` / `.mfg-master-stage`
+   que vinha de globals.css e ainda desenhava moldura e vinheta.
+
+   O ambiente virou UMA camada só, sangrando na tela inteira: antes a
+   sala era pintada duas vezes (wash da shell + imagem nítida dentro do
+   painel), e o degrau de brilho na borda era o "retângulo" — tirar só a
+   borda não resolveria.
+   ============================================================ */
+.mfg-visual-v2 .mfg-stage.mfg-master-stage,
+.mfg-visual-v2 .mfg-stage.mfg-master-stage::before,
+.mfg-visual-v2 .mfg-stage.mfg-master-stage::after {
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+
+.mfg-visual-v2 .mfg-stage.mfg-master-stage {
+  position: relative;
+  z-index: 10;
+  display: grid;
+  width: 100%;
+  min-height: 0 !important;
+  height: 100%;
+  max-height: none;
+  aspect-ratio: auto;
+  place-items: center;
+  overflow: visible;
+  isolation: isolate;
+  padding: 0;
+}
+
+.mfg-visual-v2 .mfg-stage.mfg-master-stage::before,
+.mfg-visual-v2 .mfg-stage.mfg-master-stage::after {
+  content: none;
+}
+
+/* A sala é a cena inteira, não a textura de um cartão. `next/image` com
+   `fill` injeta `position:absolute` inline — promovemos para `fixed` para
+   que o ambiente cubra o palco todo por trás da UI. */
+.mfg-visual-v2 .mfg-memory-bg {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 0;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
+  object-position: center 47%;
+  filter: brightness(0.62) saturate(0.8) contrast(1.03) blur(1.6px);
+  transform:
+    scale(1.07)
+    translate3d(var(--mfg-par-x, 0px), var(--mfg-par-y, 0px), 0);
+  transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Profundidade da cena: foco luminoso no centro, cantos recuando. */
+.mfg-visual-v2 .mfg-memory-stage-shade {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse 62% 58% at 50% 52%,
+      rgba(255, 214, 140, 0.09),
+      transparent 62%
+    ),
+    radial-gradient(
+      ellipse 90% 85% at 50% 50%,
+      transparent 38%,
+      rgba(4, 12, 11, 0.42) 78%,
+      rgba(2, 8, 7, 0.66) 100%
+    );
+  transform: translate3d(
+    calc(var(--mfg-par-x, 0px) * -0.45),
+    calc(var(--mfg-par-y, 0px) * -0.45),
+    0
+  );
+  transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* A shell não repinta a sala: só um wash de cor (evita baixar a mesma
+   imagem duas vezes — uma via CSS, outra via next/image). */
+.mfg-visual-v2 .mfg-atmosphere {
+  opacity: 1;
+  background-color: #0a1614;
+  background-image:
+    radial-gradient(ellipse 70% 60% at 50% 46%, rgba(38, 74, 68, 0.55), transparent 70%),
+    linear-gradient(180deg, #0b1917 0%, #071210 100%);
+}
+
+.mfg-visual-v2 .mfg-master-board {
+  position: absolute;
+  z-index: 4;
+  top: 50%;
+  left: 50%;
+  /* Grande o bastante para ser protagonista, com uma faixa livre embaixo
+     para o convite de ativação respirar fora da peça. */
+  width: min(78vw, 47rem, calc((100svh - 19.5rem) * 1.25));
+  min-width: min(22rem, 94vw);
+  aspect-ratio: 5 / 4;
+  transform: translate(-50%, -57%);
+  filter:
+    drop-shadow(0 1.15rem 0.75rem rgba(2, 12, 11, 0.34))
+    drop-shadow(0 2rem 2.1rem rgba(2, 9, 8, 0.42));
+}
+
+/* Sombra de contato: o que faz o artefato pousar no ambiente em vez de
+   flutuar recortado. Elipse sob o disco, alinhada ao eixo da câmera 2.5D. */
+.mfg-visual-v2 .mfg-master-board-shadow {
+  display: block;
+  position: absolute;
+  z-index: 0;
+  left: 50%;
+  bottom: 5.5%;
+  width: 66%;
+  height: 13%;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      ellipse at 50% 50%,
+      rgba(2, 8, 7, 0.62) 0%,
+      rgba(2, 8, 7, 0.34) 46%,
+      transparent 72%
+    );
+  filter: blur(0.85rem);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+/* Poça de luz quente sob o artefato — dá chão sem desenhar chão. */
+.mfg-visual-v2 .mfg-master-board::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  bottom: 1%;
+  width: 86%;
+  height: 22%;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse at 50% 50%,
+    rgba(255, 208, 132, 0.13),
+    transparent 68%
+  );
+  filter: blur(1.15rem);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.mfg-visual-v2 .mfg-master-board-art,
+.mfg-visual-v2 .mfg-master-overlay {
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+}
+
+.mfg-visual-v2 .mfg-master-overlay {
+  z-index: 3;
+  opacity: 0;
+  filter: none;
+  transition: opacity 160ms ease;
+}
+
+.mfg-visual-v2 .mfg-master-overlay.is-on {
+  opacity: 1;
+}
+
+.mfg-visual-v2 .mfg-master-overlay.is-wrong {
+  opacity: 0.78;
+  filter: sepia(0.45) saturate(0.8) hue-rotate(345deg) brightness(0.92);
+}
+
+.mfg-visual-v2 .mfg-master-core {
+  z-index: 4;
+}
+
+.mfg-visual-v2 .mfg-master-core.is-soft {
+  opacity: 0.62;
+}
+
+.mfg-visual-v2 .mfg-master-core.is-ready {
+  opacity: 0.24;
+}
+
+.mfg-visual-v2 .mfg-master-core.is-response {
+  opacity: 0.9;
+}
+
+.mfg-visual-v2 .mfg-master-complete {
+  z-index: 5;
+}
+
+.mfg-visual-v2 .mfg-master-hitboxes {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+}
+
+.mfg-visual-v2 .mfg-master-hitbox {
+  position: absolute;
+  top: var(--y);
+  left: var(--x);
+  width: var(--pad-size);
+  aspect-ratio: 1;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mfg-visual-v2 .mfg-master-hitbox::after {
+  position: absolute;
+  inset: 7%;
+  border: 2px solid transparent;
+  border-radius: inherit;
+  content: "";
+  transition:
+    border-color 140ms ease,
+    box-shadow 140ms ease,
+    transform 100ms ease;
+}
+
+.mfg-visual-v2 .mfg-master-hitbox:hover:not(:disabled)::after,
+.mfg-visual-v2 .mfg-master-hitbox:focus-visible::after {
+  border-color: color-mix(in srgb, var(--pad) 70%, #fff0c7);
+  box-shadow:
+    0 0 0 4px rgba(255, 244, 210, 0.12),
+    0 0 18px color-mix(in srgb, var(--pad) 40%, transparent);
+}
+
+.mfg-visual-v2 .mfg-master-hitbox:active:not(:disabled)::after {
+  transform: scale(0.94);
+}
+
+.mfg-visual-v2 .mfg-master-hitbox:disabled {
+  cursor: default;
+}
+
+/* O convite de ativação repousa no pé do palco — nunca sobre o core. */
+.mfg-visual-v2 .mfg-stage-overlay {
+  position: absolute;
+  z-index: 15;
+  inset: auto auto clamp(0.5rem, 1.5vh, 1rem) 50%;
+  display: grid;
+  width: min(92%, 30rem);
+  gap: 0.35rem;
+  transform: translateX(-50%);
+}
+
+.mfg-visual-v2 .mfg-stage-hint {
+  margin: 0;
+  padding: 0.5rem 0.85rem;
+  border: 1px solid rgba(110, 192, 181, 0.4);
+  border-radius: 999px;
+  color: #e9f4ee;
+  background: rgba(6, 25, 24, 0.86);
+  font-size: clamp(0.78rem, 1vw, 0.94rem);
+  text-align: center;
+  backdrop-filter: blur(10px);
+}
+
+.mfg-visual-v2 .mfg-cta {
+  min-height: 3.25rem;
+  border: 1px solid #d8a95c;
+  border-radius: 1rem;
+  color: #fff6dd;
+  background:
+    linear-gradient(180deg, #197f72, #0d5d55);
+  box-shadow:
+    inset 0 2px rgba(255, 255, 255, 0.18),
+    inset 0 -4px rgba(4, 43, 39, 0.7),
+    0 8px 20px rgba(2, 22, 20, 0.3);
+}
+
+.mfg-visual-v2 .mfg-cta:hover {
+  background:
+    linear-gradient(180deg, #218f80, #11685e);
+}
+
+/* Bandeja lateral no desktop: aberta, ela ocupa o vazio à direita da cena
+   em vez de cobrir os pads do artefato. No mobile volta a ser gaveta
+   inferior, onde o polegar alcança. */
+.mfg-visual-v2 .mfg-support-dock {
+  position: relative;
+  /* Neutraliza o posicionamento legado de globals.css (`position:absolute;
+     left:50%; bottom:…; transform:translateX(-50%)`), que deslocava a
+     bandeja para fora da viewport ao ser reancorada. */
+  inset: auto;
+  transform: none;
+  display: block;
+  z-index: 35;
+  justify-self: end;
+  width: min(100%, 27rem);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+/* Alça da bandeja: pequena, central, disponível — nunca uma barra inteira. */
+.mfg-visual-v2 .mfg-support-toggle {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  align-items: center;
+  gap: 0.6rem;
+  width: fit-content;
+  min-width: 15rem;
+  min-height: 2.85rem;
+  margin: 0 auto;
+  padding: 0.32rem 0.85rem 0.32rem 0.4rem;
+  border: 1px solid rgba(191, 149, 78, 0.5);
+  border-radius: 999px;
+  color: #f8ebc8;
+  background:
+    linear-gradient(180deg, rgba(15, 39, 36, 0.94), rgba(7, 24, 22, 0.96));
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.1),
+    0 6px 18px rgba(2, 12, 11, 0.22);
+  text-align: left;
+}
+
+.mfg-visual-v2 .mfg-support-toggle:hover {
+  border-color: rgba(232, 190, 111, 0.72);
+}
+
+.mfg-visual-v2 .mfg-support-emblem {
+  display: grid;
+  width: 2.2rem;
+  height: 2.2rem;
+  place-items: center;
+  border: 1px solid rgba(202, 157, 82, 0.5);
+  border-radius: 999px;
+  color: #e9d6a2;
+  background: rgba(26, 46, 42, 0.9);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.12);
+}
+
+.mfg-visual-v2 .mfg-support-toggle > span:not(.mfg-support-emblem) {
+  display: grid;
+  line-height: 1.1;
+}
+
+.mfg-visual-v2 .mfg-support-toggle strong {
+  font-size: 0.83rem;
+}
+
+.mfg-visual-v2 .mfg-support-toggle small {
+  margin-top: 0.1rem;
+  color: #b9cec7;
+  font-size: 0.64rem;
+}
+
+.mfg-visual-v2 .mfg-support-chevron {
+  transition: transform 160ms ease;
+}
+
+.mfg-visual-v2 .mfg-support-dock[data-open="true"] .mfg-support-chevron {
+  transform: rotate(180deg);
+}
+
+.mfg-visual-v2 .mfg-support-panel {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 0.45rem);
+  left: 0;
+  max-height: min(48svh, 24rem);
+  padding: 0.7rem;
+  overflow-y: auto;
+  border: 1px solid rgba(191, 149, 78, 0.5);
+  border-radius: 1rem;
+  background:
+    linear-gradient(180deg, rgba(10, 31, 29, 0.98), rgba(5, 20, 19, 0.98));
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.1),
+    0 12px 32px rgba(2, 9, 8, 0.42);
+  backdrop-filter: blur(16px);
+}
+
+.mfg-visual-v2 .mfg-support-panel[hidden] {
+  display: none;
+}
+
+.mfg-visual-v2 .mfg-pads {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.45rem;
+}
+
+.mfg-visual-v2 .mfg-pad-btn {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-areas:
+    "dot name"
+    "dot symbol";
+  align-items: center;
+  min-width: 0;
+  min-height: 3rem;
+  padding: 0.35rem 0.55rem;
+  border: 1px solid rgba(255, 245, 216, 0.2);
+  border-radius: 0.75rem;
+  color: #fff4d2;
+  background: rgba(255, 255, 255, 0.045);
+  text-align: left;
+}
+
+.mfg-visual-v2 .mfg-pad-dot {
+  grid-area: dot;
+  width: 1.15rem;
+  height: 1.15rem;
+  margin-right: 0.4rem;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  background: var(--pad);
+}
+
+.mfg-visual-v2 .mfg-pad-name {
+  grid-area: name;
+  overflow: hidden;
+  font-size: 0.74rem;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mfg-visual-v2 .mfg-pad-symbol {
+  grid-area: symbol;
+  color: #b8ccc5;
+  font-size: 0.58rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.mfg-visual-v2 .mfg-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin-top: 0.55rem;
+}
+
+.mfg-visual-v2 .mfg-actions .mfg-btn {
+  min-height: 2.75rem;
+}
+
+.mfg-visual-v2 .mfg-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.35rem;
+  margin-top: 0.55rem;
+}
+
+.mfg-visual-v2 .mfg-stat {
+  min-width: 0;
+  padding: 0.35rem 0.4rem;
+  border: 1px solid rgba(189, 151, 86, 0.23);
+  border-radius: 0.65rem;
+  background: rgba(255, 255, 255, 0.035);
+  text-align: center;
+}
+
+.mfg-visual-v2 .mfg-stat em {
+  color: #b8cac4;
+  font-size: 0.56rem;
+  font-style: normal;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.mfg-visual-v2 .mfg-stat strong {
+  display: block;
+  margin-top: 0.1rem;
+  color: #fff1c7;
+  font-size: 0.92rem;
+}
+
+.mfg-visual-v2 .mfg-stat.is-danger {
+  border-color: rgba(211, 165, 83, 0.42);
+  background: rgba(159, 111, 40, 0.08);
+}
+
+.mfg-visual-v2 .mfg-footnote {
+  margin: 0.5rem 0 0;
+  color: #abc2bb;
+  font-size: 0.66rem;
+  line-height: 1.35;
+  text-align: center;
+}
+
+@media (max-width: 860px) {
+  .mfg-shell.mfg-visual-v2 .mfg-frame.mfg-frame-hero {
+    gap: 0.35rem;
+    padding-inline: 0.55rem;
+  }
+
+  .mfg-visual-v2 .mfg-memory-hud {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "title path"
+      "state state";
+    gap: 0.35rem 0.55rem;
+  }
+
+  .mfg-visual-v2 .mfg-memory-title {
+    grid-area: title;
+  }
+
+  .mfg-visual-v2 .mfg-memory-state {
+    grid-area: state;
+    min-height: 2.85rem;
+  }
+
+  .mfg-visual-v2 .mfg-memory-path {
+    grid-area: path;
+    min-width: 9.6rem;
+    min-height: 2.85rem;
+  }
+
+  .mfg-visual-v2 .mfg-master-board {
+    width: min(94vw, 42rem, calc((100svh - 15.7rem) * 1.25));
+  }
+}
+
+@media (max-width: 560px) {
+  html:has(.mfg-shell.mfg-visual-v2 .mfg-support-dock[data-open="true"]),
+  body:has(.mfg-shell.mfg-visual-v2 .mfg-support-dock[data-open="true"]) {
+    height: 100svh;
+    max-height: 100svh;
+    overflow: hidden;
+  }
+
+  main:has(> .mfg-shell.mfg-visual-v2 .mfg-support-dock[data-open="true"]) {
+    min-height: 0 !important;
+    height: 100svh;
+    overflow: hidden;
+  }
+
+  .mfg-shell.mfg-visual-v2:has(.mfg-support-dock[data-open="true"]) {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    min-height: 0;
+    height: 100svh;
+    max-height: 100svh;
+    overflow: hidden;
+  }
+
+  .mfg-shell.mfg-visual-v2 .mfg-frame.mfg-frame-hero {
+    min-height: 100svh;
+    height: 100svh;
+    padding:
+      max(0.45rem, env(safe-area-inset-top))
+      0.4rem
+      max(0.4rem, env(safe-area-inset-bottom));
+  }
+
+  .mfg-visual-v2 .mfg-topbar {
+    min-height: 2.75rem;
+  }
+
+  .mfg-visual-v2 .mfg-back,
+  .mfg-visual-v2 .mfg-sound {
+    min-height: 2.75rem;
+    padding-inline: 0.65rem;
+    font-size: 0.72rem;
+  }
+
+  .mfg-visual-v2 .mfg-sound span {
+    display: none;
+  }
+
+  .mfg-visual-v2 .mfg-memory-hud {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .mfg-visual-v2 .mfg-memory-title {
+    min-height: 2.9rem;
+    padding: 0.32rem 0.6rem 0.32rem 0.42rem;
+    gap: 0.5rem;
+  }
+
+  .mfg-visual-v2 .mfg-memory-mark {
+    width: 2.1rem;
+    height: 2.1rem;
+  }
+
+  .mfg-visual-v2 .mfg-memory-lockup h1 {
+    overflow: hidden;
+    font-size: clamp(0.98rem, 4.7vw, 1.2rem);
+    line-height: 1;
+    text-overflow: ellipsis;
+  }
+
+  .mfg-visual-v2 .mfg-memory-lockup p {
+    display: none;
+  }
+
+  .mfg-visual-v2 .mfg-memory-path {
+    min-width: 6.6rem;
+    min-height: 2.9rem;
+    padding: 0.32rem 0.6rem;
+    gap: 0.2rem;
+  }
+
+  .mfg-visual-v2 .mfg-memory-path small {
+    display: none;
+  }
+
+  .mfg-visual-v2 .mfg-memory-path > strong {
+    font-size: 0.86rem;
+  }
+
+  .mfg-visual-v2 .mfg-memory-path-dots {
+    gap: 0.18rem;
+  }
+
+  .mfg-visual-v2 .mfg-memory-path-dots i {
+    width: 0.55rem;
+    height: 0.55rem;
+  }
+
+  .mfg-visual-v2 .mfg-memory-state-icon {
+    display: none;
+  }
+
+  /* Mobile: a bandeja volta a ser gaveta inferior de largura total. */
+  .mfg-visual-v2 .mfg-support-dock {
+    width: 100%;
+    margin-inline: 0;
+  }
+
+  .mfg-visual-v2 .mfg-support-dock[data-open="true"] {
+    display: flex;
+    min-height: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.3rem;
+  }
+
+  .mfg-visual-v2 .mfg-support-toggle {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .mfg-visual-v2 .mfg-support-dock[data-open="true"] .mfg-support-toggle {
+    order: 2;
+  }
+
+  .mfg-visual-v2 .mfg-support-toggle small {
+    display: none;
+  }
+
+  .mfg-visual-v2 .mfg-memory-state {
+    grid-template-columns: 1fr;
+    gap: 0.1rem;
+    min-height: 2.75rem;
+    padding: 0.4rem 0.65rem;
+  }
+
+  .mfg-visual-v2 .mfg-memory-state-copy strong {
+    font-size: 0.92rem;
+  }
+
+  .mfg-visual-v2 .mfg-memory-state-copy span {
+    font-size: 0.68rem;
+    text-align: left;
+    -webkit-line-clamp: 1;
+  }
+
+  .mfg-visual-v2 .mfg-stage {
+    border-radius: 1rem;
+  }
+
+  .mfg-visual-v2 .mfg-master-board {
+    width: min(98vw, calc((100svh - 14.5rem) * 1.25));
+    min-width: 21rem;
+    /* Sobe um pouco: distribui o respiro entre HUD, artefato e convite. */
+    transform: translate(-50%, -55%);
+  }
+
+  .mfg-shell.mfg-visual-v2:has(.mfg-support-dock[data-open="true"])
+    .mfg-stage-overlay {
+    bottom: 0.4rem;
+    height: auto;
+    padding: 0;
+  }
+
+  .mfg-visual-v2 .mfg-stage-hint {
+    display: none;
+  }
+
+  .mfg-visual-v2 .mfg-cta {
+    min-height: 3rem;
+    font-size: 0.95rem;
+  }
+
+  .mfg-visual-v2 .mfg-support-panel {
+    max-height: 46svh;
+    padding: 0.55rem;
+  }
+
+  .mfg-visual-v2 .mfg-support-dock[data-open="true"] .mfg-support-panel {
+    position: relative;
+    inset: auto;
+    order: 1;
+    width: 100%;
+    max-height: min(28svh, 13rem);
+    padding: 0.42rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+    border-radius: 0.8rem;
+  }
+
+  .mfg-visual-v2 .mfg-pads,
+  .mfg-visual-v2 .mfg-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mfg-visual-v2 .mfg-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mfg-visual-v2 .mfg-support-dock[data-open="true"] .mfg-pads {
+    gap: 0.3rem;
+  }
+
+  .mfg-visual-v2 .mfg-support-dock[data-open="true"] .mfg-pad-btn {
+    min-height: 2.75rem;
+    padding-block: 0.25rem;
+  }
+
+  .mfg-visual-v2 .mfg-support-dock[data-open="true"] .mfg-actions,
+  .mfg-visual-v2 .mfg-support-dock[data-open="true"] .mfg-stats {
+    gap: 0.3rem;
+    margin-top: 0.35rem;
+  }
+
+  .mfg-visual-v2 .mfg-support-dock[data-open="true"] .mfg-actions .mfg-btn {
+    min-height: 2.75rem;
+    padding-inline: 0.45rem;
+    font-size: 0.68rem;
+  }
+
+  .mfg-visual-v2 .mfg-support-dock[data-open="true"] .mfg-stat {
+    min-height: 2.6rem;
+    padding: 0.25rem 0.35rem;
+  }
+
+  .mfg-visual-v2 .mfg-support-dock[data-open="true"] .mfg-footnote {
+    margin-top: 0.35rem;
+    font-size: 0.61rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mfg-visual-v2 .mfg-master-overlay,
+  .mfg-visual-v2 .mfg-master-hitbox::after,
+  .mfg-visual-v2 .mfg-support-chevron {
+    transition: none;
+  }
+
+  /* O parallax já não é registrado pelo hook aqui; isto garante que
+     nenhuma variável remanescente produza movimento. */
+  .mfg-visual-v2 .mfg-memory-bg,
+  .mfg-visual-v2 .mfg-memory-stage-shade {
+    transition: none;
+    --mfg-par-x: 0px;
+    --mfg-par-y: 0px;
+  }
+}

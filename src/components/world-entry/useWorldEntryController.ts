@@ -7,6 +7,15 @@ import {
   worldEntryReducer,
 } from "@/components/world-entry/worldEntryTypes";
 
+/**
+ * Watchdog for the "preparing" phase. Readiness normally arrives from asset
+ * decode + paint; if it never does (stalled request, suspended decode), the
+ * Explorador must not stay on "Preparando..." forever — after this window we
+ * fail over to the existing retry/back error panel. While the tab is hidden
+ * the browser suspends rAF/paint, so the timer re-arms instead of firing.
+ */
+const PREPARING_WATCHDOG_MS = 12_000;
+
 export function useWorldEntryController() {
   const [state, dispatch] = useReducer(
     worldEntryReducer,
@@ -19,6 +28,29 @@ export function useWorldEntryController() {
       dispatch({ type: "REVEAL" });
     }
   }, [state.phase]);
+
+  useEffect(() => {
+    if (state.phase !== "preparing") return;
+
+    let timerId: number;
+    const arm = () => {
+      timerId = window.setTimeout(() => {
+        if (document.visibilityState === "hidden") {
+          arm();
+          return;
+        }
+        dispatch({
+          type: "FAIL",
+          error: new Error(
+            "World entry readiness was not reported within the watchdog window.",
+          ),
+        });
+      }, PREPARING_WATCHDOG_MS);
+    };
+    arm();
+
+    return () => window.clearTimeout(timerId);
+  }, [state.phase, state.attempt]);
 
   const start = useCallback((gameId: GameId) => {
     if (lockedRef.current) return false;

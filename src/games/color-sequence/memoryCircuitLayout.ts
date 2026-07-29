@@ -18,16 +18,17 @@ export interface MemoryPadLayout {
 /**
  * Caminho ativo (RESET-CIRCUIT-MAX): um board MESTRE único 2.5D com os 4 pads
  * integrados + overlays transparentes renderizados pela MESMA câmera na mesma
- * resolução (1500x1200) — alinhamento pixel-perfeito por construção. Gerados
- * por tools/blender/create_memory_circuit_board.py.
+ * resolução (1280x1024) — alinhamento pixel-perfeito por construção. Gerados
+ * por tools/blender/create_memory_circuit_visual_v2.py.
  */
 export const MEMORY_CIRCUIT_ASSETS = {
   background: "/illustrations/memory-circuit/memory-room-bg.webp",
-  board: "/assets/memory-circuit/memory-board-master.png",
-  corePulse: "/assets/memory-circuit/overlay-core-pulse.png",
+  board: "/assets/memory-circuit/v2/memory-board.webp",
+  corePulse: "/assets/memory-circuit/v2/overlay-core.webp",
+  complete: "/assets/memory-circuit/v2/overlay-complete.webp",
 } as const;
 
-/** Proporção da renderização do board mestre (1500x1200). */
+/** Proporção da renderização do board mestre (1280x1024). */
 export const MEMORY_BOARD_ASPECT = "5 / 4";
 
 export const MEMORY_PAD_LAYOUTS = [
@@ -37,9 +38,9 @@ export const MEMORY_PAD_LAYOUTS = [
     swatch: "#ef5b3e",
     symbol: "Chama",
     element: "flame",
-    overlay: "/assets/memory-circuit/overlay-flame-active.png",
+    overlay: "/assets/memory-circuit/v2/overlay-flame.webp",
     x: "50%",
-    y: "29.3%",
+    y: "27.5%",
     size: "24%",
   },
   {
@@ -48,9 +49,9 @@ export const MEMORY_PAD_LAYOUTS = [
     swatch: "#1f7bd6",
     symbol: "Onda",
     element: "wave",
-    overlay: "/assets/memory-circuit/overlay-wave-active.png",
-    x: "73.7%",
-    y: "52.4%",
+    overlay: "/assets/memory-circuit/v2/overlay-wave.webp",
+    x: "73.9%",
+    y: "51.4%",
     size: "24%",
   },
   {
@@ -59,9 +60,9 @@ export const MEMORY_PAD_LAYOUTS = [
     swatch: "#2f9e44",
     symbol: "Folha",
     element: "leaf",
-    overlay: "/assets/memory-circuit/overlay-leaf-active.png",
-    x: "26.3%",
-    y: "52.4%",
+    overlay: "/assets/memory-circuit/v2/overlay-leaf.webp",
+    x: "26.1%",
+    y: "51.4%",
     size: "24%",
   },
   {
@@ -70,9 +71,9 @@ export const MEMORY_PAD_LAYOUTS = [
     swatch: "#e6aa12",
     symbol: "Sol",
     element: "sun",
-    overlay: "/assets/memory-circuit/overlay-sun-active.png",
+    overlay: "/assets/memory-circuit/v2/overlay-sun.webp",
     x: "50%",
-    y: "75.4%",
+    y: "75.3%",
     size: "24%",
   },
 ] as const satisfies readonly MemoryPadLayout[];

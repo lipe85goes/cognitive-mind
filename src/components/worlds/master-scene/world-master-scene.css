@@ -57,8 +57,11 @@
   user-select: none;
 }
 
+/* CIRCUIT-PRESENTATION-FINAL-01-FIX: at rest the artifact must read exactly
+   like the game's resting board — no permanent pad veil washing the stone.
+   Energy is what changes between contexts, never the object itself. */
 .wms-circuit-overlay {
-  opacity: 0.12;
+  opacity: 0;
   filter: saturate(0.95);
   transition:
     opacity 260ms ease,
@@ -66,10 +69,14 @@
 }
 
 .wms-circuit-core {
-  opacity: 0.54;
+  opacity: 0.3;
   filter:
-    drop-shadow(0 0 0.5rem rgba(242, 198, 90, 0.48))
+    drop-shadow(0 0 0.5rem rgba(242, 198, 90, 0.4))
     saturate(1.04);
+}
+
+.wms-scene[data-state="focused"] .wms-circuit-pad {
+  opacity: 0.1;
 }
 
 .wms-scene[data-state="focused"] .wms-circuit-stack,
@@ -82,23 +89,24 @@
 
 .wms-scene[data-state="focused"] .wms-circuit-core,
 .wms-scene[data-state="entering"] .wms-circuit-core {
-  opacity: 0.84;
+  opacity: 0.62;
   filter:
     drop-shadow(0 0 0.65rem rgba(242, 198, 90, 0.62))
     drop-shadow(0 0 1.25rem rgba(99, 221, 202, 0.2))
     saturate(1.08);
 }
 
+/* Entering the world is the one moment the circuit truly lights up. */
 .wms-scene[data-context="transition"] .wms-circuit-pad {
-  opacity: 0.38;
+  opacity: 0.3;
 }
 
 .wms-scene[data-context="intro"] .wms-circuit-pad {
-  opacity: 0.22;
+  opacity: 0.1;
 }
 
 .wms-scene[data-context="transition"] .wms-circuit-core {
-  opacity: 0.94;
+  opacity: 0.8;
 }
 
 /* Shared physical plate language. Existing components keep their layout. */

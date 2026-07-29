@@ -37,8 +37,13 @@ export interface WorldMasterSceneConfig {
 }
 
 const ROUTE_DIORAMA_PATH = "/illustrations/home/dioramas/route";
-const CIRCUIT_MASTER_PATH =
-  "/illustrations/worlds/master-scenes/circuit";
+/**
+ * CIRCUIT-PRESENTATION-FINAL-01-FIX: the master scene now points at the SAME
+ * runtime kit the active game renders. There is no second derived copy to
+ * drift, and no stale optimizer entry keyed to a legacy URL can resurrect an
+ * older artifact — Home, transition, intro, setup and game all read one source.
+ */
+const CIRCUIT_MASTER_PATH = "/assets/memory-circuit/v2";
 
 const ROUTE_ASSETS = [
   "route-contact-shadow.webp",
@@ -56,13 +61,13 @@ const ROUTE_ASSETS = [
 ].map((asset) => `${ROUTE_DIORAMA_PATH}/${asset}`);
 
 export const CIRCUIT_MASTER_ASSETS = {
-  board: `${CIRCUIT_MASTER_PATH}/memory-board-master.webp`,
-  core: `${CIRCUIT_MASTER_PATH}/overlay-core-pulse.webp`,
+  board: `${CIRCUIT_MASTER_PATH}/memory-board.webp`,
+  core: `${CIRCUIT_MASTER_PATH}/overlay-core.webp`,
   pads: [
-    `${CIRCUIT_MASTER_PATH}/overlay-flame-active.webp`,
-    `${CIRCUIT_MASTER_PATH}/overlay-wave-active.webp`,
-    `${CIRCUIT_MASTER_PATH}/overlay-leaf-active.webp`,
-    `${CIRCUIT_MASTER_PATH}/overlay-sun-active.webp`,
+    `${CIRCUIT_MASTER_PATH}/overlay-flame.webp`,
+    `${CIRCUIT_MASTER_PATH}/overlay-wave.webp`,
+    `${CIRCUIT_MASTER_PATH}/overlay-leaf.webp`,
+    `${CIRCUIT_MASTER_PATH}/overlay-sun.webp`,
   ],
 } as const;
 

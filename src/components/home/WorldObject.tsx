@@ -114,10 +114,12 @@ export function WorldObject({
                 gameId={entry.gameId}
                 context="home"
                 state={selected ? "focused" : "idle"}
+                /* Wide enough that the optimizer never serves a soft, detail-
+                   free variant — the stone, bronze and trellis must survive. */
                 sizes={
                   selected
-                    ? "(max-width: 899px) 82vw, 34rem"
-                    : "(max-width: 899px) 66vw, 20rem"
+                    ? "(max-width: 899px) 92vw, 48rem"
+                    : "(max-width: 899px) 74vw, 30rem"
                 }
               />
             ) : (

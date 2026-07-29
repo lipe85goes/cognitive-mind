@@ -80,14 +80,20 @@ Identidade oficial:
 - cores: teal e ambar como base, com coral, azul, verde e dourado nos pads;
 - energia contida: brilho orienta, sem neon agressivo.
 
-A cena mestre usa derivados WebP leves do mesmo board e dos mesmos overlays do
-runtime ativo:
+A cena mestre carrega **exatamente os mesmos arquivos do jogo ativo**:
 
-`public/illustrations/worlds/master-scenes/circuit/`
+`public/assets/memory-circuit/v2/` (gerado por
+`tools/blender/create_memory_circuit_visual_v2.py`).
 
-Os masters PNG continuam em `public/assets/memory-circuit/` porque ainda sao
-usados no jogo. Os WebPs existem para Home, transicao e introducao, evitando
-duplicar uma segunda identidade visual.
+Nao existe copia derivada. `CIRCUIT_MASTER_ASSETS` aponta direto para esse kit,
+entao Home, transicao, introducao, preparacao e jogo mostram o mesmo artefato —
+so o crop, a escala e a energia mudam por contexto.
+
+A pasta `public/illustrations/worlds/master-scenes/circuit/` foi removida na
+CIRCUIT-PRESENTATION-FINAL-01-FIX: manter uma segunda copia com nomes antigos
+fez o otimizador de imagens do Next continuar servindo a variante V1 em cache
+para a Home e a introducao enquanto o jogo ja mostrava a V2. O primeiro kit PNG
+continua arquivado em `docs/archive/memory-circuit/legacy-kit-v1/`.
 
 ## Crops por contexto
 
@@ -160,8 +166,9 @@ importadas pelo app.
 
 - O kit da Rota ainda usa a maquete V02 na entrada e o GLB atual durante o
   jogo; um art pass futuro deve aproximar ainda mais materiais e proporcoes.
-- O Circuito usa o board mestre real, mas ainda precisa de um art pass de
-  textura e contraste para reduzir o aspecto claro/provisorio.
+- O Circuito recebeu o art pass V2 (pedra mineral, bronze envelhecido, core
+  material) e a cena mestre agora deriva do mesmo kit do jogo
+  (CIRCUIT-MASTER-FINAL-01).
 - Em viewports desktop muito baixas, o setup/game da Rota pode exigir scroll
   vertical para mostrar simultaneamente cabecalho, board e controles.
 - Os mundos secundarios ainda nao possuem cenas mestre proprias.
