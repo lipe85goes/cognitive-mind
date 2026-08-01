@@ -239,8 +239,9 @@
   position: absolute;
   z-index: var(--hj-z);
   left: 50%;
-  top: 60%;
-  width: min(var(--hj-size), 54vw);
+  top: 54%;
+  /* Peça em foco grande: a galeria é de mundos, não de miniaturas. */
+  width: min(var(--hj-size), 60vw);
   min-width: 12rem;
   opacity: var(--hj-opacity);
   transform:
@@ -264,35 +265,55 @@
 }
 
 .hj-world-offset-neg-1 {
-  --hj-shift: max(-39vw, -38rem);
-  --hj-scale: 0.64;
-  --hj-rise: 1.7rem;
-  --hj-opacity: 0.84;
+  --hj-shift: max(-33vw, -32rem);
+  --hj-scale: 0.58;
+  --hj-rise: 2.1rem;
+  --hj-opacity: 0.86;
   --hj-z: 5;
 }
 
 .hj-world-offset-pos-1 {
-  --hj-shift: min(39vw, 38rem);
-  --hj-scale: 0.64;
-  --hj-rise: 1.7rem;
-  --hj-opacity: 0.84;
+  --hj-shift: min(33vw, 32rem);
+  --hj-scale: 0.58;
+  --hj-rise: 2.1rem;
+  --hj-opacity: 0.86;
   --hj-z: 5;
 }
 
 .hj-world-offset-neg-2 {
-  --hj-shift: max(-58vw, -52rem);
-  --hj-scale: 0.48;
-  --hj-rise: 4rem;
-  --hj-opacity: 0.5;
+  --hj-shift: max(-50vw, -46rem);
+  --hj-scale: 0.4;
+  --hj-rise: 3.6rem;
+  --hj-opacity: 0.52;
   --hj-z: 2;
 }
 
 .hj-world-offset-pos-2 {
-  --hj-shift: min(58vw, 52rem);
-  --hj-scale: 0.48;
-  --hj-rise: 4rem;
-  --hj-opacity: 0.5;
+  --hj-shift: min(50vw, 46rem);
+  --hj-scale: 0.4;
+  --hj-rise: 3.6rem;
+  --hj-opacity: 0.52;
   --hj-z: 2;
+}
+
+/* Distância aérea: os mundos afastados recuam na atmosfera do ateliê,
+   continuam reconhecíveis e nunca são cortados por moldura. */
+.hj-world-offset-neg-2 .hj-world-diorama,
+.hj-world-offset-pos-2 .hj-world-diorama {
+  filter: saturate(0.86) brightness(0.82);
+}
+
+/* Os mundos mais distantes sugerem que a mesa continua: a peça aparece,
+   a placa não — uma etiqueta cortada na borda lê como card recortado. */
+.hj-world-offset-neg-2 .hj-world-plaque,
+.hj-world-offset-pos-2 .hj-world-plaque {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.hj-world-offset-neg-1 .hj-world-diorama,
+.hj-world-offset-pos-1 .hj-world-diorama {
+  filter: saturate(0.94) brightness(0.92);
 }
 
 .hj-world-select {
@@ -318,9 +339,21 @@
   border-radius: 2.2rem;
 }
 
-.hj-world-selected .hj-world-select,
-.hj-world-select:hover {
+.hj-world-selected .hj-world-select {
   filter: saturate(1.04);
+}
+
+/* Hover comunica intenção sem trocar a seleção: a peça sobe um pouco e
+   ganha luz. Quem escolhe é o clique, o toque ou o teclado. */
+.hj-world-object:not(.hj-world-selected) .hj-world-select:hover {
+  filter: saturate(1.06) brightness(1.05);
+  transform: translateY(-0.45rem);
+}
+
+.hj-world-select {
+  transition:
+    transform 240ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 240ms ease;
 }
 
 .hj-world-shadow {
@@ -374,7 +407,7 @@
 .hj-world-art {
   display: grid;
   position: absolute;
-  inset: -6% -5% 2%;
+  inset: 0;
   place-items: center;
 }
 
@@ -403,21 +436,6 @@
 
 /* Flat baked-background heroes (fallback only): crop + soft ellipse edge.
    Layered dioramas never use this — their silhouette is the real object. */
-.hj-world-art-rendered .hj-world-art {
-  inset: -5% -8% -1%;
-  overflow: hidden;
-  mask-image: radial-gradient(ellipse 72% 68% at center, #000 58%, transparent 94%);
-}
-
-.hj-world-art-rendered .hj-world-sprite {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter:
-    saturate(1.03)
-    drop-shadow(0 1.8rem 1.35rem rgba(0, 0, 0, 0.5));
-}
-
 .hj-stage[data-entering="true"] .hj-world-selected {
   --hj-scale: 1.025;
 }
@@ -426,41 +444,56 @@
   cursor: wait;
 }
 
-/* —— World plaque + enter —— */
+/* —— Placa do mundo: pedra escura com emblema em bronze —— */
 .hj-world-plaque {
   display: grid;
   position: relative;
   z-index: 8;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  gap: 0.75rem;
-  width: min(74%, 25rem);
-  min-height: 4rem;
-  margin: -4rem auto 0;
-  padding: 0.66rem 0.78rem;
-  border: 0.12rem solid color-mix(in srgb, var(--hj-world-accent) 38%, #f1cf86);
-  border-radius: 1.1rem;
+  gap: 0.7rem;
+  width: min(78%, 27rem);
+  min-height: 4.1rem;
+  /* A placa pertence à mesa, não ao objeto: fica logo abaixo da maquete,
+     com folga suficiente para não encostar na base nem na sombra. */
+  margin: -1.1rem auto 0;
+  padding: 0.6rem 0.75rem 0.6rem 0.6rem;
+  border: 1px solid color-mix(in srgb, var(--hj-world-accent) 34%, #c79a52);
+  border-radius: 1.05rem;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.12), transparent 36%),
-    linear-gradient(160deg, color-mix(in srgb, var(--hj-world-plaque) 82%, #584021), color-mix(in srgb, var(--hj-world-plaque) 66%, #130e0b));
+    linear-gradient(180deg, rgba(255, 246, 214, 0.1), transparent 40%),
+    linear-gradient(165deg, rgba(22, 38, 36, 0.94), rgba(9, 18, 17, 0.96));
   box-shadow:
-    inset 0 0.12rem 0 rgba(255, 255, 255, 0.22),
-    0 0.8rem 1.1rem rgba(0, 0, 0, 0.36);
+    inset 0 1px rgba(255, 246, 210, 0.14),
+    0 0.9rem 1.6rem rgba(0, 0, 0, 0.42);
   color: #fff8e8;
   text-align: left;
+  backdrop-filter: blur(10px);
   transition:
     opacity 260ms ease,
     transform 260ms ease;
 }
 
+.hj-world-emblem {
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: 0 0 auto;
+  filter: drop-shadow(0 2px 6px rgba(3, 15, 13, 0.55));
+}
+
 .hj-world-object:not(.hj-world-selected) .hj-world-plaque {
-  width: min(64%, 16rem);
-  min-height: 2.8rem;
-  margin-top: -3.1rem;
-  padding: 0.5rem 0.62rem;
-  grid-template-columns: 1fr;
-  opacity: 0.84;
-  transform: scale(0.92);
+  width: min(66%, 17rem);
+  min-height: 2.9rem;
+  margin-top: -0.9rem;
+  padding: 0.42rem 0.6rem 0.42rem 0.45rem;
+  grid-template-columns: auto minmax(0, 1fr);
+  opacity: 0.9;
+  transform: scale(0.94);
+}
+
+.hj-world-object:not(.hj-world-selected) .hj-world-emblem {
+  width: 1.75rem;
+  height: 1.75rem;
 }
 
 .hj-world-copy {
@@ -738,7 +771,7 @@
   .hj-world-plaque {
     width: min(88%, 22rem);
     min-height: 3.7rem;
-    margin-top: -3.25rem;
+    margin-top: -0.8rem;
   }
 
   .hj-world-object:not(.hj-world-selected) .hj-world-plaque {

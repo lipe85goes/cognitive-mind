@@ -1,0 +1,92 @@
+{
+  "panel": [
+    {
+      "name": "panel-back",
+      "size": 4986
+    },
+    {
+      "name": "panel-base",
+      "size": 13166
+    },
+    {
+      "name": "panel-contact-shadow",
+      "size": 11012
+    },
+    {
+      "name": "panel-detail",
+      "size": 5790
+    },
+    {
+      "name": "panel-energy",
+      "size": 3100
+    },
+    {
+      "name": "panel-front",
+      "size": 3938
+    },
+    {
+      "name": "panel-main",
+      "size": 4420
+    }
+  ],
+  "trail": [
+    {
+      "name": "trail-back",
+      "size": 4370
+    },
+    {
+      "name": "trail-base",
+      "size": 13166
+    },
+    {
+      "name": "trail-contact-shadow",
+      "size": 11012
+    },
+    {
+      "name": "trail-detail",
+      "size": 4966
+    },
+    {
+      "name": "trail-energy",
+      "size": 5172
+    },
+    {
+      "name": "trail-front",
+      "size": 5012
+    },
+    {
+      "name": "trail-main",
+      "size": 11178
+    }
+  ],
+  "garden": [
+    {
+      "name": "garden-back",
+      "size": 5882
+    },
+    {
+      "name": "garden-base",
+      "size": 13166
+    },
+    {
+      "name": "garden-contact-shadow",
+      "size": 11012
+    },
+    {
+      "name": "garden-detail",
+      "size": 9056
+    },
+    {
+      "name": "garden-energy",
+      "size": 4806
+    },
+    {
+      "name": "garden-front",
+      "size": 3002
+    },
+    {
+      "name": "garden-main",
+      "size": 8776
+    }
+  ]
+}

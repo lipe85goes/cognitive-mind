@@ -32,7 +32,7 @@ export const HOME_WORLD_LAYOUT: Record<GameId, HomeWorldLayout> = {
     mobileOrder: 1,
     // UNIFIED-VISUAL-01: heroes grew slightly to compensate for the wider
     // diorama render framing (the maquette now fits fully inside the frame).
-    desktop: { sizeRem: 47 },
+    desktop: { sizeRem: 48 },
   },
   "color-sequence": {
     gameId: "color-sequence",
@@ -41,7 +41,7 @@ export const HOME_WORLD_LAYOUT: Record<GameId, HomeWorldLayout> = {
     tier: "hero",
     navOrder: 2,
     mobileOrder: 2,
-    desktop: { sizeRem: 45 },
+    desktop: { sizeRem: 47 },
   },
   "security-panel": {
     gameId: "security-panel",
@@ -50,7 +50,7 @@ export const HOME_WORLD_LAYOUT: Record<GameId, HomeWorldLayout> = {
     tier: "quiet",
     navOrder: 3,
     mobileOrder: 3,
-    desktop: { sizeRem: 27.5 },
+    desktop: { sizeRem: 43 },
   },
   "number-trail": {
     gameId: "number-trail",
@@ -59,7 +59,7 @@ export const HOME_WORLD_LAYOUT: Record<GameId, HomeWorldLayout> = {
     tier: "quiet",
     navOrder: 4,
     mobileOrder: 4,
-    desktop: { sizeRem: 27 },
+    desktop: { sizeRem: 43 },
   },
   "seed-garden": {
     gameId: "seed-garden",
@@ -68,7 +68,7 @@ export const HOME_WORLD_LAYOUT: Record<GameId, HomeWorldLayout> = {
     tier: "quiet",
     navOrder: 5,
     mobileOrder: 5,
-    desktop: { sizeRem: 27 },
+    desktop: { sizeRem: 43 },
   },
 };
 

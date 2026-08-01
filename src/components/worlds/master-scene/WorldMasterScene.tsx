@@ -1,10 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { WorldDiorama } from "@/components/worlds/diorama/WorldDiorama";
 import {
-  CIRCUIT_MASTER_ASSETS,
   getWorldMasterSceneConfig,
   getWorldMasterSceneStyle,
   type MasterSceneGameId,
@@ -105,49 +103,18 @@ export function WorldMasterScene({
     >
       <span className="wms-scene-ground" aria-hidden="true" />
       <span className="wms-scene-crop">
-        {config.renderer === "route-diorama" ? (
-          <WorldDiorama
-            gameId={gameId}
-            state={state}
-            variant={context === "transition" ? "transition" : "home"}
-            sizes={sizes}
-            className="wms-route-diorama"
-          />
-        ) : (
-          <span className="wms-circuit-stack" aria-hidden="true">
-            <Image
-              src={CIRCUIT_MASTER_ASSETS.board}
-              alt=""
-              fill
-              sizes={sizes}
-              className="wms-circuit-board"
-              priority={priority}
-              draggable={false}
-            />
-            {CIRCUIT_MASTER_ASSETS.pads.map((src, index) => (
-              <Image
-                key={src}
-                src={src}
-                alt=""
-                fill
-                sizes={sizes}
-                className="wms-circuit-overlay wms-circuit-pad"
-                data-pad={index}
-                priority={priority && context === "transition"}
-                draggable={false}
-              />
-            ))}
-            <Image
-              src={CIRCUIT_MASTER_ASSETS.core}
-              alt=""
-              fill
-              sizes={sizes}
-              className="wms-circuit-overlay wms-circuit-core"
-              priority={priority}
-              draggable={false}
-            />
-          </span>
-        )}
+        {/* HOME-HERO-WORLDS-3D-01: um renderer só. Home, transição,
+            introdução e preparação leem a mesma maquete em camadas do
+            mundo — o board do Circuito continua sendo o artefato oficial,
+            agora assentado na sua ilha. */}
+        <WorldDiorama
+          gameId={gameId}
+          state={state}
+          variant={context === "transition" ? "transition" : "home"}
+          sizes={sizes}
+          className="wms-world-diorama"
+          eager={priority || state !== "idle"}
+        />
       </span>
     </span>
   );

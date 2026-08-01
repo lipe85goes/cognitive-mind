@@ -1,0 +1,156 @@
+{
+  "route": [
+    {
+      "layer": "route-shadow",
+      "size": 8442,
+      "margins": {
+        "top": 381,
+        "bottom": 312,
+        "left": 465,
+        "right": 465
+      }
+    },
+    {
+      "layer": "route-base",
+      "size": 14198,
+      "margins": {
+        "top": 218,
+        "bottom": 62,
+        "left": 125,
+        "right": 125
+      }
+    },
+    {
+      "layer": "route-terrain",
+      "size": 16014,
+      "margins": {
+        "top": 220,
+        "bottom": 194,
+        "left": 120,
+        "right": 135
+      }
+    },
+    {
+      "layer": "route-structure",
+      "size": 23342,
+      "margins": {
+        "top": 209,
+        "bottom": 224,
+        "left": 197,
+        "right": 301
+      }
+    },
+    {
+      "layer": "route-props",
+      "size": 11466,
+      "margins": {
+        "top": 261,
+        "bottom": 256,
+        "left": 209,
+        "right": 202
+      }
+    },
+    {
+      "layer": "route-characters",
+      "size": 4836,
+      "margins": {
+        "top": 285,
+        "bottom": 335,
+        "left": 428,
+        "right": 585
+      }
+    },
+    {
+      "layer": "route-energy",
+      "size": 6364,
+      "margins": {
+        "top": 278,
+        "bottom": 354,
+        "left": 411,
+        "right": 295
+      }
+    },
+    {
+      "layer": "route-front",
+      "size": 6130,
+      "margins": {
+        "top": 193,
+        "bottom": 546,
+        "left": 209,
+        "right": 235
+      }
+    }
+  ],
+  "circuit": [
+    {
+      "layer": "circuit-shadow",
+      "size": 8412,
+      "margins": {
+        "top": 381,
+        "bottom": 312,
+        "left": 465,
+        "right": 465
+      }
+    },
+    {
+      "layer": "circuit-base",
+      "size": 14178,
+      "margins": {
+        "top": 229,
+        "bottom": 47,
+        "left": 154,
+        "right": 105
+      }
+    },
+    {
+      "layer": "circuit-terrain",
+      "size": 23018,
+      "margins": {
+        "top": 190,
+        "bottom": 196,
+        "left": 173,
+        "right": 173
+      }
+    },
+    {
+      "layer": "circuit-structure",
+      "size": 25624,
+      "margins": {
+        "top": 236,
+        "bottom": 237,
+        "left": 336,
+        "right": 336
+      }
+    },
+    {
+      "layer": "circuit-props",
+      "size": 11274,
+      "margins": {
+        "top": 264,
+        "bottom": 251,
+        "left": 174,
+        "right": 159
+      }
+    },
+    {
+      "layer": "circuit-energy",
+      "size": 10214,
+      "margins": {
+        "top": 285,
+        "bottom": 296,
+        "left": 315,
+        "right": 315
+      }
+    },
+    {
+      "layer": "circuit-front",
+      "size": 5934,
+      "margins": {
+        "top": 200,
+        "bottom": 541,
+        "left": 235,
+        "right": 275
+      }
+    }
+  ]
+}

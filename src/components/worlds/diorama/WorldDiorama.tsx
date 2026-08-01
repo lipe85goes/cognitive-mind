@@ -17,6 +17,8 @@ interface WorldDioramaProps {
   variant?: "home" | "transition";
   sizes?: string;
   className?: string;
+  /** Força carregamento adiantado (transição e introdução). */
+  eager?: boolean;
 }
 
 export function WorldDiorama({
@@ -25,6 +27,7 @@ export function WorldDiorama({
   variant = "home",
   sizes = "(max-width: 899px) 88vw, 36rem",
   className,
+  eager,
 }: WorldDioramaProps) {
   if (!hasWorldDiorama(gameId)) {
     return null;
@@ -54,6 +57,7 @@ export function WorldDiorama({
             key={layer.id}
             layer={layer}
             sizes={sizes}
+            eager={eager ?? state !== "idle"}
           />
         ))}
       </span>

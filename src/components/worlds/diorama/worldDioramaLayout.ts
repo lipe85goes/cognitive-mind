@@ -2,7 +2,15 @@ import type { GameId } from "@/types/game";
 
 export type WorldDioramaState = "idle" | "focused" | "entering";
 
-export type WorldDioramaKind = "route" | "circuit";
+export type WorldDioramaKind =
+  | "route"
+  | "circuit"
+  | "panel"
+  | "trail"
+  | "garden";
+
+/** Mundos com maquete em camadas (todos, desde HOME-WORLDS-FINAL-01). */
+export type DioramaGameId = GameId;
 
 export interface WorldDioramaLayerConfig {
   id: string;
@@ -18,194 +26,127 @@ export interface WorldDioramaLayerConfig {
 }
 
 export interface WorldDioramaConfig {
-  gameId: Extract<GameId, "escape-maze" | "color-sequence">;
+  gameId: GameId;
   kind: WorldDioramaKind;
   width: number;
   height: number;
   layers: WorldDioramaLayerConfig[];
 }
 
-const ROUTE_PATH = "/illustrations/home/dioramas/route";
-const CIRCUIT_PATH = "/illustrations/home/dioramas/circuit";
 
-export const WORLD_DIORAMA_CONFIGS: Record<
-  "escape-maze" | "color-sequence",
-  WorldDioramaConfig
-> = {
+/**
+ * Os três mundos secundários usam o mesmo vocabulário de passes:
+ * sombra de contato, base, fundo, peça principal, detalhes, energia e frente.
+ * Mesma câmera, mesma luz e mesmo canvas dos mundos-herói.
+ */
+const SECONDARY_SUFFIXES = [
+  ["contact-shadow", 0, "wd-layer-shadow"],
+  ["base", 1, "wd-layer-base"],
+  ["back", 2, "wd-layer-back"],
+  ["main", 3, "wd-layer-board"],
+  ["detail", 4, "wd-layer-focus"],
+  ["energy", 5, "wd-layer-energy"],
+  ["front", 6, "wd-layer-front"],
+] as const;
+
+function buildSecondaryLayers(kind: "panel" | "trail" | "garden") {
+  const base = `/illustrations/home/dioramas/${kind}`;
+  return SECONDARY_SUFFIXES.map(([suffix, depth, className]) => ({
+    id: suffix,
+    src: `${base}/${kind}-${suffix}.webp`,
+    alt: "" as const,
+    depth,
+    className,
+    priority: suffix === "base" || suffix === "main",
+    ...(suffix === "back" ? { y: -0.5 } : {}),
+    ...(suffix === "front" ? { y: 0.45 } : {}),
+  }));
+}
+
+/**
+ * HOME-HERO-WORLDS-3D-01 — os dois mundos-herói viraram maquetes ambientais.
+ *
+ * Antes a Home mostrava o próprio jogo (o GLB do tabuleiro deitado num plinto,
+ * o board V2 do Circuito). Agora cada herói é uma pequena ilha: terreno, ruína,
+ * caminho, portal, altar, energia e primeiro plano em passes independentes.
+ * O canvas é 1120x840 com margem transparente real em todos os lados — o kit
+ * anterior do Circuito terminava exatamente na última linha de pixels, e era
+ * isso que fazia a base parecer decepada.
+ */
+const HERO_SUFFIXES = [
+  ["shadow", 0, "wd-layer-shadow", 0],
+  ["base", 1, "wd-layer-base", 0],
+  ["terrain", 2, "wd-layer-back", -0.35],
+  ["structure", 3, "wd-layer-board", 0],
+  ["props", 4, "wd-layer-props", 0.2],
+  ["characters", 5, "wd-layer-character", 0.35],
+  ["energy", 6, "wd-layer-energy", 0],
+  ["front", 7, "wd-layer-front", 0.6],
+] as const;
+
+/** O Circuito não tem passe de personagens: o artefato é o sujeito. */
+const HERO_SKIPPED: Record<"route" | "circuit", readonly string[]> = {
+  route: [],
+  circuit: ["characters"],
+};
+
+function buildHeroLayers(kind: "route" | "circuit") {
+  const base = `/illustrations/home/dioramas/${kind}-world`;
+  return HERO_SUFFIXES.filter(
+    ([suffix]) => !HERO_SKIPPED[kind].includes(suffix),
+  ).map(([suffix, depth, className, y]) => ({
+    id: suffix,
+    src: `${base}/${kind}-${suffix}.webp`,
+    alt: "" as const,
+    depth,
+    className,
+    priority: suffix === "base" || suffix === "structure",
+    ...(y ? { y } : {}),
+  }));
+}
+
+export const WORLD_DIORAMA_CONFIGS: Record<GameId, WorldDioramaConfig> = {
   "escape-maze": {
     gameId: "escape-maze",
     kind: "route",
-    width: 1040,
-    height: 780,
-    layers: [
-      {
-        id: "contact-shadow",
-        src: `${ROUTE_PATH}/route-contact-shadow.webp`,
-        alt: "",
-        depth: 0,
-        className: "wd-layer-shadow",
-      },
-      {
-        id: "base",
-        src: `${ROUTE_PATH}/route-base.webp`,
-        alt: "",
-        depth: 1,
-        className: "wd-layer-base",
-        priority: true,
-      },
-      {
-        id: "back-environment",
-        src: `${ROUTE_PATH}/route-back-environment.webp`,
-        alt: "",
-        depth: 2,
-        y: -0.6,
-        className: "wd-layer-back",
-      },
-      {
-        id: "board",
-        src: `${ROUTE_PATH}/route-board.webp`,
-        alt: "",
-        depth: 3,
-        className: "wd-layer-board",
-        priority: true,
-      },
-      {
-        id: "walls",
-        src: `${ROUTE_PATH}/route-walls.webp`,
-        alt: "",
-        depth: 4,
-        className: "wd-layer-props",
-      },
-      {
-        id: "gameplay-props",
-        src: `${ROUTE_PATH}/route-gameplay-props.webp`,
-        alt: "",
-        depth: 5,
-        className: "wd-layer-props",
-      },
-      {
-        id: "portal",
-        src: `${ROUTE_PATH}/route-portal.webp`,
-        alt: "",
-        depth: 6,
-        y: -0.4,
-        className: "wd-layer-focus wd-layer-portal",
-      },
-      {
-        id: "lights",
-        src: `${ROUTE_PATH}/route-lights.webp`,
-        alt: "",
-        depth: 7,
-        className: "wd-layer-energy wd-layer-lights",
-      },
-      {
-        id: "guardian",
-        src: `${ROUTE_PATH}/route-guardian.webp`,
-        alt: "",
-        depth: 8,
-        y: -0.25,
-        className: "wd-layer-character",
-      },
-      {
-        id: "explorer",
-        src: `${ROUTE_PATH}/route-explorer.webp`,
-        alt: "",
-        depth: 9,
-        y: 0.25,
-        className: "wd-layer-character wd-layer-explorer",
-      },
-      {
-        id: "front-environment",
-        src: `${ROUTE_PATH}/route-front-environment.webp`,
-        alt: "",
-        depth: 10,
-        y: 0.45,
-        className: "wd-layer-front",
-      },
-      {
-        id: "energy",
-        src: `${ROUTE_PATH}/route-energy.webp`,
-        alt: "",
-        depth: 11,
-        className: "wd-layer-energy wd-layer-route-energy",
-      },
-    ],
+    width: 1120,
+    height: 840,
+    layers: buildHeroLayers("route"),
   },
   "color-sequence": {
     gameId: "color-sequence",
     kind: "circuit",
+    width: 1120,
+    height: 840,
+    layers: buildHeroLayers("circuit"),
+  },
+  "security-panel": {
+    gameId: "security-panel",
+    kind: "panel",
     width: 1040,
     height: 780,
-    layers: [
-      {
-        id: "contact-shadow",
-        src: `${CIRCUIT_PATH}/circuit-contact-shadow.webp`,
-        alt: "",
-        depth: 0,
-        className: "wd-layer-shadow",
-      },
-      {
-        id: "back-environment",
-        src: `${CIRCUIT_PATH}/circuit-back-environment.webp`,
-        alt: "",
-        depth: 1,
-        y: -0.45,
-        className: "wd-layer-back",
-      },
-      {
-        id: "base",
-        src: `${CIRCUIT_PATH}/circuit-base.webp`,
-        alt: "",
-        depth: 2,
-        className: "wd-layer-base",
-      },
-      {
-        id: "board",
-        src: `${CIRCUIT_PATH}/circuit-board.webp`,
-        alt: "",
-        depth: 3,
-        className: "wd-layer-board",
-        priority: true,
-      },
-      {
-        id: "pads",
-        src: `${CIRCUIT_PATH}/circuit-pads.webp`,
-        alt: "",
-        depth: 5,
-        className: "wd-layer-focus wd-layer-pads",
-      },
-      {
-        id: "energy",
-        src: `${CIRCUIT_PATH}/circuit-energy.webp`,
-        alt: "",
-        depth: 6,
-        className: "wd-layer-energy wd-layer-circuit-energy",
-      },
-      {
-        id: "core",
-        src: `${CIRCUIT_PATH}/circuit-core.webp`,
-        alt: "",
-        depth: 7,
-        className: "wd-layer-focus wd-layer-core",
-      },
-      {
-        id: "front-environment",
-        src: `${CIRCUIT_PATH}/circuit-front-environment.webp`,
-        alt: "",
-        depth: 8,
-        y: 0.4,
-        className: "wd-layer-front",
-      },
-    ],
+    layers: buildSecondaryLayers("panel"),
+  },
+  "number-trail": {
+    gameId: "number-trail",
+    kind: "trail",
+    width: 1040,
+    height: 780,
+    layers: buildSecondaryLayers("trail"),
+  },
+  "seed-garden": {
+    gameId: "seed-garden",
+    kind: "garden",
+    width: 1040,
+    height: 780,
+    layers: buildSecondaryLayers("garden"),
   },
 };
 
-export function hasWorldDiorama(gameId: GameId): gameId is "escape-maze" | "color-sequence" {
-  return gameId === "escape-maze" || gameId === "color-sequence";
+export function hasWorldDiorama(gameId: GameId): boolean {
+  return Boolean(WORLD_DIORAMA_CONFIGS[gameId]);
 }
 
-export function getWorldDioramaConfig(
-  gameId: Extract<GameId, "escape-maze" | "color-sequence">,
-): WorldDioramaConfig {
+export function getWorldDioramaConfig(gameId: GameId): WorldDioramaConfig {
   return WORLD_DIORAMA_CONFIGS[gameId];
 }

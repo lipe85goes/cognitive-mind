@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import type { GameId } from "@/types/game";
+import { WORLD_DIORAMA_CONFIGS } from "@/components/worlds/diorama/worldDioramaLayout";
 
 export type MasterSceneGameId = Extract<
   GameId,
@@ -24,7 +25,7 @@ interface WorldMasterSceneCrop {
 export interface WorldMasterSceneConfig {
   gameId: MasterSceneGameId;
   world: "route" | "circuit";
-  renderer: "route-diorama" | "circuit-board";
+  renderer: "world-diorama";
   focalElement: "portal" | "core";
   accessibleLabel: string;
   atmosphere: string;
@@ -36,7 +37,6 @@ export interface WorldMasterSceneConfig {
   crops: Record<WorldMasterSceneContext, WorldMasterSceneCrop>;
 }
 
-const ROUTE_DIORAMA_PATH = "/illustrations/home/dioramas/route";
 /**
  * CIRCUIT-PRESENTATION-FINAL-01-FIX: the master scene now points at the SAME
  * runtime kit the active game renders. There is no second derived copy to
@@ -45,20 +45,14 @@ const ROUTE_DIORAMA_PATH = "/illustrations/home/dioramas/route";
  */
 const CIRCUIT_MASTER_PATH = "/assets/memory-circuit/v2";
 
-const ROUTE_ASSETS = [
-  "route-contact-shadow.webp",
-  "route-base.webp",
-  "route-back-environment.webp",
-  "route-board.webp",
-  "route-walls.webp",
-  "route-gameplay-props.webp",
-  "route-portal.webp",
-  "route-lights.webp",
-  "route-guardian.webp",
-  "route-explorer.webp",
-  "route-front-environment.webp",
-  "route-energy.webp",
-].map((asset) => `${ROUTE_DIORAMA_PATH}/${asset}`);
+/**
+ * HOME-HERO-WORLDS-3D-01: os dois heróis usam o MESMO renderer em camadas, e a
+ * prontidão espera exatamente os passes que serão pintados. Uma fonte só para
+ * Home, transição, introdução e preparação — nada de cópia derivada.
+ */
+function dioramaAssets(gameId: MasterSceneGameId): readonly string[] {
+  return WORLD_DIORAMA_CONFIGS[gameId].layers.map((layer) => layer.src);
+}
 
 export const CIRCUIT_MASTER_ASSETS = {
   board: `${CIRCUIT_MASTER_PATH}/memory-board.webp`,
@@ -78,7 +72,7 @@ export const WORLD_MASTER_SCENES: Record<
   "escape-maze": {
     gameId: "escape-maze",
     world: "route",
-    renderer: "route-diorama",
+    renderer: "world-diorama",
     focalElement: "portal",
     accessibleLabel:
       "Maquete da Rota Estrategica com explorador, guardiao, luzes e portal teal.",
@@ -87,7 +81,7 @@ export const WORLD_MASTER_SCENES: Record<
     accentSoft: "rgba(99, 221, 202, 0.24)",
     accentDeep: "#0d4c4a",
     warmLight: "#e1b45e",
-    essentialAssets: ROUTE_ASSETS,
+    essentialAssets: dioramaAssets("escape-maze"),
     crops: {
       home: { scale: 1, x: "0%", y: "0%" },
       transition: { scale: 1.14, x: "-2%", y: "1%" },
@@ -99,7 +93,7 @@ export const WORLD_MASTER_SCENES: Record<
   "color-sequence": {
     gameId: "color-sequence",
     world: "circuit",
-    renderer: "circuit-board",
+    renderer: "world-diorama",
     focalElement: "core",
     accessibleLabel:
       "Circuito de Memoria circular com quatro pads coloridos e cristal central.",
@@ -108,11 +102,7 @@ export const WORLD_MASTER_SCENES: Record<
     accentSoft: "rgba(242, 198, 90, 0.22)",
     accentDeep: "#5c3a18",
     warmLight: "#f2c65a",
-    essentialAssets: [
-      CIRCUIT_MASTER_ASSETS.board,
-      CIRCUIT_MASTER_ASSETS.core,
-      ...CIRCUIT_MASTER_ASSETS.pads,
-    ],
+    essentialAssets: dioramaAssets("color-sequence"),
     crops: {
       home: { scale: 0.96, x: "0%", y: "1%" },
       transition: { scale: 1.16, x: "0%", y: "2%" },

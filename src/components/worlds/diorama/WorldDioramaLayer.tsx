@@ -5,11 +5,17 @@ import type { WorldDioramaLayerConfig } from "./worldDioramaLayout";
 interface WorldDioramaLayerProps {
   layer: WorldDioramaLayerConfig;
   sizes: string;
+  /**
+   * Só a maquete em foco carrega adiantado. Os mundos vizinhos entram
+   * preguiçosamente para não disputar banda com a entrada do mundo escolhido.
+   */
+  eager?: boolean;
 }
 
 export function WorldDioramaLayer({
   layer,
   sizes,
+  eager = true,
 }: WorldDioramaLayerProps) {
   const style = {
     "--wd-depth": layer.depth,
@@ -31,7 +37,7 @@ export function WorldDioramaLayer({
         alt={layer.alt}
         fill
         sizes={sizes}
-        loading={layer.priority ? "eager" : "lazy"}
+        loading={eager && layer.priority ? "eager" : "lazy"}
         className="wd-layer-image"
         draggable={false}
       />
