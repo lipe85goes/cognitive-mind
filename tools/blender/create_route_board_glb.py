@@ -17,11 +17,22 @@ corner caps with crown rivets, a brass lattice of tile separators, domed brass
 rivets, and subtle brass rune inlays on a few perimeter tiles.
 
 Contract preserved for the live Babylon scene (do not break these):
-- 7x7 grid, CELL_SIZE = 1.0, tile centres at x = col-3, z = row-3
+- CELL_SIZE = 1.0, tile centres at x = (col - (GRID_SIZE-1)/2) * CELL_SIZE, and
+  z likewise from row — the same expression `cellToPosition` uses in
+  routeBabylonScene.ts. GRID_SIZE must equal ROWS/COLS in useEscapeMaze.ts;
+  `tools/validation/inspect-route-board-glb.mjs --assert` enforces it.
 - centred on the world origin in X/Z
 - play surface (tile tops) stays at ~Y = 0.185 so pieces placed at the scene's
   fixed BOARD_SURFACE_Y keep resting on the tiles (no sink / no float)
-- same general orientation and overall footprint
+- same general orientation
+
+ROTA-BOARD-9X9-SYNC-01: this board was authored for a 7x7 grid while the game
+moved to 9x9, so 32 of the 81 logical cells had no tile under them — the outer
+ring of the grid landed on the moat and on the frame rail. Everything that used
+to be a hand-tuned constant (body, bed, ledge, moat, frame, lip) is now derived
+from GRID_SIZE. The formulas below reproduce the original 7x7 numbers exactly at
+GRID_SIZE = 7, so this is a parametrisation of the approved design, not a
+redesign of it: nothing is stretched and no proportion is invented.
 """
 
 from __future__ import annotations
@@ -36,10 +47,32 @@ from mathutils import Vector
 
 
 CELL_SIZE = 1.0
-GRID_SIZE = 7
+GRID_SIZE = 9
 TILE_SIZE = 0.86
-BOARD_WIDTH = 8.65
-BOARD_DEPTH = 8.65
+
+# --- Every dimension below is derived from the grid ---------------------------
+# The playable field is what the game actually owns: one CELL_SIZE per row/col.
+FIELD = GRID_SIZE * CELL_SIZE
+
+# Margins kept from the approved 7x7 board, expressed as what they always were:
+# a fixed amount of material around the field, independent of how many cells the
+# field holds. At GRID_SIZE = 7 these give back the original 7.66 and 8.65.
+BED_MARGIN = 0.66  # slate bed beyond the field (0.33 per side)
+BODY_MARGIN = 1.65  # wood body beyond the field (ledge + moat + frame + skirt)
+
+BED = FIELD + BED_MARGIN
+BOARD_WIDTH = FIELD + BODY_MARGIN
+BOARD_DEPTH = BOARD_WIDTH
+
+# Inner arena rim: bronze ledge centre line, and the moat just inside it.
+LEDGE = BED / 2 - 0.11
+MOAT = LEDGE - 0.17
+MOAT_SPAN = BED - 0.36
+
+# Outer frame: rail centre line, the dark inner lip, and its span.
+FRAME_EDGE = BOARD_WIDTH / 2 - 0.19
+FRAME_LIP = FRAME_EDGE - 0.30
+FRAME_LIP_SPAN = 2 * FRAME_LIP + 0.07
 
 # Top of the slate tiles. The Babylon scene rests every gameplay piece on its
 # own fixed BOARD_SURFACE_Y (~0.2), so this MUST stay put across upgrades.
@@ -84,6 +117,17 @@ def parse_args() -> argparse.Namespace:
         "--preview",
         action="store_true",
         help="Render public/models/route/board-preview.png after export.",
+    )
+    parser.add_argument(
+        "--grid",
+        type=int,
+        default=None,
+        help=(
+            "Override GRID_SIZE. Only for review material — the shipped asset "
+            "must match ROWS/COLS in useEscapeMaze.ts. Used to re-render the "
+            "old 7x7 board for before/after sheets, and to prove the geometry "
+            "is genuinely parametric."
+        ),
     )
     parser.add_argument(
         "--preview-output",
@@ -530,20 +574,22 @@ def add_board_base(materials: dict[str, bpy.types.Material]) -> None:
     add_box(
         "Board_Inset_Bed",
         (0, -0.05, 0),
-        (7.66, 0.14, 7.66),
+        (BED, 0.14, BED),
         materials["DarkStone"],
         bevel=0.035,
     )
 
 
 def add_inner_border(materials: dict[str, bpy.types.Material]) -> None:
-    """Bronze ledge + polished brass bead + dark moat framing the 7x7 field.
+    """Bronze ledge + polished brass bead + dark moat framing the play field.
 
     Kept low (top ~0.245, only ~0.06 above the tiles) so it reads as a recessed
-    arena rim without occluding pieces from the game camera.
+    arena rim without occluding pieces from the game camera. The rim sits at the
+    edge of the field the grid actually uses, so the outermost row and column
+    stay on slate instead of climbing onto it.
     """
-    inner = 3.72
-    span = 7.66
+    inner = LEDGE
+    span = BED
     sides = (
         ("Front", (0, 0, inner), (span, 0, 0.17)),
         ("Back", (0, 0, -inner), (span, 0, 0.17)),
@@ -570,12 +616,12 @@ def add_inner_border(materials: dict[str, bpy.types.Material]) -> None:
             bevel=0.012,
         )
     # Dark moat line just inside the ledge (a recess shadow around the field).
-    moat = 3.55
+    moat = MOAT
     for label, loc, dims in (
-        ("Front", (0, 0.11, moat), (7.3, 0.06, 0.05)),
-        ("Back", (0, 0.11, -moat), (7.3, 0.06, 0.05)),
-        ("Left", (-moat, 0.11, 0), (0.05, 0.06, 7.3)),
-        ("Right", (moat, 0.11, 0), (0.05, 0.06, 7.3)),
+        ("Front", (0, 0.11, moat), (MOAT_SPAN, 0.06, 0.05)),
+        ("Back", (0, 0.11, -moat), (MOAT_SPAN, 0.06, 0.05)),
+        ("Left", (-moat, 0.11, 0), (0.05, 0.06, MOAT_SPAN)),
+        ("Right", (moat, 0.11, 0), (0.05, 0.06, MOAT_SPAN)),
     ):
         add_box(f"Inner_Moat_{label}", loc, dims, materials["DeepShadow"], bevel=0.01)
     # Small brass corner studs where the ledge meets at the field corners.
@@ -591,7 +637,7 @@ def add_inner_border(materials: dict[str, bpy.types.Material]) -> None:
 
 def add_outer_frame(materials: dict[str, bpy.types.Material]) -> None:
     """Sculpted three-tier outer frame: bronze skirt, brass rail, brass bead."""
-    edge = BOARD_WIDTH / 2 - 0.19  # 4.135 — keep the overall footprint unchanged
+    edge = FRAME_EDGE  # rail centre line, derived from the body width
     rails = (
         ("Front", (0, 0, edge), "x"),
         ("Back", (0, 0, -edge), "x"),
@@ -610,12 +656,12 @@ def add_outer_frame(materials: dict[str, bpy.types.Material]) -> None:
         add_box(f"Frame_Bead_{label}", (lx, 0.51, lz), bead, materials["BrassPolished"], bevel=0.025)
 
     # Thin dark inner lip = shadow gap between the frame and the play field.
-    lip = edge - 0.30
+    lip = FRAME_LIP
     for label, loc, dims in (
-        ("Front", (0, 0.40, lip), (7.74, 0.12, 0.07)),
-        ("Back", (0, 0.40, -lip), (7.74, 0.12, 0.07)),
-        ("Left", (-lip, 0.40, 0), (0.07, 0.12, 7.74)),
-        ("Right", (lip, 0.40, 0), (0.07, 0.12, 7.74)),
+        ("Front", (0, 0.40, lip), (FRAME_LIP_SPAN, 0.12, 0.07)),
+        ("Back", (0, 0.40, -lip), (FRAME_LIP_SPAN, 0.12, 0.07)),
+        ("Left", (-lip, 0.40, 0), (0.07, 0.12, FRAME_LIP_SPAN)),
+        ("Right", (lip, 0.40, 0), (0.07, 0.12, FRAME_LIP_SPAN)),
     ):
         add_box(f"Frame_Inner_Lip_{label}", loc, dims, materials["DeepShadow"], bevel=0.015)
 
@@ -671,24 +717,28 @@ def add_outer_frame(materials: dict[str, bpy.types.Material]) -> None:
 def add_tiles_and_grid(materials: dict[str, bpy.types.Material]) -> None:
     first = -(GRID_SIZE - 1) / 2
     tile_variations = ("TileVariationA", "TileVariationB", "TileVariationC")
-    # Controlled set of perimeter tiles that carry a brass rune inlay (keeps the
-    # inner 5x5 play area clean for pieces and hazards).
+    # Controlled set of perimeter tiles that carry a brass rune inlay. The rune
+    # set follows the grid's own corners and mid-points instead of the literal
+    # 7x7 coordinates it used to hold, so the decoration lands on the perimeter
+    # at any size and the inner play area stays clean for pieces and hazards.
+    last = GRID_SIZE - 1
+    mid = GRID_SIZE // 2
     rune_tiles = {
         (0, 0): 0,
-        (0, 6): 1,
-        (6, 0): 2,
-        (6, 6): 3,
-        (0, 3): 4,
-        (3, 0): 0,
-        (3, 6): 1,
-        (6, 3): 2,
+        (0, last): 1,
+        (last, 0): 2,
+        (last, last): 3,
+        (0, mid): 4,
+        (mid, 0): 0,
+        (mid, last): 1,
+        (last, mid): 2,
     }
     for row in range(GRID_SIZE):
         for col in range(GRID_SIZE):
             x = (col + first) * CELL_SIZE
             z = (row + first) * CELL_SIZE
             # Subtle 3-way slate variation (checker base + an occasional 3rd tone).
-            if (row * 7 + col) % 11 == 0:
+            if (row * GRID_SIZE + col) % 11 == 0:
                 material_name = "TileVariationC"
             else:
                 material_name = tile_variations[(row + col) % 2]
@@ -708,7 +758,7 @@ def add_tiles_and_grid(materials: dict[str, bpy.types.Material]) -> None:
                     materials["RuneInlay"],
                     rune_tiles[(row, col)],
                 )
-            elif (row * 7 + col) % 6 == 0:
+            elif (row * GRID_SIZE + col) % 6 == 0:
                 # A light scattering of hairline cracks for age (not on runes).
                 add_crack(
                     f"Tile_Crack_{row}_{col}",
@@ -741,7 +791,7 @@ def add_tiles_and_grid(materials: dict[str, bpy.types.Material]) -> None:
 
 def add_rivets(materials: dict[str, bpy.types.Material]) -> None:
     """Domed brass rivets along the frame, aligned with the grid columns/rows."""
-    edge = BOARD_WIDTH / 2 - 0.19
+    edge = FRAME_EDGE
     for index in range(GRID_SIZE):
         pos = (index - (GRID_SIZE - 1) / 2) * CELL_SIZE
         add_dome_rivet(f"Rivet_Front_{index}", (pos, 0.55, edge), 0.07, materials["WarmRivet"])
@@ -787,17 +837,19 @@ def add_camera_and_lights() -> dict[str, bpy.types.Object]:
     rim.data.energy = 80
     rim.data.color = (1.0, 0.74, 0.38)
 
+    # Preview framing follows the body width, so a larger grid is not cropped.
+    zoom = BOARD_WIDTH / 8.65
     preview_camera = add_preview_camera(
         "Preview_Camera",
-        location=(6.7, -7.5, 5.6),
+        location=(6.7 * zoom, -7.5 * zoom, 5.6 * zoom),
         target=(0.0, 0.0, 0.12),
-        ortho_scale=10.9,
+        ortho_scale=10.9 * zoom,
     )
     top_camera = add_preview_camera(
         "Preview_Top_Camera",
-        location=(0.0, 0.0, 12.0),
+        location=(0.0, 0.0, 12.0 * zoom),
         target=(0.0, 0.0, 0.0),
-        ortho_scale=10.35,
+        ortho_scale=10.35 * zoom,
     )
     bpy.context.scene.camera = preview_camera
     return {"preview": preview_camera, "top": top_camera}
@@ -838,8 +890,29 @@ def render_preview(
     bpy.ops.render.render(write_still=True)
 
 
+def apply_grid_override(size: int) -> None:
+    """Re-derive every board dimension for a different grid size."""
+    global GRID_SIZE, FIELD, BED, BOARD_WIDTH, BOARD_DEPTH
+    global LEDGE, MOAT, MOAT_SPAN, FRAME_EDGE, FRAME_LIP, FRAME_LIP_SPAN
+
+    GRID_SIZE = size
+    FIELD = GRID_SIZE * CELL_SIZE
+    BED = FIELD + BED_MARGIN
+    BOARD_WIDTH = FIELD + BODY_MARGIN
+    BOARD_DEPTH = BOARD_WIDTH
+    LEDGE = BED / 2 - 0.11
+    MOAT = LEDGE - 0.17
+    MOAT_SPAN = BED - 0.36
+    FRAME_EDGE = BOARD_WIDTH / 2 - 0.19
+    FRAME_LIP = FRAME_EDGE - 0.30
+    FRAME_LIP_SPAN = 2 * FRAME_LIP + 0.07
+
+
 def main() -> None:
     args = parse_args()
+    if args.grid:
+        apply_grid_override(args.grid)
+        print(f"GRID_SIZE overridden to {GRID_SIZE} (body {BOARD_WIDTH})")
     output_path = Path(args.output).resolve()
     preview_path = Path(args.preview_output).resolve()
     top_preview_path = Path(args.top_preview_output).resolve()

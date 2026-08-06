@@ -1,0 +1,142 @@
+{
+  "mission": "ROTA-BOARD-9X9-SYNC-01",
+  "generatedAt": "2026-08-06T22:46:34.449Z",
+  "glb": {
+    "file": "public/models/route/board.glb",
+    "bytes": 2233400,
+    "tiles": 81,
+    "grid": "9x9",
+    "cellPitch": 1,
+    "tileFootprint": [
+      0.86
+    ],
+    "tileTopY": [
+      0.185
+    ],
+    "insetBed": [
+      9.66,
+      0.14,
+      9.66
+    ],
+    "frameRails": [
+      10.65,
+      0.34,
+      10.65
+    ],
+    "boardBase": [
+      10.65,
+      0.72,
+      10.65
+    ],
+    "footprint": [
+      11.123,
+      1.784,
+      11.124
+    ],
+    "separators": {
+      "count": 16,
+      "xLines": [
+        -3.5,
+        -2.5,
+        -1.5,
+        -0.5,
+        0.5,
+        1.5,
+        2.5,
+        3.5
+      ],
+      "zLines": [
+        -3.5,
+        -2.5,
+        -1.5,
+        -0.5,
+        0.5,
+        1.5,
+        2.5,
+        3.5
+      ]
+    }
+  },
+  "viewports": {
+    "desktop": {
+      "canvas": "993x621",
+      "cellsPublished": 81,
+      "worstPlaneResidualPx": 0,
+      "worstLogicalVsPhysicalPx": 0,
+      "worstCell": "8,0",
+      "bodyBoxPx": [
+        18,
+        170,
+        960,
+        599
+      ],
+      "bodyWidthPx": 942,
+      "bodyFillsCanvasPct": 94.9,
+      "gridSpanPx": 632,
+      "cellPitchPx": 79,
+      "marginsPx": {
+        "left": 18,
+        "right": 33,
+        "top": 170,
+        "bottom": 22
+      },
+      "bodyInsideCanvas": true,
+      "scrollY": 0,
+      "overflowX": 0
+    },
+    "tablet": {
+      "canvas": "796x597",
+      "cellsPublished": 81,
+      "worstPlaneResidualPx": 0,
+      "worstLogicalVsPhysicalPx": 0,
+      "worstCell": "8,8",
+      "bodyBoxPx": [
+        16,
+        176,
+        760,
+        524
+      ],
+      "bodyWidthPx": 744,
+      "bodyFillsCanvasPct": 93.5,
+      "gridSpanPx": 509,
+      "cellPitchPx": 64,
+      "marginsPx": {
+        "left": 16,
+        "right": 36,
+        "top": 176,
+        "bottom": 73
+      },
+      "bodyInsideCanvas": true,
+      "scrollY": 0,
+      "overflowX": 0
+    },
+    "mobile": {
+      "canvas": "372x279",
+      "cellsPublished": 81,
+      "worstPlaneResidualPx": 0,
+      "worstLogicalVsPhysicalPx": 0,
+      "worstCell": "8,8",
+      "bodyBoxPx": [
+        6,
+        76,
+        356,
+        256
+      ],
+      "bodyWidthPx": 350,
+      "bodyFillsCanvasPct": 94.2,
+      "gridSpanPx": 240,
+      "cellPitchPx": 30,
+      "marginsPx": {
+        "left": 6,
+        "right": 16,
+        "top": 76,
+        "bottom": 23
+      },
+      "bodyInsideCanvas": true,
+      "scrollY": 0,
+      "overflowX": 0
+    }
+  },
+  "consoleErrors": [],
+  "http4xx": []
+}

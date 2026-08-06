@@ -61,6 +61,33 @@ type RouteMaterials = Record<
 
 const CELL = 1;
 /**
+ * How much wood/bronze the board carries around its playable field, per axis.
+ *
+ * ROTA-BOARD-9X9-SYNC-01: this mirrors `BODY_MARGIN` in
+ * `tools/blender/create_route_board_glb.py`, which is where the geometry is
+ * actually authored. The scene needs the number for two things the GLB cannot
+ * tell it: how far the camera must pull back to hold the whole body, and how
+ * wide the ground under the board should be. `--assert` on
+ * `tools/validation/inspect-route-board-glb.mjs` checks the built asset against
+ * the grid, so a drift between these two files fails loudly.
+ */
+const BOARD_BODY_MARGIN = 1.65;
+/**
+ * The board is a flat square seen from ~32 degrees above the horizontal, so its
+ * footprint on the screen's vertical axis is roughly half its footprint on the
+ * horizontal one — measured at 0.53 on the live scene. 0.62 keeps ~17% of
+ * headroom over that for the portal arch, wall tops and the board's thickness.
+ */
+const BOARD_VERTICAL_FLATTEN = 0.62;
+/**
+ * How much of the canvas the board's near edge is allowed to span. The corners
+ * closest to the camera are the extremes of the silhouette, so this is what
+ * decides "complete board" versus "clipped board".
+ */
+const BOARD_CANVAS_FILL = 0.94;
+/** Breathing room around the body, in world units, before the fill applies. */
+const BOARD_FIT_MARGIN = 0.15;
+/**
  * Every material in the Route scene is compiled for exactly this many lights,
  * which is also how many lights the scene has (key, fill, rim). Keeping the two
  * numbers equal is what stops `@babylonjs/loaders` from rewriting the cap on
@@ -83,7 +110,12 @@ type RoutePropAssetKey = keyof typeof ROUTE_PROP_ASSET_PATHS;
 
 // --- Board model placement -------------------------------------------------
 // The GLB grid is authored at exactly the same coordinates as `cellToPosition`
-// (tiles at x = col-3, z = row-3, CELL = 1), so scale 1 keeps pieces aligned.
+// — tile centres at x = (col - (COLS-1)/2) * CELL and z = ((ROWS-1)/2 - row) *
+// CELL — so scale 1 keeps every piece on its own tile. Scaling the board to fit
+// a different grid is never the answer: it would change the cell pitch that the
+// pieces, walls and hitboxes all assume. Regenerate the asset instead
+// (tools/blender/create_route_board_glb.py, GRID_SIZE) and re-run
+// `node tools/validation/inspect-route-board-glb.mjs --assert`.
 const BOARD_SCALE = 1;
 const BOARD_Y_OFFSET = 0;
 const BOARD_MODEL_OFFSET = { x: 0, y: BOARD_Y_OFFSET, z: 0 };
@@ -131,7 +163,9 @@ const GUARDIAN_ROTATION_Y = Math.PI - 0.12;
 // --- Camera composition (cinematic 3/4 premium tabletop) -------------------
 const DEFAULT_CAMERA_ALPHA = -Math.PI / 2.16;
 const DEFAULT_CAMERA_BETA = Math.PI / 3.1;
-const DEFAULT_CAMERA_RADIUS = 9.8;
+// Starting distance before fitCamera() measures the real canvas. Kept close to
+// the fitted value for a 9x9 body so nothing pops if a frame renders first.
+const DEFAULT_CAMERA_RADIUS = 15.6;
 const DEFAULT_CAMERA_TARGET = { x: -0.24, y: 0.08, z: 0.05 };
 
 // --- Tight tablet inspection clamps. Small left/right orbit + a touch of tilt;
@@ -141,8 +175,12 @@ const MIN_CAMERA_ALPHA = DEFAULT_CAMERA_ALPHA - 0.3; // ~17 deg left
 const MAX_CAMERA_ALPHA = DEFAULT_CAMERA_ALPHA + 0.3; // ~17 deg right
 const MIN_CAMERA_BETA = 0.92; // ~53 deg — never top-down
 const MAX_CAMERA_BETA = 1.2; // ~69 deg — stays well above the board (no flip)
-const MIN_CAMERA_RADIUS = 9.5; // closest inspect distance
-const MAX_CAMERA_RADIUS = 14.5; // farthest (board still clearly visible)
+// ROTA-BOARD-9X9-SYNC-01: both clamps were set around the old 8.65-unit body.
+// A 10.65-unit body needs the camera ~2.5 units further out just to hold the
+// frame, so 14.5 would have clamped the fit and cropped the board — the clamp,
+// not the composition, would have been choosing the framing.
+const MIN_CAMERA_RADIUS = 11.5; // closest inspect distance (manual zoom floor)
+const MAX_CAMERA_RADIUS = 18; // farthest (board still clearly visible)
 
 // Custom two-finger gesture sensitivities (one finger never orbits).
 const ORBIT_ALPHA_SENSITIVITY = 0.005;
@@ -404,9 +442,19 @@ export function createRouteBabylonController(
   groundMat.diffuseColor = B.Color3.FromHexString("#1d2224");
   groundMat.specularColor = B.Color3.FromHexString("#000000");
 
+  // ROTA-BOARD-9X9-SYNC-01: sized from the board body it sits under (10.65 at
+  // 9x9) instead of the 8.65 it was hand-fitted to, so it still reads as ground
+  // beneath the board rather than a disc peeking out from under it.
+  const groundSpan =
+    Math.max(initialState.rows, initialState.cols) * CELL + BOARD_BODY_MARGIN;
   const ground = B.MeshBuilder.CreateCylinder(
     "route-ground",
-    { diameterTop: 8.6, diameterBottom: 7.8, height: 0.7, tessellation: 9 },
+    {
+      diameterTop: groundSpan * 0.995,
+      diameterBottom: groundSpan * 0.902,
+      height: 0.7,
+      tessellation: 9,
+    },
     scene,
   );
   ground.position.set(0, -1.02, 0.1);
@@ -1176,8 +1224,11 @@ export function createRouteBabylonController(
   }
 
   function renderBase(parent: BABYLON.TransformNode) {
-    const boardWidth = state.cols * CELL + 1.1;
-    const boardDepth = state.rows * CELL + 1.1;
+    // Emergency board, drawn only if board.glb fails to load. It uses the same
+    // body margin as the real asset so the camera framing — which is derived
+    // from that margin — holds in both paths.
+    const boardWidth = state.cols * CELL + BOARD_BODY_MARGIN;
+    const boardDepth = state.rows * CELL + BOARD_BODY_MARGIN;
     box(
       "route-board-core",
       boardWidth,
@@ -1643,30 +1694,51 @@ export function createRouteBabylonController(
     camera.alpha = DEFAULT_CAMERA_ALPHA;
     camera.beta = isNarrow ? DEFAULT_CAMERA_BETA - 0.06 : DEFAULT_CAMERA_BETA;
 
-    // Half-extent the framing must contain: the 7x7 board plus its frame and
-    // the immediate territory rim.
-    // ROTA-BOARD-FOCUS-01: with the rim clutter gone the framing only has to
-    // hold the board and its frame, so the camera can come in close and let
-    // the board fill the scene.
-    // ROTA-9X9-FOUNDATION-01: the board grew from 7 to 9 cells per side
-    // (CELL = 1), so the framing half-extent grows with it — 4.3 held a 7x7
-    // board plus its frame; 9x9 needs 5.3. Derived, not guessed:
-    // (max(rows, cols) / 2) + frame margin.
-    // ROTA-RUNTIME-STABILITY-01: closing the 75px of page scroll gave the board
-    // row its true height, which on desktop is 75px less than the old formula
-    // was claiming. The board's on-screen size follows canvas height directly,
-    // so it would have come out ~11% smaller than the approved framing. The
-    // margin absorbs that: it is pure padding around a board that the 3/4 camera
-    // already foreshortens vertically, so the frame keeps a wide berth on both
-    // axes at 0.45 — verified by measuring the projected board bounds at 1440,
-    // 820 and 390.
-    const boardHalf = Math.max(state.rows, state.cols) / 2;
-    const frameMargin = isNarrow ? 0.5 : 0.45;
-    const halfExtent = boardHalf + frameMargin;
+    // ROTA-BOARD-9X9-SYNC-01: the framing now contains the PHYSICAL board, not
+    // the playable field.
+    //
+    // It used to be `max(rows, cols) / 2 + margin` — the grid plus padding. That
+    // held while the body was wider than the grid it carried. With a real 9x9
+    // body (field 9.00, wood 10.65, footprint 11.12) the grid is no longer the
+    // outer edge of anything, so the frame, corner caps and base are what have
+    // to fit.
+    //
+    // The second half of the fix is the vertical axis. Reserving the full
+    // half-extent on both axes ignored that the 3/4 camera flattens a tabletop:
+    // the board covered 92% of the canvas width but only 65% of its height. With
+    // the larger body that over-reservation pushed `needed` past
+    // MAX_CAMERA_RADIUS, so the clamp — not the fit — would have decided the
+    // framing, and the board would have been cut. Applying the measured
+    // flattening makes the horizontal axis bind, which is what actually
+    // constrains this composition.
+    const bodyHalf = (Math.max(state.rows, state.cols) * CELL + BOARD_BODY_MARGIN) / 2;
+    const half = bodyHalf + BOARD_FIT_MARGIN;
     const halfFov = camera.fov / 2;
-    const verticalFit = halfExtent / Math.tan(halfFov);
-    const horizontalFit = halfExtent / (Math.tan(halfFov) * aspect);
-    const needed = Math.max(verticalFit, horizontalFit) * 1.0;
+    const tanHalfFov = Math.tan(halfFov);
+    const sinBeta = Math.sin(camera.beta);
+    const cosBeta = Math.cos(camera.beta);
+
+    // Distance the camera needs so a half-extent of `half` covers at most
+    // `BOARD_CANVAS_FILL` of the axis:
+    //
+    //   the near edge sits at  d = hypot(R*sinB - half, R*cosB)  from the eye,
+    //   and a length L there covers  L / (2*d*tan(fov/2)*aspect)  of the canvas.
+    //
+    // Setting that equal to the fill and solving the quadratic for R gives the
+    // closed form below. Reproduces the previous camera to within 0.03 units on
+    // the old 8.65 body, and the measured 84.8px cell pitch exactly, so this is
+    // the same composition solved properly rather than a new one.
+    const distanceFor = (target: number) => {
+      const inner = target * target - (half * cosBeta) ** 2;
+      return half * sinBeta + Math.sqrt(Math.max(0, inner));
+    };
+    const horizontalFit = distanceFor(
+      half / (BOARD_CANVAS_FILL * tanHalfFov * aspect),
+    );
+    const verticalFit = distanceFor(
+      (half * BOARD_VERTICAL_FLATTEN) / (BOARD_CANVAS_FILL * tanHalfFov),
+    );
+    const needed = Math.max(verticalFit, horizontalFit);
 
     camera.radius = Math.min(
       MAX_CAMERA_RADIUS,

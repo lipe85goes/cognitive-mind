@@ -304,16 +304,25 @@
     min-height: 0;
   }
 
-  /* The 4/3 proportion is kept — it is the approved composition — but it is now
-     derived from the height the row grants instead of dictating that height.
-     Letting the canvas simply fill the column would render the same board in a
-     much wider box: the board's on-screen size follows canvas HEIGHT alone
-     (the vertical axis binds the camera fit at any aspect >= 1), so the extra
-     width would be transparent pixels over the room, paid for every frame. */
+  /* The canvas takes the height the row grants and a width derived from it.
+
+     ROTA-BOARD-9X9-SYNC-01 corrects the ratio. It was 4/3, on the reasoning
+     that the board's size follows canvas height alone — true only while the
+     camera fit reserved the full half-extent on the vertical axis. With the fit
+     modelling the 3/4 foreshortening, the two axes bind at different aspects:
+     below 1/0.62 the horizontal one decides, above it the vertical one does and
+     any extra width is transparent pixels over the room. 1.6 sits just under
+     that crossover, which is where the board is largest for a given height —
+     85px per cell against 71px at 4/3, on the same row height.
+
+     Below 900px the board stacks above the controls and the column width, not
+     the row height, is the constraint; 4/3 stays correct there and is
+     untouched. */
   .rsg-shell .rsg-canvas {
     width: auto;
     max-width: 100%;
     height: 100%;
+    aspect-ratio: 1.6;
   }
 }
 
