@@ -1,0 +1,673 @@
+/* ============================================================
+   ROTA-VISUAL-01 — o território solto no ambiente.
+
+   A Rota vivia dentro de uma vitrine: `.rsg-board-panel` tinha borda dourada,
+   raio, preenchimento escuro e sombra externa, e o palco ficava confinado numa
+   coluna central. Aqui esse chrome é removido de verdade (não escondido por
+   opacidade) e a cena passa a ocupar o ambiente inteiro.
+
+   Escopo: só o shell da Rota. Nada em globals.css.
+   ============================================================ */
+
+/* —— Sem vitrine: o tabuleiro não mora dentro de um cartão —— */
+.rsg-shell .rsg-board-panel,
+.rsg-shell .rsg-board-panel::before,
+.rsg-shell .rsg-board-panel::after {
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+
+.rsg-shell .rsg-board-panel {
+  padding: 0;
+  overflow: visible;
+}
+
+.rsg-shell .rsg-board-panel::before,
+.rsg-shell .rsg-board-panel::after {
+  content: none;
+}
+
+/* Os estados de vitória/derrota deixam de acender uma moldura e passam a
+   tingir a própria cena. */
+.rsg-shell .rsg-board-panel.is-won .rsg-canvas {
+  box-shadow: none;
+  filter: saturate(1.06) brightness(1.03);
+}
+
+.rsg-shell .rsg-board-panel.is-lost .rsg-canvas {
+  box-shadow: none;
+  filter: saturate(0.97);
+}
+
+/* Once the Route intro closes, keep its hidden grid layer from sizing the game. */
+.wentry-screen:has(.rsg-shell) > .wentry-intro-layer[aria-hidden="true"] {
+  display: none;
+}
+
+.rsg-shell .rsg-canvas {
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  overflow: visible;
+}
+
+/* —— Ambiente full-bleed: a sala é a cena, não a textura de um painel —— */
+.rsg-shell .rsg-atmosphere {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background-position: center;
+  background-size: cover;
+  filter: saturate(0.92) brightness(0.86);
+}
+
+.rsg-shell .rsg-vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  background:
+    radial-gradient(
+      ellipse 66% 60% at 50% 48%,
+      rgba(255, 214, 140, 0.08),
+      transparent 62%
+    ),
+    radial-gradient(
+      ellipse 92% 88% at 50% 50%,
+      transparent 42%,
+      rgba(6, 10, 9, 0.38) 78%,
+      rgba(3, 6, 5, 0.6) 100%
+    );
+}
+
+/* A coluna central legada prendia toda a cena; o mundo agora usa a largura
+   inteira e quem se limita é o HUD. */
+.rsg-shell .rsg-frame {
+  justify-content: stretch;
+  justify-items: stretch;
+  max-width: none;
+}
+
+.rsg-shell .rsg-board-col {
+  max-width: none;
+}
+
+/* —— HUD como placas do mundo, não cards de painel —— */
+.rsg-shell .rsg-panel,
+.rsg-shell .rsg-legend,
+.rsg-shell .rsg-current-objective {
+  border-color: rgba(202, 157, 82, 0.4);
+  background:
+    linear-gradient(180deg, rgba(255, 246, 214, 0.08), transparent 40%),
+    linear-gradient(165deg, rgba(22, 34, 32, 0.9), rgba(9, 16, 15, 0.93));
+  box-shadow:
+    inset 0 1px rgba(255, 246, 210, 0.12),
+    0 0.8rem 1.6rem rgba(0, 0, 0, 0.36);
+  backdrop-filter: blur(10px);
+}
+
+.rsg-shell .rsg-stat {
+  border-color: rgba(202, 157, 82, 0.32);
+  background: rgba(12, 22, 20, 0.72);
+  box-shadow: inset 0 1px rgba(255, 246, 210, 0.09);
+}
+
+/* Passe 3: the board is the primary surface. The route header now carries
+   only the three live decisions; the rest belongs to an opt-in record tray. */
+.rsg-shell .rsg-frame {
+  gap: clamp(0.38rem, 1vh, 0.7rem);
+  padding-top: clamp(0.65rem, 1.6vw, 1.1rem);
+}
+
+.rsg-shell .rsg-topbar {
+  display: grid;
+  grid-template-columns: auto minmax(22rem, 1fr) auto;
+  align-items: center;
+  gap: clamp(0.55rem, 1.2vw, 1rem);
+}
+
+.rsg-shell .rsg-top-hud {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(6.2rem, 8.25rem));
+  justify-content: center;
+  gap: clamp(0.38rem, 0.8vw, 0.6rem);
+}
+
+.rsg-shell .rsg-hud-token {
+  min-width: 0;
+  min-height: 3.15rem;
+  padding: 0.38rem 0.56rem;
+}
+
+.rsg-shell .rsg-details-trigger,
+.rsg-shell .rsg-details-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  border: 1px solid rgba(202, 157, 82, 0.45);
+  color: #fff3d6;
+  background:
+    linear-gradient(180deg, rgba(255, 246, 214, 0.09), transparent 48%),
+    rgba(12, 22, 20, 0.88);
+  box-shadow:
+    inset 0 1px rgba(255, 246, 210, 0.13),
+    0 0.35rem 0.8rem rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+
+.rsg-shell .rsg-details-trigger {
+  gap: 0.42rem;
+  padding: 0.42rem 0.78rem;
+  border-radius: 0.8rem;
+  font-size: 0.82rem;
+  font-weight: 850;
+  white-space: nowrap;
+}
+
+.rsg-shell .rsg-details-trigger svg:first-child,
+.rsg-shell .rsg-route-details-header svg {
+  color: var(--rsg-gold);
+}
+
+.rsg-shell .rsg-details-chevron {
+  transition: transform 160ms ease;
+}
+
+.rsg-shell .rsg-details-trigger[aria-expanded="true"] .rsg-details-chevron {
+  transform: rotate(180deg);
+}
+
+.rsg-shell .rsg-details-trigger:focus-visible,
+.rsg-shell .rsg-details-close:focus-visible,
+.rsg-shell .rsg-route-details button:focus-visible {
+  outline: 3px solid var(--rsg-cyan);
+  outline-offset: 3px;
+}
+
+.rsg-shell .rsg-signature {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.7rem;
+  width: min(31rem, 94vw);
+  max-width: none;
+  padding: 0.46rem 1.1rem;
+  border-color: rgba(190, 145, 72, 0.72);
+  background:
+    linear-gradient(180deg, rgba(255, 244, 205, 0.08), transparent 52%),
+    linear-gradient(155deg, rgba(18, 36, 34, 0.94), rgba(7, 15, 14, 0.96));
+}
+
+.rsg-shell .rsg-world-mark {
+  width: clamp(2.5rem, 4.2vw, 3.4rem);
+  height: clamp(2.5rem, 4.2vw, 3.4rem);
+  color: #d9af63;
+  filter: drop-shadow(0 0 0.55rem rgba(43, 198, 182, 0.22));
+}
+
+.rsg-shell .rsg-signature-copy {
+  display: grid;
+  align-content: center;
+  gap: 0.1rem;
+  min-width: 0;
+  text-align: left;
+}
+
+.rsg-shell .rsg-signature-copy small {
+  color: rgba(213, 235, 224, 0.74);
+  font-size: clamp(0.68rem, 1vw, 0.8rem);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.rsg-shell .rsg-current-objective {
+  width: min(45rem, 100%);
+  margin: 0 auto;
+  padding-block: 0.55rem;
+}
+
+.rsg-shell .rsg-current-objective-icon {
+  width: 2.1rem;
+  height: 2.1rem;
+}
+
+.rsg-shell .rsg-objective-message {
+  color: rgba(213, 235, 224, 0.72);
+  font-size: 0.76rem;
+  line-height: 1.2;
+}
+
+.rsg-shell .rsg-objective-message-success {
+  color: var(--rsg-green-bright);
+}
+
+.rsg-shell .rsg-layout {
+  grid-template-columns: minmax(0, 1fr) minmax(12.5rem, 14.5rem);
+  grid-template-areas: "board controls";
+  align-items: start;
+  gap: clamp(0.55rem, 1.4vw, 1rem);
+}
+
+.rsg-shell .rsg-board-col {
+  width: 100%;
+}
+
+/* ROTA-BOARD-FOCUS-01: the board is the protagonist — it takes the width the
+   column can give and only yields height when the viewport is genuinely
+   short.
+
+   ROTA-RUNTIME-STABILITY-01: it used to yield that height by guessing.
+   `width: min(100%, calc(133.333svh - 17rem))` sized the board by width and let
+   `aspect-ratio: 4/3` derive the height, so the 17rem had to stand in for every
+   piece of chrome above and below it — topbar, signature, objective, gaps and
+   the frame's own padding. It stood in for 204px of a real 280px, and the
+   difference showed up as 75px of page scroll at 1440x900.
+
+   No constant is guessed now. The frame fills the shell and stops there, the
+   layout row takes whatever height is left, and the board is that row: the
+   number that used to be hardcoded is simply measured by the layout. Chrome can
+   grow or shrink and the page still cannot scroll.
+
+   Only the two-column layout is height-driven. Below 900px the board stacks
+   above the controls and the column legitimately owns the width — that path is
+   already scroll-free and stays untouched. */
+.rsg-shell .rsg-board-panel {
+  width: 100%;
+  margin-inline: auto;
+}
+
+@media (min-width: 901px) {
+  .rsg-shell .rsg-frame {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  .rsg-shell .rsg-layout {
+    flex: 1 1 auto;
+    align-items: stretch;
+    min-height: 0;
+  }
+
+  .rsg-shell .rsg-board-col {
+    align-self: stretch;
+    justify-content: center;
+    min-height: 0;
+  }
+
+  .rsg-shell .rsg-board-panel {
+    display: flex;
+    justify-content: center;
+    height: 100%;
+    min-height: 0;
+  }
+
+  /* The 4/3 proportion is kept — it is the approved composition — but it is now
+     derived from the height the row grants instead of dictating that height.
+     Letting the canvas simply fill the column would render the same board in a
+     much wider box: the board's on-screen size follows canvas HEIGHT alone
+     (the vertical axis binds the camera fit at any aspect >= 1), so the extra
+     width would be transparent pixels over the room, paid for every frame. */
+  .rsg-shell .rsg-canvas {
+    width: auto;
+    max-width: 100%;
+    height: 100%;
+  }
+}
+
+.rsg-shell .rsg-control-col {
+  align-self: start;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+}
+
+.rsg-shell .rsg-control-col > .rsg-panel {
+  padding: clamp(0.68rem, 1.1vw, 0.9rem);
+  border: 1px solid rgba(202, 157, 82, 0.34);
+  border-radius: 1rem;
+  background:
+    linear-gradient(180deg, rgba(255, 246, 214, 0.07), transparent 42%),
+    rgba(10, 19, 18, 0.76);
+  box-shadow:
+    inset 0 1px rgba(255, 246, 210, 0.1),
+    0 0.6rem 1.25rem rgba(0, 0, 0, 0.24);
+}
+
+.rsg-shell .rsg-dpad {
+  width: min(12.25rem, 88%);
+  padding: 0.55rem;
+}
+
+.rsg-shell .rsg-route-details {
+  display: grid;
+  gap: 0.7rem;
+  max-height: min(35rem, calc(100svh - 10rem));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0.82rem;
+  border: 1px solid rgba(202, 157, 82, 0.38);
+  border-radius: 1rem;
+  background:
+    linear-gradient(180deg, rgba(255, 246, 214, 0.07), transparent 36%),
+    rgba(8, 17, 16, 0.95);
+  box-shadow:
+    inset 0 1px rgba(255, 246, 210, 0.11),
+    0 0.7rem 1.4rem rgba(0, 0, 0, 0.34);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(217, 175, 99, 0.6) transparent;
+}
+
+.rsg-shell .rsg-route-details[hidden] {
+  display: none;
+}
+
+.rsg-shell .rsg-route-details-header,
+.rsg-shell .rsg-route-details-header > span {
+  display: flex;
+  align-items: center;
+}
+
+.rsg-shell .rsg-route-details-header {
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+.rsg-shell .rsg-route-details-header > span {
+  gap: 0.42rem;
+  color: #fff3d6;
+}
+
+.rsg-shell .rsg-details-close {
+  flex: none;
+  border-radius: 0.75rem;
+}
+
+.rsg-shell .rsg-route-context {
+  margin: 0;
+  color: rgba(225, 238, 230, 0.78);
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.rsg-shell .rsg-details-note {
+  margin: 0;
+  padding-top: 0.6rem;
+  border-top: 1px solid rgba(202, 157, 82, 0.22);
+  color: rgba(213, 235, 224, 0.7);
+  font-size: 0.72rem;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.rsg-shell .rsg-route-details .rsg-mission-steps {
+  margin-top: 0;
+  padding-top: 0.65rem;
+}
+
+.rsg-shell .rsg-details-legend {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.25rem 0.45rem;
+  padding: 0.5rem;
+  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.025);
+  box-shadow: none;
+}
+
+.rsg-shell .rsg-details-legend li {
+  justify-content: flex-start;
+  font-size: 0.7rem;
+}
+
+.rsg-shell .rsg-details-restart {
+  width: 100%;
+  min-height: 2.75rem;
+  font-size: 0.78rem;
+}
+
+@media (max-width: 980px) {
+  .rsg-shell .rsg-frame {
+    padding-inline: 0.75rem;
+  }
+
+  .rsg-shell .rsg-topbar {
+    grid-template-columns: auto minmax(19rem, 1fr) auto;
+  }
+
+  .rsg-shell .rsg-layout {
+    grid-template-columns: minmax(0, 1fr) minmax(12.5rem, 14rem);
+  }
+
+  .rsg-shell .rsg-hud-token {
+    padding-inline: 0.42rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .rsg-shell .rsg-layout {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "board"
+      "controls";
+    gap: 0.55rem;
+  }
+
+  .rsg-shell .rsg-board-panel {
+    width: 100%;
+  }
+
+  .rsg-shell .rsg-control-col {
+    width: 100%;
+  }
+
+  .rsg-shell .rsg-setup {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.55rem 0.8rem;
+  }
+
+  .rsg-shell .rsg-setup .rsg-panel-title {
+    grid-column: 1 / -1;
+    margin-bottom: 0;
+  }
+
+  .rsg-shell .rsg-setup .rsg-difficulty-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .rsg-shell .rsg-setup .rsg-difficulty-btn {
+    min-height: 2.9rem;
+    padding-inline: 0.65rem;
+  }
+
+  .rsg-shell .rsg-setup .rsg-cta {
+    width: auto;
+    min-width: 12.5rem;
+    margin-top: 0;
+  }
+
+  .rsg-shell .rsg-dpad-panel {
+    width: min(19rem, 100%);
+    margin-inline: auto;
+  }
+
+  .rsg-shell .rsg-route-details {
+    max-height: 17rem;
+  }
+}
+
+@media (max-width: 720px) {
+  .rsg-shell .rsg-frame {
+    gap: 0.35rem;
+    padding: 0.5rem 0.55rem calc(0.65rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .rsg-shell .rsg-topbar {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.38rem;
+  }
+
+  .rsg-shell .rsg-back {
+    min-height: 2.75rem;
+    padding: 0.38rem 0.7rem;
+    font-size: 0.8rem;
+  }
+
+  .rsg-shell .rsg-details-trigger {
+    min-width: 2.75rem;
+    padding-inline: 0.65rem;
+  }
+
+  .rsg-shell .rsg-details-trigger > svg:first-child,
+  .rsg-shell .rsg-details-trigger > svg:last-child {
+    display: none;
+  }
+
+  .rsg-shell .rsg-top-hud {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 100%;
+  }
+
+  .rsg-shell .rsg-hud-token {
+    min-height: 2.75rem;
+  }
+
+  .rsg-shell .rsg-signature {
+    width: 100%;
+    padding: 0.3rem 0.65rem;
+  }
+
+  .rsg-shell .rsg-world-mark {
+    width: 2.4rem;
+    height: 2.4rem;
+  }
+
+  .rsg-shell .rsg-plaque-text {
+    font-size: 1.16rem;
+  }
+
+  .rsg-shell .rsg-signature-copy small {
+    font-size: 0.64rem;
+  }
+
+  .rsg-shell .rsg-current-objective {
+    min-height: 3.6rem;
+    padding: 0.42rem 0.65rem;
+  }
+
+  .rsg-shell .rsg-current-objective-icon {
+    width: 1.85rem;
+    height: 1.85rem;
+    padding: 0.4rem;
+  }
+
+  .rsg-shell .rsg-current-objective strong {
+    display: -webkit-box;
+    overflow: hidden;
+    font-size: 0.84rem;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .rsg-shell .rsg-current-objective em,
+  .rsg-shell .rsg-objective-message {
+    font-size: 0.58rem;
+  }
+
+  .rsg-shell .rsg-layout {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "board"
+      "controls";
+    align-items: start;
+    gap: 0.35rem;
+  }
+
+  .rsg-shell .rsg-canvas {
+    aspect-ratio: 4 / 3;
+  }
+
+  .rsg-shell .rsg-board-panel {
+    width: 100%;
+  }
+
+  .rsg-shell .rsg-control-col {
+    gap: 0.4rem;
+  }
+
+  .rsg-shell .rsg-control-col > .rsg-panel {
+    padding: 0.55rem;
+  }
+
+  .rsg-shell .rsg-setup {
+    grid-template-columns: 1fr;
+  }
+
+  .rsg-shell .rsg-setup .rsg-difficulty-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .rsg-shell .rsg-setup .rsg-cta {
+    width: 100%;
+  }
+
+  .rsg-shell .rsg-dpad-panel .rsg-panel-title {
+    margin-bottom: 0.25rem;
+    font-size: 0.82rem;
+  }
+
+  .rsg-shell .rsg-dpad {
+    width: min(10.5rem, 70vw);
+    padding: 0.42rem;
+  }
+
+  .rsg-shell .rsg-route-details {
+    max-height: min(18rem, 42svh);
+  }
+
+  .rsg-shell .rsg-footnote {
+    display: none;
+  }
+}
+
+@media (max-width: 420px) {
+  .rsg-shell .rsg-hud-token {
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: 0.3rem;
+    padding-inline: 0.35rem;
+  }
+
+  .rsg-shell .rsg-hud-icon {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .rsg-shell .rsg-hud-token em {
+    font-size: 0.52rem;
+  }
+
+  .rsg-shell .rsg-hud-token strong {
+    overflow: hidden;
+    font-size: 0.76rem;
+    text-overflow: ellipsis;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rsg-shell .rsg-details-chevron {
+    transition: none;
+  }
+
+  .rsg-shell .rsg-board-panel.is-won .rsg-canvas,
+  .rsg-shell .rsg-board-panel.is-lost .rsg-canvas {
+    transition: none;
+  }
+}

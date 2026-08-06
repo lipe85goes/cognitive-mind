@@ -168,6 +168,13 @@ export function RouteBabylonBoard({
         data-guardian-cell={posKey(guardian)}
         data-exit-cell={posKey(mazeMap.exitPosition)}
         data-wall-cells={state.walls.join(" ")}
+        data-light-cells={mazeMap.collectibleStars.map(posKey).join(" ")}
+        data-collected-light-cells={state.collectedKeys.join(" ")}
+        data-trap-cells={mazeMap.traps.map(posKey).join(" ")}
+        data-triggered-trap-cells={state.triggeredTrapKeys.join(" ")}
+        data-shield-cell={mazeMap.shield ? posKey(mazeMap.shield) : ""}
+        data-shield-collected={shieldCollected ? "true" : "false"}
+        data-danger-cells={state.dangerTiles.join(" ")}
         data-move-targets={state.moveTargets.join(" ")}
         data-status={status}
         aria-hidden="true"

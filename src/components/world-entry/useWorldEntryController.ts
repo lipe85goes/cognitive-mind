@@ -16,6 +16,22 @@ import {
  */
 const PREPARING_WATCHDOG_MS = 12_000;
 
+/**
+ * A Rota inicializa uma engine 3D e carrega GLBs antes do primeiro frame; em
+ * produção, medido com cache desligado, ela leva de 9,5 s (tablet) a 14,8 s
+ * (mobile 390 com DPR 2) do CTA até a cena revelada. Com 12 s globais, o
+ * watchdog disparava DURANTE um carregamento legítimo e mandava o Explorador
+ * para o painel de erro. A janela é ampliada só para este mundo — os demais
+ * seguem em 12 s, porque só pintam imagens.
+ */
+const WORLD_WATCHDOG_MS: Partial<Record<GameId, number>> = {
+  "escape-maze": 28_000,
+};
+
+function watchdogWindowFor(gameId: GameId | null) {
+  return (gameId && WORLD_WATCHDOG_MS[gameId]) || PREPARING_WATCHDOG_MS;
+}
+
 export function useWorldEntryController() {
   const [state, dispatch] = useReducer(
     worldEntryReducer,
@@ -45,12 +61,12 @@ export function useWorldEntryController() {
             "World entry readiness was not reported within the watchdog window.",
           ),
         });
-      }, PREPARING_WATCHDOG_MS);
+      }, watchdogWindowFor(state.gameId));
     };
     arm();
 
     return () => window.clearTimeout(timerId);
-  }, [state.phase, state.attempt]);
+  }, [state.phase, state.attempt, state.gameId]);
 
   const start = useCallback((gameId: GameId) => {
     if (lockedRef.current) return false;

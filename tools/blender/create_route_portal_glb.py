@@ -31,19 +31,25 @@ def create_materials():
         ),
         "PortalGreenGlow": make_material(
             "PortalGreenGlow",
-            (0.2, 0.95, 0.48, 1),
+            (0.10, 0.86, 0.78, 1),
             0.0,
             0.22,
-            emission=(0.06, 0.9, 0.36),
-            emission_strength=4.2,
+            emission=(0.03, 0.78, 0.68),
+            emission_strength=3.4,
         ),
         "PortalGlassCore": make_material(
             "PortalGlassCore",
-            (0.38, 1.0, 0.62, 1),
+            (0.30, 0.95, 0.88, 1),
             0.0,
             0.12,
-            emission=(0.08, 1.0, 0.44),
-            emission_strength=2.8,
+            emission=(0.06, 0.86, 0.78),
+            emission_strength=2.2,
+        ),
+        "PortalThreshold": make_material(
+            "PortalThreshold",
+            (0.05, 0.16, 0.16, 1),
+            0.05,
+            0.66,
         ),
         "PortalBlueGem": make_material(
             "PortalBlueGem",
@@ -57,25 +63,44 @@ def create_materials():
 
 
 def build_portal(materials) -> None:
-    add_cylinder("Portal_Shadow", (0, 0.006, 0.0), 0.38, 0.012, materials["PortalShadow"])
-    add_box("Portal_Base", (0, 0.055, 0.02), (0.74, 0.11, 0.44), materials["PortalStone"], 0.035)
-    add_box("Portal_Base_Trim", (0, 0.13, 0.02), (0.66, 0.045, 0.34), materials["PortalBronze"], 0.018)
-    add_cylinder("Portal_Left_Pillar", (-0.25, 0.38, 0.02), 0.105, 0.56, materials["PortalStone"], 24)
-    add_cylinder("Portal_Right_Pillar", (0.25, 0.38, 0.02), 0.105, 0.56, materials["PortalStone"], 24)
-    add_cylinder("Portal_Left_Cap", (-0.25, 0.68, 0.02), 0.13, 0.08, materials["PortalBronze"], 24)
-    add_cylinder("Portal_Right_Cap", (0.25, 0.68, 0.02), 0.13, 0.08, materials["PortalBronze"], 24)
-    add_torus("Portal_Arch_Bronze", (0, 0.54, -0.04), 0.30, 0.045, materials["PortalBronze"], face_front=True)
-    add_torus("Portal_Arch_Glow", (0, 0.54, -0.07), 0.22, 0.026, materials["PortalGreenGlow"], face_front=True)
+    # Grounded stone footing.
+    add_cylinder("Portal_Shadow", (0, 0.006, 0.0), 0.42, 0.012, materials["PortalShadow"])
+    add_box("Portal_Base", (0, 0.06, 0.02), (0.86, 0.12, 0.46), materials["PortalStone"], 0.04)
+    add_box("Portal_Base_Trim", (0, 0.145, 0.02), (0.76, 0.05, 0.36), materials["PortalBronze"], 0.02)
+    add_box("Portal_Step", (0, 0.03, 0.28), (0.58, 0.06, 0.2), materials["PortalStone"], 0.02)
+
+    # Tall uprights: the passage stands, it does not lie down.
+    add_cylinder("Portal_Left_Pillar", (-0.31, 0.62, 0.02), 0.1, 1.0, materials["PortalStone"], 24)
+    add_cylinder("Portal_Right_Pillar", (0.31, 0.62, 0.02), 0.1, 1.0, materials["PortalStone"], 24)
+    add_cylinder("Portal_Left_Cap", (-0.31, 1.14, 0.02), 0.125, 0.09, materials["PortalBronze"], 24)
+    add_cylinder("Portal_Right_Cap", (0.31, 1.14, 0.02), 0.125, 0.09, materials["PortalBronze"], 24)
+
+    # Arch: a bronze ring with a recessed dark jamb behind it, so the opening
+    # has visible depth instead of reading as a flat disc.
+    add_torus("Portal_Arch_Bronze", (0, 0.95, 0.0), 0.4, 0.05, materials["PortalBronze"], face_front=True)
+    add_torus("Portal_Arch_Jamb", (0, 0.95, -0.09), 0.38, 0.06, materials["PortalThreshold"], face_front=True)
+    add_torus("Portal_Arch_Glow", (0, 0.95, -0.05), 0.31, 0.03, materials["PortalGreenGlow"], face_front=True)
+
+    # The threshold itself: an upright energy surface filling the opening.
     add_sphere(
-        "Portal_Glow_Core",
-        (0, 0.49, -0.09),
-        0.19,
+        "Portal_Threshold_Field",
+        (0, 0.9, -0.06),
+        0.31,
         materials["PortalGlassCore"],
-        target_scale=(0.9, 1.35, 0.18),
-        segments=36,
-        rings=18,
+        target_scale=(1.0, 1.12, 0.1),
+        segments=40,
+        rings=20,
     )
-    add_sphere("Portal_Top_Gem", (0, 0.77, -0.01), 0.065, materials["PortalBlueGem"], target_scale=(1, 0.75, 1))
+    add_sphere(
+        "Portal_Threshold_Depth",
+        (0, 0.9, -0.14),
+        0.26,
+        materials["PortalThreshold"],
+        target_scale=(1.0, 1.1, 0.12),
+        segments=32,
+        rings=16,
+    )
+    add_sphere("Portal_Top_Gem", (0, 1.28, 0.0), 0.07, materials["PortalBlueGem"], target_scale=(1, 0.8, 1))
 
 
 def main() -> None:

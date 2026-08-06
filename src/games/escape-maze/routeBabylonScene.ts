@@ -60,6 +60,13 @@ type RouteMaterials = Record<
 >;
 
 const CELL = 1;
+/**
+ * Every material in the Route scene is compiled for exactly this many lights,
+ * which is also how many lights the scene has (key, fill, rim). Keeping the two
+ * numbers equal is what stops `@babylonjs/loaders` from rewriting the cap on
+ * every GLB import — see the light block in createRouteBabylonController.
+ */
+const ROUTE_MAX_LIGHTS = 3;
 const TILE_HEIGHT = 0.12;
 const BOARD_TOP = 0;
 const BOARD_GLB_PATH = "/models/route/board.glb";
@@ -100,8 +107,11 @@ const SHIELD_SCALE = 1;
 // facing the camera it is tilted back so the star reads from the elevated 3/4
 // camera instead of appearing edge-on like a sideways plaque.
 const PORTAL_ROTATION_Y = -0.1;
-const SHIELD_ROTATION_Y = -0.1;
-const SHIELD_TILT_X = 0.34;
+// ROTA-VISUAL-01: the shield used to lean back like a plaque lying down and
+// read as "the blue thing facing away". It now stands, angled just enough to
+// catch the key light while its crest stays toward the gameplay camera.
+const SHIELD_ROTATION_Y = 0.06;
+const SHIELD_TILT_X = 0.1;
 
 // --- Character model placement --------------------------------------------
 // Both character assets are authored centered on X/Z, bottom at local Y = 0 and
@@ -122,7 +132,6 @@ const GUARDIAN_ROTATION_Y = Math.PI - 0.12;
 const DEFAULT_CAMERA_ALPHA = -Math.PI / 2.16;
 const DEFAULT_CAMERA_BETA = Math.PI / 3.1;
 const DEFAULT_CAMERA_RADIUS = 9.8;
-const DEFAULT_CAMERA_RADIUS_MOBILE = 10.5;
 const DEFAULT_CAMERA_TARGET = { x: -0.24, y: 0.08, z: 0.05 };
 
 // --- Tight tablet inspection clamps. Small left/right orbit + a touch of tilt;
@@ -162,6 +171,7 @@ function makeMaterial(
   } = {},
 ) {
   const material = new B.StandardMaterial(name, scene);
+  material.maxSimultaneousLights = ROUTE_MAX_LIGHTS;
   material.diffuseColor = B.Color3.FromHexString(diffuse);
   material.specularColor = B.Color3.FromHexString(options.specular ?? "#2f2417");
   if (options.emissive) {
@@ -349,28 +359,29 @@ export function createRouteBabylonController(
   rim.intensity = 0.92;
   rim.diffuse = B.Color3.FromHexString("#86e3ff");
 
-  // Warm front-right glint that makes the aged brass frame pop.
-  const brassGlint = new B.PointLight(
-    "route-brass-glint",
-    new B.Vector3(4.6, 2.4, 4.2),
-    scene,
-  );
-  brassGlint.intensity = 0.88;
-  brassGlint.diffuse = B.Color3.FromHexString("#ffcf83");
-  brassGlint.setEnabled(false);
-
-  // Warm overhead "table lamp" pool that makes the board the lit hero of the
-  // composition and warms the tabletop directly under it.
-  const tableLamp = new B.PointLight(
-    "route-table-lamp",
-    new B.Vector3(0, 6.5, 1.6),
-    scene,
-  );
-  tableLamp.intensity = 0.42;
-  tableLamp.diffuse = B.Color3.FromHexString("#ffdca6");
-  tableLamp.range = 24;
-  tableLamp.setEnabled(false);
-
+  // ROTA-RUNTIME-STABILITY-01: key + fill + rim are the ONLY lights in this
+  // scene, and that is a hard invariant, not a coincidence.
+  //
+  // Two things depend on it:
+  //
+  //  1. Every material here is capped at ROUTE_MAX_LIGHTS (3) and Babylon binds
+  //     the FIRST `cap` entries of `mesh.lightSources`, which follow scene
+  //     creation order. These three are created first, so a fourth light could
+  //     never reach a surface anyway — it would only cost shader work. That was
+  //     measured: disabling the seven decorative point lights that used to live
+  //     here changed 1 pixel out of 646.816 (0,000%).
+  //
+  //  2. `@babylonjs/loaders` raises the cap of EVERY material in the scene to
+  //     `scene.lights.length` after each GLB import (glTFLoader.js: "Making sure
+  //     we enable enough lights to have all lights together"). With 3 lights and
+  //     Babylon's default cap of 4 that line is a permanent no-op. With 11 it
+  //     rewrote 200+ materials eight times over, and each write marks every
+  //     submesh light-dirty, forcing a full shader recompile.
+  //
+  // Portal state, light orbs, the shield, trap crystals and the guardian's eyes
+  // are all read through emissive materials plus the glow layer below — they
+  // never needed point lights. Keep it that way: adding a light here is a
+  // scene-wide recompile, not a local decision.
   const glow = new B.GlowLayer("route-glow-layer", scene, {
     mainTextureSamples: 4,
   });
@@ -381,29 +392,29 @@ export function createRouteBabylonController(
   shadowGenerator.blurKernel = 24;
   shadowGenerator.bias = 0.0008;
 
-  // --- Soft grounding pool ----------------------------------------------------
-  // The previous 34x34 ground caught shadows, but its square silhouette read as
-  // a flat backplate inside the canvas. Keep a grounding shape under the board,
-  // but make it an oval transparent shadow pool so the canvas blends with the
-  // CSS library/table atmosphere.
-  const shadowPool = B.MeshBuilder.CreateCylinder(
-    "route-shadow-pool",
-    { diameter: 11.8, height: 0.025, tessellation: 96 },
+  // --- Quiet ground ------------------------------------------------------------
+  // ROTA-BOARD-FOCUS-01: the previous territory (a stone shelf ringing the
+  // board, ten outcrops on the rim and two access steps) crowded the frame and
+  // competed with the board — the rocks touched the frame and pulled the eye
+  // outward. All of it is gone. What remains is a single low, dark mass far
+  // under the board: it grounds the scene and catches shadow, and never reads
+  // as scenery next to the board. No painted ellipse, no plinth, no panel.
+  const groundMat = new B.StandardMaterial("route-ground", scene);
+  groundMat.maxSimultaneousLights = ROUTE_MAX_LIGHTS;
+  groundMat.diffuseColor = B.Color3.FromHexString("#1d2224");
+  groundMat.specularColor = B.Color3.FromHexString("#000000");
+
+  const ground = B.MeshBuilder.CreateCylinder(
+    "route-ground",
+    { diameterTop: 8.6, diameterBottom: 7.8, height: 0.7, tessellation: 9 },
     scene,
   );
-  shadowPool.position.y = -0.93;
-  shadowPool.scaling.z = 0.72;
-  shadowPool.isPickable = false;
-  shadowPool.receiveShadows = true;
-  const shadowPoolMat = new B.StandardMaterial("route-shadow-pool-mat", scene);
-  shadowPoolMat.diffuseColor = B.Color3.FromHexString("#1b1008");
-  shadowPoolMat.specularColor = B.Color3.FromHexString("#000000");
-  shadowPoolMat.emissiveColor = B.Color3.FromHexString("#120a06");
-  shadowPoolMat.alpha = 0.22;
-  shadowPoolMat.disableLighting = true;
-  shadowPoolMat.backFaceCulling = false;
-  shadowPoolMat.transparencyMode = B.Material.MATERIAL_ALPHABLEND;
-  shadowPool.material = shadowPoolMat;
+  ground.position.set(0, -1.02, 0.1);
+  ground.rotation.y = 0.24;
+  ground.scaling.z = 0.86;
+  ground.material = groundMat;
+  ground.isPickable = false;
+  ground.receiveShadows = true;
 
   const materials = createMaterials(B, scene);
   materials.hit.disableDepthWrite = true;
@@ -553,12 +564,39 @@ export function createRouteBabylonController(
     material.diffuseColor = color;
   }
 
+  /**
+   * Clamp a material to the scene's light budget — but only when it is actually
+   * off budget.
+   *
+   * The guard is the point. `maxSimultaneousLights` is an `expandToProperty`
+   * accessor: Babylon runs `_markAllSubMeshesAsLightsDirty()` on every
+   * assignment, equal value or not. The tuners below run inside
+   * `configureVisualClone`, which runs on every `renderDynamicBoard()` — once
+   * per Explorer move. Assigning unconditionally therefore dirtied a few hundred
+   * submeshes on every single turn and made the whole scene queue a shader
+   * revalidation for nothing.
+   */
+  function capMaterialLights(material: TunableAssetMaterial) {
+    if (material.maxSimultaneousLights === undefined) return;
+    if (material.maxSimultaneousLights === ROUTE_MAX_LIGHTS) return;
+    material.maxSimultaneousLights = ROUTE_MAX_LIGHTS;
+  }
+
+  /**
+   * Catch materials the tuners never see: the baked-shadow materials (skipped by
+   * `isBakedShadowNode`) and anything a future GLB brings in. Cheap to run,
+   * because `capMaterialLights` is a no-op once a material is on budget.
+   */
+  function capSceneMaterialLights() {
+    scene.materials.forEach((material) =>
+      capMaterialLights(material as TunableAssetMaterial),
+    );
+  }
+
   function tuneBoardGameMaterial(mesh: BABYLON.AbstractMesh) {
     const material = mesh.material as TunableAssetMaterial | null;
     if (!material) return;
-    if (material.maxSimultaneousLights !== undefined) {
-      material.maxSimultaneousLights = 3;
-    }
+    capMaterialLights(material);
 
     const materialName = material.name.toLowerCase();
     if (materialName.includes("darkwood")) {
@@ -639,9 +677,7 @@ export function createRouteBabylonController(
   function tuneCharacterMaterial(mesh: BABYLON.AbstractMesh) {
     const material = mesh.material as TunableAssetMaterial | null;
     if (!material) return;
-    if (material.maxSimultaneousLights !== undefined) {
-      material.maxSimultaneousLights = 3;
-    }
+    capMaterialLights(material);
 
     const materialName = material.name.toLowerCase();
     if (materialName.includes("playersuitblue")) {
@@ -726,9 +762,7 @@ export function createRouteBabylonController(
   function tunePropMaterial(mesh: BABYLON.AbstractMesh) {
     const material = mesh.material as TunableAssetMaterial | null;
     if (!material) return;
-    if (material.maxSimultaneousLights !== undefined) {
-      material.maxSimultaneousLights = 3;
-    }
+    capMaterialLights(material);
 
     const materialName = material.name.toLowerCase();
     if (materialName.includes("portalstone")) {
@@ -793,6 +827,21 @@ export function createRouteBabylonController(
     }
   }
 
+  /**
+   * The two portal looks, built once and reused.
+   *
+   * ROTA-RUNTIME-STABILITY-01: this used to clone a material per mesh per
+   * render. The portal is rebuilt on every `renderDynamicBoard()`, and the
+   * previous root is released with `dispose(false, false)` — materials
+   * deliberately survive, because the prototypes share them. The clones did not
+   * belong to a prototype, so nothing ever freed them: the scene went from 173
+   * to 303 materials over ten Explorer moves, and kept climbing.
+   *
+   * Keyed by source material + state, so a route can be replayed for as long as
+   * the Explorer likes and the count stays flat.
+   */
+  const portalStateMaterials = new Map<string, BABYLON.Material>();
+
   function applyPortalActivationVisual(
     root: BABYLON.TransformNode,
     active: boolean,
@@ -801,10 +850,22 @@ export function createRouteBabylonController(
       const material = mesh.material as TunableAssetMaterial | null;
       if (!material || isBakedShadowNode(mesh)) return;
 
+      // A fresh clone always carries the prototype's material, so the key stays
+      // stable across renders. The guard covers the case of this running twice
+      // over the same root.
+      const key = `${material.name}::${active ? "active" : "locked"}`;
+      const cached = portalStateMaterials.get(key);
+      if (cached) {
+        mesh.material = cached;
+        return;
+      }
+
       const materialClone = material.clone(
-        `${material.name}-${active ? "active" : "locked"}-${root.name}`,
+        `route-portal-${active ? "active" : "locked"}-${material.name}`,
       ) as TunableAssetMaterial | null;
       if (!materialClone) return;
+      capMaterialLights(materialClone);
+      portalStateMaterials.set(key, materialClone);
 
       mesh.material = materialClone;
       const materialName = material.name.toLowerCase();
@@ -1317,15 +1378,6 @@ export function createRouteBabylonController(
         clone.scaling.setAll(PLAYER_SCALE);
         clone.rotation.y = 0;
         configureVisualClone(clone);
-        const light = new B.PointLight(
-          "route-player-light",
-          new B.Vector3(pos.x, BOARD_SURFACE_Y + 0.62, pos.z),
-          scene,
-        );
-        light.diffuse = B.Color3.FromHexString("#38e8ff");
-        light.intensity = 0.32;
-        light.range = 1.85;
-        light.parent = parent;
         return;
       }
     }
@@ -1341,11 +1393,6 @@ export function createRouteBabylonController(
       materials.playerGlow,
       parent,
     );
-    const light = new B.PointLight("route-player-light", new B.Vector3(pos.x, 0.7, pos.z), scene);
-    light.diffuse = B.Color3.FromHexString("#38e8ff");
-    light.intensity = 0.45;
-    light.range = 2.1;
-    light.parent = parent;
   }
 
   function renderGuardian(parent: BABYLON.TransformNode) {
@@ -1374,17 +1421,6 @@ export function createRouteBabylonController(
           materials.guardianGlow,
           parent,
         );
-        // Warm light pushed to the camera side and up to the hooded face so the
-        // dark hood and amber eyes read clearly from the default camera.
-        const light = new B.PointLight(
-          "route-guardian-light",
-          new B.Vector3(pos.x, BOARD_SURFACE_Y + 0.86, pos.z - 0.34),
-          scene,
-        );
-        light.diffuse = B.Color3.FromHexString("#f7a417");
-        light.intensity = 0.72;
-        light.range = 2.2;
-        light.parent = parent;
         return;
       }
     }
@@ -1420,17 +1456,6 @@ export function createRouteBabylonController(
     if (clone) {
       clone.rotation.y = PORTAL_ROTATION_Y;
       applyPortalActivationVisual(clone, portalActive);
-      const light = new B.PointLight(
-        "route-portal-light",
-        new B.Vector3(pos.x, BOARD_SURFACE_Y + 0.72, pos.z),
-        scene,
-      );
-      light.diffuse = B.Color3.FromHexString(
-        portalActive ? "#5cff87" : "#6e8b72",
-      );
-      light.intensity = portalActive ? 0.72 : 0.12;
-      light.range = portalActive ? 2.2 : 1.05;
-      light.parent = parent;
       return;
     }
 
@@ -1451,13 +1476,6 @@ export function createRouteBabylonController(
     );
     gate.rotation.x = 0;
     box("route-portal-glow-plane", 0.42, 0.54, 0.025, new B.Vector3(pos.x, 0.8, pos.z + 0.01), portalGlowMaterial, parent, false);
-    const light = new B.PointLight("route-portal-light", new B.Vector3(pos.x, 0.9, pos.z), scene);
-    light.diffuse = B.Color3.FromHexString(
-      portalActive ? "#5cff87" : "#6e8b72",
-    );
-    light.intensity = portalActive ? 0.92 : 0.14;
-    light.range = portalActive ? 2.4 : 1.15;
-    light.parent = parent;
   }
 
   function renderPickups(parent: BABYLON.TransformNode) {
@@ -1480,25 +1498,9 @@ export function createRouteBabylonController(
         new B.Vector3(pos.x, BOARD_SURFACE_Y, pos.z),
         LIGHT_SCALE,
       );
-      if (clone) {
-        const light = new B.PointLight(
-          "route-light-glow",
-          new B.Vector3(pos.x, BOARD_SURFACE_Y + 0.46, pos.z),
-          scene,
-        );
-        light.diffuse = B.Color3.FromHexString("#facc15");
-        light.intensity = 0.2;
-        light.range = 1.3;
-        light.parent = parent;
-        return;
-      }
+      if (clone) return;
 
       sphere("route-light-orb", 0.3, new B.Vector3(pos.x, 0.48, pos.z), materials.light, parent, false);
-      const light = new B.PointLight("route-light-glow", new B.Vector3(pos.x, 0.52, pos.z), scene);
-      light.diffuse = B.Color3.FromHexString("#facc15");
-      light.intensity = 0.36;
-      light.range = 1.8;
-      light.parent = parent;
     });
 
     state.traps.forEach((trap) => {
@@ -1546,15 +1548,6 @@ export function createRouteBabylonController(
         // reads as a shield instead of a sideways plaque.
         clone.rotation.x = SHIELD_TILT_X;
         clone.rotation.y = SHIELD_ROTATION_Y;
-        const light = new B.PointLight(
-          "route-shield-light",
-          new B.Vector3(pos.x, BOARD_SURFACE_Y + 0.55, pos.z),
-          scene,
-        );
-        light.diffuse = B.Color3.FromHexString("#54cfff");
-        light.intensity = 0.24;
-        light.range = 1.55;
-        light.parent = parent;
         return;
       }
 
@@ -1630,14 +1623,56 @@ export function createRouteBabylonController(
 
   // Default safe framing — also used by resetView(). Snaps alpha/beta/radius/
   // target back inside the clamps for the current canvas width.
+  /**
+   * ROTA-VISUAL-01 pass 2: the board used to be cut off at the bottom because
+   * the radius was a constant and only checked width < 520. A short canvas
+   * (the HUD eats vertical space) simply could not fit the board.
+   *
+   * The distance is now derived from the canvas aspect ratio: how far the
+   * camera must stand for the territory's half-extent to fit BOTH axes of the
+   * perspective frustum. Wide-and-short viewports pull back automatically;
+   * tall phone viewports do not zoom out more than they need to. The board
+   * keeps its size on screen and nothing is cropped.
+   */
   function fitCamera() {
     const width = canvas.clientWidth || engine.getRenderWidth();
+    const height = canvas.clientHeight || engine.getRenderHeight();
     const isNarrow = width < 520;
+    const aspect = width > 0 && height > 0 ? width / height : 16 / 9;
+
     camera.alpha = DEFAULT_CAMERA_ALPHA;
-    camera.radius = isNarrow
-      ? DEFAULT_CAMERA_RADIUS_MOBILE
-      : DEFAULT_CAMERA_RADIUS;
     camera.beta = isNarrow ? DEFAULT_CAMERA_BETA - 0.06 : DEFAULT_CAMERA_BETA;
+
+    // Half-extent the framing must contain: the 7x7 board plus its frame and
+    // the immediate territory rim.
+    // ROTA-BOARD-FOCUS-01: with the rim clutter gone the framing only has to
+    // hold the board and its frame, so the camera can come in close and let
+    // the board fill the scene.
+    // ROTA-9X9-FOUNDATION-01: the board grew from 7 to 9 cells per side
+    // (CELL = 1), so the framing half-extent grows with it — 4.3 held a 7x7
+    // board plus its frame; 9x9 needs 5.3. Derived, not guessed:
+    // (max(rows, cols) / 2) + frame margin.
+    // ROTA-RUNTIME-STABILITY-01: closing the 75px of page scroll gave the board
+    // row its true height, which on desktop is 75px less than the old formula
+    // was claiming. The board's on-screen size follows canvas height directly,
+    // so it would have come out ~11% smaller than the approved framing. The
+    // margin absorbs that: it is pure padding around a board that the 3/4 camera
+    // already foreshortens vertically, so the frame keeps a wide berth on both
+    // axes at 0.45 — verified by measuring the projected board bounds at 1440,
+    // 820 and 390.
+    const boardHalf = Math.max(state.rows, state.cols) / 2;
+    const frameMargin = isNarrow ? 0.5 : 0.45;
+    const halfExtent = boardHalf + frameMargin;
+    const halfFov = camera.fov / 2;
+    const verticalFit = halfExtent / Math.tan(halfFov);
+    const horizontalFit = halfExtent / (Math.tan(halfFov) * aspect);
+    const needed = Math.max(verticalFit, horizontalFit) * 1.0;
+
+    camera.radius = Math.min(
+      MAX_CAMERA_RADIUS,
+      Math.max(MIN_CAMERA_RADIUS, needed),
+    );
+
     camera.target.set(
       DEFAULT_CAMERA_TARGET.x,
       DEFAULT_CAMERA_TARGET.y,
@@ -1832,6 +1867,10 @@ export function createRouteBabylonController(
     // then settle the real canvas size/camera before observing the first
     // complete frame that may be revealed to the Explorer.
     renderBoard();
+    // The tuners skip baked-shadow materials, and the ground is built by hand,
+    // so neither goes through them. Normalise the whole scene once so no
+    // material is left compiling for more lights than the scene has.
+    capSceneMaterialLights();
     engine.resize();
     fitCamera();
     writeProjectedCellCenters();
@@ -1879,6 +1918,8 @@ export function createRouteBabylonController(
       Object.values(propAssets).forEach((asset) => {
         asset.proto?.dispose(false, true);
       });
+      portalStateMaterials.forEach((material) => material.dispose());
+      portalStateMaterials.clear();
       glow.dispose();
       scene.dispose();
       engine.dispose();

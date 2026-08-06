@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useMemo } from "react";
+import { useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import {
   ArrowLeft,
@@ -15,6 +15,7 @@ import {
   DoorOpen,
   Gauge,
   Hourglass,
+  Info,
   Play,
   RotateCcw,
   Shield,
@@ -23,6 +24,7 @@ import {
   Sun,
   TriangleAlert,
   Trophy,
+  X,
   type LucideIcon,
 } from "lucide-react";
 import { gentleShakeAnimate } from "@/lib/feedback-motion";
@@ -39,6 +41,7 @@ import type {
   GridPosition,
 } from "@/types/game";
 import "@/components/worlds/master-scene/world-master-scene.css";
+import "@/games/escape-maze/route-visual.css";
 
 /** WebGL is client-only: load the 3D board after mount with a calm fallback. */
 const RouteBoardScene = dynamic(
@@ -88,6 +91,41 @@ const MOVE_DELTAS: Record<"up" | "down" | "left" | "right", GridPosition> = {
   right: { row: 0, col: 1 },
 };
 
+function RouteWorldMark() {
+  return (
+    <svg
+      className="rsg-world-mark"
+      viewBox="0 0 72 72"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M15 57c5-14 15-10 19-22 4-11 11-16 23-20"
+        stroke="currentColor"
+        strokeWidth="4"
+        strokeLinecap="round"
+        strokeDasharray="3 7"
+      />
+      <circle cx="16" cy="56" r="5" fill="currentColor" />
+      <circle cx="34" cy="35" r="4" fill="currentColor" />
+      <path
+        d="M48 31V18c0-8 5-13 12-13s12 5 12 13v24H48V31Z"
+        transform="translate(-8 7) scale(.84)"
+        stroke="currentColor"
+        strokeWidth="4"
+        strokeLinejoin="round"
+      />
+      <path
+        d="m52 48 8 8 8-8"
+        stroke="currentColor"
+        strokeWidth="4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 /**
  * Rota Estratégica as a premium tabletop board game. All gameplay (maze,
  * guardian, movement, win/loss, scoring, completion) lives in `useEscapeMaze`,
@@ -101,6 +139,8 @@ export function RouteStrategyGame({
   onEntryError,
 }: GameComponentProps) {
   const reducedMotion = useReducedMotion();
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const detailsTriggerRef = useRef<HTMLButtonElement>(null);
   const game = useEscapeMaze(onComplete, initialRouteNumber);
   const {
     difficulty,
@@ -200,14 +240,6 @@ export function RouteStrategyGame({
           : status === "playing"
             ? "info"
             : "neutral";
-
-  const statusIcons: Record<typeof statusVariant, LucideIcon> = {
-    neutral: Sparkles,
-    info: Sparkles,
-    success: CircleCheck,
-    error: Sparkles,
-  };
-  const StatusIcon = statusIcons[statusVariant];
   const remainingLights = Math.max(totalLights - collectedCount, 0);
   const nextRouteNumber = routeNumber + 1;
   const currentObjective = (() => {
@@ -279,20 +311,13 @@ export function RouteStrategyGame({
     );
   };
 
-  const topHudItems: Array<{
+  const essentialHudItems: Array<{
     key: string;
     label: string;
     value: string | number;
     Icon: LucideIcon;
     className?: string;
-    danger?: boolean;
   }> = [
-    {
-      key: "rota",
-      label: "Rota",
-      value: routeNumber,
-      Icon: Sparkles,
-    },
     {
       key: "luzes",
       label: "Luzes",
@@ -303,23 +328,9 @@ export function RouteStrategyGame({
     {
       key: "portal",
       label: "Portal",
-      value: portalActive ? "Ativo" : "Bloqueado",
+      value: portalActive ? "Disponível" : "Bloqueado",
       Icon: DoorOpen,
       className: portalActive ? "rsg-hud-portal-active" : "rsg-hud-portal-locked",
-    },
-    {
-      key: "bloqueios",
-      label: "Bloqueios",
-      value: blockedMoves,
-      Icon: Box,
-      danger: blockedMoves > 0,
-    },
-    {
-      key: "armadilhas",
-      label: "Armadilhas",
-      value: `${trapsTriggered}/${mazeMap.traps.length}`,
-      Icon: TriangleAlert,
-      danger: trapsTriggered > 0,
     },
     {
       key: "escudo",
@@ -385,6 +396,17 @@ export function RouteStrategyGame({
     { label: "Bloqueio", Icon: Box },
   ];
 
+  const closeDetails = () => {
+    setDetailsOpen(false);
+    requestAnimationFrame(() => detailsTriggerRef.current?.focus());
+  };
+
+  const handleDetailsKeyDown = (event: KeyboardEvent<HTMLElement>) => {
+    if (event.key !== "Escape") return;
+    event.preventDefault();
+    closeDetails();
+  };
+
   return (
     <div
       className="rsg-shell wms-world-shell"
@@ -405,13 +427,11 @@ export function RouteStrategyGame({
             <ArrowLeft className="h-5 w-5" aria-hidden />
             Voltar à jornada
           </button>
-          <div className="rsg-top-hud" aria-label="Status da rota">
-            {topHudItems.map(({ key, label, value, Icon, className, danger }) => (
+          <div className="rsg-top-hud" aria-label="Informações essenciais da rota">
+            {essentialHudItems.map(({ key, label, value, Icon, className }) => (
               <span
                 key={key}
-                className={`rsg-hud-token ${className ?? ""} ${
-                  danger ? "is-danger" : ""
-                }`}
+                className={`rsg-hud-token ${className ?? ""}`}
               >
                 <Icon className="rsg-hud-icon" aria-hidden />
                 <em>{label}</em>
@@ -419,24 +439,28 @@ export function RouteStrategyGame({
               </span>
             ))}
           </div>
-          <span className="rsg-difficulty-chip">
-            <Gauge className="h-4 w-4" aria-hidden />
-            {DIFFICULTY_TITLE[difficulty]}
-          </span>
+          <button
+            ref={detailsTriggerRef}
+            type="button"
+            className="rsg-details-trigger"
+            aria-expanded={detailsOpen}
+            aria-controls="route-details-panel"
+            onClick={() => setDetailsOpen((open) => !open)}
+          >
+            <Info className="h-5 w-5" aria-hidden />
+            Detalhes da rota
+            <ChevronDown className="rsg-details-chevron h-4 w-4" aria-hidden />
+          </button>
         </header>
 
-        <div className="rsg-plaque wms-plate">
-          <h1 className="rsg-plaque-text">Rota Estratégica</h1>
+        <div className="rsg-plaque rsg-signature wms-plate">
+          <RouteWorldMark />
+          <span className="rsg-signature-copy">
+            <h1 className="rsg-plaque-text">Rota Estratégica</h1>
+            <small>Observe o caminho. Escolha o próximo passo.</small>
+          </span>
         </div>
 
-        <p
-          className={`rsg-status rsg-status-${statusVariant}`}
-          role="status"
-          aria-live="polite"
-        >
-          <StatusIcon className="rsg-status-icon" aria-hidden />
-          <span>{message}</span>
-        </p>
         <section
           className={`rsg-current-objective ${currentObjective.className}`}
           aria-label="Objetivo atual da rota"
@@ -445,7 +469,13 @@ export function RouteStrategyGame({
           <span>
             <em>Objetivo atual</em>
             <strong>{currentObjective.title}</strong>
-            <small>{currentObjective.detail}</small>
+            <small
+              className={`rsg-objective-message rsg-objective-message-${statusVariant}`}
+              role="status"
+              aria-live="polite"
+            >
+              {message}
+            </small>
           </span>
           {status === "playing" && totalLights > 0 && !portalActive && (
             <div
@@ -465,32 +495,6 @@ export function RouteStrategyGame({
         </section>
 
         <div className="rsg-layout">
-          <aside className="rsg-info-col" aria-label="Missão e legenda">
-            <section className="rsg-panel rsg-mission-panel">
-              <p className="rsg-panel-title rsg-panel-title-left">
-                <Shield className="h-5 w-5" aria-hidden />
-                Rota Estratégica
-              </p>
-              <p className="rsg-mission-copy">
-                Rota {routeNumber}: {routeProgression.description}
-              </p>
-              <div className="rsg-mission-steps" aria-label="Como jogar">
-                <span>
-                  <Sun className="h-4 w-4" aria-hidden />
-                  Passe pelas luzes para abrir o portal.
-                </span>
-                <span>
-                  <TriangleAlert className="h-4 w-4" aria-hidden />
-                  Evite armadilhas e bloqueios.
-                </span>
-                <span>
-                  <ShieldPlus className="h-4 w-4" aria-hidden />
-                  Use o escudo para se proteger uma vez.
-                </span>
-              </div>
-            </section>
-          </aside>
-
           <div className="rsg-board-col">
             <motion.div
               className={`rsg-board-panel ${
@@ -549,17 +553,10 @@ export function RouteStrategyGame({
               </div>
             </motion.div>
 
-            <ul className="rsg-legend rsg-board-legend" aria-label="Legenda do tabuleiro">
-              {legendItems.map(({ label, Icon }) => (
-                <li key={label}>
-                  <Icon className="h-4 w-4" aria-hidden />
-                  {label}
-                </li>
-              ))}
-            </ul>          </div>
+          </div>
 
           <div className="rsg-control-col">
-            {status === "setup" && (
+            {!detailsOpen && status === "setup" && (
               <section className="rsg-panel rsg-setup">
                 <p className="rsg-panel-title">
                   <Gauge className="h-5 w-5" aria-hidden />
@@ -596,7 +593,7 @@ export function RouteStrategyGame({
               </section>
             )}
 
-            {status === "playing" && (
+            {!detailsOpen && status === "playing" && (
               <motion.section
                 className="rsg-panel rsg-dpad-panel"
                 role="group"
@@ -626,30 +623,83 @@ export function RouteStrategyGame({
               </motion.section>
             )}
 
-            <div className="rsg-stats rsg-secondary-stats" aria-label="Informações da rota">
-              {sideStatItems.map(({ key, label, value, Icon, className }) => (
-                <span
-                  key={key}
-                  className={`rsg-stat ${className ?? ""}`}
-                >
-                  <Icon className="rsg-stat-icon" aria-hidden />
-                  <em>{label}</em>
-                  <strong>{value}</strong>
+            <section
+              id="route-details-panel"
+              className="rsg-route-details"
+              hidden={!detailsOpen}
+              aria-label="Detalhes da rota"
+              onKeyDown={handleDetailsKeyDown}
+            >
+              <header className="rsg-route-details-header">
+                <span>
+                  <Info className="h-5 w-5" aria-hidden />
+                  <strong>Detalhes da rota</strong>
                 </span>
-              ))}
-            </div>
+                <button
+                  type="button"
+                  className="rsg-details-close"
+                  aria-label="Fechar detalhes da rota"
+                  onClick={closeDetails}
+                >
+                  <X className="h-5 w-5" aria-hidden />
+                </button>
+              </header>
 
-            {status === "playing" && (
-              <button
-                type="button"
-                onClick={restartGame}
-                aria-label="Começar outra rota"
-                className="rsg-btn wms-button-secondary"
-              >
-                <RotateCcw className="h-5 w-5" aria-hidden />
-                Começar outra rota
-              </button>
-            )}
+              <p className="rsg-route-context">
+                Rota {routeNumber}: {currentObjective.detail}
+              </p>
+
+              <div className="rsg-stats rsg-secondary-stats" aria-label="Registro da rota">
+                {sideStatItems.map(({ key, label, value, Icon, className }) => (
+                  <span key={key} className={`rsg-stat ${className ?? ""}`}>
+                    <Icon className="rsg-stat-icon" aria-hidden />
+                    <em>{label}</em>
+                    <strong>{value}</strong>
+                  </span>
+                ))}
+              </div>
+
+              <div className="rsg-mission-steps" aria-label="Como jogar">
+                <span>
+                  <Sun className="h-4 w-4" aria-hidden />
+                  Passe pelas luzes para abrir o portal.
+                </span>
+                <span>
+                  <TriangleAlert className="h-4 w-4" aria-hidden />
+                  Evite armadilhas e bloqueios.
+                </span>
+                <span>
+                  <ShieldPlus className="h-4 w-4" aria-hidden />
+                  Use o escudo para se proteger uma vez.
+                </span>
+              </div>
+
+              <p className="rsg-details-note">
+                Use os botões de direção ou as setas do teclado. Os contornos
+                âmbar mostram até onde o guardião pode chegar no próximo passo.
+              </p>
+
+              <ul className="rsg-legend rsg-details-legend" aria-label="Legenda do tabuleiro">
+                {legendItems.map(({ label, Icon }) => (
+                  <li key={label}>
+                    <Icon className="h-4 w-4" aria-hidden />
+                    {label}
+                  </li>
+                ))}
+              </ul>
+
+              {status === "playing" && (
+                <button
+                  type="button"
+                  onClick={restartGame}
+                  aria-label="Começar outra rota"
+                  className="rsg-btn rsg-details-restart wms-button-secondary"
+                >
+                  <RotateCcw className="h-5 w-5" aria-hidden />
+                  Começar outra rota
+                </button>
+              )}
+            </section>
 
             {(status === "won" || status === "lost") && (
               <button
@@ -664,12 +714,6 @@ export function RouteStrategyGame({
             )}
           </div>
         </div>
-
-        <p className="rsg-footnote">
-          Toque nos botões de direção ou use as setas do teclado para mover. O
-          guardião se move depois de você; os contornos âmbar mostram até onde
-          ele pode chegar no próximo passo.
-        </p>
       </div>
     </div>
   );

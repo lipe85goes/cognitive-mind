@@ -19,44 +19,52 @@ import type {
  * over this state.
  */
 
-export const ROWS = 7;
-export const COLS = 7;
+// ROTA-9X9-FOUNDATION-01: the board is 9x9. Every anchor below is derived
+// from these two numbers instead of being written as a literal cell, so the
+// start, exits and guardian seats can never silently desync from the grid
+// again — this is the part that made 7x9 dangerous before.
+export const ROWS = 9;
+export const COLS = 9;
 const MAX_GENERATION_ATTEMPTS = 80;
 
-const PLAYER_START: GridPosition = { row: 6, col: 0 };
-const START_OPENING: GridPosition = { row: 6, col: 1 };
-const START_BRANCH: GridPosition = { row: 5, col: 0 };
+/** Bottom-left corner: the Explorer always starts at the near edge. */
+const PLAYER_START: GridPosition = { row: ROWS - 1, col: 0 };
+const START_OPENING: GridPosition = { row: ROWS - 1, col: 1 };
+const START_BRANCH: GridPosition = { row: ROWS - 2, col: 0 };
 const START_SAFE_CELLS: GridPosition[] = [
   PLAYER_START,
   START_OPENING,
   START_BRANCH,
-  { row: 5, col: 1 },
+  { row: ROWS - 2, col: 1 },
 ];
+/** Far corner, opposite the start: the portal is always a full crossing. */
 const EXIT_CANDIDATES: GridPosition[] = [
-  { row: 0, col: 6 },
-  { row: 1, col: 6 },
-  { row: 0, col: 5 },
+  { row: 0, col: COLS - 1 },
+  { row: 1, col: COLS - 1 },
+  { row: 0, col: COLS - 2 },
 ];
 const ROUTE_STAGE_EXIT_CANDIDATES: Record<RouteStage, GridPosition[]> = {
   1: [
-    { row: 2, col: 6 },
-    { row: 2, col: 5 },
+    { row: 2, col: COLS - 1 },
+    { row: 2, col: COLS - 2 },
   ],
   2: [
-    { row: 1, col: 6 },
-    { row: 0, col: 5 },
-    { row: 0, col: 6 },
+    { row: 1, col: COLS - 1 },
+    { row: 0, col: COLS - 2 },
+    { row: 0, col: COLS - 1 },
   ],
   3: [
-    { row: 0, col: 6 },
-    { row: 0, col: 5 },
+    { row: 0, col: COLS - 1 },
+    { row: 0, col: COLS - 2 },
   ],
 };
+/** Guardian seats live in the far half, never next to the Explorer. */
 const GUARDIAN_CANDIDATES: GridPosition[] = [
-  { row: 0, col: 3 },
-  { row: 1, col: 5 },
-  { row: 2, col: 6 },
-  { row: 0, col: 6 },
+  { row: 0, col: Math.floor((COLS - 1) / 2) },
+  { row: 1, col: COLS - 3 },
+  { row: 2, col: COLS - 1 },
+  { row: 0, col: COLS - 1 },
+  { row: 3, col: COLS - 2 },
 ];
 const ROUTE_STAGE_GUARDIAN_CANDIDATES: Record<RouteStage, GridPosition[]> = {
   1: [
@@ -81,45 +89,52 @@ const ROUTE_STAGE_GUARDIAN_CANDIDATES: Record<RouteStage, GridPosition[]> = {
 /** 1 = wall, 0 = walkable. Templates are intentionally roomy and validated. */
 const MAZE_TEMPLATES: number[][][] = [
   [
-    [0, 0, 0, 1, 0, 0, 0],
-    [0, 1, 0, 1, 0, 1, 0],
-    [0, 1, 0, 0, 0, 1, 0],
-    [0, 0, 0, 1, 0, 0, 0],
-    [1, 1, 0, 0, 0, 1, 0],
-    [0, 0, 0, 1, 0, 0, 0],
-    [0, 1, 0, 0, 0, 1, 0],
+    [0, 0, 0, 1, 0, 0, 0, 1, 0],
+    [0, 1, 0, 1, 0, 1, 0, 0, 0],
+    [0, 1, 0, 0, 0, 1, 0, 1, 0],
+    [0, 0, 0, 1, 0, 0, 0, 1, 0],
+    [1, 1, 0, 0, 0, 1, 0, 0, 0],
+    [0, 0, 0, 1, 0, 1, 1, 1, 0],
+    [0, 1, 0, 1, 0, 0, 0, 0, 0],
+    [0, 1, 0, 0, 0, 1, 0, 1, 0],
+    [0, 0, 0, 1, 0, 1, 0, 0, 0],
   ],
   [
-    [0, 0, 0, 0, 1, 0, 0],
-    [0, 1, 1, 0, 1, 0, 1],
-    [0, 0, 0, 0, 0, 0, 0],
-    [1, 0, 1, 1, 0, 1, 0],
-    [0, 0, 0, 1, 0, 0, 0],
-    [0, 1, 0, 0, 0, 1, 0],
-    [0, 0, 0, 1, 0, 0, 0],
+    [0, 0, 0, 0, 1, 0, 0, 0, 0],
+    [0, 1, 1, 0, 1, 0, 1, 1, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [1, 0, 1, 1, 0, 1, 1, 0, 1],
+    [0, 0, 0, 1, 0, 0, 0, 0, 0],
+    [0, 1, 0, 0, 0, 1, 1, 1, 0],
+    [0, 1, 0, 1, 0, 0, 0, 1, 0],
+    [0, 0, 0, 1, 1, 1, 0, 0, 0],
+    [0, 1, 0, 0, 0, 0, 0, 1, 0],
   ],
   [
-    [0, 0, 1, 0, 0, 0, 0],
-    [1, 0, 1, 0, 1, 1, 0],
-    [0, 0, 0, 0, 0, 0, 0],
-    [0, 1, 1, 1, 0, 1, 0],
-    [0, 0, 0, 0, 0, 1, 0],
-    [0, 1, 0, 1, 0, 0, 0],
-    [0, 0, 0, 0, 0, 1, 0],
+    [0, 0, 1, 0, 0, 0, 0, 1, 0],
+    [1, 0, 1, 0, 1, 1, 0, 1, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 1, 1, 1, 0, 1, 1, 1, 0],
+    [0, 0, 0, 0, 0, 1, 0, 0, 0],
+    [0, 1, 1, 1, 0, 0, 0, 1, 1],
+    [0, 0, 0, 1, 0, 1, 0, 0, 0],
+    [1, 1, 0, 0, 0, 1, 1, 1, 0],
+    [0, 0, 0, 1, 0, 0, 0, 0, 0],
   ],
 ];
 
 const STAGE_ONE_TEMPLATES: number[][][] = [
   [
-    [0, 0, 0, 0, 0, 0, 0],
-    [0, 1, 0, 0, 1, 0, 0],
-    [0, 0, 0, 1, 0, 0, 0],
-    [0, 0, 1, 0, 0, 1, 0],
-    [0, 0, 0, 0, 0, 1, 0],
-    [0, 0, 1, 0, 0, 0, 0],
-    [0, 0, 0, 0, 1, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 1, 0, 0, 1, 0, 0, 1, 0],
+    [0, 0, 0, 1, 0, 0, 0, 0, 0],
+    [0, 0, 1, 0, 0, 1, 0, 1, 0],
+    [0, 0, 0, 0, 0, 1, 0, 0, 0],
+    [0, 1, 0, 1, 0, 0, 0, 1, 0],
+    [0, 0, 0, 1, 0, 1, 0, 0, 0],
+    [0, 1, 0, 0, 0, 1, 0, 1, 0],
+    [0, 0, 0, 1, 0, 0, 0, 0, 0],
   ],
-  MAZE_TEMPLATES[1],
 ];
 
 const ROUTE_STAGE_TEMPLATES: Record<RouteStage, number[][][]> = {
@@ -173,23 +188,25 @@ const ROUTE_STAGE_COPY: Record<
   },
 };
 
+// Scaled for 9x9: the 7x7 ranges kept the same wall COUNT on a board with
+// 65% more cells, which read as an empty field with nothing to plan around.
 const WALL_LIMITS: Record<DifficultyLevel, { min: number; max: number }> = {
-  easy: { min: 8, max: 11 },
-  medium: { min: 11, max: 14 },
-  hard: { min: 14, max: 17 },
+  easy: { min: 13, max: 18 },
+  medium: { min: 18, max: 23 },
+  hard: { min: 23, max: 28 },
 };
 
 const BASE_STAR_COUNT: Record<DifficultyLevel, number> = {
-  easy: 3,
-  medium: 3,
-  hard: 2,
+  easy: 4,
+  medium: 4,
+  hard: 3,
 };
 
 /** A small, calm number of trap tiles per difficulty (Gameplay 2.0). */
 const BASE_TRAP_COUNT: Record<DifficultyLevel, number> = {
-  easy: 2,
-  medium: 3,
-  hard: 3,
+  easy: 3,
+  medium: 4,
+  hard: 5,
 };
 
 interface RouteStageQuality {
@@ -209,10 +226,10 @@ interface RouteStageQuality {
 
 const ROUTE_STAGE_QUALITY: Record<RouteStage, RouteStageQuality> = {
   1: {
-    minReachableCells: 34,
-    minJunctions: 7,
+    minReachableCells: 53,
+    minJunctions: 10,
     maxStartZoneWalls: 0,
-    guardianMinStartDistance: 7,
+    guardianMinStartDistance: 9,
     starMinStartDistance: 3,
     starMinExitDistance: 2,
     starMinSeparation: 2,
@@ -223,10 +240,10 @@ const ROUTE_STAGE_QUALITY: Record<RouteStage, RouteStageQuality> = {
     wallRandomizationAttempts: 8,
   },
   2: {
-    minReachableCells: 31,
-    minJunctions: 6,
+    minReachableCells: 50,
+    minJunctions: 9,
     maxStartZoneWalls: 0,
-    guardianMinStartDistance: 6,
+    guardianMinStartDistance: 8,
     starMinStartDistance: 3,
     starMinExitDistance: 2,
     starMinSeparation: 2,
@@ -237,10 +254,10 @@ const ROUTE_STAGE_QUALITY: Record<RouteStage, RouteStageQuality> = {
     wallRandomizationAttempts: 14,
   },
   3: {
-    minReachableCells: 28,
-    minJunctions: 5,
+    minReachableCells: 45,
+    minJunctions: 8,
     maxStartZoneWalls: 0,
-    guardianMinStartDistance: 6,
+    guardianMinStartDistance: 8,
     starMinStartDistance: 4,
     starMinExitDistance: 2,
     starMinSeparation: 3,
@@ -272,8 +289,8 @@ function getWallLimits(
   const base = WALL_LIMITS[difficulty];
   if (stage === 1) {
     return {
-      min: Math.max(6, base.min - 2),
-      max: Math.max(8, base.max - 2),
+      min: Math.max(10, base.min - 3),
+      max: Math.max(14, base.max - 3),
     };
   }
   if (stage === 3) {
@@ -286,14 +303,14 @@ function getWallLimits(
 }
 
 function getStarCount(difficulty: DifficultyLevel, stage: RouteStage): number {
-  if (stage === 1) return Math.max(2, BASE_STAR_COUNT[difficulty] - 1);
-  if (stage === 3) return Math.min(3, BASE_STAR_COUNT[difficulty] + 1);
+  if (stage === 1) return Math.max(3, BASE_STAR_COUNT[difficulty] - 1);
+  if (stage === 3) return Math.min(5, BASE_STAR_COUNT[difficulty] + 1);
   return BASE_STAR_COUNT[difficulty];
 }
 
 function getTrapCount(difficulty: DifficultyLevel, stage: RouteStage): number {
-  if (stage === 1) return Math.max(1, BASE_TRAP_COUNT[difficulty] - 1);
-  if (stage === 3) return Math.min(4, BASE_TRAP_COUNT[difficulty] + 1);
+  if (stage === 1) return Math.max(2, BASE_TRAP_COUNT[difficulty] - 1);
+  if (stage === 3) return Math.min(6, BASE_TRAP_COUNT[difficulty] + 1);
   return BASE_TRAP_COUNT[difficulty];
 }
 
@@ -501,7 +518,13 @@ function randomizeWalls(
   exitPosition: GridPosition,
 ): number[][] {
   const grid = cloneGrid(baseGrid);
-  START_SAFE_CELLS.forEach((cell) => {
+  const guaranteedOpenCells = [
+    ...START_SAFE_CELLS,
+    playerStart,
+    guardianStart,
+    exitPosition,
+  ];
+  guaranteedOpenCells.forEach((cell) => {
     grid[cell.row][cell.col] = 0;
   });
   const limits = getWallLimits(difficulty, routeStage);
@@ -838,13 +861,19 @@ export function generateMaze(
   }
 
   const fallbackGrid = cloneGrid(getFallbackGrid(routeStage));
-  fallbackGrid[START_OPENING.row][START_OPENING.col] = 0;
-  const walls = gridToWalls(fallbackGrid);
   const exitPosition = ROUTE_STAGE_EXIT_CANDIDATES[routeStage][0] ?? EXIT_CANDIDATES[0];
-  const guardianStart = chooseGuardianStart(walls, exitPosition, routeStage);
-  walls.delete(posKey(PLAYER_START));
-  walls.delete(posKey(exitPosition));
-  walls.delete(posKey(guardianStart));
+  const preliminaryWalls = gridToWalls(fallbackGrid);
+  const guardianStart = chooseGuardianStart(
+    preliminaryWalls,
+    exitPosition,
+    routeStage,
+  );
+  [...START_SAFE_CELLS, PLAYER_START, exitPosition, guardianStart].forEach(
+    (cell) => {
+      fallbackGrid[cell.row][cell.col] = 0;
+    },
+  );
+  const walls = gridToWalls(fallbackGrid);
 
   const collectibleStars = chooseStars(
     walls,
