@@ -1,0 +1,618 @@
+{
+  "mission": "ROTA-DUAL-GUARDIANS-MAPS-01A-FINAL",
+  "horizon": 4,
+  "tuning": {
+    "patrol": true,
+    "commitTurns": 3
+  },
+  "cases": [
+    {
+      "seed": 5883,
+      "routeNumber": 2,
+      "difficulty": "medium",
+      "label": "R2/medium/5883",
+      "rejectedByGeneration": false,
+      "portalAccesses": 3,
+      "objectiveMoves": 32,
+      "statesExplored": 26,
+      "pressureStates": 2,
+      "playerCaused": 2,
+      "systemCaused": 0,
+      "systemCausedGeometry": [],
+      "playerCausedEvidence": [
+        {
+          "explorer": "4,3",
+          "degree": 2,
+          "counterfactual": [
+            {
+              "atTurn": 6,
+              "from": "4,2",
+              "fromWidth": 4,
+              "took": "5,2",
+              "tookWidth": 2,
+              "alternative": {
+                "move": "4,3",
+                "width": 2,
+                "distance": 5
+              },
+              "reasonableAlternatives": 3,
+              "distanceToGoal": 4
+            },
+            {
+              "atTurn": 7,
+              "from": "5,2",
+              "fromWidth": 2,
+              "took": "4,2",
+              "tookWidth": 4,
+              "alternative": {
+                "move": "5,1",
+                "width": 3,
+                "distance": 6
+              },
+              "reasonableAlternatives": 2,
+              "distanceToGoal": 5
+            },
+            {
+              "atTurn": 8,
+              "from": "4,2",
+              "fromWidth": 4,
+              "took": "4,3",
+              "tookWidth": 2,
+              "alternative": {
+                "move": "4,1",
+                "width": 3,
+                "distance": 5
+              },
+              "reasonableAlternatives": 3,
+              "distanceToGoal": 4
+            }
+          ]
+        },
+        {
+          "explorer": "8,0",
+          "degree": 2,
+          "counterfactual": [
+            {
+              "atTurn": 6,
+              "from": "4,2",
+              "fromWidth": 4,
+              "took": "5,2",
+              "tookWidth": 2,
+              "alternative": {
+                "move": "4,1",
+                "width": 3,
+                "distance": 5
+              },
+              "reasonableAlternatives": 2,
+              "distanceToGoal": 4
+            },
+            {
+              "atTurn": 8,
+              "from": "5,1",
+              "fromWidth": 3,
+              "took": "6,1",
+              "tookWidth": 2,
+              "alternative": {
+                "move": "4,1",
+                "width": 3,
+                "distance": 5
+              },
+              "reasonableAlternatives": 2,
+              "distanceToGoal": 6
+            },
+            {
+              "atTurn": 10,
+              "from": "7,1",
+              "fromWidth": 4,
+              "took": "8,1",
+              "tookWidth": 3,
+              "alternative": {
+                "move": "7,2",
+                "width": 3,
+                "distance": 9
+              },
+              "reasonableAlternatives": 3,
+              "distanceToGoal": 8
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 7477,
+      "routeNumber": 3,
+      "difficulty": "hard",
+      "label": "R3/hard/7477",
+      "rejectedByGeneration": false,
+      "portalAccesses": 3,
+      "objectiveMoves": 31,
+      "statesExplored": 59,
+      "pressureStates": 1,
+      "playerCaused": 1,
+      "systemCaused": 0,
+      "systemCausedGeometry": [],
+      "playerCausedEvidence": [
+        {
+          "explorer": "8,7",
+          "degree": 1,
+          "counterfactual": [
+            {
+              "atTurn": 43,
+              "from": "5,6",
+              "fromWidth": 3,
+              "took": "5,7",
+              "tookWidth": 3,
+              "alternative": {
+                "move": "5,5",
+                "width": 3,
+                "distance": 7
+              },
+              "reasonableAlternatives": 2,
+              "distanceToGoal": 6
+            },
+            {
+              "atTurn": 44,
+              "from": "5,7",
+              "fromWidth": 3,
+              "took": "5,8",
+              "tookWidth": 3,
+              "alternative": {
+                "move": "4,7",
+                "width": 3,
+                "distance": 4
+              },
+              "reasonableAlternatives": 2,
+              "distanceToGoal": 5
+            },
+            {
+              "atTurn": 45,
+              "from": "5,8",
+              "fromWidth": 3,
+              "took": "6,8",
+              "tookWidth": 2,
+              "alternative": {
+                "move": "4,8",
+                "width": 3,
+                "distance": 3
+              },
+              "reasonableAlternatives": 2,
+              "distanceToGoal": 4
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 5659,
+      "routeNumber": 1,
+      "difficulty": "medium",
+      "label": "R1/medium/5659 (sem identidade)",
+      "rejectedByGeneration": false,
+      "portalAccesses": 3,
+      "objectiveMoves": 24,
+      "statesExplored": 128,
+      "pressureStates": 2,
+      "playerCaused": 2,
+      "systemCaused": 0,
+      "systemCausedGeometry": [],
+      "playerCausedEvidence": [
+        {
+          "explorer": "0,5",
+          "degree": 2,
+          "counterfactual": [
+            {
+              "atTurn": 49,
+              "from": "0,3",
+              "fromWidth": 3,
+              "took": "0,4",
+              "tookWidth": 3,
+              "alternative": {
+                "move": "0,2",
+                "width": 3,
+                "distance": 8
+              },
+              "reasonableAlternatives": 3,
+              "distanceToGoal": 7
+            },
+            {
+              "atTurn": 51,
+              "from": "0,3",
+              "fromWidth": 3,
+              "took": "0,4",
+              "tookWidth": 3,
+              "alternative": {
+                "move": "0,2",
+                "width": 3,
+                "distance": 8
+              },
+              "reasonableAlternatives": 3,
+              "distanceToGoal": 7
+            },
+            {
+              "atTurn": 52,
+              "from": "0,4",
+              "fromWidth": 3,
+              "took": "0,5",
+              "tookWidth": 2,
+              "alternative": {
+                "move": "0,3",
+                "width": 3,
+                "distance": 7
+              },
+              "reasonableAlternatives": 2,
+              "distanceToGoal": 6
+            }
+          ]
+        },
+        {
+          "explorer": "1,6",
+          "degree": 2,
+          "counterfactual": [
+            {
+              "atTurn": 49,
+              "from": "0,3",
+              "fromWidth": 3,
+              "took": "0,4",
+              "tookWidth": 3,
+              "alternative": {
+                "move": "0,2",
+                "width": 3,
+                "distance": 8
+              },
+              "reasonableAlternatives": 3,
+              "distanceToGoal": 7
+            },
+            {
+              "atTurn": 51,
+              "from": "0,3",
+              "fromWidth": 3,
+              "took": "0,4",
+              "tookWidth": 3,
+              "alternative": {
+                "move": "0,2",
+                "width": 3,
+                "distance": 8
+              },
+              "reasonableAlternatives": 3,
+              "distanceToGoal": 7
+            },
+            {
+              "atTurn": 52,
+              "from": "0,4",
+              "fromWidth": 3,
+              "took": "0,5",
+              "tookWidth": 2,
+              "alternative": {
+                "move": "0,3",
+                "width": 3,
+                "distance": 7
+              },
+              "reasonableAlternatives": 2,
+              "distanceToGoal": 6
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 7055,
+      "routeNumber": 1,
+      "difficulty": "hard",
+      "label": "R1/hard/7055 (pincer aberto)",
+      "rejectedByGeneration": false,
+      "portalAccesses": 3,
+      "objectiveMoves": 22,
+      "statesExplored": 41,
+      "pressureStates": 2,
+      "playerCaused": 2,
+      "systemCaused": 0,
+      "systemCausedGeometry": [],
+      "playerCausedEvidence": [
+        {
+          "explorer": "3,8",
+          "degree": 2,
+          "counterfactual": [
+            {
+              "atTurn": 26,
+              "from": "6,4",
+              "fromWidth": 3,
+              "took": "7,4",
+              "tookWidth": 3,
+              "alternative": {
+                "move": "6,5",
+                "width": 2,
+                "distance": 2
+              },
+              "reasonableAlternatives": 2,
+              "distanceToGoal": 3
+            },
+            {
+              "atTurn": 27,
+              "from": "7,4",
+              "fromWidth": 3,
+              "took": "7,5",
+              "tookWidth": 3,
+              "alternative": {
+                "move": "8,4",
+                "width": 2,
+                "distance": 3
+              },
+              "reasonableAlternatives": 2,
+              "distanceToGoal": 2
+            },
+            {
+              "atTurn": 28,
+              "from": "7,5",
+              "fromWidth": 3,
+              "took": "7,6",
+              "tookWidth": 3,
+              "alternative": {
+                "move": "7,4",
+                "width": 3,
+                "distance": 2
+              },
+              "reasonableAlternatives": 2,
+              "distanceToGoal": 1
+            }
+          ]
+        },
+        {
+          "explorer": "2,8",
+          "degree": 2,
+          "counterfactual": [
+            {
+              "atTurn": 26,
+              "from": "6,4",
+              "fromWidth": 3,
+              "took": "7,4",
+              "tookWidth": 3,
+              "alternative": {
+                "move": "6,5",
+                "width": 2,
+                "distance": 2
+              },
+              "reasonableAlternatives": 2,
+              "distanceToGoal": 3
+            },
+            {
+              "atTurn": 27,
+              "from": "7,4",
+              "fromWidth": 3,
+              "took": "7,5",
+              "tookWidth": 3,
+              "alternative": {
+                "move": "8,4",
+                "width": 2,
+                "distance": 3
+              },
+              "reasonableAlternatives": 2,
+              "distanceToGoal": 2
+            },
+            {
+              "atTurn": 28,
+              "from": "7,5",
+              "fromWidth": 3,
+              "took": "7,6",
+              "tookWidth": 3,
+              "alternative": {
+                "move": "7,4",
+                "width": 3,
+                "distance": 2
+              },
+              "reasonableAlternatives": 2,
+              "distanceToGoal": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 7266,
+      "routeNumber": 2,
+      "difficulty": "hard",
+      "label": "R2/hard/7266 (pincer aberto)",
+      "rejectedByGeneration": false,
+      "portalAccesses": 3,
+      "objectiveMoves": 26,
+      "statesExplored": 108,
+      "pressureStates": 4,
+      "playerCaused": 4,
+      "systemCaused": 0,
+      "systemCausedGeometry": [],
+      "playerCausedEvidence": [
+        {
+          "explorer": "0,3",
+          "degree": 2,
+          "counterfactual": [
+            {
+              "atTurn": 39,
+              "from": "1,2",
+              "fromWidth": 3,
+              "took": "1,3",
+              "tookWidth": 2,
+              "alternative": {
+                "move": "1,1",
+                "width": 4,
+                "distance": 10
+              },
+              "reasonableAlternatives": 3,
+              "distanceToGoal": 9
+            },
+            {
+              "atTurn": 40,
+              "from": "1,3",
+              "fromWidth": 2,
+              "took": "0,3",
+              "tookWidth": 2,
+              "alternative": {
+                "move": "1,2",
+                "width": 3,
+                "distance": 9
+              },
+              "reasonableAlternatives": 1,
+              "distanceToGoal": 8
+            },
+            {
+              "atTurn": 41,
+              "from": "0,3",
+              "fromWidth": 2,
+              "took": "0,4",
+              "tookWidth": 2,
+              "alternative": {
+                "move": "1,3",
+                "width": 2,
+                "distance": 8
+              },
+              "reasonableAlternatives": 1,
+              "distanceToGoal": 7
+            }
+          ]
+        },
+        {
+          "explorer": "0,4",
+          "degree": 2,
+          "counterfactual": [
+            {
+              "atTurn": 39,
+              "from": "1,2",
+              "fromWidth": 3,
+              "took": "1,3",
+              "tookWidth": 2,
+              "alternative": {
+                "move": "1,1",
+                "width": 4,
+                "distance": 10
+              },
+              "reasonableAlternatives": 3,
+              "distanceToGoal": 9
+            },
+            {
+              "atTurn": 40,
+              "from": "1,3",
+              "fromWidth": 2,
+              "took": "0,3",
+              "tookWidth": 2,
+              "alternative": {
+                "move": "1,2",
+                "width": 3,
+                "distance": 9
+              },
+              "reasonableAlternatives": 1,
+              "distanceToGoal": 8
+            },
+            {
+              "atTurn": 41,
+              "from": "0,3",
+              "fromWidth": 2,
+              "took": "0,4",
+              "tookWidth": 2,
+              "alternative": {
+                "move": "1,3",
+                "width": 2,
+                "distance": 8
+              },
+              "reasonableAlternatives": 1,
+              "distanceToGoal": 7
+            }
+          ]
+        },
+        {
+          "explorer": "0,3",
+          "degree": 2,
+          "counterfactual": [
+            {
+              "atTurn": 40,
+              "from": "0,0",
+              "fromWidth": 2,
+              "took": "1,0",
+              "tookWidth": 2,
+              "alternative": {
+                "move": "0,1",
+                "width": 2,
+                "distance": 11
+              },
+              "reasonableAlternatives": 2,
+              "distanceToGoal": 12
+            },
+            {
+              "atTurn": 48,
+              "from": "1,1",
+              "fromWidth": 4,
+              "took": "1,2",
+              "tookWidth": 3,
+              "alternative": {
+                "move": "1,0",
+                "width": 2,
+                "distance": 11
+              },
+              "reasonableAlternatives": 3,
+              "distanceToGoal": 10
+            },
+            {
+              "atTurn": 49,
+              "from": "1,2",
+              "fromWidth": 3,
+              "took": "1,3",
+              "tookWidth": 2,
+              "alternative": {
+                "move": "2,2",
+                "width": 3,
+                "distance": 10
+              },
+              "reasonableAlternatives": 2,
+              "distanceToGoal": 9
+            }
+          ]
+        },
+        {
+          "explorer": "0,4",
+          "degree": 2,
+          "counterfactual": [
+            {
+              "atTurn": 40,
+              "from": "0,0",
+              "fromWidth": 2,
+              "took": "1,0",
+              "tookWidth": 2,
+              "alternative": {
+                "move": "0,1",
+                "width": 2,
+                "distance": 11
+              },
+              "reasonableAlternatives": 2,
+              "distanceToGoal": 12
+            },
+            {
+              "atTurn": 48,
+              "from": "1,1",
+              "fromWidth": 4,
+              "took": "1,2",
+              "tookWidth": 3,
+              "alternative": {
+                "move": "1,0",
+                "width": 2,
+                "distance": 11
+              },
+              "reasonableAlternatives": 3,
+              "distanceToGoal": 10
+            },
+            {
+              "atTurn": 49,
+              "from": "1,2",
+              "fromWidth": 3,
+              "took": "1,3",
+              "tookWidth": 2,
+              "alternative": {
+                "move": "2,2",
+                "width": 3,
+                "distance": 10
+              },
+              "reasonableAlternatives": 2,
+              "distanceToGoal": 9
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

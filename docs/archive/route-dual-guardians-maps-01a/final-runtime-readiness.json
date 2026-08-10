@@ -1,0 +1,73 @@
+{
+  "mission": "ROTA-DUAL-GUARDIANS-MAPS-01A-BALANCE",
+  "generatedAt": "2026-08-07T20:01:47.721Z",
+  "maps": 45,
+  "gates": {
+    "zeroFallback": true,
+    "zeroInevitableTraps": false,
+    "sentinelDistinctFromHunter": true,
+    "sentinelRequiresReposition": true,
+    "zeroMapsWithoutIdentity": false,
+    "realTradeoffs": true,
+    "noUniversallyDominantRoute": true,
+    "zeroUnsafeCoexistingTraps": true,
+    "everyMapHasChestCandidate": true,
+    "pickaxeOnlyWhenUseful": true,
+    "familyDOnlyWithBreakable": true,
+    "dualDecisionsMeasurable": true,
+    "allMapsSolvable": true
+  },
+  "allGatesPass": false,
+  "familyCounts": {
+    "C_PORTAL_MULTIACESSO": 29,
+    "A_DUAS_ROTAS": 38,
+    "B_REGIOES_GARGALOS": 29,
+    "D_ATALHO_POTENCIAL": 7
+  },
+  "mapsWithoutIdentity": 1,
+  "winRates": {
+    "optimal": 0.244,
+    "cautious": 0.133,
+    "humanV2": 0.067,
+    "humanV3": 0.311,
+    "flawed": 0.156
+  },
+  "byRoute": {
+    "rota1": {
+      "dualDecisions": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 1,
+        "max": 1,
+        "mean": 0.27
+      },
+      "won": 0.467,
+      "tradeoffs": 0
+    },
+    "rota2": {
+      "dualDecisions": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 2,
+        "max": 3,
+        "mean": 0.73
+      },
+      "won": 0.267,
+      "tradeoffs": 0
+    },
+    "rota3": {
+      "dualDecisions": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 0,
+        "max": 2,
+        "mean": 0.13
+      },
+      "won": 0.2,
+      "tradeoffs": 0
+    }
+  }
+}

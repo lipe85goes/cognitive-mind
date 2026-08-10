@@ -1,0 +1,139 @@
+{
+  "mission": "ROTA-01A-GENERATION-FAILURE-ROOT-CAUSE",
+  "reasons": [
+    "pathLength === null || pathLength < getMinimumPathLength(routeStage)",
+    "manhattanDistance(PLAYER_START, guardianStart) < profile.guardianMinStartDistance",
+    "getNeighbors(PLAYER_START, walls).length < 2",
+    "getNeighbors(guardianStart, walls).length < 2",
+    "wallCount < limits.min || wallCount > limits.max",
+    "distances.size < profile.minReachableCells",
+    "countStartZoneWalls(walls) > profile.maxStartZoneWalls",
+    "countReachableJunctions(distances, walls) < profile.minJunctions",
+    "collectibleStars.length !== getStarCount(difficulty, routeStage)",
+    "!starsReachable",
+    "!starsSeparated",
+    "!hasStrategicIdentity(PLAYER_START, exitPosition, walls)",
+    "!sharesBlock(blocks, PLAYER_START, exitPosition)",
+    "!collectibleStars.every((star) => sharesBlock(blocks, PLAYER_START, star))) {",
+    "!objective",
+    "!routeCellsHaveEscape(PLAYER_START, exitPosition, objective.cells, walls, blocks)) {",
+    "flow.decisionRatio < brief.minDecisionRatio",
+    "flow.longestForcedStreak > brief.maxForcedStreak"
+  ],
+  "cases": [
+    {
+      "seed": 902627,
+      "threw": false,
+      "attemptsObserved": 18,
+      "histogram": {
+        "[15] !routeCellsHaveEscape(PLAYER_START, exitPosition, objective.cells, walls, blocks)) {": 17,
+        "PASSOU_ESTRUTURAL": 1
+      },
+      "phaseHistogram": {
+        "random": {
+          "[15] !routeCellsHaveEscape(PLAYER_START, exitPosition, objective.cells, walls, blocks)) {": 17,
+          "PASSOU_ESTRUTURAL": 1
+        },
+        "recovery": {}
+      },
+      "lastReasonIndex": -1,
+      "lastReason": "ACEITO",
+      "guardianCalls": 18,
+      "guardianZeroCandidates": 0,
+      "guardianFallbackUses": 0,
+      "guardianChosenOnWall": 0,
+      "guardianChosenHistogram": {
+        "1,4": 11,
+        "2,3": 7
+      },
+      "distinctGuardianStarts": 2
+    },
+    {
+      "seed": 907474,
+      "threw": false,
+      "attemptsObserved": 96,
+      "histogram": {
+        "[15] !routeCellsHaveEscape(PLAYER_START, exitPosition, objective.cells, walls, blocks)) {": 92,
+        "[11] !hasStrategicIdentity(PLAYER_START, exitPosition, walls)": 2,
+        "PASSOU_ESTRUTURAL": 2
+      },
+      "phaseHistogram": {
+        "random": {
+          "[15] !routeCellsHaveEscape(PLAYER_START, exitPosition, objective.cells, walls, blocks)) {": 92,
+          "[11] !hasStrategicIdentity(PLAYER_START, exitPosition, walls)": 2,
+          "PASSOU_ESTRUTURAL": 2
+        },
+        "recovery": {}
+      },
+      "lastReasonIndex": -1,
+      "lastReason": "ACEITO",
+      "guardianCalls": 96,
+      "guardianZeroCandidates": 0,
+      "guardianFallbackUses": 0,
+      "guardianChosenOnWall": 0,
+      "guardianChosenHistogram": {
+        "1,4": 81,
+        "2,3": 15
+      },
+      "distinctGuardianStarts": 2
+    },
+    {
+      "seed": 907548,
+      "threw": false,
+      "attemptsObserved": 40,
+      "histogram": {
+        "[15] !routeCellsHaveEscape(PLAYER_START, exitPosition, objective.cells, walls, blocks)) {": 39,
+        "PASSOU_ESTRUTURAL": 1
+      },
+      "phaseHistogram": {
+        "random": {
+          "[15] !routeCellsHaveEscape(PLAYER_START, exitPosition, objective.cells, walls, blocks)) {": 39,
+          "PASSOU_ESTRUTURAL": 1
+        },
+        "recovery": {}
+      },
+      "lastReasonIndex": -1,
+      "lastReason": "ACEITO",
+      "guardianCalls": 40,
+      "guardianZeroCandidates": 0,
+      "guardianFallbackUses": 0,
+      "guardianChosenOnWall": 0,
+      "guardianChosenHistogram": {
+        "1,4": 38,
+        "2,3": 2
+      },
+      "distinctGuardianStarts": 2
+    },
+    {
+      "seed": 908399,
+      "threw": false,
+      "attemptsObserved": 111,
+      "histogram": {
+        "[15] !routeCellsHaveEscape(PLAYER_START, exitPosition, objective.cells, walls, blocks)) {": 107,
+        "[11] !hasStrategicIdentity(PLAYER_START, exitPosition, walls)": 1,
+        "[17] flow.longestForcedStreak > brief.maxForcedStreak": 1,
+        "PASSOU_ESTRUTURAL": 2
+      },
+      "phaseHistogram": {
+        "random": {
+          "[15] !routeCellsHaveEscape(PLAYER_START, exitPosition, objective.cells, walls, blocks)) {": 107,
+          "[11] !hasStrategicIdentity(PLAYER_START, exitPosition, walls)": 1,
+          "[17] flow.longestForcedStreak > brief.maxForcedStreak": 1,
+          "PASSOU_ESTRUTURAL": 2
+        },
+        "recovery": {}
+      },
+      "lastReasonIndex": -1,
+      "lastReason": "ACEITO",
+      "guardianCalls": 111,
+      "guardianZeroCandidates": 0,
+      "guardianFallbackUses": 0,
+      "guardianChosenOnWall": 0,
+      "guardianChosenHistogram": {
+        "1,4": 88,
+        "2,3": 23
+      },
+      "distinctGuardianStarts": 2
+    }
+  ]
+}

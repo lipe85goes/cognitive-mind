@@ -1,0 +1,180 @@
+{
+  "mission": "ROTA-DUAL-GUARDIANS-MAPS-01A",
+  "maps": 108,
+  "candidatesPerMap": {
+    "min": 0,
+    "p10": 0,
+    "median": 0,
+    "p90": 4,
+    "max": 11,
+    "mean": 0.84
+  },
+  "mapsWithNoCandidate": 92,
+  "utility": {
+    "min": 24,
+    "p10": 27,
+    "median": 35,
+    "p90": 53,
+    "max": 61,
+    "mean": 39.95
+  },
+  "shortcut": {
+    "min": 2,
+    "p10": 2,
+    "median": 2,
+    "p90": 2,
+    "max": 4,
+    "mean": 2.09
+  },
+  "opensNewPortalDoor": 28,
+  "everRequiredForSolution": 0,
+  "rule": {
+    "neverRequired": true,
+    "minPathAfter": 10,
+    "minUtility": 20,
+    "mustJoinTwoOpenCells": true
+  },
+  "byCombo": {
+    "route1-easy": {
+      "candidates": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 0,
+        "max": 0,
+        "mean": 0
+      },
+      "utility": null
+    },
+    "route1-medium": {
+      "candidates": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 0,
+        "max": 3,
+        "mean": 0.25
+      },
+      "utility": {
+        "min": 50,
+        "p10": 50,
+        "median": 53,
+        "p90": 53,
+        "max": 53,
+        "mean": 52
+      }
+    },
+    "route1-hard": {
+      "candidates": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 3,
+        "max": 3,
+        "mean": 0.75
+      },
+      "utility": {
+        "min": 50,
+        "p10": 50,
+        "median": 53,
+        "p90": 56,
+        "max": 56,
+        "mean": 52.67
+      }
+    },
+    "route2-easy": {
+      "candidates": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 0,
+        "max": 9,
+        "mean": 0.75
+      },
+      "utility": {
+        "min": 27,
+        "p10": 27,
+        "median": 35,
+        "p90": 53,
+        "max": 53,
+        "mean": 36
+      }
+    },
+    "route2-medium": {
+      "candidates": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 7,
+        "max": 9,
+        "mean": 2.08
+      },
+      "utility": {
+        "min": 27,
+        "p10": 27,
+        "median": 35,
+        "p90": 53,
+        "max": 53,
+        "mean": 37.28
+      }
+    },
+    "route2-hard": {
+      "candidates": {
+        "min": 0,
+        "p10": 0,
+        "median": 5,
+        "p90": 7,
+        "max": 11,
+        "mean": 3.42
+      },
+      "utility": {
+        "min": 27,
+        "p10": 27,
+        "median": 35,
+        "p90": 53,
+        "max": 61,
+        "mean": 40.02
+      }
+    },
+    "route3-easy": {
+      "candidates": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 0,
+        "max": 0,
+        "mean": 0
+      },
+      "utility": null
+    },
+    "route3-medium": {
+      "candidates": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 0,
+        "max": 4,
+        "mean": 0.33
+      },
+      "utility": {
+        "min": 24,
+        "p10": 24,
+        "median": 27,
+        "p90": 30,
+        "max": 30,
+        "mean": 27
+      }
+    },
+    "route3-hard": {
+      "candidates": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 0,
+        "max": 0,
+        "mean": 0
+      },
+      "utility": null
+    }
+  }
+}

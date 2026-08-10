@@ -1,0 +1,49 @@
+{
+  "mission": "ROTA-01A-FINAL-REJECTION-AUTOPSY",
+  "tool": "tools/validation/validate-route-9x9.mjs",
+  "breakage": {
+    "symptom": "Error: Route generator shape changed; validation injection is stale. Thrown on every run, before any map was generated.",
+    "cause": "injectValidationSurface rewrote two exact statements inside generateMaze to force a template and publish metadata. Both anchors were deleted by the buildCandidate/recovery-sweep refactor of an earlier mission:",
+    "deadAnchors": [
+      "    const template = randomItem(getRouteStageTemplates(routeStage));",
+      "    if (map && isValidMap(map, difficulty, routeStage)) return map;"
+    ],
+    "impact": "The 2160-map route validation harness was dead tooling. Nothing detected it, because a validator that throws on startup looks the same as a validator nobody ran.",
+    "notCausedBy": "Not a consequence of the star-selection fix; production was already correct."
+  },
+  "repair": {
+    "approach": "No function body is patched any more. The generator is exposed through an append-only export surface, and the harness drives buildCandidate + isValidMap itself — which is where template and exit are chosen anyway, so both become observable and forceable by construction.",
+    "changes": [
+      "injectValidationSurface -> buildExportSurface: appends `export const __routeValidation = {...}` and nothing else. A binding that disappears fails with its own name in the message.",
+      "harnessGenerate: mirrors production's two phases (randomised search, then the bounded deterministic recovery sweep), both ending at the same isValidMap. Throws rather than returning an uncertified map, exactly like production.",
+      "checkGenerationFidelity: the replacement for the string anchor. Runs harnessGenerate and the real generateMaze from the same seed and requires an identical map. Behavioural equivalence, not text matching.",
+      "generate(): now records a generation throw instead of crashing the run. Production throws by design, so a seed that exhausts every gate is an observation the validator must report — crashing on it hid the very thing the tool exists to measure."
+    ],
+    "productionChanged": false,
+    "fragileAnchorsRemaining": 0
+  },
+  "smoke": {
+    "command": "node tools/validation/validate-route-9x9.mjs --seeds 6 --template-seeds 4 --quiet",
+    "generationFidelity": { "compared": 108, "mismatches": 0 },
+    "validatedMaps": 156,
+    "rejectedCandidates": 8972,
+    "fallbackMaps": 0,
+    "templateValidationErrors": 0,
+    "mapValidationErrors": 0,
+    "generationThrows": 6,
+    "generationThrowsByCombination": { "route3/easy": 3, "route3/medium": 2, "route3/hard": 1 },
+    "elapsedMs": 309536.02,
+    "coverage": {
+      "routes": [1, 2, 3],
+      "modes": ["easy", "medium", "hard"],
+      "templatesForcedPerRoute": [0, 1, 2],
+      "forcedTemplateRuns": 108,
+      "note": "Every route x mode x template combination was exercised through the forced-template path; unforced runs sample templates by chance."
+    }
+  },
+  "observations": [
+    "Zero map validation errors across 156 maps: every map the generator certified also satisfies the validator's independent re-check.",
+    "All six generation throws are on route 3, the stage with the corner portal — consistent with the routeCellsHaveEscape analysis in route-cells-have-escape-contract.md. They are production's designed failure mode, not a tool defect.",
+    "fallbackMaps is structurally 0 now: the uncertified fallback path no longer exists in the generator."
+  ]
+}

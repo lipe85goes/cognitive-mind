@@ -1,0 +1,16 @@
+{
+  "mission": "ROTA-01A-FINAL-REJECTION-AUTOPSY",
+  "gate": "routeCellsHaveEscape",
+  "totalRejections": 255,
+  "A_LEGITIMATE_STRUCTURAL_REJECTION": {
+    "count": 192,
+    "percent": 75.3
+  },
+  "B_AVOIDABLE_GENERATION_WASTE": {
+    "count": 63,
+    "percent": 24.7
+  },
+  "witnessesVerifiedByProductionGate": 63,
+  "verdict": "MIXED",
+  "note": "Diagnostic only. The gate was not modified and no threshold was touched."
+}

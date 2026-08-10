@@ -1,0 +1,63 @@
+{
+  "mission": "ROTA-01A-ESCAPE-ROUTE-GENERATION-CLOSE",
+  "gate1_avoidableWastesEliminated": {
+    "required": "63/63",
+    "achieved": "38/63",
+    "met": false,
+    "routeDimension": {
+      "cases": 38,
+      "repaired": 38,
+      "failures": 0
+    },
+    "starDimension": {
+      "cases": 25,
+      "repaired": 0,
+      "reason": "The alternative configuration requires a different light set. This mission explicitly forbids altering star selection, so these are out of bounds — not a failure of the route fix. They stay rejected by the gate, as before."
+    }
+  },
+  "gate2_legitimateStillRejected": "192/192",
+  "gate2_identifiedEarly": "192/192",
+  "gate3_earlyEquivalence": {
+    "observed": 10008,
+    "FALSE_REJECTIONS": 0,
+    "trueEarlyRejects": 3995,
+    "preserved": 6013
+  },
+  "gate4_throwsResolved": "6/6",
+  "gate5_continuousRoute3": "360/360",
+  "gate6_uncertifiedMaps": 0,
+  "gate7_contractsPreserved": true,
+  "continuousThrows": 0,
+  "observationalTiming": {
+    "before": {
+      "p50": 635.2,
+      "p75": 1206.2,
+      "p90": 1840.3,
+      "p95": 2278.4,
+      "p99": 2617.2,
+      "max": 3905,
+      "over500ms": 67,
+      "over1s": 42,
+      "over1_5s": 18,
+      "over2s": 7,
+      "over3s": 1,
+      "threw": 0
+    },
+    "after": {
+      "p50": 107.8,
+      "p75": 198.2,
+      "p90": 304.4,
+      "p95": 386.7,
+      "p99": 451,
+      "max": 622.6,
+      "over500ms": 1,
+      "over1s": 0,
+      "over1_5s": 0,
+      "over2s": 0,
+      "over3s": 0,
+      "threw": 0
+    }
+  },
+  "verdict": "STILL_OPEN",
+  "openItem": "25 avoidable cases need a different light set; repairing them requires touching star selection, which this mission prohibits."
+}

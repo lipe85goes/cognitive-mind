@@ -1,0 +1,208 @@
+{
+  "mission": "ROTA-01A-ESCAPE-ROUTE-GENERATION-CLOSE",
+  "playerStart": "8,0",
+  "note": "Measured on a wall-free board, so these are upper bounds: any wall can only reduce a cell's degree. A cell whose geometric degree is below 3 can never satisfy the convergence rule, no matter how the walls fall.",
+  "portals": [
+    {
+      "stage": 1,
+      "portal": "2,8",
+      "portalGeometricDegree": 3,
+      "portalIsCorner": false,
+      "inevitableApproachCells": [
+        {
+          "cell": "3,8",
+          "maxGeometricDegree": 3,
+          "canEverReachDegree3": true
+        },
+        {
+          "cell": "1,8",
+          "maxGeometricDegree": 3,
+          "canEverReachDegree3": true
+        },
+        {
+          "cell": "2,7",
+          "maxGeometricDegree": 4,
+          "canEverReachDegree3": true
+        }
+      ],
+      "approachesThatCanReachDegree3": 3,
+      "convergenceCellsOnOpenBoard": 15,
+      "convergenceCellsWhereDegree3IsImpossible": 1,
+      "permanentlyInadmissibleCells": [
+        "0,8"
+      ],
+      "classification": "PORTAL_ESCAPE_GEOMETRY_POSSIBLE_BUT_CONSTRAINED"
+    },
+    {
+      "stage": 1,
+      "portal": "2,7",
+      "portalGeometricDegree": 4,
+      "portalIsCorner": false,
+      "inevitableApproachCells": [
+        {
+          "cell": "3,7",
+          "maxGeometricDegree": 4,
+          "canEverReachDegree3": true
+        },
+        {
+          "cell": "1,7",
+          "maxGeometricDegree": 4,
+          "canEverReachDegree3": true
+        },
+        {
+          "cell": "2,8",
+          "maxGeometricDegree": 3,
+          "canEverReachDegree3": true
+        },
+        {
+          "cell": "2,6",
+          "maxGeometricDegree": 4,
+          "canEverReachDegree3": true
+        }
+      ],
+      "approachesThatCanReachDegree3": 4,
+      "convergenceCellsOnOpenBoard": 20,
+      "convergenceCellsWhereDegree3IsImpossible": 1,
+      "permanentlyInadmissibleCells": [
+        "0,8"
+      ],
+      "classification": "PORTAL_ESCAPE_GEOMETRY_POSSIBLE_BUT_CONSTRAINED"
+    },
+    {
+      "stage": 2,
+      "portal": "1,8",
+      "portalGeometricDegree": 3,
+      "portalIsCorner": false,
+      "inevitableApproachCells": [
+        {
+          "cell": "2,8",
+          "maxGeometricDegree": 3,
+          "canEverReachDegree3": true
+        },
+        {
+          "cell": "0,8",
+          "maxGeometricDegree": 2,
+          "canEverReachDegree3": false
+        },
+        {
+          "cell": "1,7",
+          "maxGeometricDegree": 4,
+          "canEverReachDegree3": true
+        }
+      ],
+      "approachesThatCanReachDegree3": 2,
+      "convergenceCellsOnOpenBoard": 13,
+      "convergenceCellsWhereDegree3IsImpossible": 1,
+      "permanentlyInadmissibleCells": [
+        "0,8"
+      ],
+      "classification": "PORTAL_ESCAPE_GEOMETRY_POSSIBLE_BUT_CONSTRAINED"
+    },
+    {
+      "stage": 2,
+      "portal": "0,7",
+      "portalGeometricDegree": 3,
+      "portalIsCorner": false,
+      "inevitableApproachCells": [
+        {
+          "cell": "1,7",
+          "maxGeometricDegree": 4,
+          "canEverReachDegree3": true
+        },
+        {
+          "cell": "0,8",
+          "maxGeometricDegree": 2,
+          "canEverReachDegree3": false
+        },
+        {
+          "cell": "0,6",
+          "maxGeometricDegree": 3,
+          "canEverReachDegree3": true
+        }
+      ],
+      "approachesThatCanReachDegree3": 2,
+      "convergenceCellsOnOpenBoard": 13,
+      "convergenceCellsWhereDegree3IsImpossible": 1,
+      "permanentlyInadmissibleCells": [
+        "0,8"
+      ],
+      "classification": "PORTAL_ESCAPE_GEOMETRY_POSSIBLE_BUT_CONSTRAINED"
+    },
+    {
+      "stage": 2,
+      "portal": "0,8",
+      "portalGeometricDegree": 2,
+      "portalIsCorner": true,
+      "inevitableApproachCells": [
+        {
+          "cell": "1,8",
+          "maxGeometricDegree": 3,
+          "canEverReachDegree3": true
+        },
+        {
+          "cell": "0,7",
+          "maxGeometricDegree": 3,
+          "canEverReachDegree3": true
+        }
+      ],
+      "approachesThatCanReachDegree3": 2,
+      "convergenceCellsOnOpenBoard": 10,
+      "convergenceCellsWhereDegree3IsImpossible": 0,
+      "permanentlyInadmissibleCells": [],
+      "classification": "PORTAL_ESCAPE_GEOMETRY_POSSIBLE_BUT_CONSTRAINED"
+    },
+    {
+      "stage": 3,
+      "portal": "0,8",
+      "portalGeometricDegree": 2,
+      "portalIsCorner": true,
+      "inevitableApproachCells": [
+        {
+          "cell": "1,8",
+          "maxGeometricDegree": 3,
+          "canEverReachDegree3": true
+        },
+        {
+          "cell": "0,7",
+          "maxGeometricDegree": 3,
+          "canEverReachDegree3": true
+        }
+      ],
+      "approachesThatCanReachDegree3": 2,
+      "convergenceCellsOnOpenBoard": 10,
+      "convergenceCellsWhereDegree3IsImpossible": 0,
+      "permanentlyInadmissibleCells": [],
+      "classification": "PORTAL_ESCAPE_GEOMETRY_POSSIBLE_BUT_CONSTRAINED"
+    },
+    {
+      "stage": 3,
+      "portal": "0,7",
+      "portalGeometricDegree": 3,
+      "portalIsCorner": false,
+      "inevitableApproachCells": [
+        {
+          "cell": "1,7",
+          "maxGeometricDegree": 4,
+          "canEverReachDegree3": true
+        },
+        {
+          "cell": "0,8",
+          "maxGeometricDegree": 2,
+          "canEverReachDegree3": false
+        },
+        {
+          "cell": "0,6",
+          "maxGeometricDegree": 3,
+          "canEverReachDegree3": true
+        }
+      ],
+      "approachesThatCanReachDegree3": 2,
+      "convergenceCellsOnOpenBoard": 13,
+      "convergenceCellsWhereDegree3IsImpossible": 1,
+      "permanentlyInadmissibleCells": [
+        "0,8"
+      ],
+      "classification": "PORTAL_ESCAPE_GEOMETRY_POSSIBLE_BUT_CONSTRAINED"
+    }
+  ]
+}

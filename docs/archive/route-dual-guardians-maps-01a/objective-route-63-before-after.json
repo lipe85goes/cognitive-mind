@@ -1,0 +1,817 @@
+{
+  "mission": "ROTA-01A-ESCAPE-ROUTE-GENERATION-CLOSE",
+  "fixtureSource": "replay of the four autopsy seeds with both fixes reverted in memory",
+  "preFixAttempts": 265,
+  "gateRejections": 255,
+  "routeDimensionCases": 38,
+  "starDimensionCasesOutOfScope": 25,
+  "portalUnreachableCases": 192,
+  "repaired": 38,
+  "AVOIDABLE_ROUTE_SELECTION_FAILURES": 0,
+  "costDelta": {
+    "min": 0,
+    "max": 20,
+    "mean": 4.84
+  },
+  "invariants": "walls, lights and portal identical between old and new; no threshold touched",
+  "cases": [
+    {
+      "seed": 902627,
+      "attempt": 3,
+      "templateIndex": 0,
+      "exit": "0,8",
+      "starsUnchanged": true,
+      "portalUnchanged": true,
+      "wallsUnchanged": true,
+      "oldRoute": {
+        "cells": 27,
+        "moves": 26,
+        "escapePasses": false
+      },
+      "newRoute": {
+        "cells": 29,
+        "moves": 28,
+        "escapePasses": true
+      },
+      "costDelta": 2,
+      "admissibleCells": 40
+    },
+    {
+      "seed": 902627,
+      "attempt": 15,
+      "templateIndex": 1,
+      "exit": "0,7",
+      "starsUnchanged": true,
+      "portalUnchanged": true,
+      "wallsUnchanged": true,
+      "oldRoute": {
+        "cells": 26,
+        "moves": 25,
+        "escapePasses": false
+      },
+      "newRoute": {
+        "cells": 26,
+        "moves": 25,
+        "escapePasses": true
+      },
+      "costDelta": 0,
+      "admissibleCells": 36
+    },
+    {
+      "seed": 902627,
+      "attempt": 16,
+      "templateIndex": 0,
+      "exit": "0,7",
+      "starsUnchanged": true,
+      "portalUnchanged": true,
+      "wallsUnchanged": true,
+      "oldRoute": {
+        "cells": 28,
+        "moves": 27,
+        "escapePasses": false
+      },
+      "newRoute": {
+        "cells": 32,
+        "moves": 31,
+        "escapePasses": true
+      },
+      "costDelta": 4,
+      "admissibleCells": 38
+    },
+    {
+      "seed": 907474,
+      "attempt": 3,
+      "templateIndex": 1,
+      "exit": "0,7",
+      "starsUnchanged": true,
+      "portalUnchanged": true,
+      "wallsUnchanged": true,
+      "oldRoute": {
+        "cells": 26,
+        "moves": 25,
+        "escapePasses": false
+      },
+      "newRoute": {
+        "cells": 42,
+        "moves": 41,
+        "escapePasses": true
+      },
+      "costDelta": 16,
+      "admissibleCells": 40
+    },
+    {
+      "seed": 907474,
+      "attempt": 6,
+      "templateIndex": 0,
+      "exit": "0,8",
+      "starsUnchanged": true,
+      "portalUnchanged": true,
+      "wallsUnchanged": true,
+      "oldRoute": {
+        "cells": 29,
+        "moves": 28,
+        "escapePasses": false
+      },
+      "newRoute": {
+        "cells": 41,
+        "moves": 40,
+        "escapePasses": true
+      },
+      "costDelta": 12,
+      "admissibleCells": 41
+    },
+    {
+      "seed": 907474,
+      "attempt": 20,
+      "templateIndex": 0,
+      "exit": "0,7",
+      "starsUnchanged": true,
+      "portalUnchanged": true,
+      "wallsUnchanged": true,
+      "oldRoute": {
+        "cells": 26,
+        "moves": 25,
+        "escapePasses": false
+      },
+      "newRoute": {
+        "cells": 26,
+        "moves": 25,
+        "escapePasses": true
+      },
+      "costDelta": 0,
+      "admissibleCells": 45
+    },
+    {
+      "seed": 907474,
+      "attempt": 21,
+      "templateIndex": 2,
+      "exit": "0,7",
+      "starsUnchanged": true,
+      "portalUnchanged": true,
+      "wallsUnchanged": true,
+      "oldRoute": {
+        "cells": 36,
+        "moves": 35,
+        "escapePasses": false
+      },
+      "newRoute": {
+        "cells": 38,
+        "moves": 37,
+        "escapePasses": true
+      },
+      "costDelta": 2,
+      "admissibleCells": 47
+    },
+    {
+      "seed": 907474,
+      "attempt": 51,
+      "templateIndex": 0,
+      "exit": "0,8",
+      "starsUnchanged": true,
+      "portalUnchanged": true,
+      "wallsUnchanged": true,
+      "oldRoute": {
+        "cells": 27,
+        "moves": 26,
+        "escapePasses": false
+      },
+      "newRoute": {
+        "cells": 31,
+        "moves": 30,
+        "escapePasses": true
+      },
+      "costDelta": 4,
+      "admissibleCells": 49
+    },
+    {
+      "seed": 907474,
+      "attempt": 64,
+      "templateIndex": 0,
+      "exit": "0,8",
+      "starsUnchanged": true,
+      "portalUnchanged": true,
+      "wallsUnchanged": true,
+      "oldRoute": {
+        "cells": 29,
+        "moves": 28,
+        "escapePasses": false
+      },
+      "newRoute": {
+        "cells": 31,
+        "moves": 30,
+        "escapePasses": true
+      },
+      "costDelta": 2,
+      "admissibleCells": 37
+    },
+    {
+      "seed": 907474,
+      "attempt": 68,
+      "templateIndex": 0,
+      "exit": "0,7",
+      "starsUnchanged": true,
+      "portalUnchanged": true,
+      "wallsUnchanged": true,
+      "oldRoute": {
+        "cells": 26,
+        "moves": 25,
+        "escapePasses": false
+      },
+      "newRoute": {
+        "cells": 26,
+        "moves": 25,
+        "escapePasses": true
+      },
+      "costDelta": 0,
+      "admissibleCells": 39
+    },
+    {
+      "seed": 907474,
+      "attempt": 86,
+      "templateIndex": 1,
+      "exit": "0,7",
+      "starsUnchanged": true,
+      "portalUnchanged": true,
+      "wallsUnchanged": true,
+      "oldRoute": {
+        "cells": 26,
+        "moves": 25,
+        "escapePasses": false
+      },
+      "newRoute": {
+        "cells": 26,
+        "moves": 25,
+        "escapePasses": true
+      },
+      "costDelta": 0,
+      "admissibleCells": 46
+    },
+    {
+      "seed": 907474,
+      "attempt": 88,
+      "templateIndex": 0,
+      "exit": "0,7",
+      "starsUnchanged": true,
+      "portalUnchanged": true,
+      "wallsUnchanged": true,
+      "oldRoute": {
+        "cells": 28,
+        "moves": 27,
+        "escapePasses": false
+      },
+      "newRoute": {
+        "cells": 30,
+        "moves": 29,
+        "escapePasses": true
+      },
+      "costDelta": 2,
+      "admissibleCells": 42
+    },
+    {
+      "seed": 907474,
+      "attempt": 92,
+      "templateIndex": 1,
+      "exit": "0,7",
+      "starsUnchanged": true,
+      "portalUnchanged": true,
+      "wallsUnchanged": true,
+      "oldRoute": {
+        "cells": 36,
+        "moves": 35,
+        "escapePasses": false
+      },
+      "newRoute": {
+        "cells": 36,
+        "moves": 35,
+        "escapePasses": true
+      },
+      "costDelta": 0,
+      "admissibleCells": 43
+    },
+    {
+      "seed": 907474,
+      "attempt": 94,
+      "templateIndex": 0,
+      "exit": "0,8",
+      "starsUnchanged": true,
+      "portalUnchanged": true,
+      "wallsUnchanged": true,
+      "oldRoute": {
+        "cells": 35,
+        "moves": 34,
+        "escapePasses": false
+      },
+      "newRoute": {
+        "cells": 45,
+        "moves": 44,
+        "escapePasses": true
+      },
+      "costDelta": 10,
+      "admissibleCells": 42
+    },
+    {
+      "seed": 907474,
+      "attempt": 95,
+      "templateIndex": 0,
+      "exit": "0,8",
+      "starsUnchanged": true,
+      "portalUnchanged": true,
+      "wallsUnchanged": true,
+      "oldRoute": {
+        "cells": 31,
+        "moves": 30,
+        "escapePasses": false
+      },
+      "newRoute": {
+        "cells": 35,
+        "moves": 34,
+        "escapePasses": true
+      },
+      "costDelta": 4,
+      "admissibleCells": 40
+    },
+    {
+      "seed": 907548,
+      "attempt": 7,
+      "templateIndex": 0,
+      "exit": "0,8",
+      "starsUnchanged": true,
+      "portalUnchanged": true,
+      "wallsUnchanged": true,
+      "oldRoute": {
+        "cells": 29,
+        "moves": 28,
+        "escapePasses": false
+      },
+      "newRoute": {
+        "cells": 37,
+        "moves": 36,
+        "escapePasses": true
+      },
+      "costDelta": 8,
+      "admissibleCells": 46
+    },
+    {
+      "seed": 907548,
+      "attempt": 9,
+      "templateIndex": 1,
+      "exit": "0,7",
+      "starsUnchanged": true,
+      "portalUnchanged": true,
+      "wallsUnchanged": true,
+      "oldRoute": {
+        "cells": 26,
+        "moves": 25,
+        "escapePasses": false
+      },
+      "newRoute": {
+        "cells": 26,
+        "moves": 25,
+        "escapePasses": true
+      },
+      "costDelta": 0,
+      "admissibleCells": 47
+    },
+    {
+      "seed": 907548,
+      "attempt": 10,
+      "templateIndex": 0,
+      "exit": "0,7",
+      "starsUnchanged": true,
+      "portalUnchanged": true,
+      "wallsUnchanged": true,
+      "oldRoute": {
+        "cells": 26,
+        "moves": 25,
+        "escapePasses": false
+      },
+      "newRoute": {
+        "cells": 26,
+        "moves": 25,
+        "escapePasses": true
+      },
+      "costDelta": 0,
+      "admissibleCells": 39
+    },
+    {
+      "seed": 907548,
+      "attempt": 12,
+      "templateIndex": 0,
+      "exit": "0,7",
+      "starsUnchanged": true,
+      "portalUnchanged": true,
+      "wallsUnchanged": true,
+      "oldRoute": {
+        "cells": 32,
+        "moves": 31,
+        "escapePasses": false
+      },
+      "newRoute": {
+        "cells": 32,
+        "moves": 31,
+        "escapePasses": true
+      },
+      "costDelta": 0,
+      "admissibleCells": 40
+    },
+    {
+      "seed": 907548,
+      "attempt": 16,
+      "templateIndex": 0,
+      "exit": "0,8",
+      "starsUnchanged": true,
+      "portalUnchanged": true,
+      "wallsUnchanged": true,
+      "oldRoute": {
+        "cells": 31,
+        "moves": 30,
+        "escapePasses": false
+      },
+      "newRoute": {
+        "cells": 37,
+        "moves": 36,
+        "escapePasses": true
+      },
+      "costDelta": 6,
+      "admissibleCells": 38
+    },
+    {
+      "seed": 907548,
+      "attempt": 21,
+      "templateIndex": 2,
+      "exit": "0,7",
+      "starsUnchanged": true,
+      "portalUnchanged": true,
+      "wallsUnchanged": true,
+      "oldRoute": {
+        "cells": 32,
+        "moves": 31,
+        "escapePasses": false
+      },
+      "newRoute": {
+        "cells": 32,
+        "moves": 31,
+        "escapePasses": true
+      },
+      "costDelta": 0,
+      "admissibleCells": 43
+    },
+    {
+      "seed": 907548,
+      "attempt": 23,
+      "templateIndex": 0,
+      "exit": "0,8",
+      "starsUnchanged": true,
+      "portalUnchanged": true,
+      "wallsUnchanged": true,
+      "oldRoute": {
+        "cells": 25,
+        "moves": 24,
+        "escapePasses": false
+      },
+      "newRoute": {
+        "cells": 31,
+        "moves": 30,
+        "escapePasses": true
+      },
+      "costDelta": 6,
+      "admissibleCells": 39
+    },
+    {
+      "seed": 907548,
+      "attempt": 24,
+      "templateIndex": 0,
+      "exit": "0,7",
+      "starsUnchanged": true,
+      "portalUnchanged": true,
+      "wallsUnchanged": true,
+      "oldRoute": {
+        "cells": 30,
+        "moves": 29,
+        "escapePasses": false
+      },
+      "newRoute": {
+        "cells": 30,
+        "moves": 29,
+        "escapePasses": true
+      },
+      "costDelta": 0,
+      "admissibleCells": 45
+    },
+    {
+      "seed": 907548,
+      "attempt": 25,
+      "templateIndex": 1,
+      "exit": "0,7",
+      "starsUnchanged": true,
+      "portalUnchanged": true,
+      "wallsUnchanged": true,
+      "oldRoute": {
+        "cells": 26,
+        "moves": 25,
+        "escapePasses": false
+      },
+      "newRoute": {
+        "cells": 46,
+        "moves": 45,
+        "escapePasses": true
+      },
+      "costDelta": 20,
+      "admissibleCells": 42
+    },
+    {
+      "seed": 907548,
+      "attempt": 37,
+      "templateIndex": 1,
+      "exit": "0,7",
+      "starsUnchanged": true,
+      "portalUnchanged": true,
+      "wallsUnchanged": true,
+      "oldRoute": {
+        "cells": 32,
+        "moves": 31,
+        "escapePasses": false
+      },
+      "newRoute": {
+        "cells": 48,
+        "moves": 47,
+        "escapePasses": true
+      },
+      "costDelta": 16,
+      "admissibleCells": 39
+    },
+    {
+      "seed": 908399,
+      "attempt": 2,
+      "templateIndex": 0,
+      "exit": "0,7",
+      "starsUnchanged": true,
+      "portalUnchanged": true,
+      "wallsUnchanged": true,
+      "oldRoute": {
+        "cells": 34,
+        "moves": 33,
+        "escapePasses": false
+      },
+      "newRoute": {
+        "cells": 34,
+        "moves": 33,
+        "escapePasses": true
+      },
+      "costDelta": 0,
+      "admissibleCells": 41
+    },
+    {
+      "seed": 908399,
+      "attempt": 4,
+      "templateIndex": 0,
+      "exit": "0,8",
+      "starsUnchanged": true,
+      "portalUnchanged": true,
+      "wallsUnchanged": true,
+      "oldRoute": {
+        "cells": 33,
+        "moves": 32,
+        "escapePasses": false
+      },
+      "newRoute": {
+        "cells": 39,
+        "moves": 38,
+        "escapePasses": true
+      },
+      "costDelta": 6,
+      "admissibleCells": 38
+    },
+    {
+      "seed": 908399,
+      "attempt": 5,
+      "templateIndex": 2,
+      "exit": "0,8",
+      "starsUnchanged": true,
+      "portalUnchanged": true,
+      "wallsUnchanged": true,
+      "oldRoute": {
+        "cells": 37,
+        "moves": 36,
+        "escapePasses": false
+      },
+      "newRoute": {
+        "cells": 45,
+        "moves": 44,
+        "escapePasses": true
+      },
+      "costDelta": 8,
+      "admissibleCells": 43
+    },
+    {
+      "seed": 908399,
+      "attempt": 10,
+      "templateIndex": 1,
+      "exit": "0,8",
+      "starsUnchanged": true,
+      "portalUnchanged": true,
+      "wallsUnchanged": true,
+      "oldRoute": {
+        "cells": 29,
+        "moves": 28,
+        "escapePasses": false
+      },
+      "newRoute": {
+        "cells": 41,
+        "moves": 40,
+        "escapePasses": true
+      },
+      "costDelta": 12,
+      "admissibleCells": 40
+    },
+    {
+      "seed": 908399,
+      "attempt": 26,
+      "templateIndex": 1,
+      "exit": "0,8",
+      "starsUnchanged": true,
+      "portalUnchanged": true,
+      "wallsUnchanged": true,
+      "oldRoute": {
+        "cells": 33,
+        "moves": 32,
+        "escapePasses": false
+      },
+      "newRoute": {
+        "cells": 37,
+        "moves": 36,
+        "escapePasses": true
+      },
+      "costDelta": 4,
+      "admissibleCells": 39
+    },
+    {
+      "seed": 908399,
+      "attempt": 31,
+      "templateIndex": 2,
+      "exit": "0,8",
+      "starsUnchanged": true,
+      "portalUnchanged": true,
+      "wallsUnchanged": true,
+      "oldRoute": {
+        "cells": 31,
+        "moves": 30,
+        "escapePasses": false
+      },
+      "newRoute": {
+        "cells": 41,
+        "moves": 40,
+        "escapePasses": true
+      },
+      "costDelta": 10,
+      "admissibleCells": 49
+    },
+    {
+      "seed": 908399,
+      "attempt": 39,
+      "templateIndex": 1,
+      "exit": "0,8",
+      "starsUnchanged": true,
+      "portalUnchanged": true,
+      "wallsUnchanged": true,
+      "oldRoute": {
+        "cells": 39,
+        "moves": 38,
+        "escapePasses": false
+      },
+      "newRoute": {
+        "cells": 39,
+        "moves": 38,
+        "escapePasses": true
+      },
+      "costDelta": 0,
+      "admissibleCells": 43
+    },
+    {
+      "seed": 908399,
+      "attempt": 41,
+      "templateIndex": 0,
+      "exit": "0,8",
+      "starsUnchanged": true,
+      "portalUnchanged": true,
+      "wallsUnchanged": true,
+      "oldRoute": {
+        "cells": 35,
+        "moves": 34,
+        "escapePasses": false
+      },
+      "newRoute": {
+        "cells": 41,
+        "moves": 40,
+        "escapePasses": true
+      },
+      "costDelta": 6,
+      "admissibleCells": 40
+    },
+    {
+      "seed": 908399,
+      "attempt": 54,
+      "templateIndex": 1,
+      "exit": "0,7",
+      "starsUnchanged": true,
+      "portalUnchanged": true,
+      "wallsUnchanged": true,
+      "oldRoute": {
+        "cells": 36,
+        "moves": 35,
+        "escapePasses": false
+      },
+      "newRoute": {
+        "cells": 36,
+        "moves": 35,
+        "escapePasses": true
+      },
+      "costDelta": 0,
+      "admissibleCells": 53
+    },
+    {
+      "seed": 908399,
+      "attempt": 72,
+      "templateIndex": 1,
+      "exit": "0,8",
+      "starsUnchanged": true,
+      "portalUnchanged": true,
+      "wallsUnchanged": true,
+      "oldRoute": {
+        "cells": 31,
+        "moves": 30,
+        "escapePasses": false
+      },
+      "newRoute": {
+        "cells": 35,
+        "moves": 34,
+        "escapePasses": true
+      },
+      "costDelta": 4,
+      "admissibleCells": 41
+    },
+    {
+      "seed": 908399,
+      "attempt": 83,
+      "templateIndex": 0,
+      "exit": "0,8",
+      "starsUnchanged": true,
+      "portalUnchanged": true,
+      "wallsUnchanged": true,
+      "oldRoute": {
+        "cells": 27,
+        "moves": 26,
+        "escapePasses": false
+      },
+      "newRoute": {
+        "cells": 45,
+        "moves": 44,
+        "escapePasses": true
+      },
+      "costDelta": 18,
+      "admissibleCells": 38
+    },
+    {
+      "seed": 908399,
+      "attempt": 94,
+      "templateIndex": 1,
+      "exit": "0,8",
+      "starsUnchanged": true,
+      "portalUnchanged": true,
+      "wallsUnchanged": true,
+      "oldRoute": {
+        "cells": 35,
+        "moves": 34,
+        "escapePasses": false
+      },
+      "newRoute": {
+        "cells": 37,
+        "moves": 36,
+        "escapePasses": true
+      },
+      "costDelta": 2,
+      "admissibleCells": 50
+    },
+    {
+      "seed": 908399,
+      "attempt": 101,
+      "templateIndex": 0,
+      "exit": "0,7",
+      "starsUnchanged": true,
+      "portalUnchanged": true,
+      "wallsUnchanged": true,
+      "oldRoute": {
+        "cells": 30,
+        "moves": 29,
+        "escapePasses": false
+      },
+      "newRoute": {
+        "cells": 30,
+        "moves": 29,
+        "escapePasses": true
+      },
+      "costDelta": 0,
+      "admissibleCells": 41
+    }
+  ]
+}

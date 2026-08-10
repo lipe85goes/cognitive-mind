@@ -1,0 +1,45 @@
+{
+  "mission": "ROTA-DUAL-GUARDIANS-MAPS-01A-FALLBACK-CLOSE",
+  "frozen": true,
+  "note": "Tabuleiros construídos a partir da regra sob teste, não da amostra. Nenhum foi ajustado depois de ver o resultado.",
+  "rule": "alternativa anterior que sobrevive, não perde mais de um passo de terreno e alcança/toca célula com 3+ saídas => PLAYER_CAUSED; caso contrário SYSTEM_CAUSED; pressão com movimento legal não é pincer",
+  "cases": [
+    {
+      "name": "A_SYSTEM_CAUSED",
+      "expected": "SYSTEM_CAUSED",
+      "result": {
+        "klass": "SYSTEM_CAUSED",
+        "legal": 0,
+        "safe": 0,
+        "evidence": {
+          "avoidable": false
+        }
+      }
+    },
+    {
+      "name": "B_PLAYER_CAUSED",
+      "expected": "PLAYER_CAUSED",
+      "result": {
+        "klass": "PLAYER_CAUSED",
+        "legal": 0,
+        "safe": 0,
+        "evidence": {
+          "avoidable": true,
+          "atTurn": 0,
+          "via": "2,3",
+          "width": 4
+        }
+      }
+    },
+    {
+      "name": "C_RECOVERABLE_PRESSURE",
+      "expected": "RECOVERABLE_PRESSURE",
+      "result": {
+        "klass": "RECOVERABLE_PRESSURE",
+        "legal": 2,
+        "safe": 2
+      }
+    }
+  ],
+  "failed": 0
+}

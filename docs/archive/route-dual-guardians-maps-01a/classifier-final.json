@@ -1,0 +1,25 @@
+{
+  "mission": "ROTA-DUAL-GUARDIANS-MAPS-01A-FINAL-ACCEPTANCE",
+  "note": "Classifier frozen. Not adjusted during this mission or the dynamic run.",
+  "tests": [
+    {
+      "id": "A",
+      "expected": "SYSTEM_CAUSED",
+      "got": "SYSTEM_CAUSED",
+      "pass": true
+    },
+    {
+      "id": "B",
+      "expected": "PLAYER_CAUSED",
+      "got": "PLAYER_CAUSED",
+      "pass": true
+    },
+    {
+      "id": "C",
+      "expected": "RECOVERABLE_PRESSURE",
+      "got": "RECOVERABLE_PRESSURE",
+      "pass": true
+    }
+  ],
+  "result": "3/3"
+}

@@ -1,0 +1,121 @@
+{
+  "mission": "ROTA-DUAL-GUARDIANS-MAPS-01A-BALANCE",
+  "note": "humanV2 usa apenas informação visível: posição dos dois defensores, portas da zona, luzes restantes e 2-3 turnos de consequência.",
+  "byAgent": {
+    "optimal": {
+      "runs": 45,
+      "won": 0.244,
+      "caughtHunter": 0.422,
+      "caughtSentinel": 0.333,
+      "timeout": 0,
+      "turns": {
+        "min": 6,
+        "p10": 7,
+        "median": 15,
+        "p90": 30,
+        "max": 45,
+        "mean": 18.04
+      },
+      "dualDecisions": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 0,
+        "max": 1,
+        "mean": 0.04
+      }
+    },
+    "cautious": {
+      "runs": 45,
+      "won": 0.133,
+      "caughtHunter": 0.333,
+      "caughtSentinel": 0.111,
+      "timeout": 0.422,
+      "turns": {
+        "min": 11,
+        "p10": 16,
+        "median": 63,
+        "p90": 141,
+        "max": 141,
+        "mean": 81.09
+      },
+      "dualDecisions": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 1,
+        "max": 15,
+        "mean": 0.53
+      }
+    },
+    "humanV2": {
+      "runs": 45,
+      "won": 0.067,
+      "caughtHunter": 0.244,
+      "caughtSentinel": 0.044,
+      "timeout": 0.644,
+      "turns": {
+        "min": 14,
+        "p10": 31,
+        "median": 141,
+        "p90": 141,
+        "max": 141,
+        "mean": 109.11
+      },
+      "dualDecisions": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 1,
+        "max": 7,
+        "mean": 0.44
+      }
+    },
+    "humanV3": {
+      "runs": 45,
+      "won": 0.311,
+      "caughtHunter": 0.311,
+      "caughtSentinel": 0.022,
+      "timeout": 0.356,
+      "turns": {
+        "min": 7,
+        "p10": 26,
+        "median": 62,
+        "p90": 141,
+        "max": 141,
+        "mean": 83.6
+      },
+      "dualDecisions": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 2,
+        "max": 3,
+        "mean": 0.38
+      }
+    },
+    "flawed": {
+      "runs": 45,
+      "won": 0.156,
+      "caughtHunter": 0.511,
+      "caughtSentinel": 0.067,
+      "timeout": 0.267,
+      "turns": {
+        "min": 10,
+        "p10": 15,
+        "median": 32,
+        "p90": 141,
+        "max": 141,
+        "mean": 58.82
+      },
+      "dualDecisions": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 0,
+        "max": 1,
+        "mean": 0.02
+      }
+    }
+  }
+}

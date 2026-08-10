@@ -1,0 +1,12 @@
+{
+  "mission": "ROTA-DUAL-GUARDIANS-MAPS-01A-BALANCE",
+  "contract": "toda combinação de armadilhas que NASCE junta deve ser segura; nenhuma regra invisível no runtime",
+  "maps": 45,
+  "totalCombinationsChecked": 795,
+  "unsafeSingles": 0,
+  "unsafePairs": 0,
+  "unsafeTriples": 0,
+  "mapsWhereAllTrapsUnsafe": 0,
+  "gate_zeroUnsafeCoexisting": true,
+  "offenders": []
+}

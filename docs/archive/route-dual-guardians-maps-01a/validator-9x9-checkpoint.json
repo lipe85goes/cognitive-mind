@@ -1,0 +1,2103 @@
+{
+  "mission": "ROTA-9X9-VALIDATION-01",
+  "generatedAt": "2026-08-08T15:17:27.302Z",
+  "source": "src/games/escape-maze/useEscapeMaze.ts",
+  "configuration": {
+    "rows": 9,
+    "cols": 9,
+    "seedsPerCombination": 6,
+    "templateSeeds": 4,
+    "difficulties": [
+      "easy",
+      "medium",
+      "hard"
+    ],
+    "stages": [
+      1,
+      2,
+      3
+    ]
+  },
+  "templates": {
+    "errors": [],
+    "assignments": {
+      "1": 3,
+      "2": 3,
+      "3": 3
+    },
+    "uniqueCount": 9
+  },
+  "generationFidelity": {
+    "compared": 108,
+    "mismatches": []
+  },
+  "totals": {
+    "generatedMaps": 156,
+    "forcedTemplateRuns": 102,
+    "rejectedCandidates": 8972,
+    "fallbackMaps": 0,
+    "generationThrows": 6,
+    "validationErrors": 0,
+    "elapsedMs": 309536.02
+  },
+  "summary": {
+    "1": {
+      "easy": {
+        "generated": 6,
+        "fallback": 0,
+        "templateCoverage": {
+          "0": 5,
+          "1": 1
+        },
+        "metrics": {
+          "attempts": {
+            "min": 6,
+            "max": 42,
+            "mean": 18.83,
+            "p95": 42
+          },
+          "directPortalDistance": {
+            "min": 13,
+            "max": 14,
+            "mean": 13.5,
+            "p95": 14
+          },
+          "objectiveMoves": {
+            "min": 19,
+            "max": 22,
+            "mean": 19.83,
+            "p95": 22
+          },
+          "maxDecisionGap": {
+            "min": 1,
+            "max": 2,
+            "mean": 1.17,
+            "p95": 2
+          },
+          "reachableCells": {
+            "min": 66,
+            "max": 67,
+            "mean": 66.5,
+            "p95": 67
+          },
+          "junctions": {
+            "min": 44,
+            "max": 50,
+            "mean": 47.17,
+            "p95": 50
+          },
+          "guardianDistance": {
+            "min": 11,
+            "max": 13,
+            "mean": 12,
+            "p95": 13
+          },
+          "wallCount": {
+            "min": 14,
+            "max": 15,
+            "mean": 14.5,
+            "p95": 15
+          }
+        }
+      },
+      "medium": {
+        "generated": 6,
+        "fallback": 0,
+        "templateCoverage": {
+          "0": 2,
+          "1": 2,
+          "2": 2
+        },
+        "metrics": {
+          "attempts": {
+            "min": 1,
+            "max": 33,
+            "mean": 12.33,
+            "p95": 33
+          },
+          "directPortalDistance": {
+            "min": 13,
+            "max": 14,
+            "mean": 13.33,
+            "p95": 14
+          },
+          "objectiveMoves": {
+            "min": 19,
+            "max": 29,
+            "mean": 23.33,
+            "p95": 29
+          },
+          "maxDecisionGap": {
+            "min": 1,
+            "max": 2,
+            "mean": 1.5,
+            "p95": 2
+          },
+          "reachableCells": {
+            "min": 61,
+            "max": 64,
+            "mean": 63,
+            "p95": 64
+          },
+          "junctions": {
+            "min": 36,
+            "max": 46,
+            "mean": 40.67,
+            "p95": 46
+          },
+          "guardianDistance": {
+            "min": 11,
+            "max": 12,
+            "mean": 11.67,
+            "p95": 12
+          },
+          "wallCount": {
+            "min": 17,
+            "max": 20,
+            "mean": 18,
+            "p95": 20
+          }
+        }
+      },
+      "hard": {
+        "generated": 6,
+        "fallback": 0,
+        "templateCoverage": {
+          "1": 4,
+          "2": 2
+        },
+        "metrics": {
+          "attempts": {
+            "min": 2,
+            "max": 50,
+            "mean": 21.33,
+            "p95": 50
+          },
+          "directPortalDistance": {
+            "min": 13,
+            "max": 14,
+            "mean": 13.17,
+            "p95": 14
+          },
+          "objectiveMoves": {
+            "min": 23,
+            "max": 30,
+            "mean": 24.5,
+            "p95": 30
+          },
+          "maxDecisionGap": {
+            "min": 2,
+            "max": 4,
+            "mean": 2.83,
+            "p95": 4
+          },
+          "reachableCells": {
+            "min": 59,
+            "max": 61,
+            "mean": 60,
+            "p95": 61
+          },
+          "junctions": {
+            "min": 32,
+            "max": 36,
+            "mean": 34,
+            "p95": 36
+          },
+          "guardianDistance": {
+            "min": 11,
+            "max": 11,
+            "mean": 11,
+            "p95": 11
+          },
+          "wallCount": {
+            "min": 20,
+            "max": 22,
+            "mean": 21,
+            "p95": 22
+          }
+        }
+      }
+    },
+    "2": {
+      "easy": {
+        "generated": 6,
+        "fallback": 0,
+        "templateCoverage": {
+          "0": 1,
+          "1": 1,
+          "2": 4
+        },
+        "metrics": {
+          "attempts": {
+            "min": 1,
+            "max": 141,
+            "mean": 40.33,
+            "p95": 141
+          },
+          "directPortalDistance": {
+            "min": 15,
+            "max": 16,
+            "mean": 15.17,
+            "p95": 16
+          },
+          "objectiveMoves": {
+            "min": 19,
+            "max": 29,
+            "mean": 24.17,
+            "p95": 29
+          },
+          "maxDecisionGap": {
+            "min": 1,
+            "max": 2,
+            "mean": 1.17,
+            "p95": 2
+          },
+          "reachableCells": {
+            "min": 63,
+            "max": 64,
+            "mean": 63.5,
+            "p95": 64
+          },
+          "junctions": {
+            "min": 37,
+            "max": 45,
+            "mean": 41.67,
+            "p95": 45
+          },
+          "guardianDistance": {
+            "min": 9,
+            "max": 12,
+            "mean": 10.5,
+            "p95": 12
+          },
+          "wallCount": {
+            "min": 17,
+            "max": 18,
+            "mean": 17.5,
+            "p95": 18
+          }
+        }
+      },
+      "medium": {
+        "generated": 6,
+        "fallback": 0,
+        "templateCoverage": {
+          "1": 1,
+          "2": 5
+        },
+        "metrics": {
+          "attempts": {
+            "min": 6,
+            "max": 100,
+            "mean": 41.33,
+            "p95": 100
+          },
+          "directPortalDistance": {
+            "min": 15,
+            "max": 18,
+            "mean": 16,
+            "p95": 18
+          },
+          "objectiveMoves": {
+            "min": 19,
+            "max": 37,
+            "mean": 25,
+            "p95": 37
+          },
+          "maxDecisionGap": {
+            "min": 1,
+            "max": 4,
+            "mean": 2.33,
+            "p95": 4
+          },
+          "reachableCells": {
+            "min": 58,
+            "max": 63,
+            "mean": 60,
+            "p95": 63
+          },
+          "junctions": {
+            "min": 29,
+            "max": 40,
+            "mean": 33.67,
+            "p95": 40
+          },
+          "guardianDistance": {
+            "min": 9,
+            "max": 11,
+            "mean": 10.33,
+            "p95": 11
+          },
+          "wallCount": {
+            "min": 18,
+            "max": 23,
+            "mean": 21,
+            "p95": 23
+          }
+        }
+      },
+      "hard": {
+        "generated": 6,
+        "fallback": 0,
+        "templateCoverage": {
+          "2": 6
+        },
+        "metrics": {
+          "attempts": {
+            "min": 3,
+            "max": 25,
+            "mean": 11.33,
+            "p95": 25
+          },
+          "directPortalDistance": {
+            "min": 15,
+            "max": 18,
+            "mean": 16,
+            "p95": 18
+          },
+          "objectiveMoves": {
+            "min": 21,
+            "max": 30,
+            "mean": 25.33,
+            "p95": 30
+          },
+          "maxDecisionGap": {
+            "min": 1,
+            "max": 4,
+            "mean": 2.5,
+            "p95": 4
+          },
+          "reachableCells": {
+            "min": 55,
+            "max": 58,
+            "mean": 56.67,
+            "p95": 58
+          },
+          "junctions": {
+            "min": 23,
+            "max": 32,
+            "mean": 27.67,
+            "p95": 32
+          },
+          "guardianDistance": {
+            "min": 9,
+            "max": 11,
+            "mean": 10,
+            "p95": 11
+          },
+          "wallCount": {
+            "min": 23,
+            "max": 26,
+            "mean": 24.33,
+            "p95": 26
+          }
+        }
+      }
+    },
+    "3": {
+      "easy": {
+        "generated": 6,
+        "fallback": 0,
+        "templateCoverage": {
+          "1": 6
+        },
+        "metrics": {
+          "attempts": {
+            "min": 57,
+            "max": 375,
+            "mean": 174.33,
+            "p95": 375
+          },
+          "directPortalDistance": {
+            "min": 16,
+            "max": 16,
+            "mean": 16,
+            "p95": 16
+          },
+          "objectiveMoves": {
+            "min": 20,
+            "max": 30,
+            "mean": 25.33,
+            "p95": 30
+          },
+          "maxDecisionGap": {
+            "min": 1,
+            "max": 2,
+            "mean": 1.17,
+            "p95": 2
+          },
+          "reachableCells": {
+            "min": 62,
+            "max": 64,
+            "mean": 62.5,
+            "p95": 64
+          },
+          "junctions": {
+            "min": 37,
+            "max": 46,
+            "mean": 42,
+            "p95": 46
+          },
+          "guardianDistance": {
+            "min": 11,
+            "max": 12,
+            "mean": 11.67,
+            "p95": 12
+          },
+          "wallCount": {
+            "min": 17,
+            "max": 19,
+            "mean": 18.5,
+            "p95": 19
+          }
+        }
+      },
+      "medium": {
+        "generated": 6,
+        "fallback": 0,
+        "templateCoverage": {
+          "1": 4,
+          "2": 2
+        },
+        "metrics": {
+          "attempts": {
+            "min": 1,
+            "max": 137,
+            "mean": 63.17,
+            "p95": 137
+          },
+          "directPortalDistance": {
+            "min": 15,
+            "max": 16,
+            "mean": 15.83,
+            "p95": 16
+          },
+          "objectiveMoves": {
+            "min": 20,
+            "max": 34,
+            "mean": 27.83,
+            "p95": 34
+          },
+          "maxDecisionGap": {
+            "min": 1,
+            "max": 3,
+            "mean": 2,
+            "p95": 3
+          },
+          "reachableCells": {
+            "min": 57,
+            "max": 61,
+            "mean": 58.5,
+            "p95": 61
+          },
+          "junctions": {
+            "min": 28,
+            "max": 42,
+            "mean": 33.5,
+            "p95": 42
+          },
+          "guardianDistance": {
+            "min": 9,
+            "max": 12,
+            "mean": 11.17,
+            "p95": 12
+          },
+          "wallCount": {
+            "min": 20,
+            "max": 24,
+            "mean": 22.5,
+            "p95": 24
+          }
+        }
+      },
+      "hard": {
+        "generated": 6,
+        "fallback": 0,
+        "templateCoverage": {
+          "0": 1,
+          "1": 4,
+          "2": 1
+        },
+        "metrics": {
+          "attempts": {
+            "min": 15,
+            "max": 63,
+            "mean": 35.33,
+            "p95": 63
+          },
+          "directPortalDistance": {
+            "min": 16,
+            "max": 16,
+            "mean": 16,
+            "p95": 16
+          },
+          "objectiveMoves": {
+            "min": 24,
+            "max": 36,
+            "mean": 29,
+            "p95": 36
+          },
+          "maxDecisionGap": {
+            "min": 1,
+            "max": 5,
+            "mean": 2.83,
+            "p95": 5
+          },
+          "reachableCells": {
+            "min": 52,
+            "max": 57,
+            "mean": 55.5,
+            "p95": 57
+          },
+          "junctions": {
+            "min": 22,
+            "max": 36,
+            "mean": 28.17,
+            "p95": 36
+          },
+          "guardianDistance": {
+            "min": 11,
+            "max": 11,
+            "mean": 11,
+            "p95": 11
+          },
+          "wallCount": {
+            "min": 24,
+            "max": 29,
+            "mean": 25.5,
+            "p95": 29
+          }
+        }
+      }
+    }
+  },
+  "forcedTemplateSummary": {
+    "1": {
+      "easy": {
+        "0": {
+          "generated": 4,
+          "fallback": 0,
+          "metrics": {
+            "attempts": {
+              "min": 2,
+              "max": 25,
+              "mean": 10,
+              "p95": 25
+            },
+            "directPortalDistance": {
+              "min": 13,
+              "max": 14,
+              "mean": 13.25,
+              "p95": 14
+            },
+            "objectiveMoves": {
+              "min": 19,
+              "max": 21,
+              "mean": 19.75,
+              "p95": 21
+            },
+            "maxDecisionGap": {
+              "min": 1,
+              "max": 1,
+              "mean": 1,
+              "p95": 1
+            },
+            "reachableCells": {
+              "min": 66,
+              "max": 67,
+              "mean": 66.25,
+              "p95": 67
+            },
+            "junctions": {
+              "min": 44,
+              "max": 51,
+              "mean": 47,
+              "p95": 51
+            },
+            "guardianDistance": {
+              "min": 12,
+              "max": 12,
+              "mean": 12,
+              "p95": 12
+            },
+            "wallCount": {
+              "min": 14,
+              "max": 15,
+              "mean": 14.75,
+              "p95": 15
+            }
+          }
+        },
+        "1": {
+          "generated": 4,
+          "fallback": 0,
+          "metrics": {
+            "attempts": {
+              "min": 16,
+              "max": 63,
+              "mean": 32.25,
+              "p95": 63
+            },
+            "directPortalDistance": {
+              "min": 13,
+              "max": 13,
+              "mean": 13,
+              "p95": 13
+            },
+            "objectiveMoves": {
+              "min": 21,
+              "max": 21,
+              "mean": 21,
+              "p95": 21
+            },
+            "maxDecisionGap": {
+              "min": 1,
+              "max": 2,
+              "mean": 1.5,
+              "p95": 2
+            },
+            "reachableCells": {
+              "min": 66,
+              "max": 67,
+              "mean": 66.5,
+              "p95": 67
+            },
+            "junctions": {
+              "min": 45,
+              "max": 49,
+              "mean": 47,
+              "p95": 49
+            },
+            "guardianDistance": {
+              "min": 11,
+              "max": 13,
+              "mean": 12,
+              "p95": 13
+            },
+            "wallCount": {
+              "min": 14,
+              "max": 15,
+              "mean": 14.5,
+              "p95": 15
+            }
+          }
+        },
+        "2": {
+          "generated": 4,
+          "fallback": 0,
+          "metrics": {
+            "attempts": {
+              "min": 43,
+              "max": 220,
+              "mean": 97.75,
+              "p95": 220
+            },
+            "directPortalDistance": {
+              "min": 13,
+              "max": 14,
+              "mean": 13.25,
+              "p95": 14
+            },
+            "objectiveMoves": {
+              "min": 19,
+              "max": 23,
+              "mean": 21.25,
+              "p95": 23
+            },
+            "maxDecisionGap": {
+              "min": 1,
+              "max": 2,
+              "mean": 1.25,
+              "p95": 2
+            },
+            "reachableCells": {
+              "min": 66,
+              "max": 68,
+              "mean": 66.75,
+              "p95": 68
+            },
+            "junctions": {
+              "min": 48,
+              "max": 54,
+              "mean": 50.25,
+              "p95": 54
+            },
+            "guardianDistance": {
+              "min": 11,
+              "max": 13,
+              "mean": 12.25,
+              "p95": 13
+            },
+            "wallCount": {
+              "min": 13,
+              "max": 15,
+              "mean": 14.25,
+              "p95": 15
+            }
+          }
+        }
+      },
+      "medium": {
+        "0": {
+          "generated": 4,
+          "fallback": 0,
+          "metrics": {
+            "attempts": {
+              "min": 7,
+              "max": 30,
+              "mean": 17.75,
+              "p95": 30
+            },
+            "directPortalDistance": {
+              "min": 13,
+              "max": 14,
+              "mean": 13.75,
+              "p95": 14
+            },
+            "objectiveMoves": {
+              "min": 18,
+              "max": 21,
+              "mean": 19.75,
+              "p95": 21
+            },
+            "maxDecisionGap": {
+              "min": 1,
+              "max": 4,
+              "mean": 1.75,
+              "p95": 4
+            },
+            "reachableCells": {
+              "min": 61,
+              "max": 65,
+              "mean": 63,
+              "p95": 65
+            },
+            "junctions": {
+              "min": 33,
+              "max": 45,
+              "mean": 37.75,
+              "p95": 45
+            },
+            "guardianDistance": {
+              "min": 11,
+              "max": 12,
+              "mean": 11.75,
+              "p95": 12
+            },
+            "wallCount": {
+              "min": 16,
+              "max": 20,
+              "mean": 18,
+              "p95": 20
+            }
+          }
+        },
+        "1": {
+          "generated": 4,
+          "fallback": 0,
+          "metrics": {
+            "attempts": {
+              "min": 1,
+              "max": 39,
+              "mean": 12,
+              "p95": 39
+            },
+            "directPortalDistance": {
+              "min": 13,
+              "max": 13,
+              "mean": 13,
+              "p95": 13
+            },
+            "objectiveMoves": {
+              "min": 23,
+              "max": 23,
+              "mean": 23,
+              "p95": 23
+            },
+            "maxDecisionGap": {
+              "min": 1,
+              "max": 2,
+              "mean": 1.5,
+              "p95": 2
+            },
+            "reachableCells": {
+              "min": 61,
+              "max": 66,
+              "mean": 62.75,
+              "p95": 66
+            },
+            "junctions": {
+              "min": 33,
+              "max": 48,
+              "mean": 41.25,
+              "p95": 48
+            },
+            "guardianDistance": {
+              "min": 11,
+              "max": 12,
+              "mean": 11.5,
+              "p95": 12
+            },
+            "wallCount": {
+              "min": 15,
+              "max": 20,
+              "mean": 18.25,
+              "p95": 20
+            }
+          }
+        },
+        "2": {
+          "generated": 4,
+          "fallback": 0,
+          "metrics": {
+            "attempts": {
+              "min": 3,
+              "max": 49,
+              "mean": 18.75,
+              "p95": 49
+            },
+            "directPortalDistance": {
+              "min": 13,
+              "max": 15,
+              "mean": 14,
+              "p95": 15
+            },
+            "objectiveMoves": {
+              "min": 22,
+              "max": 28,
+              "mean": 24.5,
+              "p95": 28
+            },
+            "maxDecisionGap": {
+              "min": 1,
+              "max": 3,
+              "mean": 2,
+              "p95": 3
+            },
+            "reachableCells": {
+              "min": 61,
+              "max": 64,
+              "mean": 62,
+              "p95": 64
+            },
+            "junctions": {
+              "min": 40,
+              "max": 51,
+              "mean": 42.75,
+              "p95": 51
+            },
+            "guardianDistance": {
+              "min": 11,
+              "max": 12,
+              "mean": 11.75,
+              "p95": 12
+            },
+            "wallCount": {
+              "min": 17,
+              "max": 20,
+              "mean": 19,
+              "p95": 20
+            }
+          }
+        }
+      },
+      "hard": {
+        "0": {
+          "generated": 4,
+          "fallback": 0,
+          "metrics": {
+            "attempts": {
+              "min": 5,
+              "max": 206,
+              "mean": 121.75,
+              "p95": 206
+            },
+            "directPortalDistance": {
+              "min": 13,
+              "max": 16,
+              "mean": 14.25,
+              "p95": 16
+            },
+            "objectiveMoves": {
+              "min": 19,
+              "max": 26,
+              "mean": 21.75,
+              "p95": 26
+            },
+            "maxDecisionGap": {
+              "min": 1,
+              "max": 2,
+              "mean": 1.5,
+              "p95": 2
+            },
+            "reachableCells": {
+              "min": 60,
+              "max": 61,
+              "mean": 60.25,
+              "p95": 61
+            },
+            "junctions": {
+              "min": 30,
+              "max": 34,
+              "mean": 31.5,
+              "p95": 34
+            },
+            "guardianDistance": {
+              "min": 11,
+              "max": 11,
+              "mean": 11,
+              "p95": 11
+            },
+            "wallCount": {
+              "min": 20,
+              "max": 21,
+              "mean": 20.75,
+              "p95": 21
+            }
+          }
+        },
+        "1": {
+          "generated": 4,
+          "fallback": 0,
+          "metrics": {
+            "attempts": {
+              "min": 1,
+              "max": 12,
+              "mean": 7.25,
+              "p95": 12
+            },
+            "directPortalDistance": {
+              "min": 13,
+              "max": 13,
+              "mean": 13,
+              "p95": 13
+            },
+            "objectiveMoves": {
+              "min": 23,
+              "max": 27,
+              "mean": 24.5,
+              "p95": 27
+            },
+            "maxDecisionGap": {
+              "min": 1,
+              "max": 3,
+              "mean": 1.75,
+              "p95": 3
+            },
+            "reachableCells": {
+              "min": 60,
+              "max": 61,
+              "mean": 60.5,
+              "p95": 61
+            },
+            "junctions": {
+              "min": 34,
+              "max": 37,
+              "mean": 35.25,
+              "p95": 37
+            },
+            "guardianDistance": {
+              "min": 11,
+              "max": 11,
+              "mean": 11,
+              "p95": 11
+            },
+            "wallCount": {
+              "min": 20,
+              "max": 21,
+              "mean": 20.5,
+              "p95": 21
+            }
+          }
+        },
+        "2": {
+          "generated": 4,
+          "fallback": 0,
+          "metrics": {
+            "attempts": {
+              "min": 11,
+              "max": 37,
+              "mean": 22.25,
+              "p95": 37
+            },
+            "directPortalDistance": {
+              "min": 13,
+              "max": 14,
+              "mean": 13.75,
+              "p95": 14
+            },
+            "objectiveMoves": {
+              "min": 22,
+              "max": 28,
+              "mean": 24.25,
+              "p95": 28
+            },
+            "maxDecisionGap": {
+              "min": 1,
+              "max": 4,
+              "mean": 2.25,
+              "p95": 4
+            },
+            "reachableCells": {
+              "min": 59,
+              "max": 61,
+              "mean": 60,
+              "p95": 61
+            },
+            "junctions": {
+              "min": 33,
+              "max": 38,
+              "mean": 36.25,
+              "p95": 38
+            },
+            "guardianDistance": {
+              "min": 11,
+              "max": 11,
+              "mean": 11,
+              "p95": 11
+            },
+            "wallCount": {
+              "min": 20,
+              "max": 22,
+              "mean": 21,
+              "p95": 22
+            }
+          }
+        }
+      }
+    },
+    "2": {
+      "easy": {
+        "0": {
+          "generated": 4,
+          "fallback": 0,
+          "metrics": {
+            "attempts": {
+              "min": 10,
+              "max": 216,
+              "mean": 105.75,
+              "p95": 216
+            },
+            "directPortalDistance": {
+              "min": 15,
+              "max": 15,
+              "mean": 15,
+              "p95": 15
+            },
+            "objectiveMoves": {
+              "min": 23,
+              "max": 29,
+              "mean": 27,
+              "p95": 29
+            },
+            "maxDecisionGap": {
+              "min": 1,
+              "max": 1,
+              "mean": 1,
+              "p95": 1
+            },
+            "reachableCells": {
+              "min": 63,
+              "max": 67,
+              "mean": 64.25,
+              "p95": 67
+            },
+            "junctions": {
+              "min": 38,
+              "max": 50,
+              "mean": 42.5,
+              "p95": 50
+            },
+            "guardianDistance": {
+              "min": 11,
+              "max": 13,
+              "mean": 11.75,
+              "p95": 13
+            },
+            "wallCount": {
+              "min": 14,
+              "max": 18,
+              "mean": 16.75,
+              "p95": 18
+            }
+          }
+        },
+        "1": {
+          "generated": 4,
+          "fallback": 0,
+          "metrics": {
+            "attempts": {
+              "min": 6,
+              "max": 35,
+              "mean": 15.75,
+              "p95": 35
+            },
+            "directPortalDistance": {
+              "min": 15,
+              "max": 16,
+              "mean": 15.25,
+              "p95": 16
+            },
+            "objectiveMoves": {
+              "min": 16,
+              "max": 27,
+              "mean": 22.25,
+              "p95": 27
+            },
+            "maxDecisionGap": {
+              "min": 1,
+              "max": 2,
+              "mean": 1.25,
+              "p95": 2
+            },
+            "reachableCells": {
+              "min": 63,
+              "max": 66,
+              "mean": 64,
+              "p95": 66
+            },
+            "junctions": {
+              "min": 38,
+              "max": 45,
+              "mean": 41,
+              "p95": 45
+            },
+            "guardianDistance": {
+              "min": 12,
+              "max": 13,
+              "mean": 12.5,
+              "p95": 13
+            },
+            "wallCount": {
+              "min": 15,
+              "max": 18,
+              "mean": 17,
+              "p95": 18
+            }
+          }
+        },
+        "2": {
+          "generated": 4,
+          "fallback": 0,
+          "metrics": {
+            "attempts": {
+              "min": 5,
+              "max": 32,
+              "mean": 20.5,
+              "p95": 32
+            },
+            "directPortalDistance": {
+              "min": 15,
+              "max": 16,
+              "mean": 15.25,
+              "p95": 16
+            },
+            "objectiveMoves": {
+              "min": 17,
+              "max": 34,
+              "mean": 25.25,
+              "p95": 34
+            },
+            "maxDecisionGap": {
+              "min": 1,
+              "max": 2,
+              "mean": 1.5,
+              "p95": 2
+            },
+            "reachableCells": {
+              "min": 63,
+              "max": 63,
+              "mean": 63,
+              "p95": 63
+            },
+            "junctions": {
+              "min": 39,
+              "max": 43,
+              "mean": 41.25,
+              "p95": 43
+            },
+            "guardianDistance": {
+              "min": 9,
+              "max": 11,
+              "mean": 9.5,
+              "p95": 11
+            },
+            "wallCount": {
+              "min": 18,
+              "max": 18,
+              "mean": 18,
+              "p95": 18
+            }
+          }
+        }
+      },
+      "medium": {
+        "0": {
+          "generated": 4,
+          "fallback": 0,
+          "metrics": {
+            "attempts": {
+              "min": 30,
+              "max": 113,
+              "mean": 71.25,
+              "p95": 113
+            },
+            "directPortalDistance": {
+              "min": 15,
+              "max": 16,
+              "mean": 15.75,
+              "p95": 16
+            },
+            "objectiveMoves": {
+              "min": 16,
+              "max": 23,
+              "mean": 20.25,
+              "p95": 23
+            },
+            "maxDecisionGap": {
+              "min": 1,
+              "max": 4,
+              "mean": 2.25,
+              "p95": 4
+            },
+            "reachableCells": {
+              "min": 58,
+              "max": 62,
+              "mean": 59.75,
+              "p95": 62
+            },
+            "junctions": {
+              "min": 29,
+              "max": 38,
+              "mean": 32.5,
+              "p95": 38
+            },
+            "guardianDistance": {
+              "min": 11,
+              "max": 12,
+              "mean": 11.75,
+              "p95": 12
+            },
+            "wallCount": {
+              "min": 19,
+              "max": 23,
+              "mean": 21.25,
+              "p95": 23
+            }
+          }
+        },
+        "1": {
+          "generated": 4,
+          "fallback": 0,
+          "metrics": {
+            "attempts": {
+              "min": 8,
+              "max": 46,
+              "mean": 22,
+              "p95": 46
+            },
+            "directPortalDistance": {
+              "min": 15,
+              "max": 16,
+              "mean": 15.25,
+              "p95": 16
+            },
+            "objectiveMoves": {
+              "min": 17,
+              "max": 31,
+              "mean": 23.75,
+              "p95": 31
+            },
+            "maxDecisionGap": {
+              "min": 1,
+              "max": 3,
+              "mean": 1.75,
+              "p95": 3
+            },
+            "reachableCells": {
+              "min": 60,
+              "max": 61,
+              "mean": 60.5,
+              "p95": 61
+            },
+            "junctions": {
+              "min": 34,
+              "max": 38,
+              "mean": 35.75,
+              "p95": 38
+            },
+            "guardianDistance": {
+              "min": 11,
+              "max": 12,
+              "mean": 11.25,
+              "p95": 12
+            },
+            "wallCount": {
+              "min": 20,
+              "max": 21,
+              "mean": 20.5,
+              "p95": 21
+            }
+          }
+        },
+        "2": {
+          "generated": 4,
+          "fallback": 0,
+          "metrics": {
+            "attempts": {
+              "min": 1,
+              "max": 11,
+              "mean": 6.25,
+              "p95": 11
+            },
+            "directPortalDistance": {
+              "min": 15,
+              "max": 17,
+              "mean": 15.5,
+              "p95": 17
+            },
+            "objectiveMoves": {
+              "min": 27,
+              "max": 33,
+              "mean": 29,
+              "p95": 33
+            },
+            "maxDecisionGap": {
+              "min": 1,
+              "max": 3,
+              "mean": 2,
+              "p95": 3
+            },
+            "reachableCells": {
+              "min": 59,
+              "max": 62,
+              "mean": 61.25,
+              "p95": 62
+            },
+            "junctions": {
+              "min": 33,
+              "max": 39,
+              "mean": 36.75,
+              "p95": 39
+            },
+            "guardianDistance": {
+              "min": 9,
+              "max": 11,
+              "mean": 10,
+              "p95": 11
+            },
+            "wallCount": {
+              "min": 19,
+              "max": 22,
+              "mean": 19.75,
+              "p95": 22
+            }
+          }
+        }
+      },
+      "hard": {
+        "0": {
+          "generated": 4,
+          "fallback": 0,
+          "metrics": {
+            "attempts": {
+              "min": 2,
+              "max": 206,
+              "mean": 92.25,
+              "p95": 206
+            },
+            "directPortalDistance": {
+              "min": 15,
+              "max": 17,
+              "mean": 15.75,
+              "p95": 17
+            },
+            "objectiveMoves": {
+              "min": 22,
+              "max": 35,
+              "mean": 25.75,
+              "p95": 35
+            },
+            "maxDecisionGap": {
+              "min": 1,
+              "max": 2,
+              "mean": 1.75,
+              "p95": 2
+            },
+            "reachableCells": {
+              "min": 56,
+              "max": 58,
+              "mean": 57.25,
+              "p95": 58
+            },
+            "junctions": {
+              "min": 26,
+              "max": 34,
+              "mean": 29.75,
+              "p95": 34
+            },
+            "guardianDistance": {
+              "min": 11,
+              "max": 11,
+              "mean": 11,
+              "p95": 11
+            },
+            "wallCount": {
+              "min": 23,
+              "max": 25,
+              "mean": 23.75,
+              "p95": 25
+            }
+          }
+        },
+        "1": {
+          "generated": 4,
+          "fallback": 0,
+          "metrics": {
+            "attempts": {
+              "min": 9,
+              "max": 62,
+              "mean": 31.25,
+              "p95": 62
+            },
+            "directPortalDistance": {
+              "min": 15,
+              "max": 16,
+              "mean": 15.5,
+              "p95": 16
+            },
+            "objectiveMoves": {
+              "min": 29,
+              "max": 34,
+              "mean": 32,
+              "p95": 34
+            },
+            "maxDecisionGap": {
+              "min": 2,
+              "max": 4,
+              "mean": 3,
+              "p95": 4
+            },
+            "reachableCells": {
+              "min": 57,
+              "max": 58,
+              "mean": 57.75,
+              "p95": 58
+            },
+            "junctions": {
+              "min": 27,
+              "max": 33,
+              "mean": 29.75,
+              "p95": 33
+            },
+            "guardianDistance": {
+              "min": 11,
+              "max": 11,
+              "mean": 11,
+              "p95": 11
+            },
+            "wallCount": {
+              "min": 23,
+              "max": 24,
+              "mean": 23.25,
+              "p95": 24
+            }
+          }
+        },
+        "2": {
+          "generated": 4,
+          "fallback": 0,
+          "metrics": {
+            "attempts": {
+              "min": 2,
+              "max": 13,
+              "mean": 7.25,
+              "p95": 13
+            },
+            "directPortalDistance": {
+              "min": 15,
+              "max": 18,
+              "mean": 16.75,
+              "p95": 18
+            },
+            "objectiveMoves": {
+              "min": 23,
+              "max": 33,
+              "mean": 26.25,
+              "p95": 33
+            },
+            "maxDecisionGap": {
+              "min": 1,
+              "max": 3,
+              "mean": 2.25,
+              "p95": 3
+            },
+            "reachableCells": {
+              "min": 54,
+              "max": 57,
+              "mean": 55.25,
+              "p95": 57
+            },
+            "junctions": {
+              "min": 21,
+              "max": 28,
+              "mean": 24.5,
+              "p95": 28
+            },
+            "guardianDistance": {
+              "min": 9,
+              "max": 11,
+              "mean": 10,
+              "p95": 11
+            },
+            "wallCount": {
+              "min": 24,
+              "max": 27,
+              "mean": 25.75,
+              "p95": 27
+            }
+          }
+        }
+      }
+    },
+    "3": {
+      "easy": {
+        "0": {
+          "generated": 1,
+          "fallback": 0,
+          "metrics": {
+            "attempts": {
+              "min": 50,
+              "max": 50,
+              "mean": 50,
+              "p95": 50
+            },
+            "directPortalDistance": {
+              "min": 16,
+              "max": 16,
+              "mean": 16,
+              "p95": 16
+            },
+            "objectiveMoves": {
+              "min": 26,
+              "max": 26,
+              "mean": 26,
+              "p95": 26
+            },
+            "maxDecisionGap": {
+              "min": 1,
+              "max": 1,
+              "mean": 1,
+              "p95": 1
+            },
+            "reachableCells": {
+              "min": 66,
+              "max": 66,
+              "mean": 66,
+              "p95": 66
+            },
+            "junctions": {
+              "min": 45,
+              "max": 45,
+              "mean": 45,
+              "p95": 45
+            },
+            "guardianDistance": {
+              "min": 13,
+              "max": 13,
+              "mean": 13,
+              "p95": 13
+            },
+            "wallCount": {
+              "min": 15,
+              "max": 15,
+              "mean": 15,
+              "p95": 15
+            }
+          }
+        },
+        "1": {
+          "generated": 4,
+          "fallback": 0,
+          "metrics": {
+            "attempts": {
+              "min": 8,
+              "max": 76,
+              "mean": 46.75,
+              "p95": 76
+            },
+            "directPortalDistance": {
+              "min": 16,
+              "max": 16,
+              "mean": 16,
+              "p95": 16
+            },
+            "objectiveMoves": {
+              "min": 22,
+              "max": 32,
+              "mean": 26,
+              "p95": 32
+            },
+            "maxDecisionGap": {
+              "min": 1,
+              "max": 2,
+              "mean": 1.25,
+              "p95": 2
+            },
+            "reachableCells": {
+              "min": 62,
+              "max": 64,
+              "mean": 62.75,
+              "p95": 64
+            },
+            "junctions": {
+              "min": 39,
+              "max": 42,
+              "mean": 40.5,
+              "p95": 42
+            },
+            "guardianDistance": {
+              "min": 11,
+              "max": 12,
+              "mean": 11.75,
+              "p95": 12
+            },
+            "wallCount": {
+              "min": 17,
+              "max": 19,
+              "mean": 18.25,
+              "p95": 19
+            }
+          }
+        },
+        "2": {
+          "generated": 4,
+          "fallback": 0,
+          "metrics": {
+            "attempts": {
+              "min": 117,
+              "max": 523,
+              "mean": 239,
+              "p95": 523
+            },
+            "directPortalDistance": {
+              "min": 15,
+              "max": 16,
+              "mean": 15.5,
+              "p95": 16
+            },
+            "objectiveMoves": {
+              "min": 27,
+              "max": 34,
+              "mean": 31.5,
+              "p95": 34
+            },
+            "maxDecisionGap": {
+              "min": 1,
+              "max": 3,
+              "mean": 1.5,
+              "p95": 3
+            },
+            "reachableCells": {
+              "min": 62,
+              "max": 65,
+              "mean": 63,
+              "p95": 65
+            },
+            "junctions": {
+              "min": 38,
+              "max": 43,
+              "mean": 40,
+              "p95": 43
+            },
+            "guardianDistance": {
+              "min": 12,
+              "max": 12,
+              "mean": 12,
+              "p95": 12
+            },
+            "wallCount": {
+              "min": 16,
+              "max": 19,
+              "mean": 18,
+              "p95": 19
+            }
+          }
+        }
+      },
+      "medium": {
+        "0": {
+          "generated": 2,
+          "fallback": 0,
+          "metrics": {
+            "attempts": {
+              "min": 181,
+              "max": 429,
+              "mean": 305,
+              "p95": 429
+            },
+            "directPortalDistance": {
+              "min": 15,
+              "max": 16,
+              "mean": 15.5,
+              "p95": 16
+            },
+            "objectiveMoves": {
+              "min": 25,
+              "max": 28,
+              "mean": 26.5,
+              "p95": 28
+            },
+            "maxDecisionGap": {
+              "min": 2,
+              "max": 3,
+              "mean": 2.5,
+              "p95": 3
+            },
+            "reachableCells": {
+              "min": 62,
+              "max": 62,
+              "mean": 62,
+              "p95": 62
+            },
+            "junctions": {
+              "min": 35,
+              "max": 39,
+              "mean": 37,
+              "p95": 39
+            },
+            "guardianDistance": {
+              "min": 11,
+              "max": 11,
+              "mean": 11,
+              "p95": 11
+            },
+            "wallCount": {
+              "min": 19,
+              "max": 19,
+              "mean": 19,
+              "p95": 19
+            }
+          }
+        },
+        "1": {
+          "generated": 4,
+          "fallback": 0,
+          "metrics": {
+            "attempts": {
+              "min": 2,
+              "max": 42,
+              "mean": 22.5,
+              "p95": 42
+            },
+            "directPortalDistance": {
+              "min": 16,
+              "max": 16,
+              "mean": 16,
+              "p95": 16
+            },
+            "objectiveMoves": {
+              "min": 24,
+              "max": 30,
+              "mean": 27,
+              "p95": 30
+            },
+            "maxDecisionGap": {
+              "min": 2,
+              "max": 4,
+              "mean": 2.75,
+              "p95": 4
+            },
+            "reachableCells": {
+              "min": 57,
+              "max": 58,
+              "mean": 57.5,
+              "p95": 58
+            },
+            "junctions": {
+              "min": 29,
+              "max": 35,
+              "mean": 32,
+              "p95": 35
+            },
+            "guardianDistance": {
+              "min": 11,
+              "max": 12,
+              "mean": 11.75,
+              "p95": 12
+            },
+            "wallCount": {
+              "min": 23,
+              "max": 24,
+              "mean": 23.5,
+              "p95": 24
+            }
+          }
+        },
+        "2": {
+          "generated": 4,
+          "fallback": 0,
+          "metrics": {
+            "attempts": {
+              "min": 40,
+              "max": 164,
+              "mean": 102,
+              "p95": 164
+            },
+            "directPortalDistance": {
+              "min": 15,
+              "max": 16,
+              "mean": 15.5,
+              "p95": 16
+            },
+            "objectiveMoves": {
+              "min": 29,
+              "max": 36,
+              "mean": 32.5,
+              "p95": 36
+            },
+            "maxDecisionGap": {
+              "min": 1,
+              "max": 4,
+              "mean": 2.25,
+              "p95": 4
+            },
+            "reachableCells": {
+              "min": 58,
+              "max": 62,
+              "mean": 60.25,
+              "p95": 62
+            },
+            "junctions": {
+              "min": 29,
+              "max": 38,
+              "mean": 34.25,
+              "p95": 38
+            },
+            "guardianDistance": {
+              "min": 9,
+              "max": 12,
+              "mean": 11.25,
+              "p95": 12
+            },
+            "wallCount": {
+              "min": 19,
+              "max": 23,
+              "mean": 20.75,
+              "p95": 23
+            }
+          }
+        }
+      },
+      "hard": {
+        "0": {
+          "generated": 3,
+          "fallback": 0,
+          "metrics": {
+            "attempts": {
+              "min": 27,
+              "max": 117,
+              "mean": 76,
+              "p95": 117
+            },
+            "directPortalDistance": {
+              "min": 15,
+              "max": 16,
+              "mean": 15.33,
+              "p95": 16
+            },
+            "objectiveMoves": {
+              "min": 23,
+              "max": 37,
+              "mean": 28.67,
+              "p95": 37
+            },
+            "maxDecisionGap": {
+              "min": 3,
+              "max": 4,
+              "mean": 3.33,
+              "p95": 4
+            },
+            "reachableCells": {
+              "min": 52,
+              "max": 57,
+              "mean": 54.33,
+              "p95": 57
+            },
+            "junctions": {
+              "min": 19,
+              "max": 32,
+              "mean": 24.33,
+              "p95": 32
+            },
+            "guardianDistance": {
+              "min": 11,
+              "max": 11,
+              "mean": 11,
+              "p95": 11
+            },
+            "wallCount": {
+              "min": 24,
+              "max": 29,
+              "mean": 26.67,
+              "p95": 29
+            }
+          }
+        },
+        "1": {
+          "generated": 4,
+          "fallback": 0,
+          "metrics": {
+            "attempts": {
+              "min": 4,
+              "max": 113,
+              "mean": 37.75,
+              "p95": 113
+            },
+            "directPortalDistance": {
+              "min": 16,
+              "max": 16,
+              "mean": 16,
+              "p95": 16
+            },
+            "objectiveMoves": {
+              "min": 28,
+              "max": 34,
+              "mean": 30.5,
+              "p95": 34
+            },
+            "maxDecisionGap": {
+              "min": 1,
+              "max": 5,
+              "mean": 3,
+              "p95": 5
+            },
+            "reachableCells": {
+              "min": 52,
+              "max": 57,
+              "mean": 55,
+              "p95": 57
+            },
+            "junctions": {
+              "min": 23,
+              "max": 32,
+              "mean": 29.5,
+              "p95": 32
+            },
+            "guardianDistance": {
+              "min": 11,
+              "max": 11,
+              "mean": 11,
+              "p95": 11
+            },
+            "wallCount": {
+              "min": 24,
+              "max": 29,
+              "mean": 26,
+              "p95": 29
+            }
+          }
+        },
+        "2": {
+          "generated": 4,
+          "fallback": 0,
+          "metrics": {
+            "attempts": {
+              "min": 111,
+              "max": 523,
+              "mean": 272.5,
+              "p95": 523
+            },
+            "directPortalDistance": {
+              "min": 16,
+              "max": 17,
+              "mean": 16.25,
+              "p95": 17
+            },
+            "objectiveMoves": {
+              "min": 32,
+              "max": 38,
+              "mean": 34.25,
+              "p95": 38
+            },
+            "maxDecisionGap": {
+              "min": 1,
+              "max": 4,
+              "mean": 2.5,
+              "p95": 4
+            },
+            "reachableCells": {
+              "min": 54,
+              "max": 57,
+              "mean": 55.25,
+              "p95": 57
+            },
+            "junctions": {
+              "min": 23,
+              "max": 31,
+              "mean": 27.5,
+              "p95": 31
+            },
+            "guardianDistance": {
+              "min": 9,
+              "max": 11,
+              "mean": 10.5,
+              "p95": 11
+            },
+            "wallCount": {
+              "min": 24,
+              "max": 27,
+              "mean": 25.75,
+              "p95": 27
+            }
+          }
+        }
+      }
+    }
+  },
+  "generationThrows": [
+    {
+      "seed": 53000000,
+      "difficulty": "easy",
+      "stage": 3,
+      "forcedTemplateIndex": 0,
+      "message": "Route map generation failed all gates for stage 3 (easy)."
+    },
+    {
+      "seed": 53000001,
+      "difficulty": "easy",
+      "stage": 3,
+      "forcedTemplateIndex": 0,
+      "message": "Route map generation failed all gates for stage 3 (easy)."
+    },
+    {
+      "seed": 53000002,
+      "difficulty": "easy",
+      "stage": 3,
+      "forcedTemplateIndex": 0,
+      "message": "Route map generation failed all gates for stage 3 (easy)."
+    },
+    {
+      "seed": 53100000,
+      "difficulty": "medium",
+      "stage": 3,
+      "forcedTemplateIndex": 0,
+      "message": "Route map generation failed all gates for stage 3 (medium)."
+    },
+    {
+      "seed": 53100003,
+      "difficulty": "medium",
+      "stage": 3,
+      "forcedTemplateIndex": 0,
+      "message": "Route map generation failed all gates for stage 3 (medium)."
+    },
+    {
+      "seed": 53200003,
+      "difficulty": "hard",
+      "stage": 3,
+      "forcedTemplateIndex": 0,
+      "message": "Route map generation failed all gates for stage 3 (hard)."
+    }
+  ],
+  "errors": []
+}

@@ -1,0 +1,84 @@
+{
+  "mission": "ROTA-01A-ESCAPE-ROUTE-GENERATION-CLOSE",
+  "regime": "one PRNG per stream, no reseed between maps",
+  "perMode": [
+    {
+      "difficulty": "easy",
+      "maps": 120,
+      "certified": 120,
+      "threw": 0,
+      "recoveryActivations": 0,
+      "attempts": {
+        "p50": 23,
+        "p90": 85,
+        "max": 309
+      }
+    },
+    {
+      "difficulty": "medium",
+      "maps": 120,
+      "certified": 120,
+      "threw": 0,
+      "recoveryActivations": 0,
+      "attempts": {
+        "p50": 10,
+        "p90": 32,
+        "max": 62
+      }
+    },
+    {
+      "difficulty": "hard",
+      "maps": 120,
+      "certified": 120,
+      "threw": 0,
+      "recoveryActivations": 0,
+      "attempts": {
+        "p50": 9,
+        "p90": 26,
+        "max": 75
+      }
+    }
+  ],
+  "totalCertified": 360,
+  "totalMaps": 360,
+  "totalThrows": 0,
+  "observationalTiming": {
+    "note": "measured, not tuned; diagnostics off; identical harness for both rows",
+    "harness": "node vm sandbox — NOT the browser production build",
+    "route3HardBefore": {
+      "p50": 635.2,
+      "p75": 1206.2,
+      "p90": 1840.3,
+      "p95": 2278.4,
+      "p99": 2617.2,
+      "max": 3905,
+      "over500ms": 67,
+      "over1s": 42,
+      "over1_5s": 18,
+      "over2s": 7,
+      "over3s": 1,
+      "threw": 0
+    },
+    "route3HardAfter": {
+      "p50": 107.8,
+      "p75": 198.2,
+      "p90": 304.4,
+      "p95": 386.7,
+      "p99": 451,
+      "max": 622.6,
+      "over500ms": 1,
+      "over1s": 0,
+      "over1_5s": 0,
+      "over2s": 0,
+      "over3s": 0,
+      "threw": 0
+    },
+    "publishedBrowserBaseline": {
+      "p50": 365,
+      "p90": 1834,
+      "p95": 2051,
+      "max": 3178,
+      "caveat": "taken from a browser production build via Playwright, unavailable in this environment; not comparable to the node figures above"
+    }
+  }
+}

@@ -32,60 +32,156 @@ function readStringArgument(name) {
   return index === -1 ? null : process.argv[index + 1] ?? null;
 }
 
-function injectValidationSurface(source) {
-  const templateNeedle =
-    "    const template = randomItem(getRouteStageTemplates(routeStage));";
-  const acceptedNeedle =
-    "    if (isValidMap(map, difficulty, routeStage)) return map;";
+/**
+ * Expose the generator's internals WITHOUT patching any function body.
+ *
+ * The previous version rewrote two exact statements inside `generateMaze` — one
+ * to force a template, one to publish metadata. Both anchor strings died in the
+ * buildCandidate/recovery-sweep refactor and this validator threw on every run,
+ * silently, for as long as nobody ran it.
+ *
+ * Append-only export surface instead. Template and exit are chosen by the
+ * caller anyway, so the harness drives `buildCandidate` + `isValidMap` itself
+ * and observes what it needs by construction. A missing binding now fails with
+ * the offending name; and `harnessGenerate` is held to production behaviour by
+ * `checkGenerationFidelity`, which compares whole maps, not source text.
+ */
+const VALIDATION_BINDINGS = [
+  "ROWS",
+  "COLS",
+  "MAX_GENERATION_ATTEMPTS",
+  "RECOVERY_ROUNDS",
+  "RECOVERY_RETRIES_PER_SLOT",
+  "PLAYER_START",
+  "START_SAFE_CELLS",
+  "ROUTE_STAGE_EXIT_CANDIDATES",
+  "ROUTE_STAGE_GUARDIAN_CANDIDATES",
+  "MAZE_TEMPLATES",
+  "STAGE_ONE_TEMPLATES",
+  "ROUTE_STAGE_TEMPLATES",
+  "ROUTE_STAGE_QUALITY",
+  "WALL_LIMITS",
+  "BASE_STAR_COUNT",
+  "BASE_TRAP_COUNT",
+  "generateMaze",
+  "buildCandidate",
+  "getMinimumPathLength",
+  "getRouteStageTemplates",
+  "getWallLimits",
+  "getStarCount",
+  "getTrapCount",
+  "getReachableDistances",
+  "countReachableJunctions",
+  "findPathLength",
+  "isValidMap",
+  "chooseGuardianMove",
+  "randomItem",
+  "posKey",
+];
 
-  if (!source.includes(templateNeedle) || !source.includes(acceptedNeedle)) {
-    throw new Error("Route generator shape changed; validation injection is stale.");
+function buildExportSurface(source) {
+  const missing = VALIDATION_BINDINGS.filter(
+    (name) => !new RegExp(`(?:function|const|let)\\s+${name}\\b`).test(source),
+  );
+  if (missing.length > 0) {
+    throw new Error(
+      `Route generator no longer declares: ${missing.join(", ")}. Update ` +
+        "VALIDATION_BINDINGS — never change production to satisfy the validator.",
+    );
+  }
+  const surface = VALIDATION_BINDINGS.map((name) => `  ${name},`).join("\n");
+  return `${source}
+
+export const __routeValidation = {
+${surface}
+};
+`;
+}
+
+/**
+ * `generateMaze`, driven from the harness so template and exit are observable
+ * and forceable. Mirrors production's two phases exactly: randomised search,
+ * then the bounded deterministic recovery sweep, both ending at the same
+ * `isValidMap`. There is no uncertified path here either — it throws.
+ *
+ * Fidelity to production is asserted, not assumed: see checkGenerationFidelity.
+ */
+function harnessGenerate(api, difficulty, routeStage, forcedTemplateIndex) {
+  const exitCandidates = api.ROUTE_STAGE_EXIT_CANDIDATES[routeStage];
+  const templates = api.getRouteStageTemplates(routeStage);
+  const forced =
+    forcedTemplateIndex === undefined
+      ? null
+      : templates[Math.min(forcedTemplateIndex, templates.length - 1)];
+  let attempts = 0;
+
+  const settle = (template, exitPosition, phase) => {
+    const candidate = api.buildCandidate(template, exitPosition, difficulty, routeStage);
+    attempts += 1;
+    if (
+      candidate &&
+      api.isValidMap(candidate.map, difficulty, routeStage, candidate.analysis)
+    ) {
+      return {
+        map: candidate.map,
+        attempts,
+        templateIndex: templates.indexOf(template),
+        phase,
+        fallback: false,
+      };
+    }
+    return null;
+  };
+
+  for (let attempt = 0; attempt < api.MAX_GENERATION_ATTEMPTS; attempt += 1) {
+    const template = forced ?? api.randomItem(templates);
+    const settled = settle(template, api.randomItem(exitCandidates), "random");
+    if (settled) return settled;
   }
 
-  let instrumented = source.replace(
-    templateNeedle,
-    [
-      "    const validationTemplates = getRouteStageTemplates(routeStage);",
-      "    const forcedTemplateIndex = (globalThis as { __routeValidationForcedTemplateIndex?: number }).__routeValidationForcedTemplateIndex;",
-      "    const template = forcedTemplateIndex === undefined",
-      "      ? randomItem(validationTemplates)",
-      "      : validationTemplates[Math.min(forcedTemplateIndex, validationTemplates.length - 1)];",
-    ].join("\n"),
-  );
-
-  instrumented = instrumented.replace(
-    acceptedNeedle,
-    [
-      "    if (isValidMap(map, difficulty, routeStage)) {",
-      "      (globalThis as { __routeValidationLastGeneration?: unknown }).__routeValidationLastGeneration = {",
-      "        attempts: attempt + 1,",
-      "        fallback: false,",
-      "        templateIndex: validationTemplates.indexOf(template),",
-      "      };",
-      "      return map;",
-      "    }",
-    ].join("\n"),
-  );
-
-  const fallbackPattern = /  return \{\r?\n    grid: fallbackGrid,/;
-  if (!fallbackPattern.test(instrumented)) {
-    throw new Error("Route fallback shape changed; validation injection is stale.");
+  for (let round = 0; round < api.RECOVERY_ROUNDS; round += 1) {
+    for (const template of forced ? [forced] : templates) {
+      for (const exitPosition of exitCandidates) {
+        for (let retry = 0; retry < api.RECOVERY_RETRIES_PER_SLOT; retry += 1) {
+          const settled = settle(template, exitPosition, "recovery");
+          if (settled) return settled;
+        }
+      }
+    }
   }
-  instrumented = instrumented.replace(
-    fallbackPattern,
-    [
-      "  (globalThis as { __routeValidationLastGeneration?: unknown }).__routeValidationLastGeneration = {",
-      "    attempts: MAX_GENERATION_ATTEMPTS,",
-      "    fallback: true,",
-      "    templateIndex: 0,",
-      "  };",
-      "",
-      "  return {",
-      "    grid: fallbackGrid,",
-    ].join("\n"),
-  );
 
-  return `${instrumented}\n\nexport const __routeValidation = {\n  ROWS,\n  COLS,\n  MAX_GENERATION_ATTEMPTS,\n  PLAYER_START,\n  START_SAFE_CELLS,\n  ROUTE_STAGE_EXIT_CANDIDATES,\n  ROUTE_STAGE_GUARDIAN_CANDIDATES,\n  MAZE_TEMPLATES,\n  STAGE_ONE_TEMPLATES,\n  ROUTE_STAGE_TEMPLATES,\n  ROUTE_STAGE_QUALITY,\n  WALL_LIMITS,\n  BASE_STAR_COUNT,\n  BASE_TRAP_COUNT,\n  generateMaze,\n  getMinimumPathLength,\n  getRouteStageTemplates,\n  getWallLimits,\n  getStarCount,\n  getTrapCount,\n  getReachableDistances,\n  countReachableJunctions,\n  findPathLength,\n  isValidMap,\n  chooseGuardianMove,\n  posKey,\n};\n`;
+  throw new Error(
+    `Route map generation failed all gates for stage ${routeStage} (${difficulty}).`,
+  );
+}
+
+/**
+ * The replacement for the old string anchor: run the harness loop and the real
+ * `generateMaze` from the same seed and require the same map, byte for byte.
+ * If the production loop ever changes shape, this fails loudly with a diff
+ * instead of the validator quietly measuring something else.
+ */
+function checkGenerationFidelity(api, setSeed, samples = 12) {
+  const mismatches = [];
+  let compared = 0;
+  for (const stage of STAGES) {
+    for (const difficulty of DIFFICULTIES) {
+      for (let index = 0; index < samples; index += 1) {
+        const seed = 900_000_000 + stage * 1_000_000 + index;
+        setSeed(seed);
+        const viaHarness = harnessGenerate(api, difficulty, stage, undefined);
+        setSeed(seed);
+        const viaProduction = api.generateMaze(difficulty, stage);
+        compared += 1;
+        const a = JSON.stringify(canonicalMap(viaHarness.map));
+        const b = JSON.stringify(canonicalMap(viaProduction));
+        if (a !== b) {
+          mismatches.push({ stage, difficulty, seed });
+        }
+      }
+    }
+  }
+  return { compared, mismatches };
 }
 
 function createSeededRandom(seed) {
@@ -100,7 +196,7 @@ function createSeededRandom(seed) {
 }
 
 function loadRouteGenerator() {
-  const source = injectValidationSurface(fs.readFileSync(SOURCE_PATH, "utf8"));
+  const source = buildExportSurface(fs.readFileSync(SOURCE_PATH, "utf8"));
   const output = ts.transpileModule(source, {
     compilerOptions: {
       esModuleInterop: true,
@@ -540,11 +636,21 @@ function run() {
   const reportPathArgument = readStringArgument("--write-report");
   const quiet = process.argv.includes("--quiet");
   const loaded = loadRouteGenerator();
-  const { api, sandbox, setSeed } = loaded;
+  const { api, setSeed } = loaded;
   const startedAt = performance.now();
   const errors = [];
   const templateValidation = validateTemplates(api);
   errors.push(...templateValidation.errors);
+
+  // The anchor that replaced the string anchor. Must run before anything else
+  // trusts harnessGenerate to stand in for production.
+  const fidelity = checkGenerationFidelity(api, setSeed);
+  if (fidelity.mismatches.length > 0) {
+    errors.push(
+      `harnessGenerate diverged from generateMaze on ${fidelity.mismatches.length} of ` +
+        `${fidelity.compared} seeds: ${JSON.stringify(fidelity.mismatches.slice(0, 4))}`,
+    );
+  }
 
   const summary = {};
   const forcedTemplateSummary = {};
@@ -552,15 +658,26 @@ function run() {
   let rejectedCandidates = 0;
   let fallbackMaps = 0;
   let forcedTemplateRuns = 0;
+  const generationThrows = [];
 
+  // Production throws rather than return an uncertified map, so a seed that
+  // exhausts every gate is an observation this tool has to RECORD. Crashing on
+  // it would hide the very thing the validator exists to measure.
   function generate(seed, difficulty, routeNumber, forcedTemplateIndex) {
     setSeed(seed);
-    sandbox.__routeValidationForcedTemplateIndex = forcedTemplateIndex;
-    sandbox.__routeValidationLastGeneration = null;
-    const map = api.generateMaze(difficulty, routeNumber);
-    const metadata = sandbox.__routeValidationLastGeneration;
-    if (!metadata) throw new Error("Generator did not publish validation metadata.");
-    return { map, metadata };
+    try {
+      const settled = harnessGenerate(api, difficulty, routeNumber, forcedTemplateIndex);
+      return { map: settled.map, metadata: settled };
+    } catch (error) {
+      generationThrows.push({
+        seed,
+        difficulty,
+        stage: routeNumber,
+        forcedTemplateIndex: forcedTemplateIndex ?? null,
+        message: String(error && error.message ? error.message : error),
+      });
+      return null;
+    }
   }
 
   for (const stage of STAGES) {
@@ -573,7 +690,9 @@ function run() {
 
       for (let seedIndex = 0; seedIndex < seedsPerCombination; seedIndex += 1) {
         const seed = stage * 1_000_000 + difficultyIndex * 100_000 + seedIndex + 1;
-        const { map, metadata } = generate(seed, difficulty, stage, undefined);
+        const settled = generate(seed, difficulty, stage, undefined);
+        if (!settled) continue;
+        const { map, metadata } = settled;
         const validation = validateMap(api, map, difficulty, stage);
         generatedMaps += 1;
         rejectedCandidates += metadata.attempts - 1;
@@ -605,7 +724,9 @@ function run() {
             difficultyIndex * 100_000 +
             templateIndex * 1_000 +
             seedIndex;
-          const { map, metadata } = generate(seed, difficulty, stage, templateIndex);
+          const settledForced = generate(seed, difficulty, stage, templateIndex);
+          if (!settledForced) continue;
+          const { map, metadata } = settledForced;
           const validation = validateMap(api, map, difficulty, stage);
           forcedTemplateRuns += 1;
           generatedMaps += 1;
@@ -667,16 +788,19 @@ function run() {
       stages: STAGES,
     },
     templates: templateValidation,
+    generationFidelity: fidelity,
     totals: {
       generatedMaps,
       forcedTemplateRuns,
       rejectedCandidates,
       fallbackMaps,
+      generationThrows: generationThrows.length,
       validationErrors: errors.length,
       elapsedMs: Number((performance.now() - startedAt).toFixed(2)),
     },
     summary,
     forcedTemplateSummary,
+    generationThrows: generationThrows.slice(0, 40),
     errors: errors.slice(0, 100),
   };
 
@@ -688,7 +812,7 @@ function run() {
 
   if (quiet) {
     console.log(
-      `Validated ${generatedMaps} maps; ${rejectedCandidates} rejected candidates; ${fallbackMaps} fallbacks; ${errors.length} errors; ${report.totals.elapsedMs} ms.`,
+      `Validated ${generatedMaps} maps; ${rejectedCandidates} rejected candidates; ${fallbackMaps} fallbacks; ${generationThrows.length} generation throws; ${errors.length} errors; ${report.totals.elapsedMs} ms.`,
     );
   } else {
     console.log(JSON.stringify(report, null, 2));

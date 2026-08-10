@@ -1,0 +1,99 @@
+{
+  "mission": "ROTA-DUAL-GUARDIANS-MAPS-01A-BALANCE",
+  "agent": "humanV3",
+  "note": "dificuldade não é taxa de derrota: o critério é decisões provocadas, possibilidade de enganar e ausência de bloqueio inevitável.",
+  "zoneRadius": 2,
+  "tunings": [
+    {
+      "name": "rastreador (negativo)",
+      "patrol": false,
+      "commitTurns": 0,
+      "runs": 23,
+      "won": 0,
+      "caughtHunter": 0.261,
+      "caughtSentinel": 0.261,
+      "dualDecisions": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 1,
+        "max": 1,
+        "mean": 0.13
+      }
+    },
+    {
+      "name": "territorial c1",
+      "patrol": true,
+      "commitTurns": 1,
+      "runs": 23,
+      "won": 0.261,
+      "caughtHunter": 0.217,
+      "caughtSentinel": 0.087,
+      "dualDecisions": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 1,
+        "max": 2,
+        "mean": 0.35
+      }
+    },
+    {
+      "name": "territorial c2",
+      "patrol": true,
+      "commitTurns": 2,
+      "runs": 23,
+      "won": 0.348,
+      "caughtHunter": 0.217,
+      "caughtSentinel": 0.13,
+      "dualDecisions": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 1,
+        "max": 2,
+        "mean": 0.22
+      }
+    },
+    {
+      "name": "territorial c3 (proposto)",
+      "patrol": true,
+      "commitTurns": 3,
+      "runs": 23,
+      "won": 0.348,
+      "caughtHunter": 0.261,
+      "caughtSentinel": 0.043,
+      "dualDecisions": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 2,
+        "max": 3,
+        "mean": 0.43
+      }
+    },
+    {
+      "name": "territorial c4",
+      "patrol": true,
+      "commitTurns": 4,
+      "runs": 23,
+      "won": 0.522,
+      "caughtHunter": 0.174,
+      "caughtSentinel": 0.043,
+      "dualDecisions": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 0,
+        "max": 2,
+        "mean": 0.09
+      }
+    }
+  ],
+  "proposed": {
+    "patrol": true,
+    "commitTurns": 3,
+    "neverOnPortal": true,
+    "leash": "ZONE_RADIUS + SENTINEL_LEASH"
+  }
+}

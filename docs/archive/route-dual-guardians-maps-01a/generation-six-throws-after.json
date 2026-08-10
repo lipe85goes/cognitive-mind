@@ -1,0 +1,146 @@
+{
+  "mission": "ROTA-01A-ESCAPE-ROUTE-GENERATION-CLOSE",
+  "resolved": 6,
+  "total": 6,
+  "cases": [
+    {
+      "route": 3,
+      "mode": "easy",
+      "seed": 53000000,
+      "before": {
+        "threw": true,
+        "attempts": 572
+      },
+      "after": {
+        "threw": false,
+        "attempts": 162,
+        "randomAttempts": 162,
+        "recoveryAttempts": 0,
+        "histogram": {
+          "FINAL: ?": 90,
+          "FINAL: idleDeadEnds <= brief.maxIdleDeadEnds": 48,
+          "[4] wallCount < limits.min || wallCount > limits.max": 17,
+          "[15] !routeCellsHaveEscape(PLAYER_START, exitPosition, objective.cells, walls, blocks)) {": 1,
+          "[17] flow.longestForcedStreak > brief.maxForcedStreak": 3,
+          "[11] !hasStrategicIdentity(PLAYER_START, exitPosition, walls)": 2,
+          "CERTIFIED": 1
+        }
+      },
+      "resolved": true
+    },
+    {
+      "route": 3,
+      "mode": "easy",
+      "seed": 53000001,
+      "before": {
+        "threw": true,
+        "attempts": 572
+      },
+      "after": {
+        "threw": false,
+        "attempts": 57,
+        "randomAttempts": 57,
+        "recoveryAttempts": 0,
+        "histogram": {
+          "FINAL: idleDeadEnds <= brief.maxIdleDeadEnds": 24,
+          "FINAL: ?": 24,
+          "[4] wallCount < limits.min || wallCount > limits.max": 6,
+          "[15] !routeCellsHaveEscape(PLAYER_START, exitPosition, objective.cells, walls, blocks)) {": 1,
+          "[11] !hasStrategicIdentity(PLAYER_START, exitPosition, walls)": 1,
+          "CERTIFIED": 1
+        }
+      },
+      "resolved": true
+    },
+    {
+      "route": 3,
+      "mode": "easy",
+      "seed": 53000002,
+      "before": {
+        "threw": true,
+        "attempts": 572
+      },
+      "after": {
+        "threw": false,
+        "attempts": 73,
+        "randomAttempts": 73,
+        "recoveryAttempts": 0,
+        "histogram": {
+          "FINAL: ?": 30,
+          "[4] wallCount < limits.min || wallCount > limits.max": 5,
+          "FINAL: idleDeadEnds <= brief.maxIdleDeadEnds": 34,
+          "[11] !hasStrategicIdentity(PLAYER_START, exitPosition, walls)": 2,
+          "[17] flow.longestForcedStreak > brief.maxForcedStreak": 1,
+          "CERTIFIED": 1
+        }
+      },
+      "resolved": true
+    },
+    {
+      "route": 3,
+      "mode": "medium",
+      "seed": 53100000,
+      "before": {
+        "threw": true,
+        "attempts": 572
+      },
+      "after": {
+        "threw": false,
+        "attempts": 56,
+        "randomAttempts": 56,
+        "recoveryAttempts": 0,
+        "histogram": {
+          "FINAL: ?": 36,
+          "[15] !routeCellsHaveEscape(PLAYER_START, exitPosition, objective.cells, walls, blocks)) {": 3,
+          "FINAL: idleDeadEnds <= brief.maxIdleDeadEnds": 16,
+          "CERTIFIED": 1
+        }
+      },
+      "resolved": true
+    },
+    {
+      "route": 3,
+      "mode": "medium",
+      "seed": 53100003,
+      "before": {
+        "threw": true,
+        "attempts": 572
+      },
+      "after": {
+        "threw": false,
+        "attempts": 10,
+        "randomAttempts": 10,
+        "recoveryAttempts": 0,
+        "histogram": {
+          "FINAL: idleDeadEnds <= brief.maxIdleDeadEnds": 4,
+          "FINAL: ?": 4,
+          "[15] !routeCellsHaveEscape(PLAYER_START, exitPosition, objective.cells, walls, blocks)) {": 1,
+          "CERTIFIED": 1
+        }
+      },
+      "resolved": true
+    },
+    {
+      "route": 3,
+      "mode": "hard",
+      "seed": 53200003,
+      "before": {
+        "threw": true,
+        "attempts": 572
+      },
+      "after": {
+        "threw": false,
+        "attempts": 13,
+        "randomAttempts": 13,
+        "recoveryAttempts": 0,
+        "histogram": {
+          "FINAL: ?": 9,
+          "[15] !routeCellsHaveEscape(PLAYER_START, exitPosition, objective.cells, walls, blocks)) {": 1,
+          "FINAL: idleDeadEnds <= brief.maxIdleDeadEnds": 2,
+          "CERTIFIED": 1
+        }
+      },
+      "resolved": true
+    }
+  ]
+}

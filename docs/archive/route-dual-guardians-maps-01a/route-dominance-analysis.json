@@ -1,0 +1,1395 @@
+{
+  "mission": "ROTA-DUAL-GUARDIANS-MAPS-01A-BALANCE",
+  "rule": "uma rota domina outra se é <= em comprimento, <= em exposição ao Caçador, <= em exposição ao Sentinela e >= em potencial de recuperação, sendo estritamente melhor em pelo menos um eixo",
+  "mapsAnalysed": 45,
+  "staticDominance": 21,
+  "contextualUniversallyDominant": 0,
+  "contextualTradeoffScore": {
+    "min": 0,
+    "p10": 0,
+    "median": 0.4,
+    "p90": 0.5,
+    "max": 0.5,
+    "mean": 0.36
+  },
+  "routeSwitchCount": {
+    "min": 0,
+    "p10": 0,
+    "median": 2,
+    "p90": 2,
+    "max": 3,
+    "mean": 1.84
+  },
+  "contextualExamples": [
+    {
+      "route": 1,
+      "difficulty": "easy",
+      "seed": 4224,
+      "preferredCounts": {
+        "alternativa": 21,
+        "direta": 24
+      },
+      "sample": [
+        {
+          "hunter": "2,6",
+          "door": "0,6",
+          "lightsLeft": 3,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "2,6",
+          "door": "0,6",
+          "lightsLeft": 1,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "2,6",
+          "door": "0,6",
+          "lightsLeft": 0,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "2,6",
+          "door": "3,5",
+          "lightsLeft": 3,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "2,6",
+          "door": "3,5",
+          "lightsLeft": 1,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "2,6",
+          "door": "3,5",
+          "lightsLeft": 0,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "2,6",
+          "door": "4,8",
+          "lightsLeft": 3,
+          "route": "direta"
+        },
+        {
+          "hunter": "2,6",
+          "door": "4,8",
+          "lightsLeft": 1,
+          "route": "direta"
+        }
+      ]
+    },
+    {
+      "route": 1,
+      "difficulty": "easy",
+      "seed": 4250,
+      "preferredCounts": {
+        "direta": 28,
+        "alternativa": 17
+      },
+      "sample": [
+        {
+          "hunter": "0,4",
+          "door": "0,6",
+          "lightsLeft": 3,
+          "route": "direta"
+        },
+        {
+          "hunter": "0,4",
+          "door": "0,6",
+          "lightsLeft": 1,
+          "route": "direta"
+        },
+        {
+          "hunter": "0,4",
+          "door": "0,6",
+          "lightsLeft": 0,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "0,4",
+          "door": "3,5",
+          "lightsLeft": 3,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "0,4",
+          "door": "3,5",
+          "lightsLeft": 1,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "0,4",
+          "door": "3,5",
+          "lightsLeft": 0,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "0,4",
+          "door": "4,8",
+          "lightsLeft": 3,
+          "route": "direta"
+        },
+        {
+          "hunter": "0,4",
+          "door": "4,8",
+          "lightsLeft": 1,
+          "route": "direta"
+        }
+      ]
+    },
+    {
+      "route": 1,
+      "difficulty": "easy",
+      "seed": 4263,
+      "preferredCounts": {
+        "longe-do-cacador": 10,
+        "direta": 41,
+        "alternativa": 9
+      },
+      "sample": [
+        {
+          "hunter": "1,6",
+          "door": "0,6",
+          "lightsLeft": 3,
+          "route": "longe-do-cacador"
+        },
+        {
+          "hunter": "1,6",
+          "door": "0,6",
+          "lightsLeft": 1,
+          "route": "longe-do-cacador"
+        },
+        {
+          "hunter": "1,6",
+          "door": "0,6",
+          "lightsLeft": 0,
+          "route": "longe-do-cacador"
+        },
+        {
+          "hunter": "1,6",
+          "door": "4,6",
+          "lightsLeft": 3,
+          "route": "longe-do-cacador"
+        },
+        {
+          "hunter": "1,6",
+          "door": "4,6",
+          "lightsLeft": 1,
+          "route": "longe-do-cacador"
+        },
+        {
+          "hunter": "1,6",
+          "door": "4,6",
+          "lightsLeft": 0,
+          "route": "longe-do-cacador"
+        },
+        {
+          "hunter": "1,6",
+          "door": "3,5",
+          "lightsLeft": 3,
+          "route": "longe-do-cacador"
+        },
+        {
+          "hunter": "1,6",
+          "door": "3,5",
+          "lightsLeft": 1,
+          "route": "longe-do-cacador"
+        }
+      ]
+    },
+    {
+      "route": 1,
+      "difficulty": "medium",
+      "seed": 5620,
+      "preferredCounts": {
+        "alternativa": 24,
+        "direta": 36
+      },
+      "sample": [
+        {
+          "hunter": "0,3",
+          "door": "0,6",
+          "lightsLeft": 4,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "0,3",
+          "door": "0,6",
+          "lightsLeft": 2,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "0,3",
+          "door": "0,6",
+          "lightsLeft": 0,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "0,3",
+          "door": "3,5",
+          "lightsLeft": 4,
+          "route": "direta"
+        },
+        {
+          "hunter": "0,3",
+          "door": "3,5",
+          "lightsLeft": 2,
+          "route": "direta"
+        },
+        {
+          "hunter": "0,3",
+          "door": "3,5",
+          "lightsLeft": 0,
+          "route": "direta"
+        },
+        {
+          "hunter": "0,3",
+          "door": "4,8",
+          "lightsLeft": 4,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "0,3",
+          "door": "4,8",
+          "lightsLeft": 2,
+          "route": "alternativa"
+        }
+      ]
+    },
+    {
+      "route": 1,
+      "difficulty": "medium",
+      "seed": 5633,
+      "preferredCounts": {
+        "alternativa": 15,
+        "direta": 15
+      },
+      "sample": [
+        {
+          "hunter": "0,4",
+          "door": "3,5",
+          "lightsLeft": 4,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "0,4",
+          "door": "3,5",
+          "lightsLeft": 2,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "0,4",
+          "door": "3,5",
+          "lightsLeft": 0,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "0,4",
+          "door": "4,8",
+          "lightsLeft": 4,
+          "route": "direta"
+        },
+        {
+          "hunter": "0,4",
+          "door": "4,8",
+          "lightsLeft": 2,
+          "route": "direta"
+        },
+        {
+          "hunter": "0,4",
+          "door": "4,8",
+          "lightsLeft": 0,
+          "route": "direta"
+        },
+        {
+          "hunter": "0,0",
+          "door": "3,5",
+          "lightsLeft": 4,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "0,0",
+          "door": "3,5",
+          "lightsLeft": 2,
+          "route": "alternativa"
+        }
+      ]
+    },
+    {
+      "route": 1,
+      "difficulty": "medium",
+      "seed": 5672,
+      "preferredCounts": {
+        "alternativa": 30,
+        "direta": 30
+      },
+      "sample": [
+        {
+          "hunter": "0,3",
+          "door": "0,6",
+          "lightsLeft": 4,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "0,3",
+          "door": "0,6",
+          "lightsLeft": 2,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "0,3",
+          "door": "0,6",
+          "lightsLeft": 0,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "0,3",
+          "door": "3,5",
+          "lightsLeft": 4,
+          "route": "direta"
+        },
+        {
+          "hunter": "0,3",
+          "door": "3,5",
+          "lightsLeft": 2,
+          "route": "direta"
+        },
+        {
+          "hunter": "0,3",
+          "door": "3,5",
+          "lightsLeft": 0,
+          "route": "direta"
+        },
+        {
+          "hunter": "0,3",
+          "door": "1,5",
+          "lightsLeft": 4,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "0,3",
+          "door": "1,5",
+          "lightsLeft": 2,
+          "route": "alternativa"
+        }
+      ]
+    },
+    {
+      "route": 1,
+      "difficulty": "hard",
+      "seed": 7029,
+      "preferredCounts": {
+        "direta": 38,
+        "alternativa": 7
+      },
+      "sample": [
+        {
+          "hunter": "0,3",
+          "door": "0,7",
+          "lightsLeft": 5,
+          "route": "direta"
+        },
+        {
+          "hunter": "0,3",
+          "door": "0,7",
+          "lightsLeft": 2,
+          "route": "direta"
+        },
+        {
+          "hunter": "0,3",
+          "door": "0,7",
+          "lightsLeft": 0,
+          "route": "direta"
+        },
+        {
+          "hunter": "0,3",
+          "door": "1,6",
+          "lightsLeft": 5,
+          "route": "direta"
+        },
+        {
+          "hunter": "0,3",
+          "door": "1,6",
+          "lightsLeft": 2,
+          "route": "direta"
+        },
+        {
+          "hunter": "0,3",
+          "door": "1,6",
+          "lightsLeft": 0,
+          "route": "direta"
+        },
+        {
+          "hunter": "0,3",
+          "door": "5,8",
+          "lightsLeft": 5,
+          "route": "direta"
+        },
+        {
+          "hunter": "0,3",
+          "door": "5,8",
+          "lightsLeft": 2,
+          "route": "direta"
+        }
+      ]
+    },
+    {
+      "route": 1,
+      "difficulty": "hard",
+      "seed": 7042,
+      "preferredCounts": {
+        "direta": 37,
+        "alternativa": 8
+      },
+      "sample": [
+        {
+          "hunter": "0,3",
+          "door": "0,7",
+          "lightsLeft": 5,
+          "route": "direta"
+        },
+        {
+          "hunter": "0,3",
+          "door": "0,7",
+          "lightsLeft": 2,
+          "route": "direta"
+        },
+        {
+          "hunter": "0,3",
+          "door": "0,7",
+          "lightsLeft": 0,
+          "route": "direta"
+        },
+        {
+          "hunter": "0,3",
+          "door": "1,6",
+          "lightsLeft": 5,
+          "route": "direta"
+        },
+        {
+          "hunter": "0,3",
+          "door": "1,6",
+          "lightsLeft": 2,
+          "route": "direta"
+        },
+        {
+          "hunter": "0,3",
+          "door": "1,6",
+          "lightsLeft": 0,
+          "route": "direta"
+        },
+        {
+          "hunter": "0,3",
+          "door": "5,8",
+          "lightsLeft": 5,
+          "route": "direta"
+        },
+        {
+          "hunter": "0,3",
+          "door": "5,8",
+          "lightsLeft": 2,
+          "route": "direta"
+        }
+      ]
+    },
+    {
+      "route": 1,
+      "difficulty": "hard",
+      "seed": 7068,
+      "preferredCounts": {
+        "direta": 20,
+        "alternativa": 10
+      },
+      "sample": [
+        {
+          "hunter": "0,3",
+          "door": "0,6",
+          "lightsLeft": 5,
+          "route": "direta"
+        },
+        {
+          "hunter": "0,3",
+          "door": "0,6",
+          "lightsLeft": 2,
+          "route": "direta"
+        },
+        {
+          "hunter": "0,3",
+          "door": "0,6",
+          "lightsLeft": 0,
+          "route": "direta"
+        },
+        {
+          "hunter": "0,3",
+          "door": "4,8",
+          "lightsLeft": 5,
+          "route": "direta"
+        },
+        {
+          "hunter": "0,3",
+          "door": "4,8",
+          "lightsLeft": 2,
+          "route": "direta"
+        },
+        {
+          "hunter": "0,3",
+          "door": "4,8",
+          "lightsLeft": 0,
+          "route": "direta"
+        },
+        {
+          "hunter": "0,0",
+          "door": "0,6",
+          "lightsLeft": 5,
+          "route": "direta"
+        },
+        {
+          "hunter": "0,0",
+          "door": "0,6",
+          "lightsLeft": 2,
+          "route": "direta"
+        }
+      ]
+    },
+    {
+      "route": 1,
+      "difficulty": "hard",
+      "seed": 7081,
+      "preferredCounts": {
+        "direta": 24,
+        "alternativa": 6
+      },
+      "sample": [
+        {
+          "hunter": "0,3",
+          "door": "0,6",
+          "lightsLeft": 5,
+          "route": "direta"
+        },
+        {
+          "hunter": "0,3",
+          "door": "0,6",
+          "lightsLeft": 2,
+          "route": "direta"
+        },
+        {
+          "hunter": "0,3",
+          "door": "0,6",
+          "lightsLeft": 0,
+          "route": "direta"
+        },
+        {
+          "hunter": "0,3",
+          "door": "4,8",
+          "lightsLeft": 5,
+          "route": "direta"
+        },
+        {
+          "hunter": "0,3",
+          "door": "4,8",
+          "lightsLeft": 2,
+          "route": "direta"
+        },
+        {
+          "hunter": "0,3",
+          "door": "4,8",
+          "lightsLeft": 0,
+          "route": "direta"
+        },
+        {
+          "hunter": "0,0",
+          "door": "0,6",
+          "lightsLeft": 5,
+          "route": "direta"
+        },
+        {
+          "hunter": "0,0",
+          "door": "0,6",
+          "lightsLeft": 2,
+          "route": "direta"
+        }
+      ]
+    },
+    {
+      "route": 2,
+      "difficulty": "easy",
+      "seed": 4422,
+      "preferredCounts": {
+        "alternativa": 24,
+        "direta": 21
+      },
+      "sample": [
+        {
+          "hunter": "2,5",
+          "door": "0,6",
+          "lightsLeft": 3,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "2,5",
+          "door": "0,6",
+          "lightsLeft": 1,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "2,5",
+          "door": "0,6",
+          "lightsLeft": 0,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "2,5",
+          "door": "4,8",
+          "lightsLeft": 3,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "2,5",
+          "door": "4,8",
+          "lightsLeft": 1,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "2,5",
+          "door": "4,8",
+          "lightsLeft": 0,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "2,5",
+          "door": "1,5",
+          "lightsLeft": 3,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "2,5",
+          "door": "1,5",
+          "lightsLeft": 1,
+          "route": "alternativa"
+        }
+      ]
+    },
+    {
+      "route": 2,
+      "difficulty": "easy",
+      "seed": 4435,
+      "preferredCounts": {
+        "alternativa": 24,
+        "direta": 21
+      },
+      "sample": [
+        {
+          "hunter": "1,4",
+          "door": "3,8",
+          "lightsLeft": 3,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "1,4",
+          "door": "3,8",
+          "lightsLeft": 1,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "1,4",
+          "door": "3,8",
+          "lightsLeft": 0,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "1,4",
+          "door": "2,7",
+          "lightsLeft": 3,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "1,4",
+          "door": "2,7",
+          "lightsLeft": 1,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "1,4",
+          "door": "2,7",
+          "lightsLeft": 0,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "1,4",
+          "door": "0,5",
+          "lightsLeft": 3,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "1,4",
+          "door": "0,5",
+          "lightsLeft": 1,
+          "route": "alternativa"
+        }
+      ]
+    },
+    {
+      "route": 2,
+      "difficulty": "easy",
+      "seed": 4448,
+      "preferredCounts": {
+        "longe-do-cacador": 24,
+        "direta": 21
+      },
+      "sample": [
+        {
+          "hunter": "2,3",
+          "door": "0,6",
+          "lightsLeft": 3,
+          "route": "longe-do-cacador"
+        },
+        {
+          "hunter": "2,3",
+          "door": "0,6",
+          "lightsLeft": 1,
+          "route": "longe-do-cacador"
+        },
+        {
+          "hunter": "2,3",
+          "door": "0,6",
+          "lightsLeft": 0,
+          "route": "longe-do-cacador"
+        },
+        {
+          "hunter": "2,3",
+          "door": "3,7",
+          "lightsLeft": 3,
+          "route": "longe-do-cacador"
+        },
+        {
+          "hunter": "2,3",
+          "door": "3,7",
+          "lightsLeft": 1,
+          "route": "longe-do-cacador"
+        },
+        {
+          "hunter": "2,3",
+          "door": "3,7",
+          "lightsLeft": 0,
+          "route": "longe-do-cacador"
+        },
+        {
+          "hunter": "2,3",
+          "door": "2,6",
+          "lightsLeft": 3,
+          "route": "longe-do-cacador"
+        },
+        {
+          "hunter": "2,3",
+          "door": "2,6",
+          "lightsLeft": 1,
+          "route": "longe-do-cacador"
+        }
+      ]
+    },
+    {
+      "route": 2,
+      "difficulty": "easy",
+      "seed": 4461,
+      "preferredCounts": {
+        "alternativa": 27,
+        "direta": 18
+      },
+      "sample": [
+        {
+          "hunter": "2,5",
+          "door": "3,8",
+          "lightsLeft": 3,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "2,5",
+          "door": "3,8",
+          "lightsLeft": 1,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "2,5",
+          "door": "3,8",
+          "lightsLeft": 0,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "2,5",
+          "door": "1,6",
+          "lightsLeft": 3,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "2,5",
+          "door": "1,6",
+          "lightsLeft": 1,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "2,5",
+          "door": "1,6",
+          "lightsLeft": 0,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "2,5",
+          "door": "0,5",
+          "lightsLeft": 3,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "2,5",
+          "door": "0,5",
+          "lightsLeft": 1,
+          "route": "alternativa"
+        }
+      ]
+    },
+    {
+      "route": 2,
+      "difficulty": "easy",
+      "seed": 4474,
+      "preferredCounts": {
+        "direta": 29,
+        "alternativa": 16
+      },
+      "sample": [
+        {
+          "hunter": "2,5",
+          "door": "2,8",
+          "lightsLeft": 3,
+          "route": "direta"
+        },
+        {
+          "hunter": "2,5",
+          "door": "2,8",
+          "lightsLeft": 1,
+          "route": "direta"
+        },
+        {
+          "hunter": "2,5",
+          "door": "2,8",
+          "lightsLeft": 0,
+          "route": "direta"
+        },
+        {
+          "hunter": "2,5",
+          "door": "1,5",
+          "lightsLeft": 3,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "2,5",
+          "door": "1,5",
+          "lightsLeft": 1,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "2,5",
+          "door": "1,5",
+          "lightsLeft": 0,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "2,5",
+          "door": "0,4",
+          "lightsLeft": 3,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "2,5",
+          "door": "0,4",
+          "lightsLeft": 1,
+          "route": "alternativa"
+        }
+      ]
+    },
+    {
+      "route": 2,
+      "difficulty": "medium",
+      "seed": 5831,
+      "preferredCounts": {
+        "alternativa": 18,
+        "direta": 12
+      },
+      "sample": [
+        {
+          "hunter": "2,3",
+          "door": "2,6",
+          "lightsLeft": 4,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "2,3",
+          "door": "2,6",
+          "lightsLeft": 2,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "2,3",
+          "door": "2,6",
+          "lightsLeft": 0,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "2,3",
+          "door": "1,5",
+          "lightsLeft": 4,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "2,3",
+          "door": "1,5",
+          "lightsLeft": 2,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "2,3",
+          "door": "1,5",
+          "lightsLeft": 0,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "1,0",
+          "door": "2,6",
+          "lightsLeft": 4,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "1,0",
+          "door": "2,6",
+          "lightsLeft": 2,
+          "route": "alternativa"
+        }
+      ]
+    },
+    {
+      "route": 2,
+      "difficulty": "medium",
+      "seed": 5844,
+      "preferredCounts": {
+        "longe-do-cacador": 18,
+        "direta": 27
+      },
+      "sample": [
+        {
+          "hunter": "2,5",
+          "door": "3,8",
+          "lightsLeft": 4,
+          "route": "longe-do-cacador"
+        },
+        {
+          "hunter": "2,5",
+          "door": "3,8",
+          "lightsLeft": 2,
+          "route": "longe-do-cacador"
+        },
+        {
+          "hunter": "2,5",
+          "door": "3,8",
+          "lightsLeft": 0,
+          "route": "longe-do-cacador"
+        },
+        {
+          "hunter": "2,5",
+          "door": "2,7",
+          "lightsLeft": 4,
+          "route": "longe-do-cacador"
+        },
+        {
+          "hunter": "2,5",
+          "door": "2,7",
+          "lightsLeft": 2,
+          "route": "longe-do-cacador"
+        },
+        {
+          "hunter": "2,5",
+          "door": "2,7",
+          "lightsLeft": 0,
+          "route": "longe-do-cacador"
+        },
+        {
+          "hunter": "2,5",
+          "door": "0,5",
+          "lightsLeft": 4,
+          "route": "longe-do-cacador"
+        },
+        {
+          "hunter": "2,5",
+          "door": "0,5",
+          "lightsLeft": 2,
+          "route": "longe-do-cacador"
+        }
+      ]
+    },
+    {
+      "route": 2,
+      "difficulty": "medium",
+      "seed": 5857,
+      "preferredCounts": {
+        "direta": 36,
+        "alternativa": 9
+      },
+      "sample": [
+        {
+          "hunter": "2,5",
+          "door": "3,8",
+          "lightsLeft": 4,
+          "route": "direta"
+        },
+        {
+          "hunter": "2,5",
+          "door": "3,8",
+          "lightsLeft": 2,
+          "route": "direta"
+        },
+        {
+          "hunter": "2,5",
+          "door": "3,8",
+          "lightsLeft": 0,
+          "route": "direta"
+        },
+        {
+          "hunter": "2,5",
+          "door": "2,7",
+          "lightsLeft": 4,
+          "route": "direta"
+        },
+        {
+          "hunter": "2,5",
+          "door": "2,7",
+          "lightsLeft": 2,
+          "route": "direta"
+        },
+        {
+          "hunter": "2,5",
+          "door": "2,7",
+          "lightsLeft": 0,
+          "route": "direta"
+        },
+        {
+          "hunter": "2,5",
+          "door": "0,5",
+          "lightsLeft": 4,
+          "route": "direta"
+        },
+        {
+          "hunter": "2,5",
+          "door": "0,5",
+          "lightsLeft": 2,
+          "route": "direta"
+        }
+      ]
+    },
+    {
+      "route": 2,
+      "difficulty": "medium",
+      "seed": 5870,
+      "preferredCounts": {
+        "alternativa": 24,
+        "direta": 21
+      },
+      "sample": [
+        {
+          "hunter": "0,4",
+          "door": "3,8",
+          "lightsLeft": 4,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "0,4",
+          "door": "3,8",
+          "lightsLeft": 2,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "0,4",
+          "door": "3,8",
+          "lightsLeft": 0,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "0,4",
+          "door": "1,6",
+          "lightsLeft": 4,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "0,4",
+          "door": "1,6",
+          "lightsLeft": 2,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "0,4",
+          "door": "1,6",
+          "lightsLeft": 0,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "0,4",
+          "door": "0,5",
+          "lightsLeft": 4,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "0,4",
+          "door": "0,5",
+          "lightsLeft": 2,
+          "route": "alternativa"
+        }
+      ]
+    },
+    {
+      "route": 2,
+      "difficulty": "medium",
+      "seed": 5883,
+      "preferredCounts": {
+        "alternativa": 21,
+        "direta": 24
+      },
+      "sample": [
+        {
+          "hunter": "0,4",
+          "door": "1,5",
+          "lightsLeft": 4,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "0,4",
+          "door": "1,5",
+          "lightsLeft": 2,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "0,4",
+          "door": "1,5",
+          "lightsLeft": 0,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "0,4",
+          "door": "2,8",
+          "lightsLeft": 4,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "0,4",
+          "door": "2,8",
+          "lightsLeft": 2,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "0,4",
+          "door": "2,8",
+          "lightsLeft": 0,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "0,4",
+          "door": "0,4",
+          "lightsLeft": 4,
+          "route": "alternativa"
+        },
+        {
+          "hunter": "0,4",
+          "door": "0,4",
+          "lightsLeft": 2,
+          "route": "alternativa"
+        }
+      ]
+    }
+  ],
+  "mapsWithoutAlternative": 5,
+  "dominancePairs": [
+    {
+      "difficulty": "easy",
+      "seed": 4263,
+      "dominant": "alternativa",
+      "dominated": "direta"
+    },
+    {
+      "difficulty": "medium",
+      "seed": 5672,
+      "dominant": "alternativa",
+      "dominated": "direta"
+    },
+    {
+      "difficulty": "hard",
+      "seed": 7068,
+      "dominant": "direta",
+      "dominated": "alternativa"
+    },
+    {
+      "difficulty": "easy",
+      "seed": 4435,
+      "dominant": "alternativa",
+      "dominated": "direta"
+    },
+    {
+      "difficulty": "easy",
+      "seed": 4435,
+      "dominant": "alternativa",
+      "dominated": "longe-do-cacador"
+    },
+    {
+      "difficulty": "easy",
+      "seed": 4435,
+      "dominant": "longe-do-cacador",
+      "dominated": "direta"
+    },
+    {
+      "difficulty": "easy",
+      "seed": 4448,
+      "dominant": "longe-do-cacador",
+      "dominated": "direta"
+    },
+    {
+      "difficulty": "easy",
+      "seed": 4461,
+      "dominant": "longe-do-cacador",
+      "dominated": "alternativa"
+    },
+    {
+      "difficulty": "medium",
+      "seed": 5831,
+      "dominant": "alternativa",
+      "dominated": "direta"
+    },
+    {
+      "difficulty": "medium",
+      "seed": 5831,
+      "dominant": "longe-do-cacador",
+      "dominated": "direta"
+    },
+    {
+      "difficulty": "medium",
+      "seed": 5844,
+      "dominant": "longe-do-cacador",
+      "dominated": "direta"
+    },
+    {
+      "difficulty": "medium",
+      "seed": 5870,
+      "dominant": "alternativa",
+      "dominated": "direta"
+    },
+    {
+      "difficulty": "medium",
+      "seed": 5870,
+      "dominant": "longe-do-cacador",
+      "dominated": "direta"
+    },
+    {
+      "difficulty": "hard",
+      "seed": 7253,
+      "dominant": "alternativa",
+      "dominated": "direta"
+    },
+    {
+      "difficulty": "hard",
+      "seed": 7279,
+      "dominant": "alternativa",
+      "dominated": "direta"
+    },
+    {
+      "difficulty": "easy",
+      "seed": 4646,
+      "dominant": "alternativa",
+      "dominated": "direta"
+    },
+    {
+      "difficulty": "easy",
+      "seed": 4646,
+      "dominant": "alternativa",
+      "dominated": "longe-do-cacador"
+    },
+    {
+      "difficulty": "easy",
+      "seed": 4646,
+      "dominant": "longe-do-cacador",
+      "dominated": "direta"
+    },
+    {
+      "difficulty": "easy",
+      "seed": 4672,
+      "dominant": "alternativa",
+      "dominated": "direta"
+    },
+    {
+      "difficulty": "medium",
+      "seed": 6042,
+      "dominant": "longe-do-cacador",
+      "dominated": "alternativa"
+    },
+    {
+      "difficulty": "medium",
+      "seed": 6068,
+      "dominant": "alternativa",
+      "dominated": "direta"
+    },
+    {
+      "difficulty": "medium",
+      "seed": 6068,
+      "dominant": "longe-do-cacador",
+      "dominated": "direta"
+    },
+    {
+      "difficulty": "medium",
+      "seed": 6081,
+      "dominant": "longe-do-cacador",
+      "dominated": "direta"
+    },
+    {
+      "difficulty": "medium",
+      "seed": 6081,
+      "dominant": "longe-do-cacador",
+      "dominated": "alternativa"
+    },
+    {
+      "difficulty": "hard",
+      "seed": 7451,
+      "dominant": "alternativa",
+      "dominated": "longe-do-cacador"
+    },
+    {
+      "difficulty": "hard",
+      "seed": 7464,
+      "dominant": "alternativa",
+      "dominated": "direta"
+    },
+    {
+      "difficulty": "hard",
+      "seed": 7464,
+      "dominant": "longe-do-cacador",
+      "dominated": "direta"
+    },
+    {
+      "difficulty": "hard",
+      "seed": 7477,
+      "dominant": "alternativa",
+      "dominated": "direta"
+    },
+    {
+      "difficulty": "hard",
+      "seed": 7477,
+      "dominant": "longe-do-cacador",
+      "dominated": "direta"
+    },
+    {
+      "difficulty": "hard",
+      "seed": 7490,
+      "dominant": "longe-do-cacador",
+      "dominated": "alternativa"
+    },
+    {
+      "difficulty": "hard",
+      "seed": 7503,
+      "dominant": "longe-do-cacador",
+      "dominated": "alternativa"
+    }
+  ]
+}

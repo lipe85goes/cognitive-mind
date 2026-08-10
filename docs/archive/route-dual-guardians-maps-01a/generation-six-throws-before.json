@@ -1,0 +1,222 @@
+{
+  "mission": "ROTA-01A-ESCAPE-ROUTE-GENERATION-CLOSE",
+  "phase": "before",
+  "source": "validator-9x9-checkpoint.json generationThrows",
+  "structuralReasonCodes": [
+    "pathLength === null || pathLength < getMinimumPathLength(routeStage)",
+    "manhattanDistance(PLAYER_START, guardianStart) < profile.guardianMinStartDistance",
+    "getNeighbors(PLAYER_START, walls).length < 2",
+    "getNeighbors(guardianStart, walls).length < 2",
+    "wallCount < limits.min || wallCount > limits.max",
+    "distances.size < profile.minReachableCells",
+    "countStartZoneWalls(walls) > profile.maxStartZoneWalls",
+    "countReachableJunctions(distances, walls) < profile.minJunctions",
+    "collectibleStars.length !== getStarCount(difficulty, routeStage)",
+    "!starsReachable",
+    "!starsSeparated",
+    "!hasStrategicIdentity(PLAYER_START, exitPosition, walls)",
+    "!sharesBlock(blocks, PLAYER_START, exitPosition)",
+    "!collectibleStars.every((star) => sharesBlock(blocks, PLAYER_START, star))) {",
+    "!objective",
+    "!routeCellsHaveEscape(PLAYER_START, exitPosition, objective.cells, walls, blocks)) {",
+    "flow.decisionRatio < brief.minDecisionRatio",
+    "flow.longestForcedStreak > brief.maxForcedStreak"
+  ],
+  "reproduced": "6/6",
+  "aggregateFamilies": {
+    "outras": 1038,
+    "routeCellsHaveEscape": 2244,
+    "identity": 95,
+    "final gates": 55
+  },
+  "aggregateAttempts": 3432,
+  "cases": [
+    {
+      "route": 3,
+      "mode": "easy",
+      "seed": 53000000,
+      "rngState": "createSeededRandom(53000000)",
+      "forcedTemplateIndex": 0,
+      "templatesTried": {
+        "0": 572
+      },
+      "exitsTried": {
+        "0,7": 266,
+        "0,8": 306
+      },
+      "randomAttempts": 500,
+      "recoveryAttempts": 72,
+      "totalAttempts": 572,
+      "reproduced": true,
+      "rejectionHistogram": {
+        "[4] wallCount < limits.min || wallCount > limits.max": 120,
+        "[15] !routeCellsHaveEscape(PLAYER_START, exitPosition, objective.cells, walls, blocks)) {": 304,
+        "[11] !hasStrategicIdentity(PLAYER_START, exitPosition, walls)": 29,
+        "[3] getNeighbors(guardianStart, walls).length < 2": 108,
+        "FINAL: idleDeadEnds <= brief.maxIdleDeadEnds": 11
+      },
+      "familyBreakdown": {
+        "outras": 228,
+        "routeCellsHaveEscape": 304,
+        "identity": 29,
+        "final gates": 11
+      },
+      "dominantFamily": "routeCellsHaveEscape"
+    },
+    {
+      "route": 3,
+      "mode": "easy",
+      "seed": 53000001,
+      "rngState": "createSeededRandom(53000001)",
+      "forcedTemplateIndex": 0,
+      "templatesTried": {
+        "0": 572
+      },
+      "exitsTried": {
+        "0,8": 294,
+        "0,7": 278
+      },
+      "randomAttempts": 500,
+      "recoveryAttempts": 72,
+      "totalAttempts": 572,
+      "reproduced": true,
+      "rejectionHistogram": {
+        "[15] !routeCellsHaveEscape(PLAYER_START, exitPosition, objective.cells, walls, blocks)) {": 282,
+        "[3] getNeighbors(guardianStart, walls).length < 2": 94,
+        "[4] wallCount < limits.min || wallCount > limits.max": 157,
+        "FINAL: idleDeadEnds <= brief.maxIdleDeadEnds": 15,
+        "[11] !hasStrategicIdentity(PLAYER_START, exitPosition, walls)": 24
+      },
+      "familyBreakdown": {
+        "routeCellsHaveEscape": 282,
+        "outras": 251,
+        "final gates": 15,
+        "identity": 24
+      },
+      "dominantFamily": "routeCellsHaveEscape"
+    },
+    {
+      "route": 3,
+      "mode": "easy",
+      "seed": 53000002,
+      "rngState": "createSeededRandom(53000002)",
+      "forcedTemplateIndex": 0,
+      "templatesTried": {
+        "0": 572
+      },
+      "exitsTried": {
+        "0,7": 297,
+        "0,8": 275
+      },
+      "randomAttempts": 500,
+      "recoveryAttempts": 72,
+      "totalAttempts": 572,
+      "reproduced": true,
+      "rejectionHistogram": {
+        "[4] wallCount < limits.min || wallCount > limits.max": 155,
+        "[15] !routeCellsHaveEscape(PLAYER_START, exitPosition, objective.cells, walls, blocks)) {": 293,
+        "[3] getNeighbors(guardianStart, walls).length < 2": 97,
+        "[11] !hasStrategicIdentity(PLAYER_START, exitPosition, walls)": 19,
+        "FINAL: idleDeadEnds <= brief.maxIdleDeadEnds": 8
+      },
+      "familyBreakdown": {
+        "outras": 252,
+        "routeCellsHaveEscape": 293,
+        "identity": 19,
+        "final gates": 8
+      },
+      "dominantFamily": "routeCellsHaveEscape"
+    },
+    {
+      "route": 3,
+      "mode": "medium",
+      "seed": 53100000,
+      "rngState": "createSeededRandom(53100000)",
+      "forcedTemplateIndex": 0,
+      "templatesTried": {
+        "0": 572
+      },
+      "exitsTried": {
+        "0,7": 291,
+        "0,8": 281
+      },
+      "randomAttempts": 500,
+      "recoveryAttempts": 72,
+      "totalAttempts": 572,
+      "reproduced": true,
+      "rejectionHistogram": {
+        "[15] !routeCellsHaveEscape(PLAYER_START, exitPosition, objective.cells, walls, blocks)) {": 397,
+        "[3] getNeighbors(guardianStart, walls).length < 2": 157,
+        "[11] !hasStrategicIdentity(PLAYER_START, exitPosition, walls)": 8,
+        "FINAL: idleDeadEnds <= brief.maxIdleDeadEnds": 10
+      },
+      "familyBreakdown": {
+        "routeCellsHaveEscape": 397,
+        "outras": 157,
+        "identity": 8,
+        "final gates": 10
+      },
+      "dominantFamily": "routeCellsHaveEscape"
+    },
+    {
+      "route": 3,
+      "mode": "medium",
+      "seed": 53100003,
+      "rngState": "createSeededRandom(53100003)",
+      "forcedTemplateIndex": 0,
+      "templatesTried": {
+        "0": 572
+      },
+      "exitsTried": {
+        "0,7": 273,
+        "0,8": 299
+      },
+      "randomAttempts": 500,
+      "recoveryAttempts": 72,
+      "totalAttempts": 572,
+      "reproduced": true,
+      "rejectionHistogram": {
+        "[15] !routeCellsHaveEscape(PLAYER_START, exitPosition, objective.cells, walls, blocks)) {": 412,
+        "[3] getNeighbors(guardianStart, walls).length < 2": 150,
+        "[11] !hasStrategicIdentity(PLAYER_START, exitPosition, walls)": 8,
+        "FINAL: idleDeadEnds <= brief.maxIdleDeadEnds": 2
+      },
+      "familyBreakdown": {
+        "routeCellsHaveEscape": 412,
+        "outras": 150,
+        "identity": 8,
+        "final gates": 2
+      },
+      "dominantFamily": "routeCellsHaveEscape"
+    },
+    {
+      "route": 3,
+      "mode": "hard",
+      "seed": 53200003,
+      "rngState": "createSeededRandom(53200003)",
+      "forcedTemplateIndex": 0,
+      "templatesTried": {
+        "0": 572
+      },
+      "exitsTried": {
+        "0,8": 284,
+        "0,7": 288
+      },
+      "randomAttempts": 500,
+      "recoveryAttempts": 72,
+      "totalAttempts": 572,
+      "reproduced": true,
+      "rejectionHistogram": {
+        "[15] !routeCellsHaveEscape(PLAYER_START, exitPosition, objective.cells, walls, blocks)) {": 556,
+        "FINAL: idleDeadEnds <= brief.maxIdleDeadEnds": 9,
+        "[11] !hasStrategicIdentity(PLAYER_START, exitPosition, walls)": 7
+      },
+      "familyBreakdown": {
+        "routeCellsHaveEscape": 556,
+        "final gates": 9,
+        "identity": 7
+      },
+      "dominantFamily": "routeCellsHaveEscape"
+    }
+  ]
+}

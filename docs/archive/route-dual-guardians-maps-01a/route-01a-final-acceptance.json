@@ -1,0 +1,62 @@
+{
+  "mission": "ROTA-DUAL-GUARDIANS-MAPS-01A-FINAL-ACCEPTANCE",
+  "gates": {
+    "structural1080": {
+      "required": "1080/1080, 0 throws",
+      "measured": "1080/1080, throws 0, auditFailures 0",
+      "met": true
+    },
+    "continuous270": {
+      "required": "270/270, 0 throws",
+      "measured": "270/270, throws 0",
+      "met": true
+    },
+    "dynamic270": {
+      "required": "SYSTEM_CAUSED = 0",
+      "measured": "SYSTEM_CAUSED 0, PLAYER_CAUSED 225 over 270 maps",
+      "met": true
+    },
+    "classifier": {
+      "required": "3/3",
+      "measured": "3/3",
+      "met": true
+    },
+    "deterministicRecovery": {
+      "required": "enters, same gates, certified map",
+      "measured": "9/9 entered, 9/9 certified, audit clean true",
+      "met": true
+    },
+    "uncertifiedMaps": {
+      "required": 0,
+      "measured": 0,
+      "met": true
+    },
+    "generationThrows": {
+      "required": 0,
+      "measured": 0,
+      "met": true
+    },
+    "earlyCheckFalseRejections": {
+      "required": 0,
+      "measured": 0,
+      "met": true
+    },
+    "validator": {
+      "required": "9 templates, no crash",
+      "measured": "uniqueCount 9, maps 180, errors 0, throws 0",
+      "met": true
+    },
+    "qualityContracts": {
+      "required": "none relaxed",
+      "measured": "gate 13 present, routeCellsHaveEscape untouched, thresholds/templates unchanged",
+      "met": true
+    }
+  },
+  "knownNonBlocking": {
+    "label": "KNOWN_STAR_DEPENDENT_GENERATION_WASTE",
+    "count": 25,
+    "blocking": false
+  },
+  "browserPerformance": "BROWSER_PERFORMANCE_NOT_REMEASURED",
+  "verdict": "ROTA-DUAL-GUARDIANS-MAPS-01A_READY_FOR_RUNTIME"
+}

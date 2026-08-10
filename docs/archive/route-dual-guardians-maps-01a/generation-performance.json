@@ -1,0 +1,84 @@
+{
+  "mission": "ROTA-DUAL-GUARDIANS-MAPS-01A-BALANCE",
+  "samples": 45,
+  "maxGenerationAttempts": 500,
+  "attempts": {
+    "min": 1,
+    "p10": 1,
+    "median": 3,
+    "p90": 14,
+    "max": 47,
+    "mean": 6.13
+  },
+  "milliseconds": {
+    "min": 52,
+    "p10": 70,
+    "median": 282,
+    "p90": 1105,
+    "max": 4435,
+    "mean": 504.36
+  },
+  "worst": [
+    {
+      "ms": 4435,
+      "attempts": 47,
+      "routeNumber": 3,
+      "difficulty": "easy"
+    },
+    {
+      "ms": 1867,
+      "attempts": 24,
+      "routeNumber": 3,
+      "difficulty": "hard"
+    },
+    {
+      "ms": 1699,
+      "attempts": 19,
+      "routeNumber": 2,
+      "difficulty": "medium"
+    },
+    {
+      "ms": 1200,
+      "attempts": 16,
+      "routeNumber": 2,
+      "difficulty": "easy"
+    },
+    {
+      "ms": 1105,
+      "attempts": 14,
+      "routeNumber": 3,
+      "difficulty": "medium"
+    },
+    {
+      "ms": 1087,
+      "attempts": 12,
+      "routeNumber": 2,
+      "difficulty": "medium"
+    },
+    {
+      "ms": 1053,
+      "attempts": 12,
+      "routeNumber": 3,
+      "difficulty": "easy"
+    },
+    {
+      "ms": 1005,
+      "attempts": 11,
+      "routeNumber": 3,
+      "difficulty": "easy"
+    },
+    {
+      "ms": 877,
+      "attempts": 11,
+      "routeNumber": 3,
+      "difficulty": "hard"
+    },
+    {
+      "ms": 764,
+      "attempts": 9,
+      "routeNumber": 3,
+      "difficulty": "hard"
+    }
+  ],
+  "fallbacks": 0
+}

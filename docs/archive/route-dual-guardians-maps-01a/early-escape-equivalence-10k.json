@@ -1,0 +1,10 @@
+{
+  "mission": "ROTA-01A-ESCAPE-ROUTE-GENERATION-CLOSE",
+  "candidatesObserved": 10008,
+  "earlyRejectsTotal": 3995,
+  "trueEarlyRejects": 3995,
+  "FALSE_REJECTIONS": 0,
+  "candidatesPreserved": 6013,
+  "falseRejectSamples": [],
+  "claim": "escapeGeometryIsPossible is necessary for routeCellsHaveEscape, so a false rejection would be a contradiction. Measured, not assumed."
+}

@@ -1,0 +1,679 @@
+{
+  "mission": "ROTA-DUAL-GUARDIANS-MAPS-01A-BALANCE",
+  "contract": {
+    "shape": "o baú oferece DUAS opções e o jogador escolhe UMA; sem RNG puro",
+    "rewardEligibility": "cada recompensa declara quando pode aparecer, quando não faz sentido e o impacto máximo",
+    "PICARETA": "elegível apenas se existir parede quebrável com utilidade >= 35",
+    "SEGUNDA_CHANCE": "elegível sempre que um defensor puder alcançar o Explorador",
+    "TERCEIRA": "em aberto — isca, tempo no Desafiador ou interação com armadilha",
+    "neverRequired": "nenhum item futuro é necessário para vencer"
+  },
+  "maps": 45,
+  "mapsWithChestCandidate": 45,
+  "pickaxeEligible": 7,
+  "pickaxeNotEligible": 38,
+  "secondChanceEligible": 45,
+  "mapsWithFewerThanTwoEligible": 38,
+  "sample": [
+    {
+      "route": 1,
+      "difficulty": "easy",
+      "seed": 4211,
+      "chestCandidates": 25,
+      "PICARETA": {
+        "eligible": false,
+        "reason": "nenhuma parede quebrável útil neste mapa",
+        "maxImpact": 0
+      },
+      "SEGUNDA_CHANCE": {
+        "eligible": true,
+        "reason": "protege uma vez contra captura; sempre relevante com defensores ativos",
+        "maxImpact": 1
+      },
+      "TERCEIRA": {
+        "eligible": false,
+        "reason": "categoria em aberto — isca, tempo no Desafiador ou interação com armadilha",
+        "maxImpact": null
+      },
+      "poolSize": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "easy",
+      "seed": 4224,
+      "chestCandidates": 29,
+      "PICARETA": {
+        "eligible": false,
+        "reason": "nenhuma parede quebrável útil neste mapa",
+        "maxImpact": 0
+      },
+      "SEGUNDA_CHANCE": {
+        "eligible": true,
+        "reason": "protege uma vez contra captura; sempre relevante com defensores ativos",
+        "maxImpact": 1
+      },
+      "TERCEIRA": {
+        "eligible": false,
+        "reason": "categoria em aberto — isca, tempo no Desafiador ou interação com armadilha",
+        "maxImpact": null
+      },
+      "poolSize": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "easy",
+      "seed": 4237,
+      "chestCandidates": 27,
+      "PICARETA": {
+        "eligible": false,
+        "reason": "nenhuma parede quebrável útil neste mapa",
+        "maxImpact": 0
+      },
+      "SEGUNDA_CHANCE": {
+        "eligible": true,
+        "reason": "protege uma vez contra captura; sempre relevante com defensores ativos",
+        "maxImpact": 1
+      },
+      "TERCEIRA": {
+        "eligible": false,
+        "reason": "categoria em aberto — isca, tempo no Desafiador ou interação com armadilha",
+        "maxImpact": null
+      },
+      "poolSize": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "easy",
+      "seed": 4250,
+      "chestCandidates": 29,
+      "PICARETA": {
+        "eligible": false,
+        "reason": "nenhuma parede quebrável útil neste mapa",
+        "maxImpact": 0
+      },
+      "SEGUNDA_CHANCE": {
+        "eligible": true,
+        "reason": "protege uma vez contra captura; sempre relevante com defensores ativos",
+        "maxImpact": 1
+      },
+      "TERCEIRA": {
+        "eligible": false,
+        "reason": "categoria em aberto — isca, tempo no Desafiador ou interação com armadilha",
+        "maxImpact": null
+      },
+      "poolSize": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "easy",
+      "seed": 4263,
+      "chestCandidates": 21,
+      "PICARETA": {
+        "eligible": false,
+        "reason": "nenhuma parede quebrável útil neste mapa",
+        "maxImpact": 0
+      },
+      "SEGUNDA_CHANCE": {
+        "eligible": true,
+        "reason": "protege uma vez contra captura; sempre relevante com defensores ativos",
+        "maxImpact": 1
+      },
+      "TERCEIRA": {
+        "eligible": false,
+        "reason": "categoria em aberto — isca, tempo no Desafiador ou interação com armadilha",
+        "maxImpact": null
+      },
+      "poolSize": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "medium",
+      "seed": 5620,
+      "chestCandidates": 23,
+      "PICARETA": {
+        "eligible": false,
+        "reason": "nenhuma parede quebrável útil neste mapa",
+        "maxImpact": 0
+      },
+      "SEGUNDA_CHANCE": {
+        "eligible": true,
+        "reason": "protege uma vez contra captura; sempre relevante com defensores ativos",
+        "maxImpact": 1
+      },
+      "TERCEIRA": {
+        "eligible": false,
+        "reason": "categoria em aberto — isca, tempo no Desafiador ou interação com armadilha",
+        "maxImpact": null
+      },
+      "poolSize": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "medium",
+      "seed": 5633,
+      "chestCandidates": 24,
+      "PICARETA": {
+        "eligible": false,
+        "reason": "nenhuma parede quebrável útil neste mapa",
+        "maxImpact": 0
+      },
+      "SEGUNDA_CHANCE": {
+        "eligible": true,
+        "reason": "protege uma vez contra captura; sempre relevante com defensores ativos",
+        "maxImpact": 1
+      },
+      "TERCEIRA": {
+        "eligible": false,
+        "reason": "categoria em aberto — isca, tempo no Desafiador ou interação com armadilha",
+        "maxImpact": null
+      },
+      "poolSize": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "medium",
+      "seed": 5646,
+      "chestCandidates": 26,
+      "PICARETA": {
+        "eligible": false,
+        "reason": "nenhuma parede quebrável útil neste mapa",
+        "maxImpact": 0
+      },
+      "SEGUNDA_CHANCE": {
+        "eligible": true,
+        "reason": "protege uma vez contra captura; sempre relevante com defensores ativos",
+        "maxImpact": 1
+      },
+      "TERCEIRA": {
+        "eligible": false,
+        "reason": "categoria em aberto — isca, tempo no Desafiador ou interação com armadilha",
+        "maxImpact": null
+      },
+      "poolSize": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "medium",
+      "seed": 5659,
+      "chestCandidates": 18,
+      "PICARETA": {
+        "eligible": false,
+        "reason": "nenhuma parede quebrável útil neste mapa",
+        "maxImpact": 0
+      },
+      "SEGUNDA_CHANCE": {
+        "eligible": true,
+        "reason": "protege uma vez contra captura; sempre relevante com defensores ativos",
+        "maxImpact": 1
+      },
+      "TERCEIRA": {
+        "eligible": false,
+        "reason": "categoria em aberto — isca, tempo no Desafiador ou interação com armadilha",
+        "maxImpact": null
+      },
+      "poolSize": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "medium",
+      "seed": 5672,
+      "chestCandidates": 26,
+      "PICARETA": {
+        "eligible": false,
+        "reason": "nenhuma parede quebrável útil neste mapa",
+        "maxImpact": 0
+      },
+      "SEGUNDA_CHANCE": {
+        "eligible": true,
+        "reason": "protege uma vez contra captura; sempre relevante com defensores ativos",
+        "maxImpact": 1
+      },
+      "TERCEIRA": {
+        "eligible": false,
+        "reason": "categoria em aberto — isca, tempo no Desafiador ou interação com armadilha",
+        "maxImpact": null
+      },
+      "poolSize": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "hard",
+      "seed": 7029,
+      "chestCandidates": 12,
+      "PICARETA": {
+        "eligible": false,
+        "reason": "nenhuma parede quebrável útil neste mapa",
+        "maxImpact": 0
+      },
+      "SEGUNDA_CHANCE": {
+        "eligible": true,
+        "reason": "protege uma vez contra captura; sempre relevante com defensores ativos",
+        "maxImpact": 1
+      },
+      "TERCEIRA": {
+        "eligible": false,
+        "reason": "categoria em aberto — isca, tempo no Desafiador ou interação com armadilha",
+        "maxImpact": null
+      },
+      "poolSize": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "hard",
+      "seed": 7042,
+      "chestCandidates": 10,
+      "PICARETA": {
+        "eligible": false,
+        "reason": "nenhuma parede quebrável útil neste mapa",
+        "maxImpact": 0
+      },
+      "SEGUNDA_CHANCE": {
+        "eligible": true,
+        "reason": "protege uma vez contra captura; sempre relevante com defensores ativos",
+        "maxImpact": 1
+      },
+      "TERCEIRA": {
+        "eligible": false,
+        "reason": "categoria em aberto — isca, tempo no Desafiador ou interação com armadilha",
+        "maxImpact": null
+      },
+      "poolSize": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "hard",
+      "seed": 7055,
+      "chestCandidates": 22,
+      "PICARETA": {
+        "eligible": true,
+        "reason": "melhor parede quebrável tem utilidade 56",
+        "maxImpact": 2
+      },
+      "SEGUNDA_CHANCE": {
+        "eligible": true,
+        "reason": "protege uma vez contra captura; sempre relevante com defensores ativos",
+        "maxImpact": 1
+      },
+      "TERCEIRA": {
+        "eligible": false,
+        "reason": "categoria em aberto — isca, tempo no Desafiador ou interação com armadilha",
+        "maxImpact": null
+      },
+      "poolSize": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "hard",
+      "seed": 7068,
+      "chestCandidates": 20,
+      "PICARETA": {
+        "eligible": true,
+        "reason": "melhor parede quebrável tem utilidade 53",
+        "maxImpact": 2
+      },
+      "SEGUNDA_CHANCE": {
+        "eligible": true,
+        "reason": "protege uma vez contra captura; sempre relevante com defensores ativos",
+        "maxImpact": 1
+      },
+      "TERCEIRA": {
+        "eligible": false,
+        "reason": "categoria em aberto — isca, tempo no Desafiador ou interação com armadilha",
+        "maxImpact": null
+      },
+      "poolSize": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "hard",
+      "seed": 7081,
+      "chestCandidates": 18,
+      "PICARETA": {
+        "eligible": true,
+        "reason": "melhor parede quebrável tem utilidade 53",
+        "maxImpact": 2
+      },
+      "SEGUNDA_CHANCE": {
+        "eligible": true,
+        "reason": "protege uma vez contra captura; sempre relevante com defensores ativos",
+        "maxImpact": 1
+      },
+      "TERCEIRA": {
+        "eligible": false,
+        "reason": "categoria em aberto — isca, tempo no Desafiador ou interação com armadilha",
+        "maxImpact": null
+      },
+      "poolSize": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "easy",
+      "seed": 4422,
+      "chestCandidates": 14,
+      "PICARETA": {
+        "eligible": false,
+        "reason": "nenhuma parede quebrável útil neste mapa",
+        "maxImpact": 0
+      },
+      "SEGUNDA_CHANCE": {
+        "eligible": true,
+        "reason": "protege uma vez contra captura; sempre relevante com defensores ativos",
+        "maxImpact": 1
+      },
+      "TERCEIRA": {
+        "eligible": false,
+        "reason": "categoria em aberto — isca, tempo no Desafiador ou interação com armadilha",
+        "maxImpact": null
+      },
+      "poolSize": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "easy",
+      "seed": 4435,
+      "chestCandidates": 26,
+      "PICARETA": {
+        "eligible": false,
+        "reason": "nenhuma parede quebrável útil neste mapa",
+        "maxImpact": 0
+      },
+      "SEGUNDA_CHANCE": {
+        "eligible": true,
+        "reason": "protege uma vez contra captura; sempre relevante com defensores ativos",
+        "maxImpact": 1
+      },
+      "TERCEIRA": {
+        "eligible": false,
+        "reason": "categoria em aberto — isca, tempo no Desafiador ou interação com armadilha",
+        "maxImpact": null
+      },
+      "poolSize": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "easy",
+      "seed": 4448,
+      "chestCandidates": 12,
+      "PICARETA": {
+        "eligible": false,
+        "reason": "nenhuma parede quebrável útil neste mapa",
+        "maxImpact": 0
+      },
+      "SEGUNDA_CHANCE": {
+        "eligible": true,
+        "reason": "protege uma vez contra captura; sempre relevante com defensores ativos",
+        "maxImpact": 1
+      },
+      "TERCEIRA": {
+        "eligible": false,
+        "reason": "categoria em aberto — isca, tempo no Desafiador ou interação com armadilha",
+        "maxImpact": null
+      },
+      "poolSize": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "easy",
+      "seed": 4461,
+      "chestCandidates": 14,
+      "PICARETA": {
+        "eligible": false,
+        "reason": "nenhuma parede quebrável útil neste mapa",
+        "maxImpact": 0
+      },
+      "SEGUNDA_CHANCE": {
+        "eligible": true,
+        "reason": "protege uma vez contra captura; sempre relevante com defensores ativos",
+        "maxImpact": 1
+      },
+      "TERCEIRA": {
+        "eligible": false,
+        "reason": "categoria em aberto — isca, tempo no Desafiador ou interação com armadilha",
+        "maxImpact": null
+      },
+      "poolSize": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "easy",
+      "seed": 4474,
+      "chestCandidates": 23,
+      "PICARETA": {
+        "eligible": false,
+        "reason": "nenhuma parede quebrável útil neste mapa",
+        "maxImpact": 0
+      },
+      "SEGUNDA_CHANCE": {
+        "eligible": true,
+        "reason": "protege uma vez contra captura; sempre relevante com defensores ativos",
+        "maxImpact": 1
+      },
+      "TERCEIRA": {
+        "eligible": false,
+        "reason": "categoria em aberto — isca, tempo no Desafiador ou interação com armadilha",
+        "maxImpact": null
+      },
+      "poolSize": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "medium",
+      "seed": 5831,
+      "chestCandidates": 16,
+      "PICARETA": {
+        "eligible": true,
+        "reason": "melhor parede quebrável tem utilidade 53",
+        "maxImpact": 2
+      },
+      "SEGUNDA_CHANCE": {
+        "eligible": true,
+        "reason": "protege uma vez contra captura; sempre relevante com defensores ativos",
+        "maxImpact": 1
+      },
+      "TERCEIRA": {
+        "eligible": false,
+        "reason": "categoria em aberto — isca, tempo no Desafiador ou interação com armadilha",
+        "maxImpact": null
+      },
+      "poolSize": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "medium",
+      "seed": 5844,
+      "chestCandidates": 16,
+      "PICARETA": {
+        "eligible": false,
+        "reason": "nenhuma parede quebrável útil neste mapa",
+        "maxImpact": 0
+      },
+      "SEGUNDA_CHANCE": {
+        "eligible": true,
+        "reason": "protege uma vez contra captura; sempre relevante com defensores ativos",
+        "maxImpact": 1
+      },
+      "TERCEIRA": {
+        "eligible": false,
+        "reason": "categoria em aberto — isca, tempo no Desafiador ou interação com armadilha",
+        "maxImpact": null
+      },
+      "poolSize": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "medium",
+      "seed": 5857,
+      "chestCandidates": 15,
+      "PICARETA": {
+        "eligible": false,
+        "reason": "nenhuma parede quebrável útil neste mapa",
+        "maxImpact": 0
+      },
+      "SEGUNDA_CHANCE": {
+        "eligible": true,
+        "reason": "protege uma vez contra captura; sempre relevante com defensores ativos",
+        "maxImpact": 1
+      },
+      "TERCEIRA": {
+        "eligible": false,
+        "reason": "categoria em aberto — isca, tempo no Desafiador ou interação com armadilha",
+        "maxImpact": null
+      },
+      "poolSize": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "medium",
+      "seed": 5870,
+      "chestCandidates": 16,
+      "PICARETA": {
+        "eligible": false,
+        "reason": "nenhuma parede quebrável útil neste mapa",
+        "maxImpact": 0
+      },
+      "SEGUNDA_CHANCE": {
+        "eligible": true,
+        "reason": "protege uma vez contra captura; sempre relevante com defensores ativos",
+        "maxImpact": 1
+      },
+      "TERCEIRA": {
+        "eligible": false,
+        "reason": "categoria em aberto — isca, tempo no Desafiador ou interação com armadilha",
+        "maxImpact": null
+      },
+      "poolSize": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "medium",
+      "seed": 5883,
+      "chestCandidates": 12,
+      "PICARETA": {
+        "eligible": false,
+        "reason": "nenhuma parede quebrável útil neste mapa",
+        "maxImpact": 0
+      },
+      "SEGUNDA_CHANCE": {
+        "eligible": true,
+        "reason": "protege uma vez contra captura; sempre relevante com defensores ativos",
+        "maxImpact": 1
+      },
+      "TERCEIRA": {
+        "eligible": false,
+        "reason": "categoria em aberto — isca, tempo no Desafiador ou interação com armadilha",
+        "maxImpact": null
+      },
+      "poolSize": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "hard",
+      "seed": 7240,
+      "chestCandidates": 9,
+      "PICARETA": {
+        "eligible": true,
+        "reason": "melhor parede quebrável tem utilidade 35",
+        "maxImpact": 2
+      },
+      "SEGUNDA_CHANCE": {
+        "eligible": true,
+        "reason": "protege uma vez contra captura; sempre relevante com defensores ativos",
+        "maxImpact": 1
+      },
+      "TERCEIRA": {
+        "eligible": false,
+        "reason": "categoria em aberto — isca, tempo no Desafiador ou interação com armadilha",
+        "maxImpact": null
+      },
+      "poolSize": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "hard",
+      "seed": 7253,
+      "chestCandidates": 7,
+      "PICARETA": {
+        "eligible": true,
+        "reason": "melhor parede quebrável tem utilidade 61",
+        "maxImpact": 4
+      },
+      "SEGUNDA_CHANCE": {
+        "eligible": true,
+        "reason": "protege uma vez contra captura; sempre relevante com defensores ativos",
+        "maxImpact": 1
+      },
+      "TERCEIRA": {
+        "eligible": false,
+        "reason": "categoria em aberto — isca, tempo no Desafiador ou interação com armadilha",
+        "maxImpact": null
+      },
+      "poolSize": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "hard",
+      "seed": 7266,
+      "chestCandidates": 13,
+      "PICARETA": {
+        "eligible": false,
+        "reason": "nenhuma parede quebrável útil neste mapa",
+        "maxImpact": 0
+      },
+      "SEGUNDA_CHANCE": {
+        "eligible": true,
+        "reason": "protege uma vez contra captura; sempre relevante com defensores ativos",
+        "maxImpact": 1
+      },
+      "TERCEIRA": {
+        "eligible": false,
+        "reason": "categoria em aberto — isca, tempo no Desafiador ou interação com armadilha",
+        "maxImpact": null
+      },
+      "poolSize": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "hard",
+      "seed": 7279,
+      "chestCandidates": 3,
+      "PICARETA": {
+        "eligible": true,
+        "reason": "melhor parede quebrável tem utilidade 50",
+        "maxImpact": 2
+      },
+      "SEGUNDA_CHANCE": {
+        "eligible": true,
+        "reason": "protege uma vez contra captura; sempre relevante com defensores ativos",
+        "maxImpact": 1
+      },
+      "TERCEIRA": {
+        "eligible": false,
+        "reason": "categoria em aberto — isca, tempo no Desafiador ou interação com armadilha",
+        "maxImpact": null
+      },
+      "poolSize": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "hard",
+      "seed": 7292,
+      "chestCandidates": 12,
+      "PICARETA": {
+        "eligible": false,
+        "reason": "nenhuma parede quebrável útil neste mapa",
+        "maxImpact": 0
+      },
+      "SEGUNDA_CHANCE": {
+        "eligible": true,
+        "reason": "protege uma vez contra captura; sempre relevante com defensores ativos",
+        "maxImpact": 1
+      },
+      "TERCEIRA": {
+        "eligible": false,
+        "reason": "categoria em aberto — isca, tempo no Desafiador ou interação com armadilha",
+        "maxImpact": null
+      },
+      "poolSize": 0
+    }
+  ]
+}

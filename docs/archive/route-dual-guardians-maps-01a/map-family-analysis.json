@@ -1,0 +1,611 @@
+{
+  "mission": "ROTA-DUAL-GUARDIANS-MAPS-01A-BALANCE",
+  "maps": 45,
+  "counts": {
+    "C_PORTAL_MULTIACESSO": 29,
+    "A_DUAS_ROTAS": 38,
+    "B_REGIOES_GARGALOS": 29,
+    "D_ATALHO_POTENCIAL": 7
+  },
+  "mapsWithoutIdentity": 1,
+  "familyDGate": "só aceita mapa com parede quebrável de utilidade >= 35",
+  "rows": [
+    {
+      "route": 1,
+      "difficulty": "easy",
+      "seed": 4211,
+      "tags": [
+        "C_PORTAL_MULTIACESSO"
+      ],
+      "primary": "C_PORTAL_MULTIACESSO",
+      "zoneAccesses": 3,
+      "breakableTop": 0,
+      "contextualTradeoff": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "easy",
+      "seed": 4224,
+      "tags": [
+        "A_DUAS_ROTAS",
+        "C_PORTAL_MULTIACESSO"
+      ],
+      "primary": "A_DUAS_ROTAS",
+      "zoneAccesses": 3,
+      "breakableTop": 0,
+      "contextualTradeoff": 0.467
+    },
+    {
+      "route": 1,
+      "difficulty": "easy",
+      "seed": 4237,
+      "tags": [
+        "C_PORTAL_MULTIACESSO"
+      ],
+      "primary": "C_PORTAL_MULTIACESSO",
+      "zoneAccesses": 4,
+      "breakableTop": 0,
+      "contextualTradeoff": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "easy",
+      "seed": 4250,
+      "tags": [
+        "A_DUAS_ROTAS",
+        "C_PORTAL_MULTIACESSO"
+      ],
+      "primary": "A_DUAS_ROTAS",
+      "zoneAccesses": 3,
+      "breakableTop": 0,
+      "contextualTradeoff": 0.378
+    },
+    {
+      "route": 1,
+      "difficulty": "easy",
+      "seed": 4263,
+      "tags": [
+        "A_DUAS_ROTAS",
+        "B_REGIOES_GARGALOS",
+        "C_PORTAL_MULTIACESSO"
+      ],
+      "primary": "A_DUAS_ROTAS",
+      "zoneAccesses": 5,
+      "breakableTop": 0,
+      "contextualTradeoff": 0.317
+    },
+    {
+      "route": 1,
+      "difficulty": "medium",
+      "seed": 5620,
+      "tags": [
+        "A_DUAS_ROTAS",
+        "B_REGIOES_GARGALOS",
+        "C_PORTAL_MULTIACESSO"
+      ],
+      "primary": "A_DUAS_ROTAS",
+      "zoneAccesses": 4,
+      "breakableTop": 0,
+      "contextualTradeoff": 0.4
+    },
+    {
+      "route": 1,
+      "difficulty": "medium",
+      "seed": 5633,
+      "tags": [
+        "A_DUAS_ROTAS"
+      ],
+      "primary": "A_DUAS_ROTAS",
+      "zoneAccesses": 2,
+      "breakableTop": 0,
+      "contextualTradeoff": 0.5
+    },
+    {
+      "route": 1,
+      "difficulty": "medium",
+      "seed": 5646,
+      "tags": [
+        "B_REGIOES_GARGALOS",
+        "C_PORTAL_MULTIACESSO"
+      ],
+      "primary": "B_REGIOES_GARGALOS",
+      "zoneAccesses": 3,
+      "breakableTop": 0,
+      "contextualTradeoff": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "medium",
+      "seed": 5659,
+      "tags": [],
+      "primary": "SEM_IDENTIDADE",
+      "zoneAccesses": 2,
+      "breakableTop": 0,
+      "contextualTradeoff": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "medium",
+      "seed": 5672,
+      "tags": [
+        "A_DUAS_ROTAS",
+        "C_PORTAL_MULTIACESSO"
+      ],
+      "primary": "A_DUAS_ROTAS",
+      "zoneAccesses": 4,
+      "breakableTop": 0,
+      "contextualTradeoff": 0.5
+    },
+    {
+      "route": 1,
+      "difficulty": "hard",
+      "seed": 7029,
+      "tags": [
+        "C_PORTAL_MULTIACESSO"
+      ],
+      "primary": "C_PORTAL_MULTIACESSO",
+      "zoneAccesses": 3,
+      "breakableTop": 0,
+      "contextualTradeoff": 0.156
+    },
+    {
+      "route": 1,
+      "difficulty": "hard",
+      "seed": 7042,
+      "tags": [
+        "C_PORTAL_MULTIACESSO"
+      ],
+      "primary": "C_PORTAL_MULTIACESSO",
+      "zoneAccesses": 3,
+      "breakableTop": 0,
+      "contextualTradeoff": 0.178
+    },
+    {
+      "route": 1,
+      "difficulty": "hard",
+      "seed": 7055,
+      "tags": [
+        "B_REGIOES_GARGALOS",
+        "D_ATALHO_POTENCIAL"
+      ],
+      "primary": "B_REGIOES_GARGALOS",
+      "zoneAccesses": 2,
+      "breakableTop": 56,
+      "contextualTradeoff": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "hard",
+      "seed": 7068,
+      "tags": [
+        "A_DUAS_ROTAS",
+        "B_REGIOES_GARGALOS",
+        "D_ATALHO_POTENCIAL"
+      ],
+      "primary": "A_DUAS_ROTAS",
+      "zoneAccesses": 2,
+      "breakableTop": 53,
+      "contextualTradeoff": 0.333
+    },
+    {
+      "route": 1,
+      "difficulty": "hard",
+      "seed": 7081,
+      "tags": [
+        "A_DUAS_ROTAS",
+        "D_ATALHO_POTENCIAL"
+      ],
+      "primary": "A_DUAS_ROTAS",
+      "zoneAccesses": 2,
+      "breakableTop": 53,
+      "contextualTradeoff": 0.2
+    },
+    {
+      "route": 2,
+      "difficulty": "easy",
+      "seed": 4422,
+      "tags": [
+        "A_DUAS_ROTAS",
+        "C_PORTAL_MULTIACESSO"
+      ],
+      "primary": "A_DUAS_ROTAS",
+      "zoneAccesses": 3,
+      "breakableTop": 0,
+      "contextualTradeoff": 0.467
+    },
+    {
+      "route": 2,
+      "difficulty": "easy",
+      "seed": 4435,
+      "tags": [
+        "A_DUAS_ROTAS",
+        "C_PORTAL_MULTIACESSO"
+      ],
+      "primary": "A_DUAS_ROTAS",
+      "zoneAccesses": 3,
+      "breakableTop": 0,
+      "contextualTradeoff": 0.467
+    },
+    {
+      "route": 2,
+      "difficulty": "easy",
+      "seed": 4448,
+      "tags": [
+        "A_DUAS_ROTAS",
+        "B_REGIOES_GARGALOS",
+        "C_PORTAL_MULTIACESSO"
+      ],
+      "primary": "A_DUAS_ROTAS",
+      "zoneAccesses": 3,
+      "breakableTop": 0,
+      "contextualTradeoff": 0.467
+    },
+    {
+      "route": 2,
+      "difficulty": "easy",
+      "seed": 4461,
+      "tags": [
+        "A_DUAS_ROTAS",
+        "C_PORTAL_MULTIACESSO"
+      ],
+      "primary": "A_DUAS_ROTAS",
+      "zoneAccesses": 3,
+      "breakableTop": 0,
+      "contextualTradeoff": 0.4
+    },
+    {
+      "route": 2,
+      "difficulty": "easy",
+      "seed": 4474,
+      "tags": [
+        "A_DUAS_ROTAS",
+        "B_REGIOES_GARGALOS",
+        "C_PORTAL_MULTIACESSO"
+      ],
+      "primary": "A_DUAS_ROTAS",
+      "zoneAccesses": 3,
+      "breakableTop": 0,
+      "contextualTradeoff": 0.356
+    },
+    {
+      "route": 2,
+      "difficulty": "medium",
+      "seed": 5831,
+      "tags": [
+        "A_DUAS_ROTAS",
+        "B_REGIOES_GARGALOS",
+        "D_ATALHO_POTENCIAL"
+      ],
+      "primary": "A_DUAS_ROTAS",
+      "zoneAccesses": 2,
+      "breakableTop": 53,
+      "contextualTradeoff": 0.4
+    },
+    {
+      "route": 2,
+      "difficulty": "medium",
+      "seed": 5844,
+      "tags": [
+        "A_DUAS_ROTAS",
+        "B_REGIOES_GARGALOS",
+        "C_PORTAL_MULTIACESSO"
+      ],
+      "primary": "A_DUAS_ROTAS",
+      "zoneAccesses": 3,
+      "breakableTop": 0,
+      "contextualTradeoff": 0.4
+    },
+    {
+      "route": 2,
+      "difficulty": "medium",
+      "seed": 5857,
+      "tags": [
+        "A_DUAS_ROTAS",
+        "B_REGIOES_GARGALOS",
+        "C_PORTAL_MULTIACESSO"
+      ],
+      "primary": "A_DUAS_ROTAS",
+      "zoneAccesses": 3,
+      "breakableTop": 0,
+      "contextualTradeoff": 0.2
+    },
+    {
+      "route": 2,
+      "difficulty": "medium",
+      "seed": 5870,
+      "tags": [
+        "A_DUAS_ROTAS",
+        "B_REGIOES_GARGALOS",
+        "C_PORTAL_MULTIACESSO"
+      ],
+      "primary": "A_DUAS_ROTAS",
+      "zoneAccesses": 3,
+      "breakableTop": 0,
+      "contextualTradeoff": 0.467
+    },
+    {
+      "route": 2,
+      "difficulty": "medium",
+      "seed": 5883,
+      "tags": [
+        "A_DUAS_ROTAS",
+        "B_REGIOES_GARGALOS",
+        "C_PORTAL_MULTIACESSO"
+      ],
+      "primary": "A_DUAS_ROTAS",
+      "zoneAccesses": 3,
+      "breakableTop": 0,
+      "contextualTradeoff": 0.467
+    },
+    {
+      "route": 2,
+      "difficulty": "hard",
+      "seed": 7240,
+      "tags": [
+        "A_DUAS_ROTAS",
+        "B_REGIOES_GARGALOS",
+        "D_ATALHO_POTENCIAL"
+      ],
+      "primary": "A_DUAS_ROTAS",
+      "zoneAccesses": 2,
+      "breakableTop": 35,
+      "contextualTradeoff": 0.4
+    },
+    {
+      "route": 2,
+      "difficulty": "hard",
+      "seed": 7253,
+      "tags": [
+        "A_DUAS_ROTAS",
+        "B_REGIOES_GARGALOS",
+        "D_ATALHO_POTENCIAL"
+      ],
+      "primary": "A_DUAS_ROTAS",
+      "zoneAccesses": 2,
+      "breakableTop": 61,
+      "contextualTradeoff": 0.4
+    },
+    {
+      "route": 2,
+      "difficulty": "hard",
+      "seed": 7266,
+      "tags": [
+        "A_DUAS_ROTAS",
+        "B_REGIOES_GARGALOS",
+        "C_PORTAL_MULTIACESSO"
+      ],
+      "primary": "A_DUAS_ROTAS",
+      "zoneAccesses": 3,
+      "breakableTop": 0,
+      "contextualTradeoff": 0.378
+    },
+    {
+      "route": 2,
+      "difficulty": "hard",
+      "seed": 7279,
+      "tags": [
+        "A_DUAS_ROTAS",
+        "B_REGIOES_GARGALOS",
+        "D_ATALHO_POTENCIAL"
+      ],
+      "primary": "A_DUAS_ROTAS",
+      "zoneAccesses": 2,
+      "breakableTop": 50,
+      "contextualTradeoff": 0.5
+    },
+    {
+      "route": 2,
+      "difficulty": "hard",
+      "seed": 7292,
+      "tags": [
+        "A_DUAS_ROTAS",
+        "B_REGIOES_GARGALOS"
+      ],
+      "primary": "A_DUAS_ROTAS",
+      "zoneAccesses": 2,
+      "breakableTop": 0,
+      "contextualTradeoff": 0.5
+    },
+    {
+      "route": 3,
+      "difficulty": "easy",
+      "seed": 4633,
+      "tags": [
+        "A_DUAS_ROTAS",
+        "B_REGIOES_GARGALOS",
+        "C_PORTAL_MULTIACESSO"
+      ],
+      "primary": "A_DUAS_ROTAS",
+      "zoneAccesses": 3,
+      "breakableTop": 0,
+      "contextualTradeoff": 0.467
+    },
+    {
+      "route": 3,
+      "difficulty": "easy",
+      "seed": 4646,
+      "tags": [
+        "A_DUAS_ROTAS",
+        "B_REGIOES_GARGALOS",
+        "C_PORTAL_MULTIACESSO"
+      ],
+      "primary": "A_DUAS_ROTAS",
+      "zoneAccesses": 3,
+      "breakableTop": 0,
+      "contextualTradeoff": 0.467
+    },
+    {
+      "route": 3,
+      "difficulty": "easy",
+      "seed": 4659,
+      "tags": [
+        "A_DUAS_ROTAS"
+      ],
+      "primary": "A_DUAS_ROTAS",
+      "zoneAccesses": 2,
+      "breakableTop": 0,
+      "contextualTradeoff": 0.467
+    },
+    {
+      "route": 3,
+      "difficulty": "easy",
+      "seed": 4672,
+      "tags": [
+        "A_DUAS_ROTAS",
+        "C_PORTAL_MULTIACESSO"
+      ],
+      "primary": "A_DUAS_ROTAS",
+      "zoneAccesses": 3,
+      "breakableTop": 0,
+      "contextualTradeoff": 0.4
+    },
+    {
+      "route": 3,
+      "difficulty": "easy",
+      "seed": 4685,
+      "tags": [
+        "A_DUAS_ROTAS",
+        "B_REGIOES_GARGALOS",
+        "C_PORTAL_MULTIACESSO"
+      ],
+      "primary": "A_DUAS_ROTAS",
+      "zoneAccesses": 3,
+      "breakableTop": 0,
+      "contextualTradeoff": 0.444
+    },
+    {
+      "route": 3,
+      "difficulty": "medium",
+      "seed": 6042,
+      "tags": [
+        "A_DUAS_ROTAS",
+        "B_REGIOES_GARGALOS"
+      ],
+      "primary": "A_DUAS_ROTAS",
+      "zoneAccesses": 2,
+      "breakableTop": 0,
+      "contextualTradeoff": 0.5
+    },
+    {
+      "route": 3,
+      "difficulty": "medium",
+      "seed": 6055,
+      "tags": [
+        "A_DUAS_ROTAS",
+        "B_REGIOES_GARGALOS"
+      ],
+      "primary": "A_DUAS_ROTAS",
+      "zoneAccesses": 2,
+      "breakableTop": 0,
+      "contextualTradeoff": 0.4
+    },
+    {
+      "route": 3,
+      "difficulty": "medium",
+      "seed": 6068,
+      "tags": [
+        "A_DUAS_ROTAS",
+        "B_REGIOES_GARGALOS",
+        "C_PORTAL_MULTIACESSO"
+      ],
+      "primary": "A_DUAS_ROTAS",
+      "zoneAccesses": 3,
+      "breakableTop": 0,
+      "contextualTradeoff": 0.467
+    },
+    {
+      "route": 3,
+      "difficulty": "medium",
+      "seed": 6081,
+      "tags": [
+        "A_DUAS_ROTAS",
+        "B_REGIOES_GARGALOS",
+        "C_PORTAL_MULTIACESSO"
+      ],
+      "primary": "A_DUAS_ROTAS",
+      "zoneAccesses": 3,
+      "breakableTop": 0,
+      "contextualTradeoff": 0.467
+    },
+    {
+      "route": 3,
+      "difficulty": "medium",
+      "seed": 6094,
+      "tags": [
+        "A_DUAS_ROTAS",
+        "C_PORTAL_MULTIACESSO"
+      ],
+      "primary": "A_DUAS_ROTAS",
+      "zoneAccesses": 3,
+      "breakableTop": 0,
+      "contextualTradeoff": 0.289
+    },
+    {
+      "route": 3,
+      "difficulty": "hard",
+      "seed": 7451,
+      "tags": [
+        "A_DUAS_ROTAS",
+        "B_REGIOES_GARGALOS",
+        "C_PORTAL_MULTIACESSO"
+      ],
+      "primary": "A_DUAS_ROTAS",
+      "zoneAccesses": 4,
+      "breakableTop": 0,
+      "contextualTradeoff": 0.5
+    },
+    {
+      "route": 3,
+      "difficulty": "hard",
+      "seed": 7464,
+      "tags": [
+        "A_DUAS_ROTAS",
+        "B_REGIOES_GARGALOS"
+      ],
+      "primary": "A_DUAS_ROTAS",
+      "zoneAccesses": 2,
+      "breakableTop": 0,
+      "contextualTradeoff": 0.4
+    },
+    {
+      "route": 3,
+      "difficulty": "hard",
+      "seed": 7477,
+      "tags": [
+        "A_DUAS_ROTAS",
+        "B_REGIOES_GARGALOS",
+        "C_PORTAL_MULTIACESSO"
+      ],
+      "primary": "A_DUAS_ROTAS",
+      "zoneAccesses": 3,
+      "breakableTop": 0,
+      "contextualTradeoff": 0.4
+    },
+    {
+      "route": 3,
+      "difficulty": "hard",
+      "seed": 7490,
+      "tags": [
+        "A_DUAS_ROTAS",
+        "B_REGIOES_GARGALOS"
+      ],
+      "primary": "A_DUAS_ROTAS",
+      "zoneAccesses": 2,
+      "breakableTop": 0,
+      "contextualTradeoff": 0.4
+    },
+    {
+      "route": 3,
+      "difficulty": "hard",
+      "seed": 7503,
+      "tags": [
+        "A_DUAS_ROTAS",
+        "B_REGIOES_GARGALOS"
+      ],
+      "primary": "A_DUAS_ROTAS",
+      "zoneAccesses": 2,
+      "breakableTop": 0,
+      "contextualTradeoff": 0.433
+    }
+  ]
+}

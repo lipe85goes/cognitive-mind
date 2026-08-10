@@ -1,0 +1,48 @@
+{
+  "mission": "ROTA-DUAL-GUARDIANS-MAPS-01A-FALLBACK-CLOSE",
+  "phase": "1 — causa raiz do fallback (medição ANTES da correção)",
+  "maxGenerationAttempts": 500,
+  "maps": 1080,
+  "fallbacks": 1,
+  "fallbackCases": [
+    {
+      "routeNumber": 3,
+      "difficulty": "hard",
+      "seed": 3697,
+      "attempts": 500,
+      "fallback": true,
+      "templateIndex": -1,
+      "ms": 30528,
+      "lights": 6,
+      "traps": 6
+    }
+  ],
+  "attemptsOverall": {
+    "p50": 20,
+    "p90": 125,
+    "p95": 216,
+    "p99": 357,
+    "max": 500
+  },
+  "route3hard": {
+    "samples": 120,
+    "attempts": {
+      "p50": 90,
+      "p90": 306,
+      "p95": 357,
+      "p99": 489,
+      "max": 500
+    },
+    "ms": {
+      "min": 151,
+      "p10": 855,
+      "median": 5789,
+      "p90": 19426,
+      "max": 31171,
+      "mean": 7886.22
+    },
+    "fallbacks": 1
+  },
+  "rootCause": "MAX_GENERATION_ATTEMPTS = 500 estava praticamente no p99 da distribuição de tentativas de route3-hard (p99 = 489). Com 120 amostras nessa combinação, ~1 fallback é exatamente o que a distribuição prevê. O teto não era folgado: era o percentil.",
+  "fix": "Caminho de fallback não certificado removido. Duas fases, ambas terminando no mesmo isValidMap: busca aleatória (500) e varredura determinística template x saída (3 rodadas x 12). Falha total lança erro em vez de devolver mapa não certificado."
+}

@@ -1,0 +1,88 @@
+{
+  "mission": "ROTA-DUAL-GUARDIANS-MAPS-01A-BALANCE",
+  "maps": 45,
+  "requiresReposition": 44,
+  "trivialCoverageAtRadius2": 8,
+  "coverageAt1": {
+    "min": 1,
+    "p10": 1,
+    "median": 2,
+    "p90": 2,
+    "max": 3,
+    "mean": 1.6
+  },
+  "coverageAt2": {
+    "min": 1,
+    "p10": 1,
+    "median": 2,
+    "p90": 2,
+    "max": 4,
+    "mean": 1.89
+  },
+  "accesses": {
+    "min": 2,
+    "p10": 2,
+    "median": 3,
+    "p90": 4,
+    "max": 5,
+    "mean": 2.78
+  },
+  "trivialCases": [
+    {
+      "route": 1,
+      "difficulty": "medium",
+      "seed": 5633,
+      "accesses": 2,
+      "coverageAt1": 1
+    },
+    {
+      "route": 2,
+      "difficulty": "easy",
+      "seed": 4448,
+      "accesses": 3,
+      "coverageAt1": 2
+    },
+    {
+      "route": 2,
+      "difficulty": "medium",
+      "seed": 5831,
+      "accesses": 2,
+      "coverageAt1": 2
+    },
+    {
+      "route": 2,
+      "difficulty": "hard",
+      "seed": 7279,
+      "accesses": 2,
+      "coverageAt1": 1
+    },
+    {
+      "route": 3,
+      "difficulty": "easy",
+      "seed": 4659,
+      "accesses": 2,
+      "coverageAt1": 1
+    },
+    {
+      "route": 3,
+      "difficulty": "medium",
+      "seed": 6081,
+      "accesses": 3,
+      "coverageAt1": 2
+    },
+    {
+      "route": 3,
+      "difficulty": "hard",
+      "seed": 7464,
+      "accesses": 2,
+      "coverageAt1": 1
+    },
+    {
+      "route": 3,
+      "difficulty": "hard",
+      "seed": 7490,
+      "accesses": 2,
+      "coverageAt1": 1
+    }
+  ]
+}

@@ -1,0 +1,147 @@
+{
+  "mission": "ROTA-01A-STAR-SELECTION-PROOF-FINALIZE",
+  "contract": {
+    "requiredStars": 6,
+    "starMinStartDistance": 4,
+    "starMinExitDistance": 2,
+    "starMinSeparation": 3
+  },
+  "corpusCandidates": 251,
+  "tests": [
+    {
+      "id": "A",
+      "name": "EXACT CAPACITY",
+      "pass": true,
+      "eligible": 17,
+      "completeSetsAvailable": 1,
+      "selected": [
+        "4,5",
+        "7,5",
+        "6,3",
+        "3,0",
+        "5,1",
+        "3,3"
+      ],
+      "uniqueValidSet": [
+        "4,5",
+        "7,5",
+        "6,3",
+        "3,0",
+        "5,1",
+        "3,3"
+      ],
+      "matchedUniqueSet": true,
+      "prodEqualsTrace": true,
+      "ruleViolations": [],
+      "walls": 28
+    },
+    {
+      "id": "B",
+      "name": "GREEDY TRAP",
+      "pass": true,
+      "eligible": 17,
+      "topScoringCell": "5,5",
+      "greedyResult": "5/6 (5,5,7,4,6,2,3,4,3,0)",
+      "BACKTRACK_REQUIRED": true,
+      "backtracks": 181,
+      "searchNodes": 188,
+      "selected": [
+        "4,5",
+        "7,5",
+        "6,3",
+        "3,0",
+        "5,1",
+        "3,3"
+      ],
+      "greedyPrefixAbandoned": true,
+      "strictVariant": true,
+      "topCellBelongsToNoCompleteSet": true,
+      "prodEqualsTrace": true,
+      "ruleViolations": [],
+      "wallsAdded": 3
+    },
+    {
+      "id": "C",
+      "name": "TRUE INSUFFICIENT CAPACITY",
+      "pass": true,
+      "eligible": 3,
+      "completeSetsAvailable": 0,
+      "returned": 1,
+      "requiredNotReduced": true,
+      "selected": [
+        "5,1"
+      ],
+      "separationStillRespected": true,
+      "ruleViolations": [],
+      "candidateRejected": true,
+      "prodEqualsTrace": true
+    },
+    {
+      "id": "D",
+      "name": "BOTTLENECK HIGH SCORE",
+      "pass": true,
+      "bottleneckCellsRankedByOldScorer": [
+        "8,7",
+        "6,8"
+      ],
+      "preFixSelection": [
+        "8,7",
+        "6,8",
+        "5,6",
+        "1,8",
+        "7,5",
+        "8,3"
+      ],
+      "presentInEligibleStars": 0,
+      "presentInSelection": 0,
+      "selected": [
+        "5,8",
+        "6,6",
+        "1,8",
+        "8,5",
+        "2,6",
+        "7,3"
+      ],
+      "ruleViolations": []
+    },
+    {
+      "id": "E",
+      "name": "DETERMINISM",
+      "pass": true,
+      "runs": 10,
+      "distinctOutcomes": 1,
+      "stableSetAndOrder": true,
+      "result": "4,5|7,5|6,3|3,0|5,1|3,3",
+      "nearTiesInScore": 2,
+      "differentRngSeedResult": "4,5|7,5|6,3|3,0|5,1|3,3",
+      "note": "order is asserted, not just membership"
+    },
+    {
+      "id": "F",
+      "name": "DEFENSIVE GATE 13",
+      "pass": true,
+      "baselineAccepted": true,
+      "intruder": "0,0",
+      "intruderSharesBlock": false,
+      "tamperedRejected": true,
+      "originalStars": [
+        "3,3",
+        "1,8",
+        "4,8",
+        "2,6",
+        "7,4",
+        "5,6"
+      ],
+      "tamperedStars": [
+        "3,3",
+        "1,8",
+        "4,8",
+        "2,6",
+        "7,4",
+        "0,0"
+      ],
+      "note": "differential: only the swapped light changes between the two calls"
+    }
+  ],
+  "allPass": true
+}

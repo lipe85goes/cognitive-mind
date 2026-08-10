@@ -1,0 +1,45 @@
+{
+  "mission": "ROTA-01A-STAR-CAPACITY-PROOF",
+  "contract": {
+    "requiredStars": 6,
+    "starMinStartDistance": 4,
+    "starMinExitDistance": 2,
+    "starMinSeparation": 3,
+    "note": "viabilidade é do CONJUNTO: separação mínima acopla as escolhas"
+  },
+  "totalGate13": 2330,
+  "A": 2330,
+  "B": 0,
+  "percentA": 100,
+  "percentB": 0,
+  "maxFeasibleHistogram": {
+    "6": 2330
+  },
+  "perSeed": [
+    {
+      "seed": 902627,
+      "gate13Cases": 566,
+      "A": 566,
+      "B": 0
+    },
+    {
+      "seed": 907474,
+      "gate13Cases": 586,
+      "A": 586,
+      "B": 0
+    },
+    {
+      "seed": 907548,
+      "gate13Cases": 589,
+      "A": 589,
+      "B": 0
+    },
+    {
+      "seed": 908399,
+      "gate13Cases": 589,
+      "A": 589,
+      "B": 0
+    }
+  ],
+  "verdict": "STAR_SELECTION_FAILURE_DOMINANT"
+}

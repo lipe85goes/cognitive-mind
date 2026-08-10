@@ -1,0 +1,8 @@
+{
+  "mission": "ROTA-01A-ESCAPE-ROUTE-GENERATION-CLOSE",
+  "legitimateCases": 192,
+  "identifiedEarly": 192,
+  "stillRejected": 192,
+  "lightDimensionCasesOutOfScope": 25,
+  "note": "These stay rejected. The only change is that they are dropped before light selection, the route permutation search and trap placement."
+}

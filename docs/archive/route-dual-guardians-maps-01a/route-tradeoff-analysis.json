@@ -1,0 +1,3716 @@
+{
+  "mission": "ROTA-DUAL-GUARDIANS-MAPS-01A-BALANCE",
+  "maps": 45,
+  "mapsWithTwoPlusRoutes": 40,
+  "mapsWithRealTradeoff": 19,
+  "lengthSpread": {
+    "min": 0,
+    "p10": 0,
+    "median": 2,
+    "p90": 2,
+    "max": 4,
+    "mean": 1.24
+  },
+  "hunterExposureSpread": {
+    "min": 0,
+    "p10": 0,
+    "median": 6,
+    "p90": 7,
+    "max": 7,
+    "mean": 4.69
+  },
+  "sentinelExposureSpread": {
+    "min": 0,
+    "p10": 0,
+    "median": 0,
+    "p90": 0,
+    "max": 0,
+    "mean": 0
+  },
+  "examples": [
+    {
+      "route": 1,
+      "difficulty": "easy",
+      "seed": 4224,
+      "candidates": [
+        {
+          "name": "direta",
+          "vector": {
+            "pathLength": 13,
+            "hunterExposure": 5,
+            "sentinelExposure": 4,
+            "portalAccessQuality": 0,
+            "trapLeverage": 1,
+            "recoveryPotential": 10,
+            "entryDoor": "3,5"
+          }
+        },
+        {
+          "name": "alternativa",
+          "vector": {
+            "pathLength": 15,
+            "hunterExposure": 3,
+            "sentinelExposure": 4,
+            "portalAccessQuality": 0,
+            "trapLeverage": 0,
+            "recoveryPotential": 13,
+            "entryDoor": "4,8"
+          }
+        }
+      ],
+      "dominance": [],
+      "contextual": {
+        "routes": 2,
+        "states": 45,
+        "dominantAcrossStates": null,
+        "routeSwitchCount": 2,
+        "preferredCounts": {
+          "alternativa": 21,
+          "direta": 24
+        },
+        "contextualTradeoffScore": 0.467,
+        "preferredRouteByState": [
+          {
+            "hunter": "2,6",
+            "door": "0,6",
+            "lightsLeft": 3,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "2,6",
+            "door": "0,6",
+            "lightsLeft": 1,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "2,6",
+            "door": "0,6",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "2,6",
+            "door": "3,5",
+            "lightsLeft": 3,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "2,6",
+            "door": "3,5",
+            "lightsLeft": 1,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "2,6",
+            "door": "3,5",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "2,6",
+            "door": "4,8",
+            "lightsLeft": 3,
+            "route": "direta"
+          },
+          {
+            "hunter": "2,6",
+            "door": "4,8",
+            "lightsLeft": 1,
+            "route": "direta"
+          },
+          {
+            "hunter": "2,6",
+            "door": "4,8",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "0,6",
+            "lightsLeft": 3,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "0,6",
+            "lightsLeft": 1,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "0,6",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "3,5",
+            "lightsLeft": 3,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,0",
+            "door": "3,5",
+            "lightsLeft": 1,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,0",
+            "door": "3,5",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,0",
+            "door": "4,8",
+            "lightsLeft": 3,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "4,8",
+            "lightsLeft": 1,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "4,8",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "0,6",
+            "lightsLeft": 3,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "0,6",
+            "lightsLeft": 1,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "0,6",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "3,5",
+            "lightsLeft": 3,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "3,5",
+            "lightsLeft": 1,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "3,5",
+            "lightsLeft": 0,
+            "route": "direta"
+          }
+        ]
+      },
+      "routeCount": 2,
+      "lengthSpread": 2,
+      "hasRealTradeoff": true
+    },
+    {
+      "route": 1,
+      "difficulty": "easy",
+      "seed": 4250,
+      "candidates": [
+        {
+          "name": "direta",
+          "vector": {
+            "pathLength": 13,
+            "hunterExposure": 1,
+            "sentinelExposure": 4,
+            "portalAccessQuality": 0,
+            "trapLeverage": 0,
+            "recoveryPotential": 10,
+            "entryDoor": "3,5"
+          }
+        },
+        {
+          "name": "alternativa",
+          "vector": {
+            "pathLength": 15,
+            "hunterExposure": 0,
+            "sentinelExposure": 4,
+            "portalAccessQuality": 0,
+            "trapLeverage": 0,
+            "recoveryPotential": 13,
+            "entryDoor": "4,8"
+          }
+        }
+      ],
+      "dominance": [],
+      "contextual": {
+        "routes": 2,
+        "states": 45,
+        "dominantAcrossStates": null,
+        "routeSwitchCount": 2,
+        "preferredCounts": {
+          "direta": 28,
+          "alternativa": 17
+        },
+        "contextualTradeoffScore": 0.378,
+        "preferredRouteByState": [
+          {
+            "hunter": "0,4",
+            "door": "0,6",
+            "lightsLeft": 3,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,4",
+            "door": "0,6",
+            "lightsLeft": 1,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,4",
+            "door": "0,6",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,4",
+            "door": "3,5",
+            "lightsLeft": 3,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,4",
+            "door": "3,5",
+            "lightsLeft": 1,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,4",
+            "door": "3,5",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,4",
+            "door": "4,8",
+            "lightsLeft": 3,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,4",
+            "door": "4,8",
+            "lightsLeft": 1,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,4",
+            "door": "4,8",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "0,6",
+            "lightsLeft": 3,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "0,6",
+            "lightsLeft": 1,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "0,6",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "3,5",
+            "lightsLeft": 3,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,0",
+            "door": "3,5",
+            "lightsLeft": 1,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,0",
+            "door": "3,5",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,0",
+            "door": "4,8",
+            "lightsLeft": 3,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "4,8",
+            "lightsLeft": 1,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "4,8",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "0,6",
+            "lightsLeft": 3,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "0,6",
+            "lightsLeft": 1,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "0,6",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "3,5",
+            "lightsLeft": 3,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "3,5",
+            "lightsLeft": 1,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "3,5",
+            "lightsLeft": 0,
+            "route": "direta"
+          }
+        ]
+      },
+      "routeCount": 2,
+      "lengthSpread": 2,
+      "hasRealTradeoff": true
+    },
+    {
+      "route": 1,
+      "difficulty": "medium",
+      "seed": 5620,
+      "candidates": [
+        {
+          "name": "direta",
+          "vector": {
+            "pathLength": 13,
+            "hunterExposure": 2,
+            "sentinelExposure": 4,
+            "portalAccessQuality": 0,
+            "trapLeverage": 1,
+            "recoveryPotential": 12,
+            "entryDoor": "2,4"
+          }
+        },
+        {
+          "name": "alternativa",
+          "vector": {
+            "pathLength": 13,
+            "hunterExposure": 0,
+            "sentinelExposure": 4,
+            "portalAccessQuality": 0,
+            "trapLeverage": 0,
+            "recoveryPotential": 10,
+            "entryDoor": "3,5"
+          }
+        }
+      ],
+      "dominance": [],
+      "contextual": {
+        "routes": 2,
+        "states": 60,
+        "dominantAcrossStates": null,
+        "routeSwitchCount": 2,
+        "preferredCounts": {
+          "alternativa": 24,
+          "direta": 36
+        },
+        "contextualTradeoffScore": 0.4,
+        "preferredRouteByState": [
+          {
+            "hunter": "0,3",
+            "door": "0,6",
+            "lightsLeft": 4,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,3",
+            "door": "0,6",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,3",
+            "door": "0,6",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,3",
+            "door": "3,5",
+            "lightsLeft": 4,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,3",
+            "door": "3,5",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,3",
+            "door": "3,5",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,3",
+            "door": "4,8",
+            "lightsLeft": 4,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,3",
+            "door": "4,8",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,3",
+            "door": "4,8",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,3",
+            "door": "2,4",
+            "lightsLeft": 4,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,3",
+            "door": "2,4",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,3",
+            "door": "2,4",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "1,0",
+            "door": "0,6",
+            "lightsLeft": 4,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "1,0",
+            "door": "0,6",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "1,0",
+            "door": "0,6",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "1,0",
+            "door": "3,5",
+            "lightsLeft": 4,
+            "route": "direta"
+          },
+          {
+            "hunter": "1,0",
+            "door": "3,5",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "1,0",
+            "door": "3,5",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "1,0",
+            "door": "4,8",
+            "lightsLeft": 4,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "1,0",
+            "door": "4,8",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "1,0",
+            "door": "4,8",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "1,0",
+            "door": "2,4",
+            "lightsLeft": 4,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "1,0",
+            "door": "2,4",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "1,0",
+            "door": "2,4",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          }
+        ]
+      },
+      "routeCount": 2,
+      "lengthSpread": 0,
+      "hasRealTradeoff": true
+    },
+    {
+      "route": 1,
+      "difficulty": "medium",
+      "seed": 5633,
+      "candidates": [
+        {
+          "name": "direta",
+          "vector": {
+            "pathLength": 13,
+            "hunterExposure": 0,
+            "sentinelExposure": 4,
+            "portalAccessQuality": 0,
+            "trapLeverage": 1,
+            "recoveryPotential": 8,
+            "entryDoor": "3,5"
+          }
+        },
+        {
+          "name": "alternativa",
+          "vector": {
+            "pathLength": 15,
+            "hunterExposure": 0,
+            "sentinelExposure": 4,
+            "portalAccessQuality": 0,
+            "trapLeverage": 0,
+            "recoveryPotential": 13,
+            "entryDoor": "4,8"
+          }
+        }
+      ],
+      "dominance": [],
+      "contextual": {
+        "routes": 2,
+        "states": 30,
+        "dominantAcrossStates": null,
+        "routeSwitchCount": 2,
+        "preferredCounts": {
+          "alternativa": 15,
+          "direta": 15
+        },
+        "contextualTradeoffScore": 0.5,
+        "preferredRouteByState": [
+          {
+            "hunter": "0,4",
+            "door": "3,5",
+            "lightsLeft": 4,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,4",
+            "door": "3,5",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,4",
+            "door": "3,5",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,4",
+            "door": "4,8",
+            "lightsLeft": 4,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,4",
+            "door": "4,8",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,4",
+            "door": "4,8",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "3,5",
+            "lightsLeft": 4,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,0",
+            "door": "3,5",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,0",
+            "door": "3,5",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,0",
+            "door": "4,8",
+            "lightsLeft": 4,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "4,8",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "4,8",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "3,5",
+            "lightsLeft": 4,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "3,5",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "3,5",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "4,8",
+            "lightsLeft": 4,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "4,8",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "4,8",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "8,8",
+            "door": "3,5",
+            "lightsLeft": 4,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "8,8",
+            "door": "3,5",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "8,8",
+            "door": "3,5",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "8,8",
+            "door": "4,8",
+            "lightsLeft": 4,
+            "route": "direta"
+          },
+          {
+            "hunter": "8,8",
+            "door": "4,8",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "8,8",
+            "door": "4,8",
+            "lightsLeft": 0,
+            "route": "direta"
+          }
+        ]
+      },
+      "routeCount": 2,
+      "lengthSpread": 2,
+      "hasRealTradeoff": true
+    },
+    {
+      "route": 1,
+      "difficulty": "hard",
+      "seed": 7029,
+      "candidates": [
+        {
+          "name": "direta",
+          "vector": {
+            "pathLength": 14,
+            "hunterExposure": 0,
+            "sentinelExposure": 4,
+            "portalAccessQuality": 0,
+            "trapLeverage": 0,
+            "recoveryPotential": 10,
+            "entryDoor": "5,8"
+          }
+        },
+        {
+          "name": "alternativa",
+          "vector": {
+            "pathLength": 18,
+            "hunterExposure": 7,
+            "sentinelExposure": 4,
+            "portalAccessQuality": 0,
+            "trapLeverage": 2,
+            "recoveryPotential": 12,
+            "entryDoor": "1,6"
+          }
+        }
+      ],
+      "dominance": [],
+      "contextual": {
+        "routes": 2,
+        "states": 45,
+        "dominantAcrossStates": null,
+        "routeSwitchCount": 2,
+        "preferredCounts": {
+          "direta": 38,
+          "alternativa": 7
+        },
+        "contextualTradeoffScore": 0.156,
+        "preferredRouteByState": [
+          {
+            "hunter": "0,3",
+            "door": "0,7",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,3",
+            "door": "0,7",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,3",
+            "door": "0,7",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,3",
+            "door": "1,6",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,3",
+            "door": "1,6",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,3",
+            "door": "1,6",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,3",
+            "door": "5,8",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,3",
+            "door": "5,8",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,3",
+            "door": "5,8",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "0,7",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "0,7",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "0,7",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "1,6",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "1,6",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "1,6",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "5,8",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "5,8",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "5,8",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "0,7",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "0,7",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "0,7",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "1,6",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "1,6",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "1,6",
+            "lightsLeft": 0,
+            "route": "direta"
+          }
+        ]
+      },
+      "routeCount": 2,
+      "lengthSpread": 4,
+      "hasRealTradeoff": true
+    },
+    {
+      "route": 1,
+      "difficulty": "hard",
+      "seed": 7042,
+      "candidates": [
+        {
+          "name": "direta",
+          "vector": {
+            "pathLength": 14,
+            "hunterExposure": 0,
+            "sentinelExposure": 4,
+            "portalAccessQuality": 0,
+            "trapLeverage": 0,
+            "recoveryPotential": 9,
+            "entryDoor": "5,8"
+          }
+        },
+        {
+          "name": "alternativa",
+          "vector": {
+            "pathLength": 18,
+            "hunterExposure": 5,
+            "sentinelExposure": 4,
+            "portalAccessQuality": 0,
+            "trapLeverage": 2,
+            "recoveryPotential": 13,
+            "entryDoor": "1,6"
+          }
+        }
+      ],
+      "dominance": [],
+      "contextual": {
+        "routes": 2,
+        "states": 45,
+        "dominantAcrossStates": null,
+        "routeSwitchCount": 2,
+        "preferredCounts": {
+          "direta": 37,
+          "alternativa": 8
+        },
+        "contextualTradeoffScore": 0.178,
+        "preferredRouteByState": [
+          {
+            "hunter": "0,3",
+            "door": "0,7",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,3",
+            "door": "0,7",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,3",
+            "door": "0,7",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,3",
+            "door": "1,6",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,3",
+            "door": "1,6",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,3",
+            "door": "1,6",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,3",
+            "door": "5,8",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,3",
+            "door": "5,8",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,3",
+            "door": "5,8",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,1",
+            "door": "0,7",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,1",
+            "door": "0,7",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,1",
+            "door": "0,7",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,1",
+            "door": "1,6",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,1",
+            "door": "1,6",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,1",
+            "door": "1,6",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,1",
+            "door": "5,8",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,1",
+            "door": "5,8",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,1",
+            "door": "5,8",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,8",
+            "door": "0,7",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "0,7",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "0,7",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "1,6",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "1,6",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "1,6",
+            "lightsLeft": 0,
+            "route": "direta"
+          }
+        ]
+      },
+      "routeCount": 2,
+      "lengthSpread": 4,
+      "hasRealTradeoff": true
+    },
+    {
+      "route": 1,
+      "difficulty": "hard",
+      "seed": 7081,
+      "candidates": [
+        {
+          "name": "direta",
+          "vector": {
+            "pathLength": 15,
+            "hunterExposure": 0,
+            "sentinelExposure": 4,
+            "portalAccessQuality": 0,
+            "trapLeverage": 0,
+            "recoveryPotential": 11,
+            "entryDoor": "4,8"
+          }
+        },
+        {
+          "name": "alternativa",
+          "vector": {
+            "pathLength": 17,
+            "hunterExposure": 7,
+            "sentinelExposure": 4,
+            "portalAccessQuality": 0,
+            "trapLeverage": 1,
+            "recoveryPotential": 12,
+            "entryDoor": "0,6"
+          }
+        }
+      ],
+      "dominance": [],
+      "contextual": {
+        "routes": 2,
+        "states": 30,
+        "dominantAcrossStates": null,
+        "routeSwitchCount": 2,
+        "preferredCounts": {
+          "direta": 24,
+          "alternativa": 6
+        },
+        "contextualTradeoffScore": 0.2,
+        "preferredRouteByState": [
+          {
+            "hunter": "0,3",
+            "door": "0,6",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,3",
+            "door": "0,6",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,3",
+            "door": "0,6",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,3",
+            "door": "4,8",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,3",
+            "door": "4,8",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,3",
+            "door": "4,8",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "0,6",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "0,6",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "0,6",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "4,8",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "4,8",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "4,8",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "0,6",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "0,6",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "0,6",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "4,8",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "4,8",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "4,8",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "8,8",
+            "door": "0,6",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "8,8",
+            "door": "0,6",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "8,8",
+            "door": "0,6",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "8,8",
+            "door": "4,8",
+            "lightsLeft": 5,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "8,8",
+            "door": "4,8",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "8,8",
+            "door": "4,8",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          }
+        ]
+      },
+      "routeCount": 2,
+      "lengthSpread": 2,
+      "hasRealTradeoff": true
+    },
+    {
+      "route": 2,
+      "difficulty": "easy",
+      "seed": 4422,
+      "candidates": [
+        {
+          "name": "direta",
+          "vector": {
+            "pathLength": 15,
+            "hunterExposure": 7,
+            "sentinelExposure": 4,
+            "portalAccessQuality": 0,
+            "trapLeverage": 2,
+            "recoveryPotential": 12,
+            "entryDoor": "1,5"
+          }
+        },
+        {
+          "name": "alternativa",
+          "vector": {
+            "pathLength": 15,
+            "hunterExposure": 0,
+            "sentinelExposure": 4,
+            "portalAccessQuality": 0,
+            "trapLeverage": 0,
+            "recoveryPotential": 11,
+            "entryDoor": "4,8"
+          }
+        }
+      ],
+      "dominance": [],
+      "contextual": {
+        "routes": 2,
+        "states": 45,
+        "dominantAcrossStates": null,
+        "routeSwitchCount": 2,
+        "preferredCounts": {
+          "alternativa": 24,
+          "direta": 21
+        },
+        "contextualTradeoffScore": 0.467,
+        "preferredRouteByState": [
+          {
+            "hunter": "2,5",
+            "door": "0,6",
+            "lightsLeft": 3,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "2,5",
+            "door": "0,6",
+            "lightsLeft": 1,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "2,5",
+            "door": "0,6",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "2,5",
+            "door": "4,8",
+            "lightsLeft": 3,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "2,5",
+            "door": "4,8",
+            "lightsLeft": 1,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "2,5",
+            "door": "4,8",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "2,5",
+            "door": "1,5",
+            "lightsLeft": 3,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "2,5",
+            "door": "1,5",
+            "lightsLeft": 1,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "2,5",
+            "door": "1,5",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,0",
+            "door": "0,6",
+            "lightsLeft": 3,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "0,6",
+            "lightsLeft": 1,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "0,6",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "4,8",
+            "lightsLeft": 3,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "4,8",
+            "lightsLeft": 1,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "4,8",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "1,5",
+            "lightsLeft": 3,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,0",
+            "door": "1,5",
+            "lightsLeft": 1,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,0",
+            "door": "1,5",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,8",
+            "door": "0,6",
+            "lightsLeft": 3,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "0,6",
+            "lightsLeft": 1,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "0,6",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "4,8",
+            "lightsLeft": 3,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "4,8",
+            "lightsLeft": 1,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "4,8",
+            "lightsLeft": 0,
+            "route": "direta"
+          }
+        ]
+      },
+      "routeCount": 2,
+      "lengthSpread": 0,
+      "hasRealTradeoff": true
+    },
+    {
+      "route": 2,
+      "difficulty": "easy",
+      "seed": 4474,
+      "candidates": [
+        {
+          "name": "direta",
+          "vector": {
+            "pathLength": 15,
+            "hunterExposure": 3,
+            "sentinelExposure": 4,
+            "portalAccessQuality": 0,
+            "trapLeverage": 1,
+            "recoveryPotential": 10,
+            "entryDoor": "0,4"
+          }
+        },
+        {
+          "name": "alternativa",
+          "vector": {
+            "pathLength": 17,
+            "hunterExposure": 0,
+            "sentinelExposure": 4,
+            "portalAccessQuality": 0,
+            "trapLeverage": 0,
+            "recoveryPotential": 12,
+            "entryDoor": "2,8"
+          }
+        }
+      ],
+      "dominance": [],
+      "contextual": {
+        "routes": 2,
+        "states": 45,
+        "dominantAcrossStates": null,
+        "routeSwitchCount": 2,
+        "preferredCounts": {
+          "direta": 29,
+          "alternativa": 16
+        },
+        "contextualTradeoffScore": 0.356,
+        "preferredRouteByState": [
+          {
+            "hunter": "2,5",
+            "door": "2,8",
+            "lightsLeft": 3,
+            "route": "direta"
+          },
+          {
+            "hunter": "2,5",
+            "door": "2,8",
+            "lightsLeft": 1,
+            "route": "direta"
+          },
+          {
+            "hunter": "2,5",
+            "door": "2,8",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "2,5",
+            "door": "1,5",
+            "lightsLeft": 3,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "2,5",
+            "door": "1,5",
+            "lightsLeft": 1,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "2,5",
+            "door": "1,5",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "2,5",
+            "door": "0,4",
+            "lightsLeft": 3,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "2,5",
+            "door": "0,4",
+            "lightsLeft": 1,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "2,5",
+            "door": "0,4",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,0",
+            "door": "2,8",
+            "lightsLeft": 3,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "2,8",
+            "lightsLeft": 1,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "2,8",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "1,5",
+            "lightsLeft": 3,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,0",
+            "door": "1,5",
+            "lightsLeft": 1,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,0",
+            "door": "1,5",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,0",
+            "door": "0,4",
+            "lightsLeft": 3,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,0",
+            "door": "0,4",
+            "lightsLeft": 1,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,0",
+            "door": "0,4",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,8",
+            "door": "2,8",
+            "lightsLeft": 3,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "2,8",
+            "lightsLeft": 1,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "2,8",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "1,5",
+            "lightsLeft": 3,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "1,5",
+            "lightsLeft": 1,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "1,5",
+            "lightsLeft": 0,
+            "route": "direta"
+          }
+        ]
+      },
+      "routeCount": 2,
+      "lengthSpread": 2,
+      "hasRealTradeoff": true
+    },
+    {
+      "route": 2,
+      "difficulty": "medium",
+      "seed": 5857,
+      "candidates": [
+        {
+          "name": "direta",
+          "vector": {
+            "pathLength": 16,
+            "hunterExposure": 1,
+            "sentinelExposure": 4,
+            "portalAccessQuality": 0,
+            "trapLeverage": 0,
+            "recoveryPotential": 10,
+            "entryDoor": "3,8"
+          }
+        },
+        {
+          "name": "alternativa",
+          "vector": {
+            "pathLength": 18,
+            "hunterExposure": 7,
+            "sentinelExposure": 4,
+            "portalAccessQuality": 0,
+            "trapLeverage": 4,
+            "recoveryPotential": 11,
+            "entryDoor": "0,5"
+          }
+        }
+      ],
+      "dominance": [],
+      "contextual": {
+        "routes": 2,
+        "states": 45,
+        "dominantAcrossStates": null,
+        "routeSwitchCount": 2,
+        "preferredCounts": {
+          "direta": 36,
+          "alternativa": 9
+        },
+        "contextualTradeoffScore": 0.2,
+        "preferredRouteByState": [
+          {
+            "hunter": "2,5",
+            "door": "3,8",
+            "lightsLeft": 4,
+            "route": "direta"
+          },
+          {
+            "hunter": "2,5",
+            "door": "3,8",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "2,5",
+            "door": "3,8",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "2,5",
+            "door": "2,7",
+            "lightsLeft": 4,
+            "route": "direta"
+          },
+          {
+            "hunter": "2,5",
+            "door": "2,7",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "2,5",
+            "door": "2,7",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "2,5",
+            "door": "0,5",
+            "lightsLeft": 4,
+            "route": "direta"
+          },
+          {
+            "hunter": "2,5",
+            "door": "0,5",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "2,5",
+            "door": "0,5",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "3,8",
+            "lightsLeft": 4,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "3,8",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "3,8",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "2,7",
+            "lightsLeft": 4,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "2,7",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "2,7",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "0,5",
+            "lightsLeft": 4,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "0,5",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "0,5",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "3,8",
+            "lightsLeft": 4,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,8",
+            "door": "3,8",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,8",
+            "door": "3,8",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,8",
+            "door": "2,7",
+            "lightsLeft": 4,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "2,7",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "2,7",
+            "lightsLeft": 0,
+            "route": "direta"
+          }
+        ]
+      },
+      "routeCount": 2,
+      "lengthSpread": 2,
+      "hasRealTradeoff": true
+    },
+    {
+      "route": 2,
+      "difficulty": "medium",
+      "seed": 5883,
+      "candidates": [
+        {
+          "name": "direta",
+          "vector": {
+            "pathLength": 15,
+            "hunterExposure": 7,
+            "sentinelExposure": 4,
+            "portalAccessQuality": 0,
+            "trapLeverage": 4,
+            "recoveryPotential": 11,
+            "entryDoor": "0,4"
+          }
+        },
+        {
+          "name": "alternativa",
+          "vector": {
+            "pathLength": 19,
+            "hunterExposure": 1,
+            "sentinelExposure": 4,
+            "portalAccessQuality": 0,
+            "trapLeverage": 0,
+            "recoveryPotential": 10,
+            "entryDoor": "2,8"
+          }
+        },
+        {
+          "name": "longe-do-cacador",
+          "vector": {
+            "pathLength": 19,
+            "hunterExposure": 1,
+            "sentinelExposure": 4,
+            "portalAccessQuality": 0,
+            "trapLeverage": 0,
+            "recoveryPotential": 10,
+            "entryDoor": "2,8"
+          }
+        }
+      ],
+      "dominance": [],
+      "contextual": {
+        "routes": 3,
+        "states": 45,
+        "dominantAcrossStates": null,
+        "routeSwitchCount": 2,
+        "preferredCounts": {
+          "alternativa": 21,
+          "direta": 24
+        },
+        "contextualTradeoffScore": 0.467,
+        "preferredRouteByState": [
+          {
+            "hunter": "0,4",
+            "door": "1,5",
+            "lightsLeft": 4,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,4",
+            "door": "1,5",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,4",
+            "door": "1,5",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,4",
+            "door": "2,8",
+            "lightsLeft": 4,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,4",
+            "door": "2,8",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,4",
+            "door": "2,8",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,4",
+            "door": "0,4",
+            "lightsLeft": 4,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,4",
+            "door": "0,4",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,4",
+            "door": "0,4",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,0",
+            "door": "1,5",
+            "lightsLeft": 4,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,0",
+            "door": "1,5",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,0",
+            "door": "1,5",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,0",
+            "door": "2,8",
+            "lightsLeft": 4,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "2,8",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "2,8",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "0,4",
+            "lightsLeft": 4,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,0",
+            "door": "0,4",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,0",
+            "door": "0,4",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,8",
+            "door": "1,5",
+            "lightsLeft": 4,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "1,5",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "1,5",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "2,8",
+            "lightsLeft": 4,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "2,8",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "2,8",
+            "lightsLeft": 0,
+            "route": "direta"
+          }
+        ]
+      },
+      "routeCount": 3,
+      "lengthSpread": 4,
+      "hasRealTradeoff": true
+    },
+    {
+      "route": 2,
+      "difficulty": "hard",
+      "seed": 7240,
+      "candidates": [
+        {
+          "name": "direta",
+          "vector": {
+            "pathLength": 17,
+            "hunterExposure": 7,
+            "sentinelExposure": 4,
+            "portalAccessQuality": 0,
+            "trapLeverage": 3,
+            "recoveryPotential": 11,
+            "entryDoor": "1,5"
+          }
+        },
+        {
+          "name": "alternativa",
+          "vector": {
+            "pathLength": 19,
+            "hunterExposure": 1,
+            "sentinelExposure": 4,
+            "portalAccessQuality": 0,
+            "trapLeverage": 1,
+            "recoveryPotential": 11,
+            "entryDoor": "2,6"
+          }
+        }
+      ],
+      "dominance": [],
+      "contextual": {
+        "routes": 2,
+        "states": 30,
+        "dominantAcrossStates": null,
+        "routeSwitchCount": 2,
+        "preferredCounts": {
+          "alternativa": 18,
+          "direta": 12
+        },
+        "contextualTradeoffScore": 0.4,
+        "preferredRouteByState": [
+          {
+            "hunter": "2,3",
+            "door": "2,6",
+            "lightsLeft": 5,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "2,3",
+            "door": "2,6",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "2,3",
+            "door": "2,6",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "2,3",
+            "door": "1,5",
+            "lightsLeft": 5,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "2,3",
+            "door": "1,5",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "2,3",
+            "door": "1,5",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "1,0",
+            "door": "2,6",
+            "lightsLeft": 5,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "1,0",
+            "door": "2,6",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "1,0",
+            "door": "2,6",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "1,0",
+            "door": "1,5",
+            "lightsLeft": 5,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "1,0",
+            "door": "1,5",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "1,0",
+            "door": "1,5",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,8",
+            "door": "2,6",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "2,6",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "2,6",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "1,5",
+            "lightsLeft": 5,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,8",
+            "door": "1,5",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,8",
+            "door": "1,5",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "8,7",
+            "door": "2,6",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "8,7",
+            "door": "2,6",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "8,7",
+            "door": "2,6",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "8,7",
+            "door": "1,5",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "8,7",
+            "door": "1,5",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "8,7",
+            "door": "1,5",
+            "lightsLeft": 0,
+            "route": "direta"
+          }
+        ]
+      },
+      "routeCount": 2,
+      "lengthSpread": 2,
+      "hasRealTradeoff": true
+    },
+    {
+      "route": 2,
+      "difficulty": "hard",
+      "seed": 7266,
+      "candidates": [
+        {
+          "name": "direta",
+          "vector": {
+            "pathLength": 16,
+            "hunterExposure": 3,
+            "sentinelExposure": 4,
+            "portalAccessQuality": 0,
+            "trapLeverage": 3,
+            "recoveryPotential": 11,
+            "entryDoor": "0,5"
+          }
+        },
+        {
+          "name": "alternativa",
+          "vector": {
+            "pathLength": 18,
+            "hunterExposure": 0,
+            "sentinelExposure": 4,
+            "portalAccessQuality": 0,
+            "trapLeverage": 0,
+            "recoveryPotential": 9,
+            "entryDoor": "3,8"
+          }
+        },
+        {
+          "name": "longe-do-cacador",
+          "vector": {
+            "pathLength": 18,
+            "hunterExposure": 0,
+            "sentinelExposure": 4,
+            "portalAccessQuality": 0,
+            "trapLeverage": 0,
+            "recoveryPotential": 9,
+            "entryDoor": "3,8"
+          }
+        }
+      ],
+      "dominance": [],
+      "contextual": {
+        "routes": 3,
+        "states": 45,
+        "dominantAcrossStates": null,
+        "routeSwitchCount": 2,
+        "preferredCounts": {
+          "direta": 28,
+          "alternativa": 17
+        },
+        "contextualTradeoffScore": 0.378,
+        "preferredRouteByState": [
+          {
+            "hunter": "2,5",
+            "door": "3,8",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "2,5",
+            "door": "3,8",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "2,5",
+            "door": "3,8",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "2,5",
+            "door": "1,6",
+            "lightsLeft": 5,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "2,5",
+            "door": "1,6",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "2,5",
+            "door": "1,6",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "2,5",
+            "door": "0,5",
+            "lightsLeft": 5,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "2,5",
+            "door": "0,5",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "2,5",
+            "door": "0,5",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,0",
+            "door": "3,8",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "3,8",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "3,8",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "1,6",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "1,6",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "1,6",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,0",
+            "door": "0,5",
+            "lightsLeft": 5,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,0",
+            "door": "0,5",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,0",
+            "door": "0,5",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,8",
+            "door": "3,8",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "3,8",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "3,8",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "1,6",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "1,6",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "1,6",
+            "lightsLeft": 0,
+            "route": "direta"
+          }
+        ]
+      },
+      "routeCount": 3,
+      "lengthSpread": 2,
+      "hasRealTradeoff": true
+    },
+    {
+      "route": 2,
+      "difficulty": "hard",
+      "seed": 7292,
+      "candidates": [
+        {
+          "name": "direta",
+          "vector": {
+            "pathLength": 16,
+            "hunterExposure": 7,
+            "sentinelExposure": 4,
+            "portalAccessQuality": 0,
+            "trapLeverage": 4,
+            "recoveryPotential": 11,
+            "entryDoor": "0,5"
+          }
+        },
+        {
+          "name": "alternativa",
+          "vector": {
+            "pathLength": 18,
+            "hunterExposure": 0,
+            "sentinelExposure": 4,
+            "portalAccessQuality": 0,
+            "trapLeverage": 0,
+            "recoveryPotential": 10,
+            "entryDoor": "3,8"
+          }
+        },
+        {
+          "name": "longe-do-cacador",
+          "vector": {
+            "pathLength": 18,
+            "hunterExposure": 0,
+            "sentinelExposure": 4,
+            "portalAccessQuality": 0,
+            "trapLeverage": 0,
+            "recoveryPotential": 10,
+            "entryDoor": "3,8"
+          }
+        }
+      ],
+      "dominance": [],
+      "contextual": {
+        "routes": 3,
+        "states": 30,
+        "dominantAcrossStates": null,
+        "routeSwitchCount": 2,
+        "preferredCounts": {
+          "alternativa": 15,
+          "direta": 15
+        },
+        "contextualTradeoffScore": 0.5,
+        "preferredRouteByState": [
+          {
+            "hunter": "0,3",
+            "door": "3,8",
+            "lightsLeft": 5,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,3",
+            "door": "3,8",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,3",
+            "door": "3,8",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,3",
+            "door": "0,5",
+            "lightsLeft": 5,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,3",
+            "door": "0,5",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,3",
+            "door": "0,5",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,0",
+            "door": "3,8",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "3,8",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "3,8",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,0",
+            "door": "0,5",
+            "lightsLeft": 5,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,0",
+            "door": "0,5",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,0",
+            "door": "0,5",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,8",
+            "door": "3,8",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "3,8",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "3,8",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "0,5",
+            "lightsLeft": 5,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,8",
+            "door": "0,5",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,8",
+            "door": "0,5",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "7,8",
+            "door": "3,8",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "7,8",
+            "door": "3,8",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "7,8",
+            "door": "3,8",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "7,8",
+            "door": "0,5",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "7,8",
+            "door": "0,5",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "7,8",
+            "door": "0,5",
+            "lightsLeft": 0,
+            "route": "direta"
+          }
+        ]
+      },
+      "routeCount": 3,
+      "lengthSpread": 2,
+      "hasRealTradeoff": true
+    },
+    {
+      "route": 3,
+      "difficulty": "easy",
+      "seed": 4633,
+      "candidates": [
+        {
+          "name": "direta",
+          "vector": {
+            "pathLength": 15,
+            "hunterExposure": 7,
+            "sentinelExposure": 4,
+            "portalAccessQuality": 0,
+            "trapLeverage": 2,
+            "recoveryPotential": 11,
+            "entryDoor": "0,4"
+          }
+        },
+        {
+          "name": "alternativa",
+          "vector": {
+            "pathLength": 17,
+            "hunterExposure": 0,
+            "sentinelExposure": 4,
+            "portalAccessQuality": 0,
+            "trapLeverage": 0,
+            "recoveryPotential": 10,
+            "entryDoor": "2,8"
+          }
+        }
+      ],
+      "dominance": [],
+      "contextual": {
+        "routes": 2,
+        "states": 45,
+        "dominantAcrossStates": null,
+        "routeSwitchCount": 2,
+        "preferredCounts": {
+          "alternativa": 21,
+          "direta": 24
+        },
+        "contextualTradeoffScore": 0.467,
+        "preferredRouteByState": [
+          {
+            "hunter": "2,3",
+            "door": "1,5",
+            "lightsLeft": 4,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "2,3",
+            "door": "1,5",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "2,3",
+            "door": "1,5",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "2,3",
+            "door": "0,4",
+            "lightsLeft": 4,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "2,3",
+            "door": "0,4",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "2,3",
+            "door": "0,4",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "2,3",
+            "door": "2,8",
+            "lightsLeft": 4,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "2,3",
+            "door": "2,8",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "2,3",
+            "door": "2,8",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,1",
+            "door": "1,5",
+            "lightsLeft": 4,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,1",
+            "door": "1,5",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,1",
+            "door": "1,5",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,1",
+            "door": "0,4",
+            "lightsLeft": 4,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,1",
+            "door": "0,4",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,1",
+            "door": "0,4",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,1",
+            "door": "2,8",
+            "lightsLeft": 4,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,1",
+            "door": "2,8",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,1",
+            "door": "2,8",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,8",
+            "door": "1,5",
+            "lightsLeft": 4,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "1,5",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "1,5",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "0,4",
+            "lightsLeft": 4,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "0,4",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "0,4",
+            "lightsLeft": 0,
+            "route": "direta"
+          }
+        ]
+      },
+      "routeCount": 2,
+      "lengthSpread": 2,
+      "hasRealTradeoff": true
+    },
+    {
+      "route": 3,
+      "difficulty": "easy",
+      "seed": 4659,
+      "candidates": [
+        {
+          "name": "direta",
+          "vector": {
+            "pathLength": 16,
+            "hunterExposure": 7,
+            "sentinelExposure": 4,
+            "portalAccessQuality": 0,
+            "trapLeverage": 1,
+            "recoveryPotential": 12,
+            "entryDoor": "1,6"
+          }
+        },
+        {
+          "name": "alternativa",
+          "vector": {
+            "pathLength": 18,
+            "hunterExposure": 3,
+            "sentinelExposure": 4,
+            "portalAccessQuality": 0,
+            "trapLeverage": 1,
+            "recoveryPotential": 11,
+            "entryDoor": "3,8"
+          }
+        }
+      ],
+      "dominance": [],
+      "contextual": {
+        "routes": 2,
+        "states": 30,
+        "dominantAcrossStates": null,
+        "routeSwitchCount": 2,
+        "preferredCounts": {
+          "direta": 14,
+          "alternativa": 16
+        },
+        "contextualTradeoffScore": 0.467,
+        "preferredRouteByState": [
+          {
+            "hunter": "1,6",
+            "door": "3,8",
+            "lightsLeft": 4,
+            "route": "direta"
+          },
+          {
+            "hunter": "1,6",
+            "door": "3,8",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "1,6",
+            "door": "3,8",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "1,6",
+            "door": "1,6",
+            "lightsLeft": 4,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "1,6",
+            "door": "1,6",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "1,6",
+            "door": "1,6",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,0",
+            "door": "3,8",
+            "lightsLeft": 4,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,0",
+            "door": "3,8",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,0",
+            "door": "3,8",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,0",
+            "door": "1,6",
+            "lightsLeft": 4,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,0",
+            "door": "1,6",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,0",
+            "door": "1,6",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,8",
+            "door": "3,8",
+            "lightsLeft": 4,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "3,8",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "3,8",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "1,6",
+            "lightsLeft": 4,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,8",
+            "door": "1,6",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,8",
+            "door": "1,6",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "8,8",
+            "door": "3,8",
+            "lightsLeft": 4,
+            "route": "direta"
+          },
+          {
+            "hunter": "8,8",
+            "door": "3,8",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "8,8",
+            "door": "3,8",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "8,8",
+            "door": "1,6",
+            "lightsLeft": 4,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "8,8",
+            "door": "1,6",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "8,8",
+            "door": "1,6",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          }
+        ]
+      },
+      "routeCount": 2,
+      "lengthSpread": 2,
+      "hasRealTradeoff": true
+    },
+    {
+      "route": 3,
+      "difficulty": "easy",
+      "seed": 4685,
+      "candidates": [
+        {
+          "name": "direta",
+          "vector": {
+            "pathLength": 15,
+            "hunterExposure": 4,
+            "sentinelExposure": 4,
+            "portalAccessQuality": 0,
+            "trapLeverage": 0,
+            "recoveryPotential": 10,
+            "entryDoor": "0,4"
+          }
+        },
+        {
+          "name": "alternativa",
+          "vector": {
+            "pathLength": 17,
+            "hunterExposure": 0,
+            "sentinelExposure": 4,
+            "portalAccessQuality": 0,
+            "trapLeverage": 1,
+            "recoveryPotential": 11,
+            "entryDoor": "2,8"
+          }
+        }
+      ],
+      "dominance": [],
+      "contextual": {
+        "routes": 2,
+        "states": 45,
+        "dominantAcrossStates": null,
+        "routeSwitchCount": 2,
+        "preferredCounts": {
+          "alternativa": 20,
+          "direta": 25
+        },
+        "contextualTradeoffScore": 0.444,
+        "preferredRouteByState": [
+          {
+            "hunter": "2,3",
+            "door": "1,5",
+            "lightsLeft": 4,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "2,3",
+            "door": "1,5",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "2,3",
+            "door": "1,5",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "2,3",
+            "door": "0,4",
+            "lightsLeft": 4,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "2,3",
+            "door": "0,4",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "2,3",
+            "door": "0,4",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "2,3",
+            "door": "2,8",
+            "lightsLeft": 4,
+            "route": "direta"
+          },
+          {
+            "hunter": "2,3",
+            "door": "2,8",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "2,3",
+            "door": "2,8",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,1",
+            "door": "1,5",
+            "lightsLeft": 4,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,1",
+            "door": "1,5",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,1",
+            "door": "1,5",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,1",
+            "door": "0,4",
+            "lightsLeft": 4,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,1",
+            "door": "0,4",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,1",
+            "door": "0,4",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,1",
+            "door": "2,8",
+            "lightsLeft": 4,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,1",
+            "door": "2,8",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,1",
+            "door": "2,8",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,8",
+            "door": "1,5",
+            "lightsLeft": 4,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "1,5",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "1,5",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "0,4",
+            "lightsLeft": 4,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "0,4",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "0,4",
+            "lightsLeft": 0,
+            "route": "direta"
+          }
+        ]
+      },
+      "routeCount": 2,
+      "lengthSpread": 2,
+      "hasRealTradeoff": true
+    },
+    {
+      "route": 3,
+      "difficulty": "medium",
+      "seed": 6055,
+      "candidates": [
+        {
+          "name": "direta",
+          "vector": {
+            "pathLength": 16,
+            "hunterExposure": 0,
+            "sentinelExposure": 4,
+            "portalAccessQuality": 0,
+            "trapLeverage": 0,
+            "recoveryPotential": 8,
+            "entryDoor": "0,5"
+          }
+        },
+        {
+          "name": "alternativa",
+          "vector": {
+            "pathLength": 18,
+            "hunterExposure": 7,
+            "sentinelExposure": 4,
+            "portalAccessQuality": 0,
+            "trapLeverage": 4,
+            "recoveryPotential": 9,
+            "entryDoor": "3,8"
+          }
+        }
+      ],
+      "dominance": [],
+      "contextual": {
+        "routes": 2,
+        "states": 30,
+        "dominantAcrossStates": null,
+        "routeSwitchCount": 2,
+        "preferredCounts": {
+          "direta": 18,
+          "alternativa": 12
+        },
+        "contextualTradeoffScore": 0.4,
+        "preferredRouteByState": [
+          {
+            "hunter": "3,7",
+            "door": "3,8",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "3,7",
+            "door": "3,8",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "3,7",
+            "door": "3,8",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "3,7",
+            "door": "0,5",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "3,7",
+            "door": "0,5",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "3,7",
+            "door": "0,5",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "1,0",
+            "door": "3,8",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "1,0",
+            "door": "3,8",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "1,0",
+            "door": "3,8",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "1,0",
+            "door": "0,5",
+            "lightsLeft": 5,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "1,0",
+            "door": "0,5",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "1,0",
+            "door": "0,5",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,8",
+            "door": "3,8",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "3,8",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "3,8",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "0,5",
+            "lightsLeft": 5,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,8",
+            "door": "0,5",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,8",
+            "door": "0,5",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "8,7",
+            "door": "3,8",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "8,7",
+            "door": "3,8",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "8,7",
+            "door": "3,8",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "8,7",
+            "door": "0,5",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "8,7",
+            "door": "0,5",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "8,7",
+            "door": "0,5",
+            "lightsLeft": 0,
+            "route": "direta"
+          }
+        ]
+      },
+      "routeCount": 2,
+      "lengthSpread": 2,
+      "hasRealTradeoff": true
+    },
+    {
+      "route": 3,
+      "difficulty": "medium",
+      "seed": 6094,
+      "candidates": [
+        {
+          "name": "direta",
+          "vector": {
+            "pathLength": 15,
+            "hunterExposure": 0,
+            "sentinelExposure": 4,
+            "portalAccessQuality": 0,
+            "trapLeverage": 1,
+            "recoveryPotential": 11,
+            "entryDoor": "0,4"
+          }
+        },
+        {
+          "name": "alternativa",
+          "vector": {
+            "pathLength": 17,
+            "hunterExposure": 5,
+            "sentinelExposure": 4,
+            "portalAccessQuality": 0,
+            "trapLeverage": 2,
+            "recoveryPotential": 12,
+            "entryDoor": "2,8"
+          }
+        }
+      ],
+      "dominance": [],
+      "contextual": {
+        "routes": 2,
+        "states": 45,
+        "dominantAcrossStates": null,
+        "routeSwitchCount": 2,
+        "preferredCounts": {
+          "direta": 32,
+          "alternativa": 13
+        },
+        "contextualTradeoffScore": 0.289,
+        "preferredRouteByState": [
+          {
+            "hunter": "3,7",
+            "door": "1,5",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "3,7",
+            "door": "1,5",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "3,7",
+            "door": "1,5",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "3,7",
+            "door": "2,8",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "3,7",
+            "door": "2,8",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "3,7",
+            "door": "2,8",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "3,7",
+            "door": "0,4",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "3,7",
+            "door": "0,4",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "3,7",
+            "door": "0,4",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "1,0",
+            "door": "1,5",
+            "lightsLeft": 5,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "1,0",
+            "door": "1,5",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "1,0",
+            "door": "1,5",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "1,0",
+            "door": "2,8",
+            "lightsLeft": 5,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "1,0",
+            "door": "2,8",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "1,0",
+            "door": "2,8",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "1,0",
+            "door": "0,4",
+            "lightsLeft": 5,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "1,0",
+            "door": "0,4",
+            "lightsLeft": 2,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "1,0",
+            "door": "0,4",
+            "lightsLeft": 0,
+            "route": "alternativa"
+          },
+          {
+            "hunter": "0,8",
+            "door": "1,5",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "1,5",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "1,5",
+            "lightsLeft": 0,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "2,8",
+            "lightsLeft": 5,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "2,8",
+            "lightsLeft": 2,
+            "route": "direta"
+          },
+          {
+            "hunter": "0,8",
+            "door": "2,8",
+            "lightsLeft": 0,
+            "route": "direta"
+          }
+        ]
+      },
+      "routeCount": 2,
+      "lengthSpread": 2,
+      "hasRealTradeoff": true
+    }
+  ]
+}

@@ -1,0 +1,1487 @@
+{
+  "mission": "ROTA-DUAL-GUARDIANS-MAPS-01A",
+  "zoneRadius": 2,
+  "generatedAt": "2026-08-07T17:58:33.126Z",
+  "samples": 108,
+  "overall": {
+    "portalZoneSize": {
+      "min": 5,
+      "p10": 5,
+      "median": 6,
+      "p90": 9,
+      "max": 11,
+      "mean": 6.81
+    },
+    "portalAccessCount": {
+      "min": 2,
+      "p10": 2,
+      "median": 3,
+      "p90": 4,
+      "max": 5,
+      "mean": 2.75
+    },
+    "portalAccessDistanceMean": {
+      "min": 2,
+      "p10": 3.33,
+      "median": 4.33,
+      "p90": 6,
+      "max": 6,
+      "mean": 4.43
+    },
+    "portalAccessDiversity": {
+      "min": 0,
+      "p10": 0,
+      "median": 0.333,
+      "p90": 0.5,
+      "max": 0.5,
+      "mean": 0.31
+    },
+    "sentinelCoveragePotential": {
+      "min": 1,
+      "p10": 1,
+      "median": 2,
+      "p90": 3,
+      "max": 4,
+      "mean": 1.89
+    },
+    "mapsWithOneAccess": 0,
+    "mapsWithThreePlusAccess": 64,
+    "mapsWithSingleCellLock": 0,
+    "mapsFullyCoverableFromOneCell": 21
+  },
+  "byCombo": {
+    "route1-easy": {
+      "samples": 12,
+      "accessCount": {
+        "min": 3,
+        "p10": 3,
+        "median": 4,
+        "p90": 4,
+        "max": 5,
+        "mean": 3.58
+      },
+      "zoneSize": {
+        "min": 7,
+        "p10": 7,
+        "median": 9,
+        "p90": 10,
+        "max": 11,
+        "mean": 8.58
+      },
+      "diversity": {
+        "min": 0.2,
+        "p10": 0.25,
+        "median": 0.333,
+        "p90": 0.5,
+        "max": 0.5,
+        "mean": 0.33
+      }
+    },
+    "route1-medium": {
+      "samples": 12,
+      "accessCount": {
+        "min": 2,
+        "p10": 2,
+        "median": 3,
+        "p90": 4,
+        "max": 5,
+        "mean": 3.25
+      },
+      "zoneSize": {
+        "min": 6,
+        "p10": 7,
+        "median": 9,
+        "p90": 10,
+        "max": 11,
+        "mean": 8.58
+      },
+      "diversity": {
+        "min": 0,
+        "p10": 0.25,
+        "median": 0.333,
+        "p90": 0.5,
+        "max": 0.5,
+        "mean": 0.33
+      }
+    },
+    "route1-hard": {
+      "samples": 12,
+      "accessCount": {
+        "min": 2,
+        "p10": 2,
+        "median": 3,
+        "p90": 3,
+        "max": 4,
+        "mean": 2.75
+      },
+      "zoneSize": {
+        "min": 6,
+        "p10": 7,
+        "median": 8,
+        "p90": 9,
+        "max": 11,
+        "mean": 7.92
+      },
+      "diversity": {
+        "min": 0.25,
+        "p10": 0.333,
+        "median": 0.333,
+        "p90": 0.5,
+        "max": 0.5,
+        "mean": 0.38
+      }
+    },
+    "route2-easy": {
+      "samples": 12,
+      "accessCount": {
+        "min": 2,
+        "p10": 2,
+        "median": 3,
+        "p90": 3,
+        "max": 4,
+        "mean": 2.92
+      },
+      "zoneSize": {
+        "min": 6,
+        "p10": 6,
+        "median": 6,
+        "p90": 7,
+        "max": 8,
+        "mean": 6.25
+      },
+      "diversity": {
+        "min": 0,
+        "p10": 0,
+        "median": 0.333,
+        "p90": 0.333,
+        "max": 0.5,
+        "mean": 0.28
+      }
+    },
+    "route2-medium": {
+      "samples": 12,
+      "accessCount": {
+        "min": 2,
+        "p10": 2,
+        "median": 2,
+        "p90": 3,
+        "max": 3,
+        "mean": 2.42
+      },
+      "zoneSize": {
+        "min": 5,
+        "p10": 6,
+        "median": 6,
+        "p90": 7,
+        "max": 8,
+        "mean": 6.33
+      },
+      "diversity": {
+        "min": 0,
+        "p10": 0,
+        "median": 0.333,
+        "p90": 0.5,
+        "max": 0.5,
+        "mean": 0.22
+      }
+    },
+    "route2-hard": {
+      "samples": 12,
+      "accessCount": {
+        "min": 2,
+        "p10": 2,
+        "median": 2,
+        "p90": 3,
+        "max": 3,
+        "mean": 2.25
+      },
+      "zoneSize": {
+        "min": 6,
+        "p10": 6,
+        "median": 6,
+        "p90": 7,
+        "max": 7,
+        "mean": 6.25
+      },
+      "diversity": {
+        "min": 0,
+        "p10": 0,
+        "median": 0.333,
+        "p90": 0.5,
+        "max": 0.5,
+        "mean": 0.26
+      }
+    },
+    "route3-easy": {
+      "samples": 12,
+      "accessCount": {
+        "min": 2,
+        "p10": 2,
+        "median": 3,
+        "p90": 3,
+        "max": 4,
+        "mean": 2.67
+      },
+      "zoneSize": {
+        "min": 5,
+        "p10": 5,
+        "median": 6,
+        "p90": 7,
+        "max": 8,
+        "mean": 5.83
+      },
+      "diversity": {
+        "min": 0,
+        "p10": 0,
+        "median": 0.333,
+        "p90": 0.5,
+        "max": 0.5,
+        "mean": 0.29
+      }
+    },
+    "route3-medium": {
+      "samples": 12,
+      "accessCount": {
+        "min": 2,
+        "p10": 2,
+        "median": 3,
+        "p90": 3,
+        "max": 3,
+        "mean": 2.58
+      },
+      "zoneSize": {
+        "min": 5,
+        "p10": 5,
+        "median": 6,
+        "p90": 7,
+        "max": 7,
+        "mean": 6.08
+      },
+      "diversity": {
+        "min": 0,
+        "p10": 0,
+        "median": 0.333,
+        "p90": 0.5,
+        "max": 0.5,
+        "mean": 0.33
+      }
+    },
+    "route3-hard": {
+      "samples": 12,
+      "accessCount": {
+        "min": 2,
+        "p10": 2,
+        "median": 2,
+        "p90": 3,
+        "max": 4,
+        "mean": 2.33
+      },
+      "zoneSize": {
+        "min": 5,
+        "p10": 5,
+        "median": 6,
+        "p90": 6,
+        "max": 6,
+        "mean": 5.5
+      },
+      "diversity": {
+        "min": 0,
+        "p10": 0,
+        "median": 0.5,
+        "p90": 0.5,
+        "max": 0.5,
+        "mean": 0.35
+      }
+    }
+  },
+  "rows": [
+    {
+      "route": 1,
+      "difficulty": "easy",
+      "seed": 4211,
+      "portalZoneSize": 7,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 5.33,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "easy",
+      "seed": 4224,
+      "portalZoneSize": 9,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 5.33,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "easy",
+      "seed": 4237,
+      "portalZoneSize": 7,
+      "portalAccessCount": 4,
+      "portalAccessDistanceMean": 4,
+      "portalAccessDiversity": 0.5,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "easy",
+      "seed": 4250,
+      "portalZoneSize": 9,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 5.33,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "easy",
+      "seed": 4263,
+      "portalZoneSize": 11,
+      "portalAccessCount": 5,
+      "portalAccessDistanceMean": 4,
+      "portalAccessDiversity": 0.2,
+      "sentinelCoveragePotential": 4,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "easy",
+      "seed": 4276,
+      "portalZoneSize": 9,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 5.33,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "easy",
+      "seed": 4289,
+      "portalZoneSize": 10,
+      "portalAccessCount": 4,
+      "portalAccessDistanceMean": 4.33,
+      "portalAccessDiversity": 0.25,
+      "sentinelCoveragePotential": 3,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "easy",
+      "seed": 4302,
+      "portalZoneSize": 9,
+      "portalAccessCount": 4,
+      "portalAccessDistanceMean": 4.67,
+      "portalAccessDiversity": 0.25,
+      "sentinelCoveragePotential": 3,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "easy",
+      "seed": 4315,
+      "portalZoneSize": 7,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 5.33,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "easy",
+      "seed": 4328,
+      "portalZoneSize": 9,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 5.33,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "easy",
+      "seed": 4341,
+      "portalZoneSize": 7,
+      "portalAccessCount": 4,
+      "portalAccessDistanceMean": 4,
+      "portalAccessDiversity": 0.5,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "easy",
+      "seed": 4354,
+      "portalZoneSize": 9,
+      "portalAccessCount": 4,
+      "portalAccessDistanceMean": 4.67,
+      "portalAccessDiversity": 0.25,
+      "sentinelCoveragePotential": 3,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "medium",
+      "seed": 5620,
+      "portalZoneSize": 9,
+      "portalAccessCount": 4,
+      "portalAccessDistanceMean": 4.67,
+      "portalAccessDiversity": 0.5,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "medium",
+      "seed": 5633,
+      "portalZoneSize": 8,
+      "portalAccessCount": 2,
+      "portalAccessDistanceMean": 4,
+      "portalAccessDiversity": 0,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "medium",
+      "seed": 5646,
+      "portalZoneSize": 6,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 5.33,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "medium",
+      "seed": 5659,
+      "portalZoneSize": 9,
+      "portalAccessCount": 2,
+      "portalAccessDistanceMean": 6,
+      "portalAccessDiversity": 0.5,
+      "sentinelCoveragePotential": 1,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "medium",
+      "seed": 5672,
+      "portalZoneSize": 9,
+      "portalAccessCount": 4,
+      "portalAccessDistanceMean": 2.67,
+      "portalAccessDiversity": 0.25,
+      "sentinelCoveragePotential": 3,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "medium",
+      "seed": 5685,
+      "portalZoneSize": 11,
+      "portalAccessCount": 4,
+      "portalAccessDistanceMean": 4.33,
+      "portalAccessDiversity": 0.25,
+      "sentinelCoveragePotential": 3,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "medium",
+      "seed": 5698,
+      "portalZoneSize": 8,
+      "portalAccessCount": 2,
+      "portalAccessDistanceMean": 6,
+      "portalAccessDiversity": 0.5,
+      "sentinelCoveragePotential": 1,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "medium",
+      "seed": 5711,
+      "portalZoneSize": 10,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 4,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "medium",
+      "seed": 5724,
+      "portalZoneSize": 8,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 4.67,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "medium",
+      "seed": 5737,
+      "portalZoneSize": 8,
+      "portalAccessCount": 4,
+      "portalAccessDistanceMean": 4,
+      "portalAccessDiversity": 0.25,
+      "sentinelCoveragePotential": 3,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "medium",
+      "seed": 5750,
+      "portalZoneSize": 10,
+      "portalAccessCount": 5,
+      "portalAccessDistanceMean": 3.8,
+      "portalAccessDiversity": 0.4,
+      "sentinelCoveragePotential": 3,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "medium",
+      "seed": 5763,
+      "portalZoneSize": 7,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 5.33,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "hard",
+      "seed": 7029,
+      "portalZoneSize": 8,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 4.67,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "hard",
+      "seed": 7042,
+      "portalZoneSize": 8,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 4.67,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "hard",
+      "seed": 7055,
+      "portalZoneSize": 8,
+      "portalAccessCount": 2,
+      "portalAccessDistanceMean": 6,
+      "portalAccessDiversity": 0.5,
+      "sentinelCoveragePotential": 1,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "hard",
+      "seed": 7068,
+      "portalZoneSize": 7,
+      "portalAccessCount": 2,
+      "portalAccessDistanceMean": 6,
+      "portalAccessDiversity": 0.5,
+      "sentinelCoveragePotential": 1,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "hard",
+      "seed": 7081,
+      "portalZoneSize": 8,
+      "portalAccessCount": 2,
+      "portalAccessDistanceMean": 6,
+      "portalAccessDiversity": 0.5,
+      "sentinelCoveragePotential": 1,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "hard",
+      "seed": 7094,
+      "portalZoneSize": 7,
+      "portalAccessCount": 2,
+      "portalAccessDistanceMean": 6,
+      "portalAccessDiversity": 0.5,
+      "sentinelCoveragePotential": 1,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "hard",
+      "seed": 7107,
+      "portalZoneSize": 7,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 5.33,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "hard",
+      "seed": 7120,
+      "portalZoneSize": 8,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 4.67,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "hard",
+      "seed": 7133,
+      "portalZoneSize": 8,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 5.33,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "hard",
+      "seed": 7146,
+      "portalZoneSize": 9,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 5.33,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "hard",
+      "seed": 7159,
+      "portalZoneSize": 6,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 4.67,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 1,
+      "difficulty": "hard",
+      "seed": 7172,
+      "portalZoneSize": 11,
+      "portalAccessCount": 4,
+      "portalAccessDistanceMean": 4.33,
+      "portalAccessDiversity": 0.25,
+      "sentinelCoveragePotential": 3,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "easy",
+      "seed": 4422,
+      "portalZoneSize": 8,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 4.67,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "easy",
+      "seed": 4435,
+      "portalZoneSize": 6,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 4,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "easy",
+      "seed": 4448,
+      "portalZoneSize": 6,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 3.33,
+      "portalAccessDiversity": 0,
+      "sentinelCoveragePotential": 3,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "easy",
+      "seed": 4461,
+      "portalZoneSize": 6,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 4,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "easy",
+      "seed": 4474,
+      "portalZoneSize": 6,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 4.67,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "easy",
+      "seed": 4487,
+      "portalZoneSize": 6,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 4.67,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "easy",
+      "seed": 4500,
+      "portalZoneSize": 6,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 4,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "easy",
+      "seed": 4513,
+      "portalZoneSize": 6,
+      "portalAccessCount": 4,
+      "portalAccessDistanceMean": 3.33,
+      "portalAccessDiversity": 0.25,
+      "sentinelCoveragePotential": 3,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "easy",
+      "seed": 4526,
+      "portalZoneSize": 6,
+      "portalAccessCount": 2,
+      "portalAccessDistanceMean": 4,
+      "portalAccessDiversity": 0,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "easy",
+      "seed": 4539,
+      "portalZoneSize": 6,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 4,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "easy",
+      "seed": 4552,
+      "portalZoneSize": 6,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 4,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "easy",
+      "seed": 4565,
+      "portalZoneSize": 7,
+      "portalAccessCount": 2,
+      "portalAccessDistanceMean": 2,
+      "portalAccessDiversity": 0.5,
+      "sentinelCoveragePotential": 1,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "medium",
+      "seed": 5831,
+      "portalZoneSize": 8,
+      "portalAccessCount": 2,
+      "portalAccessDistanceMean": 2,
+      "portalAccessDiversity": 0,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "medium",
+      "seed": 5844,
+      "portalZoneSize": 6,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 4,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "medium",
+      "seed": 5857,
+      "portalZoneSize": 6,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 4,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "medium",
+      "seed": 5870,
+      "portalZoneSize": 6,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 4,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "medium",
+      "seed": 5883,
+      "portalZoneSize": 7,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 4,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "medium",
+      "seed": 5896,
+      "portalZoneSize": 7,
+      "portalAccessCount": 2,
+      "portalAccessDistanceMean": 2,
+      "portalAccessDiversity": 0.5,
+      "sentinelCoveragePotential": 1,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "medium",
+      "seed": 5909,
+      "portalZoneSize": 6,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 4.67,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "medium",
+      "seed": 5922,
+      "portalZoneSize": 6,
+      "portalAccessCount": 2,
+      "portalAccessDistanceMean": 4,
+      "portalAccessDiversity": 0,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "medium",
+      "seed": 5935,
+      "portalZoneSize": 5,
+      "portalAccessCount": 2,
+      "portalAccessDistanceMean": 4,
+      "portalAccessDiversity": 0,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "medium",
+      "seed": 5948,
+      "portalZoneSize": 6,
+      "portalAccessCount": 2,
+      "portalAccessDistanceMean": 4,
+      "portalAccessDiversity": 0,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "medium",
+      "seed": 5961,
+      "portalZoneSize": 7,
+      "portalAccessCount": 2,
+      "portalAccessDistanceMean": 2,
+      "portalAccessDiversity": 0.5,
+      "sentinelCoveragePotential": 1,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "medium",
+      "seed": 5974,
+      "portalZoneSize": 6,
+      "portalAccessCount": 2,
+      "portalAccessDistanceMean": 4,
+      "portalAccessDiversity": 0,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "hard",
+      "seed": 7240,
+      "portalZoneSize": 7,
+      "portalAccessCount": 2,
+      "portalAccessDistanceMean": 2,
+      "portalAccessDiversity": 0.5,
+      "sentinelCoveragePotential": 1,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "hard",
+      "seed": 7253,
+      "portalZoneSize": 6,
+      "portalAccessCount": 2,
+      "portalAccessDistanceMean": 2,
+      "portalAccessDiversity": 0.5,
+      "sentinelCoveragePotential": 1,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "hard",
+      "seed": 7266,
+      "portalZoneSize": 6,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 4,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "hard",
+      "seed": 7279,
+      "portalZoneSize": 6,
+      "portalAccessCount": 2,
+      "portalAccessDistanceMean": 4,
+      "portalAccessDiversity": 0,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "hard",
+      "seed": 7292,
+      "portalZoneSize": 6,
+      "portalAccessCount": 2,
+      "portalAccessDistanceMean": 6,
+      "portalAccessDiversity": 0.5,
+      "sentinelCoveragePotential": 1,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "hard",
+      "seed": 7305,
+      "portalZoneSize": 6,
+      "portalAccessCount": 2,
+      "portalAccessDistanceMean": 4,
+      "portalAccessDiversity": 0,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "hard",
+      "seed": 7318,
+      "portalZoneSize": 6,
+      "portalAccessCount": 2,
+      "portalAccessDistanceMean": 4,
+      "portalAccessDiversity": 0,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "hard",
+      "seed": 7331,
+      "portalZoneSize": 7,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 4.67,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "hard",
+      "seed": 7344,
+      "portalZoneSize": 6,
+      "portalAccessCount": 2,
+      "portalAccessDistanceMean": 2,
+      "portalAccessDiversity": 0.5,
+      "sentinelCoveragePotential": 1,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "hard",
+      "seed": 7357,
+      "portalZoneSize": 7,
+      "portalAccessCount": 2,
+      "portalAccessDistanceMean": 2,
+      "portalAccessDiversity": 0.5,
+      "sentinelCoveragePotential": 1,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "hard",
+      "seed": 7370,
+      "portalZoneSize": 6,
+      "portalAccessCount": 2,
+      "portalAccessDistanceMean": 4,
+      "portalAccessDiversity": 0,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 2,
+      "difficulty": "hard",
+      "seed": 7383,
+      "portalZoneSize": 6,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 3.33,
+      "portalAccessDiversity": 0,
+      "sentinelCoveragePotential": 3,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 3,
+      "difficulty": "easy",
+      "seed": 4633,
+      "portalZoneSize": 5,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 4.67,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 3,
+      "difficulty": "easy",
+      "seed": 4646,
+      "portalZoneSize": 5,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 4.67,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 3,
+      "difficulty": "easy",
+      "seed": 4659,
+      "portalZoneSize": 6,
+      "portalAccessCount": 2,
+      "portalAccessDistanceMean": 4,
+      "portalAccessDiversity": 0,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 3,
+      "difficulty": "easy",
+      "seed": 4672,
+      "portalZoneSize": 6,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 4,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 3,
+      "difficulty": "easy",
+      "seed": 4685,
+      "portalZoneSize": 5,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 4.67,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 3,
+      "difficulty": "easy",
+      "seed": 4698,
+      "portalZoneSize": 5,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 4.67,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 3,
+      "difficulty": "easy",
+      "seed": 4711,
+      "portalZoneSize": 5,
+      "portalAccessCount": 2,
+      "portalAccessDistanceMean": 4,
+      "portalAccessDiversity": 0,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 3,
+      "difficulty": "easy",
+      "seed": 4724,
+      "portalZoneSize": 6,
+      "portalAccessCount": 2,
+      "portalAccessDistanceMean": 6,
+      "portalAccessDiversity": 0.5,
+      "sentinelCoveragePotential": 1,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 3,
+      "difficulty": "easy",
+      "seed": 4737,
+      "portalZoneSize": 7,
+      "portalAccessCount": 4,
+      "portalAccessDistanceMean": 4.67,
+      "portalAccessDiversity": 0.5,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 3,
+      "difficulty": "easy",
+      "seed": 4750,
+      "portalZoneSize": 8,
+      "portalAccessCount": 2,
+      "portalAccessDistanceMean": 4,
+      "portalAccessDiversity": 0,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 3,
+      "difficulty": "easy",
+      "seed": 4763,
+      "portalZoneSize": 7,
+      "portalAccessCount": 2,
+      "portalAccessDistanceMean": 6,
+      "portalAccessDiversity": 0.5,
+      "sentinelCoveragePotential": 1,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 3,
+      "difficulty": "easy",
+      "seed": 4776,
+      "portalZoneSize": 5,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 4.67,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 3,
+      "difficulty": "medium",
+      "seed": 6042,
+      "portalZoneSize": 6,
+      "portalAccessCount": 2,
+      "portalAccessDistanceMean": 6,
+      "portalAccessDiversity": 0.5,
+      "sentinelCoveragePotential": 1,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 3,
+      "difficulty": "medium",
+      "seed": 6055,
+      "portalZoneSize": 6,
+      "portalAccessCount": 2,
+      "portalAccessDistanceMean": 6,
+      "portalAccessDiversity": 0.5,
+      "sentinelCoveragePotential": 1,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 3,
+      "difficulty": "medium",
+      "seed": 6068,
+      "portalZoneSize": 6,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 4,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 3,
+      "difficulty": "medium",
+      "seed": 6081,
+      "portalZoneSize": 6,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 2.67,
+      "portalAccessDiversity": 0,
+      "sentinelCoveragePotential": 3,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 3,
+      "difficulty": "medium",
+      "seed": 6094,
+      "portalZoneSize": 7,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 4,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 3,
+      "difficulty": "medium",
+      "seed": 6107,
+      "portalZoneSize": 5,
+      "portalAccessCount": 2,
+      "portalAccessDistanceMean": 4,
+      "portalAccessDiversity": 0,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 3,
+      "difficulty": "medium",
+      "seed": 6120,
+      "portalZoneSize": 6,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 4,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 3,
+      "difficulty": "medium",
+      "seed": 6133,
+      "portalZoneSize": 7,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 4,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 3,
+      "difficulty": "medium",
+      "seed": 6146,
+      "portalZoneSize": 6,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 4,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 3,
+      "difficulty": "medium",
+      "seed": 6159,
+      "portalZoneSize": 5,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 4.67,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 3,
+      "difficulty": "medium",
+      "seed": 6172,
+      "portalZoneSize": 7,
+      "portalAccessCount": 2,
+      "portalAccessDistanceMean": 6,
+      "portalAccessDiversity": 0.5,
+      "sentinelCoveragePotential": 1,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 3,
+      "difficulty": "medium",
+      "seed": 6185,
+      "portalZoneSize": 6,
+      "portalAccessCount": 2,
+      "portalAccessDistanceMean": 6,
+      "portalAccessDiversity": 0.5,
+      "sentinelCoveragePotential": 1,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 3,
+      "difficulty": "hard",
+      "seed": 7451,
+      "portalZoneSize": 5,
+      "portalAccessCount": 4,
+      "portalAccessDistanceMean": 3.33,
+      "portalAccessDiversity": 0.5,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 3,
+      "difficulty": "hard",
+      "seed": 7464,
+      "portalZoneSize": 6,
+      "portalAccessCount": 2,
+      "portalAccessDistanceMean": 4,
+      "portalAccessDiversity": 0,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 3,
+      "difficulty": "hard",
+      "seed": 7477,
+      "portalZoneSize": 6,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 4,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 3,
+      "difficulty": "hard",
+      "seed": 7490,
+      "portalZoneSize": 5,
+      "portalAccessCount": 2,
+      "portalAccessDistanceMean": 4,
+      "portalAccessDiversity": 0,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 3,
+      "difficulty": "hard",
+      "seed": 7503,
+      "portalZoneSize": 6,
+      "portalAccessCount": 2,
+      "portalAccessDistanceMean": 6,
+      "portalAccessDiversity": 0.5,
+      "sentinelCoveragePotential": 1,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 3,
+      "difficulty": "hard",
+      "seed": 7516,
+      "portalZoneSize": 5,
+      "portalAccessCount": 2,
+      "portalAccessDistanceMean": 6,
+      "portalAccessDiversity": 0.5,
+      "sentinelCoveragePotential": 1,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 3,
+      "difficulty": "hard",
+      "seed": 7529,
+      "portalZoneSize": 6,
+      "portalAccessCount": 2,
+      "portalAccessDistanceMean": 6,
+      "portalAccessDiversity": 0.5,
+      "sentinelCoveragePotential": 1,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 3,
+      "difficulty": "hard",
+      "seed": 7542,
+      "portalZoneSize": 5,
+      "portalAccessCount": 3,
+      "portalAccessDistanceMean": 4.67,
+      "portalAccessDiversity": 0.333,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 3,
+      "difficulty": "hard",
+      "seed": 7555,
+      "portalZoneSize": 6,
+      "portalAccessCount": 2,
+      "portalAccessDistanceMean": 6,
+      "portalAccessDiversity": 0.5,
+      "sentinelCoveragePotential": 1,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 3,
+      "difficulty": "hard",
+      "seed": 7568,
+      "portalZoneSize": 5,
+      "portalAccessCount": 2,
+      "portalAccessDistanceMean": 6,
+      "portalAccessDiversity": 0.5,
+      "sentinelCoveragePotential": 1,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 3,
+      "difficulty": "hard",
+      "seed": 7581,
+      "portalZoneSize": 5,
+      "portalAccessCount": 2,
+      "portalAccessDistanceMean": 4,
+      "portalAccessDiversity": 0,
+      "sentinelCoveragePotential": 2,
+      "sentinelSingleCellLockRisk": 0
+    },
+    {
+      "route": 3,
+      "difficulty": "hard",
+      "seed": 7594,
+      "portalZoneSize": 6,
+      "portalAccessCount": 2,
+      "portalAccessDistanceMean": 6,
+      "portalAccessDiversity": 0.5,
+      "sentinelCoveragePotential": 1,
+      "sentinelSingleCellLockRisk": 0
+    }
+  ]
+}

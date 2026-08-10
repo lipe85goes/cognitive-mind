@@ -1,0 +1,37 @@
+{
+  "mission": "ROTA-DUAL-GUARDIANS-MAPS-01A-FINAL-ACCEPTANCE",
+  "browserMeasurement": "BROWSER_PERFORMANCE_NOT_REMEASURED",
+  "browserMeasurementReason": "Playwright is not installed in this environment, and the in-app browser pane does not composite: document.hidden is true and requestAnimationFrame delivered 0 frames in 600 ms, so the world-readiness gate never releases and the board is never reached. No browser figure is invented.",
+  "harness": "node vm sandbox, diagnostics off",
+  "route3HardFinal": {
+    "p50": 114.9,
+    "p75": 214.3,
+    "p90": 336.3,
+    "p95": 401.7,
+    "p99": 466.9,
+    "max": 697.3,
+    "over500ms": 1,
+    "over1s": 0,
+    "over1_5s": 0,
+    "over2s": 0,
+    "over3s": 0,
+    "threw": 0
+  },
+  "comparableNodeBaselineBefore": {
+    "p50": 797.1,
+    "p90": 2281.9,
+    "max": 4630.9
+  },
+  "comparableNodeBaselineAfter": {
+    "p50": 132.8,
+    "p90": 369.1,
+    "max": 919.3
+  },
+  "publishedBrowserBaseline": {
+    "p50": 365,
+    "p90": 1834,
+    "p95": 2051,
+    "max": 3178,
+    "caveat": "measured in a browser production build in an earlier session; not comparable to node figures"
+  }
+}

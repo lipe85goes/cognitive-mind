@@ -1,0 +1,138 @@
+{
+  "mission": "ROTA-DUAL-GUARDIANS-MAPS-01A",
+  "maps": 108,
+  "traps": 432,
+  "score": {
+    "min": 8,
+    "p10": 20,
+    "median": 20,
+    "p90": 100,
+    "max": 100,
+    "mean": 41.25
+  },
+  "hunterDetour": {
+    "min": 0,
+    "p10": 0,
+    "median": 0,
+    "p90": 8,
+    "max": 14,
+    "mean": 2.07
+  },
+  "worthless": 2,
+  "isolatingHunter": 0,
+  "sealingPortal": 0,
+  "insidePortalZone": 34,
+  "onPortalAccess": 13,
+  "forbiddenPairsTotal": 68,
+  "mapsWhereAllTrapsForbidden": 35,
+  "byCombo": {
+    "route1-easy": {
+      "meanScore": {
+        "min": 20,
+        "p10": 20,
+        "median": 32,
+        "p90": 68,
+        "max": 86,
+        "mean": 35.5
+      },
+      "worthless": 0,
+      "forbiddenPairs": 0
+    },
+    "route1-medium": {
+      "meanScore": {
+        "min": 20,
+        "p10": 20,
+        "median": 38,
+        "p90": 92,
+        "max": 100,
+        "mean": 39.06
+      },
+      "worthless": 0,
+      "forbiddenPairs": 0
+    },
+    "route1-hard": {
+      "meanScore": {
+        "min": 20,
+        "p10": 20,
+        "median": 20,
+        "p90": 68,
+        "max": 100,
+        "mean": 35.88
+      },
+      "worthless": 0,
+      "forbiddenPairs": 2
+    },
+    "route2-easy": {
+      "meanScore": {
+        "min": 20,
+        "p10": 20,
+        "median": 32,
+        "p90": 92,
+        "max": 100,
+        "mean": 42.39
+      },
+      "worthless": 0,
+      "forbiddenPairs": 0
+    },
+    "route2-medium": {
+      "meanScore": {
+        "min": 20,
+        "p10": 20,
+        "median": 44,
+        "p90": 92,
+        "max": 100,
+        "mean": 46.29
+      },
+      "worthless": 0,
+      "forbiddenPairs": 5
+    },
+    "route2-hard": {
+      "meanScore": {
+        "min": 20,
+        "p10": 20,
+        "median": 44,
+        "p90": 100,
+        "max": 100,
+        "mean": 51.13
+      },
+      "worthless": 0,
+      "forbiddenPairs": 22
+    },
+    "route3-easy": {
+      "meanScore": {
+        "min": 20,
+        "p10": 20,
+        "median": 20,
+        "p90": 44,
+        "max": 100,
+        "mean": 29.38
+      },
+      "worthless": 0,
+      "forbiddenPairs": 1
+    },
+    "route3-medium": {
+      "meanScore": {
+        "min": 20,
+        "p10": 20,
+        "median": 20,
+        "p90": 100,
+        "max": 100,
+        "mean": 39.6
+      },
+      "worthless": 0,
+      "forbiddenPairs": 14
+    },
+    "route3-hard": {
+      "meanScore": {
+        "min": 8,
+        "p10": 20,
+        "median": 20,
+        "p90": 100,
+        "max": 100,
+        "mean": 45
+      },
+      "worthless": 2,
+      "forbiddenPairs": 24
+    }
+  }
+}

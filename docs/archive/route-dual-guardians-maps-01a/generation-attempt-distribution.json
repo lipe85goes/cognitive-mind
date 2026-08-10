@@ -1,0 +1,196 @@
+{
+  "mission": "ROTA-DUAL-GUARDIANS-MAPS-01A-FALLBACK-CLOSE",
+  "generatedAt": "2026-08-08T03:51:40.715Z",
+  "maxGenerationAttempts": 500,
+  "maps": 1080,
+  "fallbacks": 0,
+  "fallbackCases": [],
+  "attemptsOverall": {
+    "p50": 20,
+    "p90": 136,
+    "p95": 207,
+    "p99": 396,
+    "max": 493
+  },
+  "msOverall": {
+    "min": 32,
+    "p10": 71,
+    "median": 332,
+    "p90": 1943,
+    "max": 7556,
+    "mean": 732.51
+  },
+  "byCombo": {
+    "route1-easy": {
+      "samples": 120,
+      "attempts": {
+        "p50": 14,
+        "p90": 55,
+        "p95": 72,
+        "p99": 85,
+        "max": 128
+      },
+      "ms": {
+        "min": 38,
+        "p10": 50,
+        "median": 194,
+        "p90": 778,
+        "max": 1517,
+        "mean": 293
+      },
+      "fallbacks": 0
+    },
+    "route1-medium": {
+      "samples": 120,
+      "attempts": {
+        "p50": 10,
+        "p90": 32,
+        "p95": 41,
+        "p99": 49,
+        "max": 74
+      },
+      "ms": {
+        "min": 32,
+        "p10": 51,
+        "median": 169,
+        "p90": 491,
+        "max": 1084,
+        "mean": 229
+      },
+      "fallbacks": 0
+    },
+    "route1-hard": {
+      "samples": 120,
+      "attempts": {
+        "p50": 16,
+        "p90": 51,
+        "p95": 81,
+        "p99": 103,
+        "max": 104
+      },
+      "ms": {
+        "min": 34,
+        "p10": 56,
+        "median": 237,
+        "p90": 856,
+        "max": 1872,
+        "mean": 329.3
+      },
+      "fallbacks": 0
+    },
+    "route2-easy": {
+      "samples": 120,
+      "attempts": {
+        "p50": 20,
+        "p90": 69,
+        "p95": 99,
+        "p99": 112,
+        "max": 124
+      },
+      "ms": {
+        "min": 51,
+        "p10": 109,
+        "median": 321,
+        "p90": 1019,
+        "max": 2040,
+        "mean": 455.23
+      },
+      "fallbacks": 0
+    },
+    "route2-medium": {
+      "samples": 120,
+      "attempts": {
+        "p50": 10,
+        "p90": 30,
+        "p95": 38,
+        "p99": 48,
+        "max": 49
+      },
+      "ms": {
+        "min": 32,
+        "p10": 52,
+        "median": 166,
+        "p90": 547,
+        "max": 807,
+        "mean": 242.78
+      },
+      "fallbacks": 0
+    },
+    "route2-hard": {
+      "samples": 120,
+      "attempts": {
+        "p50": 14,
+        "p90": 42,
+        "p95": 54,
+        "p99": 92,
+        "max": 101
+      },
+      "ms": {
+        "min": 34,
+        "p10": 67,
+        "median": 216,
+        "p90": 643,
+        "max": 1320,
+        "mean": 290.03
+      },
+      "fallbacks": 0
+    },
+    "route3-easy": {
+      "samples": 120,
+      "attempts": {
+        "p50": 107,
+        "p90": 258,
+        "p95": 367,
+        "p99": 440,
+        "max": 446
+      },
+      "ms": {
+        "min": 74,
+        "p10": 215,
+        "median": 1413,
+        "p90": 3541,
+        "max": 5904,
+        "mean": 1688.46
+      },
+      "fallbacks": 0
+    },
+    "route3-medium": {
+      "samples": 120,
+      "attempts": {
+        "p50": 50,
+        "p90": 154,
+        "p95": 247,
+        "p99": 335,
+        "max": 361
+      },
+      "ms": {
+        "min": 35,
+        "p10": 145,
+        "median": 716,
+        "p90": 2160,
+        "max": 5047,
+        "mean": 1007.76
+      },
+      "fallbacks": 0
+    },
+    "route3-hard": {
+      "samples": 120,
+      "attempts": {
+        "p50": 100,
+        "p90": 305,
+        "p95": 423,
+        "p99": 454,
+        "max": 493
+      },
+      "ms": {
+        "min": 50,
+        "p10": 247,
+        "median": 1592,
+        "p90": 4743,
+        "max": 7556,
+        "mean": 2057.07
+      },
+      "fallbacks": 0
+    }
+  }
+}

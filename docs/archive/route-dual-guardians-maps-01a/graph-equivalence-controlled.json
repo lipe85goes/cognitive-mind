@@ -1,0 +1,98 @@
+{
+  "mission": "ROTA-DUAL-GUARDIANS-MAPS-01A-GRAPH-PERF-CLOSE",
+  "contract": "hasAlternativeRoute(s,t) = conectados E remover qualquer célula interior de um caminho mínimo mantém a conexão; equivale a 's e t partilham um componente biconexo'",
+  "cases": [
+    {
+      "case": "corredor simples",
+      "pair": "4,0->4,8",
+      "old": false,
+      "new": false,
+      "agree": true
+    },
+    {
+      "case": "corredor simples",
+      "pair": "4,3->4,4",
+      "old": true,
+      "new": true,
+      "agree": true
+    },
+    {
+      "case": "ciclo",
+      "pair": "1,1->4,5",
+      "old": true,
+      "new": true,
+      "agree": true
+    },
+    {
+      "case": "ciclo",
+      "pair": "1,1->1,5",
+      "old": true,
+      "new": true,
+      "agree": true
+    },
+    {
+      "case": "dois ciclos ligados",
+      "pair": "1,1->1,7",
+      "old": false,
+      "new": false,
+      "agree": true
+    },
+    {
+      "case": "dois ciclos ligados",
+      "pair": "2,1->2,7",
+      "old": false,
+      "new": false,
+      "agree": true
+    },
+    {
+      "case": "ramo morto irrelevante",
+      "pair": "1,1->4,5",
+      "old": true,
+      "new": true,
+      "agree": true
+    },
+    {
+      "case": "ramo morto irrelevante",
+      "pair": "1,1->6,2",
+      "old": true,
+      "new": true,
+      "agree": true
+    },
+    {
+      "case": "articulacao global que NAO separa os endpoints",
+      "pair": "1,1->4,5",
+      "old": true,
+      "new": true,
+      "agree": true
+    },
+    {
+      "case": "articulacao global que NAO separa os endpoints",
+      "pair": "1,1->7,3",
+      "old": false,
+      "new": false,
+      "agree": true
+    },
+    {
+      "case": "articulacao que separa de verdade",
+      "pair": "1,1->1,7",
+      "old": false,
+      "new": false,
+      "agree": true
+    },
+    {
+      "case": "grade aberta (multiplas rotas)",
+      "pair": "1,1->7,7",
+      "old": true,
+      "new": true,
+      "agree": true
+    },
+    {
+      "case": "grade aberta (multiplas rotas)",
+      "pair": "1,1->1,2",
+      "old": true,
+      "new": true,
+      "agree": true
+    }
+  ],
+  "failed": 0
+}

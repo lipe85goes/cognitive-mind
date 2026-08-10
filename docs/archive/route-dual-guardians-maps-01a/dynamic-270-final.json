@@ -1,0 +1,49 @@
+{
+  "mission": "ROTA-DUAL-GUARDIANS-MAPS-01A-FINAL-ACCEPTANCE",
+  "phase": "dynamic 270 final",
+  "frozenContracts": {
+    "humanAgent": "humanV3",
+    "hunter": "production predator policy",
+    "sentinel": {
+      "patrol": true,
+      "commitTurns": 3
+    },
+    "analysis": "reachable-state exploration",
+    "classifier": "frozen — A/B/C controlled tests, not retuned"
+  },
+  "maps": 270,
+  "seedsPerCombination": 30,
+  "horizon": 4,
+  "statesExplored": {
+    "min": 11,
+    "p10": 58,
+    "median": 128,
+    "p90": 204,
+    "max": 257,
+    "mean": 129.31
+  },
+  "msPerMap": {
+    "min": 50,
+    "p10": 293,
+    "median": 597,
+    "p90": 889,
+    "max": 1067,
+    "mean": 592.77
+  },
+  "elapsedMs": 202023,
+  "totals": {
+    "pressureStates": 225,
+    "playerCaused": 225,
+    "systemCaused": 0,
+    "zeroLegalMoveStates": 111,
+    "collapseInsidePortalZone": 12
+  },
+  "collapseCellDegreeHistogram": {
+    "1": 81,
+    "2": 138,
+    "3": 6
+  },
+  "gate_SYSTEM_CAUSED_INEVITABLE_PINCERS": 0,
+  "gateMet": true,
+  "offenders": []
+}

@@ -1,0 +1,17 @@
+{
+  "mission": "ROTA-01A-STAR-SELECTION-PROOF",
+  "capturedCandidates": 13,
+  "success": 13,
+  "failures": 0,
+  "gate13Failures": 0,
+  "greedyFirstPathSuccess": 13,
+  "backtrackRequired": 0,
+  "elapsedMs": 93,
+  "contract": {
+    "requiredStars": 6,
+    "starMinStartDistance": 4,
+    "starMinExitDistance": 2,
+    "starMinSeparation": 3
+  },
+  "failureSample": []
+}

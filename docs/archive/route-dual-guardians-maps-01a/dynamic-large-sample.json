@@ -1,0 +1,37 @@
+{
+  "mission": "ROTA-DUAL-GUARDIANS-MAPS-01A-FINAL",
+  "maps": 270,
+  "seedsPerCombination": 30,
+  "horizon": 4,
+  "elapsedMs": 202023,
+  "statesExplored": {
+    "min": 11,
+    "p10": 58,
+    "median": 128,
+    "p90": 204,
+    "max": 257,
+    "mean": 129.31
+  },
+  "msPerMap": {
+    "min": 50,
+    "p10": 293,
+    "median": 597,
+    "p90": 889,
+    "max": 1067,
+    "mean": 592.77
+  },
+  "totals": {
+    "pressureStates": 225,
+    "playerCaused": 225,
+    "systemCaused": 0,
+    "zeroLegalMoveStates": 111,
+    "collapseInsidePortalZone": 12
+  },
+  "collapseCellDegreeHistogram": {
+    "1": 81,
+    "2": 138,
+    "3": 6
+  },
+  "gate_zeroSystemCaused": true,
+  "offenders": []
+}

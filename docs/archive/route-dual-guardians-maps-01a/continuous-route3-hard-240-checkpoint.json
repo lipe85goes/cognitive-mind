@@ -1,0 +1,13 @@
+{
+  "mission": "ROTA-01A-STAR-SELECTION-FIX-CHECKPOINT",
+  "regime": "continuous seeded stream, uma PRNG por stream, sem reseed",
+  "streams": [
+    11111,
+    22222,
+    33333,
+    44444
+  ],
+  "maps": 240,
+  "ok": 240,
+  "throws": 0
+}
