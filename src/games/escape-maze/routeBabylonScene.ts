@@ -826,6 +826,73 @@ export function createRouteBabylonController(
     }
   }
 
+  /**
+   * The Sentinel wears the Hunter's model in a cold palette.
+   *
+   * Same family, different job: reusing the guardian mesh is the whole point —
+   * a defender should read as a defender, not as scenery. The separation is
+   * carried entirely by material.
+   *
+   * Every material is CLONED before it is touched. The proto's materials are
+   * shared with the Hunter, so mutating them in place would turn him teal too,
+   * and the two render in the same pass. The clones are cached by source name,
+   * so a board rebuild reuses them instead of growing the material count.
+   */
+  const sentinelMaterials = new Map<string, TunableAssetMaterial>();
+
+  function tuneSentinelMaterial(mesh: BABYLON.AbstractMesh) {
+    const source = mesh.material as TunableAssetMaterial | null;
+    if (!source) return;
+    const sourceName = source.name.toLowerCase();
+    let material = sentinelMaterials.get(sourceName);
+
+    if (!material) {
+      const cloned = source.clone(`route-sentinel-${sourceName}`) as
+        | TunableAssetMaterial
+        | null;
+      if (!cloned) return;
+      material = cloned;
+      sentinelMaterials.set(sourceName, material);
+      capMaterialLights(material);
+
+      const paint = (hex: string, roughness?: number) => {
+        material!.albedoColor = B.Color3.FromHexString(hex);
+        material!.diffuseColor = B.Color3.FromHexString(hex);
+        if (roughness !== undefined && material!.roughness !== undefined) {
+          material!.roughness = roughness;
+        }
+      };
+
+      if (sourceName.includes("guardiancloakdark")) {
+        paint("#0d1f26", 0.72);
+      } else if (sourceName.includes("guardianhoodsoft")) {
+        paint("#13303a", 0.68);
+      } else if (sourceName.includes("guardianfacevoid")) {
+        paint("#04090c", 0.9);
+        material.emissiveColor = B.Color3.FromHexString("#062028");
+      } else if (sourceName.includes("guardianbasedark")) {
+        paint("#17323a");
+      } else if (sourceName.includes("guardianambertrim")) {
+        paint("#3fb3a6", 0.38);
+        if (material.metallic !== undefined) material.metallic = 0.72;
+      } else if (sourceName.includes("guardianeyeglow")) {
+        // Watchful teal instead of the Hunter's hot amber: this one is waiting
+        // for you, not coming for you.
+        material.emissiveColor = B.Color3.FromHexString("#7ff2e4");
+        if (material.emissiveIntensity !== undefined) {
+          material.emissiveIntensity = 4.6;
+        }
+      } else if (sourceName.includes("guardianwarmglow")) {
+        material.emissiveColor = B.Color3.FromHexString("#2f9e91");
+        if (material.emissiveIntensity !== undefined) {
+          material.emissiveIntensity = 1.2;
+        }
+      }
+    }
+
+    mesh.material = material;
+  }
+
   function tunePropMaterial(mesh: BABYLON.AbstractMesh) {
     const material = mesh.material as TunableAssetMaterial | null;
     if (!material) return;
@@ -1511,13 +1578,15 @@ export function createRouteBabylonController(
   }
 
   /**
-   * The Sentinel: planted, faceted, cold. Deliberately a different silhouette
-   * from the Hunter's hooded figure — wider at the base, shorter, octagonal,
-   * with a ring on the ground that reads as territory rather than as a HUD.
+   * The Sentinel: the Hunter's silhouette, planted and cold.
    *
-   * Built from primitives on purpose: no new asset pipeline, and no Babylon
-   * light. All the glow is emissive material picked up by the existing
-   * GlowLayer, so the scene still runs on three lights.
+   * The first version was a faceted column, and it read as furniture — the
+   * player saw scenery, not a defender. It wears the guardian model now,
+   * scaled a little wider and a little shorter so it looks rooted rather than
+   * mobile, with a discreet teal ring marking the ground it answers for.
+   *
+   * No new asset, and no Babylon light: the glow is emissive picked up by the
+   * existing GlowLayer, so the scene still runs on three lights.
    */
   function renderSentinel(parent: BABYLON.TransformNode) {
     if (!state.sentinel) return;
@@ -1526,49 +1595,47 @@ export function createRouteBabylonController(
       ? materials.sentinelGlowCommitted
       : materials.sentinelGlow;
 
-    // Territory ring, flat on the board.
+    // Territory first, and secondary to the figure: a thin ring, not a halo.
     torus(
       "route-sentinel-territory-ring",
-      0.86,
-      0.03,
+      0.78,
+      0.028,
       new B.Vector3(pos.x, BOARD_SURFACE_Y + 0.03, pos.z),
       crown,
       parent,
     );
-    cylinder(
-      "route-sentinel-plinth",
-      0.66,
-      0.1,
-      new B.Vector3(pos.x, 0.27, pos.z),
-      materials.sentinel,
-      parent,
-      8,
+
+    if (guardianAssetStatus === "loaded" && guardianAssetProto) {
+      const clone = guardianAssetProto.clone("route-sentinel-glb", parent, false);
+      if (clone) {
+        clone.position.set(pos.x, BOARD_SURFACE_Y + GUARDIAN_Y_OFFSET, pos.z);
+        // Wider and shorter than the Hunter: same species, heavier stance.
+        clone.scaling.set(
+          GUARDIAN_SCALE * 1.08,
+          GUARDIAN_SCALE * 0.92,
+          GUARDIAN_SCALE * 1.08,
+        );
+        clone.rotation.y = GUARDIAN_ROTATION_Y;
+        configureVisualClone(clone, tuneSentinelMaterial);
+        return;
+      }
+    }
+
+    // Same fallback anatomy as the Hunter — base, body, hood, eyes — so the two
+    // still belong together when the model is unavailable.
+    cylinder("route-sentinel-base", 0.62, 0.14, new B.Vector3(pos.x, 0.29, pos.z), materials.sentinelGlow, parent);
+    cylinder("route-sentinel-body", 0.48, 0.6, new B.Vector3(pos.x, 0.58, pos.z), materials.sentinel, parent, 18);
+    const hood = B.MeshBuilder.CreateCylinder(
+      "route-sentinel-hood",
+      { diameterTop: 0.1, diameterBottom: 0.6, height: 0.48, tessellation: 22 },
+      scene,
     );
-    cylinder(
-      "route-sentinel-column",
-      0.44,
-      0.62,
-      new B.Vector3(pos.x, 0.63, pos.z),
-      materials.sentinel,
-      parent,
-      8,
-    );
-    torus(
-      "route-sentinel-crown",
-      0.34,
-      0.05,
-      new B.Vector3(pos.x, 0.98, pos.z),
-      crown,
-      parent,
-    );
-    sphere(
-      "route-sentinel-core",
-      0.16,
-      new B.Vector3(pos.x, 1.06, pos.z),
-      crown,
-      parent,
-      false,
-    );
+    hood.position = new B.Vector3(pos.x, 1.05, pos.z);
+    hood.material = materials.sentinel;
+    hood.parent = parent;
+    shadowGenerator.addShadowCaster(hood);
+    sphere("route-sentinel-eye-left", 0.07, new B.Vector3(pos.x - 0.09, 0.99, pos.z + 0.22), crown, parent, false);
+    sphere("route-sentinel-eye-right", 0.07, new B.Vector3(pos.x + 0.09, 0.99, pos.z + 0.22), crown, parent, false);
   }
 
   function renderPortal(parent: BABYLON.TransformNode) {

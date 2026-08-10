@@ -1,0 +1,55 @@
+{
+  "mission": "ROTA-SENTINEL-VISUAL-REFINE-01",
+  "note": "Static inspection only. Does NOT replace human visual review — the environment cannot composite frames.",
+  "oldSilhouetteRemoved": {
+    "plinthGone": true,
+    "columnGone": true,
+    "crownGone": true,
+    "coreGone": true
+  },
+  "newSilhouette": {
+    "reusesGuardianModel": true,
+    "plantedStance": true,
+    "fallbackHasHood": true,
+    "fallbackHasEyes": true,
+    "territoryRing": true,
+    "ringIsSecondary": true
+  },
+  "materials": {
+    "coldTunerExists": true,
+    "clonesBeforeMutating": true,
+    "cachedByName": true,
+    "lightCapApplied": true,
+    "hunterPaletteUntouched": true,
+    "tealEyes": true
+  },
+  "runtimeBinding": {
+    "positionFromState": true,
+    "guardsNullMap": true,
+    "committedMaterialUsed": true,
+    "calledFromDynamicBoard": true,
+    "disposeConfirmed": true,
+    "noStrategyInRenderLayer": true
+  },
+  "fallbackBoard": {
+    "rendersSentinel": true,
+    "sameSilhouetteAsHunter": true,
+    "tealAccent": true,
+    "matchingStance": true
+  },
+  "lighting": {
+    "babylonLightsCreated": 3,
+    "routeMaxLights": 3,
+    "newLightForSentinel": false
+  },
+  "scope": {
+    "SENTINEL_RUNTIME_CHANGED": false,
+    "TRAPS_CHANGED": false,
+    "filesChanged": [
+      "src/games/escape-maze/routeBabylonScene.ts",
+      "src/components/three/route/RouteToken3D.tsx"
+    ],
+    "useEscapeMazeDiff": "none"
+  },
+  "allBooleanChecksExpected": false
+}

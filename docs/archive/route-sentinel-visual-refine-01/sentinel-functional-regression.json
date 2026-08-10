@@ -1,0 +1,45 @@
+{
+  "mission": "ROTA-SENTINEL-VISUAL-REFINE-01",
+  "claim": "The redesign is visual only. Behaviour is unchanged, and that is measured rather than assumed.",
+  "useEscapeMazeDiff": "none",
+  "filesChanged": [
+    "src/games/escape-maze/routeBabylonScene.ts",
+    "src/components/three/route/RouteToken3D.tsx"
+  ],
+  "equivalence": {
+    "statesCompared": 658,
+    "mapsWalked": 36,
+    "divergences": 0
+  },
+  "commitTurns": {
+    "contract": 3,
+    "ladderExact": true
+  },
+  "feint": {
+    "heldThroughSwitch": true,
+    "reaimedAfterExpiry": true
+  },
+  "leash": {
+    "breaks": 0
+  },
+  "portal": {
+    "occupations": 0,
+    "sealed": 0
+  },
+  "resets": {
+    "scenarios": 9,
+    "stateLeaks": 0
+  },
+  "gameplay": {
+    "combinations": 9,
+    "crashes": 0
+  },
+  "babylonLights": {
+    "count": 3,
+    "max": 3,
+    "added": 0
+  },
+  "generatorRegression": "not re-run — no generator code was touched in this mission",
+  "SENTINEL_RUNTIME_CHANGED": false,
+  "TRAPS_CHANGED": false
+}

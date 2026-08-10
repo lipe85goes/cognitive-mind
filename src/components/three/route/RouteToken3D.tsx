@@ -51,8 +51,13 @@ export function RouteToken3D({
   const accentHi =
     kind === "player" ? "#a5f3fc" : kind === "sentinel" ? "#a9f0e6" : "#fde68a";
 
+  // Same silhouette as the Hunter, a little wider and shorter: same species,
+  // heavier stance. Mirrors the treatment on the Babylon board.
+  const stance: [number, number, number] =
+    kind === "sentinel" ? [1.08, 0.92, 1.08] : [1, 1, 1];
+
   return (
-    <group ref={ref}>
+    <group ref={ref} scale={stance}>
       <mesh castShadow position={[0, 0.05, 0]}>
         <cylinderGeometry args={[0.2, 0.23, 0.1, 28]} />
         <meshStandardMaterial color="#1c130b" roughness={0.5} metalness={0.3} />
