@@ -1,9 +1,26 @@
-# Follow-ups visuais — registrados, não implementados
+# Follow-ups visuais
+
+Registrados no fechamento da 01B. O primeiro já foi resolvido; o segundo
+continua pendente.
+
+| item | status |
+|---|---|
+| Sentinela — silhueta | **RESOLVIDO** em `ROTA-SENTINEL-VISUAL-REFINE-01` |
+| Armadilhas vermelhas | **PENDENTE** para `ROTA-TRAPS-STRATEGY-01` |
 
 Decisões do usuário após o playtest manual da 01B. **Nenhuma foi implementada
 nesta missão** e nenhuma altera os gates funcionais da 01B.
 
-## 1. Sentinela — silhueta
+## 1. Sentinela — silhueta — **RESOLVIDO**
+
+> **Status atual:** resolvido por `ROTA-SENTINEL-VISUAL-REFINE-01`, commit
+> `11a23ea5e507c6e9557a87a6d28bbab41ac25e91`, com checagem visual manual
+> **PASS**. O totem foi substituído pelo modelo do próprio Caçador em paleta
+> fria, escala `1.08 × 0.92 × 1.08`, com materiais clonados e o anel teal
+> mantido. Runtime intocado. Ver
+> [`../route-sentinel-visual-refine-01/README.md`](../route-sentinel-visual-refine-01/README.md).
+>
+> O registro abaixo é o da decisão original e fica como está.
 
 **Rejeitado:** a forma atual de coluna/totem (plinto octogonal + coluna + coroa).
 
@@ -30,7 +47,7 @@ caminho Babylon.
 Regra a preservar na reescrita: **nenhuma Babylon Light nova.** A cena tem 3 e
 `ROUTE_MAX_LIGHTS = 3`. Todo brilho por `emissive` + `GlowLayer` existente.
 
-## 2. Armadilhas vermelhas — silhueta
+## 2. Armadilhas vermelhas — silhueta — **PENDENTE**
 
 **Rejeitado:** os pinos/cones vermelhos atuais.
 

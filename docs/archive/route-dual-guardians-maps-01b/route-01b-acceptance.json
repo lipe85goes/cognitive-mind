@@ -70,9 +70,19 @@
   },
   "RUNTIME_VISIBILITY_CHECK": "PASS",
   "SENTINEL_FUNCTIONAL_RUNTIME": "PASS",
-  "SENTINEL_VISUAL_FINAL_APPROVAL": "PENDING",
-  "SENTINEL_VISUAL_FOLLOWUP_REQUIRED": true,
+  "SENTINEL_VISUAL_FINAL_APPROVAL": "PENDING_AT_01B_CLOSE",
+  "SENTINEL_VISUAL_FOLLOWUP_REQUIRED": "true_at_01B_close",
   "TRAP_VISUAL_FOLLOWUP_REQUIRED": true,
   "playtestObservation": "Timeouts rose in rota2/hard, rota3/easy and rota3/hard under the naive scripted Explorer. Registered, not rebalanced — calibration comes after traps and chest.",
-  "verdict": "ROTA-DUAL-GUARDIANS-MAPS-01B_READY_FOR_PLAYTEST"
+  "verdict": "ROTA-DUAL-GUARDIANS-MAPS-01B_READY_FOR_PLAYTEST",
+  "visualFollowUpResolution": {
+    "note": "Recorded after the fact. The values above are the state at 01B close and are kept as history.",
+    "SENTINEL_VISUAL_FOLLOWUP_REQUIRED_now": false,
+    "SENTINEL_VISUAL_FINAL_APPROVAL_now": "APPROVED",
+    "resolvedBy": "ROTA-SENTINEL-VISUAL-REFINE-01",
+    "commit": "11a23ea5e507c6e9557a87a6d28bbab41ac25e91",
+    "manualVisualCheck": "PASS",
+    "change": "the column/totem was replaced by the Hunter's own model in a cold palette; runtime untouched",
+    "TRAP_VISUAL_FOLLOWUP_REQUIRED_now": true
+  }
 }

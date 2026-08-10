@@ -4,7 +4,8 @@ Fechamento **funcional** do Caçador + Sentinela do Portal no runtime real.
 Nada aqui é ilustrativo: cada número foi medido, e a ferramenta que o produziu
 está em `tools/validation/`.
 
-Nenhum commit foi feito nesta missão. O trabalho vive no working tree.
+Este material foi escrito durante a missão, antes do commit. A 01B foi
+protegida depois em `4f74f86 feat(route): add territorial sentinel runtime`.
 
 ---
 
@@ -16,19 +17,38 @@ Nenhum commit foi feito nesta missão. O trabalho vive no working tree.
 |---|---|
 | `RUNTIME_VISIBILITY_CHECK` | **PASS** |
 | `SENTINEL_FUNCTIONAL_RUNTIME` | **PASS** |
-| `SENTINEL_VISUAL_FINAL_APPROVAL` | **PENDING** |
-| `SENTINEL_VISUAL_FOLLOWUP_REQUIRED` | **true** |
+| `SENTINEL_VISUAL_FINAL_APPROVAL` | **PENDING** *(no fechamento da 01B)* |
+| `SENTINEL_VISUAL_FOLLOWUP_REQUIRED` | **true** *(no fechamento da 01B)* |
 | `TRAP_VISUAL_FOLLOWUP_REQUIRED` | **true** |
+
+### Depois da 01B
+
+O follow-up visual do Sentinela **foi resolvido**, em missão posterior:
+
+| marcador | valor atual |
+|---|---|
+| `SENTINEL_VISUAL_FOLLOWUP_REQUIRED` | **false — RESOLVED** |
+| `SENTINEL_VISUAL_FINAL_APPROVAL` | **APPROVED** |
+| resolvido por | `ROTA-SENTINEL-VISUAL-REFINE-01` |
+| commit | `11a23ea5e507c6e9557a87a6d28bbab41ac25e91` |
+| checagem visual manual | **PASS** |
+| `TRAP_VISUAL_FOLLOWUP_REQUIRED` | **true** — continua pendente |
+
+O totem foi substituído pelo modelo do próprio Caçador em paleta fria.
+Detalhes em [`../route-sentinel-visual-refine-01/README.md`](../route-sentinel-visual-refine-01/README.md).
+
+As linhas acima registram o estado **no momento da 01B** e ficam como estão: a
+01B não nasceu com o visual final, e apagar isso reescreveria a cronologia.
 
 O usuário executou a Rota em navegador real e gravou vídeo do gameplay.
 Confirmou-se que as três peças aparecem e são distinguíveis, que o Sentinela
 permanece associado à região do portal, que o Caçador percorre o tabuleiro, que
 o portal continuou utilizável e que a partida pôde concluir.
 
-**O visual atual do Sentinela não é o design final aprovado.** Ele é funcional e
-visível; a estética foi rejeitada e será refeita. Direção registrada em
-[`visual-followups.md`](visual-followups.md). O redesenho **não bloqueia** o
-fechamento funcional.
+No fechamento da 01B, **o visual do Sentinela ainda não era o design final**:
+ele era funcional e visível, mas a estética foi rejeitada. O redesenho não
+bloqueou o fechamento funcional, e foi entregue depois — ver a tabela acima e
+[`visual-followups.md`](visual-followups.md).
 
 ---
 
@@ -119,7 +139,7 @@ dinâmica da 01A usou `humanV3`, bem mais capaz, e não apresentou esse padrão.
 | `runtime-turn-order.md` | fluxo do turno, antes e depois |
 | `sentinel-runtime-contract.md` | política c3 portada, constante por constante |
 | `sentinel-visual-contract.md` | separação visual e regra de iluminação |
-| `visual-followups.md` | redesenhos pendentes: Sentinela e armadilhas |
+| `visual-followups.md` | follow-ups visuais: Sentinela (resolvido) e armadilhas (pendente) |
 | `sentinel-lab-runtime-equivalence.json` | 658 estados, 0 divergências |
 | `sentinel-feint-trace.json` | finta, turno a turno |
 | `hunter-vs-sentinel-role-test.json` | papéis distintos |
