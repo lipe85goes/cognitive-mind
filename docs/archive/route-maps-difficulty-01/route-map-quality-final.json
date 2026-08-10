@@ -1,0 +1,2398 @@
+{
+  "mission": "ROTA-MAPS-DIFFICULTY-01",
+  "label": "final",
+  "generatedAt": "2026-08-07T03:00:17.710Z",
+  "seedsPerCombination": 120,
+  "totalMaps": 1080,
+  "elapsedMs": 455274,
+  "byDifficulty": {
+    "easy": {
+      "objectiveMoves": {
+        "min": 17,
+        "p10": 19,
+        "median": 24,
+        "p90": 32,
+        "max": 36,
+        "mean": 24.75
+      },
+      "movesToAllLights": {
+        "min": 9,
+        "p10": 11,
+        "median": 20,
+        "p90": 28,
+        "max": 34,
+        "mean": 19
+      },
+      "portalShortest": {
+        "min": 13,
+        "p10": 13,
+        "median": 15,
+        "p90": 16,
+        "max": 18,
+        "mean": 14.82
+      },
+      "wallCount": {
+        "min": 12,
+        "p10": 15,
+        "median": 18,
+        "p90": 19,
+        "max": 19,
+        "mean": 16.93
+      },
+      "lights": {
+        "min": 3,
+        "p10": 3,
+        "median": 3,
+        "p90": 4,
+        "max": 4,
+        "mean": 3.33
+      },
+      "reachableCells": {
+        "min": 62,
+        "p10": 62,
+        "median": 63,
+        "p90": 66,
+        "max": 69,
+        "mean": 64.07
+      },
+      "junctions": {
+        "min": 34,
+        "p10": 37,
+        "median": 42,
+        "p90": 47,
+        "max": 54,
+        "mean": 42.29
+      },
+      "deadEnds": {
+        "min": 0,
+        "p10": 0,
+        "median": 1,
+        "p90": 3,
+        "max": 4,
+        "mean": 1.06
+      },
+      "idleDeadEnds": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 0,
+        "max": 0,
+        "mean": 0
+      },
+      "longestCorridor": {
+        "min": 1,
+        "p10": 1,
+        "median": 3,
+        "p90": 4,
+        "max": 7,
+        "mean": 2.49
+      },
+      "disjointRoutes": {
+        "min": 2,
+        "p10": 2,
+        "median": 2,
+        "p90": 2,
+        "max": 2,
+        "mean": 2
+      },
+      "decisions": {
+        "min": 12,
+        "p10": 14,
+        "median": 19,
+        "p90": 25,
+        "max": 30,
+        "mean": 19.32
+      },
+      "decisionRatio": {
+        "min": 0.621,
+        "p10": 0.684,
+        "median": 0.781,
+        "p90": 0.875,
+        "max": 0.963,
+        "mean": 0.78
+      },
+      "longestForcedStreak": {
+        "min": 1,
+        "p10": 1,
+        "median": 1,
+        "p90": 3,
+        "max": 3,
+        "mean": 1.5
+      },
+      "guardianStartDistance": {
+        "min": 9,
+        "p10": 11,
+        "median": 12,
+        "p90": 13,
+        "max": 15,
+        "mean": 11.76
+      },
+      "attempts": {
+        "min": 1,
+        "p10": 1,
+        "median": 7,
+        "p90": 31,
+        "max": 186,
+        "mean": 13.69
+      },
+      "trapMeanScore": {
+        "min": 24,
+        "p10": 24,
+        "median": 43,
+        "p90": 69.5,
+        "max": 100,
+        "mean": 45.42
+      },
+      "trapUseless": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 0,
+        "max": 0,
+        "mean": 0
+      },
+      "shieldDistance": {
+        "min": 4,
+        "p10": 4,
+        "median": 5,
+        "p90": 6,
+        "max": 6,
+        "mean": 5
+      },
+      "captureRate": {
+        "min": 0,
+        "p10": 0,
+        "median": 0.167,
+        "p90": 0.5,
+        "max": 0.833,
+        "mean": 0.19
+      },
+      "avgMinDistance": {
+        "min": 0.33,
+        "p10": 1.25,
+        "median": 2.33,
+        "p90": 4.67,
+        "max": 7.83,
+        "mean": 2.8
+      },
+      "threatTurns": {
+        "min": 0,
+        "p10": 0.17,
+        "median": 0.75,
+        "p90": 1.92,
+        "max": 4.25,
+        "mean": 0.9
+      },
+      "fallbacks": 0,
+      "trapIsolatingPairs": 20,
+      "trapAllIsolate": 26,
+      "uniqueWallLayouts": 330,
+      "uniqueTemplates": 3,
+      "samples": 360
+    },
+    "medium": {
+      "objectiveMoves": {
+        "min": 17,
+        "p10": 20,
+        "median": 26,
+        "p90": 33,
+        "max": 40,
+        "mean": 26.76
+      },
+      "movesToAllLights": {
+        "min": 9,
+        "p10": 13,
+        "median": 21,
+        "p90": 30,
+        "max": 37,
+        "mean": 21.16
+      },
+      "portalShortest": {
+        "min": 13,
+        "p10": 13,
+        "median": 15,
+        "p90": 17,
+        "max": 19,
+        "mean": 15.13
+      },
+      "wallCount": {
+        "min": 15,
+        "p10": 18,
+        "median": 21,
+        "p90": 23,
+        "max": 24,
+        "mean": 20.89
+      },
+      "lights": {
+        "min": 4,
+        "p10": 4,
+        "median": 4,
+        "p90": 5,
+        "max": 5,
+        "mean": 4.33
+      },
+      "reachableCells": {
+        "min": 57,
+        "p10": 58,
+        "median": 60,
+        "p90": 63,
+        "max": 66,
+        "mean": 60.11
+      },
+      "junctions": {
+        "min": 23,
+        "p10": 29,
+        "median": 34,
+        "p90": 40,
+        "max": 47,
+        "mean": 34.46
+      },
+      "deadEnds": {
+        "min": 0,
+        "p10": 1,
+        "median": 2,
+        "p90": 4,
+        "max": 7,
+        "mean": 2.18
+      },
+      "idleDeadEnds": {
+        "min": 0,
+        "p10": 0,
+        "median": 1,
+        "p90": 1,
+        "max": 1,
+        "mean": 0.72
+      },
+      "longestCorridor": {
+        "min": 1,
+        "p10": 2,
+        "median": 3,
+        "p90": 5,
+        "max": 10,
+        "mean": 3.52
+      },
+      "disjointRoutes": {
+        "min": 2,
+        "p10": 2,
+        "median": 2,
+        "p90": 2,
+        "max": 2,
+        "mean": 2
+      },
+      "decisions": {
+        "min": 11,
+        "p10": 14,
+        "median": 19,
+        "p90": 25,
+        "max": 31,
+        "mean": 19.26
+      },
+      "decisionRatio": {
+        "min": 0.55,
+        "p10": 0.609,
+        "median": 0.72,
+        "p90": 0.828,
+        "max": 0.931,
+        "mean": 0.72
+      },
+      "longestForcedStreak": {
+        "min": 1,
+        "p10": 1,
+        "median": 2,
+        "p90": 4,
+        "max": 4,
+        "mean": 2.12
+      },
+      "guardianStartDistance": {
+        "min": 9,
+        "p10": 11,
+        "median": 12,
+        "p90": 13,
+        "max": 17,
+        "mean": 11.83
+      },
+      "attempts": {
+        "min": 1,
+        "p10": 1,
+        "median": 3,
+        "p90": 12,
+        "max": 31,
+        "mean": 4.99
+      },
+      "trapMeanScore": {
+        "min": 24,
+        "p10": 24.7,
+        "median": 45,
+        "p90": 76,
+        "max": 100,
+        "mean": 49.18
+      },
+      "trapUseless": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 0,
+        "max": 0,
+        "mean": 0
+      },
+      "shieldDistance": {
+        "min": 4,
+        "p10": 4,
+        "median": 5,
+        "p90": 6,
+        "max": 6,
+        "mean": 5
+      },
+      "captureRate": {
+        "min": 0,
+        "p10": 0.25,
+        "median": 0.917,
+        "p90": 1,
+        "max": 1,
+        "mean": 0.75
+      },
+      "avgMinDistance": {
+        "min": 0,
+        "p10": 0,
+        "median": 0.17,
+        "p90": 2.08,
+        "max": 5.83,
+        "mean": 0.7
+      },
+      "threatTurns": {
+        "min": 0,
+        "p10": 1,
+        "median": 1.58,
+        "p90": 3.17,
+        "max": 5.67,
+        "mean": 1.86
+      },
+      "fallbacks": 0,
+      "trapIsolatingPairs": 154,
+      "trapAllIsolate": 101,
+      "uniqueWallLayouts": 359,
+      "uniqueTemplates": 3,
+      "samples": 360
+    },
+    "hard": {
+      "objectiveMoves": {
+        "min": 19,
+        "p10": 22,
+        "median": 29,
+        "p90": 35,
+        "max": 42,
+        "mean": 28.51
+      },
+      "movesToAllLights": {
+        "min": 11,
+        "p10": 13,
+        "median": 25,
+        "p90": 32,
+        "max": 38,
+        "mean": 23.52
+      },
+      "portalShortest": {
+        "min": 13,
+        "p10": 14,
+        "median": 15,
+        "p90": 17,
+        "max": 19,
+        "mean": 15.39
+      },
+      "wallCount": {
+        "min": 20,
+        "p10": 20,
+        "median": 24,
+        "p90": 27,
+        "max": 29,
+        "mean": 23.81
+      },
+      "lights": {
+        "min": 5,
+        "p10": 5,
+        "median": 5,
+        "p90": 6,
+        "max": 6,
+        "mean": 5.33
+      },
+      "reachableCells": {
+        "min": 52,
+        "p10": 54,
+        "median": 57,
+        "p90": 61,
+        "max": 61,
+        "mean": 57.19
+      },
+      "junctions": {
+        "min": 18,
+        "p10": 23,
+        "median": 29,
+        "p90": 34,
+        "max": 41,
+        "mean": 28.91
+      },
+      "deadEnds": {
+        "min": 0,
+        "p10": 1,
+        "median": 3,
+        "p90": 5,
+        "max": 8,
+        "mean": 3.27
+      },
+      "idleDeadEnds": {
+        "min": 0,
+        "p10": 0,
+        "median": 1,
+        "p90": 2,
+        "max": 2,
+        "mean": 1.24
+      },
+      "longestCorridor": {
+        "min": 2,
+        "p10": 2,
+        "median": 4,
+        "p90": 6,
+        "max": 9,
+        "mean": 3.98
+      },
+      "disjointRoutes": {
+        "min": 2,
+        "p10": 2,
+        "median": 2,
+        "p90": 2,
+        "max": 2,
+        "mean": 2
+      },
+      "decisions": {
+        "min": 11,
+        "p10": 14,
+        "median": 19,
+        "p90": 24,
+        "max": 28,
+        "mean": 18.95
+      },
+      "decisionRatio": {
+        "min": 0.5,
+        "p10": 0.563,
+        "median": 0.667,
+        "p90": 0.781,
+        "max": 0.926,
+        "mean": 0.67
+      },
+      "longestForcedStreak": {
+        "min": 1,
+        "p10": 1,
+        "median": 3,
+        "p90": 4,
+        "max": 5,
+        "mean": 2.74
+      },
+      "guardianStartDistance": {
+        "min": 9,
+        "p10": 11,
+        "median": 11,
+        "p90": 13,
+        "max": 15,
+        "mean": 11.44
+      },
+      "attempts": {
+        "min": 1,
+        "p10": 1,
+        "median": 2,
+        "p90": 13,
+        "max": 53,
+        "mean": 4.89
+      },
+      "trapMeanScore": {
+        "min": 19.7,
+        "p10": 25,
+        "median": 47,
+        "p90": 66.4,
+        "max": 97.6,
+        "mean": 47.28
+      },
+      "trapUseless": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 0,
+        "max": 3,
+        "mean": 0.08
+      },
+      "shieldDistance": {
+        "min": 4,
+        "p10": 4,
+        "median": 5,
+        "p90": 6,
+        "max": 6,
+        "mean": 5
+      },
+      "captureRate": {
+        "min": 0,
+        "p10": 0,
+        "median": 0.917,
+        "p90": 1,
+        "max": 1,
+        "mean": 0.69
+      },
+      "avgMinDistance": {
+        "min": 0,
+        "p10": 0,
+        "median": 0.08,
+        "p90": 2.33,
+        "max": 11,
+        "mean": 0.86
+      },
+      "threatTurns": {
+        "min": 0,
+        "p10": 0.92,
+        "median": 1.83,
+        "p90": 10.67,
+        "max": 20.33,
+        "mean": 3.92
+      },
+      "fallbacks": 0,
+      "trapIsolatingPairs": 517,
+      "trapAllIsolate": 209,
+      "uniqueWallLayouts": 360,
+      "uniqueTemplates": 3,
+      "samples": 360
+    }
+  },
+  "byCombo": {
+    "route1-easy": {
+      "objectiveMoves": {
+        "min": 18,
+        "p10": 19,
+        "median": 20,
+        "p90": 22,
+        "max": 23,
+        "mean": 19.88
+      },
+      "movesToAllLights": {
+        "min": 9,
+        "p10": 11,
+        "median": 11,
+        "p90": 13,
+        "max": 15,
+        "mean": 11.46
+      },
+      "portalShortest": {
+        "min": 13,
+        "p10": 13,
+        "median": 13,
+        "p90": 14,
+        "max": 15,
+        "mean": 13.43
+      },
+      "wallCount": {
+        "min": 12,
+        "p10": 14,
+        "median": 15,
+        "p90": 15,
+        "max": 15,
+        "mean": 14.72
+      },
+      "lights": {
+        "min": 3,
+        "p10": 3,
+        "median": 3,
+        "p90": 3,
+        "max": 3,
+        "mean": 3
+      },
+      "reachableCells": {
+        "min": 66,
+        "p10": 66,
+        "median": 66,
+        "p90": 67,
+        "max": 69,
+        "mean": 66.28
+      },
+      "junctions": {
+        "min": 41,
+        "p10": 43,
+        "median": 46,
+        "p90": 49,
+        "max": 54,
+        "mean": 45.96
+      },
+      "deadEnds": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 1,
+        "max": 2,
+        "mean": 0.28
+      },
+      "idleDeadEnds": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 0,
+        "max": 0,
+        "mean": 0
+      },
+      "longestCorridor": {
+        "min": 1,
+        "p10": 1,
+        "median": 1,
+        "p90": 3,
+        "max": 5,
+        "mean": 1.43
+      },
+      "disjointRoutes": {
+        "min": 2,
+        "p10": 2,
+        "median": 2,
+        "p90": 2,
+        "max": 2,
+        "mean": 2
+      },
+      "decisions": {
+        "min": 12,
+        "p10": 13,
+        "median": 15,
+        "p90": 18,
+        "max": 21,
+        "mean": 15.23
+      },
+      "decisionRatio": {
+        "min": 0.632,
+        "p10": 0.684,
+        "median": 0.762,
+        "p90": 0.857,
+        "max": 0.913,
+        "mean": 0.76
+      },
+      "longestForcedStreak": {
+        "min": 1,
+        "p10": 1,
+        "median": 1,
+        "p90": 1,
+        "max": 3,
+        "mean": 1.09
+      },
+      "guardianStartDistance": {
+        "min": 11,
+        "p10": 11,
+        "median": 12,
+        "p90": 12,
+        "max": 13,
+        "mean": 11.82
+      },
+      "attempts": {
+        "min": 1,
+        "p10": 1,
+        "median": 3,
+        "p90": 13,
+        "max": 36,
+        "mean": 5.27
+      },
+      "trapMeanScore": {
+        "min": 24,
+        "p10": 24,
+        "median": 38,
+        "p90": 52,
+        "max": 80,
+        "mean": 39.08
+      },
+      "trapUseless": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 0,
+        "max": 0,
+        "mean": 0
+      },
+      "shieldDistance": {
+        "min": 4,
+        "p10": 4,
+        "median": 4,
+        "p90": 4,
+        "max": 4,
+        "mean": 4
+      },
+      "captureRate": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 0.167,
+        "max": 0.417,
+        "mean": 0.06
+      },
+      "avgMinDistance": {
+        "min": 1.33,
+        "p10": 2,
+        "median": 2.33,
+        "p90": 4,
+        "max": 4.33,
+        "mean": 2.67
+      },
+      "threatTurns": {
+        "min": 0,
+        "p10": 0.25,
+        "median": 1.17,
+        "p90": 1.83,
+        "max": 2.17,
+        "mean": 0.96
+      },
+      "fallbacks": 0,
+      "trapIsolatingPairs": 0,
+      "trapAllIsolate": 0,
+      "uniqueWallLayouts": 91,
+      "uniqueTemplates": 3,
+      "samples": 120
+    },
+    "route1-medium": {
+      "objectiveMoves": {
+        "min": 17,
+        "p10": 19,
+        "median": 23,
+        "p90": 26,
+        "max": 31,
+        "mean": 22.67
+      },
+      "movesToAllLights": {
+        "min": 9,
+        "p10": 11,
+        "median": 15,
+        "p90": 17,
+        "max": 21,
+        "mean": 13.85
+      },
+      "portalShortest": {
+        "min": 13,
+        "p10": 13,
+        "median": 14,
+        "p90": 15,
+        "max": 17,
+        "mean": 13.88
+      },
+      "wallCount": {
+        "min": 15,
+        "p10": 17,
+        "median": 19,
+        "p90": 20,
+        "max": 20,
+        "mean": 18.82
+      },
+      "lights": {
+        "min": 4,
+        "p10": 4,
+        "median": 4,
+        "p90": 4,
+        "max": 4,
+        "mean": 4
+      },
+      "reachableCells": {
+        "min": 61,
+        "p10": 61,
+        "median": 62,
+        "p90": 64,
+        "max": 66,
+        "mean": 62.17
+      },
+      "junctions": {
+        "min": 30,
+        "p10": 33,
+        "median": 37,
+        "p90": 42,
+        "max": 47,
+        "mean": 37.29
+      },
+      "deadEnds": {
+        "min": 0,
+        "p10": 0,
+        "median": 1,
+        "p90": 3,
+        "max": 3,
+        "mean": 1.27
+      },
+      "idleDeadEnds": {
+        "min": 0,
+        "p10": 0,
+        "median": 1,
+        "p90": 1,
+        "max": 1,
+        "mean": 0.74
+      },
+      "longestCorridor": {
+        "min": 1,
+        "p10": 2,
+        "median": 3,
+        "p90": 5,
+        "max": 7,
+        "mean": 3.07
+      },
+      "disjointRoutes": {
+        "min": 2,
+        "p10": 2,
+        "median": 2,
+        "p90": 2,
+        "max": 2,
+        "mean": 2
+      },
+      "decisions": {
+        "min": 11,
+        "p10": 13,
+        "median": 16,
+        "p90": 19,
+        "max": 23,
+        "mean": 16.02
+      },
+      "decisionRatio": {
+        "min": 0.565,
+        "p10": 0.619,
+        "median": 0.7,
+        "p90": 0.808,
+        "max": 0.895,
+        "mean": 0.71
+      },
+      "longestForcedStreak": {
+        "min": 1,
+        "p10": 1,
+        "median": 1,
+        "p90": 3,
+        "max": 4,
+        "mean": 1.72
+      },
+      "guardianStartDistance": {
+        "min": 11,
+        "p10": 11,
+        "median": 12,
+        "p90": 14,
+        "max": 16,
+        "mean": 12.04
+      },
+      "attempts": {
+        "min": 1,
+        "p10": 1,
+        "median": 2,
+        "p90": 5,
+        "max": 17,
+        "mean": 2.58
+      },
+      "trapMeanScore": {
+        "min": 24,
+        "p10": 24.7,
+        "median": 42.7,
+        "p90": 72.7,
+        "max": 80,
+        "mean": 44
+      },
+      "trapUseless": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 0,
+        "max": 0,
+        "mean": 0
+      },
+      "shieldDistance": {
+        "min": 4,
+        "p10": 4,
+        "median": 4,
+        "p90": 4,
+        "max": 4,
+        "mean": 4
+      },
+      "captureRate": {
+        "min": 0,
+        "p10": 0.083,
+        "median": 0.583,
+        "p90": 1,
+        "max": 1,
+        "mean": 0.56
+      },
+      "avgMinDistance": {
+        "min": 0,
+        "p10": 0,
+        "median": 1,
+        "p90": 2.33,
+        "max": 5.83,
+        "mean": 1.21
+      },
+      "threatTurns": {
+        "min": 0,
+        "p10": 1,
+        "median": 1.75,
+        "p90": 3.58,
+        "max": 5.67,
+        "mean": 2.02
+      },
+      "fallbacks": 0,
+      "trapIsolatingPairs": 2,
+      "trapAllIsolate": 1,
+      "uniqueWallLayouts": 119,
+      "uniqueTemplates": 3,
+      "samples": 120
+    },
+    "route1-hard": {
+      "objectiveMoves": {
+        "min": 19,
+        "p10": 20,
+        "median": 24,
+        "p90": 28,
+        "max": 32,
+        "mean": 23.71
+      },
+      "movesToAllLights": {
+        "min": 11,
+        "p10": 13,
+        "median": 15,
+        "p90": 19,
+        "max": 23,
+        "mean": 15.52
+      },
+      "portalShortest": {
+        "min": 13,
+        "p10": 13,
+        "median": 14,
+        "p90": 15,
+        "max": 17,
+        "mean": 13.96
+      },
+      "wallCount": {
+        "min": 20,
+        "p10": 20,
+        "median": 21,
+        "p90": 23,
+        "max": 25,
+        "mean": 21.2
+      },
+      "lights": {
+        "min": 5,
+        "p10": 5,
+        "median": 5,
+        "p90": 5,
+        "max": 5,
+        "mean": 5
+      },
+      "reachableCells": {
+        "min": 56,
+        "p10": 58,
+        "median": 60,
+        "p90": 61,
+        "max": 61,
+        "mean": 59.8
+      },
+      "junctions": {
+        "min": 23,
+        "p10": 28,
+        "median": 33,
+        "p90": 36,
+        "max": 41,
+        "mean": 32.35
+      },
+      "deadEnds": {
+        "min": 0,
+        "p10": 1,
+        "median": 2,
+        "p90": 4,
+        "max": 5,
+        "mean": 2.2
+      },
+      "idleDeadEnds": {
+        "min": 0,
+        "p10": 0,
+        "median": 2,
+        "p90": 2,
+        "max": 2,
+        "mean": 1.41
+      },
+      "longestCorridor": {
+        "min": 2,
+        "p10": 2,
+        "median": 3,
+        "p90": 5,
+        "max": 8,
+        "mean": 3.42
+      },
+      "disjointRoutes": {
+        "min": 2,
+        "p10": 2,
+        "median": 2,
+        "p90": 2,
+        "max": 2,
+        "mean": 2
+      },
+      "decisions": {
+        "min": 11,
+        "p10": 13,
+        "median": 16,
+        "p90": 19,
+        "max": 22,
+        "mean": 15.86
+      },
+      "decisionRatio": {
+        "min": 0.5,
+        "p10": 0.581,
+        "median": 0.667,
+        "p90": 0.792,
+        "max": 0.917,
+        "mean": 0.67
+      },
+      "longestForcedStreak": {
+        "min": 1,
+        "p10": 1,
+        "median": 2,
+        "p90": 4,
+        "max": 5,
+        "mean": 2.13
+      },
+      "guardianStartDistance": {
+        "min": 11,
+        "p10": 11,
+        "median": 11,
+        "p90": 13,
+        "max": 13,
+        "mean": 11.5
+      },
+      "attempts": {
+        "min": 1,
+        "p10": 1,
+        "median": 1,
+        "p90": 4,
+        "max": 6,
+        "mean": 1.97
+      },
+      "trapMeanScore": {
+        "min": 24,
+        "p10": 25,
+        "median": 36,
+        "p90": 63,
+        "max": 67,
+        "mean": 39.62
+      },
+      "trapUseless": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 0,
+        "max": 0,
+        "mean": 0
+      },
+      "shieldDistance": {
+        "min": 4,
+        "p10": 4,
+        "median": 4,
+        "p90": 4,
+        "max": 4,
+        "mean": 4
+      },
+      "captureRate": {
+        "min": 0,
+        "p10": 0,
+        "median": 0.333,
+        "p90": 1,
+        "max": 1,
+        "mean": 0.37
+      },
+      "avgMinDistance": {
+        "min": 0,
+        "p10": 0.08,
+        "median": 0.92,
+        "p90": 6.67,
+        "max": 11,
+        "mean": 1.92
+      },
+      "threatTurns": {
+        "min": 0,
+        "p10": 0.08,
+        "median": 5.33,
+        "p90": 17.5,
+        "max": 20.33,
+        "mean": 7.07
+      },
+      "fallbacks": 0,
+      "trapIsolatingPairs": 23,
+      "trapAllIsolate": 20,
+      "uniqueWallLayouts": 120,
+      "uniqueTemplates": 3,
+      "samples": 120
+    },
+    "route2-easy": {
+      "objectiveMoves": {
+        "min": 17,
+        "p10": 22,
+        "median": 28,
+        "p90": 33,
+        "max": 35,
+        "mean": 27.55
+      },
+      "movesToAllLights": {
+        "min": 12,
+        "p10": 18,
+        "median": 22,
+        "p90": 27,
+        "max": 29,
+        "mean": 21.95
+      },
+      "portalShortest": {
+        "min": 15,
+        "p10": 15,
+        "median": 15,
+        "p90": 16,
+        "max": 18,
+        "mean": 15.42
+      },
+      "wallCount": {
+        "min": 16,
+        "p10": 17,
+        "median": 18,
+        "p90": 18,
+        "max": 18,
+        "mean": 17.55
+      },
+      "lights": {
+        "min": 3,
+        "p10": 3,
+        "median": 3,
+        "p90": 3,
+        "max": 3,
+        "mean": 3
+      },
+      "reachableCells": {
+        "min": 63,
+        "p10": 63,
+        "median": 63,
+        "p90": 65,
+        "max": 65,
+        "mean": 63.45
+      },
+      "junctions": {
+        "min": 34,
+        "p10": 37,
+        "median": 40,
+        "p90": 44,
+        "max": 47,
+        "mean": 40.44
+      },
+      "deadEnds": {
+        "min": 0,
+        "p10": 0,
+        "median": 2,
+        "p90": 3,
+        "max": 4,
+        "mean": 1.65
+      },
+      "idleDeadEnds": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 0,
+        "max": 0,
+        "mean": 0
+      },
+      "longestCorridor": {
+        "min": 2,
+        "p10": 2,
+        "median": 3,
+        "p90": 3,
+        "max": 4,
+        "mean": 2.67
+      },
+      "disjointRoutes": {
+        "min": 2,
+        "p10": 2,
+        "median": 2,
+        "p90": 2,
+        "max": 2,
+        "mean": 2
+      },
+      "decisions": {
+        "min": 13,
+        "p10": 17,
+        "median": 22,
+        "p90": 27,
+        "max": 30,
+        "mean": 22.2
+      },
+      "decisionRatio": {
+        "min": 0.621,
+        "p10": 0.724,
+        "median": 0.815,
+        "p90": 0.889,
+        "max": 0.963,
+        "mean": 0.81
+      },
+      "longestForcedStreak": {
+        "min": 1,
+        "p10": 1,
+        "median": 1,
+        "p90": 3,
+        "max": 3,
+        "mean": 1.65
+      },
+      "guardianStartDistance": {
+        "min": 9,
+        "p10": 11,
+        "median": 11,
+        "p90": 13,
+        "max": 15,
+        "mean": 11.54
+      },
+      "attempts": {
+        "min": 1,
+        "p10": 2,
+        "median": 5,
+        "p90": 17,
+        "max": 40,
+        "mean": 7.82
+      },
+      "trapMeanScore": {
+        "min": 24,
+        "p10": 25.3,
+        "median": 52,
+        "p90": 80.7,
+        "max": 93.3,
+        "mean": 53.28
+      },
+      "trapUseless": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 0,
+        "max": 0,
+        "mean": 0
+      },
+      "shieldDistance": {
+        "min": 5,
+        "p10": 5,
+        "median": 5,
+        "p90": 5,
+        "max": 5,
+        "mean": 5
+      },
+      "captureRate": {
+        "min": 0,
+        "p10": 0,
+        "median": 0.25,
+        "p90": 0.583,
+        "max": 0.75,
+        "mean": 0.28
+      },
+      "avgMinDistance": {
+        "min": 0.33,
+        "p10": 1.08,
+        "median": 2.08,
+        "p90": 4.5,
+        "max": 6.17,
+        "mean": 2.36
+      },
+      "threatTurns": {
+        "min": 0,
+        "p10": 0.08,
+        "median": 0.67,
+        "p90": 1.5,
+        "max": 4.25,
+        "mean": 0.82
+      },
+      "fallbacks": 0,
+      "trapIsolatingPairs": 6,
+      "trapAllIsolate": 5,
+      "uniqueWallLayouts": 119,
+      "uniqueTemplates": 3,
+      "samples": 120
+    },
+    "route2-medium": {
+      "objectiveMoves": {
+        "min": 19,
+        "p10": 23,
+        "median": 29,
+        "p90": 34,
+        "max": 38,
+        "mean": 28.23
+      },
+      "movesToAllLights": {
+        "min": 12,
+        "p10": 17,
+        "median": 23,
+        "p90": 30,
+        "max": 33,
+        "mean": 23
+      },
+      "portalShortest": {
+        "min": 15,
+        "p10": 15,
+        "median": 16,
+        "p90": 17,
+        "max": 19,
+        "mean": 15.91
+      },
+      "wallCount": {
+        "min": 18,
+        "p10": 20,
+        "median": 22,
+        "p90": 23,
+        "max": 23,
+        "mean": 21.53
+      },
+      "lights": {
+        "min": 4,
+        "p10": 4,
+        "median": 4,
+        "p90": 4,
+        "max": 4,
+        "mean": 4
+      },
+      "reachableCells": {
+        "min": 58,
+        "p10": 58,
+        "median": 59,
+        "p90": 61,
+        "max": 63,
+        "mean": 59.47
+      },
+      "junctions": {
+        "min": 24,
+        "p10": 27,
+        "median": 33,
+        "p90": 38,
+        "max": 41,
+        "mean": 32.52
+      },
+      "deadEnds": {
+        "min": 0,
+        "p10": 1,
+        "median": 3,
+        "p90": 5,
+        "max": 7,
+        "mean": 2.78
+      },
+      "idleDeadEnds": {
+        "min": 0,
+        "p10": 0,
+        "median": 1,
+        "p90": 1,
+        "max": 1,
+        "mean": 0.79
+      },
+      "longestCorridor": {
+        "min": 2,
+        "p10": 2,
+        "median": 3,
+        "p90": 5,
+        "max": 10,
+        "mean": 3.74
+      },
+      "disjointRoutes": {
+        "min": 2,
+        "p10": 2,
+        "median": 2,
+        "p90": 2,
+        "max": 2,
+        "mean": 2
+      },
+      "decisions": {
+        "min": 12,
+        "p10": 16,
+        "median": 21,
+        "p90": 26,
+        "max": 31,
+        "mean": 20.84
+      },
+      "decisionRatio": {
+        "min": 0.571,
+        "p10": 0.621,
+        "median": 0.739,
+        "p90": 0.862,
+        "max": 0.931,
+        "mean": 0.74
+      },
+      "longestForcedStreak": {
+        "min": 1,
+        "p10": 1,
+        "median": 2,
+        "p90": 3,
+        "max": 4,
+        "mean": 2.17
+      },
+      "guardianStartDistance": {
+        "min": 9,
+        "p10": 11,
+        "median": 11,
+        "p90": 13,
+        "max": 17,
+        "mean": 11.61
+      },
+      "attempts": {
+        "min": 1,
+        "p10": 1,
+        "median": 3,
+        "p90": 8,
+        "max": 19,
+        "mean": 3.92
+      },
+      "trapMeanScore": {
+        "min": 24,
+        "p10": 25,
+        "median": 52.5,
+        "p90": 80,
+        "max": 100,
+        "mean": 54.61
+      },
+      "trapUseless": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 0,
+        "max": 0,
+        "mean": 0
+      },
+      "shieldDistance": {
+        "min": 5,
+        "p10": 5,
+        "median": 5,
+        "p90": 5,
+        "max": 5,
+        "mean": 5
+      },
+      "captureRate": {
+        "min": 0,
+        "p10": 0.583,
+        "median": 1,
+        "p90": 1,
+        "max": 1,
+        "mean": 0.89
+      },
+      "avgMinDistance": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 0.92,
+        "max": 4,
+        "mean": 0.27
+      },
+      "threatTurns": {
+        "min": 0,
+        "p10": 1,
+        "median": 1.5,
+        "p90": 2.92,
+        "max": 5.42,
+        "mean": 1.77
+      },
+      "fallbacks": 0,
+      "trapIsolatingPairs": 46,
+      "trapAllIsolate": 29,
+      "uniqueWallLayouts": 120,
+      "uniqueTemplates": 3,
+      "samples": 120
+    },
+    "route2-hard": {
+      "objectiveMoves": {
+        "min": 20,
+        "p10": 24,
+        "median": 31,
+        "p90": 35,
+        "max": 39,
+        "mean": 30.37
+      },
+      "movesToAllLights": {
+        "min": 16,
+        "p10": 19,
+        "median": 27,
+        "p90": 32,
+        "max": 37,
+        "mean": 26.29
+      },
+      "portalShortest": {
+        "min": 15,
+        "p10": 15,
+        "median": 17,
+        "p90": 18,
+        "max": 19,
+        "mean": 16.47
+      },
+      "wallCount": {
+        "min": 23,
+        "p10": 23,
+        "median": 24,
+        "p90": 26,
+        "max": 28,
+        "mean": 24.27
+      },
+      "lights": {
+        "min": 5,
+        "p10": 5,
+        "median": 5,
+        "p90": 5,
+        "max": 5,
+        "mean": 5
+      },
+      "reachableCells": {
+        "min": 53,
+        "p10": 55,
+        "median": 57,
+        "p90": 58,
+        "max": 58,
+        "mean": 56.73
+      },
+      "junctions": {
+        "min": 18,
+        "p10": 23,
+        "median": 28,
+        "p90": 31,
+        "max": 36,
+        "mean": 27.43
+      },
+      "deadEnds": {
+        "min": 1,
+        "p10": 2,
+        "median": 4,
+        "p90": 6,
+        "max": 8,
+        "mean": 3.98
+      },
+      "idleDeadEnds": {
+        "min": 0,
+        "p10": 0,
+        "median": 1,
+        "p90": 2,
+        "max": 2,
+        "mean": 1.23
+      },
+      "longestCorridor": {
+        "min": 2,
+        "p10": 3,
+        "median": 4,
+        "p90": 8,
+        "max": 8,
+        "mean": 4.17
+      },
+      "disjointRoutes": {
+        "min": 2,
+        "p10": 2,
+        "median": 2,
+        "p90": 2,
+        "max": 2,
+        "mean": 2
+      },
+      "decisions": {
+        "min": 14,
+        "p10": 17,
+        "median": 22,
+        "p90": 25,
+        "max": 28,
+        "mean": 21.32
+      },
+      "decisionRatio": {
+        "min": 0.541,
+        "p10": 0.629,
+        "median": 0.708,
+        "p90": 0.8,
+        "max": 0.926,
+        "mean": 0.7
+      },
+      "longestForcedStreak": {
+        "min": 1,
+        "p10": 1,
+        "median": 3,
+        "p90": 4,
+        "max": 5,
+        "mean": 2.63
+      },
+      "guardianStartDistance": {
+        "min": 9,
+        "p10": 11,
+        "median": 11,
+        "p90": 15,
+        "max": 15,
+        "mean": 11.77
+      },
+      "attempts": {
+        "min": 1,
+        "p10": 1,
+        "median": 2,
+        "p90": 8,
+        "max": 16,
+        "mean": 3.38
+      },
+      "trapMeanScore": {
+        "min": 24,
+        "p10": 25.2,
+        "median": 54.4,
+        "p90": 75.2,
+        "max": 97.6,
+        "mean": 53.75
+      },
+      "trapUseless": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 0,
+        "max": 0,
+        "mean": 0
+      },
+      "shieldDistance": {
+        "min": 5,
+        "p10": 5,
+        "median": 5,
+        "p90": 5,
+        "max": 5,
+        "mean": 5
+      },
+      "captureRate": {
+        "min": 0,
+        "p10": 0.75,
+        "median": 1,
+        "p90": 1,
+        "max": 1,
+        "mean": 0.89
+      },
+      "avgMinDistance": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 1,
+        "max": 4,
+        "mean": 0.28
+      },
+      "threatTurns": {
+        "min": 0,
+        "p10": 1,
+        "median": 1,
+        "p90": 4,
+        "max": 6.17,
+        "mean": 1.82
+      },
+      "fallbacks": 0,
+      "trapIsolatingPairs": 224,
+      "trapAllIsolate": 82,
+      "uniqueWallLayouts": 120,
+      "uniqueTemplates": 3,
+      "samples": 120
+    },
+    "route3-easy": {
+      "objectiveMoves": {
+        "min": 17,
+        "p10": 21,
+        "median": 27,
+        "p90": 33,
+        "max": 36,
+        "mean": 26.82
+      },
+      "movesToAllLights": {
+        "min": 15,
+        "p10": 18,
+        "median": 23,
+        "p90": 30,
+        "max": 34,
+        "mean": 23.58
+      },
+      "portalShortest": {
+        "min": 15,
+        "p10": 15,
+        "median": 16,
+        "p90": 16,
+        "max": 17,
+        "mean": 15.61
+      },
+      "wallCount": {
+        "min": 14,
+        "p10": 18,
+        "median": 19,
+        "p90": 19,
+        "max": 19,
+        "mean": 18.51
+      },
+      "lights": {
+        "min": 4,
+        "p10": 4,
+        "median": 4,
+        "p90": 4,
+        "max": 4,
+        "mean": 4
+      },
+      "reachableCells": {
+        "min": 62,
+        "p10": 62,
+        "median": 62,
+        "p90": 63,
+        "max": 67,
+        "mean": 62.49
+      },
+      "junctions": {
+        "min": 34,
+        "p10": 37,
+        "median": 40,
+        "p90": 45,
+        "max": 52,
+        "mean": 40.47
+      },
+      "deadEnds": {
+        "min": 0,
+        "p10": 0,
+        "median": 1,
+        "p90": 3,
+        "max": 4,
+        "mean": 1.26
+      },
+      "idleDeadEnds": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 0,
+        "max": 0,
+        "mean": 0
+      },
+      "longestCorridor": {
+        "min": 1,
+        "p10": 2,
+        "median": 3,
+        "p90": 5,
+        "max": 7,
+        "mean": 3.38
+      },
+      "disjointRoutes": {
+        "min": 2,
+        "p10": 2,
+        "median": 2,
+        "p90": 2,
+        "max": 2,
+        "mean": 2
+      },
+      "decisions": {
+        "min": 12,
+        "p10": 15,
+        "median": 21,
+        "p90": 26,
+        "max": 29,
+        "mean": 20.54
+      },
+      "decisionRatio": {
+        "min": 0.625,
+        "p10": 0.667,
+        "median": 0.767,
+        "p90": 0.875,
+        "max": 0.95,
+        "mean": 0.77
+      },
+      "longestForcedStreak": {
+        "min": 1,
+        "p10": 1,
+        "median": 2,
+        "p90": 3,
+        "max": 3,
+        "mean": 1.76
+      },
+      "guardianStartDistance": {
+        "min": 9,
+        "p10": 11,
+        "median": 12,
+        "p90": 13,
+        "max": 15,
+        "mean": 11.93
+      },
+      "attempts": {
+        "min": 1,
+        "p10": 5,
+        "median": 18,
+        "p90": 70,
+        "max": 186,
+        "mean": 27.98
+      },
+      "trapMeanScore": {
+        "min": 24,
+        "p10": 24,
+        "median": 43,
+        "p90": 68,
+        "max": 100,
+        "mean": 43.91
+      },
+      "trapUseless": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 0,
+        "max": 0,
+        "mean": 0
+      },
+      "shieldDistance": {
+        "min": 6,
+        "p10": 6,
+        "median": 6,
+        "p90": 6,
+        "max": 6,
+        "mean": 6
+      },
+      "captureRate": {
+        "min": 0,
+        "p10": 0,
+        "median": 0.167,
+        "p90": 0.583,
+        "max": 0.833,
+        "mean": 0.24
+      },
+      "avgMinDistance": {
+        "min": 0.33,
+        "p10": 1.33,
+        "median": 3.33,
+        "p90": 6,
+        "max": 7.83,
+        "mean": 3.36
+      },
+      "threatTurns": {
+        "min": 0,
+        "p10": 0,
+        "median": 0.67,
+        "p90": 2.42,
+        "max": 4.17,
+        "mean": 0.92
+      },
+      "fallbacks": 0,
+      "trapIsolatingPairs": 14,
+      "trapAllIsolate": 21,
+      "uniqueWallLayouts": 120,
+      "uniqueTemplates": 3,
+      "samples": 120
+    },
+    "route3-medium": {
+      "objectiveMoves": {
+        "min": 19,
+        "p10": 23,
+        "median": 30,
+        "p90": 37,
+        "max": 40,
+        "mean": 29.39
+      },
+      "movesToAllLights": {
+        "min": 17,
+        "p10": 21,
+        "median": 27,
+        "p90": 32,
+        "max": 37,
+        "mean": 26.64
+      },
+      "portalShortest": {
+        "min": 15,
+        "p10": 15,
+        "median": 16,
+        "p90": 16,
+        "max": 18,
+        "mean": 15.59
+      },
+      "wallCount": {
+        "min": 19,
+        "p10": 20,
+        "median": 23,
+        "p90": 24,
+        "max": 24,
+        "mean": 22.32
+      },
+      "lights": {
+        "min": 5,
+        "p10": 5,
+        "median": 5,
+        "p90": 5,
+        "max": 5,
+        "mean": 5
+      },
+      "reachableCells": {
+        "min": 57,
+        "p10": 57,
+        "median": 58,
+        "p90": 61,
+        "max": 62,
+        "mean": 58.67
+      },
+      "junctions": {
+        "min": 23,
+        "p10": 29,
+        "median": 34,
+        "p90": 39,
+        "max": 44,
+        "mean": 33.57
+      },
+      "deadEnds": {
+        "min": 0,
+        "p10": 1,
+        "median": 2,
+        "p90": 4,
+        "max": 6,
+        "mean": 2.5
+      },
+      "idleDeadEnds": {
+        "min": 0,
+        "p10": 0,
+        "median": 1,
+        "p90": 1,
+        "max": 1,
+        "mean": 0.63
+      },
+      "longestCorridor": {
+        "min": 2,
+        "p10": 2,
+        "median": 4,
+        "p90": 6,
+        "max": 9,
+        "mean": 3.77
+      },
+      "disjointRoutes": {
+        "min": 2,
+        "p10": 2,
+        "median": 2,
+        "p90": 2,
+        "max": 2,
+        "mean": 2
+      },
+      "decisions": {
+        "min": 13,
+        "p10": 15,
+        "median": 21,
+        "p90": 25,
+        "max": 31,
+        "mean": 20.93
+      },
+      "decisionRatio": {
+        "min": 0.55,
+        "p10": 0.6,
+        "median": 0.72,
+        "p90": 0.821,
+        "max": 0.913,
+        "mean": 0.71
+      },
+      "longestForcedStreak": {
+        "min": 1,
+        "p10": 1,
+        "median": 2,
+        "p90": 4,
+        "max": 4,
+        "mean": 2.47
+      },
+      "guardianStartDistance": {
+        "min": 9,
+        "p10": 11,
+        "median": 12,
+        "p90": 13,
+        "max": 16,
+        "mean": 11.83
+      },
+      "attempts": {
+        "min": 1,
+        "p10": 2,
+        "median": 6,
+        "p90": 19,
+        "max": 31,
+        "mean": 8.49
+      },
+      "trapMeanScore": {
+        "min": 24,
+        "p10": 24.8,
+        "median": 44.4,
+        "p90": 70,
+        "max": 85.2,
+        "mean": 48.91
+      },
+      "trapUseless": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 0,
+        "max": 0,
+        "mean": 0
+      },
+      "shieldDistance": {
+        "min": 6,
+        "p10": 6,
+        "median": 6,
+        "p90": 6,
+        "max": 6,
+        "mean": 6
+      },
+      "captureRate": {
+        "min": 0,
+        "p10": 0.417,
+        "median": 0.917,
+        "p90": 1,
+        "max": 1,
+        "mean": 0.79
+      },
+      "avgMinDistance": {
+        "min": 0,
+        "p10": 0,
+        "median": 0.25,
+        "p90": 1.83,
+        "max": 4.17,
+        "mean": 0.61
+      },
+      "threatTurns": {
+        "min": 0.17,
+        "p10": 0.92,
+        "median": 1.5,
+        "p90": 3,
+        "max": 5.42,
+        "mean": 1.79
+      },
+      "fallbacks": 0,
+      "trapIsolatingPairs": 106,
+      "trapAllIsolate": 71,
+      "uniqueWallLayouts": 120,
+      "uniqueTemplates": 3,
+      "samples": 120
+    },
+    "route3-hard": {
+      "objectiveMoves": {
+        "min": 24,
+        "p10": 26,
+        "median": 31,
+        "p90": 38,
+        "max": 42,
+        "mean": 31.44
+      },
+      "movesToAllLights": {
+        "min": 22,
+        "p10": 24,
+        "median": 28,
+        "p90": 34,
+        "max": 38,
+        "mean": 28.76
+      },
+      "portalShortest": {
+        "min": 15,
+        "p10": 15,
+        "median": 16,
+        "p90": 16,
+        "max": 18,
+        "mean": 15.76
+      },
+      "wallCount": {
+        "min": 24,
+        "p10": 24,
+        "median": 26,
+        "p90": 28,
+        "max": 29,
+        "mean": 25.96
+      },
+      "lights": {
+        "min": 6,
+        "p10": 6,
+        "median": 6,
+        "p90": 6,
+        "max": 6,
+        "mean": 6
+      },
+      "reachableCells": {
+        "min": 52,
+        "p10": 53,
+        "median": 55,
+        "p90": 57,
+        "max": 57,
+        "mean": 55.04
+      },
+      "junctions": {
+        "min": 18,
+        "p10": 22,
+        "median": 27,
+        "p90": 33,
+        "max": 36,
+        "mean": 26.95
+      },
+      "deadEnds": {
+        "min": 0,
+        "p10": 2,
+        "median": 4,
+        "p90": 6,
+        "max": 7,
+        "mean": 3.63
+      },
+      "idleDeadEnds": {
+        "min": 0,
+        "p10": 0,
+        "median": 1,
+        "p90": 2,
+        "max": 2,
+        "mean": 1.1
+      },
+      "longestCorridor": {
+        "min": 2,
+        "p10": 3,
+        "median": 4,
+        "p90": 6,
+        "max": 9,
+        "mean": 4.35
+      },
+      "disjointRoutes": {
+        "min": 2,
+        "p10": 2,
+        "median": 2,
+        "p90": 2,
+        "max": 2,
+        "mean": 2
+      },
+      "decisions": {
+        "min": 14,
+        "p10": 16,
+        "median": 20,
+        "p90": 24,
+        "max": 26,
+        "mean": 19.68
+      },
+      "decisionRatio": {
+        "min": 0.5,
+        "p10": 0.531,
+        "median": 0.625,
+        "p90": 0.727,
+        "max": 0.857,
+        "mean": 0.63
+      },
+      "longestForcedStreak": {
+        "min": 1,
+        "p10": 2,
+        "median": 4,
+        "p90": 5,
+        "max": 5,
+        "mean": 3.46
+      },
+      "guardianStartDistance": {
+        "min": 9,
+        "p10": 11,
+        "median": 11,
+        "p90": 13,
+        "max": 13,
+        "mean": 11.05
+      },
+      "attempts": {
+        "min": 1,
+        "p10": 1,
+        "median": 6,
+        "p90": 20,
+        "max": 53,
+        "mean": 9.31
+      },
+      "trapMeanScore": {
+        "min": 19.7,
+        "p10": 26.7,
+        "median": 49.3,
+        "p90": 62.3,
+        "max": 81.7,
+        "mean": 48.46
+      },
+      "trapUseless": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 1,
+        "max": 3,
+        "mean": 0.25
+      },
+      "shieldDistance": {
+        "min": 6,
+        "p10": 6,
+        "median": 6,
+        "p90": 6,
+        "max": 6,
+        "mean": 6
+      },
+      "captureRate": {
+        "min": 0,
+        "p10": 0.417,
+        "median": 1,
+        "p90": 1,
+        "max": 1,
+        "mean": 0.82
+      },
+      "avgMinDistance": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 1.42,
+        "max": 3.33,
+        "mean": 0.37
+      },
+      "threatTurns": {
+        "min": 0,
+        "p10": 1,
+        "median": 1.67,
+        "p90": 6.5,
+        "max": 18.5,
+        "mean": 2.87
+      },
+      "fallbacks": 0,
+      "trapIsolatingPairs": 270,
+      "trapAllIsolate": 107,
+      "uniqueWallLayouts": 120,
+      "uniqueTemplates": 3,
+      "samples": 120
+    }
+  },
+  "worst": {
+    "longestForcedStreak": [
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3750,
+        "streak": 5,
+        "moves": 21
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3820,
+        "streak": 5,
+        "moves": 29
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3841,
+        "streak": 5,
+        "moves": 20
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3363,
+        "streak": 5,
+        "moves": 27
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3965,
+        "streak": 5,
+        "moves": 30
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3368,
+        "streak": 5,
+        "moves": 36
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3382,
+        "streak": 5,
+        "moves": 25
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3389,
+        "streak": 5,
+        "moves": 24
+      }
+    ],
+    "idleDeadEnds": [
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3099,
+        "idle": 2,
+        "total": 3
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3106,
+        "idle": 2,
+        "total": 2
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3120,
+        "idle": 2,
+        "total": 3
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3134,
+        "idle": 2,
+        "total": 2
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3141,
+        "idle": 2,
+        "total": 2
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3148,
+        "idle": 2,
+        "total": 3
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3162,
+        "idle": 2,
+        "total": 2
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3169,
+        "idle": 2,
+        "total": 2
+      }
+    ],
+    "singleCorridor": [],
+    "fewDecisions": [
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3155,
+        "ratio": 0.5,
+        "decisions": 11
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3162,
+        "ratio": 0.5,
+        "decisions": 14
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3368,
+        "ratio": 0.5,
+        "decisions": 18
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3480,
+        "ratio": 0.5,
+        "decisions": 16
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3522,
+        "ratio": 0.5,
+        "decisions": 16
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3585,
+        "ratio": 0.5,
+        "decisions": 15
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3620,
+        "ratio": 0.5,
+        "decisions": 21
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3802,
+        "ratio": 0.5,
+        "decisions": 17
+      }
+    ],
+    "uselessTraps": 23
+  }
+}

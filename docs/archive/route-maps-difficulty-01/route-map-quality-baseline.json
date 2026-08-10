@@ -1,0 +1,5381 @@
+{
+  "mission": "ROTA-MAPS-DIFFICULTY-01",
+  "label": "baseline",
+  "generatedAt": "2026-08-07T00:35:54.137Z",
+  "seedsPerCombination": 120,
+  "totalMaps": 1080,
+  "elapsedMs": 56093,
+  "byDifficulty": {
+    "easy": {
+      "objectiveMoves": {
+        "min": 15,
+        "p10": 19,
+        "median": 24,
+        "p90": 34,
+        "max": 51,
+        "mean": 26.39
+      },
+      "movesToAllLights": {
+        "min": 9,
+        "p10": 13,
+        "median": 21,
+        "p90": 30,
+        "max": 46,
+        "mean": 20.42
+      },
+      "portalShortest": {
+        "min": 13,
+        "p10": 13,
+        "median": 15,
+        "p90": 16,
+        "max": 17,
+        "mean": 14.78
+      },
+      "wallCount": {
+        "min": 11,
+        "p10": 15,
+        "median": 18,
+        "p90": 19,
+        "max": 19,
+        "mean": 17.07
+      },
+      "lights": {
+        "min": 3,
+        "p10": 3,
+        "median": 4,
+        "p90": 5,
+        "max": 5,
+        "mean": 4
+      },
+      "reachableCells": {
+        "min": 61,
+        "p10": 62,
+        "median": 63,
+        "p90": 66,
+        "max": 70,
+        "mean": 63.92
+      },
+      "junctions": {
+        "min": 28,
+        "p10": 31,
+        "median": 35,
+        "p90": 41,
+        "max": 49,
+        "mean": 35.91
+      },
+      "deadEnds": {
+        "min": 0,
+        "p10": 0,
+        "median": 1,
+        "p90": 3,
+        "max": 5,
+        "mean": 0.99
+      },
+      "idleDeadEnds": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 1,
+        "max": 5,
+        "mean": 0.48
+      },
+      "longestCorridor": {
+        "min": 2,
+        "p10": 3,
+        "median": 4,
+        "p90": 7,
+        "max": 9,
+        "mean": 4.73
+      },
+      "disjointRoutes": {
+        "min": 1,
+        "p10": 1,
+        "median": 2,
+        "p90": 2,
+        "max": 2,
+        "mean": 1.89
+      },
+      "decisions": {
+        "min": 10,
+        "p10": 14,
+        "median": 17,
+        "p90": 22,
+        "max": 27,
+        "mean": 17.62
+      },
+      "decisionRatio": {
+        "min": 0.432,
+        "p10": 0.531,
+        "median": 0.686,
+        "p90": 0.833,
+        "max": 0.955,
+        "mean": 0.68
+      },
+      "longestForcedStreak": {
+        "min": 1,
+        "p10": 1,
+        "median": 3,
+        "p90": 7,
+        "max": 11,
+        "mean": 3.2
+      },
+      "guardianStartDistance": {
+        "min": 9,
+        "p10": 9,
+        "median": 12,
+        "p90": 16,
+        "max": 16,
+        "mean": 12.41
+      },
+      "attempts": {
+        "min": 1,
+        "p10": 1,
+        "median": 2,
+        "p90": 8,
+        "max": 20,
+        "mean": 3.01
+      },
+      "trapMeanScore": {
+        "min": 7.3,
+        "p10": 14.7,
+        "median": 20.5,
+        "p90": 31,
+        "max": 43.3,
+        "mean": 22.1
+      },
+      "trapUseless": {
+        "min": 0,
+        "p10": 0,
+        "median": 1,
+        "p90": 2,
+        "max": 4,
+        "mean": 0.89
+      },
+      "shieldDistance": {
+        "min": 4,
+        "p10": 4,
+        "median": 5,
+        "p90": 6,
+        "max": 6,
+        "mean": 5
+      },
+      "captureRate": {
+        "min": 0,
+        "p10": 0,
+        "median": 0.083,
+        "p90": 0.5,
+        "max": 0.917,
+        "mean": 0.18
+      },
+      "avgMinDistance": {
+        "min": 0.17,
+        "p10": 1.42,
+        "median": 2.67,
+        "p90": 3.92,
+        "max": 8.17,
+        "mean": 2.66
+      },
+      "threatTurns": {
+        "min": 0,
+        "p10": 0.17,
+        "median": 0.75,
+        "p90": 2.17,
+        "max": 4.67,
+        "mean": 0.97
+      },
+      "fallbacks": 0,
+      "trapIsolatingPairs": 32,
+      "trapAllIsolate": 32,
+      "uniqueWallLayouts": 320,
+      "uniqueTemplates": 3,
+      "samples": 360
+    },
+    "medium": {
+      "objectiveMoves": {
+        "min": 14,
+        "p10": 19,
+        "median": 29,
+        "p90": 43,
+        "max": 55,
+        "mean": 29.82
+      },
+      "movesToAllLights": {
+        "min": 7,
+        "p10": 9,
+        "median": 22,
+        "p90": 37,
+        "max": 51,
+        "mean": 22.82
+      },
+      "portalShortest": {
+        "min": 13,
+        "p10": 13,
+        "median": 15,
+        "p90": 16,
+        "max": 20,
+        "mean": 15.05
+      },
+      "wallCount": {
+        "min": 15,
+        "p10": 19,
+        "median": 22,
+        "p90": 24,
+        "max": 24,
+        "mean": 21.61
+      },
+      "lights": {
+        "min": 3,
+        "p10": 3,
+        "median": 4,
+        "p90": 5,
+        "max": 5,
+        "mean": 4
+      },
+      "reachableCells": {
+        "min": 46,
+        "p10": 57,
+        "median": 59,
+        "p90": 62,
+        "max": 66,
+        "mean": 58.96
+      },
+      "junctions": {
+        "min": 16,
+        "p10": 21,
+        "median": 26,
+        "p90": 33,
+        "max": 42,
+        "mean": 26.67
+      },
+      "deadEnds": {
+        "min": 0,
+        "p10": 2,
+        "median": 4,
+        "p90": 6,
+        "max": 8,
+        "mean": 3.8
+      },
+      "idleDeadEnds": {
+        "min": 0,
+        "p10": 0,
+        "median": 1,
+        "p90": 4,
+        "max": 7,
+        "mean": 1.63
+      },
+      "longestCorridor": {
+        "min": 2,
+        "p10": 3,
+        "median": 5,
+        "p90": 8,
+        "max": 12,
+        "mean": 5.37
+      },
+      "disjointRoutes": {
+        "min": 1,
+        "p10": 1,
+        "median": 1,
+        "p90": 2,
+        "max": 2,
+        "mean": 1.49
+      },
+      "decisions": {
+        "min": 7,
+        "p10": 12,
+        "median": 16,
+        "p90": 22,
+        "max": 31,
+        "mean": 16.55
+      },
+      "decisionRatio": {
+        "min": 0.293,
+        "p10": 0.415,
+        "median": 0.563,
+        "p90": 0.765,
+        "max": 0.952,
+        "mean": 0.58
+      },
+      "longestForcedStreak": {
+        "min": 1,
+        "p10": 1,
+        "median": 4,
+        "p90": 9,
+        "max": 17,
+        "mean": 4.6
+      },
+      "guardianStartDistance": {
+        "min": 9,
+        "p10": 9,
+        "median": 12,
+        "p90": 16,
+        "max": 20,
+        "mean": 12.68
+      },
+      "attempts": {
+        "min": 1,
+        "p10": 1,
+        "median": 1,
+        "p90": 2,
+        "max": 4,
+        "mean": 1.12
+      },
+      "trapMeanScore": {
+        "min": 6,
+        "p10": 13.5,
+        "median": 20,
+        "p90": 30.5,
+        "max": 50,
+        "mean": 20.88
+      },
+      "trapUseless": {
+        "min": 0,
+        "p10": 0,
+        "median": 2,
+        "p90": 3,
+        "max": 5,
+        "mean": 1.61
+      },
+      "shieldDistance": {
+        "min": 4,
+        "p10": 4,
+        "median": 5,
+        "p90": 6,
+        "max": 7,
+        "mean": 5.01
+      },
+      "captureRate": {
+        "min": 0,
+        "p10": 0.25,
+        "median": 0.917,
+        "p90": 1,
+        "max": 1,
+        "mean": 0.79
+      },
+      "avgMinDistance": {
+        "min": 0,
+        "p10": 0,
+        "median": 0.17,
+        "p90": 1.75,
+        "max": 6.17,
+        "mean": 0.56
+      },
+      "threatTurns": {
+        "min": 0.08,
+        "p10": 1,
+        "median": 1.67,
+        "p90": 3.5,
+        "max": 5.42,
+        "mean": 1.96
+      },
+      "fallbacks": 0,
+      "trapIsolatingPairs": 152,
+      "trapAllIsolate": 74,
+      "uniqueWallLayouts": 359,
+      "uniqueTemplates": 3,
+      "samples": 360
+    },
+    "hard": {
+      "objectiveMoves": {
+        "min": 14,
+        "p10": 18,
+        "median": 31,
+        "p90": 45,
+        "max": 60,
+        "mean": 31.13
+      },
+      "movesToAllLights": {
+        "min": 7,
+        "p10": 9,
+        "median": 22,
+        "p90": 38,
+        "max": 51,
+        "mean": 22.25
+      },
+      "portalShortest": {
+        "min": 13,
+        "p10": 13,
+        "median": 15,
+        "p90": 17,
+        "max": 29,
+        "mean": 15.49
+      },
+      "wallCount": {
+        "min": 20,
+        "p10": 21,
+        "median": 26,
+        "p90": 28,
+        "max": 29,
+        "mean": 25.14
+      },
+      "lights": {
+        "min": 3,
+        "p10": 3,
+        "median": 3,
+        "p90": 4,
+        "max": 4,
+        "mean": 3.33
+      },
+      "reachableCells": {
+        "min": 45,
+        "p10": 49,
+        "median": 54,
+        "p90": 60,
+        "max": 61,
+        "mean": 54.46
+      },
+      "junctions": {
+        "min": 10,
+        "p10": 15,
+        "median": 21,
+        "p90": 28,
+        "max": 33,
+        "mean": 21.04
+      },
+      "deadEnds": {
+        "min": 0,
+        "p10": 3,
+        "median": 5,
+        "p90": 8,
+        "max": 12,
+        "mean": 5.31
+      },
+      "idleDeadEnds": {
+        "min": 0,
+        "p10": 0,
+        "median": 2,
+        "p90": 5,
+        "max": 7,
+        "mean": 2.22
+      },
+      "longestCorridor": {
+        "min": 2,
+        "p10": 3,
+        "median": 5,
+        "p90": 8,
+        "max": 16,
+        "mean": 5.35
+      },
+      "disjointRoutes": {
+        "min": 1,
+        "p10": 1,
+        "median": 1,
+        "p90": 2,
+        "max": 2,
+        "mean": 1.23
+      },
+      "decisions": {
+        "min": 7,
+        "p10": 11,
+        "median": 15,
+        "p90": 20,
+        "max": 28,
+        "mean": 15.16
+      },
+      "decisionRatio": {
+        "min": 0.241,
+        "p10": 0.355,
+        "median": 0.5,
+        "p90": 0.714,
+        "max": 0.842,
+        "mean": 0.52
+      },
+      "longestForcedStreak": {
+        "min": 1,
+        "p10": 1,
+        "median": 5,
+        "p90": 10,
+        "max": 19,
+        "mean": 5.36
+      },
+      "guardianStartDistance": {
+        "min": 9,
+        "p10": 11,
+        "median": 13,
+        "p90": 16,
+        "max": 21,
+        "mean": 13.3
+      },
+      "attempts": {
+        "min": 1,
+        "p10": 1,
+        "median": 1,
+        "p90": 3,
+        "max": 8,
+        "mean": 1.74
+      },
+      "trapMeanScore": {
+        "min": 0,
+        "p10": 11.7,
+        "median": 18.5,
+        "p90": 28.4,
+        "max": 41.5,
+        "mean": 19.02
+      },
+      "trapUseless": {
+        "min": 0,
+        "p10": 1,
+        "median": 2,
+        "p90": 4,
+        "max": 6,
+        "mean": 2.38
+      },
+      "shieldDistance": {
+        "min": 4,
+        "p10": 4,
+        "median": 5,
+        "p90": 6,
+        "max": 7,
+        "mean": 5
+      },
+      "captureRate": {
+        "min": 0,
+        "p10": 0.25,
+        "median": 1,
+        "p90": 1,
+        "max": 1,
+        "mean": 0.83
+      },
+      "avgMinDistance": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 2,
+        "max": 99,
+        "mean": 1.58
+      },
+      "threatTurns": {
+        "min": 0,
+        "p10": 1,
+        "median": 1,
+        "p90": 4.5,
+        "max": 25,
+        "mean": 2.08
+      },
+      "fallbacks": 0,
+      "trapIsolatingPairs": 497,
+      "trapAllIsolate": 113,
+      "uniqueWallLayouts": 360,
+      "uniqueTemplates": 3,
+      "samples": 360
+    }
+  },
+  "byCombo": {
+    "route1-easy": {
+      "objectiveMoves": {
+        "min": 17,
+        "p10": 18,
+        "median": 21,
+        "p90": 22,
+        "max": 24,
+        "mean": 20.98
+      },
+      "movesToAllLights": {
+        "min": 9,
+        "p10": 9,
+        "median": 13,
+        "p90": 13,
+        "max": 15,
+        "mean": 12.4
+      },
+      "portalShortest": {
+        "min": 13,
+        "p10": 13,
+        "median": 14,
+        "p90": 14,
+        "max": 14,
+        "mean": 13.58
+      },
+      "wallCount": {
+        "min": 11,
+        "p10": 14,
+        "median": 15,
+        "p90": 15,
+        "max": 15,
+        "mean": 14.64
+      },
+      "lights": {
+        "min": 3,
+        "p10": 3,
+        "median": 3,
+        "p90": 3,
+        "max": 3,
+        "mean": 3
+      },
+      "reachableCells": {
+        "min": 65,
+        "p10": 66,
+        "median": 66,
+        "p90": 67,
+        "max": 70,
+        "mean": 66.35
+      },
+      "junctions": {
+        "min": 37,
+        "p10": 38,
+        "median": 40,
+        "p90": 44,
+        "max": 49,
+        "mean": 40.31
+      },
+      "deadEnds": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 2,
+        "max": 5,
+        "mean": 0.41
+      },
+      "idleDeadEnds": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 1,
+        "max": 5,
+        "mean": 0.35
+      },
+      "longestCorridor": {
+        "min": 3,
+        "p10": 3,
+        "median": 3,
+        "p90": 3,
+        "max": 5,
+        "mean": 3.09
+      },
+      "disjointRoutes": {
+        "min": 2,
+        "p10": 2,
+        "median": 2,
+        "p90": 2,
+        "max": 2,
+        "mean": 2
+      },
+      "decisions": {
+        "min": 13,
+        "p10": 15,
+        "median": 17,
+        "p90": 18,
+        "max": 21,
+        "mean": 16.57
+      },
+      "decisionRatio": {
+        "min": 0.625,
+        "p10": 0.727,
+        "median": 0.773,
+        "p90": 0.864,
+        "max": 0.955,
+        "mean": 0.79
+      },
+      "longestForcedStreak": {
+        "min": 1,
+        "p10": 1,
+        "median": 1,
+        "p90": 1,
+        "max": 3,
+        "mean": 1.05
+      },
+      "guardianStartDistance": {
+        "min": 11,
+        "p10": 12,
+        "median": 12,
+        "p90": 16,
+        "max": 16,
+        "mean": 12.82
+      },
+      "attempts": {
+        "min": 1,
+        "p10": 1,
+        "median": 1,
+        "p90": 2,
+        "max": 4,
+        "mean": 1.27
+      },
+      "trapMeanScore": {
+        "min": 10,
+        "p10": 17,
+        "median": 24,
+        "p90": 25,
+        "max": 38,
+        "mean": 22.38
+      },
+      "trapUseless": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 1,
+        "max": 2,
+        "mean": 0.36
+      },
+      "shieldDistance": {
+        "min": 4,
+        "p10": 4,
+        "median": 4,
+        "p90": 4,
+        "max": 4,
+        "mean": 4
+      },
+      "captureRate": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 0.083,
+        "max": 0.25,
+        "mean": 0.03
+      },
+      "avgMinDistance": {
+        "min": 1.5,
+        "p10": 2.17,
+        "median": 2.83,
+        "p90": 3.17,
+        "max": 6.33,
+        "mean": 2.79
+      },
+      "threatTurns": {
+        "min": 0,
+        "p10": 0.17,
+        "median": 0.83,
+        "p90": 1.33,
+        "max": 2.5,
+        "mean": 0.78
+      },
+      "fallbacks": 0,
+      "trapIsolatingPairs": 0,
+      "trapAllIsolate": 0,
+      "uniqueWallLayouts": 80,
+      "uniqueTemplates": 1,
+      "samples": 120
+    },
+    "route1-medium": {
+      "objectiveMoves": {
+        "min": 14,
+        "p10": 17,
+        "median": 21,
+        "p90": 23,
+        "max": 26,
+        "mean": 20.45
+      },
+      "movesToAllLights": {
+        "min": 7,
+        "p10": 9,
+        "median": 13,
+        "p90": 15,
+        "max": 15,
+        "mean": 11.46
+      },
+      "portalShortest": {
+        "min": 13,
+        "p10": 13,
+        "median": 14,
+        "p90": 16,
+        "max": 18,
+        "mean": 13.93
+      },
+      "wallCount": {
+        "min": 15,
+        "p10": 18,
+        "median": 20,
+        "p90": 20,
+        "max": 20,
+        "mean": 19.13
+      },
+      "lights": {
+        "min": 3,
+        "p10": 3,
+        "median": 3,
+        "p90": 3,
+        "max": 3,
+        "mean": 3
+      },
+      "reachableCells": {
+        "min": 58,
+        "p10": 60,
+        "median": 61,
+        "p90": 64,
+        "max": 66,
+        "mean": 61.63
+      },
+      "junctions": {
+        "min": 23,
+        "p10": 27,
+        "median": 30,
+        "p90": 36,
+        "max": 42,
+        "mean": 30.77
+      },
+      "deadEnds": {
+        "min": 0,
+        "p10": 1,
+        "median": 3,
+        "p90": 7,
+        "max": 8,
+        "mean": 3.71
+      },
+      "idleDeadEnds": {
+        "min": 0,
+        "p10": 1,
+        "median": 2,
+        "p90": 5,
+        "max": 7,
+        "mean": 2.77
+      },
+      "longestCorridor": {
+        "min": 2,
+        "p10": 3,
+        "median": 4,
+        "p90": 5,
+        "max": 8,
+        "mean": 3.99
+      },
+      "disjointRoutes": {
+        "min": 1,
+        "p10": 1,
+        "median": 2,
+        "p90": 2,
+        "max": 2,
+        "mean": 1.76
+      },
+      "decisions": {
+        "min": 9,
+        "p10": 12,
+        "median": 15,
+        "p90": 17,
+        "max": 20,
+        "mean": 14.55
+      },
+      "decisionRatio": {
+        "min": 0.526,
+        "p10": 0.609,
+        "median": 0.72,
+        "p90": 0.824,
+        "max": 0.952,
+        "mean": 0.71
+      },
+      "longestForcedStreak": {
+        "min": 1,
+        "p10": 1,
+        "median": 1,
+        "p90": 3,
+        "max": 5,
+        "mean": 1.78
+      },
+      "guardianStartDistance": {
+        "min": 11,
+        "p10": 12,
+        "median": 12,
+        "p90": 16,
+        "max": 20,
+        "mean": 13.2
+      },
+      "attempts": {
+        "min": 1,
+        "p10": 1,
+        "median": 1,
+        "p90": 1,
+        "max": 2,
+        "mean": 1.04
+      },
+      "trapMeanScore": {
+        "min": 12.7,
+        "p10": 14.7,
+        "median": 20,
+        "p90": 26.7,
+        "max": 50,
+        "mean": 21.56
+      },
+      "trapUseless": {
+        "min": 0,
+        "p10": 0,
+        "median": 1,
+        "p90": 2,
+        "max": 2,
+        "mean": 0.96
+      },
+      "shieldDistance": {
+        "min": 4,
+        "p10": 4,
+        "median": 4,
+        "p90": 4,
+        "max": 4,
+        "mean": 4
+      },
+      "captureRate": {
+        "min": 0,
+        "p10": 0.083,
+        "median": 0.667,
+        "p90": 1,
+        "max": 1,
+        "mean": 0.6
+      },
+      "avgMinDistance": {
+        "min": 0,
+        "p10": 0,
+        "median": 0.83,
+        "p90": 2.83,
+        "max": 6.17,
+        "mean": 1.15
+      },
+      "threatTurns": {
+        "min": 0.08,
+        "p10": 0.92,
+        "median": 1.58,
+        "p90": 3.75,
+        "max": 5.42,
+        "mean": 1.93
+      },
+      "fallbacks": 0,
+      "trapIsolatingPairs": 9,
+      "trapAllIsolate": 7,
+      "uniqueWallLayouts": 120,
+      "uniqueTemplates": 1,
+      "samples": 120
+    },
+    "route1-hard": {
+      "objectiveMoves": {
+        "min": 14,
+        "p10": 17,
+        "median": 19,
+        "p90": 24,
+        "max": 27,
+        "mean": 19.94
+      },
+      "movesToAllLights": {
+        "min": 7,
+        "p10": 9,
+        "median": 9,
+        "p90": 15,
+        "max": 17,
+        "mean": 10.83
+      },
+      "portalShortest": {
+        "min": 13,
+        "p10": 13,
+        "median": 14,
+        "p90": 17,
+        "max": 18,
+        "mean": 14.18
+      },
+      "wallCount": {
+        "min": 20,
+        "p10": 20,
+        "median": 21,
+        "p90": 23,
+        "max": 24,
+        "mean": 21.48
+      },
+      "lights": {
+        "min": 3,
+        "p10": 3,
+        "median": 3,
+        "p90": 3,
+        "max": 3,
+        "mean": 3
+      },
+      "reachableCells": {
+        "min": 53,
+        "p10": 57,
+        "median": 59,
+        "p90": 61,
+        "max": 61,
+        "mean": 58.98
+      },
+      "junctions": {
+        "min": 19,
+        "p10": 21,
+        "median": 26,
+        "p90": 30,
+        "max": 33,
+        "mean": 25.64
+      },
+      "deadEnds": {
+        "min": 0,
+        "p10": 2,
+        "median": 4,
+        "p90": 7,
+        "max": 12,
+        "mean": 4.44
+      },
+      "idleDeadEnds": {
+        "min": 0,
+        "p10": 1,
+        "median": 3,
+        "p90": 6,
+        "max": 7,
+        "mean": 3.41
+      },
+      "longestCorridor": {
+        "min": 3,
+        "p10": 3,
+        "median": 4,
+        "p90": 6,
+        "max": 8,
+        "mean": 4.31
+      },
+      "disjointRoutes": {
+        "min": 1,
+        "p10": 1,
+        "median": 2,
+        "p90": 2,
+        "max": 2,
+        "mean": 1.54
+      },
+      "decisions": {
+        "min": 8,
+        "p10": 10,
+        "median": 13,
+        "p90": 16,
+        "max": 18,
+        "mean": 13.03
+      },
+      "decisionRatio": {
+        "min": 0.48,
+        "p10": 0.529,
+        "median": 0.667,
+        "p90": 0.762,
+        "max": 0.842,
+        "mean": 0.66
+      },
+      "longestForcedStreak": {
+        "min": 1,
+        "p10": 1,
+        "median": 2,
+        "p90": 4,
+        "max": 8,
+        "mean": 2.26
+      },
+      "guardianStartDistance": {
+        "min": 11,
+        "p10": 12,
+        "median": 13,
+        "p90": 16,
+        "max": 21,
+        "mean": 13.53
+      },
+      "attempts": {
+        "min": 1,
+        "p10": 1,
+        "median": 1,
+        "p90": 2,
+        "max": 5,
+        "mean": 1.27
+      },
+      "trapMeanScore": {
+        "min": 9,
+        "p10": 12.5,
+        "median": 20,
+        "p90": 26,
+        "max": 41.5,
+        "mean": 20.13
+      },
+      "trapUseless": {
+        "min": 0,
+        "p10": 0,
+        "median": 2,
+        "p90": 3,
+        "max": 4,
+        "mean": 1.56
+      },
+      "shieldDistance": {
+        "min": 4,
+        "p10": 4,
+        "median": 4,
+        "p90": 4,
+        "max": 4,
+        "mean": 4
+      },
+      "captureRate": {
+        "min": 0,
+        "p10": 0,
+        "median": 0.833,
+        "p90": 1,
+        "max": 1,
+        "mean": 0.66
+      },
+      "avgMinDistance": {
+        "min": 0,
+        "p10": 0,
+        "median": 0.5,
+        "p90": 3.17,
+        "max": 10.5,
+        "mean": 1.12
+      },
+      "threatTurns": {
+        "min": 0,
+        "p10": 0.83,
+        "median": 1.08,
+        "p90": 4.75,
+        "max": 19,
+        "mean": 2.17
+      },
+      "fallbacks": 0,
+      "trapIsolatingPairs": 14,
+      "trapAllIsolate": 9,
+      "uniqueWallLayouts": 120,
+      "uniqueTemplates": 1,
+      "samples": 120
+    },
+    "route2-easy": {
+      "objectiveMoves": {
+        "min": 15,
+        "p10": 19,
+        "median": 25,
+        "p90": 34,
+        "max": 40,
+        "mean": 26.14
+      },
+      "movesToAllLights": {
+        "min": 11,
+        "p10": 15,
+        "median": 21,
+        "p90": 28,
+        "max": 33,
+        "mean": 20.98
+      },
+      "portalShortest": {
+        "min": 15,
+        "p10": 15,
+        "median": 15,
+        "p90": 16,
+        "max": 16,
+        "mean": 15.22
+      },
+      "wallCount": {
+        "min": 16,
+        "p10": 17,
+        "median": 18,
+        "p90": 18,
+        "max": 18,
+        "mean": 17.79
+      },
+      "lights": {
+        "min": 4,
+        "p10": 4,
+        "median": 4,
+        "p90": 4,
+        "max": 4,
+        "mean": 4
+      },
+      "reachableCells": {
+        "min": 62,
+        "p10": 63,
+        "median": 63,
+        "p90": 64,
+        "max": 65,
+        "mean": 63.2
+      },
+      "junctions": {
+        "min": 30,
+        "p10": 32,
+        "median": 34,
+        "p90": 37,
+        "max": 41,
+        "mean": 34.58
+      },
+      "deadEnds": {
+        "min": 0,
+        "p10": 0,
+        "median": 1,
+        "p90": 2,
+        "max": 4,
+        "mean": 1.23
+      },
+      "idleDeadEnds": {
+        "min": 0,
+        "p10": 0,
+        "median": 1,
+        "p90": 1,
+        "max": 2,
+        "mean": 0.61
+      },
+      "longestCorridor": {
+        "min": 2,
+        "p10": 4,
+        "median": 5,
+        "p90": 7,
+        "max": 9,
+        "mean": 5.41
+      },
+      "disjointRoutes": {
+        "min": 1,
+        "p10": 1,
+        "median": 2,
+        "p90": 2,
+        "max": 2,
+        "mean": 1.85
+      },
+      "decisions": {
+        "min": 10,
+        "p10": 12,
+        "median": 17,
+        "p90": 22,
+        "max": 26,
+        "mean": 17.3
+      },
+      "decisionRatio": {
+        "min": 0.459,
+        "p10": 0.556,
+        "median": 0.65,
+        "p90": 0.824,
+        "max": 0.941,
+        "mean": 0.67
+      },
+      "longestForcedStreak": {
+        "min": 1,
+        "p10": 1,
+        "median": 3,
+        "p90": 7,
+        "max": 8,
+        "mean": 3.52
+      },
+      "guardianStartDistance": {
+        "min": 9,
+        "p10": 9,
+        "median": 12,
+        "p90": 16,
+        "max": 16,
+        "mean": 12.24
+      },
+      "attempts": {
+        "min": 1,
+        "p10": 1,
+        "median": 5,
+        "p90": 11,
+        "max": 20,
+        "mean": 5.84
+      },
+      "trapMeanScore": {
+        "min": 7.3,
+        "p10": 14.7,
+        "median": 19.3,
+        "p90": 33.3,
+        "max": 43.3,
+        "mean": 22.54
+      },
+      "trapUseless": {
+        "min": 0,
+        "p10": 0,
+        "median": 1,
+        "p90": 2,
+        "max": 3,
+        "mean": 0.96
+      },
+      "shieldDistance": {
+        "min": 5,
+        "p10": 5,
+        "median": 5,
+        "p90": 5,
+        "max": 5,
+        "mean": 5
+      },
+      "captureRate": {
+        "min": 0,
+        "p10": 0,
+        "median": 0.167,
+        "p90": 0.5,
+        "max": 0.917,
+        "mean": 0.2
+      },
+      "avgMinDistance": {
+        "min": 0.17,
+        "p10": 1.5,
+        "median": 2.83,
+        "p90": 4.83,
+        "max": 8.17,
+        "mean": 3.01
+      },
+      "threatTurns": {
+        "min": 0,
+        "p10": 0.08,
+        "median": 0.67,
+        "p90": 2,
+        "max": 3.17,
+        "mean": 0.83
+      },
+      "fallbacks": 0,
+      "trapIsolatingPairs": 8,
+      "trapAllIsolate": 7,
+      "uniqueWallLayouts": 120,
+      "uniqueTemplates": 3,
+      "samples": 120
+    },
+    "route2-medium": {
+      "objectiveMoves": {
+        "min": 17,
+        "p10": 22,
+        "median": 31,
+        "p90": 40,
+        "max": 45,
+        "mean": 30.64
+      },
+      "movesToAllLights": {
+        "min": 11,
+        "p10": 15,
+        "median": 23,
+        "p90": 32,
+        "max": 41,
+        "mean": 23.23
+      },
+      "portalShortest": {
+        "min": 15,
+        "p10": 15,
+        "median": 15,
+        "p90": 16,
+        "max": 18,
+        "mean": 15.39
+      },
+      "wallCount": {
+        "min": 19,
+        "p10": 22,
+        "median": 23,
+        "p90": 23,
+        "max": 23,
+        "mean": 22.52
+      },
+      "lights": {
+        "min": 4,
+        "p10": 4,
+        "median": 4,
+        "p90": 4,
+        "max": 4,
+        "mean": 4
+      },
+      "reachableCells": {
+        "min": 51,
+        "p10": 57,
+        "median": 58,
+        "p90": 59,
+        "max": 62,
+        "mean": 58.22
+      },
+      "junctions": {
+        "min": 19,
+        "p10": 21,
+        "median": 25,
+        "p90": 29,
+        "max": 32,
+        "mean": 24.68
+      },
+      "deadEnds": {
+        "min": 0,
+        "p10": 1,
+        "median": 3,
+        "p90": 6,
+        "max": 8,
+        "mean": 3.47
+      },
+      "idleDeadEnds": {
+        "min": 0,
+        "p10": 0,
+        "median": 1,
+        "p90": 3,
+        "max": 5,
+        "mean": 1.34
+      },
+      "longestCorridor": {
+        "min": 3,
+        "p10": 4,
+        "median": 6,
+        "p90": 9,
+        "max": 10,
+        "mean": 6.08
+      },
+      "disjointRoutes": {
+        "min": 1,
+        "p10": 1,
+        "median": 1,
+        "p90": 2,
+        "max": 2,
+        "mean": 1.45
+      },
+      "decisions": {
+        "min": 7,
+        "p10": 11,
+        "median": 17,
+        "p90": 21,
+        "max": 27,
+        "mean": 16.42
+      },
+      "decisionRatio": {
+        "min": 0.36,
+        "p10": 0.419,
+        "median": 0.525,
+        "p90": 0.688,
+        "max": 0.818,
+        "mean": 0.54
+      },
+      "longestForcedStreak": {
+        "min": 1,
+        "p10": 2,
+        "median": 5,
+        "p90": 9,
+        "max": 13,
+        "mean": 5.29
+      },
+      "guardianStartDistance": {
+        "min": 9,
+        "p10": 9,
+        "median": 12,
+        "p90": 16,
+        "max": 16,
+        "mean": 12.4
+      },
+      "attempts": {
+        "min": 1,
+        "p10": 1,
+        "median": 1,
+        "p90": 2,
+        "max": 2,
+        "mean": 1.11
+      },
+      "trapMeanScore": {
+        "min": 6,
+        "p10": 13.5,
+        "median": 20,
+        "p90": 32.5,
+        "max": 42.5,
+        "mean": 21.07
+      },
+      "trapUseless": {
+        "min": 0,
+        "p10": 0,
+        "median": 2,
+        "p90": 3,
+        "max": 4,
+        "mean": 1.68
+      },
+      "shieldDistance": {
+        "min": 5,
+        "p10": 5,
+        "median": 5,
+        "p90": 5,
+        "max": 6,
+        "mean": 5.01
+      },
+      "captureRate": {
+        "min": 0.083,
+        "p10": 0.5,
+        "median": 0.917,
+        "p90": 1,
+        "max": 1,
+        "mean": 0.84
+      },
+      "avgMinDistance": {
+        "min": 0,
+        "p10": 0,
+        "median": 0.17,
+        "p90": 1,
+        "max": 3.17,
+        "mean": 0.35
+      },
+      "threatTurns": {
+        "min": 0.17,
+        "p10": 1,
+        "median": 1.92,
+        "p90": 3.25,
+        "max": 5.42,
+        "mean": 2.04
+      },
+      "fallbacks": 0,
+      "trapIsolatingPairs": 34,
+      "trapAllIsolate": 23,
+      "uniqueWallLayouts": 119,
+      "uniqueTemplates": 3,
+      "samples": 120
+    },
+    "route2-hard": {
+      "objectiveMoves": {
+        "min": 17,
+        "p10": 25,
+        "median": 34,
+        "p90": 44,
+        "max": 51,
+        "mean": 33.77
+      },
+      "movesToAllLights": {
+        "min": 13,
+        "p10": 15,
+        "median": 23,
+        "p90": 33,
+        "max": 41,
+        "mean": 23.26
+      },
+      "portalShortest": {
+        "min": 15,
+        "p10": 15,
+        "median": 16,
+        "p90": 18,
+        "max": 22,
+        "mean": 16.04
+      },
+      "wallCount": {
+        "min": 23,
+        "p10": 25,
+        "median": 27,
+        "p90": 28,
+        "max": 28,
+        "mean": 26.52
+      },
+      "lights": {
+        "min": 3,
+        "p10": 3,
+        "median": 3,
+        "p90": 3,
+        "max": 3,
+        "mean": 3
+      },
+      "reachableCells": {
+        "min": 50,
+        "p10": 51,
+        "median": 54,
+        "p90": 56,
+        "max": 58,
+        "mean": 53.52
+      },
+      "junctions": {
+        "min": 12,
+        "p10": 15,
+        "median": 19,
+        "p90": 23,
+        "max": 28,
+        "mean": 18.86
+      },
+      "deadEnds": {
+        "min": 2,
+        "p10": 3,
+        "median": 6,
+        "p90": 8,
+        "max": 11,
+        "mean": 5.66
+      },
+      "idleDeadEnds": {
+        "min": 0,
+        "p10": 0,
+        "median": 2,
+        "p90": 4,
+        "max": 6,
+        "mean": 2.17
+      },
+      "longestCorridor": {
+        "min": 2,
+        "p10": 4,
+        "median": 6,
+        "p90": 9,
+        "max": 12,
+        "mean": 6.17
+      },
+      "disjointRoutes": {
+        "min": 1,
+        "p10": 1,
+        "median": 1,
+        "p90": 2,
+        "max": 2,
+        "mean": 1.12
+      },
+      "decisions": {
+        "min": 7,
+        "p10": 11,
+        "median": 15,
+        "p90": 20,
+        "max": 24,
+        "mean": 15.13
+      },
+      "decisionRatio": {
+        "min": 0.241,
+        "p10": 0.333,
+        "median": 0.452,
+        "p90": 0.588,
+        "max": 0.824,
+        "mean": 0.46
+      },
+      "longestForcedStreak": {
+        "min": 1,
+        "p10": 3,
+        "median": 6,
+        "p90": 11,
+        "max": 19,
+        "mean": 6.5
+      },
+      "guardianStartDistance": {
+        "min": 9,
+        "p10": 9,
+        "median": 13,
+        "p90": 17,
+        "max": 21,
+        "mean": 13.03
+      },
+      "attempts": {
+        "min": 1,
+        "p10": 1,
+        "median": 2,
+        "p90": 3,
+        "max": 6,
+        "mean": 1.83
+      },
+      "trapMeanScore": {
+        "min": 0,
+        "p10": 12,
+        "median": 18.8,
+        "p90": 30,
+        "max": 38.8,
+        "mean": 19.63
+      },
+      "trapUseless": {
+        "min": 0,
+        "p10": 1,
+        "median": 2,
+        "p90": 4,
+        "max": 5,
+        "mean": 2.42
+      },
+      "shieldDistance": {
+        "min": 4,
+        "p10": 5,
+        "median": 5,
+        "p90": 5,
+        "max": 5,
+        "mean": 4.99
+      },
+      "captureRate": {
+        "min": 0,
+        "p10": 0.5,
+        "median": 1,
+        "p90": 1,
+        "max": 1,
+        "mean": 0.89
+      },
+      "avgMinDistance": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 1,
+        "max": 99,
+        "mean": 1.08
+      },
+      "threatTurns": {
+        "min": 0,
+        "p10": 1,
+        "median": 1,
+        "p90": 5.92,
+        "max": 25,
+        "mean": 2.32
+      },
+      "fallbacks": 0,
+      "trapIsolatingPairs": 111,
+      "trapAllIsolate": 35,
+      "uniqueWallLayouts": 120,
+      "uniqueTemplates": 3,
+      "samples": 120
+    },
+    "route3-easy": {
+      "objectiveMoves": {
+        "min": 23,
+        "p10": 26,
+        "median": 32,
+        "p90": 37,
+        "max": 51,
+        "mean": 32.05
+      },
+      "movesToAllLights": {
+        "min": 20,
+        "p10": 23,
+        "median": 28,
+        "p90": 33,
+        "max": 46,
+        "mean": 27.88
+      },
+      "portalShortest": {
+        "min": 15,
+        "p10": 15,
+        "median": 16,
+        "p90": 16,
+        "max": 17,
+        "mean": 15.52
+      },
+      "wallCount": {
+        "min": 16,
+        "p10": 18,
+        "median": 19,
+        "p90": 19,
+        "max": 19,
+        "mean": 18.77
+      },
+      "lights": {
+        "min": 5,
+        "p10": 5,
+        "median": 5,
+        "p90": 5,
+        "max": 5,
+        "mean": 5
+      },
+      "reachableCells": {
+        "min": 61,
+        "p10": 62,
+        "median": 62,
+        "p90": 63,
+        "max": 65,
+        "mean": 62.21
+      },
+      "junctions": {
+        "min": 28,
+        "p10": 30,
+        "median": 33,
+        "p90": 36,
+        "max": 43,
+        "mean": 32.85
+      },
+      "deadEnds": {
+        "min": 0,
+        "p10": 0,
+        "median": 1,
+        "p90": 3,
+        "max": 5,
+        "mean": 1.33
+      },
+      "idleDeadEnds": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 1,
+        "max": 2,
+        "mean": 0.47
+      },
+      "longestCorridor": {
+        "min": 3,
+        "p10": 3,
+        "median": 6,
+        "p90": 8,
+        "max": 9,
+        "mean": 5.68
+      },
+      "disjointRoutes": {
+        "min": 1,
+        "p10": 1,
+        "median": 2,
+        "p90": 2,
+        "max": 2,
+        "mean": 1.83
+      },
+      "decisions": {
+        "min": 12,
+        "p10": 15,
+        "median": 19,
+        "p90": 24,
+        "max": 27,
+        "mean": 18.98
+      },
+      "decisionRatio": {
+        "min": 0.432,
+        "p10": 0.5,
+        "median": 0.588,
+        "p90": 0.688,
+        "max": 0.793,
+        "mean": 0.59
+      },
+      "longestForcedStreak": {
+        "min": 2,
+        "p10": 3,
+        "median": 5,
+        "p90": 9,
+        "max": 11,
+        "mean": 5.03
+      },
+      "guardianStartDistance": {
+        "min": 9,
+        "p10": 9,
+        "median": 12,
+        "p90": 14,
+        "max": 16,
+        "mean": 12.16
+      },
+      "attempts": {
+        "min": 1,
+        "p10": 1,
+        "median": 1,
+        "p90": 4,
+        "max": 9,
+        "mean": 1.92
+      },
+      "trapMeanScore": {
+        "min": 10,
+        "p10": 17,
+        "median": 20.5,
+        "p90": 31,
+        "max": 43,
+        "mean": 21.38
+      },
+      "trapUseless": {
+        "min": 0,
+        "p10": 0,
+        "median": 1,
+        "p90": 2,
+        "max": 4,
+        "mean": 1.34
+      },
+      "shieldDistance": {
+        "min": 6,
+        "p10": 6,
+        "median": 6,
+        "p90": 6,
+        "max": 6,
+        "mean": 6
+      },
+      "captureRate": {
+        "min": 0,
+        "p10": 0.083,
+        "median": 0.25,
+        "p90": 0.667,
+        "max": 0.917,
+        "mean": 0.31
+      },
+      "avgMinDistance": {
+        "min": 0.17,
+        "p10": 0.83,
+        "median": 1.92,
+        "p90": 3.92,
+        "max": 5.67,
+        "mean": 2.19
+      },
+      "threatTurns": {
+        "min": 0,
+        "p10": 0.17,
+        "median": 1,
+        "p90": 2.92,
+        "max": 4.67,
+        "mean": 1.31
+      },
+      "fallbacks": 0,
+      "trapIsolatingPairs": 24,
+      "trapAllIsolate": 25,
+      "uniqueWallLayouts": 120,
+      "uniqueTemplates": 2,
+      "samples": 120
+    },
+    "route3-medium": {
+      "objectiveMoves": {
+        "min": 22,
+        "p10": 30,
+        "median": 38,
+        "p90": 48,
+        "max": 55,
+        "mean": 38.37
+      },
+      "movesToAllLights": {
+        "min": 18,
+        "p10": 25,
+        "median": 34,
+        "p90": 43,
+        "max": 51,
+        "mean": 33.76
+      },
+      "portalShortest": {
+        "min": 15,
+        "p10": 15,
+        "median": 16,
+        "p90": 17,
+        "max": 20,
+        "mean": 15.83
+      },
+      "wallCount": {
+        "min": 19,
+        "p10": 22,
+        "median": 24,
+        "p90": 24,
+        "max": 24,
+        "mean": 23.18
+      },
+      "lights": {
+        "min": 5,
+        "p10": 5,
+        "median": 5,
+        "p90": 5,
+        "max": 5,
+        "mean": 5
+      },
+      "reachableCells": {
+        "min": 46,
+        "p10": 55,
+        "median": 57,
+        "p90": 59,
+        "max": 62,
+        "mean": 57.03
+      },
+      "junctions": {
+        "min": 16,
+        "p10": 20,
+        "median": 24,
+        "p90": 31,
+        "max": 34,
+        "mean": 24.56
+      },
+      "deadEnds": {
+        "min": 1,
+        "p10": 2,
+        "median": 4,
+        "p90": 6,
+        "max": 8,
+        "mean": 4.23
+      },
+      "idleDeadEnds": {
+        "min": 0,
+        "p10": 0,
+        "median": 1,
+        "p90": 2,
+        "max": 4,
+        "mean": 0.78
+      },
+      "longestCorridor": {
+        "min": 2,
+        "p10": 4,
+        "median": 6,
+        "p90": 9,
+        "max": 12,
+        "mean": 6.03
+      },
+      "disjointRoutes": {
+        "min": 1,
+        "p10": 1,
+        "median": 1,
+        "p90": 2,
+        "max": 2,
+        "mean": 1.27
+      },
+      "decisions": {
+        "min": 10,
+        "p10": 13,
+        "median": 18,
+        "p90": 25,
+        "max": 31,
+        "mean": 18.68
+      },
+      "decisionRatio": {
+        "min": 0.293,
+        "p10": 0.366,
+        "median": 0.5,
+        "p90": 0.6,
+        "max": 0.735,
+        "mean": 0.49
+      },
+      "longestForcedStreak": {
+        "min": 1,
+        "p10": 4,
+        "median": 7,
+        "p90": 9,
+        "max": 17,
+        "mean": 6.72
+      },
+      "guardianStartDistance": {
+        "min": 9,
+        "p10": 9,
+        "median": 12,
+        "p90": 16,
+        "max": 18,
+        "mean": 12.43
+      },
+      "attempts": {
+        "min": 1,
+        "p10": 1,
+        "median": 1,
+        "p90": 2,
+        "max": 4,
+        "mean": 1.2
+      },
+      "trapMeanScore": {
+        "min": 6.4,
+        "p10": 12,
+        "median": 19.2,
+        "p90": 28.8,
+        "max": 37.2,
+        "mean": 20
+      },
+      "trapUseless": {
+        "min": 0,
+        "p10": 1,
+        "median": 2,
+        "p90": 4,
+        "max": 5,
+        "mean": 2.19
+      },
+      "shieldDistance": {
+        "min": 6,
+        "p10": 6,
+        "median": 6,
+        "p90": 6,
+        "max": 7,
+        "mean": 6.01
+      },
+      "captureRate": {
+        "min": 0.25,
+        "p10": 0.75,
+        "median": 1,
+        "p90": 1,
+        "max": 1,
+        "mean": 0.93
+      },
+      "avgMinDistance": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 0.5,
+        "max": 4.58,
+        "mean": 0.17
+      },
+      "threatTurns": {
+        "min": 0.33,
+        "p10": 1,
+        "median": 1.67,
+        "p90": 3.17,
+        "max": 5,
+        "mean": 1.91
+      },
+      "fallbacks": 0,
+      "trapIsolatingPairs": 109,
+      "trapAllIsolate": 44,
+      "uniqueWallLayouts": 120,
+      "uniqueTemplates": 2,
+      "samples": 120
+    },
+    "route3-hard": {
+      "objectiveMoves": {
+        "min": 19,
+        "p10": 29,
+        "median": 41,
+        "p90": 50,
+        "max": 60,
+        "mean": 39.68
+      },
+      "movesToAllLights": {
+        "min": 13,
+        "p10": 23,
+        "median": 33,
+        "p90": 41,
+        "max": 51,
+        "mean": 32.65
+      },
+      "portalShortest": {
+        "min": 15,
+        "p10": 15,
+        "median": 16,
+        "p90": 18,
+        "max": 29,
+        "mean": 16.25
+      },
+      "wallCount": {
+        "min": 24,
+        "p10": 25,
+        "median": 28,
+        "p90": 29,
+        "max": 29,
+        "mean": 27.41
+      },
+      "lights": {
+        "min": 4,
+        "p10": 4,
+        "median": 4,
+        "p90": 4,
+        "max": 4,
+        "mean": 4
+      },
+      "reachableCells": {
+        "min": 45,
+        "p10": 47,
+        "median": 51,
+        "p90": 55,
+        "max": 57,
+        "mean": 50.86
+      },
+      "junctions": {
+        "min": 10,
+        "p10": 14,
+        "median": 19,
+        "p90": 24,
+        "max": 29,
+        "mean": 18.62
+      },
+      "deadEnds": {
+        "min": 1,
+        "p10": 3,
+        "median": 6,
+        "p90": 8,
+        "max": 11,
+        "mean": 5.84
+      },
+      "idleDeadEnds": {
+        "min": 0,
+        "p10": 0,
+        "median": 1,
+        "p90": 3,
+        "max": 4,
+        "mean": 1.08
+      },
+      "longestCorridor": {
+        "min": 2,
+        "p10": 3,
+        "median": 5,
+        "p90": 9,
+        "max": 16,
+        "mean": 5.58
+      },
+      "disjointRoutes": {
+        "min": 1,
+        "p10": 1,
+        "median": 1,
+        "p90": 1,
+        "max": 2,
+        "mean": 1.04
+      },
+      "decisions": {
+        "min": 8,
+        "p10": 13,
+        "median": 17,
+        "p90": 22,
+        "max": 28,
+        "mean": 17.32
+      },
+      "decisionRatio": {
+        "min": 0.241,
+        "p10": 0.326,
+        "median": 0.442,
+        "p90": 0.571,
+        "max": 0.692,
+        "mean": 0.45
+      },
+      "longestForcedStreak": {
+        "min": 2,
+        "p10": 4,
+        "median": 7,
+        "p90": 11,
+        "max": 19,
+        "mean": 7.31
+      },
+      "guardianStartDistance": {
+        "min": 9,
+        "p10": 9,
+        "median": 13,
+        "p90": 17,
+        "max": 21,
+        "mean": 13.34
+      },
+      "attempts": {
+        "min": 1,
+        "p10": 1,
+        "median": 2,
+        "p90": 4,
+        "max": 8,
+        "mean": 2.12
+      },
+      "trapMeanScore": {
+        "min": 0,
+        "p10": 8.7,
+        "median": 17,
+        "p90": 24.7,
+        "max": 40.3,
+        "mean": 17.31
+      },
+      "trapUseless": {
+        "min": 0,
+        "p10": 1,
+        "median": 3,
+        "p90": 5,
+        "max": 6,
+        "mean": 3.17
+      },
+      "shieldDistance": {
+        "min": 6,
+        "p10": 6,
+        "median": 6,
+        "p90": 6,
+        "max": 7,
+        "mean": 6.01
+      },
+      "captureRate": {
+        "min": 0,
+        "p10": 0.917,
+        "median": 1,
+        "p90": 1,
+        "max": 1,
+        "mean": 0.94
+      },
+      "avgMinDistance": {
+        "min": 0,
+        "p10": 0,
+        "median": 0,
+        "p90": 0.33,
+        "max": 99,
+        "mean": 2.55
+      },
+      "threatTurns": {
+        "min": 0,
+        "p10": 1,
+        "median": 1,
+        "p90": 3.75,
+        "max": 12,
+        "mean": 1.75
+      },
+      "fallbacks": 0,
+      "trapIsolatingPairs": 372,
+      "trapAllIsolate": 69,
+      "uniqueWallLayouts": 120,
+      "uniqueTemplates": 2,
+      "samples": 120
+    }
+  },
+  "worst": {
+    "longestForcedStreak": [
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3902,
+        "streak": 19,
+        "moves": 44
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3984,
+        "streak": 19,
+        "moves": 58
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 4033,
+        "streak": 19,
+        "moves": 56
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3314,
+        "streak": 17,
+        "moves": 33
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2713,
+        "streak": 17,
+        "moves": 41
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2916,
+        "streak": 17,
+        "moves": 45
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3459,
+        "streak": 16,
+        "moves": 52
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 3000,
+        "streak": 15,
+        "moves": 46
+      }
+    ],
+    "idleDeadEnds": [
+      {
+        "route": 1,
+        "difficulty": "medium",
+        "seed": 2297,
+        "idle": 7,
+        "total": 8
+      },
+      {
+        "route": 1,
+        "difficulty": "medium",
+        "seed": 2416,
+        "idle": 7,
+        "total": 7
+      },
+      {
+        "route": 1,
+        "difficulty": "medium",
+        "seed": 2479,
+        "idle": 7,
+        "total": 7
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3316,
+        "idle": 7,
+        "total": 12
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3799,
+        "idle": 7,
+        "total": 8
+      },
+      {
+        "route": 1,
+        "difficulty": "medium",
+        "seed": 2115,
+        "idle": 6,
+        "total": 7
+      },
+      {
+        "route": 1,
+        "difficulty": "medium",
+        "seed": 2136,
+        "idle": 6,
+        "total": 7
+      },
+      {
+        "route": 1,
+        "difficulty": "medium",
+        "seed": 2185,
+        "idle": 6,
+        "total": 6
+      }
+    ],
+    "singleCorridor": [
+      {
+        "route": 1,
+        "difficulty": "medium",
+        "seed": 2115,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "medium",
+        "seed": 2129,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "medium",
+        "seed": 2143,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "medium",
+        "seed": 2150,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "medium",
+        "seed": 2192,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "medium",
+        "seed": 2227,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "medium",
+        "seed": 2234,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "medium",
+        "seed": 2276,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "medium",
+        "seed": 2283,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "medium",
+        "seed": 2318,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "medium",
+        "seed": 2353,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "medium",
+        "seed": 2395,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "medium",
+        "seed": 2402,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "medium",
+        "seed": 2416,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "medium",
+        "seed": 2423,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "medium",
+        "seed": 2451,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "medium",
+        "seed": 2472,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "medium",
+        "seed": 2493,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "medium",
+        "seed": 2521,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "medium",
+        "seed": 2570,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "medium",
+        "seed": 2577,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "medium",
+        "seed": 2598,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "medium",
+        "seed": 2605,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "medium",
+        "seed": 2654,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "medium",
+        "seed": 2710,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "medium",
+        "seed": 2787,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "medium",
+        "seed": 2801,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "medium",
+        "seed": 2857,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "medium",
+        "seed": 2899,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3092,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3099,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3113,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3197,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3204,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3225,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3232,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3239,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3246,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3281,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3288,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3295,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3309,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3316,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3323,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3330,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3337,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3344,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3358,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3407,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3428,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3442,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3477,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3484,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3498,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3505,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3512,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3519,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3540,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3589,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3596,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3603,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3617,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3645,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3659,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3673,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3687,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3694,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3701,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3708,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3736,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3750,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3757,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3771,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3778,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3785,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3792,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3806,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3813,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3827,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3841,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3855,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3883,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3897,
+        "routes": 1
+      },
+      {
+        "route": 1,
+        "difficulty": "hard",
+        "seed": 3911,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "easy",
+        "seed": 1325,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "easy",
+        "seed": 1339,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "easy",
+        "seed": 1346,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "easy",
+        "seed": 1374,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "easy",
+        "seed": 1388,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "easy",
+        "seed": 1458,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "easy",
+        "seed": 1668,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "easy",
+        "seed": 1717,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "easy",
+        "seed": 1745,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "easy",
+        "seed": 1759,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "easy",
+        "seed": 1787,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "easy",
+        "seed": 1871,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "easy",
+        "seed": 1934,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "easy",
+        "seed": 2046,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "easy",
+        "seed": 2053,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "easy",
+        "seed": 2067,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "easy",
+        "seed": 2074,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "easy",
+        "seed": 2095,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2239,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2246,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2260,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2281,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2295,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2302,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2309,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2316,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2358,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2365,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2372,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2393,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2414,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2435,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2456,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2463,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2484,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2491,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2505,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2540,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2554,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2561,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2568,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2575,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2582,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2589,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2596,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2603,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2617,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2652,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2673,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2680,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2687,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2694,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2708,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2722,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2736,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2743,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2771,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2778,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2792,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2799,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2820,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2834,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2841,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2848,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2855,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2862,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2876,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2883,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2897,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2911,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2932,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2939,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2946,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2960,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2974,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2988,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 2995,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 3002,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 3009,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 3030,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 3037,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 3044,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 3051,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "medium",
+        "seed": 3072,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3216,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3223,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3230,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3237,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3244,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3265,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3272,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3279,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3293,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3307,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3314,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3321,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3342,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3349,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3356,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3370,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3377,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3384,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3391,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3398,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3405,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3412,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3419,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3426,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3433,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3440,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3447,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3454,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3461,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3468,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3475,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3482,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3489,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3496,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3503,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3510,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3517,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3524,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3531,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3538,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3545,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3552,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3559,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3566,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3573,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3580,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3587,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3594,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3601,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3608,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3615,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3622,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3636,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3643,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3650,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3657,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3664,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3671,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3678,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3685,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3692,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3699,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3713,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3720,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3734,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3741,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3748,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3755,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3762,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3769,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3776,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3783,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3790,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3797,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3804,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3811,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3818,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3825,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3832,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3846,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3860,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3867,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3881,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3888,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3895,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3902,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3909,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3916,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3923,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3930,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3937,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3944,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3951,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3958,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3965,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3972,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3979,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3986,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3993,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 4000,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 4007,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 4014,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 4021,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 4028,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 4035,
+        "routes": 1
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 4049,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "easy",
+        "seed": 1449,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "easy",
+        "seed": 1463,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "easy",
+        "seed": 1477,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "easy",
+        "seed": 1540,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "easy",
+        "seed": 1603,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "easy",
+        "seed": 1624,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "easy",
+        "seed": 1638,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "easy",
+        "seed": 1652,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "easy",
+        "seed": 1666,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "easy",
+        "seed": 1694,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "easy",
+        "seed": 1722,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "easy",
+        "seed": 1799,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "easy",
+        "seed": 1806,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "easy",
+        "seed": 1848,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "easy",
+        "seed": 1897,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "easy",
+        "seed": 1939,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "easy",
+        "seed": 1995,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "easy",
+        "seed": 2023,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "easy",
+        "seed": 2072,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "easy",
+        "seed": 2156,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2370,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2384,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2391,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2398,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2440,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2447,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2454,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2461,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2468,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2475,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2482,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2489,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2496,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2503,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2510,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2517,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2524,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2538,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2545,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2552,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2559,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2587,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2601,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2608,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2629,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2636,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2643,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2650,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2664,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2671,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2678,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2692,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2699,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2706,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2720,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2727,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2734,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2741,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2748,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2755,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2762,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2769,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2776,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2790,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2797,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2804,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2818,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2825,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2832,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2839,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2853,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2860,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2867,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2881,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2888,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2902,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2909,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2916,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2930,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2937,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2944,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2951,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2958,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2965,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2979,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2986,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 2993,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 3000,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 3007,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 3021,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 3028,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 3035,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 3049,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 3056,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 3063,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 3077,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 3084,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 3098,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 3105,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 3112,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 3126,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 3140,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 3154,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 3161,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 3168,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 3175,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 3196,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "medium",
+        "seed": 3203,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3347,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3354,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3361,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3368,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3375,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3382,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3389,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3396,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3403,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3410,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3417,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3424,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3431,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3438,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3445,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3452,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3459,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3466,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3473,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3480,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3487,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3494,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3501,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3508,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3515,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3522,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3529,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3536,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3543,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3550,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3557,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3564,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3571,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3578,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3585,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3599,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3606,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3613,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3620,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3627,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3634,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3648,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3655,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3662,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3669,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3676,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3683,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3690,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3697,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3704,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3711,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3718,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3725,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3732,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3739,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3746,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3753,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3760,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3767,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3774,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3781,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3788,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3795,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3802,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3809,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3816,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3823,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3830,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3837,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3844,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3851,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3858,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3865,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3872,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3879,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3886,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3893,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3900,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3907,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3914,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3921,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3928,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3935,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3942,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3949,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3956,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3963,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3977,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3984,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3991,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3998,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 4005,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 4012,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 4019,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 4026,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 4033,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 4040,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 4047,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 4054,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 4061,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 4075,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 4082,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 4089,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 4096,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 4103,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 4110,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 4117,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 4124,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 4131,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 4138,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 4145,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 4152,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 4166,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 4173,
+        "routes": 1
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 4180,
+        "routes": 1
+      }
+    ],
+    "fewDecisions": [
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3657,
+        "ratio": 0.241,
+        "decisions": 7
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3984,
+        "ratio": 0.241,
+        "decisions": 14
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3564,
+        "ratio": 0.26,
+        "decisions": 13
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 4007,
+        "ratio": 0.267,
+        "decisions": 12
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3837,
+        "ratio": 0.275,
+        "decisions": 14
+      },
+      {
+        "route": 2,
+        "difficulty": "hard",
+        "seed": 3650,
+        "ratio": 0.286,
+        "decisions": 10
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 4033,
+        "ratio": 0.286,
+        "decisions": 16
+      },
+      {
+        "route": 3,
+        "difficulty": "hard",
+        "seed": 3403,
+        "ratio": 0.291,
+        "decisions": 16
+      }
+    ],
+    "uselessTraps": 855
+  }
+}
