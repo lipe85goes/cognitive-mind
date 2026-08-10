@@ -5,7 +5,7 @@ import { useFrame } from "@react-three/fiber";
 import { Group, MathUtils } from "three";
 
 interface RouteToken3DProps {
-  kind: "player" | "guardian";
+  kind: "player" | "guardian" | "sentinel";
   /** Target board coordinates (computed from the grid by the scene). */
   x: number;
   z: number;
@@ -39,13 +39,17 @@ export function RouteToken3D({
       group.position.x = MathUtils.damp(group.position.x, x, 11, delta);
       group.position.z = MathUtils.damp(group.position.z, z, 11, delta);
     }
-    if (kind === "guardian" && !reducedMotion) {
+    if (kind !== "player" && !reducedMotion) {
       group.rotation.y = Math.sin(state.clock.elapsedTime * 0.8) * 0.14;
     }
   });
 
-  const accent = kind === "player" ? "#22d3ee" : "#f59e0b";
-  const accentHi = kind === "player" ? "#a5f3fc" : "#fde68a";
+  // Warm amber for the Hunter, cold teal for the Sentinel: the same split the
+  // Babylon board uses, so the two boards teach the player the same thing.
+  const accent =
+    kind === "player" ? "#22d3ee" : kind === "sentinel" ? "#2f9e91" : "#f59e0b";
+  const accentHi =
+    kind === "player" ? "#a5f3fc" : kind === "sentinel" ? "#a9f0e6" : "#fde68a";
 
   return (
     <group ref={ref}>

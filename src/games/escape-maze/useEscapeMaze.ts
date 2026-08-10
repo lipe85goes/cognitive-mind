@@ -532,11 +532,13 @@ function findPathLength(
   start: GridPosition,
   target: GridPosition,
   walls: Set<string>,
+  blocked?: Set<string>,
 ): number | null {
   const queue: { pos: GridPosition; distance: number }[] = [
     { pos: start, distance: 0 },
   ];
   const visited = new Set([posKey(start)]);
+  if (blocked) for (const cellKey of blocked) visited.add(cellKey);
 
   while (queue.length > 0) {
     const current = queue.shift();
@@ -1810,6 +1812,190 @@ function isValidMap(
   );
 }
 
+/* ------------------------------------------------------ portal sentinel ---
+ *
+ * ROTA-DUAL-GUARDIANS-MAPS-01B: the second defender, ported from the approved
+ * lab model (`tools/validation/dual-guardian-lab.mjs`, contract c3).
+ *
+ * The Hunter asks "how do I reach the Explorer?". The Sentinel asks "which way
+ * into the final region should I hold?". It is territorial: it lives around the
+ * portal, picks the door the Explorer is threatening, commits to it for three
+ * turns, and gives up any chase that would pull it off its region. It never
+ * stands on the portal itself — plugging the goal cell is the degenerate
+ * defence this design exists to avoid.
+ *
+ * The commitment is what makes a feint possible: the Explorer threatens one
+ * door, the Sentinel commits, the Explorer switches, and the Sentinel cannot
+ * answer immediately.
+ *
+ * Behaviour is the lab's, decision for decision. Equivalence is asserted rather
+ * than assumed — see `tools/validation/sentinel-runtime-equivalence.mjs`.
+ */
+const PORTAL_ZONE_RADIUS = 2;
+/** How far outside the zone the Sentinel will step before turning back. */
+const SENTINEL_LEASH = 2;
+/** Past this distance the Explorer threatens no door and the Sentinel goes home. */
+const SENTINEL_THREAT_HORIZON = 6;
+/** Contract c3: a door is held for three turns before it can be re-aimed. */
+const SENTINEL_COMMIT_TURNS = 3;
+
+export interface PortalDefenceZone {
+  /** Cells within `PORTAL_ZONE_RADIUS` of the portal — the Sentinel's region. */
+  zone: GridPosition[];
+  zoneKeys: Set<string>;
+  /** Doors: cells outside the zone that touch it and are reachable on their own. */
+  accesses: GridPosition[];
+}
+
+/**
+ * The zone follows the topology, not a rectangle. A door only counts when the
+ * Explorer can arrive through it WITHOUT first passing another door, otherwise
+ * two doors are really one approach and there is nothing to choose between.
+ */
+export function computePortalDefenceZone(
+  playerStart: GridPosition,
+  exitPosition: GridPosition,
+  walls: Set<string>,
+): PortalDefenceZone {
+  const fromPortal = getReachableDistances(exitPosition, walls);
+  const zone: GridPosition[] = [];
+  fromPortal.forEach((distance, cellKey) => {
+    if (distance <= PORTAL_ZONE_RADIUS) zone.push(keyToPosition(cellKey));
+  });
+  const zoneKeys = new Set(zone.map(posKey));
+
+  const accessKeys = new Set<string>();
+  for (const cell of zone) {
+    for (const next of getNeighbors(cell, walls)) {
+      if (!zoneKeys.has(posKey(next))) accessKeys.add(posKey(next));
+    }
+  }
+  const accesses = [...accessKeys].map(keyToPosition);
+
+  const fromStart = getReachableDistances(playerStart, walls);
+  const useful = accesses.filter((access) => {
+    if (!fromStart.has(posKey(access))) return false;
+    const others = new Set(
+      accesses.filter((other) => !positionsEqual(other, access)).map(posKey),
+    );
+    return findPathLength(playerStart, access, walls, others) !== null;
+  });
+
+  return { zone, zoneKeys, accesses: useful };
+}
+
+export interface SentinelState {
+  position: GridPosition;
+  /** The door currently being held, or null when falling back to the portal. */
+  target: GridPosition | null;
+  commitLeft: number;
+}
+
+/**
+ * On duty from the first turn, and never on the portal. The zone is listed in
+ * breadth-first order from the portal, so this is the nearest usable cell — a
+ * property of the geometry, not a magic coordinate.
+ */
+export function createSentinelState(
+  map: MazeMap,
+  zone: PortalDefenceZone,
+): SentinelState {
+  const start = zone.zone.find(
+    (cell) =>
+      !positionsEqual(cell, map.exitPosition) &&
+      !positionsEqual(cell, map.playerStart) &&
+      !positionsEqual(cell, map.guardianStart),
+  );
+  if (!start) {
+    // The portal is certified to have at least two ways out, so its zone always
+    // holds another cell. Reaching this means the map broke its own contract,
+    // and inventing a position would hide that.
+    throw new Error(
+      "Portal defence zone has no cell available for the Sentinel: the map " +
+        "violates the portal contract certified by ROTA-DUAL-GUARDIANS-MAPS-01A.",
+    );
+  }
+  return { position: start, target: null, commitLeft: 0 };
+}
+
+/**
+ * One Sentinel decision. Pure: it reads state and returns the next state, so
+ * the same inputs always produce the same move and nothing strategic lives in
+ * the render layer.
+ */
+export function decideSentinelMove(
+  state: SentinelState,
+  playerPosition: GridPosition,
+  exitPosition: GridPosition,
+  walls: Set<string>,
+  zone: PortalDefenceZone,
+  commitTurns: number = SENTINEL_COMMIT_TURNS,
+): SentinelState {
+  const fromPlayer = getReachableDistances(playerPosition, walls);
+  const home = exitPosition;
+
+  // Which door is the Explorer actually threatening?
+  let target: GridPosition = home;
+  let bestThreat = Number.POSITIVE_INFINITY;
+  for (const access of zone.accesses) {
+    const distance = fromPlayer.get(posKey(access)) ?? Number.POSITIVE_INFINITY;
+    if (distance < bestThreat) {
+      bestThreat = distance;
+      target = access;
+    }
+  }
+
+  // Commitment. A defender that re-aims every turn is tracking, not patrolling.
+  let heldTarget = state.target;
+  let commitLeft = state.commitLeft;
+  if (commitLeft > 0 && heldTarget) {
+    target = heldTarget;
+    commitLeft -= 1;
+  } else {
+    heldTarget = target;
+    commitLeft = commitTurns;
+  }
+
+  // Leash: a chase that pulls the Sentinel off its region is abandoned, and it
+  // does not become a second Hunter — it walks back to the portal.
+  const distanceHome = findPathLength(state.position, home, walls) ?? 0;
+  const outside = !zone.zoneKeys.has(posKey(state.position));
+  if (
+    bestThreat > SENTINEL_THREAT_HORIZON ||
+    (outside && distanceHome > PORTAL_ZONE_RADIUS + SENTINEL_LEASH)
+  ) {
+    target = home;
+    heldTarget = null;
+    commitLeft = 0;
+  }
+
+  const toTarget = getReachableDistances(target, walls);
+  const options = getNeighbors(state.position, walls).filter((next) => {
+    if (positionsEqual(next, home)) return false;
+    const distance = findPathLength(next, home, walls);
+    return distance !== null && distance <= PORTAL_ZONE_RADIUS + SENTINEL_LEASH;
+  });
+  if (options.length === 0) {
+    return { position: state.position, target: heldTarget, commitLeft };
+  }
+
+  let best = state.position;
+  let bestScore = Number.POSITIVE_INFINITY;
+  for (const next of options) {
+    const score = toTarget.get(posKey(next)) ?? 99;
+    if (score < bestScore) {
+      bestScore = score;
+      best = next;
+    }
+  }
+  const stayScore = toTarget.get(posKey(state.position)) ?? 99;
+  return {
+    position: bestScore < stayScore ? best : state.position,
+    target: heldTarget,
+    commitLeft,
+  };
+}
+
 function chooseGuardianMove(
   guardian: GridPosition,
   player: GridPosition,
@@ -2034,6 +2220,19 @@ export function useEscapeMaze(onComplete: CompleteFn, initialRouteNumber = 1) {
   );
   const [player, setPlayer] = useState<GridPosition>(mazeMap.playerStart);
   const [guardian, setGuardian] = useState<GridPosition>(mazeMap.guardianStart);
+  // The Sentinel's region depends only on the map, so it is derived, not stored.
+  const portalDefenceZone = useMemo(
+    () =>
+      computePortalDefenceZone(
+        mazeMap.playerStart,
+        mazeMap.exitPosition,
+        mazeMap.walls,
+      ),
+    [mazeMap],
+  );
+  const [sentinel, setSentinel] = useState<SentinelState>(() =>
+    createSentinelState(mazeMap, portalDefenceZone),
+  );
   const [collectedStars, setCollectedStars] = useState<string[]>([]);
   const [turns, setTurns] = useState(0);
   const [blockedMoves, setBlockedMoves] = useState(0);
@@ -2084,6 +2283,19 @@ export function useEscapeMaze(onComplete: CompleteFn, initialRouteNumber = 1) {
       setMazeMap(nextMap);
       setPlayer(nextMap.playerStart);
       setGuardian(nextMap.guardianStart);
+      // Rebuilt from the new map, so no commitment survives a restart or a
+      // route change. Recomputed here rather than read from the memo, which
+      // still holds the previous map on this render.
+      setSentinel(
+        createSentinelState(
+          nextMap,
+          computePortalDefenceZone(
+            nextMap.playerStart,
+            nextMap.exitPosition,
+            nextMap.walls,
+          ),
+        ),
+      );
       setCollectedStars([]);
       setTurns(0);
       setBlockedMoves(0);
@@ -2220,6 +2432,7 @@ export function useEscapeMaze(onComplete: CompleteFn, initialRouteNumber = 1) {
     const nextTurn = turns + 1;
     const nextKey = posKey(next);
     const stepOnGuardian = positionsEqual(next, guardian);
+    const stepOnSentinel = positionsEqual(next, sentinel.position);
 
     // --- Gameplay 2.0 overlays (walkable, never alter maze rules) ---
     // A trap only matters when we aren't already losing to the guardian.
@@ -2282,7 +2495,7 @@ export function useEscapeMaze(onComplete: CompleteFn, initialRouteNumber = 1) {
       playGentleErrorTone();
     }
 
-    if (stepOnGuardian) {
+    if (stepOnGuardian || stepOnSentinel) {
       setErrors(errorsAfterStep);
       endGame(false, finalStats(nextTurn, errorsAfterStep));
       return;
@@ -2309,6 +2522,30 @@ export function useEscapeMaze(onComplete: CompleteFn, initialRouteNumber = 1) {
       return;
     }
 
+    // The Sentinel moves last, on the state the Hunter has already produced, so
+    // the two never resolve a shared destination by render order.
+    const nextSentinel = decideSentinelMove(
+      sentinel,
+      next,
+      mazeMap.exitPosition,
+      mazeMap.walls,
+      portalDefenceZone,
+    );
+    const sentinelBlocked =
+      positionsEqual(nextSentinel.position, nextGuardian) &&
+      !positionsEqual(nextSentinel.position, sentinel.position);
+    const settledSentinel: SentinelState = sentinelBlocked
+      ? { ...nextSentinel, position: sentinel.position }
+      : nextSentinel;
+    setSentinel(settledSentinel);
+
+    if (positionsEqual(settledSentinel.position, next)) {
+      const caughtErrors = errorsAfterStep + 1;
+      setErrors(caughtErrors);
+      endGame(false, finalStats(nextTurn, caughtErrors));
+      return;
+    }
+
     const guardianClose = manhattanDistance(nextGuardian, next) <= 2;
     const exitClose = manhattanDistance(next, mazeMap.exitPosition) <= 2;
 
@@ -2326,12 +2563,12 @@ export function useEscapeMaze(onComplete: CompleteFn, initialRouteNumber = 1) {
               : positionsEqual(next, mazeMap.exitPosition)
                 ? "O portal ainda precisa das luzes da rota."
               : guardianClose
-                ? "O guardião está próximo. Pense no próximo caminho."
+                ? "O Caçador está próximo. Pense no próximo caminho."
                 : exitClose
                   ? portalActive
                     ? "A saída está próxima."
                     : "O portal ainda precisa de todas as luzes."
-                  : "Boa jogada. O guardião se moveu.",
+                  : "Boa jogada. O Caçador se moveu.",
     );
   };
 
@@ -2362,6 +2599,9 @@ export function useEscapeMaze(onComplete: CompleteFn, initialRouteNumber = 1) {
     mazeMap,
     player,
     guardian,
+    sentinel: sentinel.position,
+    sentinelTarget: sentinel.target,
+    portalDefenceZone,
     collectedSet,
     collectedCount,
     totalLights,

@@ -10,6 +10,10 @@ export interface RouteBabylonState {
   collectedKeys: string[];
   player: GridPosition;
   guardian: GridPosition;
+  /** The Portal Sentinel. Null before a map exists. */
+  sentinel: GridPosition | null;
+  /** True while the Sentinel is holding a door — a steadier glow, nothing more. */
+  sentinelCommitted: boolean;
   moveTargets: string[];
   traps: GridPosition[];
   triggeredTrapKeys: string[];
@@ -46,6 +50,9 @@ type RouteMaterials = Record<
   | "playerGlow"
   | "guardian"
   | "guardianGlow"
+  | "sentinel"
+  | "sentinelGlow"
+  | "sentinelGlowCommitted"
   | "portal"
   | "portalGlow"
   | "portalLocked"
@@ -258,6 +265,18 @@ function createMaterials(
     }),
     guardianGlow: makeMaterial(B, scene, "route-guardian-glow", "#ffd166", {
       emissive: "#f59e0b",
+    }),
+    // The Hunter is warm bronze because it moves at you. The Sentinel is cold
+    // stone with the portal's own teal: it belongs to the place it guards.
+    // Emissive only — the scene keeps exactly three lights.
+    sentinel: makeMaterial(B, scene, "route-sentinel", "#2f4858", {
+      specular: "#8fb8c9",
+    }),
+    sentinelGlow: makeMaterial(B, scene, "route-sentinel-glow", "#7fd8d0", {
+      emissive: "#2f9e91",
+    }),
+    sentinelGlowCommitted: makeMaterial(B, scene, "route-sentinel-glow-committed", "#a9f0e6", {
+      emissive: "#4fd1c5",
     }),
     portal: makeMaterial(B, scene, "route-portal", "#245f31", {
       specular: "#b5ffb6",
@@ -1491,6 +1510,67 @@ export function createRouteBabylonController(
     sphere("route-guardian-eye-right", 0.07, new B.Vector3(pos.x + 0.09, 1.05, pos.z + 0.21), materials.guardianGlow, parent, false);
   }
 
+  /**
+   * The Sentinel: planted, faceted, cold. Deliberately a different silhouette
+   * from the Hunter's hooded figure — wider at the base, shorter, octagonal,
+   * with a ring on the ground that reads as territory rather than as a HUD.
+   *
+   * Built from primitives on purpose: no new asset pipeline, and no Babylon
+   * light. All the glow is emissive material picked up by the existing
+   * GlowLayer, so the scene still runs on three lights.
+   */
+  function renderSentinel(parent: BABYLON.TransformNode) {
+    if (!state.sentinel) return;
+    const pos = cellToPosition(state.sentinel.row, state.sentinel.col);
+    const crown = state.sentinelCommitted
+      ? materials.sentinelGlowCommitted
+      : materials.sentinelGlow;
+
+    // Territory ring, flat on the board.
+    torus(
+      "route-sentinel-territory-ring",
+      0.86,
+      0.03,
+      new B.Vector3(pos.x, BOARD_SURFACE_Y + 0.03, pos.z),
+      crown,
+      parent,
+    );
+    cylinder(
+      "route-sentinel-plinth",
+      0.66,
+      0.1,
+      new B.Vector3(pos.x, 0.27, pos.z),
+      materials.sentinel,
+      parent,
+      8,
+    );
+    cylinder(
+      "route-sentinel-column",
+      0.44,
+      0.62,
+      new B.Vector3(pos.x, 0.63, pos.z),
+      materials.sentinel,
+      parent,
+      8,
+    );
+    torus(
+      "route-sentinel-crown",
+      0.34,
+      0.05,
+      new B.Vector3(pos.x, 0.98, pos.z),
+      crown,
+      parent,
+    );
+    sphere(
+      "route-sentinel-core",
+      0.16,
+      new B.Vector3(pos.x, 1.06, pos.z),
+      crown,
+      parent,
+      false,
+    );
+  }
+
   function renderPortal(parent: BABYLON.TransformNode) {
     const pos = cellToPosition(state.exitPosition.row, state.exitPosition.col);
     const collectedKeys = new Set(state.collectedKeys);
@@ -1656,6 +1736,7 @@ export function createRouteBabylonController(
     renderPortal(nextRoot);
     renderPlayer(nextRoot);
     renderGuardian(nextRoot);
+    renderSentinel(nextRoot);
 
     const previousRoot = dynamicBoardRoot;
     dynamicBoardRoot = nextRoot;

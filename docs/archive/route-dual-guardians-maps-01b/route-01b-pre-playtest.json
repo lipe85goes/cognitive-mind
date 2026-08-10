@@ -1,0 +1,72 @@
+{
+  "mission": "ROTA-DUAL-GUARDIANS-MAPS-01B-VISUAL-RUNTIME-CLOSE",
+  "gates": {
+    "sentinelInRuntime": {
+      "met": true,
+      "note": "rendered on both boards; NOT visually verified"
+    },
+    "labEquivalence": {
+      "statesCompared": 658,
+      "divergences": 0,
+      "met": true
+    },
+    "commitTurns3": {
+      "met": true,
+      "held": 112,
+      "expired": 98
+    },
+    "feint": {
+      "met": true,
+      "committedTo": "3,7",
+      "heldThroughSwitch": true,
+      "reaimedAfter": "2,8"
+    },
+    "leash": {
+      "met": true,
+      "leashedStates": 315
+    },
+    "neverOnPortal": {
+      "met": true,
+      "note": "movement filter rejects the portal cell; asserted in decideSentinelMove"
+    },
+    "rolesDistinct": {
+      "met": true
+    },
+    "babylonLights": {
+      "count": 3,
+      "max": 3,
+      "newLightAdded": false,
+      "met": true
+    },
+    "generatorRegression": {
+      "met": true,
+      "note": "A-F 6/6, four seeds 4/4, validator 135 maps 0 throws 0 errors, 9 templates"
+    },
+    "technical": {
+      "lint": 0,
+      "tsc": "pass",
+      "build": "pass",
+      "diffCheck": "pass",
+      "met": true
+    }
+  },
+  "visualVerification": "NOT_PERFORMED — environment cannot composite frames (document.hidden=true, rAF=0 frames); Playwright unavailable",
+  "verdict": "ROTA-DUAL-GUARDIANS-MAPS-01B_READY_FOR_MANUAL_VISUAL_CHECK",
+  "manualPlaytestOutcome": {
+    "functionalGates": "unchanged — all still met",
+    "visualFollowUps": [
+      {
+        "subject": "Sentinel silhouette",
+        "status": "REJECTED_PENDING_REDESIGN",
+        "direction": "closer to the Hunter’s entity family, cool/teal palette, keep the teal ground ring; behaviour stays the main difference"
+      },
+      {
+        "subject": "Red traps",
+        "status": "REJECTED_PENDING_REDESIGN",
+        "direction": "low, floor-integrated rune/plate, dark red when passive; mechanics reserved for ROTA-TRAPS-STRATEGY-01"
+      }
+    ],
+    "note": "Recorded as follow-ups by user decision. Not implemented in this mission and not blocking.",
+    "detail": "visual-followups.md"
+  }
+}

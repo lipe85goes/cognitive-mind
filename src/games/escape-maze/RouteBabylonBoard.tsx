@@ -19,6 +19,8 @@ interface RouteBabylonBoardProps {
   mazeMap: MazeMap;
   player: GridPosition;
   guardian: GridPosition;
+  sentinel: GridPosition;
+  sentinelCommitted: boolean;
   collectedSet: Set<string>;
   moveTargets: Set<string>;
   triggeredTrapSet: Set<string>;
@@ -35,6 +37,8 @@ export function RouteBabylonBoard({
   mazeMap,
   player,
   guardian,
+  sentinel,
+  sentinelCommitted,
   collectedSet,
   moveTargets,
   triggeredTrapSet,
@@ -62,6 +66,8 @@ export function RouteBabylonBoard({
       collectedKeys: Array.from(collectedSet),
       player,
       guardian,
+      sentinel,
+      sentinelCommitted,
       moveTargets: Array.from(moveTargets),
       traps: mazeMap.traps,
       triggeredTrapKeys: Array.from(triggeredTrapSet),
@@ -75,6 +81,8 @@ export function RouteBabylonBoard({
       mazeMap,
       player,
       guardian,
+      sentinel,
+      sentinelCommitted,
       collectedSet,
       moveTargets,
       triggeredTrapSet,

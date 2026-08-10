@@ -1,0 +1,31 @@
+{
+  "mission": "ROTA-DUAL-GUARDIANS-MAPS-01B",
+  "note": "Static inspection only. This does NOT replace human visual review; the environment cannot composite frames.",
+  "babylon": {
+    "stateFieldSentinel": true,
+    "stateFieldCommitted": true,
+    "renderFunctionExists": true,
+    "calledFromDynamicBoard": true,
+    "guardsNullMap": true,
+    "positionFromState": true,
+    "distinctMaterials": 3,
+    "committedMaterialUsed": true,
+    "meshCount": 7,
+    "babylonLightsCreated": 3,
+    "routeMaxLights": 3,
+    "newLightForSentinel": false,
+    "disposalStrategy": "renderDynamicBoard disposes the previous root wholesale, so the Sentinel meshes cannot outlive a rebuild",
+    "disposeConfirmed": true
+  },
+  "propagation": {
+    "boardPropsTyped": true,
+    "boardStateAssembly": true,
+    "boardMemoDeps": true,
+    "hookExposes": true,
+    "gamePassesToBabylon": true,
+    "fallbackBoardRenders": true,
+    "fallbackTokenKind": true,
+    "noStrategyInRenderLayer": true
+  },
+  "allChecksPass": false
+}

@@ -1,0 +1,313 @@
+{
+  "mission": "ROTA-DUAL-GUARDIANS-MAPS-01B-PLAYTEST-CLOSE",
+  "agents": "scripted Explorer + production chooseGuardianMove + production decideSentinelMove",
+  "note": "correctness only — no difficulty recalibration was attempted or intended",
+  "gamesPerCombination": 20,
+  "combinations": [
+    {
+      "route": 1,
+      "mode": "easy",
+      "games": 20,
+      "outcomes": {
+        "won": 15,
+        "caughtHunter": 1,
+        "caughtSentinel": 0,
+        "timeout": 4
+      },
+      "sentinelMoves": 37,
+      "commitmentsStarted": 239,
+      "leashBreaks": 0,
+      "portalOccupations": 0,
+      "crash": null,
+      "winPossible": true,
+      "lossPossible": true
+    },
+    {
+      "route": 1,
+      "mode": "medium",
+      "games": 20,
+      "outcomes": {
+        "won": 5,
+        "caughtHunter": 12,
+        "caughtSentinel": 0,
+        "timeout": 3
+      },
+      "sentinelMoves": 63,
+      "commitmentsStarted": 112,
+      "leashBreaks": 0,
+      "portalOccupations": 0,
+      "crash": null,
+      "winPossible": true,
+      "lossPossible": true
+    },
+    {
+      "route": 1,
+      "mode": "hard",
+      "games": 20,
+      "outcomes": {
+        "won": 11,
+        "caughtHunter": 0,
+        "caughtSentinel": 0,
+        "timeout": 9
+      },
+      "sentinelMoves": 103,
+      "commitmentsStarted": 109,
+      "leashBreaks": 0,
+      "portalOccupations": 0,
+      "crash": null,
+      "winPossible": true,
+      "lossPossible": false
+    },
+    {
+      "route": 2,
+      "mode": "easy",
+      "games": 20,
+      "outcomes": {
+        "won": 5,
+        "caughtHunter": 1,
+        "caughtSentinel": 0,
+        "timeout": 14
+      },
+      "sentinelMoves": 175,
+      "commitmentsStarted": 545,
+      "leashBreaks": 0,
+      "portalOccupations": 0,
+      "crash": null,
+      "winPossible": true,
+      "lossPossible": true
+    },
+    {
+      "route": 2,
+      "mode": "medium",
+      "games": 20,
+      "outcomes": {
+        "won": 7,
+        "caughtHunter": 4,
+        "caughtSentinel": 3,
+        "timeout": 6
+      },
+      "sentinelMoves": 111,
+      "commitmentsStarted": 122,
+      "leashBreaks": 0,
+      "portalOccupations": 0,
+      "crash": null,
+      "winPossible": true,
+      "lossPossible": true
+    },
+    {
+      "route": 2,
+      "mode": "hard",
+      "games": 20,
+      "outcomes": {
+        "won": 0,
+        "caughtHunter": 0,
+        "caughtSentinel": 2,
+        "timeout": 18
+      },
+      "sentinelMoves": 82,
+      "commitmentsStarted": 257,
+      "leashBreaks": 0,
+      "portalOccupations": 0,
+      "crash": null,
+      "winPossible": false,
+      "lossPossible": true
+    },
+    {
+      "route": 3,
+      "mode": "easy",
+      "games": 20,
+      "outcomes": {
+        "won": 1,
+        "caughtHunter": 1,
+        "caughtSentinel": 2,
+        "timeout": 16
+      },
+      "sentinelMoves": 143,
+      "commitmentsStarted": 637,
+      "leashBreaks": 0,
+      "portalOccupations": 0,
+      "crash": null,
+      "winPossible": true,
+      "lossPossible": true
+    },
+    {
+      "route": 3,
+      "mode": "medium",
+      "games": 20,
+      "outcomes": {
+        "won": 6,
+        "caughtHunter": 8,
+        "caughtSentinel": 0,
+        "timeout": 6
+      },
+      "sentinelMoves": 125,
+      "commitmentsStarted": 143,
+      "leashBreaks": 0,
+      "portalOccupations": 0,
+      "crash": null,
+      "winPossible": true,
+      "lossPossible": true
+    },
+    {
+      "route": 3,
+      "mode": "hard",
+      "games": 20,
+      "outcomes": {
+        "won": 2,
+        "caughtHunter": 0,
+        "caughtSentinel": 2,
+        "timeout": 16
+      },
+      "sentinelMoves": 143,
+      "commitmentsStarted": 248,
+      "leashBreaks": 0,
+      "portalOccupations": 0,
+      "crash": null,
+      "winPossible": true,
+      "lossPossible": true
+    }
+  ],
+  "crashes": 0,
+  "winPossible": true,
+  "lossPossible": true,
+  "commitLadder": {
+    "seed": 8300000,
+    "door": "3,7",
+    "ladder": [
+      {
+        "turn": 1,
+        "commitLeftBefore": 0,
+        "commitLeftAfter": 3,
+        "target": "3,7"
+      },
+      {
+        "turn": 2,
+        "commitLeftBefore": 3,
+        "commitLeftAfter": 2,
+        "target": "3,7"
+      },
+      {
+        "turn": 3,
+        "commitLeftBefore": 2,
+        "commitLeftAfter": 1,
+        "target": "3,7"
+      },
+      {
+        "turn": 4,
+        "commitLeftBefore": 1,
+        "commitLeftAfter": 0,
+        "target": "3,7"
+      },
+      {
+        "turn": 5,
+        "commitLeftBefore": 0,
+        "commitLeftAfter": 3,
+        "target": "3,7"
+      },
+      {
+        "turn": 6,
+        "commitLeftBefore": 3,
+        "commitLeftAfter": 2,
+        "target": "3,7"
+      }
+    ],
+    "expected": [
+      {
+        "before": 0,
+        "after": 3
+      },
+      {
+        "before": 3,
+        "after": 2
+      },
+      {
+        "before": 2,
+        "after": 1
+      },
+      {
+        "before": 1,
+        "after": 0
+      },
+      {
+        "before": 0,
+        "after": 3
+      },
+      {
+        "before": 3,
+        "after": 2
+      }
+    ],
+    "matchesContract": true
+  },
+  "commitContractExact": true,
+  "captureRules": [
+    {
+      "id": "A",
+      "rule": "Hunter entra na célula do Explorer",
+      "implemented": "positionsEqual(nextGuardian, next) -> derrota",
+      "met": true
+    },
+    {
+      "id": "B",
+      "rule": "Sentinel entra na célula do Explorer",
+      "implemented": "positionsEqual(settledSentinel.position, next) -> derrota",
+      "met": true
+    },
+    {
+      "id": "C",
+      "rule": "Explorer entra na célula do Hunter",
+      "implemented": "stepOnGuardian -> derrota (contrato existente preservado)",
+      "met": true
+    },
+    {
+      "id": "D",
+      "rule": "Explorer entra na célula do Sentinel",
+      "implemented": "stepOnSentinel -> derrota",
+      "met": true
+    },
+    {
+      "id": "E",
+      "rule": "Hunter e Sentinel disputam a mesma célula",
+      "implemented": "o Sentinela decide por último, já vendo o Hunter; se o destino coincidir ele permanece parado",
+      "met": true
+    }
+  ],
+  "collisionProbes": [
+    {
+      "seed": 8400000,
+      "sentinelFinal": "3,8",
+      "portalReachableAroundSentinel": true
+    },
+    {
+      "seed": 8400001,
+      "sentinelFinal": "2,6",
+      "portalReachableAroundSentinel": true
+    },
+    {
+      "seed": 8400002,
+      "sentinelFinal": "3,8",
+      "portalReachableAroundSentinel": true
+    },
+    {
+      "seed": 8400003,
+      "sentinelFinal": "1,5",
+      "portalReachableAroundSentinel": true
+    },
+    {
+      "seed": 8400004,
+      "sentinelFinal": "3,8",
+      "portalReachableAroundSentinel": true
+    },
+    {
+      "seed": 8400005,
+      "sentinelFinal": "3,7",
+      "portalReachableAroundSentinel": true
+    }
+  ],
+  "invariants": {
+    "sentinelOnPortal": 0,
+    "sentinelOutsideLeash": 0,
+    "portalSealedBySentinel": 0
+  },
+  "gateMet": true
+}

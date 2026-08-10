@@ -39,6 +39,7 @@ interface RouteBoardSceneProps {
   collectedSet: Set<string>;
   player: GridPosition;
   guardian: GridPosition;
+  sentinel: GridPosition;
   /** Adjacent walkable cells, as "row,col" keys (purely visual + click). */
   moveTargets: Set<string>;
   /** Trap tiles (Gameplay 2.0); spent ones are read from `triggeredTrapSet`. */
@@ -125,6 +126,7 @@ export function RouteBoardScene({
   collectedSet,
   player,
   guardian,
+  sentinel,
   moveTargets,
   traps,
   triggeredTrapSet,
@@ -136,6 +138,7 @@ export function RouteBoardScene({
 }: RouteBoardSceneProps) {
   const [px, pz] = toXZ(player.row, player.col);
   const [gx, gz] = toXZ(guardian.row, guardian.col);
+  const [sx, sz] = toXZ(sentinel.row, sentinel.col);
   const [ex, ez] = toXZ(exitPosition.row, exitPosition.col);
   const shieldXZ = shield ? toXZ(shield.row, shield.col) : null;
 
@@ -303,6 +306,13 @@ export function RouteBoardScene({
         kind="guardian"
         x={gx}
         z={gz}
+        baseY={TILE_TOP}
+        reducedMotion={reducedMotion}
+      />
+      <RouteToken3D
+        kind="sentinel"
+        x={sx}
+        z={sz}
         baseY={TILE_TOP}
         reducedMotion={reducedMotion}
       />

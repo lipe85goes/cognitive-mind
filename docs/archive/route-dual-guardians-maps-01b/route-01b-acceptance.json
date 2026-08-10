@@ -1,0 +1,78 @@
+{
+  "mission": "ROTA-DUAL-GUARDIANS-MAPS-01B-PLAYTEST-CLOSE",
+  "gates": {
+    "1. Sentinel runtime funciona": true,
+    "2. LAB <-> RUNTIME = 0 divergencias": true,
+    "3. commitTurns = 3 correto": true,
+    "4. finta funciona": true,
+    "5. leash funciona": true,
+    "6. Sentinel nunca ocupa portal": true,
+    "7. Hunter mantem papel perseguidor": true,
+    "8. Sentinel mantem papel territorial": true,
+    "9. capturas corretas": true,
+    "10. conflitos deterministicos": true,
+    "11. reset/transicoes sem state leak": true,
+    "12. gameplay 9 combinacoes passa": true,
+    "13. nenhum deadlock funcional": true,
+    "14. portal nunca permanentemente selado": true,
+    "15. regressao 01A passa": true,
+    "16. Babylon continua com 3 lights": true,
+    "17. lint/TS/build/diff passam": true
+  },
+  "evidence": {
+    "equivalenceStates": 658,
+    "equivalenceDivergences": 0,
+    "commitLadder": [
+      {
+        "turn": 1,
+        "commitLeftBefore": 0,
+        "commitLeftAfter": 3,
+        "target": "3,7"
+      },
+      {
+        "turn": 2,
+        "commitLeftBefore": 3,
+        "commitLeftAfter": 2,
+        "target": "3,7"
+      },
+      {
+        "turn": 3,
+        "commitLeftBefore": 2,
+        "commitLeftAfter": 1,
+        "target": "3,7"
+      },
+      {
+        "turn": 4,
+        "commitLeftBefore": 1,
+        "commitLeftAfter": 0,
+        "target": "3,7"
+      },
+      {
+        "turn": 5,
+        "commitLeftBefore": 0,
+        "commitLeftAfter": 3,
+        "target": "3,7"
+      },
+      {
+        "turn": 6,
+        "commitLeftBefore": 3,
+        "commitLeftAfter": 2,
+        "target": "3,7"
+      }
+    ],
+    "feintCommittedTo": "3,7",
+    "feintHeldThroughSwitch": true,
+    "resetScenarios": 9,
+    "resetLeaks": 0,
+    "gameplayCombinations": 9,
+    "gameplayCrashes": 0,
+    "babylonLights": 3
+  },
+  "RUNTIME_VISIBILITY_CHECK": "PASS",
+  "SENTINEL_FUNCTIONAL_RUNTIME": "PASS",
+  "SENTINEL_VISUAL_FINAL_APPROVAL": "PENDING",
+  "SENTINEL_VISUAL_FOLLOWUP_REQUIRED": true,
+  "TRAP_VISUAL_FOLLOWUP_REQUIRED": true,
+  "playtestObservation": "Timeouts rose in rota2/hard, rota3/easy and rota3/hard under the naive scripted Explorer. Registered, not rebalanced — calibration comes after traps and chest.",
+  "verdict": "ROTA-DUAL-GUARDIANS-MAPS-01B_READY_FOR_PLAYTEST"
+}

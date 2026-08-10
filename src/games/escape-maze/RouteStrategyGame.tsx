@@ -149,6 +149,8 @@ export function RouteStrategyGame({
     mazeMap,
     player,
     guardian,
+    sentinel,
+    sentinelTarget,
     collectedSet,
     collectedCount,
     totalLights,
@@ -225,7 +227,7 @@ export function RouteStrategyGame({
   ]);
   const warnMessages = new Set([
     "Este caminho tem um obstáculo. Observe o próximo passo.",
-    "O guardião está próximo. Pense no próximo caminho.",
+    "O Caçador está próximo. Pense no próximo caminho.",
     "Caminho bloqueado. Escolha outra direção.",
     "O portal ainda precisa das luzes da rota.",
     "O portal ainda precisa de todas as luzes.",
@@ -388,7 +390,8 @@ export function RouteStrategyGame({
   ];
   const legendItems: Array<{ label: string; Icon: LucideIcon }> = [
     { label: "Você", Icon: CircleUserRound },
-    { label: "Guardião", Icon: Shield },
+    { label: "Caçador", Icon: Shield },
+    { label: "Sentinela", Icon: ShieldPlus },
     { label: "Saída", Icon: DoorOpen },
     { label: "Luz", Icon: Sun },
     { label: "Armadilha", Icon: TriangleAlert },
@@ -514,7 +517,7 @@ export function RouteStrategyGame({
               <div
                 className="rsg-canvas"
                 role="img"
-                aria-label="Tabuleiro 3D da rota: o explorador é você, o guardião é o sentinela encapuzado, o portal é a saída e as luzes douradas ativam o portal."
+                aria-label="Tabuleiro 3D da rota: o explorador é você, o Caçador encapuzado persegue pelo tabuleiro, o Sentinela em teal guarda a região do portal, o portal é a saída e as luzes douradas o ativam."
               >
                 {USE_BABYLON_ROUTE_BOARD ? (
                   <RouteBabylonBoard
@@ -522,6 +525,8 @@ export function RouteStrategyGame({
                     collectedSet={collectedSet}
                     player={player}
                     guardian={guardian}
+                    sentinel={sentinel}
+                    sentinelCommitted={sentinelTarget !== null}
                     moveTargets={moveTargets}
                     triggeredTrapSet={triggeredTrapSet}
                     shieldCollected={shieldCollected}
@@ -540,6 +545,7 @@ export function RouteStrategyGame({
                     collectedSet={collectedSet}
                     player={player}
                     guardian={guardian}
+                    sentinel={sentinel}
                     moveTargets={moveTargets}
                     traps={mazeMap.traps}
                     triggeredTrapSet={triggeredTrapSet}
@@ -676,7 +682,7 @@ export function RouteStrategyGame({
 
               <p className="rsg-details-note">
                 Use os botões de direção ou as setas do teclado. Os contornos
-                âmbar mostram até onde o guardião pode chegar no próximo passo.
+                âmbar mostram até onde o Caçador pode chegar no próximo passo.
               </p>
 
               <ul className="rsg-legend rsg-details-legend" aria-label="Legenda do tabuleiro">
