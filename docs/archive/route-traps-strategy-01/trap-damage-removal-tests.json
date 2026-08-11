@@ -1,0 +1,29 @@
+{
+  "mission": "ROTA-TRAPS-STRATEGY-01-CLOSEOUT",
+  "method": "static inspection of the move handler: the penalty paths were removed, not merely bypassed",
+  "A_stepOnDormantTrap": {
+    "trapHurtsFlagGone": true,
+    "shieldAbsorbsFlagGone": true,
+    "errorsExcludeTraps": true,
+    "noShakeOnTrap": true,
+    "noErrorToneOnTrap": true,
+    "shieldNotConsumed": true,
+    "moveStillValid": true,
+    "trapStillArms": true,
+    "pass": true
+  },
+  "B_crossAlreadyArmedTrap": {
+    "note": "isUntriggeredTrap is false for an armed trap, so no branch runs at all",
+    "pass": true
+  },
+  "C_genuineErrorsPreserved": {
+    "guardianStepStillCounts": true,
+    "blockedMoveStillCounts": true,
+    "errorSystemNotRemoved": true,
+    "pass": true
+  },
+  "TRAP_ACTIVATION_IS_PLAYER_ERROR": false,
+  "TRAP_ACTIVATION_DAMAGE": false,
+  "shieldNote": "The shield keeps its current contract and is simply no longer spent on traps. It is redesigned in ROTA-CHEST-REWARDS-01, not given a new job here.",
+  "allPass": true
+}

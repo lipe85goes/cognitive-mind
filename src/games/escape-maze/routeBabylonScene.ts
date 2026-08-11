@@ -60,6 +60,9 @@ type RouteMaterials = Record<
   | "light"
   | "trap"
   | "trapSpent"
+  | "trapDormant"
+  | "trapArmed"
+  | "trapArmedCore"
   | "shield"
   | "danger"
   | "move",
@@ -139,7 +142,6 @@ const BOARD_SURFACE_Y = 0.2;
 const WALL_SCALE = 1;
 const PORTAL_SCALE = 1;
 const LIGHT_SCALE = 1;
-const TRAP_SCALE = 1;
 const SHIELD_SCALE = 1;
 // Props are authored with their front on target -Z. The portal arch just needs a
 // small turn toward the camera's azimuth. The shield is a FLAT face, so besides
@@ -302,6 +304,17 @@ function createMaterials(
     light: makeMaterial(B, scene, "route-light", "#f6c447", {
       emissive: "#facc15",
       specular: "#fff4b0",
+    }),
+    // ROTA-TRAPS-STRATEGY-01: dormant is oxide sunk into the stone; armed is
+    // the same rune lit. Emissive only — the scene still runs on three lights.
+    trapDormant: makeMaterial(B, scene, "route-trap-dormant", "#4a2229", {
+      specular: "#6d3a41",
+    }),
+    trapArmed: makeMaterial(B, scene, "route-trap-armed", "#c8323f", {
+      emissive: "#e0313f",
+    }),
+    trapArmedCore: makeMaterial(B, scene, "route-trap-armed-core", "#ff8a92", {
+      emissive: "#ff4d5a",
     }),
     trap: makeMaterial(B, scene, "route-trap", "#df4e5a", {
       emissive: "#7f1d1d",
@@ -1703,33 +1716,58 @@ export function createRouteBabylonController(
 
     state.traps.forEach((trap) => {
       const pos = cellToPosition(trap.row, trap.col);
-      const spent = triggeredTrapKeys.has(keyOf(trap));
-      if (!spent) {
-        const clone = clonePropAsset(
-          "trap",
-          `route-trap-glb-${keyOf(trap)}`,
-          parent,
-          new B.Vector3(pos.x, BOARD_SURFACE_Y, pos.z),
-          TRAP_SCALE,
-        );
-        if (clone) return;
-      }
+      const armed = triggeredTrapKeys.has(keyOf(trap));
+      // A rune cut into the floor, not an object standing on it. Dormant it is
+      // oxide and almost flat; armed, the same shape lights up. The player
+      // should read "something is set into this tile", never "this is attacking".
+      const face = armed ? materials.trapArmed : materials.trapDormant;
+      const core = armed ? materials.trapArmedCore : materials.trapDormant;
 
-      const crystal = B.MeshBuilder.CreateCylinder(
-        "route-trap-crystal",
-        {
-          diameterTop: 0.05,
-          diameterBottom: 0.36,
-          height: 0.5,
-          tessellation: 5,
-        },
+      const plate = B.MeshBuilder.CreateCylinder(
+        "route-trap-plate",
+        { diameter: 0.72, height: 0.035, tessellation: 6 },
         scene,
       );
-      crystal.position = new B.Vector3(pos.x, BOARD_SURFACE_Y + 0.26, pos.z);
-      crystal.rotation.y = Math.PI / 5;
-      crystal.material = spent ? materials.trapSpent : materials.trap;
-      crystal.parent = parent;
-      shadowGenerator.addShadowCaster(crystal);
+      plate.position = new B.Vector3(pos.x, BOARD_SURFACE_Y + 0.018, pos.z);
+      plate.rotation.y = Math.PI / 6;
+      plate.material = face;
+      plate.parent = parent;
+
+      torus(
+        "route-trap-rune-ring",
+        0.5,
+        0.022,
+        new B.Vector3(pos.x, BOARD_SURFACE_Y + 0.038, pos.z),
+        core,
+        parent,
+      );
+
+      // Three grooves radiating from the centre: engraving, not decoration.
+      for (let spoke = 0; spoke < 3; spoke += 1) {
+        const angle = (spoke * 2 * Math.PI) / 3 + Math.PI / 6;
+        const groove = B.MeshBuilder.CreateBox(
+          "route-trap-rune-groove",
+          { width: 0.26, height: 0.02, depth: 0.05 },
+          scene,
+        );
+        groove.position = new B.Vector3(
+          pos.x + Math.cos(angle) * 0.17,
+          BOARD_SURFACE_Y + 0.04,
+          pos.z + Math.sin(angle) * 0.17,
+        );
+        groove.rotation.y = -angle;
+        groove.material = core;
+        groove.parent = parent;
+      }
+
+      sphere(
+        "route-trap-rune-core",
+        0.12,
+        new B.Vector3(pos.x, BOARD_SURFACE_Y + 0.05, pos.z),
+        core,
+        parent,
+        false,
+      );
     });
 
     if (state.shield && !state.shieldCollected) {

@@ -33,50 +33,57 @@ export function RouteTrap3D({
   useFrame((state) => {
     const mesh = ref.current;
     if (!mesh) return;
-    if (reducedMotion || triggered) {
+    if (reducedMotion || !triggered) {
       mesh.scale.setScalar(1);
       return;
     }
-    const pulse = 1 + Math.sin(state.clock.elapsedTime * 3 + seed) * 0.09;
+    // Armed traps breathe slowly. Dormant ones are still.
+    const pulse = 1 + Math.sin(state.clock.elapsedTime * 1.6 + seed) * 0.05;
     mesh.scale.setScalar(pulse);
   });
 
+  // ROTA-TRAPS-STRATEGY-01: a rune cut into the floor, not a pin standing on
+  // it. `triggered` now means ARMED, so the semantics are the other way round
+  // from before: dormant is dark oxide, armed lights up and stays lit.
+  const face = triggered ? "#c8323f" : "#4a2229";
+  const core = triggered ? "#ff8a92" : "#5d2b33";
+  const glow = triggered ? 1.4 : 0.06;
+
   return (
     <group position={[x, 0, z]}>
-      <mesh position={[0, baseY + 0.055, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <circleGeometry args={[0.2, 28]} />
+      <mesh position={[0, baseY + 0.012, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+        <circleGeometry args={[0.24, 6]} />
         <meshStandardMaterial
-          color="#ef4444"
-          emissive="#ef4444"
-          emissiveIntensity={triggered ? 0.12 : 0.75}
-          transparent
-          opacity={triggered ? 0.16 : 0.42}
-          toneMapped={false}
-          depthWrite={false}
-        />
-      </mesh>
-
-      <mesh ref={ref} position={[0, baseY + 0.2, 0]} castShadow>
-        <coneGeometry args={[0.16, 0.3, 3]} />
-        <meshStandardMaterial
-          color={triggered ? "#7f1d1d" : "#fca5a5"}
-          emissive={triggered ? "#3f0d0d" : "#ef4444"}
-          emissiveIntensity={triggered ? 0.25 : 1.5}
-          roughness={0.32}
-          metalness={0.1}
+          color={face}
+          emissive={face}
+          emissiveIntensity={triggered ? 0.55 : 0.04}
+          roughness={0.68}
+          metalness={0.12}
           toneMapped={false}
         />
       </mesh>
 
-      {!triggered && (
-        <pointLight
-          position={[0, baseY + 0.38, 0]}
-          intensity={0.5}
-          distance={1.3}
-          decay={2}
-          color="#ef4444"
+      <mesh ref={ref} position={[0, baseY + 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <ringGeometry args={[0.13, 0.17, 24]} />
+        <meshStandardMaterial
+          color={core}
+          emissive={core}
+          emissiveIntensity={glow}
+          roughness={0.4}
+          toneMapped={false}
         />
-      )}
+      </mesh>
+
+      <mesh position={[0, baseY + 0.022, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <circleGeometry args={[0.06, 16]} />
+        <meshStandardMaterial
+          color={core}
+          emissive={core}
+          emissiveIntensity={glow}
+          roughness={0.4}
+          toneMapped={false}
+        />
+      </mesh>
     </group>
   );
 }

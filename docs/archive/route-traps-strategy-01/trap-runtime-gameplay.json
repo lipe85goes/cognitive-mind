@@ -1,0 +1,396 @@
+{
+  "mission": "ROTA-TRAPS-STRATEGY-01-CLOSEOUT",
+  "gamesPerCombination": 15,
+  "combinations": [
+    {
+      "route": 1,
+      "mode": "easy",
+      "games": 15,
+      "outcomes": {
+        "won": 8,
+        "caughtHunter": 0,
+        "caughtSentinel": 1,
+        "timeout": 6
+      },
+      "trapActivations": 7,
+      "defenderTrapViolations": 0,
+      "portalOccupations": 0,
+      "oscillationSuspects": 3,
+      "crash": null
+    },
+    {
+      "route": 1,
+      "mode": "medium",
+      "games": 15,
+      "outcomes": {
+        "won": 3,
+        "caughtHunter": 11,
+        "caughtSentinel": 0,
+        "timeout": 1
+      },
+      "trapActivations": 3,
+      "defenderTrapViolations": 0,
+      "portalOccupations": 0,
+      "oscillationSuspects": 4,
+      "crash": null
+    },
+    {
+      "route": 1,
+      "mode": "hard",
+      "games": 15,
+      "outcomes": {
+        "won": 5,
+        "caughtHunter": 0,
+        "caughtSentinel": 0,
+        "timeout": 10
+      },
+      "trapActivations": 13,
+      "defenderTrapViolations": 0,
+      "portalOccupations": 0,
+      "oscillationSuspects": 4,
+      "crash": null
+    },
+    {
+      "route": 2,
+      "mode": "easy",
+      "games": 15,
+      "outcomes": {
+        "won": 0,
+        "caughtHunter": 0,
+        "caughtSentinel": 1,
+        "timeout": 14
+      },
+      "trapActivations": 19,
+      "defenderTrapViolations": 0,
+      "portalOccupations": 0,
+      "oscillationSuspects": 1,
+      "crash": null
+    },
+    {
+      "route": 2,
+      "mode": "medium",
+      "games": 15,
+      "outcomes": {
+        "won": 2,
+        "caughtHunter": 1,
+        "caughtSentinel": 1,
+        "timeout": 11
+      },
+      "trapActivations": 24,
+      "defenderTrapViolations": 0,
+      "portalOccupations": 0,
+      "oscillationSuspects": 5,
+      "crash": null
+    },
+    {
+      "route": 2,
+      "mode": "hard",
+      "games": 15,
+      "outcomes": {
+        "won": 4,
+        "caughtHunter": 0,
+        "caughtSentinel": 0,
+        "timeout": 11
+      },
+      "trapActivations": 29,
+      "defenderTrapViolations": 0,
+      "portalOccupations": 0,
+      "oscillationSuspects": 3,
+      "crash": null
+    },
+    {
+      "route": 3,
+      "mode": "easy",
+      "games": 15,
+      "outcomes": {
+        "won": 4,
+        "caughtHunter": 1,
+        "caughtSentinel": 2,
+        "timeout": 8
+      },
+      "trapActivations": 26,
+      "defenderTrapViolations": 0,
+      "portalOccupations": 0,
+      "oscillationSuspects": 6,
+      "crash": null
+    },
+    {
+      "route": 3,
+      "mode": "medium",
+      "games": 15,
+      "outcomes": {
+        "won": 3,
+        "caughtHunter": 7,
+        "caughtSentinel": 1,
+        "timeout": 4
+      },
+      "trapActivations": 36,
+      "defenderTrapViolations": 0,
+      "portalOccupations": 0,
+      "oscillationSuspects": 2,
+      "crash": null
+    },
+    {
+      "route": 3,
+      "mode": "hard",
+      "games": 15,
+      "outcomes": {
+        "won": 2,
+        "caughtHunter": 0,
+        "caughtSentinel": 0,
+        "timeout": 13
+      },
+      "trapActivations": 28,
+      "defenderTrapViolations": 0,
+      "portalOccupations": 0,
+      "oscillationSuspects": 9,
+      "crash": null
+    }
+  ],
+  "crashes": 0,
+  "defenderTrapViolations": 0,
+  "portalOccupations": 0,
+  "note": "correctness only; no difficulty was recalibrated",
+  "timeoutCaveat": "AUTOMATED_AGENT_LIMITATION — the scripted Explorer is naive and is not a measure of human difficulty",
+  "DYNAMIC_SOLVABILITY_REVIEW_REQUIRED": true,
+  "potentialLocks": [
+    {
+      "seed": 8801008,
+      "route": 1,
+      "mode": "easy",
+      "portal": "2,7",
+      "accesses": [
+        "0,6",
+        "3,5",
+        "4,8"
+      ],
+      "alternatingBetween": [
+        "home",
+        "3,5"
+      ],
+      "lightsLeft": 0,
+      "activeTraps": [],
+      "classification": "POTENTIAL_SENTINEL_OSCILLATION_LOCK"
+    },
+    {
+      "seed": 8801012,
+      "route": 1,
+      "mode": "easy",
+      "portal": "2,7",
+      "accesses": [
+        "0,6",
+        "3,5",
+        "4,8"
+      ],
+      "alternatingBetween": [
+        "home",
+        "3,5"
+      ],
+      "lightsLeft": 0,
+      "activeTraps": [
+        "3,5"
+      ],
+      "classification": "POTENTIAL_SENTINEL_OSCILLATION_LOCK"
+    },
+    {
+      "seed": 8801014,
+      "route": 1,
+      "mode": "easy",
+      "portal": "2,7",
+      "accesses": [
+        "0,6",
+        "3,5",
+        "4,8"
+      ],
+      "alternatingBetween": [
+        "home",
+        "3,5"
+      ],
+      "lightsLeft": 0,
+      "activeTraps": [
+        "3,3"
+      ],
+      "classification": "POTENTIAL_SENTINEL_OSCILLATION_LOCK"
+    },
+    {
+      "seed": 8801107,
+      "route": 1,
+      "mode": "medium",
+      "portal": "2,7",
+      "accesses": [
+        "0,6",
+        "4,8"
+      ],
+      "alternatingBetween": [
+        "home",
+        "4,8",
+        "0,6"
+      ],
+      "lightsLeft": 0,
+      "activeTraps": [
+        "1,2"
+      ],
+      "classification": "POTENTIAL_SENTINEL_OSCILLATION_LOCK"
+    },
+    {
+      "seed": 8801108,
+      "route": 1,
+      "mode": "medium",
+      "portal": "2,8",
+      "accesses": [
+        "0,7",
+        "1,6",
+        "5,8",
+        "2,5"
+      ],
+      "alternatingBetween": [
+        "home",
+        "5,8",
+        "2,5"
+      ],
+      "lightsLeft": 0,
+      "activeTraps": [],
+      "classification": "POTENTIAL_SENTINEL_OSCILLATION_LOCK"
+    },
+    {
+      "seed": 8801109,
+      "route": 1,
+      "mode": "medium",
+      "portal": "2,7",
+      "accesses": [
+        "0,6",
+        "3,5"
+      ],
+      "alternatingBetween": [
+        "home",
+        "3,5"
+      ],
+      "lightsLeft": 0,
+      "activeTraps": [],
+      "classification": "POTENTIAL_SENTINEL_OSCILLATION_LOCK"
+    },
+    {
+      "seed": 8801110,
+      "route": 1,
+      "mode": "medium",
+      "portal": "2,8",
+      "accesses": [
+        "5,8",
+        "0,7",
+        "1,6"
+      ],
+      "alternatingBetween": [
+        "home",
+        "5,8"
+      ],
+      "lightsLeft": 1,
+      "activeTraps": [],
+      "classification": "POTENTIAL_SENTINEL_OSCILLATION_LOCK"
+    },
+    {
+      "seed": 8801204,
+      "route": 1,
+      "mode": "hard",
+      "portal": "2,7",
+      "accesses": [
+        "0,6",
+        "3,5",
+        "4,8"
+      ],
+      "alternatingBetween": [
+        "home",
+        "0,6"
+      ],
+      "lightsLeft": 3,
+      "activeTraps": [
+        "3,2"
+      ],
+      "classification": "POTENTIAL_SENTINEL_OSCILLATION_LOCK"
+    },
+    {
+      "seed": 8801207,
+      "route": 1,
+      "mode": "hard",
+      "portal": "2,8",
+      "accesses": [
+        "0,7",
+        "1,6",
+        "5,8",
+        "3,6"
+      ],
+      "alternatingBetween": [
+        "home",
+        "5,8",
+        "3,6"
+      ],
+      "lightsLeft": 0,
+      "activeTraps": [
+        "3,8"
+      ],
+      "classification": "POTENTIAL_SENTINEL_OSCILLATION_LOCK"
+    },
+    {
+      "seed": 8801212,
+      "route": 1,
+      "mode": "hard",
+      "portal": "2,8",
+      "accesses": [
+        "0,7",
+        "1,6",
+        "5,8"
+      ],
+      "alternatingBetween": [
+        "home",
+        "5,8"
+      ],
+      "lightsLeft": 0,
+      "activeTraps": [
+        "7,8"
+      ],
+      "classification": "POTENTIAL_SENTINEL_OSCILLATION_LOCK"
+    },
+    {
+      "seed": 8801214,
+      "route": 1,
+      "mode": "hard",
+      "portal": "2,7",
+      "accesses": [
+        "0,6",
+        "3,5",
+        "4,8"
+      ],
+      "alternatingBetween": [
+        "home",
+        "3,5",
+        "4,8"
+      ],
+      "lightsLeft": 0,
+      "activeTraps": [],
+      "classification": "POTENTIAL_SENTINEL_OSCILLATION_LOCK"
+    },
+    {
+      "seed": 8802000,
+      "route": 2,
+      "mode": "easy",
+      "portal": "0,7",
+      "accesses": [
+        "2,6",
+        "1,5",
+        "0,4"
+      ],
+      "alternatingBetween": [
+        "1,5",
+        "2,6"
+      ],
+      "lightsLeft": 1,
+      "activeTraps": [
+        "5,1",
+        "2,0",
+        "2,4"
+      ],
+      "classification": "POTENTIAL_SENTINEL_OSCILLATION_LOCK"
+    }
+  ],
+  "handoff": "seeds above are recorded for ROTA-DYNAMIC-SOLVABILITY-01; no map, threshold or defender was changed here",
+  "gateMet": true
+}

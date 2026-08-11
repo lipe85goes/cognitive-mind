@@ -1,0 +1,120 @@
+{
+  "mission": "ROTA-TRAPS-STRATEGY-01-CLOSEOUT",
+  "stateLeaks": 0,
+  "gateMet": true,
+  "mechanism": "startNewMaze calls setTriggeredTraps([]); the armed set and the renderer both derive from it",
+  "scenarios": [
+    {
+      "scenario": "restart",
+      "from": "rota1/easy",
+      "to": "rota1/easy",
+      "armedBeforeTransition": [
+        "3,5",
+        "1,0"
+      ],
+      "armedAfterTransition": [],
+      "visualState": "dormant — the renderer derives it from triggeredTrapKeys, which startNewMaze clears",
+      "defendersSeeEmptyBlockedSet": true,
+      "staleSetWouldHaveChangedDecision": false,
+      "problems": []
+    },
+    {
+      "scenario": "derrota -> retry",
+      "from": "rota2/medium",
+      "to": "rota2/medium",
+      "armedBeforeTransition": [
+        "2,4",
+        "4,4"
+      ],
+      "armedAfterTransition": [],
+      "visualState": "dormant — the renderer derives it from triggeredTrapKeys, which startNewMaze clears",
+      "defendersSeeEmptyBlockedSet": true,
+      "staleSetWouldHaveChangedDecision": false,
+      "problems": []
+    },
+    {
+      "scenario": "vitória -> próxima",
+      "from": "rota1/medium",
+      "to": "rota2/medium",
+      "armedBeforeTransition": [
+        "7,8",
+        "0,4"
+      ],
+      "armedAfterTransition": [],
+      "visualState": "dormant — the renderer derives it from triggeredTrapKeys, which startNewMaze clears",
+      "defendersSeeEmptyBlockedSet": true,
+      "staleSetWouldHaveChangedDecision": false,
+      "problems": []
+    },
+    {
+      "scenario": "Rota 1 -> 2",
+      "from": "rota1/hard",
+      "to": "rota2/hard",
+      "armedBeforeTransition": [
+        "1,1",
+        "7,8"
+      ],
+      "armedAfterTransition": [],
+      "visualState": "dormant — the renderer derives it from triggeredTrapKeys, which startNewMaze clears",
+      "defendersSeeEmptyBlockedSet": true,
+      "staleSetWouldHaveChangedDecision": false,
+      "problems": []
+    },
+    {
+      "scenario": "Rota 2 -> 3",
+      "from": "rota2/hard",
+      "to": "rota3/hard",
+      "armedBeforeTransition": [
+        "2,4",
+        "2,2"
+      ],
+      "armedAfterTransition": [],
+      "visualState": "dormant — the renderer derives it from triggeredTrapKeys, which startNewMaze clears",
+      "defendersSeeEmptyBlockedSet": true,
+      "staleSetWouldHaveChangedDecision": false,
+      "problems": []
+    },
+    {
+      "scenario": "mudança de modo",
+      "from": "rota3/easy",
+      "to": "rota3/hard",
+      "armedBeforeTransition": [
+        "7,7",
+        "5,7"
+      ],
+      "armedAfterTransition": [],
+      "visualState": "dormant — the renderer derives it from triggeredTrapKeys, which startNewMaze clears",
+      "defendersSeeEmptyBlockedSet": true,
+      "staleSetWouldHaveChangedDecision": false,
+      "problems": []
+    },
+    {
+      "scenario": "Home -> Rota",
+      "from": "rota3/medium",
+      "to": "rota3/medium",
+      "armedBeforeTransition": [
+        "3,2",
+        "3,0"
+      ],
+      "armedAfterTransition": [],
+      "visualState": "dormant — the renderer derives it from triggeredTrapKeys, which startNewMaze clears",
+      "defendersSeeEmptyBlockedSet": true,
+      "staleSetWouldHaveChangedDecision": false,
+      "problems": []
+    },
+    {
+      "scenario": "nova sessão",
+      "from": "rota2/easy",
+      "to": "rota1/easy",
+      "armedBeforeTransition": [
+        "4,3",
+        "2,4"
+      ],
+      "armedAfterTransition": [],
+      "visualState": "dormant — the renderer derives it from triggeredTrapKeys, which startNewMaze clears",
+      "defendersSeeEmptyBlockedSet": true,
+      "staleSetWouldHaveChangedDecision": false,
+      "problems": []
+    }
+  ]
+}

@@ -1930,7 +1930,17 @@ export function decideSentinelMove(
   walls: Set<string>,
   zone: PortalDefenceZone,
   commitTurns: number = SENTINEL_COMMIT_TURNS,
+  /** Cells the defenders may not enter — armed traps. Empty in 01B. */
+  blockedForDefenders: Set<string> = EMPTY_BLOCKED,
 ): SentinelState {
+  // ROTA-TRAPS-STRATEGY-01: an armed trap is a wall for this defender and for
+  // nobody else. Folding it into the graph extends the c3 algorithm instead of
+  // forking a second, trap-aware copy of it. With no trap armed the set is
+  // empty and the graph IS `walls`, so every 01B decision is unchanged.
+  const graph =
+    blockedForDefenders.size === 0
+      ? walls
+      : new Set<string>([...walls, ...blockedForDefenders]);
   const fromPlayer = getReachableDistances(playerPosition, walls);
   const home = exitPosition;
 
@@ -1958,7 +1968,7 @@ export function decideSentinelMove(
 
   // Leash: a chase that pulls the Sentinel off its region is abandoned, and it
   // does not become a second Hunter — it walks back to the portal.
-  const distanceHome = findPathLength(state.position, home, walls) ?? 0;
+  const distanceHome = findPathLength(state.position, home, graph) ?? 0;
   const outside = !zone.zoneKeys.has(posKey(state.position));
   if (
     bestThreat > SENTINEL_THREAT_HORIZON ||
@@ -1969,10 +1979,25 @@ export function decideSentinelMove(
     commitLeft = 0;
   }
 
-  const toTarget = getReachableDistances(target, walls);
-  const options = getNeighbors(state.position, walls).filter((next) => {
+  let toTarget = getReachableDistances(target, graph);
+  // A trap can cut the Sentinel off from the door it was holding. Holding a
+  // door it can no longer reach is not patrolling, it is freezing: the
+  // commitment is released and it falls back to the portal, free to pick
+  // another access next turn. It never tries to walk through the trap.
+  if (
+    blockedForDefenders.size > 0 &&
+    heldTarget &&
+    toTarget.get(posKey(state.position)) === undefined
+  ) {
+    target = home;
+    heldTarget = null;
+    commitLeft = 0;
+    toTarget = getReachableDistances(target, graph);
+  }
+
+  const options = getNeighbors(state.position, graph).filter((next) => {
     if (positionsEqual(next, home)) return false;
-    const distance = findPathLength(next, home, walls);
+    const distance = findPathLength(next, home, graph);
     return distance !== null && distance <= PORTAL_ZONE_RADIUS + SENTINEL_LEASH;
   });
   if (options.length === 0) {
@@ -1996,12 +2021,21 @@ export function decideSentinelMove(
   };
 }
 
+const EMPTY_BLOCKED: Set<string> = new Set();
+
+/**
+ * ROTA-TRAPS-STRATEGY-01: the Hunter keeps its policy — Manhattan-greedy, same
+ * scoring, same tie-break. The only thing an armed trap changes is which cells
+ * are a LEGAL destination. When the trap removes the move it wanted, it
+ * reconsiders among the remaining legal ones with the same rule it always used.
+ */
 function chooseGuardianMove(
   guardian: GridPosition,
   player: GridPosition,
   exitPosition: GridPosition,
   walls: Set<string>,
   difficulty: DifficultyLevel,
+  blockedForDefenders: Set<string> = EMPTY_BLOCKED,
 ): GridPosition {
   const preferred = getPredatorNextPosition(
     guardian,
@@ -2012,12 +2046,15 @@ function chooseGuardianMove(
     difficulty,
   );
 
-  if (!positionsEqual(preferred, exitPosition)) {
+  const isIllegal = (cell: GridPosition) =>
+    positionsEqual(cell, exitPosition) || blockedForDefenders.has(posKey(cell));
+
+  if (!isIllegal(preferred)) {
     return preferred;
   }
 
   const alternatives = getNeighbors(guardian, walls).filter(
-    (next) => !positionsEqual(next, exitPosition),
+    (next) => !isIllegal(next),
   );
   if (alternatives.length === 0) return guardian;
 
@@ -2440,16 +2477,19 @@ export function useEscapeMaze(onComplete: CompleteFn, initialRouteNumber = 1) {
       !stepOnGuardian &&
       mazeMap.traps.some((trap) => positionsEqual(trap, next)) &&
       !triggeredTrapSet.has(nextKey);
-    const shieldAbsorbs = isUntriggeredTrap && shieldActive;
-    const trapHurts = isUntriggeredTrap && !shieldAbsorbs;
+    // ROTA-TRAPS-STRATEGY-01-CLOSEOUT: arming a trap is not a mistake.
+    // The trap stopped being a punishment and became the Explorer's own
+    // instrument, so stepping on it costs nothing: no error, no shake, no error
+    // tone, and no shield spent. The shield keeps its current contract and is
+    // simply no longer consumed here — it is redesigned in ROTA-CHEST-REWARDS-01,
+    // not invented a new job in this mission.
     const collectShield =
       mazeMap.shield !== null &&
       positionsEqual(next, mazeMap.shield) &&
       !shieldCollected;
 
-    // Errors = the existing guardian-step error, plus an unshielded trap.
-    const errorsAfterStep =
-      errors + (stepOnGuardian ? 1 : 0) + (trapHurts ? 1 : 0);
+    // Errors come from the guardian step only. Traps no longer contribute.
+    const errorsAfterStep = errors + (stepOnGuardian ? 1 : 0);
 
     const collectedStar =
       mazeMap.collectibleStars.some((star) => positionsEqual(star, next)) &&
@@ -2473,7 +2513,7 @@ export function useEscapeMaze(onComplete: CompleteFn, initialRouteNumber = 1) {
       totalStars: mazeMap.collectibleStars.length,
       trapsTriggered: triggeredTraps.length + (isUntriggeredTrap ? 1 : 0),
       shieldCollected: shieldCollected || collectShield,
-      shieldUsed: shieldUsed || shieldAbsorbs,
+      shieldUsed,
     });
 
     setTurns(nextTurn);
@@ -2486,15 +2526,6 @@ export function useEscapeMaze(onComplete: CompleteFn, initialRouteNumber = 1) {
     if (collectShield) {
       setShieldCollected(true);
     }
-    if (shieldAbsorbs) {
-      setShieldUsed(true);
-    }
-    if (trapHurts) {
-      setErrors(errorsAfterStep);
-      setBlockedShake((n) => n + 1);
-      playGentleErrorTone();
-    }
-
     if (stepOnGuardian || stepOnSentinel) {
       setErrors(errorsAfterStep);
       endGame(false, finalStats(nextTurn, errorsAfterStep));
@@ -2506,12 +2537,21 @@ export function useEscapeMaze(onComplete: CompleteFn, initialRouteNumber = 1) {
       return;
     }
 
+    // ROTA-TRAPS-STRATEGY-01: the trap arms on the turn the Explorer steps on
+    // it, so the defenders must already respect it in THIS turn's answer. The
+    // set is built locally rather than read back from state, because the state
+    // update above is asynchronous and would arrive one turn late.
+    const armedTraps = isUntriggeredTrap
+      ? new Set<string>([...triggeredTrapSet, nextKey])
+      : triggeredTrapSet;
+
     const nextGuardian = chooseGuardianMove(
       guardian,
       next,
       mazeMap.exitPosition,
       mazeMap.walls,
       difficulty,
+      armedTraps,
     );
     setGuardian(nextGuardian);
 
@@ -2530,6 +2570,8 @@ export function useEscapeMaze(onComplete: CompleteFn, initialRouteNumber = 1) {
       mazeMap.exitPosition,
       mazeMap.walls,
       portalDefenceZone,
+      SENTINEL_COMMIT_TURNS,
+      armedTraps,
     );
     const sentinelBlocked =
       positionsEqual(nextSentinel.position, nextGuardian) &&
@@ -2550,11 +2592,9 @@ export function useEscapeMaze(onComplete: CompleteFn, initialRouteNumber = 1) {
     const exitClose = manhattanDistance(next, mazeMap.exitPosition) <= 2;
 
     setMessage(
-      shieldAbsorbs
-        ? "Escudo protegeu você."
-        : trapHurts
-          ? "Este caminho tem um obstáculo. Observe o próximo passo."
-          : collectShield
+      isUntriggeredTrap
+        ? "Armadilha ativada. Os defensores precisam contornar."
+        : collectShield
             ? "Escudo coletado."
             : collectedStar
               ? nextPortalActive

@@ -1,0 +1,27 @@
+{
+  "mission": "ROTA-TRAPS-STRATEGY-01-CLOSEOUT",
+  "gateMet": true,
+  "scenario": {
+    "seed": 9600001,
+    "trap": "0,4",
+    "before": {
+      "trapState": "dormant",
+      "explorer": "approaching",
+      "hunterAt": "1,4",
+      "sentinelAt": "0,3",
+      "hunterWouldGo": "0,4",
+      "sentinelWouldGo": "0,4",
+      "bothTargetTheTrap": true
+    },
+    "activation": {
+      "explorerStepsOn": "0,4",
+      "trapBecomes": "armed"
+    },
+    "after": {
+      "hunterGoes": "1,3",
+      "sentinelGoes": "0,3",
+      "hunterCrossed": false,
+      "sentinelCrossed": false
+    }
+  }
+}

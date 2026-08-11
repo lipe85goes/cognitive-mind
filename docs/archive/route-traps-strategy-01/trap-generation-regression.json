@@ -1,0 +1,25 @@
+{
+  "mission": "ROTA-TRAPS-STRATEGY-01-CLOSEOUT",
+  "claim": "No generator code was touched. The trap contract lives entirely in the runtime.",
+  "generatorFilesChanged": "none — useEscapeMaze.ts changed only in the move handler and the two defender functions",
+  "measured": {
+    "starSelectionAtoF": "6/6",
+    "fourHistoricalSeeds": "4/4",
+    "validator": {
+      "maps": 126,
+      "fallbacks": 0,
+      "generationThrows": 0,
+      "validationErrors": 0
+    },
+    "templates": 9
+  },
+  "contractsPresent": {
+    "gate13": true,
+    "routeCellsHaveEscape": true,
+    "resolveObjectiveRoute": true,
+    "escapeGeometryIsPossible": true,
+    "uncertifiedFallback": false
+  },
+  "trapCoordinates": "unchanged — the generator still places traps and still resolves combinational safety at build time, per ROTA-01A",
+  "note": "The runtime never asks the generator to limit or reposition traps."
+}

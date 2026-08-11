@@ -1,0 +1,107 @@
+{
+  "mission": "ROTA-TRAPS-STRATEGY-01-CLOSEOUT",
+  "gateMet": true,
+  "trace": {
+    "seed": 9400000,
+    "trap": "0,8",
+    "portal": "0,7",
+    "accesses": [
+      "3,7",
+      "0,4"
+    ],
+    "activeTraps": [
+      "0,8"
+    ],
+    "enteredArmedTrap": 0,
+    "leashBreaks": 0,
+    "portalOccupations": 0,
+    "teleports": 0,
+    "turns": [
+      {
+        "phase": "dormant",
+        "turn": 1,
+        "sentinel": "2,7",
+        "committed": "3,7",
+        "commitLeft": 3
+      },
+      {
+        "phase": "dormant",
+        "turn": 2,
+        "sentinel": "3,7",
+        "committed": "3,7",
+        "commitLeft": 2
+      },
+      {
+        "phase": "dormant",
+        "turn": 3,
+        "sentinel": "3,7",
+        "committed": "3,7",
+        "commitLeft": 1
+      },
+      {
+        "phase": "armed",
+        "turn": 1,
+        "sentinel": "3,7",
+        "committed": "3,7",
+        "commitLeft": 0,
+        "teleported": false
+      },
+      {
+        "phase": "armed",
+        "turn": 2,
+        "sentinel": "3,7",
+        "committed": "3,7",
+        "commitLeft": 3,
+        "teleported": false
+      },
+      {
+        "phase": "armed",
+        "turn": 3,
+        "sentinel": "3,7",
+        "committed": "3,7",
+        "commitLeft": 2,
+        "teleported": false
+      },
+      {
+        "phase": "armed",
+        "turn": 4,
+        "sentinel": "3,7",
+        "committed": "3,7",
+        "commitLeft": 1,
+        "teleported": false
+      },
+      {
+        "phase": "armed",
+        "turn": 5,
+        "sentinel": "3,7",
+        "committed": "3,7",
+        "commitLeft": 0,
+        "teleported": false
+      },
+      {
+        "phase": "armed",
+        "turn": 6,
+        "sentinel": "3,7",
+        "committed": "3,7",
+        "commitLeft": 3,
+        "teleported": false
+      },
+      {
+        "phase": "armed",
+        "turn": 7,
+        "sentinel": "3,7",
+        "committed": "3,7",
+        "commitLeft": 2,
+        "teleported": false
+      },
+      {
+        "phase": "armed",
+        "turn": 8,
+        "sentinel": "3,7",
+        "committed": "3,7",
+        "commitLeft": 1,
+        "teleported": false
+      }
+    ]
+  }
+}

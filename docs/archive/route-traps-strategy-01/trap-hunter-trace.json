@@ -1,0 +1,25 @@
+{
+  "mission": "ROTA-TRAPS-STRATEGY-01-CLOSEOUT",
+  "gateMet": true,
+  "trace": {
+    "seed": 9100000,
+    "trap": "2,0",
+    "hunterAt": "1,0",
+    "explorerAt": "2,0",
+    "before": {
+      "trapState": "dormant",
+      "hunterDestination": "2,0",
+      "enteredTrap": true
+    },
+    "after": {
+      "trapState": "armed",
+      "hunterDestination": "1,0",
+      "enteredTrap": false,
+      "stayedPut": true,
+      "legalNeighbours": [
+        "2,0"
+      ]
+    },
+    "policyUnchanged": "same seed, same scoring, same tie-break; only the legal destination set differs"
+  }
+}

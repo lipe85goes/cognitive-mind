@@ -1,0 +1,27 @@
+{
+  "mission": "ROTA-TRAPS-STRATEGY-01",
+  "note": "Static inspection only; environment cannot composite frames.",
+  "conesRemoved": {
+    "babylonGlbPropGone": true,
+    "babylonConeGone": true,
+    "fallbackConeGone": true
+  },
+  "floorIntegrated": {
+    "plate": true,
+    "runeRing": true,
+    "grooves": true,
+    "core": true,
+    "maxHeight": 0.05
+  },
+  "states": {
+    "dormantMaterial": true,
+    "armedMaterial": true,
+    "fallbackSemanticsFlipped": true
+  },
+  "lighting": {
+    "babylonLights": 3,
+    "routeMaxLights": 3,
+    "fallbackPointLightRemoved": true
+  },
+  "noStrategyInRenderLayer": true
+}
