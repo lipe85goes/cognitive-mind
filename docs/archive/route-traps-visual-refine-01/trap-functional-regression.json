@@ -1,0 +1,32 @@
+{
+  "mission": "ROTA-TRAPS-VISUAL-REFINE-01",
+  "claim": "Visual only. Behaviour is identical to commit 62ad414, and that is measured rather than assumed.",
+  "useEscapeMazeDiff": "none",
+  "filesChanged": [
+    "src/games/escape-maze/routeBabylonScene.ts",
+    "src/components/three/route/RouteTrap3D.tsx"
+  ],
+  "trapControlledTestsAtoK": "11/11",
+  "sameTurnActivation": "0 crossings",
+  "hunterDormantVsArmed": "40/40 entered dormant, 0/40 entered armed",
+  "sentinelArmedTrap": "0 entries across 120 states",
+  "multipleTraps": "6 armed, 0 violations",
+  "resetTransitions": "0 leaks across 8",
+  "emptyActiveSetRegression": {
+    "statesCompared": 486,
+    "hunterDivergences": 0,
+    "sentinelDivergences": 0
+  },
+  "sentinelLabRuntime": {
+    "states": 658,
+    "divergences": 0
+  },
+  "commitTurns": "ladder exact",
+  "feint": "held through commitment",
+  "leashBreaks": 0,
+  "portalOccupations": 0,
+  "gameplayCrashes": 0,
+  "babylonLights": 3,
+  "TRAP_RUNTIME_CHANGED": false,
+  "DYNAMIC_SOLVABILITY_CHANGED": false
+}

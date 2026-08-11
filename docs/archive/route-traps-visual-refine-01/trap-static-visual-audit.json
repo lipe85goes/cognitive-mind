@@ -1,0 +1,78 @@
+{
+  "mission": "ROTA-TRAPS-VISUAL-REFINE-01",
+  "note": "Static inspection only; the environment cannot composite frames.",
+  "conesStillAbsent": {
+    "babylonGlbProp": true,
+    "babylonCone": true,
+    "fallbackCone": true
+  },
+  "badgeRemoved": {
+    "babylonFilledPlateGone": true,
+    "fallbackFilledCircleGone": true,
+    "babylonSphereCoreGone": true
+  },
+  "engravingOnly": {
+    "outerRing": true,
+    "grooves": true,
+    "innerRing": true,
+    "fallbackRings": 2,
+    "fallbackGrooves": true
+  },
+  "heights": {
+    "babylonMaxOffset": 0.016,
+    "fallbackMaxOffset": 0.016,
+    "verticalGeometryDominant": false
+  },
+  "palette": {
+    "dormantBabylon": [
+      "#3a1a1f",
+      "#4a2229"
+    ],
+    "armedBabylon": [
+      "#7e1620",
+      "#8f1a24",
+      "#a51e2a",
+      "#b3202c"
+    ],
+    "dormantFallback": [
+      "#3a1a1f",
+      "#4a2229"
+    ],
+    "armedFallback": [
+      "#7e1620",
+      "#a51e2a"
+    ],
+    "anyNearWhite": false,
+    "anyPink": false
+  },
+  "states": {
+    "dormantMaterialDistinct": true,
+    "armedMaterialDistinct": true,
+    "persistentWhileArmed": "derived from triggeredTrapKeys every rebuild, not a one-shot effect",
+    "activationPulse": "fallback breathes at amplitude 0.05 when armed; Babylon has no timed effect"
+  },
+  "lighting": {
+    "babylonLights": 3,
+    "routeMaxLights": 3,
+    "newLightForTrap": false,
+    "fallbackPointLight": false
+  },
+  "rendererPurity": {
+    "noStrategyInBabylon": true,
+    "noStrategyInFallback": true,
+    "disposeConfirmed": true
+  },
+  "scope": {
+    "TRAP_RUNTIME_CHANGED": false,
+    "DYNAMIC_SOLVABILITY_CHANGED": false,
+    "useEscapeMazeDiff": "none",
+    "filesChanged": [
+      "src/games/escape-maze/routeBabylonScene.ts",
+      "src/components/three/route/RouteTrap3D.tsx"
+    ]
+  },
+  "TRAP_VISUAL_MANUAL_CHECK": "PASS_WITH_REMARKS",
+  "TRAP_VISUAL_FINAL_DIRECTION": "APPROVED",
+  "ACTIVE_RED_TONE_POLISH_OPTIONAL": true,
+  "manualCheckRemark": "Armed traps can still pull slightly toward magenta at some angles. Non-blocking; deferred to the final visual polish pass."
+}
