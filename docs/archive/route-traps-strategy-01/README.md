@@ -13,9 +13,31 @@ Ele não destrói os defensores. Ele fecha portas.
 | `TRAP_ACTIVATION_IS_PLAYER_ERROR` | **false** |
 | `TRAP_ACTIVATION_DAMAGE` | **false** |
 | `TRAP_VISUAL_DIRECTION` | **PASS** |
-| `TRAP_VISUAL_FINAL_APPROVAL` | **PENDING** |
-| `TRAP_VISUAL_REFINE_REQUIRED` | **true** |
+| `TRAP_VISUAL_FINAL_APPROVAL` | **PENDING** *(no fechamento desta missão)* |
+| `TRAP_VISUAL_REFINE_REQUIRED` | **true** *(no fechamento desta missão)* |
 | `DYNAMIC_SOLVABILITY_REVIEW_REQUIRED` | **true** |
+
+### Depois desta missão
+
+O follow-up visual das armadilhas **foi resolvido**:
+
+| marcador | valor atual |
+|---|---|
+| `TRAP_VISUAL_REFINE_REQUIRED_NOW` | **false — RESOLVED** |
+| `TRAP_VISUAL_FINAL_DIRECTION` | **APPROVED** |
+| resolvido por | `ROTA-TRAPS-VISUAL-REFINE-01` |
+| commit | `607e3e9e492b5a7811f997c2a6af2bd1f3dca5f9` |
+| checagem manual | **PASS_WITH_REMARKS** |
+| `ACTIVE_RED_TONE_POLISH_OPTIONAL` | **true** — ressalva não bloqueadora |
+| `DYNAMIC_SOLVABILITY_REVIEW_REQUIRED` | **true** — continua pendente |
+
+A placa preenchida e a esfera do núcleo foram removidas; sobrou só gravação, com
+altura máxima 0,016 e paleta vinho/vermelho queimado. Detalhes em
+[`../route-traps-visual-refine-01/README.md`](../route-traps-visual-refine-01/README.md).
+
+As linhas acima registram o estado **no fechamento desta missão** e ficam como
+estão: ela não nasceu com o acabamento final, e apagar isso reescreveria a
+cronologia.
 
 ## Playtest real
 
@@ -36,7 +58,9 @@ Direção para o refinamento futuro: runa **escura e integrada ao chão** quando
 dormente; **vermelho profundo com emissivo controlado** quando ativa. Nunca
 clara, nunca rosada, nunca parecida com prêmio.
 
-Não corrigido aqui — este arquivamento fecha o comportamento.
+Não corrigido aqui — este arquivamento fecha o comportamento. A direção acima
+foi executada depois, em `ROTA-TRAPS-VISUAL-REFINE-01` (`607e3e9`), e aprovada
+em nova inspeção manual.
 
 ---
 
@@ -94,6 +118,10 @@ Cones removidos dos dois renderers; agora é runa gravada no piso, altura máxim
 0,05. Dormente é óxido quase apagado; armada acende e respira devagar. A
 semântica inverteu — `triggered` significava *gasta*, agora significa **armada**.
 
+> Esta descrição é a **desta missão**. O refinamento posterior removeu a placa
+> preenchida e a esfera do núcleo e baixou a altura máxima para 0,016 — ver
+> [`../route-traps-visual-refine-01/trap-before-after-contract.md`](../route-traps-visual-refine-01/trap-before-after-contract.md).
+
 O `pointLight` que o fallback criava por armadilha foi removido: com até 6 por
 mapa, era o padrão que a `ROTA-RUNTIME-STABILITY-01` fechou.
 
@@ -130,4 +158,5 @@ Playwright não está instalado. Tudo que este arquivamento afirma sobre render 
 contrato de código, confirmado por inspeção estática.
 
 Quem viu foi o usuário, em navegador real — ver "Playtest real" no início. O
-comportamento passou; o acabamento visual segue pendente.
+comportamento passou. O acabamento visual seguia pendente **naquele momento** e
+foi resolvido depois, em `ROTA-TRAPS-VISUAL-REFINE-01`.

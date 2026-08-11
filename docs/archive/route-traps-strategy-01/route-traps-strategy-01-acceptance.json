@@ -38,7 +38,18 @@
   "TRAP_FUNCTIONAL_RUNTIME": "PASS",
   "TRAP_MANUAL_GAMEPLAY_CHECK": "PASS",
   "TRAP_VISUAL_DIRECTION": "PASS",
-  "TRAP_VISUAL_FINAL_APPROVAL": "PENDING",
-  "TRAP_VISUAL_REFINE_REQUIRED": true,
-  "visualRefineDirection": "dormant reads as a pink badge laid on the tile and should be a dark rune cut into it; armed goes pink/white bright and can be mistaken for a collectible — should be deep red with controlled emissive"
+  "TRAP_VISUAL_FINAL_APPROVAL": "PENDING_AT_STRATEGY_CLOSE",
+  "TRAP_VISUAL_REFINE_REQUIRED": "true_at_strategy_close",
+  "visualRefineDirection": "dormant reads as a pink badge laid on the tile and should be a dark rune cut into it; armed goes pink/white bright and can be mistaken for a collectible — should be deep red with controlled emissive",
+  "visualFollowUpResolution": {
+    "note": "Recorded after the fact. The values above are the state at this mission's close and are kept as history.",
+    "TRAP_VISUAL_REFINE_REQUIRED_NOW": false,
+    "TRAP_VISUAL_FINAL_DIRECTION": "APPROVED",
+    "resolvedBy": "ROTA-TRAPS-VISUAL-REFINE-01",
+    "commit": "607e3e9e492b5a7811f997c2a6af2bd1f3dca5f9",
+    "manualCheck": "PASS_WITH_REMARKS",
+    "change": "filled plate and core sphere removed; engraving only, max height 0.016, wine/burnt-red palette",
+    "ACTIVE_RED_TONE_POLISH_OPTIONAL": true,
+    "DYNAMIC_SOLVABILITY_REVIEW_REQUIRED_now": true
+  }
 }
