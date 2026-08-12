@@ -1,0 +1,84 @@
+{
+  "mission": "ROTA-DYNAMIC-SOLVABILITY-01",
+  "PRE_CHEST_BASELINE": true,
+  "BASELINE_COMPLETE": false,
+  "RESOURCE_BOUND": true,
+  "DYNAMIC_SOLVABILITY_02_REQUIRED": true,
+  "gates": {
+    "1. RNG formalized": true,
+    "2. SUCCESSORS enumerates support": true,
+    "3. runtime soundness": true,
+    "4. completeness justified from source branches": true,
+    "5. pack/unpack and key equivalence": true,
+    "6. exact successor-set equivalence": true,
+    "7. existential attractor equivalence": true,
+    "8. guaranteed attractor equivalence": true,
+    "9. POSSIBLE_NOT_GUARANTEED distinguished": true,
+    "10. UNSOLVABLE requires graph exhaustion": true,
+    "11. witnesses and policies reconstructible": true,
+    "12. SCC and dead regions analyzed on complete graphs": true,
+    "13. 12 suspect seeds processed": true,
+    "14. initial vs suspicious distinguished": true,
+    "15. trap role measured": true,
+    "16. 180-map sample executed": true,
+    "17. no map correction": true,
+    "18. PRE_CHEST_BASELINE": true,
+    "19. production intact": true,
+    "20. lint, TypeScript, build, diff": true
+  },
+  "exactnessGateMet": true,
+  "suspectCases": {
+    "completed": 12,
+    "conclusive": 10,
+    "inconclusive": 2,
+    "verdictCounts": {
+      "GUARANTEED_SOLVABLE_PRE_CHEST": 2,
+      "INCONCLUSIVE_RESOURCE_LIMIT": 2,
+      "PROVED_UNSOLVABLE_PRE_CHEST": 2,
+      "POSSIBLE_BUT_NOT_GUARANTEED_PRE_CHEST": 6
+    }
+  },
+  "sampleCases": {
+    "completed": 180,
+    "conclusive": 46,
+    "inconclusive": 134,
+    "verdictCounts": {
+      "INCONCLUSIVE_RESOURCE_LIMIT": 134,
+      "POSSIBLE_BUT_NOT_GUARANTEED_PRE_CHEST": 25,
+      "PROVED_UNSOLVABLE_PRE_CHEST": 14,
+      "GUARANTEED_SOLVABLE_PRE_CHEST": 7
+    }
+  },
+  "goldenCases": [
+    {
+      "seed": 8801214,
+      "route": 1,
+      "mode": "hard",
+      "classification": "PROVED_UNSOLVABLE_PRE_CHEST",
+      "POST_CHEST_REGRESSION_TARGET": true
+    },
+    {
+      "seed": 8801107,
+      "route": 1,
+      "mode": "medium",
+      "classification": "PROVED_UNSOLVABLE_PRE_CHEST",
+      "POST_CHEST_REGRESSION_TARGET": true
+    }
+  ],
+  "lintAudit": {
+    "PRE_EXISTING_LINT_WARNINGS_AT_CHECKPOINT": 9,
+    "inheritedFromSolverReadyBaseline": 4,
+    "introducedDuringPerformanceContinuation": 5,
+    "remainingErrors": 0,
+    "remainingWarnings": 0,
+    "rule": "@typescript-eslint/no-unused-vars",
+    "files": [
+      "tools/validation/dynamic-solvability-run.mjs",
+      "tools/validation/dynamic-solver-equivalence-run.mjs",
+      "tools/validation/dynamic-solver-packed.mjs",
+      "tools/validation/dynamic-solver-performance-run.mjs"
+    ]
+  },
+  "remainingBlocker": "136 cases remain resource-limited under their audited per-case budgets; graph frontiers were not exhausted.",
+  "verdict": "ROTA-DYNAMIC-SOLVABILITY-01_BASELINE_STILL_RESOURCE_BOUND"
+}

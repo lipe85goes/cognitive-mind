@@ -1,0 +1,1631 @@
+{
+  "mission": "ROTA-DYNAMIC-SOLVABILITY-01",
+  "PRE_CHEST_BASELINE": true,
+  "campaignId": "sample-4be235d2bbc7615e",
+  "solverRuntimeContractHash": "f87a692add561819d8e2fe4c45bcb0d5fe2eb5a85b32ffbfe0a21572b41fd8aa",
+  "configHash": "d18be9acfe80cb78e482ad7e0c32bdce225f98794252eb8c563d27762951c956",
+  "completedAt": "2026-08-12T04:45:08.057Z",
+  "result": {
+    "mission": "ROTA-DYNAMIC-SOLVABILITY-01",
+    "PRE_CHEST_BASELINE": true,
+    "seed": 8503211,
+    "route": 3,
+    "mode": "hard",
+    "limits": {
+      "maxStates": 300000,
+      "maxTransitions": 12000000,
+      "maxFrontier": 400000,
+      "maxMemoryBytes": 536870912,
+      "maxElapsedMs": 60000
+    },
+    "stateContract": {
+      "boardCells": 81,
+      "accessCount": 4,
+      "lightCount": 6,
+      "trapCount": 6,
+      "commitValues": 4,
+      "componentBits": {
+        "explorerPosition": 7,
+        "hunterPosition": 7,
+        "sentinelPosition": 7,
+        "committedAccess": 3,
+        "commitTurnsRemaining": 2,
+        "collectedLights": 6,
+        "activeTraps": 6
+      },
+      "conservativeBitSum": 38,
+      "mixedRadixStateCardinality": 43535646720,
+      "maximumPackedKey": 43535646719,
+      "mixedRadixRequiredBits": 36,
+      "numberSafe": true
+    },
+    "classification": "GUARANTEED_SOLVABLE_PRE_CHEST",
+    "initial": {
+      "existential": true,
+      "guaranteed": true
+    },
+    "states": 288014,
+    "processedStates": 288014,
+    "transitions": 971296,
+    "truncated": false,
+    "resourceLimit": null,
+    "frontier": 0,
+    "peakFrontier": 10677,
+    "elapsedMs": 1446.7084999999497,
+    "graphElapsedMs": 1214.7001000000164,
+    "solveProfile": {
+      "predecessorBuildMs": 18.611800000013318,
+      "existentialMs": 15.787399999971967,
+      "guaranteedMs": 8.871400000003632,
+      "totalMs": 43.31219999998575
+    },
+    "memory": {
+      "typedArrayBytes": 30932992,
+      "estimatedMapBytes": 11520560,
+      "estimatedTotalBytes": 42453552
+    },
+    "shortestExistentialWitness": [
+      {
+        "action": "UP",
+        "state": "7,0|1,3|1,8|-1|0|0|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "7,1|1,2|1,8|-1|0|0|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "7,2|1,1|1,8|-1|0|0|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "7,3|1,2|1,8|-1|0|8|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "7,4|1,3|1,8|-1|0|8|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "7,5|1,4|1,8|-1|0|8|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "7,6|0,4|1,8|-1|0|24|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "7,7|1,4|1,8|-1|0|24|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "7,8|0,4|2,8|0|3|24|0"
+      },
+      {
+        "action": "UP",
+        "state": "6,8|1,4|3,8|0|2|56|0"
+      },
+      {
+        "action": "UP",
+        "state": "5,8|0,4|3,8|0|1|56|0"
+      },
+      {
+        "action": "DOWN",
+        "state": "6,8|1,4|3,8|0|0|56|0"
+      },
+      {
+        "action": "UP",
+        "state": "5,8|0,4|3,8|0|3|56|0"
+      },
+      {
+        "action": "LEFT",
+        "state": "5,7|1,4|3,8|0|2|56|0"
+      },
+      {
+        "action": "UP",
+        "state": "4,7|0,4|3,8|0|1|60|0"
+      },
+      {
+        "action": "LEFT",
+        "state": "4,6|1,4|3,8|0|0|60|0"
+      },
+      {
+        "action": "LEFT",
+        "state": "4,5|0,4|3,8|0|3|60|16"
+      },
+      {
+        "action": "UP",
+        "state": "3,5|1,4|3,8|0|2|60|16"
+      },
+      {
+        "action": "LEFT",
+        "state": "3,4|0,4|3,8|0|1|61|16"
+      },
+      {
+        "action": "RIGHT",
+        "state": "3,5|1,4|3,8|0|0|61|16"
+      },
+      {
+        "action": "UP",
+        "state": "2,5|0,4|2,8|1|3|61|16"
+      },
+      {
+        "action": "RIGHT",
+        "state": "2,6|1,4|2,7|1|2|61|16"
+      },
+      {
+        "action": "UP",
+        "state": "1,6|0,4|2,7|1|1|61|16"
+      },
+      {
+        "action": "RIGHT",
+        "state": "1,7|1,4|2,7|1|0|63|16"
+      },
+      {
+        "action": "UP",
+        "state": "0,7|0,4|2,7|1|3|63|16"
+      },
+      {
+        "action": "RIGHT",
+        "state": "WIN"
+      }
+    ],
+    "shortestExistentialWin": 26,
+    "guaranteedPolicy": {
+      "initialAction": "UP",
+      "winningPolicyStates": 82341,
+      "entries": [
+        {
+          "state": "8,0|1,4|1,8|-1|0|0|0",
+          "action": "UP"
+        },
+        {
+          "state": "7,0|1,3|1,8|-1|0|0|0",
+          "action": "UP"
+        },
+        {
+          "state": "8,1|1,3|1,8|-1|0|0|0",
+          "action": "LEFT"
+        },
+        {
+          "state": "6,0|1,2|1,8|-1|0|0|0",
+          "action": "UP"
+        },
+        {
+          "state": "8,0|1,2|1,8|-1|0|0|0",
+          "action": "UP"
+        },
+        {
+          "state": "7,1|1,2|1,8|-1|0|0|0",
+          "action": "LEFT"
+        },
+        {
+          "state": "5,0|1,1|1,8|-1|0|0|0",
+          "action": "DOWN"
+        },
+        {
+          "state": "7,0|1,1|1,8|-1|0|0|0",
+          "action": "UP"
+        },
+        {
+          "state": "6,1|1,1|1,8|-1|0|0|0",
+          "action": "LEFT"
+        },
+        {
+          "state": "8,1|1,1|1,8|-1|0|0|0",
+          "action": "LEFT"
+        },
+        {
+          "state": "7,2|1,1|1,8|-1|0|0|0",
+          "action": "LEFT"
+        },
+        {
+          "state": "7,2|1,3|1,8|-1|0|0|0",
+          "action": "LEFT"
+        },
+        {
+          "state": "4,0|1,0|1,8|-1|0|0|1",
+          "action": "DOWN"
+        },
+        {
+          "state": "6,0|1,0|1,8|-1|0|0|0",
+          "action": "DOWN"
+        },
+        {
+          "state": "8,0|1,0|1,8|-1|0|0|0",
+          "action": "UP"
+        },
+        {
+          "state": "7,1|1,0|1,8|-1|0|0|0",
+          "action": "LEFT"
+        },
+        {
+          "state": "6,2|1,2|1,8|-1|0|0|8",
+          "action": "LEFT"
+        },
+        {
+          "state": "7,3|1,2|1,8|-1|0|8|0",
+          "action": "LEFT"
+        },
+        {
+          "state": "7,3|1,4|1,8|-1|0|8|0",
+          "action": "LEFT"
+        },
+        {
+          "state": "3,0|2,0|1,8|-1|0|0|1",
+          "action": "DOWN"
+        },
+        {
+          "state": "5,0|2,0|1,8|-1|0|0|1",
+          "action": "DOWN"
+        },
+        {
+          "state": "4,1|2,0|1,8|-1|0|0|1",
+          "action": "LEFT"
+        },
+        {
+          "state": "4,1|1,1|1,8|-1|0|0|1",
+          "action": "LEFT"
+        },
+        {
+          "state": "5,0|2,0|1,8|-1|0|0|0",
+          "action": "UP"
+        },
+        {
+          "state": "7,0|2,0|1,8|-1|0|0|0",
+          "action": "RIGHT"
+        },
+        {
+          "state": "6,1|2,0|1,8|-1|0|0|0",
+          "action": "DOWN"
+        },
+        {
+          "state": "8,1|2,0|1,8|-1|0|0|0",
+          "action": "UP"
+        },
+        {
+          "state": "7,2|2,0|1,8|-1|0|0|0",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,2|1,1|1,8|-1|0|0|8",
+          "action": "UP"
+        },
+        {
+          "state": "7,2|1,3|1,8|-1|0|0|8",
+          "action": "UP"
+        },
+        {
+          "state": "6,1|1,1|1,8|-1|0|0|8",
+          "action": "LEFT"
+        },
+        {
+          "state": "6,3|1,3|1,8|-1|0|0|8",
+          "action": "LEFT"
+        },
+        {
+          "state": "6,3|1,3|1,8|-1|0|8|0",
+          "action": "LEFT"
+        },
+        {
+          "state": "8,3|1,3|1,8|-1|0|8|0",
+          "action": "UP"
+        },
+        {
+          "state": "7,2|1,1|1,8|-1|0|8|0",
+          "action": "LEFT"
+        },
+        {
+          "state": "7,2|1,3|1,8|-1|0|8|0",
+          "action": "LEFT"
+        },
+        {
+          "state": "7,4|1,3|1,8|-1|0|8|0",
+          "action": "LEFT"
+        },
+        {
+          "state": "7,4|0,4|1,8|-1|0|8|0",
+          "action": "LEFT"
+        },
+        {
+          "state": "4,0|3,0|1,8|-1|0|0|1",
+          "action": "DOWN"
+        },
+        {
+          "state": "6,0|3,0|1,8|-1|0|0|1",
+          "action": "DOWN"
+        },
+        {
+          "state": "4,2|3,0|1,8|-1|0|0|1",
+          "action": "LEFT"
+        },
+        {
+          "state": "4,2|1,2|1,8|-1|0|0|1",
+          "action": "LEFT"
+        },
+        {
+          "state": "7,1|3,0|1,8|-1|0|0|0",
+          "action": "RIGHT"
+        },
+        {
+          "state": "6,2|3,0|1,8|-1|0|0|8",
+          "action": "DOWN"
+        },
+        {
+          "state": "7,3|3,0|1,8|-1|0|8|0",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,1|1,0|1,8|-1|0|0|8",
+          "action": "LEFT"
+        },
+        {
+          "state": "7,1|1,2|1,8|-1|0|0|8",
+          "action": "UP"
+        },
+        {
+          "state": "7,3|1,2|1,8|-1|0|8|8",
+          "action": "UP"
+        },
+        {
+          "state": "7,3|1,4|1,8|-1|0|8|8",
+          "action": "UP"
+        },
+        {
+          "state": "6,0|1,0|1,8|-1|0|0|8",
+          "action": "DOWN"
+        },
+        {
+          "state": "6,2|1,2|1,8|-1|0|8|8",
+          "action": "LEFT"
+        },
+        {
+          "state": "7,1|1,0|1,8|-1|0|8|0",
+          "action": "LEFT"
+        },
+        {
+          "state": "7,1|1,2|1,8|-1|0|8|0",
+          "action": "UP"
+        },
+        {
+          "state": "7,5|1,4|1,8|-1|0|8|0",
+          "action": "LEFT"
+        },
+        {
+          "state": "7,5|0,5|1,8|-1|0|8|0",
+          "action": "LEFT"
+        },
+        {
+          "state": "7,0|2,0|1,8|-1|0|0|1",
+          "action": "RIGHT"
+        },
+        {
+          "state": "6,1|2,0|1,8|-1|0|0|1",
+          "action": "DOWN"
+        },
+        {
+          "state": "7,2|4,0|1,8|-1|0|0|0",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,2|4,0|1,8|-1|0|0|8",
+          "action": "RIGHT"
+        },
+        {
+          "state": "6,3|4,0|1,8|-1|0|0|8",
+          "action": "DOWN"
+        },
+        {
+          "state": "6,3|4,0|1,8|-1|0|8|0",
+          "action": "DOWN"
+        },
+        {
+          "state": "8,3|4,0|1,8|-1|0|8|0",
+          "action": "UP"
+        },
+        {
+          "state": "7,2|4,0|1,8|-1|0|8|0",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,4|4,0|1,8|-1|0|8|0",
+          "action": "RIGHT"
+        },
+        {
+          "state": "6,1|2,0|1,8|-1|0|0|8",
+          "action": "RIGHT"
+        },
+        {
+          "state": "8,1|2,0|1,8|-1|0|0|8",
+          "action": "UP"
+        },
+        {
+          "state": "8,1|1,1|1,8|-1|0|0|8",
+          "action": "LEFT"
+        },
+        {
+          "state": "7,0|2,0|1,8|-1|0|0|8",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,2|2,0|1,8|-1|0|0|8",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,0|1,1|1,8|-1|0|0|8",
+          "action": "UP"
+        },
+        {
+          "state": "6,3|1,3|1,8|-1|0|8|8",
+          "action": "LEFT"
+        },
+        {
+          "state": "8,3|1,3|1,8|-1|0|8|8",
+          "action": "UP"
+        },
+        {
+          "state": "7,2|1,1|1,8|-1|0|8|8",
+          "action": "UP"
+        },
+        {
+          "state": "7,2|1,3|1,8|-1|0|8|8",
+          "action": "UP"
+        },
+        {
+          "state": "7,4|1,3|1,8|-1|0|8|8",
+          "action": "LEFT"
+        },
+        {
+          "state": "7,4|0,4|1,8|-1|0|8|8",
+          "action": "LEFT"
+        },
+        {
+          "state": "5,0|2,0|1,8|-1|0|0|8",
+          "action": "UP"
+        },
+        {
+          "state": "6,1|1,1|1,8|-1|0|8|8",
+          "action": "LEFT"
+        },
+        {
+          "state": "6,1|2,0|1,8|-1|0|8|0",
+          "action": "DOWN"
+        },
+        {
+          "state": "6,1|1,1|1,8|-1|0|8|0",
+          "action": "LEFT"
+        },
+        {
+          "state": "8,1|2,0|1,8|-1|0|8|0",
+          "action": "UP"
+        },
+        {
+          "state": "8,1|1,1|1,8|-1|0|8|0",
+          "action": "LEFT"
+        },
+        {
+          "state": "7,0|2,0|1,8|-1|0|8|0",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,2|2,0|1,8|-1|0|8|0",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,0|1,1|1,8|-1|0|8|0",
+          "action": "UP"
+        },
+        {
+          "state": "8,5|0,4|1,8|-1|0|8|0",
+          "action": "UP"
+        },
+        {
+          "state": "8,5|1,3|1,8|-1|0|8|0",
+          "action": "UP"
+        },
+        {
+          "state": "7,6|0,4|1,8|-1|0|24|0",
+          "action": "LEFT"
+        },
+        {
+          "state": "7,6|1,3|1,8|-1|0|24|0",
+          "action": "LEFT"
+        },
+        {
+          "state": "8,0|3,0|1,8|-1|0|0|1",
+          "action": "UP"
+        },
+        {
+          "state": "7,1|3,0|1,8|-1|0|0|1",
+          "action": "RIGHT"
+        },
+        {
+          "state": "6,2|3,0|1,8|-1|0|0|9",
+          "action": "DOWN"
+        },
+        {
+          "state": "7,1|4,1|1,8|-1|0|0|0",
+          "action": "RIGHT"
+        },
+        {
+          "state": "6,2|4,1|1,8|-1|0|0|8",
+          "action": "DOWN"
+        },
+        {
+          "state": "7,3|5,0|1,8|-1|0|8|0",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,3|4,1|1,8|-1|0|8|0",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,1|4,1|1,8|-1|0|0|8",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,3|5,0|1,8|-1|0|8|8",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,3|4,1|1,8|-1|0|8|8",
+          "action": "RIGHT"
+        },
+        {
+          "state": "6,2|4,1|1,8|-1|0|8|8",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,1|4,1|1,8|-1|0|8|0",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,5|5,0|1,8|-1|0|8|0",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,5|4,1|1,8|-1|0|8|0",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,1|3,0|1,8|-1|0|0|8",
+          "action": "RIGHT"
+        },
+        {
+          "state": "8,0|1,0|1,8|-1|0|0|8",
+          "action": "UP"
+        },
+        {
+          "state": "7,3|3,0|1,8|-1|0|8|8",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,1|1,0|1,8|-1|0|8|8",
+          "action": "LEFT"
+        },
+        {
+          "state": "7,1|1,2|1,8|-1|0|8|8",
+          "action": "UP"
+        },
+        {
+          "state": "7,5|1,4|1,8|-1|0|8|8",
+          "action": "LEFT"
+        },
+        {
+          "state": "7,5|0,5|1,8|-1|0|8|8",
+          "action": "LEFT"
+        },
+        {
+          "state": "4,0|3,0|1,8|-1|0|0|9",
+          "action": "DOWN"
+        },
+        {
+          "state": "6,0|1,0|1,8|-1|0|8|8",
+          "action": "DOWN"
+        },
+        {
+          "state": "7,1|3,0|1,8|-1|0|8|0",
+          "action": "RIGHT"
+        },
+        {
+          "state": "6,2|3,0|1,8|-1|0|8|8",
+          "action": "RIGHT"
+        },
+        {
+          "state": "6,0|1,0|1,8|-1|0|8|0",
+          "action": "DOWN"
+        },
+        {
+          "state": "8,0|1,0|1,8|-1|0|8|0",
+          "action": "UP"
+        },
+        {
+          "state": "6,6|1,4|1,8|-1|0|24|0",
+          "action": "DOWN"
+        },
+        {
+          "state": "7,5|1,4|1,8|-1|0|24|0",
+          "action": "LEFT"
+        },
+        {
+          "state": "7,5|0,5|1,8|-1|0|24|0",
+          "action": "LEFT"
+        },
+        {
+          "state": "7,7|1,4|1,8|-1|0|24|0",
+          "action": "LEFT"
+        },
+        {
+          "state": "8,1|2,0|1,8|-1|0|0|1",
+          "action": "UP"
+        },
+        {
+          "state": "7,2|2,0|1,8|-1|0|0|1",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,2|2,0|1,8|-1|0|0|9",
+          "action": "RIGHT"
+        },
+        {
+          "state": "6,1|2,0|1,8|-1|0|0|9",
+          "action": "RIGHT"
+        },
+        {
+          "state": "6,3|2,0|1,8|-1|0|0|9",
+          "action": "DOWN"
+        },
+        {
+          "state": "6,1|4,2|1,8|-1|0|0|0",
+          "action": "DOWN"
+        },
+        {
+          "state": "8,1|4,2|1,8|-1|0|0|0",
+          "action": "UP"
+        },
+        {
+          "state": "7,2|4,2|1,8|-1|0|0|0",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,2|4,2|1,8|-1|0|0|8",
+          "action": "RIGHT"
+        },
+        {
+          "state": "6,1|4,2|1,8|-1|0|0|8",
+          "action": "RIGHT"
+        },
+        {
+          "state": "6,3|4,2|1,8|-1|0|0|8",
+          "action": "DOWN"
+        },
+        {
+          "state": "7,4|6,0|1,8|-1|0|8|0",
+          "action": "RIGHT"
+        },
+        {
+          "state": "6,3|4,2|1,8|-1|0|8|0",
+          "action": "DOWN"
+        },
+        {
+          "state": "8,3|4,2|1,8|-1|0|8|0",
+          "action": "UP"
+        },
+        {
+          "state": "7,2|4,2|1,8|-1|0|8|0",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,4|4,2|1,8|-1|0|8|0",
+          "action": "RIGHT"
+        },
+        {
+          "state": "8,1|4,2|1,8|-1|0|0|8",
+          "action": "UP"
+        },
+        {
+          "state": "7,4|6,0|1,8|-1|0|8|8",
+          "action": "RIGHT"
+        },
+        {
+          "state": "6,3|4,2|1,8|-1|0|8|8",
+          "action": "DOWN"
+        },
+        {
+          "state": "8,3|4,2|1,8|-1|0|8|8",
+          "action": "UP"
+        },
+        {
+          "state": "7,2|4,2|1,8|-1|0|8|8",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,4|4,2|1,8|-1|0|8|8",
+          "action": "RIGHT"
+        },
+        {
+          "state": "6,1|4,2|1,8|-1|0|8|8",
+          "action": "RIGHT"
+        },
+        {
+          "state": "6,1|4,2|1,8|-1|0|8|0",
+          "action": "DOWN"
+        },
+        {
+          "state": "8,1|4,2|1,8|-1|0|8|0",
+          "action": "UP"
+        },
+        {
+          "state": "8,5|6,0|1,8|-1|0|8|0",
+          "action": "UP"
+        },
+        {
+          "state": "7,6|6,0|1,8|-1|0|24|0",
+          "action": "RIGHT"
+        },
+        {
+          "state": "8,5|4,2|1,8|-1|0|8|0",
+          "action": "UP"
+        },
+        {
+          "state": "7,6|4,2|1,8|-1|0|24|0",
+          "action": "RIGHT"
+        },
+        {
+          "state": "6,3|4,0|1,8|-1|0|8|8",
+          "action": "DOWN"
+        },
+        {
+          "state": "8,3|4,0|1,8|-1|0|8|8",
+          "action": "UP"
+        },
+        {
+          "state": "7,2|4,0|1,8|-1|0|8|8",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,4|4,0|1,8|-1|0|8|8",
+          "action": "RIGHT"
+        },
+        {
+          "state": "6,1|2,0|1,8|-1|0|8|8",
+          "action": "RIGHT"
+        },
+        {
+          "state": "8,1|2,0|1,8|-1|0|8|8",
+          "action": "UP"
+        },
+        {
+          "state": "8,1|1,1|1,8|-1|0|8|8",
+          "action": "LEFT"
+        },
+        {
+          "state": "7,0|2,0|1,8|-1|0|8|8",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,2|2,0|1,8|-1|0|8|8",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,0|1,1|1,8|-1|0|8|8",
+          "action": "UP"
+        },
+        {
+          "state": "8,5|0,4|1,8|-1|0|8|8",
+          "action": "UP"
+        },
+        {
+          "state": "8,5|1,3|1,8|-1|0|8|8",
+          "action": "UP"
+        },
+        {
+          "state": "7,6|0,4|1,8|-1|0|24|8",
+          "action": "LEFT"
+        },
+        {
+          "state": "7,6|1,3|1,8|-1|0|24|8",
+          "action": "LEFT"
+        },
+        {
+          "state": "5,0|2,0|1,8|-1|0|0|9",
+          "action": "DOWN"
+        },
+        {
+          "state": "4,1|2,0|1,8|-1|0|0|9",
+          "action": "LEFT"
+        },
+        {
+          "state": "5,0|2,0|1,8|-1|0|8|8",
+          "action": "UP"
+        },
+        {
+          "state": "5,0|2,0|1,8|-1|0|8|0",
+          "action": "UP"
+        },
+        {
+          "state": "8,5|0,4|1,8|-1|0|24|0",
+          "action": "UP"
+        },
+        {
+          "state": "8,5|1,3|1,8|-1|0|24|0",
+          "action": "UP"
+        },
+        {
+          "state": "7,4|0,4|1,8|-1|0|24|0",
+          "action": "LEFT"
+        },
+        {
+          "state": "7,4|1,3|1,8|-1|0|24|0",
+          "action": "LEFT"
+        },
+        {
+          "state": "7,8|1,3|2,8|0|3|24|0",
+          "action": "LEFT"
+        },
+        {
+          "state": "7,3|3,0|1,8|-1|0|8|1",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,1|3,0|1,8|-1|0|0|9",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,3|3,0|1,8|-1|0|8|9",
+          "action": "RIGHT"
+        },
+        {
+          "state": "6,0|3,0|1,8|-1|0|0|9",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,5|7,0|1,8|-1|0|8|0",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,5|6,1|1,8|-1|0|8|0",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,5|7,0|1,8|-1|0|8|8",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,5|6,1|1,8|-1|0|8|8",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,1|4,1|1,8|-1|0|8|8",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,5|4,1|1,8|-1|0|8|8",
+          "action": "RIGHT"
+        },
+        {
+          "state": "6,6|6,1|1,8|-1|0|24|0",
+          "action": "DOWN"
+        },
+        {
+          "state": "7,5|7,0|1,8|-1|0|24|0",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,5|6,1|1,8|-1|0|24|0",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,7|7,0|1,8|-1|0|24|0",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,7|6,1|1,8|-1|0|24|0",
+          "action": "RIGHT"
+        },
+        {
+          "state": "6,6|4,1|1,8|-1|0|24|0",
+          "action": "DOWN"
+        },
+        {
+          "state": "7,5|4,1|1,8|-1|0|24|0",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,7|4,1|1,8|-1|0|24|0",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,5|5,0|1,8|-1|0|8|8",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,1|3,0|1,8|-1|0|8|8",
+          "action": "RIGHT"
+        },
+        {
+          "state": "8,0|1,0|1,8|-1|0|8|8",
+          "action": "UP"
+        },
+        {
+          "state": "6,6|1,4|1,8|-1|0|24|8",
+          "action": "DOWN"
+        },
+        {
+          "state": "7,5|1,4|1,8|-1|0|24|8",
+          "action": "LEFT"
+        },
+        {
+          "state": "7,5|0,5|1,8|-1|0|24|8",
+          "action": "LEFT"
+        },
+        {
+          "state": "7,7|1,4|1,8|-1|0|24|8",
+          "action": "LEFT"
+        },
+        {
+          "state": "4,2|3,0|1,8|-1|0|0|9",
+          "action": "LEFT"
+        },
+        {
+          "state": "4,0|3,0|1,8|-1|0|8|9",
+          "action": "DOWN"
+        },
+        {
+          "state": "4,0|3,0|1,8|-1|0|8|1",
+          "action": "DOWN"
+        },
+        {
+          "state": "7,3|1,4|1,8|-1|0|24|0",
+          "action": "LEFT"
+        },
+        {
+          "state": "7,3|1,2|1,8|-1|0|24|0",
+          "action": "LEFT"
+        },
+        {
+          "state": "6,3|2,0|1,8|-1|0|8|1",
+          "action": "DOWN"
+        },
+        {
+          "state": "8,3|2,0|1,8|-1|0|8|1",
+          "action": "UP"
+        },
+        {
+          "state": "7,2|2,0|1,8|-1|0|8|1",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,4|2,0|1,8|-1|0|8|1",
+          "action": "RIGHT"
+        },
+        {
+          "state": "8,1|2,0|1,8|-1|0|0|9",
+          "action": "UP"
+        },
+        {
+          "state": "7,0|2,0|1,8|-1|0|0|9",
+          "action": "RIGHT"
+        },
+        {
+          "state": "6,3|2,0|1,8|-1|0|8|9",
+          "action": "DOWN"
+        },
+        {
+          "state": "8,3|2,0|1,8|-1|0|8|9",
+          "action": "UP"
+        },
+        {
+          "state": "7,2|2,0|1,8|-1|0|8|9",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,4|2,0|1,8|-1|0|8|9",
+          "action": "RIGHT"
+        },
+        {
+          "state": "8,5|8,0|1,8|-1|0|8|0",
+          "action": "UP"
+        },
+        {
+          "state": "7,6|7,1|1,8|-1|0|24|0",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,6|6,2|1,8|-1|0|24|0",
+          "action": "RIGHT"
+        },
+        {
+          "state": "8,5|8,0|1,8|-1|0|8|8",
+          "action": "UP"
+        },
+        {
+          "state": "7,6|7,1|1,8|-1|0|24|8",
+          "action": "RIGHT"
+        },
+        {
+          "state": "8,1|4,2|1,8|-1|0|8|8",
+          "action": "UP"
+        },
+        {
+          "state": "8,5|4,2|1,8|-1|0|8|8",
+          "action": "UP"
+        },
+        {
+          "state": "7,6|4,2|1,8|-1|0|24|8",
+          "action": "RIGHT"
+        },
+        {
+          "state": "8,5|8,0|1,8|-1|0|24|0",
+          "action": "UP"
+        },
+        {
+          "state": "7,8|7,1|2,8|0|3|24|0",
+          "action": "UP"
+        },
+        {
+          "state": "7,8|6,2|2,8|0|3|24|0",
+          "action": "UP"
+        },
+        {
+          "state": "8,5|4,2|1,8|-1|0|24|0",
+          "action": "UP"
+        },
+        {
+          "state": "7,4|4,2|1,8|-1|0|24|0",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,8|4,2|2,8|0|3|24|0",
+          "action": "UP"
+        },
+        {
+          "state": "8,5|6,0|1,8|-1|0|8|8",
+          "action": "UP"
+        },
+        {
+          "state": "7,6|6,0|1,8|-1|0|24|8",
+          "action": "RIGHT"
+        },
+        {
+          "state": "8,5|0,4|1,8|-1|0|24|8",
+          "action": "UP"
+        },
+        {
+          "state": "8,5|1,3|1,8|-1|0|24|8",
+          "action": "UP"
+        },
+        {
+          "state": "7,4|0,4|1,8|-1|0|24|8",
+          "action": "LEFT"
+        },
+        {
+          "state": "7,4|1,3|1,8|-1|0|24|8",
+          "action": "LEFT"
+        },
+        {
+          "state": "7,8|1,3|2,8|0|3|24|8",
+          "action": "LEFT"
+        },
+        {
+          "state": "5,0|2,0|1,8|-1|0|8|9",
+          "action": "DOWN"
+        },
+        {
+          "state": "4,1|2,0|1,8|-1|0|8|9",
+          "action": "LEFT"
+        },
+        {
+          "state": "5,0|2,0|1,8|-1|0|8|1",
+          "action": "DOWN"
+        },
+        {
+          "state": "4,1|2,0|1,8|-1|0|8|1",
+          "action": "LEFT"
+        },
+        {
+          "state": "6,3|1,3|1,8|-1|0|24|0",
+          "action": "LEFT"
+        },
+        {
+          "state": "8,3|1,3|1,8|-1|0|24|0",
+          "action": "UP"
+        },
+        {
+          "state": "7,2|1,3|1,8|-1|0|24|0",
+          "action": "LEFT"
+        },
+        {
+          "state": "7,2|1,1|1,8|-1|0|24|0",
+          "action": "LEFT"
+        },
+        {
+          "state": "7,8|1,3|3,8|0|1|56|0",
+          "action": "LEFT"
+        },
+        {
+          "state": "6,2|3,0|1,8|-1|0|8|9",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,1|3,0|1,8|-1|0|8|1",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,5|3,0|1,8|-1|0|8|1",
+          "action": "RIGHT"
+        },
+        {
+          "state": "8,0|3,0|1,8|-1|0|0|9",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,1|3,0|1,8|-1|0|8|9",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,5|3,0|1,8|-1|0|8|9",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,5|8,1|1,8|-1|0|8|0",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,7|7,2|1,8|-1|0|24|0",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,7|6,3|1,8|-1|0|24|0",
+          "action": "RIGHT"
+        },
+        {
+          "state": "7,5|8,1|1,8|-1|0|8|8",
+          "action": "RIGHT"
+        },
+        {
+          "state": "6,6|6,1|1,8|-1|0|24|8",
+          "action": "DOWN"
+        },
+        {
+          "state": "7,7|7,2|1,8|-1|0|24|8",
+          "action": "RIGHT"
+        },
+        {
+          "state": "6,6|4,1|1,8|-1|0|24|8",
+          "action": "DOWN"
+        },
+        {
+          "state": "7,5|4,1|1,8|-1|0|24|8",
+          "action": "RIGHT"
+        }
+      ],
+      "truncatedEntries": true
+    },
+    "witnessMetrics": {
+      "turns": 26,
+      "accessSwitches": 2,
+      "trapActivations": 1,
+      "revisitedExplorerCells": 3,
+      "backtrackingOrRevisits": true
+    },
+    "reachableWinning": 276756,
+    "reachableNonWinning": 11258,
+    "auxiliaryClassifications": [
+      "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+    ],
+    "suspicious": null,
+    "scc": {
+      "completeGraph": true,
+      "componentCount": 73176,
+      "largestComponentStates": 2673,
+      "cyclicComponents": 2223,
+      "closedNonWinningComponents": [
+        {
+          "componentId": 15085,
+          "states": 61
+        },
+        {
+          "componentId": 15775,
+          "states": 61
+        },
+        {
+          "componentId": 27384,
+          "states": 61
+        },
+        {
+          "componentId": 35612,
+          "states": 61
+        },
+        {
+          "componentId": 41639,
+          "states": 61
+        },
+        {
+          "componentId": 41668,
+          "states": 61
+        },
+        {
+          "componentId": 42406,
+          "states": 61
+        },
+        {
+          "componentId": 42435,
+          "states": 61
+        },
+        {
+          "componentId": 43978,
+          "states": 61
+        },
+        {
+          "componentId": 44026,
+          "states": 61
+        },
+        {
+          "componentId": 44042,
+          "states": 61
+        },
+        {
+          "componentId": 44057,
+          "states": 61
+        },
+        {
+          "componentId": 52101,
+          "states": 61
+        },
+        {
+          "componentId": 52547,
+          "states": 61
+        },
+        {
+          "componentId": 52564,
+          "states": 61
+        },
+        {
+          "componentId": 52652,
+          "states": 61
+        },
+        {
+          "componentId": 52782,
+          "states": 61
+        },
+        {
+          "componentId": 52797,
+          "states": 61
+        },
+        {
+          "componentId": 52812,
+          "states": 61
+        },
+        {
+          "componentId": 52827,
+          "states": 61
+        },
+        {
+          "componentId": 16748,
+          "states": 12
+        },
+        {
+          "componentId": 17187,
+          "states": 12
+        },
+        {
+          "componentId": 17264,
+          "states": 12
+        },
+        {
+          "componentId": 17330,
+          "states": 12
+        },
+        {
+          "componentId": 17725,
+          "states": 12
+        },
+        {
+          "componentId": 18224,
+          "states": 12
+        },
+        {
+          "componentId": 18380,
+          "states": 12
+        },
+        {
+          "componentId": 18451,
+          "states": 12
+        },
+        {
+          "componentId": 20816,
+          "states": 12
+        },
+        {
+          "componentId": 21143,
+          "states": 12
+        },
+        {
+          "componentId": 21527,
+          "states": 12
+        },
+        {
+          "componentId": 23232,
+          "states": 12
+        },
+        {
+          "componentId": 23494,
+          "states": 12
+        },
+        {
+          "componentId": 23773,
+          "states": 12
+        },
+        {
+          "componentId": 23827,
+          "states": 12
+        },
+        {
+          "componentId": 24794,
+          "states": 12
+        },
+        {
+          "componentId": 27658,
+          "states": 12
+        },
+        {
+          "componentId": 27760,
+          "states": 12
+        },
+        {
+          "componentId": 28873,
+          "states": 12
+        },
+        {
+          "componentId": 28983,
+          "states": 12
+        },
+        {
+          "componentId": 30018,
+          "states": 12
+        },
+        {
+          "componentId": 30415,
+          "states": 12
+        },
+        {
+          "componentId": 30769,
+          "states": 12
+        },
+        {
+          "componentId": 30981,
+          "states": 12
+        },
+        {
+          "componentId": 31809,
+          "states": 12
+        },
+        {
+          "componentId": 32353,
+          "states": 12
+        },
+        {
+          "componentId": 32865,
+          "states": 12
+        },
+        {
+          "componentId": 33809,
+          "states": 12
+        },
+        {
+          "componentId": 34107,
+          "states": 12
+        },
+        {
+          "componentId": 34476,
+          "states": 12
+        },
+        {
+          "componentId": 34881,
+          "states": 12
+        },
+        {
+          "componentId": 35240,
+          "states": 12
+        },
+        {
+          "componentId": 27626,
+          "states": 6
+        },
+        {
+          "componentId": 27728,
+          "states": 6
+        },
+        {
+          "componentId": 28841,
+          "states": 6
+        },
+        {
+          "componentId": 28951,
+          "states": 6
+        },
+        {
+          "componentId": 29986,
+          "states": 6
+        },
+        {
+          "componentId": 30383,
+          "states": 6
+        },
+        {
+          "componentId": 30737,
+          "states": 6
+        },
+        {
+          "componentId": 30960,
+          "states": 6
+        },
+        {
+          "componentId": 31777,
+          "states": 6
+        },
+        {
+          "componentId": 32321,
+          "states": 6
+        },
+        {
+          "componentId": 32833,
+          "states": 6
+        },
+        {
+          "componentId": 33777,
+          "states": 6
+        },
+        {
+          "componentId": 34075,
+          "states": 6
+        },
+        {
+          "componentId": 34444,
+          "states": 6
+        },
+        {
+          "componentId": 34849,
+          "states": 6
+        },
+        {
+          "componentId": 35219,
+          "states": 6
+        },
+        {
+          "componentId": 50,
+          "states": 1
+        },
+        {
+          "componentId": 706,
+          "states": 1
+        },
+        {
+          "componentId": 830,
+          "states": 1
+        },
+        {
+          "componentId": 1264,
+          "states": 1
+        },
+        {
+          "componentId": 1665,
+          "states": 1
+        },
+        {
+          "componentId": 2247,
+          "states": 1
+        },
+        {
+          "componentId": 2446,
+          "states": 1
+        },
+        {
+          "componentId": 2841,
+          "states": 1
+        },
+        {
+          "componentId": 3334,
+          "states": 1
+        },
+        {
+          "componentId": 3336,
+          "states": 1
+        },
+        {
+          "componentId": 3337,
+          "states": 1
+        },
+        {
+          "componentId": 3427,
+          "states": 1
+        },
+        {
+          "componentId": 3429,
+          "states": 1
+        },
+        {
+          "componentId": 3430,
+          "states": 1
+        },
+        {
+          "componentId": 3529,
+          "states": 1
+        },
+        {
+          "componentId": 3531,
+          "states": 1
+        },
+        {
+          "componentId": 3532,
+          "states": 1
+        },
+        {
+          "componentId": 3620,
+          "states": 1
+        },
+        {
+          "componentId": 3621,
+          "states": 1
+        },
+        {
+          "componentId": 3704,
+          "states": 1
+        },
+        {
+          "componentId": 3705,
+          "states": 1
+        },
+        {
+          "componentId": 3905,
+          "states": 1
+        },
+        {
+          "componentId": 3907,
+          "states": 1
+        },
+        {
+          "componentId": 3908,
+          "states": 1
+        },
+        {
+          "componentId": 3926,
+          "states": 1
+        },
+        {
+          "componentId": 3928,
+          "states": 1
+        },
+        {
+          "componentId": 3929,
+          "states": 1
+        },
+        {
+          "componentId": 4109,
+          "states": 1
+        },
+        {
+          "componentId": 4111,
+          "states": 1
+        },
+        {
+          "componentId": 4112,
+          "states": 1
+        },
+        {
+          "componentId": 4127,
+          "states": 1
+        },
+        {
+          "componentId": 4129,
+          "states": 1
+        }
+      ],
+      "closedNonWinningComponentCount": 1368,
+      "closedNonWinningStates": 3000,
+      "elapsedMs": 55.48519999999553
+    },
+    "trapAnalysis": null
+  }
+}

@@ -1,0 +1,193 @@
+{
+  "mission": "ROTA-DYNAMIC-SOLVABILITY-01",
+  "PRE_CHEST_BASELINE": true,
+  "campaignId": "sample-4be235d2bbc7615e",
+  "solverRuntimeContractHash": "f87a692add561819d8e2fe4c45bcb0d5fe2eb5a85b32ffbfe0a21572b41fd8aa",
+  "configHash": "d18be9acfe80cb78e482ad7e0c32bdce225f98794252eb8c563d27762951c956",
+  "completedAt": "2026-08-12T04:42:50.345Z",
+  "result": {
+    "mission": "ROTA-DYNAMIC-SOLVABILITY-01",
+    "PRE_CHEST_BASELINE": true,
+    "seed": 8502016,
+    "route": 2,
+    "mode": "easy",
+    "limits": {
+      "maxStates": 300000,
+      "maxTransitions": 12000000,
+      "maxFrontier": 400000,
+      "maxMemoryBytes": 536870912,
+      "maxElapsedMs": 60000
+    },
+    "stateContract": {
+      "boardCells": 81,
+      "accessCount": 4,
+      "lightCount": 3,
+      "trapCount": 3,
+      "commitValues": 4,
+      "componentBits": {
+        "explorerPosition": 7,
+        "hunterPosition": 7,
+        "sentinelPosition": 7,
+        "committedAccess": 3,
+        "commitTurnsRemaining": 2,
+        "collectedLights": 3,
+        "activeTraps": 3
+      },
+      "conservativeBitSum": 32,
+      "mixedRadixStateCardinality": 680244480,
+      "maximumPackedKey": 680244479,
+      "mixedRadixRequiredBits": 30,
+      "numberSafe": true
+    },
+    "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+    "initial": {
+      "existential": true,
+      "guaranteed": false
+    },
+    "states": 300227,
+    "processedStates": 251648,
+    "transitions": 1744318,
+    "truncated": true,
+    "resourceLimit": "STATE_LIMIT",
+    "frontier": 48579,
+    "peakFrontier": 51062,
+    "elapsedMs": 1555.837200000009,
+    "graphElapsedMs": 1365.2949999999837,
+    "solveProfile": {
+      "predecessorBuildMs": 22.729099999996834,
+      "existentialMs": 9.572099999990314,
+      "guaranteedMs": 6.350299999990966,
+      "totalMs": 38.69000000000233
+    },
+    "memory": {
+      "typedArrayBytes": 35127296,
+      "estimatedMapBytes": 12009080,
+      "estimatedTotalBytes": 47136376
+    },
+    "shortestExistentialWitness": [
+      {
+        "action": "UP",
+        "state": "7,0|1,5|1,7|-1|0|0|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "7,1|0,5|1,7|-1|0|0|0"
+      },
+      {
+        "action": "UP",
+        "state": "6,1|1,5|1,7|-1|0|0|0"
+      },
+      {
+        "action": "UP",
+        "state": "5,1|0,5|1,7|-1|0|0|0"
+      },
+      {
+        "action": "UP",
+        "state": "4,1|1,5|1,7|-1|0|0|0"
+      },
+      {
+        "action": "LEFT",
+        "state": "4,0|0,5|1,7|-1|0|0|0"
+      },
+      {
+        "action": "UP",
+        "state": "3,0|1,5|1,7|-1|0|0|0"
+      },
+      {
+        "action": "UP",
+        "state": "2,0|0,5|2,7|0|3|0|0"
+      },
+      {
+        "action": "UP",
+        "state": "1,0|1,5|2,6|0|2|0|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "1,1|0,5|2,6|0|1|0|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "1,2|1,5|2,6|0|0|1|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "1,3|0,5|2,5|2|3|1|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "1,4|1,5|2,5|2|2|5|0"
+      },
+      {
+        "action": "DOWN",
+        "state": "2,4|0,5|1,5|2|1|5|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "2,5|1,5|1,5|2|0|5|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "2,6|0,5|2,5|0|3|5|0"
+      },
+      {
+        "action": "DOWN",
+        "state": "3,6|1,5|2,6|0|2|5|0"
+      },
+      {
+        "action": "DOWN",
+        "state": "4,6|0,5|2,6|0|1|5|1"
+      },
+      {
+        "action": "DOWN",
+        "state": "5,6|1,5|2,6|0|0|5|1"
+      },
+      {
+        "action": "RIGHT",
+        "state": "5,7|0,5|2,6|0|3|7|1"
+      },
+      {
+        "action": "UP",
+        "state": "4,7|1,5|2,6|0|2|7|1"
+      },
+      {
+        "action": "RIGHT",
+        "state": "4,8|0,5|2,6|0|1|7|1"
+      },
+      {
+        "action": "UP",
+        "state": "3,8|1,5|2,6|0|0|7|1"
+      },
+      {
+        "action": "UP",
+        "state": "2,8|0,5|2,7|1|3|7|1"
+      },
+      {
+        "action": "UP",
+        "state": "1,8|1,5|2,8|1|2|7|1"
+      },
+      {
+        "action": "UP",
+        "state": "0,8|0,5|2,8|1|1|7|1"
+      },
+      {
+        "action": "LEFT",
+        "state": "WIN"
+      }
+    ],
+    "shortestExistentialWin": 27,
+    "guaranteedPolicy": null,
+    "witnessMetrics": {
+      "turns": 27,
+      "accessSwitches": 4,
+      "trapActivations": 1,
+      "revisitedExplorerCells": 0,
+      "backtrackingOrRevisits": false
+    },
+    "reachableWinning": 178713,
+    "reachableNonWinning": 121514,
+    "auxiliaryClassifications": [],
+    "suspicious": null,
+    "scc": null,
+    "trapAnalysis": null
+  }
+}

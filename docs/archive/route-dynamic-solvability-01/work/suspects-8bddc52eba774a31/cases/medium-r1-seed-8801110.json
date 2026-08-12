@@ -1,0 +1,316 @@
+{
+  "mission": "ROTA-DYNAMIC-SOLVABILITY-01",
+  "PRE_CHEST_BASELINE": true,
+  "campaignId": "suspects-8bddc52eba774a31",
+  "solverRuntimeContractHash": "f87a692add561819d8e2fe4c45bcb0d5fe2eb5a85b32ffbfe0a21572b41fd8aa",
+  "configHash": "ddfa935aafac7e48b761406e1fe7480c6367d49f79b518c77f5d77384b2214c3",
+  "completedAt": "2026-08-12T04:39:36.903Z",
+  "result": {
+    "mission": "ROTA-DYNAMIC-SOLVABILITY-01",
+    "PRE_CHEST_BASELINE": true,
+    "seed": 8801110,
+    "route": 1,
+    "mode": "medium",
+    "limits": {
+      "maxStates": 1000000,
+      "maxTransitions": 12000000,
+      "maxFrontier": 400000,
+      "maxMemoryBytes": 536870912,
+      "maxElapsedMs": 60000
+    },
+    "stateContract": {
+      "boardCells": 81,
+      "accessCount": 3,
+      "lightCount": 4,
+      "trapCount": 3,
+      "commitValues": 4,
+      "componentBits": {
+        "explorerPosition": 7,
+        "hunterPosition": 7,
+        "sentinelPosition": 7,
+        "committedAccess": 2,
+        "commitTurnsRemaining": 2,
+        "collectedLights": 4,
+        "activeTraps": 3
+      },
+      "conservativeBitSum": 32,
+      "mixedRadixStateCardinality": 1088391168,
+      "maximumPackedKey": 1088391167,
+      "mixedRadixRequiredBits": 31,
+      "numberSafe": true
+    },
+    "classification": "POSSIBLE_BUT_NOT_GUARANTEED_PRE_CHEST",
+    "initial": {
+      "existential": true,
+      "guaranteed": false
+    },
+    "states": 653426,
+    "processedStates": 653426,
+    "transitions": 4177211,
+    "truncated": false,
+    "resourceLimit": null,
+    "frontier": 0,
+    "peakFrontier": 33596,
+    "elapsedMs": 4144.038800000002,
+    "graphElapsedMs": 3387.2425999999978,
+    "solveProfile": {
+      "predecessorBuildMs": 61.15030000000115,
+      "existentialMs": 44.07599999999729,
+      "guaranteedMs": 11.344399999998132,
+      "totalMs": 116.63100000000122
+    },
+    "memory": {
+      "typedArrayBytes": 70254592,
+      "estimatedMapBytes": 26137040,
+      "estimatedTotalBytes": 96391632
+    },
+    "shortestExistentialWitness": [
+      {
+        "action": "RIGHT",
+        "state": "8,1|1,4|3,8|-1|0|0|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "8,2|0,4|3,8|-1|0|0|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "8,3|1,4|3,8|-1|0|0|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "8,4|0,4|3,8|-1|0|0|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "8,5|1,4|4,8|0|3|1|0"
+      },
+      {
+        "action": "UP",
+        "state": "7,5|0,4|5,8|0|2|1|0"
+      },
+      {
+        "action": "LEFT",
+        "state": "7,4|1,4|5,8|0|1|5|0"
+      },
+      {
+        "action": "UP",
+        "state": "6,4|0,4|4,8|-1|0|5|0"
+      },
+      {
+        "action": "UP",
+        "state": "5,4|1,4|3,8|-1|0|5|0"
+      },
+      {
+        "action": "UP",
+        "state": "4,4|0,4|3,8|-1|0|5|0"
+      },
+      {
+        "action": "LEFT",
+        "state": "4,3|1,4|3,8|-1|0|5|0"
+      },
+      {
+        "action": "LEFT",
+        "state": "4,2|0,4|3,8|-1|0|5|0"
+      },
+      {
+        "action": "DOWN",
+        "state": "5,2|1,4|3,8|-1|0|13|0"
+      },
+      {
+        "action": "LEFT",
+        "state": "5,1|0,4|3,8|-1|0|13|0"
+      },
+      {
+        "action": "LEFT",
+        "state": "5,0|1,4|3,8|-1|0|13|0"
+      },
+      {
+        "action": "UP",
+        "state": "4,0|0,4|3,8|-1|0|13|0"
+      },
+      {
+        "action": "UP",
+        "state": "3,0|1,4|3,8|-1|0|15|0"
+      },
+      {
+        "action": "UP",
+        "state": "2,0|0,4|3,8|-1|0|15|0"
+      },
+      {
+        "action": "UP",
+        "state": "1,0|1,4|3,8|-1|0|15|1"
+      },
+      {
+        "action": "RIGHT",
+        "state": "1,1|0,4|3,8|-1|0|15|1"
+      },
+      {
+        "action": "RIGHT",
+        "state": "1,2|1,4|3,7|1|3|15|1"
+      },
+      {
+        "action": "UP",
+        "state": "0,2|0,4|2,7|1|2|15|1"
+      },
+      {
+        "action": "RIGHT",
+        "state": "0,3|1,4|1,7|1|1|15|5"
+      },
+      {
+        "action": "RIGHT",
+        "state": "0,4|2,4|0,7|1|0|15|5"
+      },
+      {
+        "action": "RIGHT",
+        "state": "0,5|1,4|0,7|1|3|15|5"
+      },
+      {
+        "action": "RIGHT",
+        "state": "0,6|0,4|0,7|1|2|15|5"
+      },
+      {
+        "action": "DOWN",
+        "state": "1,6|1,4|0,7|1|1|15|5"
+      },
+      {
+        "action": "RIGHT",
+        "state": "1,7|0,4|0,7|1|0|15|5"
+      },
+      {
+        "action": "DOWN",
+        "state": "2,7|1,4|0,7|1|3|15|5"
+      },
+      {
+        "action": "RIGHT",
+        "state": "WIN"
+      }
+    ],
+    "shortestExistentialWin": 30,
+    "guaranteedPolicy": null,
+    "witnessMetrics": {
+      "turns": 30,
+      "accessSwitches": 3,
+      "trapActivations": 2,
+      "revisitedExplorerCells": 0,
+      "backtrackingOrRevisits": false
+    },
+    "reachableWinning": 653426,
+    "reachableNonWinning": 0,
+    "auxiliaryClassifications": [],
+    "suspicious": {
+      "method": "exact replay of tools/validation/trap-strategy-closeout.mjs naive agent",
+      "sourceWasFullState": false,
+      "terminal": "LOSS_HUNTER",
+      "turns": 28,
+      "canonicalState": {
+        "e": "4,4",
+        "h": "4,4",
+        "s": "3,8",
+        "t": -1,
+        "c": 0,
+        "lights": 7,
+        "traps": 0
+      },
+      "stateKey": "4,4|4,4|3,8|-1|0|7|0",
+      "sentinelTail": [
+        "home",
+        "5,8",
+        "home",
+        "home",
+        "home",
+        "home",
+        "home",
+        "home",
+        "home",
+        "home",
+        "home",
+        "home",
+        "home",
+        "home",
+        "home",
+        "home",
+        "home",
+        "home",
+        "home",
+        "home",
+        "home",
+        "5,8",
+        "home",
+        "home"
+      ],
+      "reconstructed": {
+        "portal": "2,8",
+        "accesses": [
+          "5,8",
+          "0,7",
+          "1,6"
+        ],
+        "activeTraps": [],
+        "lightsLeft": 1,
+        "alternatingBetween": [
+          "home",
+          "5,8"
+        ]
+      },
+      "archived": {
+        "portal": "2,8",
+        "accesses": [
+          "5,8",
+          "0,7",
+          "1,6"
+        ],
+        "activeTraps": [],
+        "lightsLeft": 1,
+        "alternatingBetween": [
+          "home",
+          "5,8"
+        ]
+      },
+      "checks": {
+        "portal": true,
+        "accesses": true,
+        "activeTraps": true,
+        "lightsLeft": true,
+        "alternatingBetween": true
+      },
+      "metadataMatchesArchive": true,
+      "packedKey": 544184376,
+      "presentInInitialReachableGraph": false,
+      "nodeId": null,
+      "exactClassificationAvailable": false,
+      "existential": null,
+      "guaranteed": null,
+      "winningExit": null,
+      "deadRegion": false,
+      "trapState": 0,
+      "sentinelCommitment": {
+        "targetAccess": -1,
+        "commitTurnsRemaining": 0
+      },
+      "component": null
+    },
+    "scc": {
+      "completeGraph": true,
+      "componentCount": 534,
+      "largestComponentStates": 6268,
+      "cyclicComponents": 244,
+      "closedNonWinningComponents": [],
+      "closedNonWinningComponentCount": 0,
+      "closedNonWinningStates": 0,
+      "elapsedMs": 142.2393000000011
+    },
+    "trapAnalysis": {
+      "classification": "TRAP_OPTIONAL_PRE_CHEST",
+      "mainExistential": true,
+      "mainGuaranteed": false,
+      "noTrapExistential": true,
+      "noTrapGuaranteed": false,
+      "noTrapStates": 76575,
+      "noTrapTransitions": 509504,
+      "noTrapTruncated": false,
+      "noTrapResourceLimit": null,
+      "noTrapElapsedMs": 396.2420999999995
+    }
+  }
+}

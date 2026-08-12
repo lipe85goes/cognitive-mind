@@ -1,0 +1,280 @@
+{
+  "mission": "ROTA-DYNAMIC-SOLVABILITY-01",
+  "PRE_CHEST_BASELINE": true,
+  "campaignId": "suspects-8bddc52eba774a31",
+  "solverRuntimeContractHash": "f87a692add561819d8e2fe4c45bcb0d5fe2eb5a85b32ffbfe0a21572b41fd8aa",
+  "configHash": "ddfa935aafac7e48b761406e1fe7480c6367d49f79b518c77f5d77384b2214c3",
+  "completedAt": "2026-08-12T04:39:52.406Z",
+  "result": {
+    "mission": "ROTA-DYNAMIC-SOLVABILITY-01",
+    "PRE_CHEST_BASELINE": true,
+    "seed": 8801012,
+    "route": 1,
+    "mode": "easy",
+    "limits": {
+      "maxStates": 1000000,
+      "maxTransitions": 12000000,
+      "maxFrontier": 400000,
+      "maxMemoryBytes": 536870912,
+      "maxElapsedMs": 60000
+    },
+    "stateContract": {
+      "boardCells": 81,
+      "accessCount": 3,
+      "lightCount": 3,
+      "trapCount": 2,
+      "commitValues": 4,
+      "componentBits": {
+        "explorerPosition": 7,
+        "hunterPosition": 7,
+        "sentinelPosition": 7,
+        "committedAccess": 2,
+        "commitTurnsRemaining": 2,
+        "collectedLights": 3,
+        "activeTraps": 2
+      },
+      "conservativeBitSum": 30,
+      "mixedRadixStateCardinality": 272097792,
+      "maximumPackedKey": 272097791,
+      "mixedRadixRequiredBits": 29,
+      "numberSafe": true
+    },
+    "classification": "POSSIBLE_BUT_NOT_GUARANTEED_PRE_CHEST",
+    "initial": {
+      "existential": true,
+      "guaranteed": false
+    },
+    "states": 873706,
+    "processedStates": 873706,
+    "transitions": 6499351,
+    "truncated": false,
+    "resourceLimit": null,
+    "frontier": 0,
+    "peakFrontier": 41134,
+    "elapsedMs": 7430.436600000001,
+    "graphElapsedMs": 5483.470600000001,
+    "solveProfile": {
+      "predecessorBuildMs": 96.67869999999675,
+      "existentialMs": 87.69430000000284,
+      "guaranteedMs": 18.59280000000581,
+      "totalMs": 203.01320000000123
+    },
+    "memory": {
+      "typedArrayBytes": 110100480,
+      "estimatedMapBytes": 34948240,
+      "estimatedTotalBytes": 145048720
+    },
+    "shortestExistentialWitness": [
+      {
+        "action": "UP",
+        "state": "7,0|3,6|1,7|-1|0|0|0"
+      },
+      {
+        "action": "UP",
+        "state": "6,0|2,6|1,7|-1|0|0|0"
+      },
+      {
+        "action": "UP",
+        "state": "5,0|3,6|1,7|-1|0|0|0"
+      },
+      {
+        "action": "UP",
+        "state": "4,0|2,6|1,7|1|3|0|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "4,1|3,6|1,7|1|2|1|0"
+      },
+      {
+        "action": "DOWN",
+        "state": "5,1|2,6|1,7|1|1|1|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "5,2|3,6|1,7|1|0|3|0"
+      },
+      {
+        "action": "DOWN",
+        "state": "6,2|2,6|1,7|1|3|3|0"
+      },
+      {
+        "action": "DOWN",
+        "state": "7,2|3,6|1,7|-1|0|3|0"
+      },
+      {
+        "action": "DOWN",
+        "state": "8,2|2,6|1,7|-1|0|3|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "8,3|3,6|1,7|-1|0|3|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "8,4|2,6|1,7|1|3|3|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "8,5|3,6|1,7|1|2|7|0"
+      },
+      {
+        "action": "UP",
+        "state": "7,5|2,6|1,7|1|1|7|0"
+      },
+      {
+        "action": "UP",
+        "state": "6,5|3,6|1,7|1|0|7|0"
+      },
+      {
+        "action": "UP",
+        "state": "5,5|2,6|1,7|1|3|7|0"
+      },
+      {
+        "action": "UP",
+        "state": "4,5|3,6|1,7|1|2|7|0"
+      },
+      {
+        "action": "UP",
+        "state": "3,5|3,7|1,7|-1|0|7|1"
+      },
+      {
+        "action": "RIGHT",
+        "state": "3,6|3,8|1,7|-1|0|7|1"
+      },
+      {
+        "action": "UP",
+        "state": "2,6|2,8|1,7|-1|0|7|1"
+      },
+      {
+        "action": "RIGHT",
+        "state": "WIN"
+      }
+    ],
+    "shortestExistentialWin": 21,
+    "guaranteedPolicy": null,
+    "witnessMetrics": {
+      "turns": 21,
+      "accessSwitches": 4,
+      "trapActivations": 1,
+      "revisitedExplorerCells": 0,
+      "backtrackingOrRevisits": false
+    },
+    "reachableWinning": 873706,
+    "reachableNonWinning": 0,
+    "auxiliaryClassifications": [],
+    "suspicious": {
+      "method": "exact replay of tools/validation/trap-strategy-closeout.mjs naive agent",
+      "sourceWasFullState": false,
+      "terminal": "WIN",
+      "turns": 21,
+      "canonicalState": {
+        "e": "2,7",
+        "h": "0,8",
+        "s": "1,7",
+        "t": 1,
+        "c": 3,
+        "lights": 7,
+        "traps": 1
+      },
+      "stateKey": "2,7|0,8|1,7|1|3|7|1",
+      "sentinelTail": [
+        "home",
+        "home",
+        "home",
+        "3,5",
+        "3,5",
+        "3,5",
+        "3,5",
+        "3,5",
+        "home",
+        "home",
+        "home",
+        "3,5",
+        "3,5",
+        "3,5",
+        "3,5",
+        "3,5",
+        "3,5",
+        "3,5",
+        "3,5",
+        "3,5"
+      ],
+      "reconstructed": {
+        "portal": "2,7",
+        "accesses": [
+          "0,6",
+          "3,5",
+          "4,8"
+        ],
+        "activeTraps": [
+          "3,5"
+        ],
+        "lightsLeft": 0,
+        "alternatingBetween": [
+          "home",
+          "3,5"
+        ]
+      },
+      "archived": {
+        "portal": "2,7",
+        "accesses": [
+          "0,6",
+          "3,5",
+          "4,8"
+        ],
+        "activeTraps": [
+          "3,5"
+        ],
+        "lightsLeft": 0,
+        "alternatingBetween": [
+          "home",
+          "3,5"
+        ]
+      },
+      "checks": {
+        "portal": true,
+        "accesses": true,
+        "activeTraps": true,
+        "lightsLeft": true,
+        "alternatingBetween": true
+      },
+      "metadataMatchesArchive": true,
+      "packedKey": 84321149,
+      "presentInInitialReachableGraph": false,
+      "nodeId": null,
+      "exactClassificationAvailable": false,
+      "existential": null,
+      "guaranteed": null,
+      "winningExit": null,
+      "deadRegion": false,
+      "trapState": 1,
+      "sentinelCommitment": {
+        "targetAccess": 1,
+        "commitTurnsRemaining": 3
+      },
+      "component": null
+    },
+    "scc": {
+      "completeGraph": true,
+      "componentCount": 43789,
+      "largestComponentStates": 28030,
+      "cyclicComponents": 118,
+      "closedNonWinningComponents": [],
+      "closedNonWinningComponentCount": 0,
+      "closedNonWinningStates": 0,
+      "elapsedMs": 284.842899999996
+    },
+    "trapAnalysis": {
+      "classification": "TRAP_OPTIONAL_PRE_CHEST",
+      "mainExistential": true,
+      "mainGuaranteed": false,
+      "noTrapExistential": true,
+      "noTrapGuaranteed": false,
+      "noTrapStates": 229119,
+      "noTrapTransitions": 1745805,
+      "noTrapTruncated": false,
+      "noTrapResourceLimit": null,
+      "noTrapElapsedMs": 1331.8447000000015
+    }
+  }
+}

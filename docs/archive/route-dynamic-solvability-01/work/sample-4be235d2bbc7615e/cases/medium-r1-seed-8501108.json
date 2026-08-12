@@ -1,0 +1,165 @@
+{
+  "mission": "ROTA-DYNAMIC-SOLVABILITY-01",
+  "PRE_CHEST_BASELINE": true,
+  "campaignId": "sample-4be235d2bbc7615e",
+  "solverRuntimeContractHash": "f87a692add561819d8e2fe4c45bcb0d5fe2eb5a85b32ffbfe0a21572b41fd8aa",
+  "configHash": "d18be9acfe80cb78e482ad7e0c32bdce225f98794252eb8c563d27762951c956",
+  "completedAt": "2026-08-12T04:41:24.505Z",
+  "result": {
+    "mission": "ROTA-DYNAMIC-SOLVABILITY-01",
+    "PRE_CHEST_BASELINE": true,
+    "seed": 8501108,
+    "route": 1,
+    "mode": "medium",
+    "limits": {
+      "maxStates": 300000,
+      "maxTransitions": 12000000,
+      "maxFrontier": 400000,
+      "maxMemoryBytes": 536870912,
+      "maxElapsedMs": 60000
+    },
+    "stateContract": {
+      "boardCells": 81,
+      "accessCount": 4,
+      "lightCount": 4,
+      "trapCount": 3,
+      "commitValues": 4,
+      "componentBits": {
+        "explorerPosition": 7,
+        "hunterPosition": 7,
+        "sentinelPosition": 7,
+        "committedAccess": 3,
+        "commitTurnsRemaining": 2,
+        "collectedLights": 4,
+        "activeTraps": 3
+      },
+      "conservativeBitSum": 33,
+      "mixedRadixStateCardinality": 1360488960,
+      "maximumPackedKey": 1360488959,
+      "mixedRadixRequiredBits": 31,
+      "numberSafe": true
+    },
+    "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+    "initial": {
+      "existential": true,
+      "guaranteed": false
+    },
+    "states": 300087,
+    "processedStates": 245248,
+    "transitions": 1751923,
+    "truncated": true,
+    "resourceLimit": "STATE_LIMIT",
+    "frontier": 54839,
+    "peakFrontier": 70628,
+    "elapsedMs": 1527.0077999999994,
+    "graphElapsedMs": 1453.0851000000039,
+    "solveProfile": {
+      "predecessorBuildMs": 20.47690000000148,
+      "existentialMs": 3.534299999999348,
+      "guaranteedMs": 3.223599999997532,
+      "totalMs": 27.295799999999872
+    },
+    "memory": {
+      "typedArrayBytes": 35127296,
+      "estimatedMapBytes": 12003480,
+      "estimatedTotalBytes": 47130776
+    },
+    "shortestExistentialWitness": [
+      {
+        "action": "UP",
+        "state": "7,0|0,5|1,8|-1|0|0|0"
+      },
+      {
+        "action": "UP",
+        "state": "6,0|1,5|1,8|-1|0|0|0"
+      },
+      {
+        "action": "UP",
+        "state": "5,0|0,5|1,8|-1|0|0|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "5,1|1,5|1,8|-1|0|0|0"
+      },
+      {
+        "action": "UP",
+        "state": "4,1|0,5|1,7|3|3|2|0"
+      },
+      {
+        "action": "DOWN",
+        "state": "5,1|1,5|1,8|-1|0|2|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "5,2|0,5|1,7|3|3|6|0"
+      },
+      {
+        "action": "DOWN",
+        "state": "6,2|1,5|1,8|-1|0|6|0"
+      },
+      {
+        "action": "DOWN",
+        "state": "7,2|0,5|1,8|-1|0|14|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "7,3|1,5|1,8|-1|0|14|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "7,4|0,5|1,8|2|3|15|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "7,5|1,5|1,8|2|2|15|0"
+      },
+      {
+        "action": "UP",
+        "state": "6,5|0,5|1,8|2|1|15|0"
+      },
+      {
+        "action": "UP",
+        "state": "5,5|1,5|1,8|2|0|15|0"
+      },
+      {
+        "action": "UP",
+        "state": "4,5|0,5|1,7|3|3|15|0"
+      },
+      {
+        "action": "UP",
+        "state": "3,5|1,5|1,6|3|2|15|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "3,6|0,5|2,6|3|1|15|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "3,7|1,5|3,6|3|0|15|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "3,8|0,5|4,6|2|3|15|0"
+      },
+      {
+        "action": "UP",
+        "state": "WIN"
+      }
+    ],
+    "shortestExistentialWin": 20,
+    "guaranteedPolicy": null,
+    "witnessMetrics": {
+      "turns": 20,
+      "accessSwitches": 7,
+      "trapActivations": 0,
+      "revisitedExplorerCells": 1,
+      "backtrackingOrRevisits": true
+    },
+    "reachableWinning": 32687,
+    "reachableNonWinning": 267400,
+    "auxiliaryClassifications": [],
+    "suspicious": null,
+    "scc": null,
+    "trapAnalysis": null
+  }
+}

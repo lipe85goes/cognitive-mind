@@ -1,0 +1,91 @@
+{
+  "mission": "ROTA-DYNAMIC-SOLVABILITY-01",
+  "PRE_CHEST_BASELINE": true,
+  "identity": {
+    "name": "suspects",
+    "solverRuntimeContractHash": "f87a692add561819d8e2fe4c45bcb0d5fe2eb5a85b32ffbfe0a21572b41fd8aa",
+    "configHash": "ddfa935aafac7e48b761406e1fe7480c6367d49f79b518c77f5d77384b2214c3",
+    "id": "suspects-8bddc52eba774a31"
+  },
+  "config": {
+    "campaign": "suspects",
+    "limits": {
+      "maxStates": 1000000,
+      "maxTransitions": 12000000,
+      "maxFrontier": 400000,
+      "maxMemoryBytes": 536870912,
+      "maxElapsedMs": 60000
+    },
+    "ordering": "hard, medium, easy",
+    "cases": [
+      {
+        "seed": 8801204,
+        "route": 1,
+        "mode": "hard"
+      },
+      {
+        "seed": 8801207,
+        "route": 1,
+        "mode": "hard"
+      },
+      {
+        "seed": 8801212,
+        "route": 1,
+        "mode": "hard"
+      },
+      {
+        "seed": 8801214,
+        "route": 1,
+        "mode": "hard"
+      },
+      {
+        "seed": 8801107,
+        "route": 1,
+        "mode": "medium"
+      },
+      {
+        "seed": 8801108,
+        "route": 1,
+        "mode": "medium"
+      },
+      {
+        "seed": 8801109,
+        "route": 1,
+        "mode": "medium"
+      },
+      {
+        "seed": 8801110,
+        "route": 1,
+        "mode": "medium"
+      },
+      {
+        "seed": 8801008,
+        "route": 1,
+        "mode": "easy"
+      },
+      {
+        "seed": 8801012,
+        "route": 1,
+        "mode": "easy"
+      },
+      {
+        "seed": 8801014,
+        "route": 1,
+        "mode": "easy"
+      },
+      {
+        "seed": 8802000,
+        "route": 2,
+        "mode": "easy"
+      }
+    ]
+  },
+  "equivalenceGate": {
+    "path": "docs/archive/route-dynamic-solvability-01/solver-encoding-equivalence.json",
+    "generatedAt": "2026-08-12T04:29:09.593Z",
+    "statesTested": 36009,
+    "successorPairsTested": 6480,
+    "attractorStatesCompared": 5263
+  },
+  "createdAt": "2026-08-12T04:38:39.627Z"
+}

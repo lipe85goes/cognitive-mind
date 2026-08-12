@@ -1,0 +1,316 @@
+{
+  "mission": "ROTA-DYNAMIC-SOLVABILITY-01",
+  "PRE_CHEST_BASELINE": true,
+  "generatedAt": "2026-08-12T04:40:13.724Z",
+  "campaign": {
+    "name": "suspects",
+    "solverRuntimeContractHash": "f87a692add561819d8e2fe4c45bcb0d5fe2eb5a85b32ffbfe0a21572b41fd8aa",
+    "configHash": "ddfa935aafac7e48b761406e1fe7480c6367d49f79b518c77f5d77384b2214c3",
+    "id": "suspects-8bddc52eba774a31"
+  },
+  "config": {
+    "campaign": "suspects",
+    "limits": {
+      "maxStates": 1000000,
+      "maxTransitions": 12000000,
+      "maxFrontier": 400000,
+      "maxMemoryBytes": 536870912,
+      "maxElapsedMs": 60000
+    },
+    "ordering": "hard, medium, easy",
+    "cases": [
+      {
+        "seed": 8801204,
+        "route": 1,
+        "mode": "hard"
+      },
+      {
+        "seed": 8801207,
+        "route": 1,
+        "mode": "hard"
+      },
+      {
+        "seed": 8801212,
+        "route": 1,
+        "mode": "hard"
+      },
+      {
+        "seed": 8801214,
+        "route": 1,
+        "mode": "hard"
+      },
+      {
+        "seed": 8801107,
+        "route": 1,
+        "mode": "medium"
+      },
+      {
+        "seed": 8801108,
+        "route": 1,
+        "mode": "medium"
+      },
+      {
+        "seed": 8801109,
+        "route": 1,
+        "mode": "medium"
+      },
+      {
+        "seed": 8801110,
+        "route": 1,
+        "mode": "medium"
+      },
+      {
+        "seed": 8801008,
+        "route": 1,
+        "mode": "easy"
+      },
+      {
+        "seed": 8801012,
+        "route": 1,
+        "mode": "easy"
+      },
+      {
+        "seed": 8801014,
+        "route": 1,
+        "mode": "easy"
+      },
+      {
+        "seed": 8802000,
+        "route": 2,
+        "mode": "easy"
+      }
+    ]
+  },
+  "equivalenceGate": {
+    "path": "docs/archive/route-dynamic-solvability-01/solver-encoding-equivalence.json",
+    "generatedAt": "2026-08-12T04:29:09.593Z",
+    "statesTested": 36009,
+    "successorPairsTested": 6480,
+    "attractorStatesCompared": 5263
+  },
+  "casesExpected": 12,
+  "casesCompleted": 12,
+  "completeCampaign": true,
+  "verdictCounts": {
+    "GUARANTEED_SOLVABLE_PRE_CHEST": 2,
+    "INCONCLUSIVE_RESOURCE_LIMIT": 2,
+    "PROVED_UNSOLVABLE_PRE_CHEST": 2,
+    "POSSIBLE_BUT_NOT_GUARANTEED_PRE_CHEST": 6
+  },
+  "auxiliaryClassificationCounts": {
+    "AGENT_OSCILLATION_WITH_LUCK_DEPENDENCE": 2,
+    "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST": 8,
+    "TRUE_DYNAMIC_LOCK_PRE_CHEST": 2,
+    "INITIAL_UNSOLVABLE_PRE_CHEST": 2
+  },
+  "classificationCounts": {
+    "TRAP_OPTIONAL_PRE_CHEST": 10,
+    "TRAP_NOT_NEEDED_PRE_CHEST": 2
+  },
+  "cases": [
+    {
+      "seed": 8801204,
+      "route": 1,
+      "mode": "hard",
+      "trapAnalysis": {
+        "classification": "TRAP_OPTIONAL_PRE_CHEST",
+        "mainExistential": true,
+        "mainGuaranteed": true,
+        "noTrapExistential": true,
+        "noTrapGuaranteed": true,
+        "noTrapStates": 204093,
+        "noTrapTransitions": 757376,
+        "noTrapTruncated": false,
+        "noTrapResourceLimit": null,
+        "noTrapElapsedMs": 833.607600000003
+      }
+    },
+    {
+      "seed": 8801207,
+      "route": 1,
+      "mode": "hard",
+      "trapAnalysis": {
+        "classification": "TRAP_OPTIONAL_PRE_CHEST",
+        "mainExistential": true,
+        "mainGuaranteed": true,
+        "noTrapExistential": true,
+        "noTrapGuaranteed": true,
+        "noTrapStates": 173434,
+        "noTrapTransitions": 621010,
+        "noTrapTruncated": false,
+        "noTrapResourceLimit": null,
+        "noTrapElapsedMs": 896.7982000000002
+      }
+    },
+    {
+      "seed": 8801212,
+      "route": 1,
+      "mode": "hard",
+      "trapAnalysis": {
+        "classification": "TRAP_OPTIONAL_PRE_CHEST",
+        "mainExistential": true,
+        "mainGuaranteed": true,
+        "noTrapExistential": true,
+        "noTrapGuaranteed": true,
+        "noTrapStates": 60972,
+        "noTrapTransitions": 219564,
+        "noTrapTruncated": false,
+        "noTrapResourceLimit": null,
+        "noTrapElapsedMs": 275.28640000000087
+      }
+    },
+    {
+      "seed": 8801214,
+      "route": 1,
+      "mode": "hard",
+      "trapAnalysis": {
+        "classification": "TRAP_NOT_NEEDED_PRE_CHEST",
+        "mainExistential": false,
+        "mainGuaranteed": false,
+        "noTrapExistential": false,
+        "noTrapGuaranteed": false,
+        "noTrapStates": 20575,
+        "noTrapTransitions": 78180,
+        "noTrapTruncated": false,
+        "noTrapResourceLimit": null,
+        "noTrapElapsedMs": 93.50470000000132
+      }
+    },
+    {
+      "seed": 8801107,
+      "route": 1,
+      "mode": "medium",
+      "trapAnalysis": {
+        "classification": "TRAP_NOT_NEEDED_PRE_CHEST",
+        "mainExistential": false,
+        "mainGuaranteed": false,
+        "noTrapExistential": false,
+        "noTrapGuaranteed": false,
+        "noTrapStates": 57023,
+        "noTrapTransitions": 379381,
+        "noTrapTruncated": false,
+        "noTrapResourceLimit": null,
+        "noTrapElapsedMs": 315.4243000000006
+      }
+    },
+    {
+      "seed": 8801108,
+      "route": 1,
+      "mode": "medium",
+      "trapAnalysis": {
+        "classification": "TRAP_OPTIONAL_PRE_CHEST",
+        "mainExistential": true,
+        "mainGuaranteed": false,
+        "noTrapExistential": true,
+        "noTrapGuaranteed": false,
+        "noTrapStates": 146658,
+        "noTrapTransitions": 1051676,
+        "noTrapTruncated": false,
+        "noTrapResourceLimit": null,
+        "noTrapElapsedMs": 841.8712999999989
+      }
+    },
+    {
+      "seed": 8801109,
+      "route": 1,
+      "mode": "medium",
+      "trapAnalysis": {
+        "classification": "TRAP_OPTIONAL_PRE_CHEST",
+        "mainExistential": true,
+        "mainGuaranteed": false,
+        "noTrapExistential": true,
+        "noTrapGuaranteed": false,
+        "noTrapStates": 89121,
+        "noTrapTransitions": 606797,
+        "noTrapTruncated": false,
+        "noTrapResourceLimit": null,
+        "noTrapElapsedMs": 495.1747000000032
+      }
+    },
+    {
+      "seed": 8801110,
+      "route": 1,
+      "mode": "medium",
+      "trapAnalysis": {
+        "classification": "TRAP_OPTIONAL_PRE_CHEST",
+        "mainExistential": true,
+        "mainGuaranteed": false,
+        "noTrapExistential": true,
+        "noTrapGuaranteed": false,
+        "noTrapStates": 76575,
+        "noTrapTransitions": 509504,
+        "noTrapTruncated": false,
+        "noTrapResourceLimit": null,
+        "noTrapElapsedMs": 396.2420999999995
+      }
+    },
+    {
+      "seed": 8801008,
+      "route": 1,
+      "mode": "easy",
+      "trapAnalysis": {
+        "classification": "TRAP_OPTIONAL_PRE_CHEST",
+        "mainExistential": true,
+        "mainGuaranteed": false,
+        "noTrapExistential": true,
+        "noTrapGuaranteed": false,
+        "noTrapStates": 223419,
+        "noTrapTransitions": 1625157,
+        "noTrapTruncated": false,
+        "noTrapResourceLimit": null,
+        "noTrapElapsedMs": 1375.9254
+      }
+    },
+    {
+      "seed": 8801012,
+      "route": 1,
+      "mode": "easy",
+      "trapAnalysis": {
+        "classification": "TRAP_OPTIONAL_PRE_CHEST",
+        "mainExistential": true,
+        "mainGuaranteed": false,
+        "noTrapExistential": true,
+        "noTrapGuaranteed": false,
+        "noTrapStates": 229119,
+        "noTrapTransitions": 1745805,
+        "noTrapTruncated": false,
+        "noTrapResourceLimit": null,
+        "noTrapElapsedMs": 1331.8447000000015
+      }
+    },
+    {
+      "seed": 8801014,
+      "route": 1,
+      "mode": "easy",
+      "trapAnalysis": {
+        "classification": "TRAP_OPTIONAL_PRE_CHEST",
+        "mainExistential": true,
+        "mainGuaranteed": false,
+        "noTrapExistential": true,
+        "noTrapGuaranteed": false,
+        "noTrapStates": 183774,
+        "noTrapTransitions": 1371244,
+        "noTrapTruncated": false,
+        "noTrapResourceLimit": null,
+        "noTrapElapsedMs": 1058.2318000000014
+      }
+    },
+    {
+      "seed": 8802000,
+      "route": 2,
+      "mode": "easy",
+      "trapAnalysis": {
+        "classification": "TRAP_OPTIONAL_PRE_CHEST",
+        "mainExistential": true,
+        "mainGuaranteed": false,
+        "noTrapExistential": true,
+        "noTrapGuaranteed": false,
+        "noTrapStates": 63739,
+        "noTrapTransitions": 462188,
+        "noTrapTruncated": false,
+        "noTrapResourceLimit": null,
+        "noTrapElapsedMs": 371.62160000000586
+      }
+    }
+  ]
+}

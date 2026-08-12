@@ -1,0 +1,776 @@
+{
+  "mission": "ROTA-DYNAMIC-SOLVABILITY-01",
+  "PRE_CHEST_BASELINE": true,
+  "campaignId": "suspects-8bddc52eba774a31",
+  "solverRuntimeContractHash": "f87a692add561819d8e2fe4c45bcb0d5fe2eb5a85b32ffbfe0a21572b41fd8aa",
+  "configHash": "ddfa935aafac7e48b761406e1fe7480c6367d49f79b518c77f5d77384b2214c3",
+  "completedAt": "2026-08-12T04:40:13.721Z",
+  "result": {
+    "mission": "ROTA-DYNAMIC-SOLVABILITY-01",
+    "PRE_CHEST_BASELINE": true,
+    "seed": 8802000,
+    "route": 2,
+    "mode": "easy",
+    "limits": {
+      "maxStates": 1000000,
+      "maxTransitions": 12000000,
+      "maxFrontier": 400000,
+      "maxMemoryBytes": 536870912,
+      "maxElapsedMs": 60000
+    },
+    "stateContract": {
+      "boardCells": 81,
+      "accessCount": 3,
+      "lightCount": 3,
+      "trapCount": 3,
+      "commitValues": 4,
+      "componentBits": {
+        "explorerPosition": 7,
+        "hunterPosition": 7,
+        "sentinelPosition": 7,
+        "committedAccess": 2,
+        "commitTurnsRemaining": 2,
+        "collectedLights": 3,
+        "activeTraps": 3
+      },
+      "conservativeBitSum": 31,
+      "mixedRadixStateCardinality": 544195584,
+      "maximumPackedKey": 544195583,
+      "mixedRadixRequiredBits": 30,
+      "numberSafe": true
+    },
+    "classification": "POSSIBLE_BUT_NOT_GUARANTEED_PRE_CHEST",
+    "initial": {
+      "existential": true,
+      "guaranteed": false
+    },
+    "states": 238859,
+    "processedStates": 238859,
+    "transitions": 1673020,
+    "truncated": false,
+    "resourceLimit": null,
+    "frontier": 0,
+    "peakFrontier": 8193,
+    "elapsedMs": 3019.6240000000034,
+    "graphElapsedMs": 1328.251400000001,
+    "solveProfile": {
+      "predecessorBuildMs": 19.700199999999313,
+      "existentialMs": 11.145400000001246,
+      "guaranteedMs": 6.4724999999962165,
+      "totalMs": 37.611900000003516
+    },
+    "memory": {
+      "typedArrayBytes": 27525120,
+      "estimatedMapBytes": 9554360,
+      "estimatedTotalBytes": 37079480
+    },
+    "shortestExistentialWitness": [
+      {
+        "action": "UP",
+        "state": "7,0|1,5|1,7|-1|0|0|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "7,1|0,5|1,7|-1|0|0|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "7,2|1,5|1,7|-1|0|0|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "7,3|0,5|1,7|-1|0|0|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "7,4|1,5|1,7|-1|0|0|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "7,5|0,5|1,7|-1|0|0|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "7,6|1,5|1,7|-1|0|0|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "7,7|0,5|2,7|0|3|0|0"
+      },
+      {
+        "action": "UP",
+        "state": "6,7|1,5|2,6|0|2|0|0"
+      },
+      {
+        "action": "UP",
+        "state": "5,7|0,5|2,6|0|1|0|0"
+      },
+      {
+        "action": "UP",
+        "state": "4,7|1,5|2,6|0|0|0|0"
+      },
+      {
+        "action": "LEFT",
+        "state": "4,6|0,5|2,6|0|3|4|0"
+      },
+      {
+        "action": "DOWN",
+        "state": "5,6|1,5|2,6|0|2|4|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "5,7|0,5|2,6|0|1|4|0"
+      },
+      {
+        "action": "DOWN",
+        "state": "6,7|1,5|2,6|0|0|4|0"
+      },
+      {
+        "action": "DOWN",
+        "state": "7,7|0,5|2,6|0|3|4|0"
+      },
+      {
+        "action": "LEFT",
+        "state": "7,6|1,5|2,7|-1|0|4|0"
+      },
+      {
+        "action": "LEFT",
+        "state": "7,5|0,5|1,7|-1|0|4|0"
+      },
+      {
+        "action": "LEFT",
+        "state": "7,4|1,5|1,7|-1|0|4|0"
+      },
+      {
+        "action": "UP",
+        "state": "6,4|0,5|1,7|-1|0|4|0"
+      },
+      {
+        "action": "LEFT",
+        "state": "6,3|1,5|1,7|-1|0|4|0"
+      },
+      {
+        "action": "UP",
+        "state": "5,3|0,5|1,7|-1|0|4|0"
+      },
+      {
+        "action": "UP",
+        "state": "4,3|1,5|1,7|-1|0|4|0"
+      },
+      {
+        "action": "LEFT",
+        "state": "4,2|0,5|1,7|-1|0|4|0"
+      },
+      {
+        "action": "LEFT",
+        "state": "4,1|1,5|1,7|-1|0|4|0"
+      },
+      {
+        "action": "LEFT",
+        "state": "4,0|0,5|1,7|-1|0|4|0"
+      },
+      {
+        "action": "UP",
+        "state": "3,0|1,5|1,7|-1|0|4|0"
+      },
+      {
+        "action": "UP",
+        "state": "2,0|0,5|2,7|0|3|4|4"
+      },
+      {
+        "action": "UP",
+        "state": "1,0|1,5|2,6|0|2|4|4"
+      },
+      {
+        "action": "RIGHT",
+        "state": "1,1|0,5|2,6|0|1|4|4"
+      },
+      {
+        "action": "RIGHT",
+        "state": "1,2|1,5|2,6|0|0|6|4"
+      },
+      {
+        "action": "RIGHT",
+        "state": "1,3|0,5|2,5|1|3|6|4"
+      },
+      {
+        "action": "DOWN",
+        "state": "2,3|1,5|2,5|1|2|6|4"
+      },
+      {
+        "action": "RIGHT",
+        "state": "2,4|0,5|1,5|1|1|6|5"
+      },
+      {
+        "action": "RIGHT",
+        "state": "2,5|1,5|1,5|1|0|6|5"
+      },
+      {
+        "action": "RIGHT",
+        "state": "2,6|0,5|2,5|0|3|6|5"
+      },
+      {
+        "action": "RIGHT",
+        "state": "2,7|1,5|2,6|0|2|6|5"
+      },
+      {
+        "action": "UP",
+        "state": "1,7|0,5|2,6|0|1|6|5"
+      },
+      {
+        "action": "RIGHT",
+        "state": "1,8|1,5|2,6|0|0|7|5"
+      },
+      {
+        "action": "UP",
+        "state": "0,8|0,5|2,6|0|3|7|5"
+      },
+      {
+        "action": "LEFT",
+        "state": "WIN"
+      }
+    ],
+    "shortestExistentialWin": 41,
+    "guaranteedPolicy": null,
+    "witnessMetrics": {
+      "turns": 41,
+      "accessSwitches": 5,
+      "trapActivations": 2,
+      "revisitedExplorerCells": 6,
+      "backtrackingOrRevisits": true
+    },
+    "reachableWinning": 238499,
+    "reachableNonWinning": 360,
+    "auxiliaryClassifications": [
+      "AGENT_OSCILLATION_WITH_LUCK_DEPENDENCE",
+      "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+    ],
+    "suspicious": {
+      "method": "exact replay of tools/validation/trap-strategy-closeout.mjs naive agent",
+      "sourceWasFullState": false,
+      "terminal": "TURN_LIMIT",
+      "turns": 160,
+      "canonicalState": {
+        "e": "1,5",
+        "h": "8,7",
+        "s": "2,5",
+        "t": 1,
+        "c": 3,
+        "lights": 3,
+        "traps": 7
+      },
+      "stateKey": "1,5|8,7|2,5|1|3|3|7",
+      "sentinelTail": [
+        "1,5",
+        "1,5",
+        "1,5",
+        "2,6",
+        "2,6",
+        "2,6",
+        "2,6",
+        "1,5",
+        "1,5",
+        "1,5",
+        "1,5",
+        "2,6",
+        "2,6",
+        "2,6",
+        "2,6",
+        "1,5",
+        "1,5",
+        "1,5",
+        "1,5",
+        "2,6",
+        "2,6",
+        "2,6",
+        "2,6",
+        "1,5"
+      ],
+      "reconstructed": {
+        "portal": "0,7",
+        "accesses": [
+          "2,6",
+          "1,5",
+          "0,4"
+        ],
+        "activeTraps": [
+          "5,1",
+          "2,0",
+          "2,4"
+        ],
+        "lightsLeft": 1,
+        "alternatingBetween": [
+          "1,5",
+          "2,6"
+        ]
+      },
+      "archived": {
+        "portal": "0,7",
+        "accesses": [
+          "2,6",
+          "1,5",
+          "0,4"
+        ],
+        "activeTraps": [
+          "5,1",
+          "2,0",
+          "2,4"
+        ],
+        "lightsLeft": 1,
+        "alternatingBetween": [
+          "1,5",
+          "2,6"
+        ]
+      },
+      "checks": {
+        "portal": true,
+        "accesses": true,
+        "activeTraps": true,
+        "lightsLeft": true,
+        "alternatingBetween": true
+      },
+      "metadataMatchesArchive": true,
+      "packedKey": 100635359,
+      "presentInInitialReachableGraph": true,
+      "nodeId": 42677,
+      "exactClassificationAvailable": true,
+      "existential": true,
+      "guaranteed": false,
+      "winningExit": true,
+      "deadRegion": false,
+      "trapState": 7,
+      "sentinelCommitment": {
+        "targetAccess": 1,
+        "commitTurnsRemaining": 3
+      },
+      "component": {
+        "componentId": 2910,
+        "closedNonWinning": false,
+        "statesIfClosed": null
+      }
+    },
+    "scc": {
+      "completeGraph": true,
+      "componentCount": 3240,
+      "largestComponentStates": 7735,
+      "cyclicComponents": 40,
+      "closedNonWinningComponents": [
+        {
+          "componentId": 7,
+          "states": 1
+        },
+        {
+          "componentId": 8,
+          "states": 1
+        },
+        {
+          "componentId": 9,
+          "states": 1
+        },
+        {
+          "componentId": 10,
+          "states": 1
+        },
+        {
+          "componentId": 26,
+          "states": 1
+        },
+        {
+          "componentId": 27,
+          "states": 1
+        },
+        {
+          "componentId": 58,
+          "states": 1
+        },
+        {
+          "componentId": 74,
+          "states": 1
+        },
+        {
+          "componentId": 107,
+          "states": 1
+        },
+        {
+          "componentId": 108,
+          "states": 1
+        },
+        {
+          "componentId": 115,
+          "states": 1
+        },
+        {
+          "componentId": 116,
+          "states": 1
+        },
+        {
+          "componentId": 117,
+          "states": 1
+        },
+        {
+          "componentId": 118,
+          "states": 1
+        },
+        {
+          "componentId": 123,
+          "states": 1
+        },
+        {
+          "componentId": 125,
+          "states": 1
+        },
+        {
+          "componentId": 128,
+          "states": 1
+        },
+        {
+          "componentId": 132,
+          "states": 1
+        },
+        {
+          "componentId": 148,
+          "states": 1
+        },
+        {
+          "componentId": 178,
+          "states": 1
+        },
+        {
+          "componentId": 185,
+          "states": 1
+        },
+        {
+          "componentId": 211,
+          "states": 1
+        },
+        {
+          "componentId": 226,
+          "states": 1
+        },
+        {
+          "componentId": 227,
+          "states": 1
+        },
+        {
+          "componentId": 230,
+          "states": 1
+        },
+        {
+          "componentId": 232,
+          "states": 1
+        },
+        {
+          "componentId": 233,
+          "states": 1
+        },
+        {
+          "componentId": 234,
+          "states": 1
+        },
+        {
+          "componentId": 235,
+          "states": 1
+        },
+        {
+          "componentId": 237,
+          "states": 1
+        },
+        {
+          "componentId": 239,
+          "states": 1
+        },
+        {
+          "componentId": 248,
+          "states": 1
+        },
+        {
+          "componentId": 249,
+          "states": 1
+        },
+        {
+          "componentId": 256,
+          "states": 1
+        },
+        {
+          "componentId": 272,
+          "states": 1
+        },
+        {
+          "componentId": 300,
+          "states": 1
+        },
+        {
+          "componentId": 320,
+          "states": 1
+        },
+        {
+          "componentId": 338,
+          "states": 1
+        },
+        {
+          "componentId": 339,
+          "states": 1
+        },
+        {
+          "componentId": 340,
+          "states": 1
+        },
+        {
+          "componentId": 341,
+          "states": 1
+        },
+        {
+          "componentId": 349,
+          "states": 1
+        },
+        {
+          "componentId": 351,
+          "states": 1
+        },
+        {
+          "componentId": 352,
+          "states": 1
+        },
+        {
+          "componentId": 353,
+          "states": 1
+        },
+        {
+          "componentId": 354,
+          "states": 1
+        },
+        {
+          "componentId": 359,
+          "states": 1
+        },
+        {
+          "componentId": 366,
+          "states": 1
+        },
+        {
+          "componentId": 373,
+          "states": 1
+        },
+        {
+          "componentId": 411,
+          "states": 1
+        },
+        {
+          "componentId": 431,
+          "states": 1
+        },
+        {
+          "componentId": 447,
+          "states": 1
+        },
+        {
+          "componentId": 452,
+          "states": 1
+        },
+        {
+          "componentId": 453,
+          "states": 1
+        },
+        {
+          "componentId": 454,
+          "states": 1
+        },
+        {
+          "componentId": 455,
+          "states": 1
+        },
+        {
+          "componentId": 459,
+          "states": 1
+        },
+        {
+          "componentId": 461,
+          "states": 1
+        },
+        {
+          "componentId": 462,
+          "states": 1
+        },
+        {
+          "componentId": 463,
+          "states": 1
+        },
+        {
+          "componentId": 464,
+          "states": 1
+        },
+        {
+          "componentId": 466,
+          "states": 1
+        },
+        {
+          "componentId": 467,
+          "states": 1
+        },
+        {
+          "componentId": 468,
+          "states": 1
+        },
+        {
+          "componentId": 470,
+          "states": 1
+        },
+        {
+          "componentId": 499,
+          "states": 1
+        },
+        {
+          "componentId": 522,
+          "states": 1
+        },
+        {
+          "componentId": 523,
+          "states": 1
+        },
+        {
+          "componentId": 524,
+          "states": 1
+        },
+        {
+          "componentId": 525,
+          "states": 1
+        },
+        {
+          "componentId": 538,
+          "states": 1
+        },
+        {
+          "componentId": 541,
+          "states": 1
+        },
+        {
+          "componentId": 566,
+          "states": 1
+        },
+        {
+          "componentId": 649,
+          "states": 1
+        },
+        {
+          "componentId": 650,
+          "states": 1
+        },
+        {
+          "componentId": 665,
+          "states": 1
+        },
+        {
+          "componentId": 666,
+          "states": 1
+        },
+        {
+          "componentId": 712,
+          "states": 1
+        },
+        {
+          "componentId": 713,
+          "states": 1
+        },
+        {
+          "componentId": 714,
+          "states": 1
+        },
+        {
+          "componentId": 715,
+          "states": 1
+        },
+        {
+          "componentId": 719,
+          "states": 1
+        },
+        {
+          "componentId": 727,
+          "states": 1
+        },
+        {
+          "componentId": 728,
+          "states": 1
+        },
+        {
+          "componentId": 729,
+          "states": 1
+        },
+        {
+          "componentId": 730,
+          "states": 1
+        },
+        {
+          "componentId": 731,
+          "states": 1
+        },
+        {
+          "componentId": 734,
+          "states": 1
+        },
+        {
+          "componentId": 757,
+          "states": 1
+        },
+        {
+          "componentId": 781,
+          "states": 1
+        },
+        {
+          "componentId": 782,
+          "states": 1
+        },
+        {
+          "componentId": 783,
+          "states": 1
+        },
+        {
+          "componentId": 790,
+          "states": 1
+        },
+        {
+          "componentId": 797,
+          "states": 1
+        },
+        {
+          "componentId": 800,
+          "states": 1
+        },
+        {
+          "componentId": 826,
+          "states": 1
+        },
+        {
+          "componentId": 923,
+          "states": 1
+        },
+        {
+          "componentId": 924,
+          "states": 1
+        },
+        {
+          "componentId": 940,
+          "states": 1
+        },
+        {
+          "componentId": 950,
+          "states": 1
+        }
+      ],
+      "closedNonWinningComponentCount": 360,
+      "closedNonWinningStates": 360,
+      "elapsedMs": 56.1449999999968
+    },
+    "trapAnalysis": {
+      "classification": "TRAP_OPTIONAL_PRE_CHEST",
+      "mainExistential": true,
+      "mainGuaranteed": false,
+      "noTrapExistential": true,
+      "noTrapGuaranteed": false,
+      "noTrapStates": 63739,
+      "noTrapTransitions": 462188,
+      "noTrapTruncated": false,
+      "noTrapResourceLimit": null,
+      "noTrapElapsedMs": 371.62160000000586
+    }
+  }
+}

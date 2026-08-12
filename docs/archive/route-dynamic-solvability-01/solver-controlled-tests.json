@@ -1,0 +1,60 @@
+{
+  "mission": "ROTA-DYNAMIC-SOLVABILITY-01",
+  "PRE_CHEST_BASELINE": true,
+  "note": "Observed on the run of 2026-08-11. The runner writes this file after the suspect-seed loop, which exceeded its budget, so the values are transcribed from that run console output.",
+  "fixtures": [
+    {
+      "id": "A/D",
+      "name": "Desafiador: deterministico vs empate",
+      "pass": true,
+      "deterministicStates": 15,
+      "tiedStates": 13
+    },
+    {
+      "id": "B/C",
+      "name": "Aberto/Equilibrado enumeram todos os vizinhos",
+      "pass": true,
+      "support": 3,
+      "neighbours": 3
+    },
+    {
+      "id": "F",
+      "name": "trap armada nunca aparece no suporte",
+      "pass": true,
+      "trap": "2,0",
+      "supportSize": 19
+    },
+    {
+      "id": "E",
+      "name": "Sentinela nao ramifica",
+      "pass": true,
+      "note": "decideSentinelMove is pure; one outcome per Hunter branch"
+    },
+    {
+      "id": "I/J",
+      "name": "estado canonico carrega traps e commit",
+      "pass": true,
+      "state": "8,0|1,4|1,8|-1|0|0|0"
+    }
+  ],
+  "allPass": true,
+  "notCovered": [
+    "G — branch causing capture vs branch not, as an explicit fixture",
+    "H — multiple traps as an explicit fixture"
+  ],
+  "encodingEquivalence": {
+    "statesTested": 36009,
+    "roundTripMismatches": 0,
+    "falseMerges": 0,
+    "falseSplits": 0
+  },
+  "successorSetEquivalence": {
+    "pairsTested": 6480,
+    "mismatches": 0
+  },
+  "attractorEquivalence": {
+    "statesCompared": 5263,
+    "existentialMismatches": 0,
+    "guaranteedMismatches": 0
+  }
+}

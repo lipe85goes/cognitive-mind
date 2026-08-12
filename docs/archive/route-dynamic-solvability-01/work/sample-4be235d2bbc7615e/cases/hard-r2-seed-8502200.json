@@ -1,0 +1,645 @@
+{
+  "mission": "ROTA-DYNAMIC-SOLVABILITY-01",
+  "PRE_CHEST_BASELINE": true,
+  "campaignId": "sample-4be235d2bbc7615e",
+  "solverRuntimeContractHash": "f87a692add561819d8e2fe4c45bcb0d5fe2eb5a85b32ffbfe0a21572b41fd8aa",
+  "configHash": "d18be9acfe80cb78e482ad7e0c32bdce225f98794252eb8c563d27762951c956",
+  "completedAt": "2026-08-12T04:43:21.835Z",
+  "result": {
+    "mission": "ROTA-DYNAMIC-SOLVABILITY-01",
+    "PRE_CHEST_BASELINE": true,
+    "seed": 8502200,
+    "route": 2,
+    "mode": "hard",
+    "limits": {
+      "maxStates": 300000,
+      "maxTransitions": 12000000,
+      "maxFrontier": 400000,
+      "maxMemoryBytes": 536870912,
+      "maxElapsedMs": 60000
+    },
+    "stateContract": {
+      "boardCells": 81,
+      "accessCount": 2,
+      "lightCount": 5,
+      "trapCount": 5,
+      "commitValues": 4,
+      "componentBits": {
+        "explorerPosition": 7,
+        "hunterPosition": 7,
+        "sentinelPosition": 7,
+        "committedAccess": 2,
+        "commitTurnsRemaining": 2,
+        "collectedLights": 5,
+        "activeTraps": 5
+      },
+      "conservativeBitSum": 35,
+      "mixedRadixStateCardinality": 6530347008,
+      "maximumPackedKey": 6530347007,
+      "mixedRadixRequiredBits": 33,
+      "numberSafe": true
+    },
+    "classification": "POSSIBLE_BUT_NOT_GUARANTEED_PRE_CHEST",
+    "initial": {
+      "existential": true,
+      "guaranteed": false
+    },
+    "states": 75922,
+    "processedStates": 75922,
+    "transitions": 266288,
+    "truncated": false,
+    "resourceLimit": null,
+    "frontier": 0,
+    "peakFrontier": 3832,
+    "elapsedMs": 426.1966000000248,
+    "graphElapsedMs": 305.50380000000587,
+    "solveProfile": {
+      "predecessorBuildMs": 4.645500000013271,
+      "existentialMs": 2.704200000007404,
+      "guaranteedMs": 1.9909000000043306,
+      "totalMs": 9.370900000008987
+    },
+    "memory": {
+      "typedArrayBytes": 7733248,
+      "estimatedMapBytes": 3036880,
+      "estimatedTotalBytes": 10770128
+    },
+    "shortestExistentialWitness": [
+      {
+        "action": "UP",
+        "state": "7,0|2,4|0,8|-1|0|0|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "7,1|3,4|0,8|-1|0|0|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "7,2|4,4|0,8|-1|0|0|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "7,3|4,3|0,8|-1|0|0|0"
+      },
+      {
+        "action": "UP",
+        "state": "6,3|4,4|0,8|-1|0|0|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "6,4|4,5|0,8|-1|0|0|0"
+      },
+      {
+        "action": "DOWN",
+        "state": "7,4|5,5|0,8|-1|0|0|0"
+      },
+      {
+        "action": "LEFT",
+        "state": "7,3|4,5|0,8|-1|0|0|0"
+      },
+      {
+        "action": "LEFT",
+        "state": "7,2|5,5|0,8|-1|0|0|0"
+      },
+      {
+        "action": "LEFT",
+        "state": "7,1|4,5|0,8|-1|0|0|0"
+      },
+      {
+        "action": "UP",
+        "state": "6,1|5,5|0,8|-1|0|0|0"
+      },
+      {
+        "action": "UP",
+        "state": "5,1|4,5|0,8|-1|0|0|2"
+      },
+      {
+        "action": "UP",
+        "state": "4,1|4,4|0,8|-1|0|0|2"
+      },
+      {
+        "action": "RIGHT",
+        "state": "4,2|4,3|0,7|1|3|16|2"
+      },
+      {
+        "action": "DOWN",
+        "state": "5,2|4,2|1,7|-1|0|16|2"
+      },
+      {
+        "action": "LEFT",
+        "state": "5,1|5,2|1,7|-1|0|16|2"
+      },
+      {
+        "action": "DOWN",
+        "state": "6,1|4,2|1,7|-1|0|16|2"
+      },
+      {
+        "action": "DOWN",
+        "state": "7,1|5,2|1,7|-1|0|16|2"
+      },
+      {
+        "action": "RIGHT",
+        "state": "7,2|4,2|1,7|-1|0|16|2"
+      },
+      {
+        "action": "RIGHT",
+        "state": "7,3|5,2|1,7|-1|0|16|2"
+      },
+      {
+        "action": "RIGHT",
+        "state": "7,4|4,2|1,7|-1|0|16|2"
+      },
+      {
+        "action": "DOWN",
+        "state": "8,4|5,2|1,7|-1|0|16|2"
+      },
+      {
+        "action": "RIGHT",
+        "state": "8,5|4,2|1,7|-1|0|16|2"
+      },
+      {
+        "action": "RIGHT",
+        "state": "8,6|5,2|1,7|0|3|16|2"
+      },
+      {
+        "action": "UP",
+        "state": "7,6|4,2|1,7|0|2|16|2"
+      },
+      {
+        "action": "RIGHT",
+        "state": "7,7|5,2|1,7|0|1|24|2"
+      },
+      {
+        "action": "UP",
+        "state": "6,7|4,2|1,7|0|0|24|2"
+      },
+      {
+        "action": "RIGHT",
+        "state": "6,8|5,2|1,7|0|3|26|2"
+      },
+      {
+        "action": "UP",
+        "state": "5,8|4,2|1,7|0|2|26|2"
+      },
+      {
+        "action": "UP",
+        "state": "4,8|4,3|1,7|0|1|26|2"
+      },
+      {
+        "action": "UP",
+        "state": "3,8|3,3|1,7|0|0|30|2"
+      },
+      {
+        "action": "UP",
+        "state": "2,8|3,4|1,7|0|3|30|2"
+      },
+      {
+        "action": "UP",
+        "state": "1,8|2,4|1,7|0|2|30|2"
+      },
+      {
+        "action": "UP",
+        "state": "0,8|2,5|1,7|0|1|30|2"
+      },
+      {
+        "action": "LEFT",
+        "state": "0,7|1,5|1,7|0|0|31|2"
+      },
+      {
+        "action": "RIGHT",
+        "state": "0,8|0,5|1,7|0|3|31|2"
+      },
+      {
+        "action": "DOWN",
+        "state": "WIN"
+      }
+    ],
+    "shortestExistentialWin": 37,
+    "guaranteedPolicy": null,
+    "witnessMetrics": {
+      "turns": 37,
+      "accessSwitches": 3,
+      "trapActivations": 1,
+      "revisitedExplorerCells": 7,
+      "backtrackingOrRevisits": true
+    },
+    "reachableWinning": 74920,
+    "reachableNonWinning": 1002,
+    "auxiliaryClassifications": [
+      "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+    ],
+    "suspicious": null,
+    "scc": {
+      "completeGraph": true,
+      "componentCount": 7885,
+      "largestComponentStates": 613,
+      "cyclicComponents": 984,
+      "closedNonWinningComponents": [
+        {
+          "componentId": 50,
+          "states": 1
+        },
+        {
+          "componentId": 51,
+          "states": 1
+        },
+        {
+          "componentId": 55,
+          "states": 1
+        },
+        {
+          "componentId": 56,
+          "states": 1
+        },
+        {
+          "componentId": 59,
+          "states": 1
+        },
+        {
+          "componentId": 62,
+          "states": 1
+        },
+        {
+          "componentId": 67,
+          "states": 1
+        },
+        {
+          "componentId": 68,
+          "states": 1
+        },
+        {
+          "componentId": 70,
+          "states": 1
+        },
+        {
+          "componentId": 72,
+          "states": 1
+        },
+        {
+          "componentId": 74,
+          "states": 1
+        },
+        {
+          "componentId": 76,
+          "states": 1
+        },
+        {
+          "componentId": 87,
+          "states": 1
+        },
+        {
+          "componentId": 89,
+          "states": 1
+        },
+        {
+          "componentId": 92,
+          "states": 1
+        },
+        {
+          "componentId": 96,
+          "states": 1
+        },
+        {
+          "componentId": 98,
+          "states": 1
+        },
+        {
+          "componentId": 99,
+          "states": 1
+        },
+        {
+          "componentId": 100,
+          "states": 1
+        },
+        {
+          "componentId": 122,
+          "states": 1
+        },
+        {
+          "componentId": 123,
+          "states": 1
+        },
+        {
+          "componentId": 127,
+          "states": 1
+        },
+        {
+          "componentId": 128,
+          "states": 1
+        },
+        {
+          "componentId": 131,
+          "states": 1
+        },
+        {
+          "componentId": 134,
+          "states": 1
+        },
+        {
+          "componentId": 139,
+          "states": 1
+        },
+        {
+          "componentId": 140,
+          "states": 1
+        },
+        {
+          "componentId": 142,
+          "states": 1
+        },
+        {
+          "componentId": 144,
+          "states": 1
+        },
+        {
+          "componentId": 146,
+          "states": 1
+        },
+        {
+          "componentId": 148,
+          "states": 1
+        },
+        {
+          "componentId": 159,
+          "states": 1
+        },
+        {
+          "componentId": 161,
+          "states": 1
+        },
+        {
+          "componentId": 164,
+          "states": 1
+        },
+        {
+          "componentId": 168,
+          "states": 1
+        },
+        {
+          "componentId": 170,
+          "states": 1
+        },
+        {
+          "componentId": 171,
+          "states": 1
+        },
+        {
+          "componentId": 172,
+          "states": 1
+        },
+        {
+          "componentId": 290,
+          "states": 1
+        },
+        {
+          "componentId": 509,
+          "states": 1
+        },
+        {
+          "componentId": 512,
+          "states": 1
+        },
+        {
+          "componentId": 517,
+          "states": 1
+        },
+        {
+          "componentId": 524,
+          "states": 1
+        },
+        {
+          "componentId": 526,
+          "states": 1
+        },
+        {
+          "componentId": 528,
+          "states": 1
+        },
+        {
+          "componentId": 537,
+          "states": 1
+        },
+        {
+          "componentId": 540,
+          "states": 1
+        },
+        {
+          "componentId": 545,
+          "states": 1
+        },
+        {
+          "componentId": 552,
+          "states": 1
+        },
+        {
+          "componentId": 554,
+          "states": 1
+        },
+        {
+          "componentId": 556,
+          "states": 1
+        },
+        {
+          "componentId": 998,
+          "states": 1
+        },
+        {
+          "componentId": 1000,
+          "states": 1
+        },
+        {
+          "componentId": 1131,
+          "states": 1
+        },
+        {
+          "componentId": 1134,
+          "states": 1
+        },
+        {
+          "componentId": 1136,
+          "states": 1
+        },
+        {
+          "componentId": 1215,
+          "states": 1
+        },
+        {
+          "componentId": 1217,
+          "states": 1
+        },
+        {
+          "componentId": 1348,
+          "states": 1
+        },
+        {
+          "componentId": 1351,
+          "states": 1
+        },
+        {
+          "componentId": 1353,
+          "states": 1
+        },
+        {
+          "componentId": 1629,
+          "states": 1
+        },
+        {
+          "componentId": 1630,
+          "states": 1
+        },
+        {
+          "componentId": 1634,
+          "states": 1
+        },
+        {
+          "componentId": 1635,
+          "states": 1
+        },
+        {
+          "componentId": 1638,
+          "states": 1
+        },
+        {
+          "componentId": 1641,
+          "states": 1
+        },
+        {
+          "componentId": 1648,
+          "states": 1
+        },
+        {
+          "componentId": 1650,
+          "states": 1
+        },
+        {
+          "componentId": 1653,
+          "states": 1
+        },
+        {
+          "componentId": 1655,
+          "states": 1
+        },
+        {
+          "componentId": 1736,
+          "states": 1
+        },
+        {
+          "componentId": 1739,
+          "states": 1
+        },
+        {
+          "componentId": 1744,
+          "states": 1
+        },
+        {
+          "componentId": 1751,
+          "states": 1
+        },
+        {
+          "componentId": 1753,
+          "states": 1
+        },
+        {
+          "componentId": 1755,
+          "states": 1
+        },
+        {
+          "componentId": 1759,
+          "states": 1
+        },
+        {
+          "componentId": 1762,
+          "states": 1
+        },
+        {
+          "componentId": 1764,
+          "states": 1
+        },
+        {
+          "componentId": 1770,
+          "states": 1
+        },
+        {
+          "componentId": 1773,
+          "states": 1
+        },
+        {
+          "componentId": 1775,
+          "states": 1
+        },
+        {
+          "componentId": 1784,
+          "states": 1
+        },
+        {
+          "componentId": 1787,
+          "states": 1
+        },
+        {
+          "componentId": 1792,
+          "states": 1
+        },
+        {
+          "componentId": 1799,
+          "states": 1
+        },
+        {
+          "componentId": 1801,
+          "states": 1
+        },
+        {
+          "componentId": 1803,
+          "states": 1
+        },
+        {
+          "componentId": 1807,
+          "states": 1
+        },
+        {
+          "componentId": 1810,
+          "states": 1
+        },
+        {
+          "componentId": 1812,
+          "states": 1
+        },
+        {
+          "componentId": 1816,
+          "states": 1
+        },
+        {
+          "componentId": 1818,
+          "states": 1
+        },
+        {
+          "componentId": 1820,
+          "states": 1
+        },
+        {
+          "componentId": 1824,
+          "states": 1
+        },
+        {
+          "componentId": 1826,
+          "states": 1
+        },
+        {
+          "componentId": 1827,
+          "states": 1
+        },
+        {
+          "componentId": 1834,
+          "states": 1
+        },
+        {
+          "componentId": 1838,
+          "states": 1
+        }
+      ],
+      "closedNonWinningComponentCount": 438,
+      "closedNonWinningStates": 438,
+      "elapsedMs": 12.997100000007777
+    },
+    "trapAnalysis": null
+  }
+}

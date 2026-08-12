@@ -1,0 +1,170 @@
+{
+  "mission": "ROTA-DYNAMIC-SOLVABILITY-01",
+  "PRE_CHEST_BASELINE": true,
+  "campaignId": "sample-4be235d2bbc7615e",
+  "solverRuntimeContractHash": "f87a692add561819d8e2fe4c45bcb0d5fe2eb5a85b32ffbfe0a21572b41fd8aa",
+  "configHash": "d18be9acfe80cb78e482ad7e0c32bdce225f98794252eb8c563d27762951c956",
+  "completedAt": "2026-08-12T04:41:32.529Z",
+  "result": {
+    "mission": "ROTA-DYNAMIC-SOLVABILITY-01",
+    "PRE_CHEST_BASELINE": true,
+    "seed": 8501113,
+    "route": 1,
+    "mode": "medium",
+    "limits": {
+      "maxStates": 300000,
+      "maxTransitions": 12000000,
+      "maxFrontier": 400000,
+      "maxMemoryBytes": 536870912,
+      "maxElapsedMs": 60000
+    },
+    "stateContract": {
+      "boardCells": 81,
+      "accessCount": 2,
+      "lightCount": 4,
+      "trapCount": 3,
+      "commitValues": 4,
+      "componentBits": {
+        "explorerPosition": 7,
+        "hunterPosition": 7,
+        "sentinelPosition": 7,
+        "committedAccess": 2,
+        "commitTurnsRemaining": 2,
+        "collectedLights": 4,
+        "activeTraps": 3
+      },
+      "conservativeBitSum": 32,
+      "mixedRadixStateCardinality": 816293376,
+      "maximumPackedKey": 816293375,
+      "mixedRadixRequiredBits": 30,
+      "numberSafe": true
+    },
+    "classification": "POSSIBLE_BUT_NOT_GUARANTEED_PRE_CHEST",
+    "initial": {
+      "existential": true,
+      "guaranteed": false
+    },
+    "states": 266333,
+    "processedStates": 266333,
+    "transitions": 1801037,
+    "truncated": false,
+    "resourceLimit": null,
+    "frontier": 0,
+    "peakFrontier": 18682,
+    "elapsedMs": 1721.027399999999,
+    "graphElapsedMs": 1487.2891000000018,
+    "solveProfile": {
+      "predecessorBuildMs": 22.107100000001083,
+      "existentialMs": 19.25970000000234,
+      "guaranteedMs": 8.22609999999986,
+      "totalMs": 57.86329999999725
+    },
+    "memory": {
+      "typedArrayBytes": 35127296,
+      "estimatedMapBytes": 10653320,
+      "estimatedTotalBytes": 45780616
+    },
+    "shortestExistentialWitness": [
+      {
+        "action": "UP",
+        "state": "7,0|0,2|1,7|-1|0|0|0"
+      },
+      {
+        "action": "UP",
+        "state": "6,0|1,2|1,7|-1|0|0|0"
+      },
+      {
+        "action": "UP",
+        "state": "5,0|0,2|1,7|-1|0|0|0"
+      },
+      {
+        "action": "UP",
+        "state": "4,0|1,2|1,7|0|3|0|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "4,1|0,2|1,7|0|2|1|0"
+      },
+      {
+        "action": "DOWN",
+        "state": "5,1|1,2|1,7|0|1|1|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "5,2|0,2|1,7|0|0|5|0"
+      },
+      {
+        "action": "DOWN",
+        "state": "6,2|1,2|1,7|0|3|5|0"
+      },
+      {
+        "action": "DOWN",
+        "state": "7,2|0,2|1,7|-1|0|13|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "7,3|1,2|1,7|0|3|13|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "7,4|0,2|1,7|0|2|15|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "7,5|1,2|1,7|0|1|15|0"
+      },
+      {
+        "action": "UP",
+        "state": "6,5|0,2|1,7|0|0|15|0"
+      },
+      {
+        "action": "UP",
+        "state": "5,5|1,2|1,7|0|3|15|0"
+      },
+      {
+        "action": "UP",
+        "state": "4,5|0,2|1,7|0|2|15|0"
+      },
+      {
+        "action": "UP",
+        "state": "3,5|1,2|1,7|0|1|15|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "3,6|0,2|1,7|0|0|15|0"
+      },
+      {
+        "action": "UP",
+        "state": "2,6|1,2|1,7|0|3|15|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "WIN"
+      }
+    ],
+    "shortestExistentialWin": 19,
+    "guaranteedPolicy": null,
+    "witnessMetrics": {
+      "turns": 19,
+      "accessSwitches": 3,
+      "trapActivations": 0,
+      "revisitedExplorerCells": 0,
+      "backtrackingOrRevisits": false
+    },
+    "reachableWinning": 266333,
+    "reachableNonWinning": 0,
+    "auxiliaryClassifications": [],
+    "suspicious": null,
+    "scc": {
+      "completeGraph": true,
+      "componentCount": 595,
+      "largestComponentStates": 3687,
+      "cyclicComponents": 85,
+      "closedNonWinningComponents": [],
+      "closedNonWinningComponentCount": 0,
+      "closedNonWinningStates": 0,
+      "elapsedMs": 134.44460000000254
+    },
+    "trapAnalysis": null
+  }
+}

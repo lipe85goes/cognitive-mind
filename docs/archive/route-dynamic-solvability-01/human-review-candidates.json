@@ -1,0 +1,3236 @@
+{
+  "mission": "ROTA-DYNAMIC-SOLVABILITY-01",
+  "PRE_CHEST_BASELINE": true,
+  "thresholdsFinalized": false,
+  "metricsOnly": true,
+  "candidates": [
+    {
+      "source": "suspect",
+      "seed": 8801204,
+      "route": 1,
+      "mode": "hard",
+      "classification": "GUARANTEED_SOLVABLE_PRE_CHEST",
+      "shortestWin": 31,
+      "guaranteedFirstAction": "RIGHT",
+      "reachableNonWinning": 5012,
+      "witnessMetrics": {
+        "turns": 31,
+        "accessSwitches": 4,
+        "trapActivations": 3,
+        "revisitedExplorerCells": 0,
+        "backtrackingOrRevisits": false
+      },
+      "auxiliaryClassifications": [
+        "AGENT_OSCILLATION_WITH_LUCK_DEPENDENCE",
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "suspect",
+      "seed": 8801207,
+      "route": 1,
+      "mode": "hard",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 22,
+      "guaranteedFirstAction": "UP",
+      "reachableNonWinning": 495376,
+      "witnessMetrics": {
+        "turns": 22,
+        "accessSwitches": 3,
+        "trapActivations": 1,
+        "revisitedExplorerCells": 2,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "suspect",
+      "seed": 8801212,
+      "route": 1,
+      "mode": "hard",
+      "classification": "GUARANTEED_SOLVABLE_PRE_CHEST",
+      "shortestWin": 28,
+      "guaranteedFirstAction": "UP",
+      "reachableNonWinning": 3618,
+      "witnessMetrics": {
+        "turns": 28,
+        "accessSwitches": 1,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 5,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": [
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "suspect",
+      "seed": 8801214,
+      "route": 1,
+      "mode": "hard",
+      "classification": "PROVED_UNSOLVABLE_PRE_CHEST",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 99430,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": [
+        "TRUE_DYNAMIC_LOCK_PRE_CHEST",
+        "INITIAL_UNSOLVABLE_PRE_CHEST",
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "suspect",
+      "seed": 8801107,
+      "route": 1,
+      "mode": "medium",
+      "classification": "PROVED_UNSOLVABLE_PRE_CHEST",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 214411,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": [
+        "TRUE_DYNAMIC_LOCK_PRE_CHEST",
+        "INITIAL_UNSOLVABLE_PRE_CHEST",
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "suspect",
+      "seed": 8801108,
+      "route": 1,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 28,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 242629,
+      "witnessMetrics": {
+        "turns": 28,
+        "accessSwitches": 10,
+        "trapActivations": 1,
+        "revisitedExplorerCells": 0,
+        "backtrackingOrRevisits": false
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "suspect",
+      "seed": 8801109,
+      "route": 1,
+      "mode": "medium",
+      "classification": "POSSIBLE_BUT_NOT_GUARANTEED_PRE_CHEST",
+      "shortestWin": 19,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 208,
+      "witnessMetrics": {
+        "turns": 19,
+        "accessSwitches": 3,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 1,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": [
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "suspect",
+      "seed": 8801110,
+      "route": 1,
+      "mode": "medium",
+      "classification": "POSSIBLE_BUT_NOT_GUARANTEED_PRE_CHEST",
+      "shortestWin": 30,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 0,
+      "witnessMetrics": {
+        "turns": 30,
+        "accessSwitches": 3,
+        "trapActivations": 2,
+        "revisitedExplorerCells": 0,
+        "backtrackingOrRevisits": false
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "suspect",
+      "seed": 8801008,
+      "route": 1,
+      "mode": "easy",
+      "classification": "POSSIBLE_BUT_NOT_GUARANTEED_PRE_CHEST",
+      "shortestWin": 21,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 700,
+      "witnessMetrics": {
+        "turns": 21,
+        "accessSwitches": 3,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 0,
+        "backtrackingOrRevisits": false
+      },
+      "auxiliaryClassifications": [
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "suspect",
+      "seed": 8801012,
+      "route": 1,
+      "mode": "easy",
+      "classification": "POSSIBLE_BUT_NOT_GUARANTEED_PRE_CHEST",
+      "shortestWin": 21,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 0,
+      "witnessMetrics": {
+        "turns": 21,
+        "accessSwitches": 4,
+        "trapActivations": 1,
+        "revisitedExplorerCells": 0,
+        "backtrackingOrRevisits": false
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "suspect",
+      "seed": 8801014,
+      "route": 1,
+      "mode": "easy",
+      "classification": "POSSIBLE_BUT_NOT_GUARANTEED_PRE_CHEST",
+      "shortestWin": 19,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 26,
+      "witnessMetrics": {
+        "turns": 19,
+        "accessSwitches": 3,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 0,
+        "backtrackingOrRevisits": false
+      },
+      "auxiliaryClassifications": [
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "suspect",
+      "seed": 8802000,
+      "route": 2,
+      "mode": "easy",
+      "classification": "POSSIBLE_BUT_NOT_GUARANTEED_PRE_CHEST",
+      "shortestWin": 41,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 360,
+      "witnessMetrics": {
+        "turns": 41,
+        "accessSwitches": 5,
+        "trapActivations": 2,
+        "revisitedExplorerCells": 6,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": [
+        "AGENT_OSCILLATION_WITH_LUCK_DEPENDENCE",
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "sample",
+      "seed": 8501000,
+      "route": 1,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 19,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 137712,
+      "witnessMetrics": {
+        "turns": 19,
+        "accessSwitches": 3,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 0,
+        "backtrackingOrRevisits": false
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501001,
+      "route": 1,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 21,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 76493,
+      "witnessMetrics": {
+        "turns": 21,
+        "accessSwitches": 4,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 0,
+        "backtrackingOrRevisits": false
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501002,
+      "route": 1,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 19,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 161204,
+      "witnessMetrics": {
+        "turns": 19,
+        "accessSwitches": 3,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 0,
+        "backtrackingOrRevisits": false
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501003,
+      "route": 1,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 23,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 155520,
+      "witnessMetrics": {
+        "turns": 23,
+        "accessSwitches": 2,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 3,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501004,
+      "route": 1,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 19,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 150168,
+      "witnessMetrics": {
+        "turns": 19,
+        "accessSwitches": 3,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 0,
+        "backtrackingOrRevisits": false
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501005,
+      "route": 1,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 19,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 128189,
+      "witnessMetrics": {
+        "turns": 19,
+        "accessSwitches": 3,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 0,
+        "backtrackingOrRevisits": false
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501006,
+      "route": 1,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 19,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 129909,
+      "witnessMetrics": {
+        "turns": 19,
+        "accessSwitches": 3,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 0,
+        "backtrackingOrRevisits": false
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501007,
+      "route": 1,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 24,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 131347,
+      "witnessMetrics": {
+        "turns": 24,
+        "accessSwitches": 5,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 1,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501008,
+      "route": 1,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 19,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 141641,
+      "witnessMetrics": {
+        "turns": 19,
+        "accessSwitches": 3,
+        "trapActivations": 1,
+        "revisitedExplorerCells": 0,
+        "backtrackingOrRevisits": false
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501009,
+      "route": 1,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 19,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 76851,
+      "witnessMetrics": {
+        "turns": 19,
+        "accessSwitches": 3,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 0,
+        "backtrackingOrRevisits": false
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501010,
+      "route": 1,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 19,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 78272,
+      "witnessMetrics": {
+        "turns": 19,
+        "accessSwitches": 3,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 0,
+        "backtrackingOrRevisits": false
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501011,
+      "route": 1,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 19,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 115218,
+      "witnessMetrics": {
+        "turns": 19,
+        "accessSwitches": 3,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 0,
+        "backtrackingOrRevisits": false
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501012,
+      "route": 1,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 21,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 66330,
+      "witnessMetrics": {
+        "turns": 21,
+        "accessSwitches": 4,
+        "trapActivations": 1,
+        "revisitedExplorerCells": 0,
+        "backtrackingOrRevisits": false
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501013,
+      "route": 1,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 19,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 50814,
+      "witnessMetrics": {
+        "turns": 19,
+        "accessSwitches": 4,
+        "trapActivations": 1,
+        "revisitedExplorerCells": 0,
+        "backtrackingOrRevisits": false
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501014,
+      "route": 1,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 23,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 169452,
+      "witnessMetrics": {
+        "turns": 23,
+        "accessSwitches": 2,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 3,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501015,
+      "route": 1,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 19,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 167335,
+      "witnessMetrics": {
+        "turns": 19,
+        "accessSwitches": 4,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 0,
+        "backtrackingOrRevisits": false
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501016,
+      "route": 1,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 19,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 125380,
+      "witnessMetrics": {
+        "turns": 19,
+        "accessSwitches": 3,
+        "trapActivations": 1,
+        "revisitedExplorerCells": 0,
+        "backtrackingOrRevisits": false
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501017,
+      "route": 1,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 19,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 83095,
+      "witnessMetrics": {
+        "turns": 19,
+        "accessSwitches": 4,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 0,
+        "backtrackingOrRevisits": false
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501018,
+      "route": 1,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 19,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 144962,
+      "witnessMetrics": {
+        "turns": 19,
+        "accessSwitches": 3,
+        "trapActivations": 1,
+        "revisitedExplorerCells": 0,
+        "backtrackingOrRevisits": false
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501019,
+      "route": 1,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 19,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 25297,
+      "witnessMetrics": {
+        "turns": 19,
+        "accessSwitches": 4,
+        "trapActivations": 1,
+        "revisitedExplorerCells": 0,
+        "backtrackingOrRevisits": false
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501100,
+      "route": 1,
+      "mode": "medium",
+      "classification": "POSSIBLE_BUT_NOT_GUARANTEED_PRE_CHEST",
+      "shortestWin": 23,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 0,
+      "witnessMetrics": {
+        "turns": 23,
+        "accessSwitches": 1,
+        "trapActivations": 3,
+        "revisitedExplorerCells": 2,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501101,
+      "route": 1,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 22,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 53525,
+      "witnessMetrics": {
+        "turns": 22,
+        "accessSwitches": 2,
+        "trapActivations": 1,
+        "revisitedExplorerCells": 2,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501102,
+      "route": 1,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 22,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 209337,
+      "witnessMetrics": {
+        "turns": 22,
+        "accessSwitches": 7,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 0,
+        "backtrackingOrRevisits": false
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501103,
+      "route": 1,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 17,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 99097,
+      "witnessMetrics": {
+        "turns": 17,
+        "accessSwitches": 1,
+        "trapActivations": 2,
+        "revisitedExplorerCells": 1,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501104,
+      "route": 1,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 25,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 14986,
+      "witnessMetrics": {
+        "turns": 25,
+        "accessSwitches": 4,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 4,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501105,
+      "route": 1,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 21,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 94649,
+      "witnessMetrics": {
+        "turns": 21,
+        "accessSwitches": 3,
+        "trapActivations": 2,
+        "revisitedExplorerCells": 3,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501106,
+      "route": 1,
+      "mode": "medium",
+      "classification": "PROVED_UNSOLVABLE_PRE_CHEST",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 179729,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": [
+        "INITIAL_UNSOLVABLE_PRE_CHEST",
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "sample",
+      "seed": 8501107,
+      "route": 1,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 22,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 92430,
+      "witnessMetrics": {
+        "turns": 22,
+        "accessSwitches": 1,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 2,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501108,
+      "route": 1,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 20,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 267400,
+      "witnessMetrics": {
+        "turns": 20,
+        "accessSwitches": 7,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 1,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501109,
+      "route": 1,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 26,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 262188,
+      "witnessMetrics": {
+        "turns": 26,
+        "accessSwitches": 4,
+        "trapActivations": 2,
+        "revisitedExplorerCells": 2,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501110,
+      "route": 1,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 23,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 238664,
+      "witnessMetrics": {
+        "turns": 23,
+        "accessSwitches": 4,
+        "trapActivations": 1,
+        "revisitedExplorerCells": 3,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501111,
+      "route": 1,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 19,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 241665,
+      "witnessMetrics": {
+        "turns": 19,
+        "accessSwitches": 3,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 0,
+        "backtrackingOrRevisits": false
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501112,
+      "route": 1,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 23,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 128853,
+      "witnessMetrics": {
+        "turns": 23,
+        "accessSwitches": 3,
+        "trapActivations": 3,
+        "revisitedExplorerCells": 1,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501113,
+      "route": 1,
+      "mode": "medium",
+      "classification": "POSSIBLE_BUT_NOT_GUARANTEED_PRE_CHEST",
+      "shortestWin": 19,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 0,
+      "witnessMetrics": {
+        "turns": 19,
+        "accessSwitches": 3,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 0,
+        "backtrackingOrRevisits": false
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501114,
+      "route": 1,
+      "mode": "medium",
+      "classification": "POSSIBLE_BUT_NOT_GUARANTEED_PRE_CHEST",
+      "shortestWin": 24,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 48,
+      "witnessMetrics": {
+        "turns": 24,
+        "accessSwitches": 5,
+        "trapActivations": 1,
+        "revisitedExplorerCells": 5,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": [
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "sample",
+      "seed": 8501115,
+      "route": 1,
+      "mode": "medium",
+      "classification": "POSSIBLE_BUT_NOT_GUARANTEED_PRE_CHEST",
+      "shortestWin": 17,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 0,
+      "witnessMetrics": {
+        "turns": 17,
+        "accessSwitches": 3,
+        "trapActivations": 1,
+        "revisitedExplorerCells": 0,
+        "backtrackingOrRevisits": false
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501116,
+      "route": 1,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 28,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 146409,
+      "witnessMetrics": {
+        "turns": 28,
+        "accessSwitches": 3,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 0,
+        "backtrackingOrRevisits": false
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501117,
+      "route": 1,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 24,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 254272,
+      "witnessMetrics": {
+        "turns": 24,
+        "accessSwitches": 1,
+        "trapActivations": 1,
+        "revisitedExplorerCells": 3,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501118,
+      "route": 1,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 26,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 58788,
+      "witnessMetrics": {
+        "turns": 26,
+        "accessSwitches": 4,
+        "trapActivations": 1,
+        "revisitedExplorerCells": 5,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501119,
+      "route": 1,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 25,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 216798,
+      "witnessMetrics": {
+        "turns": 25,
+        "accessSwitches": 4,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 3,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501200,
+      "route": 1,
+      "mode": "hard",
+      "classification": "PROVED_UNSOLVABLE_PRE_CHEST",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 156952,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": [
+        "INITIAL_UNSOLVABLE_PRE_CHEST",
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "sample",
+      "seed": 8501201,
+      "route": 1,
+      "mode": "hard",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 29,
+      "guaranteedFirstAction": "RIGHT",
+      "reachableNonWinning": 146172,
+      "witnessMetrics": {
+        "turns": 29,
+        "accessSwitches": 3,
+        "trapActivations": 1,
+        "revisitedExplorerCells": 0,
+        "backtrackingOrRevisits": false
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501202,
+      "route": 1,
+      "mode": "hard",
+      "classification": "GUARANTEED_SOLVABLE_PRE_CHEST",
+      "shortestWin": 23,
+      "guaranteedFirstAction": "UP",
+      "reachableNonWinning": 1752,
+      "witnessMetrics": {
+        "turns": 23,
+        "accessSwitches": 1,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 2,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": [
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "sample",
+      "seed": 8501203,
+      "route": 1,
+      "mode": "hard",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 28,
+      "guaranteedFirstAction": "RIGHT",
+      "reachableNonWinning": 218622,
+      "witnessMetrics": {
+        "turns": 28,
+        "accessSwitches": 6,
+        "trapActivations": 1,
+        "revisitedExplorerCells": 2,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501204,
+      "route": 1,
+      "mode": "hard",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 300012,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501205,
+      "route": 1,
+      "mode": "hard",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 24,
+      "guaranteedFirstAction": "UP",
+      "reachableNonWinning": 80548,
+      "witnessMetrics": {
+        "turns": 24,
+        "accessSwitches": 3,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 2,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501206,
+      "route": 1,
+      "mode": "hard",
+      "classification": "GUARANTEED_SOLVABLE_PRE_CHEST",
+      "shortestWin": 25,
+      "guaranteedFirstAction": "UP",
+      "reachableNonWinning": 2152,
+      "witnessMetrics": {
+        "turns": 25,
+        "accessSwitches": 1,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 2,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": [
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "sample",
+      "seed": 8501207,
+      "route": 1,
+      "mode": "hard",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 22,
+      "guaranteedFirstAction": "UP",
+      "reachableNonWinning": 83476,
+      "witnessMetrics": {
+        "turns": 22,
+        "accessSwitches": 1,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 2,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501208,
+      "route": 1,
+      "mode": "hard",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 26,
+      "guaranteedFirstAction": "UP",
+      "reachableNonWinning": 141400,
+      "witnessMetrics": {
+        "turns": 26,
+        "accessSwitches": 4,
+        "trapActivations": 1,
+        "revisitedExplorerCells": 4,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501209,
+      "route": 1,
+      "mode": "hard",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 25,
+      "guaranteedFirstAction": "UP",
+      "reachableNonWinning": 274683,
+      "witnessMetrics": {
+        "turns": 25,
+        "accessSwitches": 4,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 3,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501210,
+      "route": 1,
+      "mode": "hard",
+      "classification": "GUARANTEED_SOLVABLE_PRE_CHEST",
+      "shortestWin": 23,
+      "guaranteedFirstAction": "UP",
+      "reachableNonWinning": 10263,
+      "witnessMetrics": {
+        "turns": 23,
+        "accessSwitches": 6,
+        "trapActivations": 2,
+        "revisitedExplorerCells": 0,
+        "backtrackingOrRevisits": false
+      },
+      "auxiliaryClassifications": [
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "sample",
+      "seed": 8501211,
+      "route": 1,
+      "mode": "hard",
+      "classification": "PROVED_UNSOLVABLE_PRE_CHEST",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 266374,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": [
+        "INITIAL_UNSOLVABLE_PRE_CHEST",
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "sample",
+      "seed": 8501212,
+      "route": 1,
+      "mode": "hard",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 30,
+      "guaranteedFirstAction": "RIGHT",
+      "reachableNonWinning": 82115,
+      "witnessMetrics": {
+        "turns": 30,
+        "accessSwitches": 3,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 6,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501213,
+      "route": 1,
+      "mode": "hard",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 32,
+      "guaranteedFirstAction": "RIGHT",
+      "reachableNonWinning": 82378,
+      "witnessMetrics": {
+        "turns": 32,
+        "accessSwitches": 3,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 4,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501214,
+      "route": 1,
+      "mode": "hard",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 24,
+      "guaranteedFirstAction": "UP",
+      "reachableNonWinning": 141890,
+      "witnessMetrics": {
+        "turns": 24,
+        "accessSwitches": 1,
+        "trapActivations": 1,
+        "revisitedExplorerCells": 2,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501215,
+      "route": 1,
+      "mode": "hard",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 24,
+      "guaranteedFirstAction": "UP",
+      "reachableNonWinning": 165630,
+      "witnessMetrics": {
+        "turns": 24,
+        "accessSwitches": 2,
+        "trapActivations": 1,
+        "revisitedExplorerCells": 2,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501216,
+      "route": 1,
+      "mode": "hard",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 25,
+      "guaranteedFirstAction": "UP",
+      "reachableNonWinning": 27218,
+      "witnessMetrics": {
+        "turns": 25,
+        "accessSwitches": 1,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 2,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501217,
+      "route": 1,
+      "mode": "hard",
+      "classification": "POSSIBLE_BUT_NOT_GUARANTEED_PRE_CHEST",
+      "shortestWin": 27,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 1336,
+      "witnessMetrics": {
+        "turns": 27,
+        "accessSwitches": 2,
+        "trapActivations": 2,
+        "revisitedExplorerCells": 3,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": [
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "sample",
+      "seed": 8501218,
+      "route": 1,
+      "mode": "hard",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 24,
+      "guaranteedFirstAction": "RIGHT",
+      "reachableNonWinning": 270086,
+      "witnessMetrics": {
+        "turns": 24,
+        "accessSwitches": 3,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 2,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8501219,
+      "route": 1,
+      "mode": "hard",
+      "classification": "PROVED_UNSOLVABLE_PRE_CHEST",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 295506,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": [
+        "INITIAL_UNSOLVABLE_PRE_CHEST",
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "sample",
+      "seed": 8502000,
+      "route": 2,
+      "mode": "easy",
+      "classification": "POSSIBLE_BUT_NOT_GUARANTEED_PRE_CHEST",
+      "shortestWin": 39,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 278,
+      "witnessMetrics": {
+        "turns": 39,
+        "accessSwitches": 3,
+        "trapActivations": 2,
+        "revisitedExplorerCells": 7,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": [
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "sample",
+      "seed": 8502001,
+      "route": 2,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 300114,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8502002,
+      "route": 2,
+      "mode": "easy",
+      "classification": "POSSIBLE_BUT_NOT_GUARANTEED_PRE_CHEST",
+      "shortestWin": 28,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 1365,
+      "witnessMetrics": {
+        "turns": 28,
+        "accessSwitches": 6,
+        "trapActivations": 3,
+        "revisitedExplorerCells": 4,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": [
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "sample",
+      "seed": 8502003,
+      "route": 2,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 31,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 100095,
+      "witnessMetrics": {
+        "turns": 31,
+        "accessSwitches": 3,
+        "trapActivations": 3,
+        "revisitedExplorerCells": 1,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8502004,
+      "route": 2,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 32,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 80576,
+      "witnessMetrics": {
+        "turns": 32,
+        "accessSwitches": 7,
+        "trapActivations": 2,
+        "revisitedExplorerCells": 3,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8502005,
+      "route": 2,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 28,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 7503,
+      "witnessMetrics": {
+        "turns": 28,
+        "accessSwitches": 2,
+        "trapActivations": 2,
+        "revisitedExplorerCells": 4,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8502006,
+      "route": 2,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 300181,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8502007,
+      "route": 2,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 28,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 218443,
+      "witnessMetrics": {
+        "turns": 28,
+        "accessSwitches": 5,
+        "trapActivations": 1,
+        "revisitedExplorerCells": 4,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8502008,
+      "route": 2,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 300050,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8502009,
+      "route": 2,
+      "mode": "easy",
+      "classification": "POSSIBLE_BUT_NOT_GUARANTEED_PRE_CHEST",
+      "shortestWin": 37,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 0,
+      "witnessMetrics": {
+        "turns": 37,
+        "accessSwitches": 3,
+        "trapActivations": 1,
+        "revisitedExplorerCells": 5,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8502010,
+      "route": 2,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 31,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 143927,
+      "witnessMetrics": {
+        "turns": 31,
+        "accessSwitches": 5,
+        "trapActivations": 2,
+        "revisitedExplorerCells": 3,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8502011,
+      "route": 2,
+      "mode": "easy",
+      "classification": "POSSIBLE_BUT_NOT_GUARANTEED_PRE_CHEST",
+      "shortestWin": 25,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 60,
+      "witnessMetrics": {
+        "turns": 25,
+        "accessSwitches": 4,
+        "trapActivations": 3,
+        "revisitedExplorerCells": 0,
+        "backtrackingOrRevisits": false
+      },
+      "auxiliaryClassifications": [
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "sample",
+      "seed": 8502012,
+      "route": 2,
+      "mode": "easy",
+      "classification": "POSSIBLE_BUT_NOT_GUARANTEED_PRE_CHEST",
+      "shortestWin": 22,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 226,
+      "witnessMetrics": {
+        "turns": 22,
+        "accessSwitches": 1,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 2,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": [
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "sample",
+      "seed": 8502013,
+      "route": 2,
+      "mode": "easy",
+      "classification": "POSSIBLE_BUT_NOT_GUARANTEED_PRE_CHEST",
+      "shortestWin": 33,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 128,
+      "witnessMetrics": {
+        "turns": 33,
+        "accessSwitches": 6,
+        "trapActivations": 2,
+        "revisitedExplorerCells": 1,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": [
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "sample",
+      "seed": 8502014,
+      "route": 2,
+      "mode": "easy",
+      "classification": "POSSIBLE_BUT_NOT_GUARANTEED_PRE_CHEST",
+      "shortestWin": 20,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 0,
+      "witnessMetrics": {
+        "turns": 20,
+        "accessSwitches": 1,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 1,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8502015,
+      "route": 2,
+      "mode": "easy",
+      "classification": "POSSIBLE_BUT_NOT_GUARANTEED_PRE_CHEST",
+      "shortestWin": 31,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 136,
+      "witnessMetrics": {
+        "turns": 31,
+        "accessSwitches": 6,
+        "trapActivations": 2,
+        "revisitedExplorerCells": 1,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": [
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "sample",
+      "seed": 8502016,
+      "route": 2,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 27,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 121514,
+      "witnessMetrics": {
+        "turns": 27,
+        "accessSwitches": 4,
+        "trapActivations": 1,
+        "revisitedExplorerCells": 0,
+        "backtrackingOrRevisits": false
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8502017,
+      "route": 2,
+      "mode": "easy",
+      "classification": "POSSIBLE_BUT_NOT_GUARANTEED_PRE_CHEST",
+      "shortestWin": 31,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 228,
+      "witnessMetrics": {
+        "turns": 31,
+        "accessSwitches": 2,
+        "trapActivations": 1,
+        "revisitedExplorerCells": 4,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": [
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "sample",
+      "seed": 8502018,
+      "route": 2,
+      "mode": "easy",
+      "classification": "POSSIBLE_BUT_NOT_GUARANTEED_PRE_CHEST",
+      "shortestWin": 28,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 0,
+      "witnessMetrics": {
+        "turns": 28,
+        "accessSwitches": 2,
+        "trapActivations": 2,
+        "revisitedExplorerCells": 0,
+        "backtrackingOrRevisits": false
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8502019,
+      "route": 2,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 300019,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8502100,
+      "route": 2,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 34,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 288028,
+      "witnessMetrics": {
+        "turns": 34,
+        "accessSwitches": 4,
+        "trapActivations": 1,
+        "revisitedExplorerCells": 6,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8502101,
+      "route": 2,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 33,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 65632,
+      "witnessMetrics": {
+        "turns": 33,
+        "accessSwitches": 5,
+        "trapActivations": 2,
+        "revisitedExplorerCells": 5,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8502102,
+      "route": 2,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 30,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 2559,
+      "witnessMetrics": {
+        "turns": 30,
+        "accessSwitches": 1,
+        "trapActivations": 4,
+        "revisitedExplorerCells": 2,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8502103,
+      "route": 2,
+      "mode": "medium",
+      "classification": "POSSIBLE_BUT_NOT_GUARANTEED_PRE_CHEST",
+      "shortestWin": 34,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 958,
+      "witnessMetrics": {
+        "turns": 34,
+        "accessSwitches": 5,
+        "trapActivations": 2,
+        "revisitedExplorerCells": 3,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": [
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "sample",
+      "seed": 8502104,
+      "route": 2,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 28,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 134057,
+      "witnessMetrics": {
+        "turns": 28,
+        "accessSwitches": 3,
+        "trapActivations": 2,
+        "revisitedExplorerCells": 3,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8502105,
+      "route": 2,
+      "mode": "medium",
+      "classification": "PROVED_UNSOLVABLE_PRE_CHEST",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 67314,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": [
+        "INITIAL_UNSOLVABLE_PRE_CHEST",
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "sample",
+      "seed": 8502106,
+      "route": 2,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 29,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 254392,
+      "witnessMetrics": {
+        "turns": 29,
+        "accessSwitches": 4,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 3,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8502107,
+      "route": 2,
+      "mode": "medium",
+      "classification": "POSSIBLE_BUT_NOT_GUARANTEED_PRE_CHEST",
+      "shortestWin": 47,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 526,
+      "witnessMetrics": {
+        "turns": 47,
+        "accessSwitches": 4,
+        "trapActivations": 2,
+        "revisitedExplorerCells": 13,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": [
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "sample",
+      "seed": 8502108,
+      "route": 2,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 300151,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8502109,
+      "route": 2,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 22,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 89924,
+      "witnessMetrics": {
+        "turns": 22,
+        "accessSwitches": 3,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 1,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8502110,
+      "route": 2,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 24,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 157580,
+      "witnessMetrics": {
+        "turns": 24,
+        "accessSwitches": 4,
+        "trapActivations": 2,
+        "revisitedExplorerCells": 1,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8502111,
+      "route": 2,
+      "mode": "medium",
+      "classification": "POSSIBLE_BUT_NOT_GUARANTEED_PRE_CHEST",
+      "shortestWin": 43,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 186,
+      "witnessMetrics": {
+        "turns": 43,
+        "accessSwitches": 6,
+        "trapActivations": 3,
+        "revisitedExplorerCells": 6,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": [
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "sample",
+      "seed": 8502112,
+      "route": 2,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 300296,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8502113,
+      "route": 2,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 34,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 122619,
+      "witnessMetrics": {
+        "turns": 34,
+        "accessSwitches": 1,
+        "trapActivations": 2,
+        "revisitedExplorerCells": 5,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8502114,
+      "route": 2,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 30,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 270104,
+      "witnessMetrics": {
+        "turns": 30,
+        "accessSwitches": 3,
+        "trapActivations": 1,
+        "revisitedExplorerCells": 2,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8502115,
+      "route": 2,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 25,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 105713,
+      "witnessMetrics": {
+        "turns": 25,
+        "accessSwitches": 2,
+        "trapActivations": 3,
+        "revisitedExplorerCells": 0,
+        "backtrackingOrRevisits": false
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8502116,
+      "route": 2,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 32,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 241517,
+      "witnessMetrics": {
+        "turns": 32,
+        "accessSwitches": 3,
+        "trapActivations": 2,
+        "revisitedExplorerCells": 3,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8502117,
+      "route": 2,
+      "mode": "medium",
+      "classification": "POSSIBLE_BUT_NOT_GUARANTEED_PRE_CHEST",
+      "shortestWin": 47,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 0,
+      "witnessMetrics": {
+        "turns": 47,
+        "accessSwitches": 6,
+        "trapActivations": 4,
+        "revisitedExplorerCells": 12,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8502118,
+      "route": 2,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 300405,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8502119,
+      "route": 2,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 31,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 217127,
+      "witnessMetrics": {
+        "turns": 31,
+        "accessSwitches": 5,
+        "trapActivations": 2,
+        "revisitedExplorerCells": 3,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8502200,
+      "route": 2,
+      "mode": "hard",
+      "classification": "POSSIBLE_BUT_NOT_GUARANTEED_PRE_CHEST",
+      "shortestWin": 37,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 1002,
+      "witnessMetrics": {
+        "turns": 37,
+        "accessSwitches": 3,
+        "trapActivations": 1,
+        "revisitedExplorerCells": 7,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": [
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "sample",
+      "seed": 8502201,
+      "route": 2,
+      "mode": "hard",
+      "classification": "POSSIBLE_BUT_NOT_GUARANTEED_PRE_CHEST",
+      "shortestWin": 37,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 4132,
+      "witnessMetrics": {
+        "turns": 37,
+        "accessSwitches": 5,
+        "trapActivations": 2,
+        "revisitedExplorerCells": 6,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": [
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "sample",
+      "seed": 8502202,
+      "route": 2,
+      "mode": "hard",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 38,
+      "guaranteedFirstAction": "RIGHT",
+      "reachableNonWinning": 33385,
+      "witnessMetrics": {
+        "turns": 38,
+        "accessSwitches": 1,
+        "trapActivations": 1,
+        "revisitedExplorerCells": 9,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8502203,
+      "route": 2,
+      "mode": "hard",
+      "classification": "GUARANTEED_SOLVABLE_PRE_CHEST",
+      "shortestWin": 47,
+      "guaranteedFirstAction": "UP",
+      "reachableNonWinning": 24108,
+      "witnessMetrics": {
+        "turns": 47,
+        "accessSwitches": 5,
+        "trapActivations": 4,
+        "revisitedExplorerCells": 7,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": [
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "sample",
+      "seed": 8502204,
+      "route": 2,
+      "mode": "hard",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 300323,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8502205,
+      "route": 2,
+      "mode": "hard",
+      "classification": "POSSIBLE_BUT_NOT_GUARANTEED_PRE_CHEST",
+      "shortestWin": 46,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 9221,
+      "witnessMetrics": {
+        "turns": 46,
+        "accessSwitches": 3,
+        "trapActivations": 3,
+        "revisitedExplorerCells": 15,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": [
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "sample",
+      "seed": 8502206,
+      "route": 2,
+      "mode": "hard",
+      "classification": "POSSIBLE_BUT_NOT_GUARANTEED_PRE_CHEST",
+      "shortestWin": 39,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 23129,
+      "witnessMetrics": {
+        "turns": 39,
+        "accessSwitches": 5,
+        "trapActivations": 2,
+        "revisitedExplorerCells": 5,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": [
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "sample",
+      "seed": 8502207,
+      "route": 2,
+      "mode": "hard",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 32,
+      "guaranteedFirstAction": "UP",
+      "reachableNonWinning": 35685,
+      "witnessMetrics": {
+        "turns": 32,
+        "accessSwitches": 1,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 5,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8502208,
+      "route": 2,
+      "mode": "hard",
+      "classification": "GUARANTEED_SOLVABLE_PRE_CHEST",
+      "shortestWin": 27,
+      "guaranteedFirstAction": "UP",
+      "reachableNonWinning": 2294,
+      "witnessMetrics": {
+        "turns": 27,
+        "accessSwitches": 2,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 3,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": [
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "sample",
+      "seed": 8502209,
+      "route": 2,
+      "mode": "hard",
+      "classification": "PROVED_UNSOLVABLE_PRE_CHEST",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 24390,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": [
+        "INITIAL_UNSOLVABLE_PRE_CHEST",
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "sample",
+      "seed": 8502210,
+      "route": 2,
+      "mode": "hard",
+      "classification": "PROVED_UNSOLVABLE_PRE_CHEST",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 42009,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": [
+        "INITIAL_UNSOLVABLE_PRE_CHEST",
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "sample",
+      "seed": 8502211,
+      "route": 2,
+      "mode": "hard",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 38,
+      "guaranteedFirstAction": "RIGHT",
+      "reachableNonWinning": 115685,
+      "witnessMetrics": {
+        "turns": 38,
+        "accessSwitches": 1,
+        "trapActivations": 2,
+        "revisitedExplorerCells": 6,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8502212,
+      "route": 2,
+      "mode": "hard",
+      "classification": "PROVED_UNSOLVABLE_PRE_CHEST",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 6423,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": [
+        "INITIAL_UNSOLVABLE_PRE_CHEST",
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "sample",
+      "seed": 8502213,
+      "route": 2,
+      "mode": "hard",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 35,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 270554,
+      "witnessMetrics": {
+        "turns": 35,
+        "accessSwitches": 3,
+        "trapActivations": 1,
+        "revisitedExplorerCells": 5,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8502214,
+      "route": 2,
+      "mode": "hard",
+      "classification": "PROVED_UNSOLVABLE_PRE_CHEST",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 134092,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": [
+        "INITIAL_UNSOLVABLE_PRE_CHEST",
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "sample",
+      "seed": 8502215,
+      "route": 2,
+      "mode": "hard",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 39,
+      "guaranteedFirstAction": "UP",
+      "reachableNonWinning": 173770,
+      "witnessMetrics": {
+        "turns": 39,
+        "accessSwitches": 7,
+        "trapActivations": 2,
+        "revisitedExplorerCells": 4,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8502216,
+      "route": 2,
+      "mode": "hard",
+      "classification": "POSSIBLE_BUT_NOT_GUARANTEED_PRE_CHEST",
+      "shortestWin": 39,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 1155,
+      "witnessMetrics": {
+        "turns": 39,
+        "accessSwitches": 5,
+        "trapActivations": 5,
+        "revisitedExplorerCells": 5,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": [
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "sample",
+      "seed": 8502217,
+      "route": 2,
+      "mode": "hard",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 47,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 3837,
+      "witnessMetrics": {
+        "turns": 47,
+        "accessSwitches": 5,
+        "trapActivations": 3,
+        "revisitedExplorerCells": 8,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8502218,
+      "route": 2,
+      "mode": "hard",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 300177,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8502219,
+      "route": 2,
+      "mode": "hard",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 31,
+      "guaranteedFirstAction": "UP",
+      "reachableNonWinning": 69825,
+      "witnessMetrics": {
+        "turns": 31,
+        "accessSwitches": 3,
+        "trapActivations": 1,
+        "revisitedExplorerCells": 3,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503000,
+      "route": 3,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 26,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 268104,
+      "witnessMetrics": {
+        "turns": 26,
+        "accessSwitches": 2,
+        "trapActivations": 2,
+        "revisitedExplorerCells": 1,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503001,
+      "route": 3,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 300143,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503002,
+      "route": 3,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 300033,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503003,
+      "route": 3,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 300525,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503004,
+      "route": 3,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 21,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 220040,
+      "witnessMetrics": {
+        "turns": 21,
+        "accessSwitches": 4,
+        "trapActivations": 1,
+        "revisitedExplorerCells": 0,
+        "backtrackingOrRevisits": false
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503005,
+      "route": 3,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 300176,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503006,
+      "route": 3,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 300392,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503007,
+      "route": 3,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 27,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 196588,
+      "witnessMetrics": {
+        "turns": 27,
+        "accessSwitches": 2,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 3,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503008,
+      "route": 3,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 300053,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503009,
+      "route": 3,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 300210,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503010,
+      "route": 3,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 24,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 250750,
+      "witnessMetrics": {
+        "turns": 24,
+        "accessSwitches": 2,
+        "trapActivations": 1,
+        "revisitedExplorerCells": 0,
+        "backtrackingOrRevisits": false
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503011,
+      "route": 3,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 300073,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503012,
+      "route": 3,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 300276,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503013,
+      "route": 3,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 300124,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503014,
+      "route": 3,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 30,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 205985,
+      "witnessMetrics": {
+        "turns": 30,
+        "accessSwitches": 6,
+        "trapActivations": 3,
+        "revisitedExplorerCells": 1,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503015,
+      "route": 3,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 300269,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503016,
+      "route": 3,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 300236,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503017,
+      "route": 3,
+      "mode": "easy",
+      "classification": "PROVED_UNSOLVABLE_PRE_CHEST",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 137852,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": [
+        "INITIAL_UNSOLVABLE_PRE_CHEST",
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "sample",
+      "seed": 8503018,
+      "route": 3,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 300264,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503019,
+      "route": 3,
+      "mode": "easy",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 23,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 194462,
+      "witnessMetrics": {
+        "turns": 23,
+        "accessSwitches": 4,
+        "trapActivations": 1,
+        "revisitedExplorerCells": 0,
+        "backtrackingOrRevisits": false
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503100,
+      "route": 3,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 30,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 270809,
+      "witnessMetrics": {
+        "turns": 30,
+        "accessSwitches": 3,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 5,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503101,
+      "route": 3,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 300365,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503102,
+      "route": 3,
+      "mode": "medium",
+      "classification": "PROVED_UNSOLVABLE_PRE_CHEST",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 268280,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": [
+        "INITIAL_UNSOLVABLE_PRE_CHEST",
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "sample",
+      "seed": 8503103,
+      "route": 3,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 300263,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503104,
+      "route": 3,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 27,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 256764,
+      "witnessMetrics": {
+        "turns": 27,
+        "accessSwitches": 3,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 2,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503105,
+      "route": 3,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 300087,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503106,
+      "route": 3,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 300110,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503107,
+      "route": 3,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 41,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 207480,
+      "witnessMetrics": {
+        "turns": 41,
+        "accessSwitches": 4,
+        "trapActivations": 4,
+        "revisitedExplorerCells": 9,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503108,
+      "route": 3,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 300045,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503109,
+      "route": 3,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 300148,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503110,
+      "route": 3,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 300100,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503111,
+      "route": 3,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 300164,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503112,
+      "route": 3,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 300238,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503113,
+      "route": 3,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 25,
+      "guaranteedFirstAction": "UP",
+      "reachableNonWinning": 125119,
+      "witnessMetrics": {
+        "turns": 25,
+        "accessSwitches": 7,
+        "trapActivations": 1,
+        "revisitedExplorerCells": 0,
+        "backtrackingOrRevisits": false
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503114,
+      "route": 3,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 300073,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503115,
+      "route": 3,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 300033,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503116,
+      "route": 3,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 300276,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503117,
+      "route": 3,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 300090,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503118,
+      "route": 3,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 300047,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503119,
+      "route": 3,
+      "mode": "medium",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 29,
+      "guaranteedFirstAction": "UP",
+      "reachableNonWinning": 3206,
+      "witnessMetrics": {
+        "turns": 29,
+        "accessSwitches": 1,
+        "trapActivations": 1,
+        "revisitedExplorerCells": 1,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503200,
+      "route": 3,
+      "mode": "hard",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 30,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 180779,
+      "witnessMetrics": {
+        "turns": 30,
+        "accessSwitches": 3,
+        "trapActivations": 1,
+        "revisitedExplorerCells": 3,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503201,
+      "route": 3,
+      "mode": "hard",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 29,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 266345,
+      "witnessMetrics": {
+        "turns": 29,
+        "accessSwitches": 2,
+        "trapActivations": 1,
+        "revisitedExplorerCells": 1,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503202,
+      "route": 3,
+      "mode": "hard",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 300214,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503203,
+      "route": 3,
+      "mode": "hard",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 31,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 297309,
+      "witnessMetrics": {
+        "turns": 31,
+        "accessSwitches": 3,
+        "trapActivations": 1,
+        "revisitedExplorerCells": 5,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503204,
+      "route": 3,
+      "mode": "hard",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 32,
+      "guaranteedFirstAction": "UP",
+      "reachableNonWinning": 17103,
+      "witnessMetrics": {
+        "turns": 32,
+        "accessSwitches": 3,
+        "trapActivations": 1,
+        "revisitedExplorerCells": 6,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503205,
+      "route": 3,
+      "mode": "hard",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 31,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 251613,
+      "witnessMetrics": {
+        "turns": 31,
+        "accessSwitches": 6,
+        "trapActivations": 2,
+        "revisitedExplorerCells": 3,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503206,
+      "route": 3,
+      "mode": "hard",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 35,
+      "guaranteedFirstAction": "UP",
+      "reachableNonWinning": 63691,
+      "witnessMetrics": {
+        "turns": 35,
+        "accessSwitches": 5,
+        "trapActivations": 4,
+        "revisitedExplorerCells": 3,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503207,
+      "route": 3,
+      "mode": "hard",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 26,
+      "guaranteedFirstAction": "UP",
+      "reachableNonWinning": 206014,
+      "witnessMetrics": {
+        "turns": 26,
+        "accessSwitches": 2,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 0,
+        "backtrackingOrRevisits": false
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503208,
+      "route": 3,
+      "mode": "hard",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 39,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 270193,
+      "witnessMetrics": {
+        "turns": 39,
+        "accessSwitches": 3,
+        "trapActivations": 4,
+        "revisitedExplorerCells": 4,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503209,
+      "route": 3,
+      "mode": "hard",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 300102,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503210,
+      "route": 3,
+      "mode": "hard",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 34,
+      "guaranteedFirstAction": "UP",
+      "reachableNonWinning": 181159,
+      "witnessMetrics": {
+        "turns": 34,
+        "accessSwitches": 4,
+        "trapActivations": 4,
+        "revisitedExplorerCells": 7,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503211,
+      "route": 3,
+      "mode": "hard",
+      "classification": "GUARANTEED_SOLVABLE_PRE_CHEST",
+      "shortestWin": 26,
+      "guaranteedFirstAction": "UP",
+      "reachableNonWinning": 11258,
+      "witnessMetrics": {
+        "turns": 26,
+        "accessSwitches": 2,
+        "trapActivations": 1,
+        "revisitedExplorerCells": 3,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": [
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "sample",
+      "seed": 8503212,
+      "route": 3,
+      "mode": "hard",
+      "classification": "PROVED_UNSOLVABLE_PRE_CHEST",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 58651,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": [
+        "INITIAL_UNSOLVABLE_PRE_CHEST",
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "sample",
+      "seed": 8503213,
+      "route": 3,
+      "mode": "hard",
+      "classification": "GUARANTEED_SOLVABLE_PRE_CHEST",
+      "shortestWin": 32,
+      "guaranteedFirstAction": "UP",
+      "reachableNonWinning": 7504,
+      "witnessMetrics": {
+        "turns": 32,
+        "accessSwitches": 4,
+        "trapActivations": 1,
+        "revisitedExplorerCells": 4,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": [
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "sample",
+      "seed": 8503214,
+      "route": 3,
+      "mode": "hard",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 300061,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503215,
+      "route": 3,
+      "mode": "hard",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": 33,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 252039,
+      "witnessMetrics": {
+        "turns": 33,
+        "accessSwitches": 3,
+        "trapActivations": 1,
+        "revisitedExplorerCells": 6,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503216,
+      "route": 3,
+      "mode": "hard",
+      "classification": "PROVED_UNSOLVABLE_PRE_CHEST",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 47311,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": [
+        "INITIAL_UNSOLVABLE_PRE_CHEST",
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "sample",
+      "seed": 8503217,
+      "route": 3,
+      "mode": "hard",
+      "classification": "PROVED_UNSOLVABLE_PRE_CHEST",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 91745,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": [
+        "INITIAL_UNSOLVABLE_PRE_CHEST",
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    },
+    {
+      "source": "sample",
+      "seed": 8503218,
+      "route": 3,
+      "mode": "hard",
+      "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "shortestWin": null,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 300180,
+      "witnessMetrics": null,
+      "auxiliaryClassifications": []
+    },
+    {
+      "source": "sample",
+      "seed": 8503219,
+      "route": 3,
+      "mode": "hard",
+      "classification": "POSSIBLE_BUT_NOT_GUARANTEED_PRE_CHEST",
+      "shortestWin": 28,
+      "guaranteedFirstAction": null,
+      "reachableNonWinning": 90925,
+      "witnessMetrics": {
+        "turns": 28,
+        "accessSwitches": 2,
+        "trapActivations": 0,
+        "revisitedExplorerCells": 3,
+        "backtrackingOrRevisits": true
+      },
+      "auxiliaryClassifications": [
+        "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+      ]
+    }
+  ]
+}

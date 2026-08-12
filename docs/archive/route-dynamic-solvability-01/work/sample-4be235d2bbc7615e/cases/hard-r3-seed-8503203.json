@@ -1,0 +1,209 @@
+{
+  "mission": "ROTA-DYNAMIC-SOLVABILITY-01",
+  "PRE_CHEST_BASELINE": true,
+  "campaignId": "sample-4be235d2bbc7615e",
+  "solverRuntimeContractHash": "f87a692add561819d8e2fe4c45bcb0d5fe2eb5a85b32ffbfe0a21572b41fd8aa",
+  "configHash": "d18be9acfe80cb78e482ad7e0c32bdce225f98794252eb8c563d27762951c956",
+  "completedAt": "2026-08-12T04:44:56.779Z",
+  "result": {
+    "mission": "ROTA-DYNAMIC-SOLVABILITY-01",
+    "PRE_CHEST_BASELINE": true,
+    "seed": 8503203,
+    "route": 3,
+    "mode": "hard",
+    "limits": {
+      "maxStates": 300000,
+      "maxTransitions": 12000000,
+      "maxFrontier": 400000,
+      "maxMemoryBytes": 536870912,
+      "maxElapsedMs": 60000
+    },
+    "stateContract": {
+      "boardCells": 81,
+      "accessCount": 3,
+      "lightCount": 6,
+      "trapCount": 6,
+      "commitValues": 4,
+      "componentBits": {
+        "explorerPosition": 7,
+        "hunterPosition": 7,
+        "sentinelPosition": 7,
+        "committedAccess": 2,
+        "commitTurnsRemaining": 2,
+        "collectedLights": 6,
+        "activeTraps": 6
+      },
+      "conservativeBitSum": 37,
+      "mixedRadixStateCardinality": 34828517376,
+      "maximumPackedKey": 34828517375,
+      "mixedRadixRequiredBits": 36,
+      "numberSafe": true
+    },
+    "classification": "INCONCLUSIVE_RESOURCE_LIMIT",
+    "initial": {
+      "existential": true,
+      "guaranteed": false
+    },
+    "states": 300220,
+    "processedStates": 242688,
+    "transitions": 867321,
+    "truncated": true,
+    "resourceLimit": "STATE_LIMIT",
+    "frontier": 57532,
+    "peakFrontier": 57560,
+    "elapsedMs": 1339.9420999999857,
+    "graphElapsedMs": 1118.1272000000172,
+    "solveProfile": {
+      "predecessorBuildMs": 16.322199999995064,
+      "existentialMs": 1.4880000000121072,
+      "guaranteedMs": 3.361800000013318,
+      "totalMs": 21.22159999998985
+    },
+    "memory": {
+      "typedArrayBytes": 30932992,
+      "estimatedMapBytes": 12008800,
+      "estimatedTotalBytes": 42941792
+    },
+    "shortestExistentialWitness": [
+      {
+        "action": "UP",
+        "state": "7,0|1,3|1,7|-1|0|0|0"
+      },
+      {
+        "action": "UP",
+        "state": "6,0|1,2|1,7|-1|0|0|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "6,1|1,1|1,7|-1|0|0|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "6,2|2,1|1,7|-1|0|16|0"
+      },
+      {
+        "action": "LEFT",
+        "state": "6,1|1,1|1,7|-1|0|16|0"
+      },
+      {
+        "action": "UP",
+        "state": "5,1|2,1|1,7|-1|0|16|0"
+      },
+      {
+        "action": "UP",
+        "state": "4,1|2,0|1,7|-1|0|16|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "4,2|3,0|1,6|2|3|16|0"
+      },
+      {
+        "action": "UP",
+        "state": "3,2|2,0|0,6|2|2|16|0"
+      },
+      {
+        "action": "UP",
+        "state": "2,2|2,1|0,5|2|1|16|0"
+      },
+      {
+        "action": "UP",
+        "state": "1,2|1,1|0,4|2|0|20|0"
+      },
+      {
+        "action": "DOWN",
+        "state": "2,2|2,1|0,4|2|3|20|0"
+      },
+      {
+        "action": "DOWN",
+        "state": "3,2|2,2|0,4|2|2|20|0"
+      },
+      {
+        "action": "RIGHT",
+        "state": "3,3|3,2|0,4|2|1|20|32"
+      },
+      {
+        "action": "RIGHT",
+        "state": "3,4|2,2|0,4|2|0|20|32"
+      },
+      {
+        "action": "DOWN",
+        "state": "4,4|3,2|0,5|0|3|20|32"
+      },
+      {
+        "action": "RIGHT",
+        "state": "4,5|4,2|0,6|0|2|52|32"
+      },
+      {
+        "action": "RIGHT",
+        "state": "4,6|3,2|1,6|0|1|52|32"
+      },
+      {
+        "action": "UP",
+        "state": "3,6|2,2|1,7|0|0|52|32"
+      },
+      {
+        "action": "RIGHT",
+        "state": "3,7|3,2|2,7|0|3|54|32"
+      },
+      {
+        "action": "DOWN",
+        "state": "4,7|4,2|3,7|0|2|54|32"
+      },
+      {
+        "action": "DOWN",
+        "state": "5,7|3,2|3,7|0|1|54|32"
+      },
+      {
+        "action": "DOWN",
+        "state": "6,7|4,2|3,7|0|0|62|32"
+      },
+      {
+        "action": "UP",
+        "state": "5,7|3,2|3,7|0|3|62|32"
+      },
+      {
+        "action": "UP",
+        "state": "4,7|4,2|3,7|0|2|62|32"
+      },
+      {
+        "action": "RIGHT",
+        "state": "4,8|3,2|3,7|0|1|62|32"
+      },
+      {
+        "action": "UP",
+        "state": "3,8|2,2|3,7|0|0|62|32"
+      },
+      {
+        "action": "UP",
+        "state": "2,8|1,2|2,7|1|3|62|32"
+      },
+      {
+        "action": "UP",
+        "state": "1,8|1,3|2,8|1|2|63|32"
+      },
+      {
+        "action": "UP",
+        "state": "0,8|1,4|2,8|1|1|63|32"
+      },
+      {
+        "action": "LEFT",
+        "state": "WIN"
+      }
+    ],
+    "shortestExistentialWin": 31,
+    "guaranteedPolicy": null,
+    "witnessMetrics": {
+      "turns": 31,
+      "accessSwitches": 3,
+      "trapActivations": 1,
+      "revisitedExplorerCells": 5,
+      "backtrackingOrRevisits": true
+    },
+    "reachableWinning": 2911,
+    "reachableNonWinning": 297309,
+    "auxiliaryClassifications": [],
+    "suspicious": null,
+    "scc": null,
+    "trapAnalysis": null
+  }
+}

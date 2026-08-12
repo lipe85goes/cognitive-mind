@@ -1,0 +1,86 @@
+{
+  "mission": "ROTA-DYNAMIC-SOLVABILITY-01",
+  "probe": "same state + same Explorer action, 200 repetitions",
+  "map": {
+    "seed": 9100000,
+    "route": 3
+  },
+  "hunter": {
+    "easy": {
+      "distinctNextStates": 2,
+      "outcomes": [
+        "0,4",
+        "1,3"
+      ]
+    },
+    "medium": {
+      "distinctNextStates": 2,
+      "outcomes": [
+        "1,3",
+        "0,4"
+      ]
+    },
+    "hard": {
+      "distinctNextStates": 1,
+      "outcomes": [
+        "1,3"
+      ]
+    },
+    "sentinel": {
+      "distinctNextStates": 1
+    }
+  },
+  "finding": "The Hunter is stochastic in all three modes; the Sentinel is deterministic.",
+  "consequence": "STEP(state, action) is not a function. The premise in Fase 1 does not hold for the real runtime.",
+  "broadProbe": {
+    "statesProbed": 227,
+    "nondeterministic": {
+      "hard": 95,
+      "medium": 203,
+      "easy": 203
+    },
+    "percent": {
+      "hard": 41.9,
+      "medium": 89.4,
+      "easy": 89.4
+    },
+    "hardSamples": [
+      {
+        "seed": 9100000,
+        "hunter": "0,6",
+        "player": "4,0",
+        "outcomes": [
+          "1,6",
+          "0,5"
+        ]
+      },
+      {
+        "seed": 9100000,
+        "hunter": "1,4",
+        "player": "1,7",
+        "outcomes": [
+          "0,4",
+          "1,3"
+        ]
+      },
+      {
+        "seed": 9100000,
+        "hunter": "1,8",
+        "player": "5,0",
+        "outcomes": [
+          "1,7",
+          "2,8"
+        ]
+      }
+    ],
+    "method": "40 repetitions of chooseGuardianMove from an identical (hunter, player) state across 12 maps"
+  },
+  "rootCause": {
+    "file": "src/engine/difficulty.ts",
+    "easy": "Math.random() < 0.5 picks a random neighbour, else a random not-closer one",
+    "medium": "Math.random() < 0.75 gates the greedy branch; otherwise a random neighbour",
+    "hard": "no explicit random gate, but pickRandom(best) breaks Manhattan ties at random",
+    "alsoInHook": "chooseGuardianMove itself calls randomItem for easy and for the best-alternative tie-break"
+  },
+  "verdict": "STEP(state, action) is NOT a function. The mission Fase 1 premise does not hold, and it is not a missing state variable — it is genuine randomness in the approved Hunter policy."
+}

@@ -1,0 +1,491 @@
+{
+  "mission": "ROTA-DYNAMIC-SOLVABILITY-01",
+  "PRE_CHEST_BASELINE": true,
+  "campaignId": "sample-4be235d2bbc7615e",
+  "solverRuntimeContractHash": "f87a692add561819d8e2fe4c45bcb0d5fe2eb5a85b32ffbfe0a21572b41fd8aa",
+  "configHash": "d18be9acfe80cb78e482ad7e0c32bdce225f98794252eb8c563d27762951c956",
+  "completedAt": "2026-08-12T04:45:08.394Z",
+  "result": {
+    "mission": "ROTA-DYNAMIC-SOLVABILITY-01",
+    "PRE_CHEST_BASELINE": true,
+    "seed": 8503212,
+    "route": 3,
+    "mode": "hard",
+    "limits": {
+      "maxStates": 300000,
+      "maxTransitions": 12000000,
+      "maxFrontier": 400000,
+      "maxMemoryBytes": 536870912,
+      "maxElapsedMs": 60000
+    },
+    "stateContract": {
+      "boardCells": 81,
+      "accessCount": 2,
+      "lightCount": 6,
+      "trapCount": 6,
+      "commitValues": 4,
+      "componentBits": {
+        "explorerPosition": 7,
+        "hunterPosition": 7,
+        "sentinelPosition": 7,
+        "committedAccess": 2,
+        "commitTurnsRemaining": 2,
+        "collectedLights": 6,
+        "activeTraps": 6
+      },
+      "conservativeBitSum": 37,
+      "mixedRadixStateCardinality": 26121388032,
+      "maximumPackedKey": 26121388031,
+      "mixedRadixRequiredBits": 35,
+      "numberSafe": true
+    },
+    "classification": "PROVED_UNSOLVABLE_PRE_CHEST",
+    "initial": {
+      "existential": false,
+      "guaranteed": false
+    },
+    "states": 58651,
+    "processedStates": 58651,
+    "transitions": 196786,
+    "truncated": false,
+    "resourceLimit": null,
+    "frontier": 0,
+    "peakFrontier": 2511,
+    "elapsedMs": 335.0746999999974,
+    "graphElapsedMs": 234.5344000000041,
+    "solveProfile": {
+      "predecessorBuildMs": 3.4531999999890104,
+      "existentialMs": 0.2911999999778345,
+      "guaranteedMs": 0.679500000027474,
+      "totalMs": 4.439700000046287
+    },
+    "memory": {
+      "typedArrayBytes": 5832704,
+      "estimatedMapBytes": 2346040,
+      "estimatedTotalBytes": 8178744
+    },
+    "shortestExistentialWitness": null,
+    "shortestExistentialWin": null,
+    "guaranteedPolicy": null,
+    "witnessMetrics": null,
+    "reachableWinning": 0,
+    "reachableNonWinning": 58651,
+    "auxiliaryClassifications": [
+      "INITIAL_UNSOLVABLE_PRE_CHEST",
+      "PLAYER_REACHABLE_NON_WINNING_REGION_PRE_CHEST"
+    ],
+    "suspicious": null,
+    "scc": {
+      "completeGraph": true,
+      "componentCount": 6602,
+      "largestComponentStates": 725,
+      "cyclicComponents": 590,
+      "closedNonWinningComponents": [
+        {
+          "componentId": 6589,
+          "states": 147
+        },
+        {
+          "componentId": 6601,
+          "states": 147
+        },
+        {
+          "componentId": 1632,
+          "states": 48
+        },
+        {
+          "componentId": 2088,
+          "states": 6
+        },
+        {
+          "componentId": 2324,
+          "states": 6
+        },
+        {
+          "componentId": 2558,
+          "states": 6
+        },
+        {
+          "componentId": 2708,
+          "states": 6
+        },
+        {
+          "componentId": 3314,
+          "states": 6
+        },
+        {
+          "componentId": 3554,
+          "states": 6
+        },
+        {
+          "componentId": 3792,
+          "states": 6
+        },
+        {
+          "componentId": 3946,
+          "states": 6
+        },
+        {
+          "componentId": 4542,
+          "states": 6
+        },
+        {
+          "componentId": 4768,
+          "states": 6
+        },
+        {
+          "componentId": 5004,
+          "states": 6
+        },
+        {
+          "componentId": 5167,
+          "states": 6
+        },
+        {
+          "componentId": 5768,
+          "states": 6
+        },
+        {
+          "componentId": 5998,
+          "states": 6
+        },
+        {
+          "componentId": 6238,
+          "states": 6
+        },
+        {
+          "componentId": 6405,
+          "states": 6
+        },
+        {
+          "componentId": 86,
+          "states": 1
+        },
+        {
+          "componentId": 235,
+          "states": 1
+        },
+        {
+          "componentId": 239,
+          "states": 1
+        },
+        {
+          "componentId": 240,
+          "states": 1
+        },
+        {
+          "componentId": 248,
+          "states": 1
+        },
+        {
+          "componentId": 252,
+          "states": 1
+        },
+        {
+          "componentId": 253,
+          "states": 1
+        },
+        {
+          "componentId": 261,
+          "states": 1
+        },
+        {
+          "componentId": 268,
+          "states": 1
+        },
+        {
+          "componentId": 274,
+          "states": 1
+        },
+        {
+          "componentId": 278,
+          "states": 1
+        },
+        {
+          "componentId": 279,
+          "states": 1
+        },
+        {
+          "componentId": 285,
+          "states": 1
+        },
+        {
+          "componentId": 289,
+          "states": 1
+        },
+        {
+          "componentId": 290,
+          "states": 1
+        },
+        {
+          "componentId": 296,
+          "states": 1
+        },
+        {
+          "componentId": 300,
+          "states": 1
+        },
+        {
+          "componentId": 301,
+          "states": 1
+        },
+        {
+          "componentId": 309,
+          "states": 1
+        },
+        {
+          "componentId": 316,
+          "states": 1
+        },
+        {
+          "componentId": 322,
+          "states": 1
+        },
+        {
+          "componentId": 326,
+          "states": 1
+        },
+        {
+          "componentId": 327,
+          "states": 1
+        },
+        {
+          "componentId": 333,
+          "states": 1
+        },
+        {
+          "componentId": 337,
+          "states": 1
+        },
+        {
+          "componentId": 338,
+          "states": 1
+        },
+        {
+          "componentId": 344,
+          "states": 1
+        },
+        {
+          "componentId": 348,
+          "states": 1
+        },
+        {
+          "componentId": 349,
+          "states": 1
+        },
+        {
+          "componentId": 365,
+          "states": 1
+        },
+        {
+          "componentId": 371,
+          "states": 1
+        },
+        {
+          "componentId": 377,
+          "states": 1
+        },
+        {
+          "componentId": 383,
+          "states": 1
+        },
+        {
+          "componentId": 395,
+          "states": 1
+        },
+        {
+          "componentId": 399,
+          "states": 1
+        },
+        {
+          "componentId": 400,
+          "states": 1
+        },
+        {
+          "componentId": 407,
+          "states": 1
+        },
+        {
+          "componentId": 411,
+          "states": 1
+        },
+        {
+          "componentId": 412,
+          "states": 1
+        },
+        {
+          "componentId": 420,
+          "states": 1
+        },
+        {
+          "componentId": 427,
+          "states": 1
+        },
+        {
+          "componentId": 433,
+          "states": 1
+        },
+        {
+          "componentId": 437,
+          "states": 1
+        },
+        {
+          "componentId": 438,
+          "states": 1
+        },
+        {
+          "componentId": 444,
+          "states": 1
+        },
+        {
+          "componentId": 448,
+          "states": 1
+        },
+        {
+          "componentId": 449,
+          "states": 1
+        },
+        {
+          "componentId": 455,
+          "states": 1
+        },
+        {
+          "componentId": 459,
+          "states": 1
+        },
+        {
+          "componentId": 460,
+          "states": 1
+        },
+        {
+          "componentId": 468,
+          "states": 1
+        },
+        {
+          "componentId": 475,
+          "states": 1
+        },
+        {
+          "componentId": 481,
+          "states": 1
+        },
+        {
+          "componentId": 485,
+          "states": 1
+        },
+        {
+          "componentId": 486,
+          "states": 1
+        },
+        {
+          "componentId": 492,
+          "states": 1
+        },
+        {
+          "componentId": 496,
+          "states": 1
+        },
+        {
+          "componentId": 497,
+          "states": 1
+        },
+        {
+          "componentId": 503,
+          "states": 1
+        },
+        {
+          "componentId": 507,
+          "states": 1
+        },
+        {
+          "componentId": 508,
+          "states": 1
+        },
+        {
+          "componentId": 588,
+          "states": 1
+        },
+        {
+          "componentId": 589,
+          "states": 1
+        },
+        {
+          "componentId": 590,
+          "states": 1
+        },
+        {
+          "componentId": 591,
+          "states": 1
+        },
+        {
+          "componentId": 656,
+          "states": 1
+        },
+        {
+          "componentId": 657,
+          "states": 1
+        },
+        {
+          "componentId": 658,
+          "states": 1
+        },
+        {
+          "componentId": 659,
+          "states": 1
+        },
+        {
+          "componentId": 782,
+          "states": 1
+        },
+        {
+          "componentId": 783,
+          "states": 1
+        },
+        {
+          "componentId": 784,
+          "states": 1
+        },
+        {
+          "componentId": 785,
+          "states": 1
+        },
+        {
+          "componentId": 786,
+          "states": 1
+        },
+        {
+          "componentId": 787,
+          "states": 1
+        },
+        {
+          "componentId": 791,
+          "states": 1
+        },
+        {
+          "componentId": 792,
+          "states": 1
+        },
+        {
+          "componentId": 793,
+          "states": 1
+        },
+        {
+          "componentId": 794,
+          "states": 1
+        },
+        {
+          "componentId": 795,
+          "states": 1
+        },
+        {
+          "componentId": 796,
+          "states": 1
+        }
+      ],
+      "closedNonWinningComponentCount": 576,
+      "closedNonWinningStates": 995,
+      "elapsedMs": 9.9083999999566
+    },
+    "trapAnalysis": null
+  }
+}
