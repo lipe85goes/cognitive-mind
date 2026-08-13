@@ -138,7 +138,7 @@ const compile = (src) =>
  * so both its verdict and the full pipeline's can be observed on the same
  * candidate. The file on disk is never written to.
  */
-export function loadInstrumented({ transform, bare = false } = {}) {
+export function loadInstrumented({ transform, bare = false, react } = {}) {
   const raw = fs.readFileSync(HOOK, "utf8");
   const base = transform ? transform(raw) : raw;
   // `bare` skips the diagnostics entirely and only appends the export surface.
@@ -167,16 +167,25 @@ export function loadInstrumented({ transform, bare = false } = {}) {
     setTimeout, clearTimeout, performance,
     require(r) {
       if (r === "react") {
-        return {
-          useCallback: (c) => c, useEffect: () => {}, useMemo: (f) => f(),
-          useRef: (v) => ({ current: v }),
-          useState: (v) => [typeof v === "function" ? v() : v, () => {}],
-        };
+        // `react` lets a caller supply a STATEFUL shim and drive the hook
+        // headlessly (see route-runtime-harness.mjs). Without it the default
+        // inert shim is enough for the pure generator functions.
+        return (
+          react ?? {
+            useCallback: (c) => c, useEffect: () => {}, useMemo: (f) => f(),
+            useRef: (v) => ({ current: v }),
+            useState: (v) => [typeof v === "function" ? v() : v, () => {}],
+          }
+        );
       }
       if (r === "@/engine/difficulty") return dMod.exports;
       if (r === "@/engine/scoring") return { calculateEscapeMazeScore: () => 0 };
       if (r === "@/lib/game-sounds") {
-        return { playGentleErrorTone: () => {}, playSuccessChime: () => {} };
+        return {
+          playGentleErrorTone: () => {},
+          playSuccessChime: () => {},
+          playStoneBreak: () => {},
+        };
       }
       throw new Error("unexpected import " + r);
     },
@@ -232,7 +241,7 @@ export function loadInstrumented({ transform, bare = false } = {}) {
             exitPosition: API.posKey(candidate.map.exitPosition),
             stars: candidate.map.collectibleStars.map(API.posKey),
             traps: candidate.map.traps.map(API.posKey),
-            shield: candidate.map.shield ? API.posKey(candidate.map.shield) : null,
+            chest: candidate.map.chest ? API.posKey(candidate.map.chest) : null,
             objectiveCells: candidate.analysis.objective
               ? candidate.analysis.objective.cells.map(API.posKey)
               : null,
@@ -285,5 +294,14 @@ export function loadInstrumented({ transform, bare = false } = {}) {
     };
   }
 
-  return { API, sb, setSeed, replayGeneration, structuralReasons, finalGateNames };
+  return {
+    API,
+    /** The module's real export surface — `useEscapeMaze` included. */
+    exports: hMod.exports,
+    sb,
+    setSeed,
+    replayGeneration,
+    structuralReasons,
+    finalGateNames,
+  };
 }

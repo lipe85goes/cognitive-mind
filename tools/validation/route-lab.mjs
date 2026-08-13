@@ -15,7 +15,7 @@
  *  - disjoint routes: vertex connectivity between start and exit, by max-flow on
  *    a split-node graph. 1 means a single corridor with a choke point; >= 2
  *    means genuinely independent alternatives exist.
- *  - dead ends: degree-1 cells, split into USEFUL (holds a light, the shield or
+ *  - dead ends: degree-1 cells, split into USEFUL (holds a light, the chest or
  *    a trap, or is adjacent to the objective route) and IDLE (holds nothing and
  *    sits away from the route). Only idle ones are a defect.
  *  - guardian pressure: the real predator simulated against an optimal player.
@@ -429,7 +429,7 @@ export function deadEndAudit(map, structureInfo, route) {
   const payload = new Set([
     ...map.collectibleStars.map(key),
     ...map.traps.map(key),
-    ...(map.shield ? [key(map.shield)] : []),
+    ...(map.chest ? [key(map.chest)] : []),
     key(map.exitPosition),
   ]);
   let useful = 0;
@@ -554,7 +554,7 @@ export function measure(lab, difficulty, routeNumber, seed) {
   const pressure = guardianPressure(lab, map, difficulty);
   const traps = trapAnalysis(map);
   const walls = [...map.walls].sort().join("|");
-  const shieldDist = map.shield ? bfs(map.playerStart, map.walls).get(key(map.shield)) ?? null : null;
+  const chestDist = map.chest ? bfs(map.playerStart, map.walls).get(key(map.chest)) ?? null : null;
 
   return {
     difficulty, routeNumber, seed,
@@ -564,8 +564,8 @@ export function measure(lab, difficulty, routeNumber, seed) {
     wallCount: map.grid.flat().filter((c) => c === 1).length,
     lights: map.collectibleStars.length,
     trapCount: map.traps.length,
-    hasShield: Boolean(map.shield),
-    shieldDistance: shieldDist,
+    hasChest: Boolean(map.chest),
+    chestDistance: chestDist,
     objectiveMoves: route?.moves ?? null,
     movesToAllLights: route?.movesToAllLights ?? null,
     movesLastLightToPortal: route?.movesLastLightToPortal ?? null,

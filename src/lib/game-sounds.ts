@@ -69,3 +69,14 @@ export function playSuccessChime(): void {
 export function playGentleErrorTone(): void {
   playTone(196, 0.18, 0.05, "triangle");
 }
+
+/**
+ * ROTA-CHEST-REWARDS-01: a wall opening. Two short, low, quiet knocks — stone,
+ * not an explosion. Deliberately below the success chime in pitch and volume so
+ * it reads as "the board changed", never as "you scored".
+ */
+export function playStoneBreak(): void {
+  if (!isSoundEnabled()) return;
+  playTone(146.83, 0.09, 0.05, "triangle");
+  window.setTimeout(() => playTone(110, 0.16, 0.04, "triangle"), 70);
+}

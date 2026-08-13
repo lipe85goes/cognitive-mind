@@ -166,7 +166,7 @@ for (const [w, h, name, extra, settle] of [
       player: c.dataset.playerCell,
       guardian: c.dataset.guardianCell,
       exit: c.dataset.exitCell,
-      shield: c.dataset.shieldCell,
+      chest: c.dataset.chestCell,
       scrollY: document.documentElement.scrollHeight - document.documentElement.clientHeight,
       overflowX: document.documentElement.scrollWidth - document.documentElement.clientWidth,
     };
@@ -267,7 +267,7 @@ for (const [w, h, name, extra, settle] of [
       const isWall = data.walls.includes(key);
       const isLight = data.lights.includes(key);
       const colour = isLight ? "#ffd23f" : isWall ? "#ff8a5c" : edge ? "#4be0d0" : "#8fb7ff";
-      const label = key === data.player ? "P" : key === data.guardian ? "G" : key === data.exit ? "X" : key === data.shield ? "S" : "";
+      const label = key === data.player ? "P" : key === data.guardian ? "G" : key === data.exit ? "X" : key === data.chest ? "B" : "";
       return dot(c.px, c.py, edge ? 4 : 3, colour, label);
     })
     .join("");

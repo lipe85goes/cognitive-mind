@@ -17,6 +17,8 @@ import type {
 
 interface RouteBabylonBoardProps {
   mazeMap: MazeMap;
+  /** The board as it stands: `mazeMap.walls` minus the wall the Pickaxe opened. */
+  walls: Set<string>;
   player: GridPosition;
   guardian: GridPosition;
   sentinel: GridPosition;
@@ -25,7 +27,12 @@ interface RouteBabylonBoardProps {
   moveTargets: Set<string>;
   triggeredTrapSet: Set<string>;
   dangerTiles: Set<string>;
-  shieldCollected: boolean;
+  chestOpened: boolean;
+  /** Adjacent walls the Pickaxe could open right now — contextual, never a hint. */
+  breakTargets: string[];
+  /** The one the player is pointing at, so the board can show which will open. */
+  aimedWall: string | null;
+  brokenWall: string | null;
   reducedMotion: boolean;
   status: GameStatus;
   onMove: (delta: GridPosition) => void;
@@ -35,6 +42,7 @@ interface RouteBabylonBoardProps {
 
 export function RouteBabylonBoard({
   mazeMap,
+  walls,
   player,
   guardian,
   sentinel,
@@ -43,7 +51,10 @@ export function RouteBabylonBoard({
   moveTargets,
   triggeredTrapSet,
   dangerTiles,
-  shieldCollected,
+  chestOpened,
+  breakTargets,
+  aimedWall,
+  brokenWall,
   reducedMotion,
   status,
   onMove,
@@ -60,7 +71,7 @@ export function RouteBabylonBoard({
     () => ({
       rows: ROWS,
       cols: COLS,
-      walls: Array.from(mazeMap.walls),
+      walls: Array.from(walls),
       exitPosition: mazeMap.exitPosition,
       lights: mazeMap.collectibleStars,
       collectedKeys: Array.from(collectedSet),
@@ -71,14 +82,21 @@ export function RouteBabylonBoard({
       moveTargets: Array.from(moveTargets),
       traps: mazeMap.traps,
       triggeredTrapKeys: Array.from(triggeredTrapSet),
-      shield: mazeMap.shield,
-      shieldCollected,
+      chest: mazeMap.chest,
+      chestOpened,
+      // Contextual only: these exist while the Pickaxe is in hand and the
+      // Explorer is standing next to a wall, and they vanish the moment it is
+      // spent. No wall carries a permanent mark (§14).
+      breakTargetKeys: breakTargets,
+      aimedWallKey: aimedWall,
+      brokenWallKey: brokenWall,
       dangerTiles: Array.from(dangerTiles),
       reducedMotion,
       status,
     }),
     [
       mazeMap,
+      walls,
       player,
       guardian,
       sentinel,
@@ -87,7 +105,10 @@ export function RouteBabylonBoard({
       moveTargets,
       triggeredTrapSet,
       dangerTiles,
-      shieldCollected,
+      chestOpened,
+      breakTargets,
+      aimedWall,
+      brokenWall,
       reducedMotion,
       status,
     ],
@@ -180,8 +201,11 @@ export function RouteBabylonBoard({
         data-collected-light-cells={state.collectedKeys.join(" ")}
         data-trap-cells={mazeMap.traps.map(posKey).join(" ")}
         data-triggered-trap-cells={state.triggeredTrapKeys.join(" ")}
-        data-shield-cell={mazeMap.shield ? posKey(mazeMap.shield) : ""}
-        data-shield-collected={shieldCollected ? "true" : "false"}
+        data-chest-cell={mazeMap.chest ? posKey(mazeMap.chest) : ""}
+        data-chest-opened={chestOpened ? "true" : "false"}
+        data-break-target-cells={state.breakTargetKeys.join(" ")}
+        data-aimed-wall-cell={aimedWall ?? ""}
+        data-broken-wall-cell={brokenWall ?? ""}
         data-danger-cells={state.dangerTiles.join(" ")}
         data-move-targets={state.moveTargets.join(" ")}
         data-status={status}

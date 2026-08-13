@@ -17,8 +17,23 @@ export interface RouteBabylonState {
   moveTargets: string[];
   traps: GridPosition[];
   triggeredTrapKeys: string[];
-  shield: GridPosition | null;
-  shieldCollected: boolean;
+  /** The reward chest, or null before a map exists. */
+  chest: GridPosition | null;
+  chestOpened: boolean;
+  /**
+   * Walls the Pickaxe could open from where the Explorer stands, right now.
+   *
+   * ROTA-CHEST-REWARDS-01 (revisão pós-playtest): this replaced a permanent
+   * fissure on a certified subset. That crack told the player which walls the
+   * generator approved of, which is exactly the hint the mechanic must not give.
+   * These keys are contextual — they appear with the Pickaxe and disappear with
+   * it — and they mark VALID targets, never good ones.
+   */
+  breakTargetKeys: string[];
+  /** The target the player is pointing at, so it is clear which one will open. */
+  aimedWallKey: string | null;
+  /** The single wall the Pickaxe opened, or null. Already absent from `walls`. */
+  brokenWallKey: string | null;
   dangerTiles: string[];
   reducedMotion: boolean;
   status: "setup" | "playing" | "won" | "lost";
@@ -63,7 +78,13 @@ type RouteMaterials = Record<
   | "trapDormant"
   | "trapArmed"
   | "trapArmedCore"
-  | "shield"
+  | "chestStone"
+  | "chestBronze"
+  | "chestGlow"
+  | "chestSpent"
+  | "breakTarget"
+  | "breakAim"
+  | "rubble"
   | "danger"
   | "move",
   BABYLON.StandardMaterial
@@ -110,11 +131,16 @@ const BOARD_GLB_PATH = "/models/route/board.glb";
 const WALL_GLB_PATH = "/models/route/wall.glb";
 const PLAYER_GLB_PATH = "/models/route/player.glb";
 const GUARDIAN_GLB_PATH = "/models/route/guardian.glb";
+/**
+ * ROTA-CHEST-REWARDS-01: `shield.glb` is no longer loaded. The chest that
+ * replaced it is built from the scene's own primitives instead of a new asset —
+ * it is four boxes, two bands and an ember, and authoring a GLB for that would
+ * have added a build pipeline to save nothing.
+ */
 const ROUTE_PROP_ASSET_PATHS = {
   portal: "/models/route/portal.glb",
   light: "/models/route/light.glb",
   trap: "/models/route/trap.glb",
-  shield: "/models/route/shield.glb",
 } as const;
 type RoutePropAssetKey = keyof typeof ROUTE_PROP_ASSET_PATHS;
 
@@ -142,17 +168,11 @@ const BOARD_SURFACE_Y = 0.2;
 const WALL_SCALE = 1;
 const PORTAL_SCALE = 1;
 const LIGHT_SCALE = 1;
-const SHIELD_SCALE = 1;
 // Props are authored with their front on target -Z. The portal arch just needs a
-// small turn toward the camera's azimuth. The shield is a FLAT face, so besides
-// facing the camera it is tilted back so the star reads from the elevated 3/4
-// camera instead of appearing edge-on like a sideways plaque.
+// small turn toward the camera's azimuth.
 const PORTAL_ROTATION_Y = -0.1;
-// ROTA-VISUAL-01: the shield used to lean back like a plaque lying down and
-// read as "the blue thing facing away". It now stands, angled just enough to
-// catch the key light while its crest stays toward the gameplay camera.
-const SHIELD_ROTATION_Y = 0.06;
-const SHIELD_TILT_X = 0.1;
+/** The chest sits slightly turned so both a face and a side catch the key light. */
+const CHEST_ROTATION_Y = 0.24;
 
 // --- Character model placement --------------------------------------------
 // Both character assets are authored centered on X/Z, bottom at local Y = 0 and
@@ -327,9 +347,37 @@ function createMaterials(
       emissive: "#241016",
       alpha: 0.44,
     }),
-    shield: makeMaterial(B, scene, "route-shield", "#3ba8ff", {
-      emissive: "#1554d1",
-      specular: "#cae8ff",
+    // ROTA-CHEST-REWARDS-01: the blue shield is gone. The chest is the board's
+    // own language — the same stone the tiles are cut from, the same bronze the
+    // frame is banded with — plus one restrained teal ember that ties it to the
+    // world. It is deliberately quieter than the portal: a relic on the floor,
+    // not a second objective. Emissive only; the scene still has three lights.
+    chestStone: makeMaterial(B, scene, "route-chest-stone", "#3d3a30", {
+      specular: "#8b7f5e",
+    }),
+    chestBronze: makeMaterial(B, scene, "route-chest-bronze", "#a9762f", {
+      specular: "#ffdc9a",
+    }),
+    chestGlow: makeMaterial(B, scene, "route-chest-glow", "#63b6ad", {
+      emissive: "#236f68",
+    }),
+    chestSpent: makeMaterial(B, scene, "route-chest-spent", "#4a463c", {
+      specular: "#6b6355",
+    }),
+    // The Pickaxe's own bronze, borrowed from the tool and from its button — so
+    // the ring under a wall reads as "the Pickaxe can reach this", not as a
+    // property of the wall. It exists only while the Pickaxe does. The aim is
+    // the same colour, brighter, for the one wall about to open.
+    breakTarget: makeMaterial(B, scene, "route-break-target", "#c9903f", {
+      emissive: "#5a3a12",
+      alpha: 0.5,
+    }),
+    breakAim: makeMaterial(B, scene, "route-break-aim", "#ffcf7a", {
+      emissive: "#a8641a",
+      alpha: 0.78,
+    }),
+    rubble: makeMaterial(B, scene, "route-rubble", "#4b3826", {
+      specular: "#7d5f3a",
     }),
     danger: makeMaterial(B, scene, "route-danger", "#f5a524", {
       emissive: "#a85506",
@@ -451,7 +499,7 @@ export function createRouteBabylonController(
   //     rewrote 200+ materials eight times over, and each write marks every
   //     submesh light-dirty, forcing a full shader recompile.
   //
-  // Portal state, light orbs, the shield, trap crystals and the guardian's eyes
+  // Portal state, light orbs, the chest ember, trap runes and the guardian's eyes
   // are all read through emissive materials plus the glow layer below — they
   // never needed point lights. Keep it that way: adding a light here is a
   // scene-wide recompile, not a local decision.
@@ -529,7 +577,6 @@ export function createRouteBabylonController(
     portal: { proto: null, status: "pending", warningLogged: false },
     light: { proto: null, status: "pending", warningLogged: false },
     trap: { proto: null, status: "pending", warningLogged: false },
-    shield: { proto: null, status: "pending", warningLogged: false },
   };
   let disposed = false;
 
@@ -921,8 +968,7 @@ export function createRouteBabylonController(
     } else if (
       materialName.includes("portalbronze") ||
       materialName.includes("lightbronze") ||
-      materialName.includes("trapbronze") ||
-      materialName.includes("shieldbronze")
+      materialName.includes("trapbronze")
     ) {
       setMaterialColor(material, B.Color3.FromHexString("#a86d2f"));
       material.emissiveColor = B.Color3.FromHexString("#170b03");
@@ -950,8 +996,7 @@ export function createRouteBabylonController(
       }
     } else if (
       materialName.includes("lightdarkbase") ||
-      materialName.includes("trapdarkbase") ||
-      materialName.includes("shielddarkbase")
+      materialName.includes("trapdarkbase")
     ) {
       setMaterialColor(material, B.Color3.FromHexString("#2a1b10"));
       if (material.roughness !== undefined) material.roughness = 0.68;
@@ -965,15 +1010,6 @@ export function createRouteBabylonController(
         material.emissiveIntensity = 0.95;
       }
       if (material.roughness !== undefined) material.roughness = 0.28;
-    } else if (materialName.includes("shieldblue")) {
-      setMaterialColor(material, B.Color3.FromHexString("#2782e6"));
-      material.emissiveColor = B.Color3.FromHexString("#0b2a78");
-      if (material.roughness !== undefined) material.roughness = 0.28;
-    } else if (materialName.includes("shieldcyanglow")) {
-      material.emissiveColor = B.Color3.FromHexString("#57dbff");
-      if (material.emissiveIntensity !== undefined) {
-        material.emissiveIntensity = 1.55;
-      }
     }
   }
 
@@ -1458,8 +1494,104 @@ export function createRouteBabylonController(
       }
     }
   }
+  /**
+   * ROTA-CHEST-REWARDS-01 §16 (revisão pós-playtest): the Pickaxe's reach.
+   *
+   * A bronze ring at the foot of a wall the Explorer is standing next to, drawn
+   * only while the Pickaxe is in hand — and a brighter, taller one on the wall
+   * the player is actually pointing at. Both are CONTROL information: "this is
+   * a target you can hit". Neither says anything about whether hitting it is a
+   * good idea, and neither survives the Pickaxe being spent.
+   *
+   * This lives on the DYNAMIC board, not the static one, because it changes with
+   * every step the Explorer takes.
+   */
+  function renderBreakTargets(parent: BABYLON.TransformNode) {
+    if (state.breakTargetKeys.length === 0) return;
+    state.breakTargetKeys.forEach((key) => {
+      if (!state.walls.includes(key)) return;
+      const [row, col] = key.split(",").map(Number);
+      const pos = cellToPosition(row, col);
+      const aimed = state.aimedWallKey === key;
+      torus(
+        aimed ? "route-break-aim-ring" : "route-break-target-ring",
+        aimed ? 0.78 : 0.7,
+        aimed ? 0.034 : 0.022,
+        new B.Vector3(pos.x, BOARD_SURFACE_Y + (aimed ? 0.07 : 0.03), pos.z),
+        aimed ? materials.breakAim : materials.breakTarget,
+        parent,
+      );
+      if (!aimed) return;
+      // The aimed wall also gets a second ring higher up its body, so the
+      // player can tell the two apart at a glance from the 3/4 camera.
+      torus(
+        "route-break-aim-collar",
+        0.72,
+        0.026,
+        new B.Vector3(pos.x, BOARD_SURFACE_Y + 0.42, pos.z),
+        materials.breakAim,
+        parent,
+      );
+    });
+  }
+
+  /**
+   * Small stone left where a wall stood. The opening itself is real geometry —
+   * the block is simply gone — and these chips are the only thing that says it
+   * was ever there. No explosion, no shake, no particle storm (§30).
+   */
+  function renderBrokenWallTrace(
+    parent: BABYLON.TransformNode,
+    pos: BABYLON.Vector3,
+  ) {
+    const chips: Array<[number, number, number]> = [
+      [-0.26, 0.09, 0.22],
+      [0.24, 0.07, -0.18],
+      [0.06, 0.05, 0.3],
+    ];
+    chips.forEach(([dx, size, dz], index) => {
+      const chip = B.MeshBuilder.CreateBox(
+        "route-broken-chip",
+        { width: size, height: size * 0.55, depth: size * 0.82 },
+        scene,
+      );
+      chip.position = new B.Vector3(
+        pos.x + dx,
+        BOARD_SURFACE_Y + size * 0.28,
+        pos.z + dz,
+      );
+      chip.rotation.y = 0.5 + index * 0.9;
+      chip.material = materials.rubble;
+      chip.parent = parent;
+      chip.isPickable = false;
+      chip.receiveShadows = true;
+    });
+    // Settled dust, flat on the tile — the mark of the block's own footprint.
+    torus(
+      "route-broken-dust",
+      0.6,
+      0.014,
+      new B.Vector3(pos.x, BOARD_SURFACE_Y + 0.008, pos.z),
+      materials.rubble,
+      parent,
+    );
+  }
+
+  /**
+   * Every wall is drawn the same way, because every wall is the same thing.
+   *
+   * ROTA-CHEST-REWARDS-01 (revisão pós-playtest): this function used to give a
+   * certified subset older stone and visible fissures. It no longer does — a
+   * permanent mark would have been the game answering the question the Pickaxe
+   * is supposed to ask (§14).
+   */
   function renderWalls(parent: BABYLON.TransformNode) {
     const useWallAsset = wallAssetStatus === "loaded" && wallAssetProto !== null;
+
+    if (state.brokenWallKey) {
+      const [row, col] = state.brokenWallKey.split(",").map(Number);
+      renderBrokenWallTrace(parent, cellToPosition(row, col));
+    }
 
     state.walls.forEach((key) => {
       const [row, col] = key.split(",").map(Number);
@@ -1765,40 +1897,81 @@ export function createRouteBabylonController(
       );
     });
 
-    if (state.shield && !state.shieldCollected) {
-      const pos = cellToPosition(state.shield.row, state.shield.col);
-      const clone = clonePropAsset(
-        "shield",
-        "route-shield-glb",
-        parent,
-        new B.Vector3(pos.x, BOARD_SURFACE_Y, pos.z),
-        SHIELD_SCALE,
-      );
-      if (clone) {
-        // Tilt the flat shield toward the elevated camera so the blue star face
-        // reads as a shield instead of a sideways plaque.
-        clone.rotation.x = SHIELD_TILT_X;
-        clone.rotation.y = SHIELD_ROTATION_Y;
-        return;
-      }
+    if (state.chest) renderChest(parent);
+  }
 
-      cylinder(
-        "route-shield-token",
-        0.46,
-        0.08,
-        new B.Vector3(pos.x, BOARD_SURFACE_Y + 0.06, pos.z),
-        materials.shield,
-        parent,
-        6,
-      );
+  /**
+   * The reward chest: a small stone relic banded in bronze, with one teal ember
+   * in its lock.
+   *
+   * ROTA-CHEST-REWARDS-01 §25/§26. Closed it is shut and lit; once opened the
+   * lid stands back, the ember goes out and the whole piece drops to a spent
+   * grey — it stays on the board, visibly used, because a chest that vanished
+   * would leave the player wondering whether it was ever there.
+   */
+  function renderChest(parent: BABYLON.TransformNode) {
+    if (!state.chest) return;
+    const pos = cellToPosition(state.chest.row, state.chest.col);
+    const opened = state.chestOpened;
+    const body = opened ? materials.chestSpent : materials.chestStone;
+    const band = opened ? materials.chestSpent : materials.chestBronze;
+
+    const root = new B.TransformNode("route-chest-root", scene);
+    root.parent = parent;
+    root.position.set(pos.x, BOARD_SURFACE_Y, pos.z);
+    root.rotation.y = CHEST_ROTATION_Y;
+
+    // Plinth: the relic sits ON the stone, it is not part of it.
+    box("route-chest-plinth", 0.5, 0.04, 0.4, new B.Vector3(0, 0.02, 0), band, root);
+    // Body.
+    box("route-chest-body", 0.42, 0.2, 0.32, new B.Vector3(0, 0.14, 0), body, root);
+    // Two bronze bands around the body.
+    [-0.13, 0.13].forEach((offset, index) => {
       box(
-        "route-shield-face",
-        0.25,
-        0.18,
-        0.06,
-        new B.Vector3(pos.x, BOARD_SURFACE_Y + 0.22, pos.z),
-        materials.shield,
-        parent,
+        `route-chest-band-${index}`,
+        0.04,
+        0.21,
+        0.335,
+        new B.Vector3(offset, 0.14, 0),
+        band,
+        root,
+      );
+    });
+    // Lid: shut and level when closed, tipped back and open once used.
+    const lid = B.MeshBuilder.CreateBox(
+      "route-chest-lid",
+      { width: 0.44, height: 0.1, depth: 0.34 },
+      scene,
+    );
+    lid.material = body;
+    lid.parent = root;
+    lid.receiveShadows = true;
+    shadowGenerator.addShadowCaster(lid);
+    if (opened) {
+      lid.position.set(0, 0.28, -0.15);
+      lid.rotation.x = -1.15;
+    } else {
+      lid.position.set(0, 0.28, 0);
+    }
+
+    // The lock. Closed: one restrained teal ember, the world's own colour, well
+    // below the portal's brightness. Opened: dark bronze, plainly spent.
+    const lock = B.MeshBuilder.CreateBox(
+      "route-chest-lock",
+      { width: 0.09, height: 0.11, depth: 0.05 },
+      scene,
+    );
+    lock.position.set(0, 0.2, 0.17);
+    lock.material = opened ? materials.chestSpent : materials.chestGlow;
+    lock.parent = root;
+    if (!opened) {
+      torus(
+        "route-chest-ember",
+        0.2,
+        0.016,
+        new B.Vector3(0, 0.345, 0),
+        materials.chestGlow,
+        root,
       );
     }
   }
@@ -1810,6 +1983,10 @@ export function createRouteBabylonController(
       boardAssetStatus,
       wallAssetStatus,
       state.walls.slice().sort().join("|"),
+      // The rubble lives on the static board, so opening a wall rebuilds it.
+      // The break-target rings do NOT: they move with the Explorer every turn,
+      // so they belong to the dynamic board and must not force a static rebuild.
+      state.brokenWallKey ?? "",
     ].join(";");
   }
 
@@ -1832,6 +2009,7 @@ export function createRouteBabylonController(
     const nextRoot = new B.TransformNode("route-dynamic-board-root", scene);
 
     renderTileOverlays(nextRoot);
+    renderBreakTargets(nextRoot);
     renderPickups(nextRoot);
     renderPortal(nextRoot);
     renderPlayer(nextRoot);
@@ -2105,7 +2283,6 @@ export function createRouteBabylonController(
     loadPropAssetOnce("portal"),
     loadPropAssetOnce("light"),
     loadPropAssetOnce("trap"),
-    loadPropAssetOnce("shield"),
   ]);
   engine.runRenderLoop(() => {
     scene.render();

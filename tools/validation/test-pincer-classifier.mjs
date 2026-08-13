@@ -36,7 +36,7 @@ function board(rows, { start, portal, hunter, lights = [] }) {
     exitPosition: cell(portal),
     collectibleStars: lights.map(cell),
     traps: [],
-    shield: null,
+    chest: null,
   };
 }
 

@@ -6,6 +6,7 @@ import { motion, useReducedMotion } from "motion/react";
 import {
   ArrowLeft,
   Box,
+  BrickWall,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
@@ -16,6 +17,8 @@ import {
   Gauge,
   Hourglass,
   Info,
+  Package,
+  Pickaxe,
   Play,
   RotateCcw,
   Shield,
@@ -24,6 +27,7 @@ import {
   Sun,
   TriangleAlert,
   Trophy,
+  Undo2,
   X,
   type LucideIcon,
 } from "lucide-react";
@@ -33,6 +37,7 @@ import {
   posKey,
   ROWS,
   useEscapeMaze,
+  type ChestReward,
 } from "@/games/escape-maze/useEscapeMaze";
 import { getWorldMasterSceneStyle } from "@/components/worlds/master-scene/worldMasterSceneConfig";
 import type {
@@ -91,6 +96,36 @@ const MOVE_DELTAS: Record<"up" | "down" | "left" | "right", GridPosition> = {
   right: { row: 0, col: 1 },
 };
 
+/**
+ * The two rewards, as the player meets them. Short enough to decide from, and
+ * deliberately silent about how either one is computed (ROTA-CHEST-REWARDS-01 §27).
+ */
+const REWARD_COPY: Record<
+  ChestReward,
+  { title: string; detail: string; Icon: LucideIcon }
+> = {
+  pickaxe: {
+    title: "Picareta",
+    // Post-playtest: it used to say "uma parede marcada". Nothing is marked any
+    // more, and the copy has to say what the player can actually do — open ONE
+    // wall, any wall — without hinting at which.
+    detail: "Abra uma parede do labirinto. Só uma.",
+    Icon: Pickaxe,
+  },
+  "second-chance": {
+    title: "Segunda Chance",
+    detail: "Sobreviva a uma captura.",
+    Icon: Undo2,
+  },
+};
+
+const DIRECTION_LABEL: Record<"up" | "down" | "left" | "right", string> = {
+  up: "acima",
+  down: "abaixo",
+  left: "à esquerda",
+  right: "à direita",
+};
+
 function RouteWorldMark() {
   return (
     <svg
@@ -140,6 +175,12 @@ export function RouteStrategyGame({
 }: GameComponentProps) {
   const reducedMotion = useReducedMotion();
   const [detailsOpen, setDetailsOpen] = useState(false);
+  /**
+   * The wall the player is pointing at, so the board can show WHICH one would
+   * open. Pure UX: it exists only while a break affordance is hovered or
+   * focused, and it says "this is the target", never "this is the good target".
+   */
+  const [aimedWall, setAimedWall] = useState<string | null>(null);
   const detailsTriggerRef = useRef<HTMLButtonElement>(null);
   const game = useEscapeMaze(onComplete, initialRouteNumber);
   const {
@@ -147,6 +188,7 @@ export function RouteStrategyGame({
     routeNumber,
     routeProgression,
     mazeMap,
+    walls,
     player,
     guardian,
     sentinel,
@@ -164,13 +206,22 @@ export function RouteStrategyGame({
     blockedShake,
     triggeredTrapSet,
     trapsTriggered,
-    shieldCollected,
-    shieldActive,
+    chestOpened,
+    rewardSelected,
+    rewardChoicePending,
+    pickaxeAvailable,
+    pickaxeSpent,
+    secondChanceAvailable,
+    secondChanceSpent,
+    brokenWall,
+    breakTargets,
     startGame,
     restartGame,
     continueJourney,
     changeDifficulty,
     tryMovePlayer,
+    chooseReward,
+    breakWall,
   } = game;
 
   // Walkable neighbours of the player — a calm "available moves" hint. Pure
@@ -190,11 +241,11 @@ export function RouteStrategyGame({
             p.row < ROWS &&
             p.col >= 0 &&
             p.col < COLS &&
-            !mazeMap.walls.has(posKey(p)),
+            !walls.has(posKey(p)),
         )
         .map(posKey),
     );
-  }, [status, player, mazeMap]);
+  }, [status, player, walls]);
 
   // Tiles the guardian can step to next — a simple, calm danger radius derived
   // purely from its position and the walls (never from the guardian AI).
@@ -213,22 +264,27 @@ export function RouteStrategyGame({
             p.row < ROWS &&
             p.col >= 0 &&
             p.col < COLS &&
-            !mazeMap.walls.has(posKey(p)),
+            !walls.has(posKey(p)),
         )
         .map(posKey),
     );
-  }, [status, guardian, mazeMap]);
+  }, [status, guardian, walls]);
 
   const positiveMessages = new Set([
     "Luz-chave coletada.",
     "Portal ativado! Vá até a saída.",
-    "Escudo coletado.",
-    "Escudo protegeu você.",
+    "Baú encontrado. Escolha a sua ferramenta.",
+    "Picareta na mão. Você pode abrir uma parede — só uma.",
+    "Segunda Chance guardada. Você resiste a uma captura.",
+    "Parede aberta. O caminho novo serve para todos.",
+    "Segunda Chance: você resistiu e não avançou.",
+    "Segunda Chance: você resistiu e os defensores recuaram.",
   ]);
   const warnMessages = new Set([
     "Este caminho tem um obstáculo. Observe o próximo passo.",
     "O Caçador está próximo. Pense no próximo caminho.",
     "Caminho bloqueado. Escolha outra direção.",
+    "Parede no caminho. A Picareta pode abri-la.",
     "O portal ainda precisa das luzes da rota.",
     "O portal ainda precisa de todas as luzes.",
   ]);
@@ -335,11 +391,29 @@ export function RouteStrategyGame({
       className: portalActive ? "rsg-hud-portal-active" : "rsg-hud-portal-locked",
     },
     {
-      key: "escudo",
-      label: "Escudo",
-      value: shieldActive ? "Ativo" : shieldCollected ? "Usado" : "No mapa",
-      Icon: ShieldPlus,
-      className: shieldActive ? "rsg-hud-shield-active" : undefined,
+      key: "bau",
+      label: "Baú",
+      value: pickaxeAvailable
+        ? "Picareta"
+        : pickaxeSpent
+          ? "Picareta usada"
+          : secondChanceAvailable
+            ? "2ª Chance"
+            : secondChanceSpent
+              ? "2ª Chance usada"
+              : rewardChoicePending
+                ? "Escolha"
+                : "No mapa",
+      Icon: pickaxeAvailable
+        ? Pickaxe
+        : secondChanceAvailable
+          ? Undo2
+          : Package,
+      className: pickaxeAvailable || secondChanceAvailable
+        ? "rsg-hud-reward-active"
+        : rewardSelected !== null
+          ? "rsg-hud-reward-spent"
+          : undefined,
     },
   ];
 
@@ -395,7 +469,11 @@ export function RouteStrategyGame({
     { label: "Saída", Icon: DoorOpen },
     { label: "Luz", Icon: Sun },
     { label: "Armadilha", Icon: TriangleAlert },
-    { label: "Escudo", Icon: ShieldPlus },
+    { label: "Baú", Icon: Package },
+    // Post-playtest: there is no "cracked wall" symbol on the board any more.
+    // Every wall is a possible target, so the legend says what a wall IS, not
+    // which ones are special.
+    { label: "Parede", Icon: BrickWall },
     { label: "Bloqueio", Icon: Box },
   ];
 
@@ -522,6 +600,7 @@ export function RouteStrategyGame({
                 {USE_BABYLON_ROUTE_BOARD ? (
                   <RouteBabylonBoard
                     mazeMap={mazeMap}
+                    walls={walls}
                     collectedSet={collectedSet}
                     player={player}
                     guardian={guardian}
@@ -529,7 +608,10 @@ export function RouteStrategyGame({
                     sentinelCommitted={sentinelTarget !== null}
                     moveTargets={moveTargets}
                     triggeredTrapSet={triggeredTrapSet}
-                    shieldCollected={shieldCollected}
+                    chestOpened={chestOpened}
+                    breakTargets={breakTargets.map(({ cell }) => posKey(cell))}
+                    aimedWall={aimedWall}
+                    brokenWall={brokenWall}
                     dangerTiles={dangerTiles}
                     reducedMotion={Boolean(reducedMotion)}
                     status={status}
@@ -539,7 +621,7 @@ export function RouteStrategyGame({
                   />
                 ) : (
                   <RouteBoardScene
-                    walls={mazeMap.walls}
+                    walls={walls}
                     exitPosition={mazeMap.exitPosition}
                     stars={mazeMap.collectibleStars}
                     collectedSet={collectedSet}
@@ -549,8 +631,11 @@ export function RouteStrategyGame({
                     moveTargets={moveTargets}
                     traps={mazeMap.traps}
                     triggeredTrapSet={triggeredTrapSet}
-                    shield={mazeMap.shield}
-                    shieldCollected={shieldCollected}
+                    chest={mazeMap.chest}
+                    chestOpened={chestOpened}
+                    breakTargets={breakTargets.map(({ cell }) => posKey(cell))}
+                    aimedWall={aimedWall}
+                    brokenWall={brokenWall}
                     dangerTiles={dangerTiles}
                     reducedMotion={Boolean(reducedMotion)}
                     onMove={tryMovePlayer}
@@ -599,7 +684,42 @@ export function RouteStrategyGame({
               </section>
             )}
 
-            {!detailsOpen && status === "playing" && (
+            {!detailsOpen && status === "playing" && rewardChoicePending && (
+              <section
+                className="rsg-panel rsg-reward-panel"
+                role="group"
+                aria-label="Escolha a recompensa do baú"
+              >
+                <p className="rsg-panel-title">
+                  <Package className="h-5 w-5" aria-hidden />
+                  O baú abriu. Escolha uma.
+                </p>
+                <div className="rsg-reward-grid">
+                  {(["pickaxe", "second-chance"] as ChestReward[]).map((reward) => {
+                    const { title, detail, Icon } = REWARD_COPY[reward];
+                    return (
+                      <button
+                        key={reward}
+                        type="button"
+                        autoFocus={reward === "pickaxe"}
+                        onClick={() => chooseReward(reward)}
+                        aria-label={`Escolher ${title}: ${detail}`}
+                        className="rsg-reward-btn"
+                      >
+                        <Icon className="rsg-reward-icon" aria-hidden />
+                        <strong>{title}</strong>
+                        <em>{detail}</em>
+                      </button>
+                    );
+                  })}
+                </div>
+                <p className="rsg-reward-note">
+                  A outra ferramenta fica no baú. Nesta rota, só uma vem com você.
+                </p>
+              </section>
+            )}
+
+            {!detailsOpen && status === "playing" && !rewardChoicePending && (
               <motion.section
                 className="rsg-panel rsg-dpad-panel"
                 role="group"
@@ -626,6 +746,39 @@ export function RouteStrategyGame({
                   {renderMoveButton("down")}
                   <span />
                 </div>
+                {/*
+                  ROTA-CHEST-REWARDS-01 §15/§17/§18 (revisão pós-playtest): one
+                  button per ADJACENT WALL — any wall, not a marked subset. It is
+                  always an explicit tap; walking into a wall never consumes the
+                  Pickaxe.
+
+                  Each button names its direction, so two adjacent walls are two
+                  distinguishable choices and nothing is decided by array order.
+                  Pointing at a button aims at that wall on the board (§16): a
+                  VALID target is control information, and showing it is fine —
+                  what the game must never say is which target is a GOOD one.
+                */}
+                {breakTargets.length > 0 && (
+                  <div className="rsg-break-actions" role="group" aria-label="Ação da Picareta">
+                    {breakTargets.map(({ direction, cell }) => (
+                      <button
+                        key={posKey(cell)}
+                        type="button"
+                        onClick={() => breakWall(cell)}
+                        onPointerEnter={() => setAimedWall(posKey(cell))}
+                        onPointerLeave={() => setAimedWall(null)}
+                        onFocus={() => setAimedWall(posKey(cell))}
+                        onBlur={() => setAimedWall(null)}
+                        aria-label={`Quebrar a parede ${DIRECTION_LABEL[direction]}. Gasta a Picareta e custa um turno.`}
+                        className="rsg-break-btn"
+                      >
+                        <Pickaxe className="h-5 w-5" aria-hidden />
+                        Quebrar parede
+                        <em>{DIRECTION_LABEL[direction]}</em>
+                      </button>
+                    ))}
+                  </div>
+                )}
               </motion.section>
             )}
 
@@ -675,8 +828,8 @@ export function RouteStrategyGame({
                   Evite armadilhas e bloqueios.
                 </span>
                 <span>
-                  <ShieldPlus className="h-4 w-4" aria-hidden />
-                  Use o escudo para se proteger uma vez.
+                  <Package className="h-4 w-4" aria-hidden />
+                  O baú é opcional: escolha uma ferramenta, só uma.
                 </span>
               </div>
 

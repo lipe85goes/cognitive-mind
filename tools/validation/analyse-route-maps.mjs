@@ -36,7 +36,7 @@ const NUMERIC = [
   "objectiveMoves", "movesToAllLights", "portalShortest", "wallCount", "lights",
   "reachableCells", "junctions", "deadEnds", "idleDeadEnds", "longestCorridor",
   "disjointRoutes", "decisions", "decisionRatio", "longestForcedStreak",
-  "guardianStartDistance", "attempts", "trapMeanScore", "trapUseless", "shieldDistance",
+  "guardianStartDistance", "attempts", "trapMeanScore", "trapUseless", "chestDistance",
 ];
 
 function summarise(subset) {

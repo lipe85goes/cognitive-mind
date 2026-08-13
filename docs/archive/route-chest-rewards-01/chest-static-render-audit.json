@@ -1,0 +1,153 @@
+{
+  "mission": "ROTA-CHEST-REWARDS-01",
+  "note": "Static source inspection only; this environment cannot composite frames.",
+  "babylonLights": [
+    {
+      "type": "DirectionalLight",
+      "name": "route-key-light"
+    },
+    {
+      "type": "HemisphericLight",
+      "name": "route-fill-light"
+    },
+    {
+      "type": "PointLight",
+      "name": "route-rim-light"
+    }
+  ],
+  "ROUTE_MAX_LIGHTS": 3,
+  "checks": [
+    {
+      "id": "BABYLON_LIGHTS",
+      "pass": true,
+      "lights": [
+        {
+          "type": "DirectionalLight",
+          "name": "route-key-light"
+        },
+        {
+          "type": "HemisphericLight",
+          "name": "route-fill-light"
+        },
+        {
+          "type": "PointLight",
+          "name": "route-rim-light"
+        }
+      ],
+      "count": 3,
+      "ROUTE_MAX_LIGHTS": 3,
+      "expectedNames": [
+        "route-key-light",
+        "route-fill-light",
+        "route-rim-light"
+      ],
+      "namesMatch": true,
+      "glowLayers": 1
+    },
+    {
+      "id": "NO_NEW_LIGHT_FOR_CHEST",
+      "pass": true,
+      "materialsAdded": [
+        "chestStone",
+        "chestBronze",
+        "chestGlow",
+        "chestSpent",
+        "breakTarget",
+        "breakAim",
+        "rubble"
+      ],
+      "allAreMaterials": true,
+      "note": "chest ember and fissures are material + emissive + the existing GlowLayer"
+    },
+    {
+      "id": "BOTH_RENDERERS_CARRY_EVERY_STATE",
+      "pass": true,
+      "babylon": {
+        "chestClosed": true,
+        "chestOpened": true,
+        "breakTargetContextual": true,
+        "breakAim": true,
+        "brokenWall": true,
+        "stateFields": true
+      },
+      "fallback": {
+        "chestClosed": true,
+        "chestOpened": true,
+        "breakTargetContextual": true,
+        "breakAim": true,
+        "brokenWall": true,
+        "stateFields": true
+      }
+    },
+    {
+      "id": "REWARD_STATE_IS_VISIBLE",
+      "pass": true,
+      "hudTokenStates": [
+        "Picareta",
+        "Picareta usada",
+        "2ª Chance",
+        "2ª Chance usada",
+        "Escolha",
+        "No mapa"
+      ],
+      "contextualBreakAction": true,
+      "rewardChoicePanel": true
+    },
+    {
+      "id": "NO_PERMANENT_GOOD_WALL_HINT",
+      "pass": true,
+      "babylonFissureRenderer": false,
+      "babylonWeakWallMaterial": false,
+      "fallbackFissures": false,
+      "babylonWallMaterialBranches": false,
+      "fallbackWallColourBranches": false,
+      "targetsInStaticSignature": false,
+      "contextualTargetsLiveOnTheDynamicBoard": true,
+      "targetRingColour": "#c9903f",
+      "aimRingColour": "#ffcf7a",
+      "note": "valid-target rings are control information and appear only with the Pickaxe; no wall carries a mark of its own"
+    },
+    {
+      "id": "BREAK_TARGET_VISUAL_LANGUAGE",
+      "pass": true,
+      "trapRed": false,
+      "sentinelTeal": false,
+      "moveGreen": false,
+      "note": "bronze, borrowed from the Pickaxe itself — not the trap's red, not the Sentinel's teal, not the move ring's green"
+    },
+    {
+      "id": "SHIELD_FULLY_REMOVED",
+      "pass": true,
+      "babylonScene": false,
+      "babylonBoard": false,
+      "fallbackScene": false,
+      "fallbackTile": false,
+      "hook": false,
+      "gameShieldWording": false,
+      "detailLabels": false,
+      "cssShieldClasses": false,
+      "shieldComponentFile": false,
+      "remainingOnDisk": {
+        "public/models/route/shield.glb": true,
+        "note": "no longer loaded by the Route board; the file and its Blender script stay only because two unrelated diorama scripts import them"
+      }
+    },
+    {
+      "id": "CHEST_STAYS_VISIBLY_SPENT",
+      "pass": true,
+      "babylonDrawsWhenOpened": true,
+      "fallbackDrawsWhenOpened": true,
+      "note": "§26 — an opened chest stays on the board, lid back and ember out"
+    },
+    {
+      "id": "NO_STRATEGY_IN_RENDER_LAYER",
+      "pass": true,
+      "babylonDecidesBreakable": false,
+      "fallbackDecidesBreakable": false,
+      "babylonMutatesWalls": false,
+      "fallbackMutatesWalls": false,
+      "note": "renderers receive breakableWallKeys / brokenWallKey and draw them; they never decide them"
+    }
+  ],
+  "allPass": true
+}

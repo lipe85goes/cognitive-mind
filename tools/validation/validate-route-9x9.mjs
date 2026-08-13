@@ -401,7 +401,7 @@ function validateMap(api, map, difficulty, stage) {
     ["portal", map.exitPosition],
     ...map.collectibleStars.map((position, index) => [`light-${index}`, position]),
     ...map.traps.map((position, index) => [`trap-${index}`, position]),
-    ...(map.shield ? [["shield", map.shield]] : []),
+    ...(map.chest ? [["chest", map.chest]] : []),
   ];
   for (const [label, position] of entities) {
     if (!isInBounds(position, rows, cols)) {
@@ -448,7 +448,7 @@ function validateMap(api, map, difficulty, stage) {
   for (const [label, positions] of [
     ["light", map.collectibleStars],
     ["trap", map.traps],
-    ["shield", map.shield ? [map.shield] : []],
+    ["chest", map.chest ? [map.chest] : []],
   ]) {
     for (const position of positions) {
       const key = posKey(position);
@@ -520,7 +520,7 @@ function validateMap(api, map, difficulty, stage) {
       `trap count ${map.traps.length} differs from ${api.getTrapCount(difficulty, stage)}`,
     );
   }
-  if (map.shield === null) errors.push("shield was not placed");
+  if (map.chest === null) errors.push("chest was not placed");
   if (neighbors(map.guardianStart, map.walls, rows, cols).length < 2) {
     errors.push("guardian starts with fewer than two exits");
   }
@@ -555,7 +555,7 @@ function canonicalMap(map) {
     exitPosition: map.exitPosition,
     collectibleStars: map.collectibleStars,
     traps: map.traps,
-    shield: map.shield,
+    chest: map.chest,
   });
 }
 

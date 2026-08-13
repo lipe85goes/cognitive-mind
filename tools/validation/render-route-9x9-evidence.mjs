@@ -145,7 +145,7 @@ function mapBoard(route) {
   pieces.push(marker(state.player, "E", palette.blue));
   pieces.push(marker(state.guardian, "G", palette.coral));
   pieces.push(marker(state.exit, "P", palette.green, 27));
-  if (state.shield) pieces.push(marker(parseCell(state.shield), "S", palette.teal, 20));
+  if (state.chest) pieces.push(marker(parseCell(state.chest), "B", palette.teal, 20));
 
   const metricRows = [
     ["Rota", route.route],

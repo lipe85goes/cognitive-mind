@@ -219,7 +219,7 @@ for (const seed of SEEDS) {
         exitPosition: API.posKey(candidate.map.exitPosition),
         stars: candidate.map.collectibleStars.map(API.posKey),
         traps: candidate.map.traps.map(API.posKey),
-        shield: candidate.map.shield ? API.posKey(candidate.map.shield) : null,
+        chest: candidate.map.chest ? API.posKey(candidate.map.chest) : null,
         objectiveCells: candidate.analysis.objective
           ? candidate.analysis.objective.cells.map(API.posKey)
           : null,
@@ -274,7 +274,7 @@ const twoRejects = postStructuralRejects.map((c) => ({
   stars: c.map.stars,
   guardian: c.map.guardianStart,
   traps: c.map.traps,
-  shield: c.map.shield,
+  chest: c.map.chest,
   objectiveCells: c.map.objectiveCells,
   structuralVerdict: "PASSED",
   structuralReasonCode: c.structuralReason,

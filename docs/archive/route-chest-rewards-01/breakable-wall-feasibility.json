@@ -1,0 +1,2576 @@
+{
+  "mission": "ROTA-CHEST-REWARDS-01",
+  "phase": "FASE_1_BREAKABLE_WALL_FEASIBILITY",
+  "preChestBaselineCommit": "eb26368",
+  "history": {
+    "originalRole": "GATE — a Picareta so foi implementada depois desta campanha passar, e o conjunto certificado decidia quais paredes o jogador podia abrir",
+    "designRevision": "playtest manual: a Picareta passou a abrir QUALQUER parede interna adjacente, e escolher qual virou a dificuldade",
+    "currentRole": "evidencia historica — mede se abrir uma parede muda estes tabuleiros, que e o motivo pelo qual a mecanica existe",
+    "BREAKABLE_WALL_FEASIBILITY_GATE": "SUPERSEDED_AS_RUNTIME_RESTRICTION",
+    "BREAKABLE_WALL_FEASIBILITY_EVIDENCE": "PRESERVED",
+    "CERTIFIED_WALL_RUNTIME_RESTRICTION": false,
+    "ruleSourceThen": "src/games/escape-maze/useEscapeMaze.ts :: auditBreakableWalls / certifyBreakableWall",
+    "ruleSourceNow": "tools/validation/breakable-wall-certifier.mjs (offline only)",
+    "reproducesOriginalCampaign": {
+      "comparable": true,
+      "mapsMeasured": true,
+      "mapsWithZeroCertifiedWalls": true,
+      "certifiedPerMapMin": true,
+      "certifiedPerMapMax": true,
+      "certifiedPerMapMean": true,
+      "determinismViolations": true,
+      "rejectionReasons": true
+    },
+    "reproducedExactly": true
+  },
+  "ruleSource": "tools/validation/breakable-wall-certifier.mjs",
+  "contract": {
+    "mustBeAnExistingWallCell": true,
+    "excludedByAssertion": [
+      "portal",
+      "spawn",
+      "startZone",
+      "light",
+      "trap",
+      "chest"
+    ],
+    "minimumWalkableNeighbours": 2,
+    "mustKeepOneConnectedField": true,
+    "significanceIsAnyOf": [
+      "objectiveMovesSaved >= 1 (atalho na rota objetivo completa)",
+      "portalAccessesGained >= 1 (nova porta na regiao do portal)",
+      "escapeCellsGained >= 1 (celula da rota ganha uma terceira saida)",
+      "alternativeRouteCellsGained >= 1 (celula existente ganha rota independente)"
+    ],
+    "measuredButNeverACertifyingReason": [
+      "hunterMovesSaved (o trade-off da Picareta)",
+      "portalZoneCellsGained (o territorio do Sentinela muda de forma)",
+      "cyclesGained (consequencia exata de degree - 1)"
+    ],
+    "markedPerStage": {
+      "1": 2,
+      "2": 2,
+      "3": 3
+    },
+    "hardMaximum": 3,
+    "minimumSeparation": 2,
+    "randomnessInSelection": "none",
+    "goldenSeedHardcoding": "none"
+  },
+  "sampling": {
+    "seedsPerSlot": 12,
+    "baseSeed": 4400000,
+    "stages": [
+      1,
+      2,
+      3
+    ],
+    "templatesPerStage": 3,
+    "difficulties": [
+      "easy",
+      "medium",
+      "hard"
+    ],
+    "mapsMeasured": 324,
+    "generationFailures": 0,
+    "elapsedMs": 132395
+  },
+  "results": {
+    "mapsWithZeroCertifiedWalls": 0,
+    "certifiedPerMap": {
+      "n": 324,
+      "min": 2,
+      "max": 21,
+      "mean": 11.448,
+      "p50": 12
+    },
+    "determinismViolations": 0,
+    "rejectionReasons": {
+      "NO_TOPOLOGICAL_EFFECT": 2059,
+      "WOULD_ADD_DEAD_END": 755,
+      "WOULD_ADD_ISLAND": 57
+    },
+    "perTemplate": [
+      {
+        "stage": 1,
+        "templateIndex": 0,
+        "templateId": "stage1-template0",
+        "mapsMeasured": 36,
+        "worstCaseCertifiedOnAnyMap": 6,
+        "passesMinimumOne": true,
+        "reachesTargetTwoAlways": true
+      },
+      {
+        "stage": 1,
+        "templateIndex": 1,
+        "templateId": "stage1-template1",
+        "mapsMeasured": 36,
+        "worstCaseCertifiedOnAnyMap": 5,
+        "passesMinimumOne": true,
+        "reachesTargetTwoAlways": true
+      },
+      {
+        "stage": 1,
+        "templateIndex": 2,
+        "templateId": "stage1-template2",
+        "mapsMeasured": 36,
+        "worstCaseCertifiedOnAnyMap": 3,
+        "passesMinimumOne": true,
+        "reachesTargetTwoAlways": true
+      },
+      {
+        "stage": 2,
+        "templateIndex": 0,
+        "templateId": "stage2-template0",
+        "mapsMeasured": 36,
+        "worstCaseCertifiedOnAnyMap": 4,
+        "passesMinimumOne": true,
+        "reachesTargetTwoAlways": true
+      },
+      {
+        "stage": 2,
+        "templateIndex": 1,
+        "templateId": "stage2-template1",
+        "mapsMeasured": 36,
+        "worstCaseCertifiedOnAnyMap": 3,
+        "passesMinimumOne": true,
+        "reachesTargetTwoAlways": true
+      },
+      {
+        "stage": 2,
+        "templateIndex": 2,
+        "templateId": "stage2-template2",
+        "mapsMeasured": 36,
+        "worstCaseCertifiedOnAnyMap": 4,
+        "passesMinimumOne": true,
+        "reachesTargetTwoAlways": true
+      },
+      {
+        "stage": 3,
+        "templateIndex": 0,
+        "templateId": "stage3-template0",
+        "mapsMeasured": 36,
+        "worstCaseCertifiedOnAnyMap": 7,
+        "passesMinimumOne": true,
+        "reachesTargetTwoAlways": true
+      },
+      {
+        "stage": 3,
+        "templateIndex": 1,
+        "templateId": "stage3-template1",
+        "mapsMeasured": 36,
+        "worstCaseCertifiedOnAnyMap": 2,
+        "passesMinimumOne": true,
+        "reachesTargetTwoAlways": true
+      },
+      {
+        "stage": 3,
+        "templateIndex": 2,
+        "templateId": "stage3-template2",
+        "mapsMeasured": 36,
+        "worstCaseCertifiedOnAnyMap": 5,
+        "passesMinimumOne": true,
+        "reachesTargetTwoAlways": true
+      }
+    ],
+    "perSlot": [
+      {
+        "stage": 1,
+        "templateIndex": 0,
+        "difficulty": "easy",
+        "mapsMeasured": 12,
+        "certifiedPerMap": {
+          "n": 12,
+          "min": 6,
+          "max": 10,
+          "mean": 8.083,
+          "p50": 8
+        },
+        "minCertifiedOnAnyMap": 6,
+        "passesMinimumOne": true,
+        "reachesTargetTwo": true,
+        "candidateScore": {
+          "n": 97,
+          "min": 8,
+          "max": 37,
+          "mean": 19.093,
+          "p50": 16
+        },
+        "candidateDegree": {
+          "n": 97,
+          "min": 2,
+          "max": 4,
+          "mean": 3.247,
+          "p50": 3
+        },
+        "certifyingEffects": {
+          "objectiveMovesSaved": 0,
+          "portalAccessesGained": 33,
+          "escapeCellsGained": 79,
+          "alternativeRouteCellsGained": 6
+        },
+        "certifiedThatAlsoShortenTheHunter": 0,
+        "certifiedThatResizeTheSentinelZone": 18,
+        "examples": [
+          {
+            "seed": 4410000,
+            "walls": 14,
+            "certified": 10,
+            "marked": [
+              "6,1",
+              "4,6"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "6,1",
+              "score": 25,
+              "effect": {
+                "degree": 4,
+                "cyclesGained": 3,
+                "objectiveMovesSaved": 0,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 2,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            }
+          },
+          {
+            "seed": 4410001,
+            "walls": 15,
+            "certified": 8,
+            "marked": [
+              "6,1",
+              "4,6"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "6,1",
+              "score": 25,
+              "effect": {
+                "degree": 4,
+                "cyclesGained": 3,
+                "objectiveMovesSaved": 0,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 2,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            }
+          }
+        ]
+      },
+      {
+        "stage": 1,
+        "templateIndex": 0,
+        "difficulty": "medium",
+        "mapsMeasured": 12,
+        "certifiedPerMap": {
+          "n": 12,
+          "min": 7,
+          "max": 16,
+          "mean": 11.167,
+          "p50": 11
+        },
+        "minCertifiedOnAnyMap": 7,
+        "passesMinimumOne": true,
+        "reachesTargetTwo": true,
+        "candidateScore": {
+          "n": 134,
+          "min": 8,
+          "max": 67,
+          "mean": 20.343,
+          "p50": 17
+        },
+        "candidateDegree": {
+          "n": 134,
+          "min": 2,
+          "max": 4,
+          "mean": 3,
+          "p50": 3
+        },
+        "certifyingEffects": {
+          "objectiveMovesSaved": 8,
+          "portalAccessesGained": 38,
+          "escapeCellsGained": 94,
+          "alternativeRouteCellsGained": 43
+        },
+        "certifiedThatAlsoShortenTheHunter": 0,
+        "certifiedThatResizeTheSentinelZone": 23,
+        "examples": [
+          {
+            "seed": 4410000,
+            "walls": 20,
+            "certified": 11,
+            "marked": [
+              "6,1",
+              "5,2"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "6,1",
+              "score": 67,
+              "effect": {
+                "degree": 4,
+                "cyclesGained": 3,
+                "objectiveMovesSaved": 2,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 4,
+                "alternativeRouteCellsGained": 1,
+                "hunterMovesSaved": 0
+              }
+            }
+          },
+          {
+            "seed": 4410001,
+            "walls": 18,
+            "certified": 12,
+            "marked": [
+              "1,6",
+              "1,3"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "1,6",
+              "score": 27,
+              "effect": {
+                "degree": 4,
+                "cyclesGained": 3,
+                "objectiveMovesSaved": 0,
+                "portalAccessesGained": 1,
+                "portalZoneCellsGained": 1,
+                "escapeCellsGained": 1,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            }
+          }
+        ]
+      },
+      {
+        "stage": 1,
+        "templateIndex": 0,
+        "difficulty": "hard",
+        "mapsMeasured": 12,
+        "certifiedPerMap": {
+          "n": 12,
+          "min": 9,
+          "max": 18,
+          "mean": 13.833,
+          "p50": 13
+        },
+        "minCertifiedOnAnyMap": 9,
+        "passesMinimumOne": true,
+        "reachesTargetTwo": true,
+        "candidateScore": {
+          "n": 166,
+          "min": 5,
+          "max": 70,
+          "mean": 23.596,
+          "p50": 20
+        },
+        "candidateDegree": {
+          "n": 166,
+          "min": 2,
+          "max": 4,
+          "mean": 2.91,
+          "p50": 3
+        },
+        "certifyingEffects": {
+          "objectiveMovesSaved": 28,
+          "portalAccessesGained": 43,
+          "escapeCellsGained": 111,
+          "alternativeRouteCellsGained": 65
+        },
+        "certifiedThatAlsoShortenTheHunter": 8,
+        "certifiedThatResizeTheSentinelZone": 32,
+        "examples": [
+          {
+            "seed": 4410000,
+            "walls": 20,
+            "certified": 9,
+            "marked": [
+              "4,7",
+              "6,1"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "4,7",
+              "score": 28,
+              "effect": {
+                "degree": 3,
+                "cyclesGained": 2,
+                "objectiveMovesSaved": 0,
+                "portalAccessesGained": 2,
+                "portalZoneCellsGained": 1,
+                "escapeCellsGained": 0,
+                "alternativeRouteCellsGained": 1,
+                "hunterMovesSaved": 0
+              }
+            }
+          },
+          {
+            "seed": 4410001,
+            "walls": 20,
+            "certified": 13,
+            "marked": [
+              "1,6",
+              "6,1"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "1,6",
+              "score": 27,
+              "effect": {
+                "degree": 4,
+                "cyclesGained": 3,
+                "objectiveMovesSaved": 0,
+                "portalAccessesGained": 1,
+                "portalZoneCellsGained": 1,
+                "escapeCellsGained": 1,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            }
+          }
+        ]
+      },
+      {
+        "stage": 1,
+        "templateIndex": 1,
+        "difficulty": "easy",
+        "mapsMeasured": 12,
+        "certifiedPerMap": {
+          "n": 12,
+          "min": 5,
+          "max": 9,
+          "mean": 7.25,
+          "p50": 8
+        },
+        "minCertifiedOnAnyMap": 5,
+        "passesMinimumOne": true,
+        "reachesTargetTwo": true,
+        "candidateScore": {
+          "n": 87,
+          "min": 11,
+          "max": 35,
+          "mean": 15.977,
+          "p50": 14
+        },
+        "candidateDegree": {
+          "n": 87,
+          "min": 2,
+          "max": 4,
+          "mean": 2.862,
+          "p50": 3
+        },
+        "certifyingEffects": {
+          "objectiveMovesSaved": 0,
+          "portalAccessesGained": 28,
+          "escapeCellsGained": 69,
+          "alternativeRouteCellsGained": 0
+        },
+        "certifiedThatAlsoShortenTheHunter": 3,
+        "certifiedThatResizeTheSentinelZone": 10,
+        "examples": [
+          {
+            "seed": 4411000,
+            "walls": 15,
+            "certified": 7,
+            "marked": [
+              "1,5",
+              "4,6"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "1,5",
+              "score": 19,
+              "effect": {
+                "degree": 4,
+                "cyclesGained": 3,
+                "objectiveMovesSaved": 0,
+                "portalAccessesGained": 1,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 0,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            }
+          },
+          {
+            "seed": 4411001,
+            "walls": 15,
+            "certified": 5,
+            "marked": [
+              "2,7",
+              "4,7"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "2,7",
+              "score": 35,
+              "effect": {
+                "degree": 4,
+                "cyclesGained": 3,
+                "objectiveMovesSaved": 0,
+                "portalAccessesGained": 1,
+                "portalZoneCellsGained": 2,
+                "escapeCellsGained": 2,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            }
+          }
+        ]
+      },
+      {
+        "stage": 1,
+        "templateIndex": 1,
+        "difficulty": "medium",
+        "mapsMeasured": 12,
+        "certifiedPerMap": {
+          "n": 12,
+          "min": 6,
+          "max": 13,
+          "mean": 10.167,
+          "p50": 11
+        },
+        "minCertifiedOnAnyMap": 6,
+        "passesMinimumOne": true,
+        "reachesTargetTwo": true,
+        "candidateScore": {
+          "n": 122,
+          "min": 5,
+          "max": 82,
+          "mean": 20.492,
+          "p50": 17
+        },
+        "candidateDegree": {
+          "n": 122,
+          "min": 2,
+          "max": 4,
+          "mean": 2.787,
+          "p50": 3
+        },
+        "certifyingEffects": {
+          "objectiveMovesSaved": 18,
+          "portalAccessesGained": 32,
+          "escapeCellsGained": 78,
+          "alternativeRouteCellsGained": 37
+        },
+        "certifiedThatAlsoShortenTheHunter": 4,
+        "certifiedThatResizeTheSentinelZone": 16,
+        "examples": [
+          {
+            "seed": 4411000,
+            "walls": 19,
+            "certified": 13,
+            "marked": [
+              "4,5",
+              "5,7"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "4,5",
+              "score": 39,
+              "effect": {
+                "degree": 2,
+                "cyclesGained": 1,
+                "objectiveMovesSaved": 2,
+                "portalAccessesGained": 1,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 0,
+                "alternativeRouteCellsGained": 1,
+                "hunterMovesSaved": 0
+              }
+            }
+          },
+          {
+            "seed": 4411001,
+            "walls": 19,
+            "certified": 11,
+            "marked": [
+              "6,3",
+              "7,4"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "6,3",
+              "score": 35,
+              "effect": {
+                "degree": 2,
+                "cyclesGained": 1,
+                "objectiveMovesSaved": 2,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 1,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            }
+          }
+        ]
+      },
+      {
+        "stage": 1,
+        "templateIndex": 1,
+        "difficulty": "hard",
+        "mapsMeasured": 12,
+        "certifiedPerMap": {
+          "n": 12,
+          "min": 10,
+          "max": 15,
+          "mean": 12.583,
+          "p50": 13
+        },
+        "minCertifiedOnAnyMap": 10,
+        "passesMinimumOne": true,
+        "reachesTargetTwo": true,
+        "candidateScore": {
+          "n": 151,
+          "min": 5,
+          "max": 54,
+          "mean": 19.53,
+          "p50": 16
+        },
+        "candidateDegree": {
+          "n": 151,
+          "min": 2,
+          "max": 4,
+          "mean": 2.715,
+          "p50": 3
+        },
+        "certifyingEffects": {
+          "objectiveMovesSaved": 25,
+          "portalAccessesGained": 32,
+          "escapeCellsGained": 95,
+          "alternativeRouteCellsGained": 65
+        },
+        "certifiedThatAlsoShortenTheHunter": 10,
+        "certifiedThatResizeTheSentinelZone": 14,
+        "examples": [
+          {
+            "seed": 4411000,
+            "walls": 21,
+            "certified": 14,
+            "marked": [
+              "6,3",
+              "7,4"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "6,3",
+              "score": 37,
+              "effect": {
+                "degree": 2,
+                "cyclesGained": 1,
+                "objectiveMovesSaved": 2,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 1,
+                "alternativeRouteCellsGained": 1,
+                "hunterMovesSaved": 0
+              }
+            }
+          },
+          {
+            "seed": 4411001,
+            "walls": 20,
+            "certified": 12,
+            "marked": [
+              "6,3",
+              "7,4"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "6,3",
+              "score": 35,
+              "effect": {
+                "degree": 2,
+                "cyclesGained": 1,
+                "objectiveMovesSaved": 2,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 1,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            }
+          }
+        ]
+      },
+      {
+        "stage": 1,
+        "templateIndex": 2,
+        "difficulty": "easy",
+        "mapsMeasured": 12,
+        "certifiedPerMap": {
+          "n": 12,
+          "min": 3,
+          "max": 9,
+          "mean": 6.333,
+          "p50": 7
+        },
+        "minCertifiedOnAnyMap": 3,
+        "passesMinimumOne": true,
+        "reachesTargetTwo": true,
+        "candidateScore": {
+          "n": 76,
+          "min": 8,
+          "max": 56,
+          "mean": 21.132,
+          "p50": 16
+        },
+        "candidateDegree": {
+          "n": 76,
+          "min": 2,
+          "max": 4,
+          "mean": 2.974,
+          "p50": 3
+        },
+        "certifyingEffects": {
+          "objectiveMovesSaved": 10,
+          "portalAccessesGained": 32,
+          "escapeCellsGained": 46,
+          "alternativeRouteCellsGained": 6
+        },
+        "certifiedThatAlsoShortenTheHunter": 2,
+        "certifiedThatResizeTheSentinelZone": 19,
+        "examples": [
+          {
+            "seed": 4412000,
+            "walls": 15,
+            "certified": 7,
+            "marked": [
+              "4,1",
+              "6,1"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "4,1",
+              "score": 33,
+              "effect": {
+                "degree": 4,
+                "cyclesGained": 3,
+                "objectiveMovesSaved": 0,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 3,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            }
+          },
+          {
+            "seed": 4412001,
+            "walls": 15,
+            "certified": 3,
+            "marked": [
+              "4,7",
+              "2,6"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "4,7",
+              "score": 32,
+              "effect": {
+                "degree": 3,
+                "cyclesGained": 2,
+                "objectiveMovesSaved": 0,
+                "portalAccessesGained": 1,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 2,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            }
+          }
+        ]
+      },
+      {
+        "stage": 1,
+        "templateIndex": 2,
+        "difficulty": "medium",
+        "mapsMeasured": 12,
+        "certifiedPerMap": {
+          "n": 12,
+          "min": 7,
+          "max": 13,
+          "mean": 9.75,
+          "p50": 10
+        },
+        "minCertifiedOnAnyMap": 7,
+        "passesMinimumOne": true,
+        "reachesTargetTwo": true,
+        "candidateScore": {
+          "n": 117,
+          "min": 5,
+          "max": 118,
+          "mean": 22.06,
+          "p50": 14
+        },
+        "candidateDegree": {
+          "n": 117,
+          "min": 2,
+          "max": 4,
+          "mean": 2.855,
+          "p50": 3
+        },
+        "certifyingEffects": {
+          "objectiveMovesSaved": 13,
+          "portalAccessesGained": 37,
+          "escapeCellsGained": 77,
+          "alternativeRouteCellsGained": 12
+        },
+        "certifiedThatAlsoShortenTheHunter": 9,
+        "certifiedThatResizeTheSentinelZone": 21,
+        "examples": [
+          {
+            "seed": 4412000,
+            "walls": 19,
+            "certified": 12,
+            "marked": [
+              "4,7",
+              "6,1"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "4,7",
+              "score": 32,
+              "effect": {
+                "degree": 3,
+                "cyclesGained": 2,
+                "objectiveMovesSaved": 0,
+                "portalAccessesGained": 1,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 2,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 2
+              }
+            }
+          },
+          {
+            "seed": 4412001,
+            "walls": 20,
+            "certified": 11,
+            "marked": [
+              "4,1",
+              "2,6"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "4,1",
+              "score": 33,
+              "effect": {
+                "degree": 4,
+                "cyclesGained": 3,
+                "objectiveMovesSaved": 0,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 3,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            }
+          }
+        ]
+      },
+      {
+        "stage": 1,
+        "templateIndex": 2,
+        "difficulty": "hard",
+        "mapsMeasured": 12,
+        "certifiedPerMap": {
+          "n": 12,
+          "min": 7,
+          "max": 17,
+          "mean": 11.167,
+          "p50": 11
+        },
+        "minCertifiedOnAnyMap": 7,
+        "passesMinimumOne": true,
+        "reachesTargetTwo": true,
+        "candidateScore": {
+          "n": 134,
+          "min": 5,
+          "max": 88,
+          "mean": 23.201,
+          "p50": 17
+        },
+        "candidateDegree": {
+          "n": 134,
+          "min": 2,
+          "max": 4,
+          "mean": 2.828,
+          "p50": 3
+        },
+        "certifyingEffects": {
+          "objectiveMovesSaved": 21,
+          "portalAccessesGained": 35,
+          "escapeCellsGained": 75,
+          "alternativeRouteCellsGained": 56
+        },
+        "certifiedThatAlsoShortenTheHunter": 0,
+        "certifiedThatResizeTheSentinelZone": 23,
+        "examples": [
+          {
+            "seed": 4412000,
+            "walls": 21,
+            "certified": 11,
+            "marked": [
+              "4,1",
+              "5,2"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "4,1",
+              "score": 53,
+              "effect": {
+                "degree": 4,
+                "cyclesGained": 3,
+                "objectiveMovesSaved": 2,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 2,
+                "alternativeRouteCellsGained": 2,
+                "hunterMovesSaved": 0
+              }
+            }
+          },
+          {
+            "seed": 4412001,
+            "walls": 25,
+            "certified": 11,
+            "marked": [
+              "4,1",
+              "2,6"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "4,1",
+              "score": 33,
+              "effect": {
+                "degree": 4,
+                "cyclesGained": 3,
+                "objectiveMovesSaved": 0,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 3,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            }
+          }
+        ]
+      },
+      {
+        "stage": 2,
+        "templateIndex": 0,
+        "difficulty": "easy",
+        "mapsMeasured": 12,
+        "certifiedPerMap": {
+          "n": 12,
+          "min": 6,
+          "max": 15,
+          "mean": 9.917,
+          "p50": 9
+        },
+        "minCertifiedOnAnyMap": 6,
+        "passesMinimumOne": true,
+        "reachesTargetTwo": true,
+        "candidateScore": {
+          "n": 119,
+          "min": 5,
+          "max": 90,
+          "mean": 33.504,
+          "p50": 30
+        },
+        "candidateDegree": {
+          "n": 119,
+          "min": 2,
+          "max": 4,
+          "mean": 3.16,
+          "p50": 3
+        },
+        "certifyingEffects": {
+          "objectiveMovesSaved": 59,
+          "portalAccessesGained": 31,
+          "escapeCellsGained": 68,
+          "alternativeRouteCellsGained": 38
+        },
+        "certifiedThatAlsoShortenTheHunter": 6,
+        "certifiedThatResizeTheSentinelZone": 0,
+        "examples": [
+          {
+            "seed": 4420000,
+            "walls": 18,
+            "certified": 9,
+            "marked": [
+              "7,4",
+              "4,5"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "7,4",
+              "score": 46,
+              "effect": {
+                "degree": 3,
+                "cyclesGained": 2,
+                "objectiveMovesSaved": 2,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 2,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            }
+          },
+          {
+            "seed": 4420001,
+            "walls": 18,
+            "certified": 15,
+            "marked": [
+              "3,7",
+              "5,4"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "3,7",
+              "score": 88,
+              "effect": {
+                "degree": 3,
+                "cyclesGained": 2,
+                "objectiveMovesSaved": 4,
+                "portalAccessesGained": 1,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 3,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            }
+          }
+        ]
+      },
+      {
+        "stage": 2,
+        "templateIndex": 0,
+        "difficulty": "medium",
+        "mapsMeasured": 12,
+        "certifiedPerMap": {
+          "n": 12,
+          "min": 4,
+          "max": 13,
+          "mean": 9.917,
+          "p50": 11
+        },
+        "minCertifiedOnAnyMap": 4,
+        "passesMinimumOne": true,
+        "reachesTargetTwo": true,
+        "candidateScore": {
+          "n": 119,
+          "min": 5,
+          "max": 51,
+          "mean": 19.571,
+          "p50": 17
+        },
+        "candidateDegree": {
+          "n": 119,
+          "min": 2,
+          "max": 4,
+          "mean": 2.924,
+          "p50": 3
+        },
+        "certifyingEffects": {
+          "objectiveMovesSaved": 23,
+          "portalAccessesGained": 25,
+          "escapeCellsGained": 63,
+          "alternativeRouteCellsGained": 42
+        },
+        "certifiedThatAlsoShortenTheHunter": 0,
+        "certifiedThatResizeTheSentinelZone": 1,
+        "examples": [
+          {
+            "seed": 4420000,
+            "walls": 21,
+            "certified": 13,
+            "marked": [
+              "7,4",
+              "8,2"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "7,4",
+              "score": 38,
+              "effect": {
+                "degree": 3,
+                "cyclesGained": 2,
+                "objectiveMovesSaved": 2,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 1,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            }
+          },
+          {
+            "seed": 4420001,
+            "walls": 22,
+            "certified": 12,
+            "marked": [
+              "3,7",
+              "3,0"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "3,7",
+              "score": 48,
+              "effect": {
+                "degree": 3,
+                "cyclesGained": 2,
+                "objectiveMovesSaved": 2,
+                "portalAccessesGained": 1,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 1,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            }
+          }
+        ]
+      },
+      {
+        "stage": 2,
+        "templateIndex": 0,
+        "difficulty": "hard",
+        "mapsMeasured": 12,
+        "certifiedPerMap": {
+          "n": 12,
+          "min": 10,
+          "max": 19,
+          "mean": 14.5,
+          "p50": 14
+        },
+        "minCertifiedOnAnyMap": 10,
+        "passesMinimumOne": true,
+        "reachesTargetTwo": true,
+        "candidateScore": {
+          "n": 174,
+          "min": 5,
+          "max": 88,
+          "mean": 21.839,
+          "p50": 19
+        },
+        "candidateDegree": {
+          "n": 174,
+          "min": 2,
+          "max": 4,
+          "mean": 2.851,
+          "p50": 3
+        },
+        "certifyingEffects": {
+          "objectiveMovesSaved": 25,
+          "portalAccessesGained": 33,
+          "escapeCellsGained": 109,
+          "alternativeRouteCellsGained": 90
+        },
+        "certifiedThatAlsoShortenTheHunter": 0,
+        "certifiedThatResizeTheSentinelZone": 0,
+        "examples": [
+          {
+            "seed": 4420000,
+            "walls": 23,
+            "certified": 15,
+            "marked": [
+              "8,2",
+              "3,7"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "8,2",
+              "score": 38,
+              "effect": {
+                "degree": 3,
+                "cyclesGained": 2,
+                "objectiveMovesSaved": 2,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 1,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            }
+          },
+          {
+            "seed": 4420001,
+            "walls": 23,
+            "certified": 12,
+            "marked": [
+              "3,7",
+              "4,1"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "3,7",
+              "score": 64,
+              "effect": {
+                "degree": 3,
+                "cyclesGained": 2,
+                "objectiveMovesSaved": 2,
+                "portalAccessesGained": 1,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 3,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            }
+          }
+        ]
+      },
+      {
+        "stage": 2,
+        "templateIndex": 1,
+        "difficulty": "easy",
+        "mapsMeasured": 12,
+        "certifiedPerMap": {
+          "n": 12,
+          "min": 3,
+          "max": 14,
+          "mean": 8.167,
+          "p50": 10
+        },
+        "minCertifiedOnAnyMap": 3,
+        "passesMinimumOne": true,
+        "reachesTargetTwo": true,
+        "candidateScore": {
+          "n": 98,
+          "min": 5,
+          "max": 69,
+          "mean": 23.439,
+          "p50": 17
+        },
+        "candidateDegree": {
+          "n": 98,
+          "min": 2,
+          "max": 4,
+          "mean": 3.092,
+          "p50": 3
+        },
+        "certifyingEffects": {
+          "objectiveMovesSaved": 32,
+          "portalAccessesGained": 19,
+          "escapeCellsGained": 55,
+          "alternativeRouteCellsGained": 42
+        },
+        "certifiedThatAlsoShortenTheHunter": 0,
+        "certifiedThatResizeTheSentinelZone": 4,
+        "examples": [
+          {
+            "seed": 4421000,
+            "walls": 18,
+            "certified": 11,
+            "marked": [
+              "5,7",
+              "7,5"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "5,7",
+              "score": 38,
+              "effect": {
+                "degree": 3,
+                "cyclesGained": 2,
+                "objectiveMovesSaved": 2,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 1,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            }
+          },
+          {
+            "seed": 4421001,
+            "walls": 18,
+            "certified": 10,
+            "marked": [
+              "5,7",
+              "3,1"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "5,7",
+              "score": 48,
+              "effect": {
+                "degree": 3,
+                "cyclesGained": 2,
+                "objectiveMovesSaved": 2,
+                "portalAccessesGained": 1,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 1,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            }
+          }
+        ]
+      },
+      {
+        "stage": 2,
+        "templateIndex": 1,
+        "difficulty": "medium",
+        "mapsMeasured": 12,
+        "certifiedPerMap": {
+          "n": 12,
+          "min": 8,
+          "max": 20,
+          "mean": 13.5,
+          "p50": 14
+        },
+        "minCertifiedOnAnyMap": 8,
+        "passesMinimumOne": true,
+        "reachesTargetTwo": true,
+        "candidateScore": {
+          "n": 162,
+          "min": 5,
+          "max": 117,
+          "mean": 26.049,
+          "p50": 19
+        },
+        "candidateDegree": {
+          "n": 162,
+          "min": 2,
+          "max": 4,
+          "mean": 2.951,
+          "p50": 3
+        },
+        "certifyingEffects": {
+          "objectiveMovesSaved": 50,
+          "portalAccessesGained": 37,
+          "escapeCellsGained": 82,
+          "alternativeRouteCellsGained": 91
+        },
+        "certifiedThatAlsoShortenTheHunter": 10,
+        "certifiedThatResizeTheSentinelZone": 9,
+        "examples": [
+          {
+            "seed": 4421000,
+            "walls": 21,
+            "certified": 13,
+            "marked": [
+              "5,6",
+              "6,5"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "5,6",
+              "score": 38,
+              "effect": {
+                "degree": 3,
+                "cyclesGained": 2,
+                "objectiveMovesSaved": 2,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 1,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            }
+          },
+          {
+            "seed": 4421001,
+            "walls": 22,
+            "certified": 20,
+            "marked": [
+              "2,6",
+              "5,7"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "2,6",
+              "score": 66,
+              "effect": {
+                "degree": 3,
+                "cyclesGained": 2,
+                "objectiveMovesSaved": 4,
+                "portalAccessesGained": 1,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 0,
+                "alternativeRouteCellsGained": 1,
+                "hunterMovesSaved": 0
+              }
+            }
+          }
+        ]
+      },
+      {
+        "stage": 2,
+        "templateIndex": 1,
+        "difficulty": "hard",
+        "mapsMeasured": 12,
+        "certifiedPerMap": {
+          "n": 12,
+          "min": 11,
+          "max": 21,
+          "mean": 15.417,
+          "p50": 15
+        },
+        "minCertifiedOnAnyMap": 11,
+        "passesMinimumOne": true,
+        "reachesTargetTwo": true,
+        "candidateScore": {
+          "n": 185,
+          "min": 5,
+          "max": 100,
+          "mean": 24.27,
+          "p50": 19
+        },
+        "candidateDegree": {
+          "n": 185,
+          "min": 2,
+          "max": 4,
+          "mean": 2.881,
+          "p50": 3
+        },
+        "certifyingEffects": {
+          "objectiveMovesSaved": 47,
+          "portalAccessesGained": 37,
+          "escapeCellsGained": 84,
+          "alternativeRouteCellsGained": 126
+        },
+        "certifiedThatAlsoShortenTheHunter": 4,
+        "certifiedThatResizeTheSentinelZone": 7,
+        "examples": [
+          {
+            "seed": 4421000,
+            "walls": 23,
+            "certified": 15,
+            "marked": [
+              "7,5",
+              "8,3"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "7,5",
+              "score": 38,
+              "effect": {
+                "degree": 3,
+                "cyclesGained": 2,
+                "objectiveMovesSaved": 2,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 1,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            }
+          },
+          {
+            "seed": 4421001,
+            "walls": 24,
+            "certified": 16,
+            "marked": [
+              "3,5",
+              "2,6"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "3,5",
+              "score": 61,
+              "effect": {
+                "degree": 4,
+                "cyclesGained": 3,
+                "objectiveMovesSaved": 4,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 0,
+                "alternativeRouteCellsGained": 2,
+                "hunterMovesSaved": 0
+              }
+            }
+          }
+        ]
+      },
+      {
+        "stage": 2,
+        "templateIndex": 2,
+        "difficulty": "easy",
+        "mapsMeasured": 12,
+        "certifiedPerMap": {
+          "n": 12,
+          "min": 4,
+          "max": 15,
+          "mean": 9.417,
+          "p50": 10
+        },
+        "minCertifiedOnAnyMap": 4,
+        "passesMinimumOne": true,
+        "reachesTargetTwo": true,
+        "candidateScore": {
+          "n": 113,
+          "min": 5,
+          "max": 48,
+          "mean": 19.965,
+          "p50": 14
+        },
+        "candidateDegree": {
+          "n": 113,
+          "min": 2,
+          "max": 4,
+          "mean": 2.982,
+          "p50": 3
+        },
+        "certifyingEffects": {
+          "objectiveMovesSaved": 28,
+          "portalAccessesGained": 19,
+          "escapeCellsGained": 63,
+          "alternativeRouteCellsGained": 37
+        },
+        "certifiedThatAlsoShortenTheHunter": 27,
+        "certifiedThatResizeTheSentinelZone": 5,
+        "examples": [
+          {
+            "seed": 4422000,
+            "walls": 18,
+            "certified": 10,
+            "marked": [
+              "3,7",
+              "1,4"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "3,7",
+              "score": 48,
+              "effect": {
+                "degree": 3,
+                "cyclesGained": 2,
+                "objectiveMovesSaved": 2,
+                "portalAccessesGained": 1,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 1,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            }
+          },
+          {
+            "seed": 4422001,
+            "walls": 18,
+            "certified": 8,
+            "marked": [
+              "3,7",
+              "3,5"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "3,7",
+              "score": 27,
+              "effect": {
+                "degree": 4,
+                "cyclesGained": 3,
+                "objectiveMovesSaved": 0,
+                "portalAccessesGained": 1,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 1,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            }
+          }
+        ]
+      },
+      {
+        "stage": 2,
+        "templateIndex": 2,
+        "difficulty": "medium",
+        "mapsMeasured": 12,
+        "certifiedPerMap": {
+          "n": 12,
+          "min": 10,
+          "max": 17,
+          "mean": 13.083,
+          "p50": 12
+        },
+        "minCertifiedOnAnyMap": 10,
+        "passesMinimumOne": true,
+        "reachesTargetTwo": true,
+        "candidateScore": {
+          "n": 157,
+          "min": 5,
+          "max": 69,
+          "mean": 21.006,
+          "p50": 17
+        },
+        "candidateDegree": {
+          "n": 157,
+          "min": 2,
+          "max": 4,
+          "mean": 2.796,
+          "p50": 3
+        },
+        "certifyingEffects": {
+          "objectiveMovesSaved": 41,
+          "portalAccessesGained": 19,
+          "escapeCellsGained": 90,
+          "alternativeRouteCellsGained": 70
+        },
+        "certifiedThatAlsoShortenTheHunter": 31,
+        "certifiedThatResizeTheSentinelZone": 9,
+        "examples": [
+          {
+            "seed": 4422000,
+            "walls": 21,
+            "certified": 12,
+            "marked": [
+              "3,7",
+              "3,5"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "3,7",
+              "score": 21,
+              "effect": {
+                "degree": 2,
+                "cyclesGained": 1,
+                "objectiveMovesSaved": 0,
+                "portalAccessesGained": 1,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 1,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            }
+          },
+          {
+            "seed": 4422001,
+            "walls": 21,
+            "certified": 11,
+            "marked": [
+              "1,4",
+              "3,7"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "1,4",
+              "score": 38,
+              "effect": {
+                "degree": 3,
+                "cyclesGained": 2,
+                "objectiveMovesSaved": 2,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 1,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            }
+          }
+        ]
+      },
+      {
+        "stage": 2,
+        "templateIndex": 2,
+        "difficulty": "hard",
+        "mapsMeasured": 12,
+        "certifiedPerMap": {
+          "n": 12,
+          "min": 11,
+          "max": 18,
+          "mean": 14.583,
+          "p50": 15
+        },
+        "minCertifiedOnAnyMap": 11,
+        "passesMinimumOne": true,
+        "reachesTargetTwo": true,
+        "candidateScore": {
+          "n": 175,
+          "min": 5,
+          "max": 71,
+          "mean": 19.594,
+          "p50": 16
+        },
+        "candidateDegree": {
+          "n": 175,
+          "min": 2,
+          "max": 4,
+          "mean": 2.811,
+          "p50": 3
+        },
+        "certifyingEffects": {
+          "objectiveMovesSaved": 22,
+          "portalAccessesGained": 18,
+          "escapeCellsGained": 106,
+          "alternativeRouteCellsGained": 103
+        },
+        "certifiedThatAlsoShortenTheHunter": 24,
+        "certifiedThatResizeTheSentinelZone": 8,
+        "examples": [
+          {
+            "seed": 4422000,
+            "walls": 24,
+            "certified": 14,
+            "marked": [
+              "3,3",
+              "4,4"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "3,3",
+              "score": 64,
+              "effect": {
+                "degree": 3,
+                "cyclesGained": 2,
+                "objectiveMovesSaved": 4,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 1,
+                "alternativeRouteCellsGained": 1,
+                "hunterMovesSaved": 2
+              }
+            }
+          },
+          {
+            "seed": 4422001,
+            "walls": 24,
+            "certified": 13,
+            "marked": [
+              "3,7",
+              "5,7"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "3,7",
+              "score": 32,
+              "effect": {
+                "degree": 3,
+                "cyclesGained": 2,
+                "objectiveMovesSaved": 0,
+                "portalAccessesGained": 1,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 2,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            }
+          }
+        ]
+      },
+      {
+        "stage": 3,
+        "templateIndex": 0,
+        "difficulty": "easy",
+        "mapsMeasured": 12,
+        "certifiedPerMap": {
+          "n": 12,
+          "min": 7,
+          "max": 14,
+          "mean": 9.833,
+          "p50": 10
+        },
+        "minCertifiedOnAnyMap": 7,
+        "passesMinimumOne": true,
+        "reachesTargetTwo": true,
+        "candidateScore": {
+          "n": 118,
+          "min": 5,
+          "max": 59,
+          "mean": 19.381,
+          "p50": 16
+        },
+        "candidateDegree": {
+          "n": 118,
+          "min": 2,
+          "max": 4,
+          "mean": 2.907,
+          "p50": 3
+        },
+        "certifyingEffects": {
+          "objectiveMovesSaved": 23,
+          "portalAccessesGained": 14,
+          "escapeCellsGained": 69,
+          "alternativeRouteCellsGained": 42
+        },
+        "certifiedThatAlsoShortenTheHunter": 5,
+        "certifiedThatResizeTheSentinelZone": 10,
+        "examples": [
+          {
+            "seed": 4430000,
+            "walls": 19,
+            "certified": 8,
+            "marked": [
+              "7,6",
+              "2,7",
+              "7,2"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "7,6",
+              "score": 30,
+              "effect": {
+                "degree": 3,
+                "cyclesGained": 2,
+                "objectiveMovesSaved": 2,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 0,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            }
+          },
+          {
+            "seed": 4430001,
+            "walls": 19,
+            "certified": 10,
+            "marked": [
+              "4,8",
+              "4,2",
+              "5,3"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "4,8",
+              "score": 54,
+              "effect": {
+                "degree": 3,
+                "cyclesGained": 2,
+                "objectiveMovesSaved": 2,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 3,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            }
+          }
+        ]
+      },
+      {
+        "stage": 3,
+        "templateIndex": 0,
+        "difficulty": "medium",
+        "mapsMeasured": 12,
+        "certifiedPerMap": {
+          "n": 12,
+          "min": 11,
+          "max": 19,
+          "mean": 14.667,
+          "p50": 15
+        },
+        "minCertifiedOnAnyMap": 11,
+        "passesMinimumOne": true,
+        "reachesTargetTwo": true,
+        "candidateScore": {
+          "n": 176,
+          "min": 5,
+          "max": 80,
+          "mean": 20.71,
+          "p50": 16
+        },
+        "candidateDegree": {
+          "n": 176,
+          "min": 2,
+          "max": 4,
+          "mean": 2.778,
+          "p50": 3
+        },
+        "certifyingEffects": {
+          "objectiveMovesSaved": 30,
+          "portalAccessesGained": 12,
+          "escapeCellsGained": 117,
+          "alternativeRouteCellsGained": 75
+        },
+        "certifiedThatAlsoShortenTheHunter": 0,
+        "certifiedThatResizeTheSentinelZone": 14,
+        "examples": [
+          {
+            "seed": 4430000,
+            "walls": 23,
+            "certified": 15,
+            "marked": [
+              "1,5",
+              "7,2",
+              "5,4"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "1,5",
+              "score": 46,
+              "effect": {
+                "degree": 3,
+                "cyclesGained": 2,
+                "objectiveMovesSaved": 2,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 2,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            }
+          },
+          {
+            "seed": 4430001,
+            "walls": 19,
+            "certified": 15,
+            "marked": [
+              "0,3",
+              "5,4",
+              "7,2"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "0,3",
+              "score": 32,
+              "effect": {
+                "degree": 3,
+                "cyclesGained": 2,
+                "objectiveMovesSaved": 0,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 3,
+                "alternativeRouteCellsGained": 1,
+                "hunterMovesSaved": 0
+              }
+            }
+          }
+        ]
+      },
+      {
+        "stage": 3,
+        "templateIndex": 0,
+        "difficulty": "hard",
+        "mapsMeasured": 12,
+        "certifiedPerMap": {
+          "n": 12,
+          "min": 11,
+          "max": 19,
+          "mean": 14.583,
+          "p50": 15
+        },
+        "minCertifiedOnAnyMap": 11,
+        "passesMinimumOne": true,
+        "reachesTargetTwo": true,
+        "candidateScore": {
+          "n": 175,
+          "min": 5,
+          "max": 72,
+          "mean": 15.823,
+          "p50": 14
+        },
+        "candidateDegree": {
+          "n": 175,
+          "min": 2,
+          "max": 4,
+          "mean": 2.651,
+          "p50": 3
+        },
+        "certifyingEffects": {
+          "objectiveMovesSaved": 6,
+          "portalAccessesGained": 16,
+          "escapeCellsGained": 99,
+          "alternativeRouteCellsGained": 109
+        },
+        "certifiedThatAlsoShortenTheHunter": 0,
+        "certifiedThatResizeTheSentinelZone": 14,
+        "examples": [
+          {
+            "seed": 4430000,
+            "walls": 25,
+            "certified": 17,
+            "marked": [
+              "5,6",
+              "7,6",
+              "8,5"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "5,6",
+              "score": 62,
+              "effect": {
+                "degree": 3,
+                "cyclesGained": 2,
+                "objectiveMovesSaved": 2,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 4,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            }
+          },
+          {
+            "seed": 4430001,
+            "walls": 27,
+            "certified": 14,
+            "marked": [
+              "3,5",
+              "6,7",
+              "2,7"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "3,5",
+              "score": 38,
+              "effect": {
+                "degree": 3,
+                "cyclesGained": 2,
+                "objectiveMovesSaved": 2,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 1,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            }
+          }
+        ]
+      },
+      {
+        "stage": 3,
+        "templateIndex": 1,
+        "difficulty": "easy",
+        "mapsMeasured": 12,
+        "certifiedPerMap": {
+          "n": 12,
+          "min": 2,
+          "max": 12,
+          "mean": 6.667,
+          "p50": 7
+        },
+        "minCertifiedOnAnyMap": 2,
+        "passesMinimumOne": true,
+        "reachesTargetTwo": true,
+        "candidateScore": {
+          "n": 80,
+          "min": 5,
+          "max": 61,
+          "mean": 21.137,
+          "p50": 16
+        },
+        "candidateDegree": {
+          "n": 80,
+          "min": 2,
+          "max": 4,
+          "mean": 3.013,
+          "p50": 3
+        },
+        "certifyingEffects": {
+          "objectiveMovesSaved": 18,
+          "portalAccessesGained": 11,
+          "escapeCellsGained": 53,
+          "alternativeRouteCellsGained": 24
+        },
+        "certifiedThatAlsoShortenTheHunter": 3,
+        "certifiedThatResizeTheSentinelZone": 3,
+        "examples": [
+          {
+            "seed": 4431000,
+            "walls": 19,
+            "certified": 8,
+            "marked": [
+              "4,3",
+              "1,5",
+              "2,3"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "4,3",
+              "score": 17,
+              "effect": {
+                "degree": 4,
+                "cyclesGained": 3,
+                "objectiveMovesSaved": 0,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 1,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            }
+          },
+          {
+            "seed": 4431001,
+            "walls": 19,
+            "certified": 9,
+            "marked": [
+              "6,7",
+              "2,7",
+              "3,6"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "6,7",
+              "score": 46,
+              "effect": {
+                "degree": 3,
+                "cyclesGained": 2,
+                "objectiveMovesSaved": 2,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 2,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            }
+          }
+        ]
+      },
+      {
+        "stage": 3,
+        "templateIndex": 1,
+        "difficulty": "medium",
+        "mapsMeasured": 12,
+        "certifiedPerMap": {
+          "n": 12,
+          "min": 5,
+          "max": 17,
+          "mean": 12.333,
+          "p50": 12
+        },
+        "minCertifiedOnAnyMap": 5,
+        "passesMinimumOne": true,
+        "reachesTargetTwo": true,
+        "candidateScore": {
+          "n": 148,
+          "min": 5,
+          "max": 82,
+          "mean": 20.75,
+          "p50": 16
+        },
+        "candidateDegree": {
+          "n": 148,
+          "min": 2,
+          "max": 4,
+          "mean": 2.736,
+          "p50": 3
+        },
+        "certifyingEffects": {
+          "objectiveMovesSaved": 27,
+          "portalAccessesGained": 12,
+          "escapeCellsGained": 84,
+          "alternativeRouteCellsGained": 74
+        },
+        "certifiedThatAlsoShortenTheHunter": 7,
+        "certifiedThatResizeTheSentinelZone": 3,
+        "examples": [
+          {
+            "seed": 4431000,
+            "walls": 22,
+            "certified": 5,
+            "marked": [
+              "5,6",
+              "4,8",
+              "3,6"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "5,6",
+              "score": 30,
+              "effect": {
+                "degree": 3,
+                "cyclesGained": 2,
+                "objectiveMovesSaved": 0,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 3,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            }
+          },
+          {
+            "seed": 4431001,
+            "walls": 23,
+            "certified": 12,
+            "marked": [
+              "8,3",
+              "4,8",
+              "6,7"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "8,3",
+              "score": 38,
+              "effect": {
+                "degree": 3,
+                "cyclesGained": 2,
+                "objectiveMovesSaved": 2,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 1,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            }
+          }
+        ]
+      },
+      {
+        "stage": 3,
+        "templateIndex": 1,
+        "difficulty": "hard",
+        "mapsMeasured": 12,
+        "certifiedPerMap": {
+          "n": 12,
+          "min": 13,
+          "max": 18,
+          "mean": 14.917,
+          "p50": 15
+        },
+        "minCertifiedOnAnyMap": 13,
+        "passesMinimumOne": true,
+        "reachesTargetTwo": true,
+        "candidateScore": {
+          "n": 179,
+          "min": 5,
+          "max": 114,
+          "mean": 17.709,
+          "p50": 14
+        },
+        "candidateDegree": {
+          "n": 179,
+          "min": 2,
+          "max": 4,
+          "mean": 2.654,
+          "p50": 3
+        },
+        "certifyingEffects": {
+          "objectiveMovesSaved": 20,
+          "portalAccessesGained": 20,
+          "escapeCellsGained": 92,
+          "alternativeRouteCellsGained": 109
+        },
+        "certifiedThatAlsoShortenTheHunter": 7,
+        "certifiedThatResizeTheSentinelZone": 3,
+        "examples": [
+          {
+            "seed": 4431000,
+            "walls": 27,
+            "certified": 16,
+            "marked": [
+              "4,1",
+              "1,5",
+              "4,3"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "4,1",
+              "score": 51,
+              "effect": {
+                "degree": 4,
+                "cyclesGained": 3,
+                "objectiveMovesSaved": 2,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 2,
+                "alternativeRouteCellsGained": 1,
+                "hunterMovesSaved": 0
+              }
+            }
+          },
+          {
+            "seed": 4431001,
+            "walls": 24,
+            "certified": 17,
+            "marked": [
+              "6,7",
+              "2,7",
+              "6,4"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "6,7",
+              "score": 30,
+              "effect": {
+                "degree": 3,
+                "cyclesGained": 2,
+                "objectiveMovesSaved": 0,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 3,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            }
+          }
+        ]
+      },
+      {
+        "stage": 3,
+        "templateIndex": 2,
+        "difficulty": "easy",
+        "mapsMeasured": 12,
+        "certifiedPerMap": {
+          "n": 12,
+          "min": 5,
+          "max": 12,
+          "mean": 7.917,
+          "p50": 8
+        },
+        "minCertifiedOnAnyMap": 5,
+        "passesMinimumOne": true,
+        "reachesTargetTwo": true,
+        "candidateScore": {
+          "n": 95,
+          "min": 5,
+          "max": 72,
+          "mean": 21.474,
+          "p50": 16
+        },
+        "candidateDegree": {
+          "n": 95,
+          "min": 2,
+          "max": 4,
+          "mean": 2.937,
+          "p50": 3
+        },
+        "certifyingEffects": {
+          "objectiveMovesSaved": 17,
+          "portalAccessesGained": 11,
+          "escapeCellsGained": 71,
+          "alternativeRouteCellsGained": 40
+        },
+        "certifiedThatAlsoShortenTheHunter": 0,
+        "certifiedThatResizeTheSentinelZone": 7,
+        "examples": [
+          {
+            "seed": 4432000,
+            "walls": 18,
+            "certified": 5,
+            "marked": [
+              "2,6",
+              "7,3",
+              "3,5"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "2,6",
+              "score": 24,
+              "effect": {
+                "degree": 3,
+                "cyclesGained": 2,
+                "objectiveMovesSaved": 0,
+                "portalAccessesGained": 1,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 1,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            }
+          },
+          {
+            "seed": 4432001,
+            "walls": 16,
+            "certified": 6,
+            "marked": [
+              "1,6",
+              "3,5",
+              "7,5"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "1,6",
+              "score": 64,
+              "effect": {
+                "degree": 3,
+                "cyclesGained": 2,
+                "objectiveMovesSaved": 2,
+                "portalAccessesGained": 1,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 3,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            }
+          }
+        ]
+      },
+      {
+        "stage": 3,
+        "templateIndex": 2,
+        "difficulty": "medium",
+        "mapsMeasured": 12,
+        "certifiedPerMap": {
+          "n": 12,
+          "min": 6,
+          "max": 18,
+          "mean": 14,
+          "p50": 15
+        },
+        "minCertifiedOnAnyMap": 6,
+        "passesMinimumOne": true,
+        "reachesTargetTwo": true,
+        "candidateScore": {
+          "n": 168,
+          "min": 5,
+          "max": 78,
+          "mean": 21.125,
+          "p50": 14
+        },
+        "candidateDegree": {
+          "n": 168,
+          "min": 2,
+          "max": 4,
+          "mean": 2.768,
+          "p50": 3
+        },
+        "certifyingEffects": {
+          "objectiveMovesSaved": 27,
+          "portalAccessesGained": 11,
+          "escapeCellsGained": 120,
+          "alternativeRouteCellsGained": 67
+        },
+        "certifiedThatAlsoShortenTheHunter": 0,
+        "certifiedThatResizeTheSentinelZone": 10,
+        "examples": [
+          {
+            "seed": 4432000,
+            "walls": 23,
+            "certified": 6,
+            "marked": [
+              "5,8",
+              "7,3",
+              "6,6"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "5,8",
+              "score": 22,
+              "effect": {
+                "degree": 3,
+                "cyclesGained": 2,
+                "objectiveMovesSaved": 0,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 2,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            }
+          },
+          {
+            "seed": 4432001,
+            "walls": 22,
+            "certified": 16,
+            "marked": [
+              "1,7",
+              "4,7",
+              "2,6"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "1,7",
+              "score": 41,
+              "effect": {
+                "degree": 4,
+                "cyclesGained": 3,
+                "objectiveMovesSaved": 0,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 2,
+                "escapeCellsGained": 4,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            }
+          }
+        ]
+      },
+      {
+        "stage": 3,
+        "templateIndex": 2,
+        "difficulty": "hard",
+        "mapsMeasured": 12,
+        "certifiedPerMap": {
+          "n": 12,
+          "min": 11,
+          "max": 20,
+          "mean": 15.333,
+          "p50": 16
+        },
+        "minCertifiedOnAnyMap": 11,
+        "passesMinimumOne": true,
+        "reachesTargetTwo": true,
+        "candidateScore": {
+          "n": 184,
+          "min": 5,
+          "max": 73,
+          "mean": 19.951,
+          "p50": 16
+        },
+        "candidateDegree": {
+          "n": 184,
+          "min": 2,
+          "max": 4,
+          "mean": 2.723,
+          "p50": 3
+        },
+        "certifyingEffects": {
+          "objectiveMovesSaved": 18,
+          "portalAccessesGained": 22,
+          "escapeCellsGained": 125,
+          "alternativeRouteCellsGained": 98
+        },
+        "certifiedThatAlsoShortenTheHunter": 6,
+        "certifiedThatResizeTheSentinelZone": 10,
+        "examples": [
+          {
+            "seed": 4432000,
+            "walls": 28,
+            "certified": 17,
+            "marked": [
+              "8,5",
+              "2,4",
+              "6,4"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "8,5",
+              "score": 24,
+              "effect": {
+                "degree": 3,
+                "cyclesGained": 2,
+                "objectiveMovesSaved": 0,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 2,
+                "alternativeRouteCellsGained": 1,
+                "hunterMovesSaved": 0
+              }
+            }
+          },
+          {
+            "seed": 4432001,
+            "walls": 26,
+            "certified": 13,
+            "marked": [
+              "5,8",
+              "4,7",
+              "4,5"
+            ],
+            "markedStable": true,
+            "best": {
+              "cell": "5,8",
+              "score": 32,
+              "effect": {
+                "degree": 3,
+                "cyclesGained": 2,
+                "objectiveMovesSaved": 0,
+                "portalAccessesGained": 1,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 0,
+                "alternativeRouteCellsGained": 8,
+                "hunterMovesSaved": 0
+              }
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "verdict": "BREAKABLE_WALL_FEASIBILITY_PASSED",
+  "BREAKABLE_WALL_HAS_TOPOLOGICAL_EFFECT": true,
+  "failingTemplates": []
+}

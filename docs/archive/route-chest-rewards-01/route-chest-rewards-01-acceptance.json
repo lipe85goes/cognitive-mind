@@ -1,0 +1,395 @@
+{
+  "mission": "ROTA-CHEST-REWARDS-01",
+  "continuation": "PICKAXE_FREE_WALL_CHOICE",
+  "PRE_CHEST_BASELINE_COMMIT": "eb26368",
+  "CHEST_REPLACES_SHIELD": true,
+  "REWARD_OPTIONS_V1": [
+    "PICKAXE",
+    "SECOND_CHANCE"
+  ],
+  "REWARD_SELECTION_RANDOM": false,
+  "PICKAXE_USES": 1,
+  "PICKAXE_TARGET_POLICY": "ANY_INTERNAL_MAZE_WALL",
+  "PLAYER_SELECTS_WALL": true,
+  "NO_GENERATOR_PRESELECTION": true,
+  "NO_VISUAL_CORRECT_WALL_HINT": true,
+  "NO_PERMANENT_GOOD_WALL_HINT": true,
+  "BAD_STRATEGIC_WALL_CHOICE_ALLOWED": true,
+  "CERTIFIED_WALL_RUNTIME_RESTRICTION": false,
+  "CERTIFIED_WALL_ANALYSIS_PRESERVED": true,
+  "BREAKABLE_WALL_FEASIBILITY_GATE": "SUPERSEDED_AS_RUNTIME_RESTRICTION",
+  "BREAKABLE_WALL_FEASIBILITY_EVIDENCE": "PRESERVED",
+  "BROKEN_WALL_WALKABLE_BY_ALL": true,
+  "BREAK_WALL_CONSUMES_TURN": true,
+  "SECOND_CHANCE_CHARGES": 1,
+  "CHEST_MANUAL_PLAYTEST": "PASS",
+  "FREE_WALL_PICKAXE_MANUAL_PLAYTEST": "PASS",
+  "WALL_BREAK_VISUAL_POLISH_OPTIONAL": true,
+  "DYNAMIC_SOLVABILITY_02_REQUIRED": true,
+  "MAP_REPAIR_PERFORMED": false,
+  "DUAL_GUARDIAN_CO_OCCUPANCY_FOLLOWUP_REQUIRED": true,
+  "ROUTE_VISUAL_FLICKER_FOLLOWUP_REQUIRED": true,
+  "SENTINEL_STALL_FOLLOWUP_REQUIRED": true,
+  "DIFFICULTY_REBALANCE_REQUIRED": true,
+  "manualPlaytest": {
+    "source": "external user browser playtest",
+    "observed": [
+      "Chest opens and presents the two reward choices",
+      "Pickaxe breaks ordinary internal walls without a permanent crack hint",
+      "multiple adjacent walls have explicit readable direction choices",
+      "Pickaxe is spent after one break",
+      "gameplay continues and portal/lights remain operational"
+    ]
+  },
+  "knownFollowUps": [
+    {
+      "id": "WALL_BREAK_VISUAL_POLISH_OPTIONAL",
+      "required": false,
+      "detail": "A future pass may add slightly stronger fragments, discreet dust, or short feedback; this does not block the checkpoint."
+    },
+    {
+      "id": "DUAL_GUARDIAN_CO_OCCUPANCY_FOLLOWUP_REQUIRED",
+      "required": true,
+      "detail": "Pre-existing Hunter/Sentinel co-occupancy measured in 23 of 1466 turns; not introduced or fixed by Chest."
+    },
+    {
+      "id": "ROUTE_VISUAL_FLICKER_FOLLOWUP_REQUIRED",
+      "required": true,
+      "targetMission": "ROTA-RUNTIME-STABILITY-02",
+      "detail": "Occasional visual flicker was observed manually; its cause is not proven and is not attributed to renderDynamicBoard."
+    },
+    {
+      "id": "SENTINEL_STALL_FOLLOWUP_REQUIRED",
+      "required": true,
+      "targetMission": "ROTA-RUNTIME-STABILITY-02",
+      "detail": "An apparent Sentinel stall, especially in the intermediate mode, requires a state-complete reproduction before it can be called a confirmed bug."
+    },
+    {
+      "id": "DIFFICULTY_REBALANCE_REQUIRED",
+      "required": true,
+      "targetMission": "ROTA-DIFFICULTY-FINAL-01",
+      "detail": "Manual difficulty feedback is recorded for a separate mission; no difficulty or timer change belongs to this checkpoint."
+    }
+  ],
+  "suiteVerdicts": {
+    "feasibility": "BREAKABLE_WALL_FEASIBILITY_PASSED",
+    "feasibilityReproducedExactly": true,
+    "chest": true,
+    "pickaxe": true,
+    "secondChance": true,
+    "regressionAndGameplay": true,
+    "staticRender": true
+  },
+  "knownPreExistingConditions": [
+    {
+      "id": "HUNTER_MAY_STAND_ON_THE_SENTINEL",
+      "introducedByThisMission": false,
+      "detail": "chooseGuardianMove excludes the portal and armed traps from the Hunter's legal cells, never the Sentinel's, while decideSentinelMove is guarded against the reverse. The two defenders can therefore share a cell.",
+      "measuredInPlainPlay": "23 of 1466 turns across 9 combinations x 8 seeds, with no wall broken and no Second Chance involved",
+      "whyNotFixedHere": "§38 forbids changing the Hunter's policy in this mission; the Second Chance resolution neither creates nor worsens it, because every piece returns to the cell it already held."
+    }
+  ],
+  "acceptance": [
+    {
+      "n": 1,
+      "claim": "qualquer wall interna válida pode ser quebrada",
+      "pass": true,
+      "evidence": [
+        "pickaxe-controlled-tests.json A",
+        "pickaxe-free-wall-choice-contract.md"
+      ]
+    },
+    {
+      "n": 2,
+      "claim": "antigo certified set não restringe runtime",
+      "pass": true,
+      "evidence": [
+        "pickaxe-controlled-tests.json B",
+        "breakable-wall-feasibility.json history"
+      ],
+      "measured": {
+        "certifierNowLivesIn": "tools/validation/breakable-wall-certifier.mjs (offline only)",
+        "evidencePreserved": "PRESERVED",
+        "reproducedOriginalCampaignExactly": true
+      }
+    },
+    {
+      "n": 3,
+      "claim": "uma wall fora do antigo set foi quebrada em teste",
+      "pass": true,
+      "evidence": [
+        "pickaxe-controlled-tests.json B",
+        "chest-runtime-gameplay.json PLAY-COVERAGE"
+      ],
+      "measured": {
+        "inControlledTests": 4,
+        "inGameplaySweep": 4,
+        "insideOldSetForComparison": 3
+      }
+    },
+    {
+      "n": 4,
+      "claim": "Pickaxe continua one-use",
+      "pass": true,
+      "evidence": [
+        "pickaxe-controlled-tests.json C"
+      ]
+    },
+    {
+      "n": 5,
+      "claim": "ação é explícita",
+      "pass": true,
+      "evidence": [
+        "pickaxe-controlled-tests.json H"
+      ]
+    },
+    {
+      "n": 6,
+      "claim": "multiple-adjacent é inequívoco",
+      "pass": true,
+      "evidence": [
+        "pickaxe-controlled-tests.json I"
+      ]
+    },
+    {
+      "n": 7,
+      "claim": "wall ruim continua legal",
+      "pass": true,
+      "evidence": [
+        "pickaxe-controlled-tests.json BAD_CHOICE"
+      ],
+      "measured": {
+        "poorOptionsBrokenWithoutRefusal": 6,
+        "rewardEligibilityImplemented": false
+      }
+    },
+    {
+      "n": 8,
+      "claim": "wall aberta é usada por todos",
+      "pass": true,
+      "evidence": [
+        "pickaxe-controlled-tests.json K/L",
+        "pickaxe-controlled-tests.json DEFENDER_BENEFIT"
+      ]
+    },
+    {
+      "n": 9,
+      "claim": "restart restaura topologia",
+      "pass": true,
+      "evidence": [
+        "pickaxe-controlled-tests.json M",
+        "chest-controlled-tests.json H"
+      ]
+    },
+    {
+      "n": 10,
+      "claim": "Chest continua oferecendo exatamente duas rewards",
+      "pass": true,
+      "evidence": [
+        "chest-controlled-tests.json D/E/F",
+        "reward-choice-contract.md"
+      ]
+    },
+    {
+      "n": 11,
+      "claim": "Second Chance permanece intacta",
+      "pass": true,
+      "evidence": [
+        "second-chance-controlled-tests.json"
+      ],
+      "measured": {
+        "tests": [
+          {
+            "id": "P",
+            "pass": true
+          },
+          {
+            "id": "Q",
+            "pass": true
+          },
+          {
+            "id": "S",
+            "pass": true
+          },
+          {
+            "id": "R",
+            "pass": true
+          },
+          {
+            "id": "T",
+            "pass": true
+          }
+        ]
+      }
+    },
+    {
+      "n": 12,
+      "claim": "traps permanecem intactas",
+      "pass": true,
+      "evidence": [
+        "chest-runtime-gameplay.json REG-TRAPS"
+      ],
+      "measured": {
+        "id": "REG-TRAPS",
+        "name": "TRAPS_UNCHANGED",
+        "pass": true,
+        "trapsArmedOnArrival": 33,
+        "trapsThatFailedToArm": 0,
+        "explorerRecrossedArmedTrap": 30,
+        "hunterOnArmedTrap": 0,
+        "sentinelOnArmedTrap": 0,
+        "penaltiesToExplorer": 0,
+        "runsWithSeveralArmed": 11,
+        "armedAfterReset": 0
+      }
+    },
+    {
+      "n": 13,
+      "claim": "Hunter/Sentinel permanecem intactos",
+      "pass": true,
+      "evidence": [
+        "chest-runtime-gameplay.json REG-HUNTER / REG-SENTINEL"
+      ],
+      "measured": {
+        "hunter": {
+          "id": "REG-HUNTER",
+          "name": "HUNTER_POLICY_UNCHANGED",
+          "pass": true,
+          "statesCompared": 648,
+          "divergences": 0
+        },
+        "sentinel": {
+          "id": "REG-SENTINEL",
+          "name": "SENTINEL_C3_UNCHANGED",
+          "pass": true,
+          "statesCompared": 648,
+          "divergences": 0,
+          "portalOccupancy": 0,
+          "commitTurnsMax": 3,
+          "commitOverruns": 0,
+          "leashBreaks": 0
+        }
+      }
+    },
+    {
+      "n": 14,
+      "claim": "portal/lights permanecem intactos",
+      "pass": true,
+      "evidence": [
+        "chest-runtime-gameplay.json REG-PORTAL"
+      ],
+      "measured": {
+        "id": "REG-PORTAL",
+        "name": "PORTAL_AND_LIGHTS_UNCHANGED",
+        "pass": true,
+        "portalRefusedWithoutLights": 3,
+        "winsBeforeTheObjective": 0,
+        "lightRequirementChangedByABreak": 0,
+        "lightCollectedByABreak": 0,
+        "portalReadyWithoutEveryLight": 0
+      }
+    },
+    {
+      "n": 15,
+      "claim": "estado continua solver-friendly",
+      "pass": true,
+      "evidence": [
+        "pickaxe-controlled-tests.json N",
+        "chest-runtime-contract.md §7"
+      ]
+    },
+    {
+      "n": 16,
+      "claim": "golden seeds não receberam hack",
+      "pass": true,
+      "evidence": [
+        "golden-seeds-post-chest-input.json"
+      ],
+      "measured": [
+        {
+          "seed": 8801214,
+          "legalTargets": 20,
+          "retiredCertifierWouldHaveApproved": 13,
+          "postChestVerdict": "NOT_EVALUATED_IN_THIS_MISSION"
+        },
+        {
+          "seed": 8801107,
+          "legalTargets": 20,
+          "retiredCertifierWouldHaveApproved": 9,
+          "postChestVerdict": "NOT_EVALUATED_IN_THIS_MISSION"
+        }
+      ]
+    },
+    {
+      "n": 17,
+      "claim": "visual não entrega “wall correta”",
+      "pass": true,
+      "evidence": [
+        "chest-static-render-audit.json"
+      ],
+      "measured": {
+        "id": "NO_PERMANENT_GOOD_WALL_HINT",
+        "pass": true,
+        "babylonFissureRenderer": false,
+        "babylonWeakWallMaterial": false,
+        "fallbackFissures": false,
+        "babylonWallMaterialBranches": false,
+        "fallbackWallColourBranches": false,
+        "targetsInStaticSignature": false,
+        "contextualTargetsLiveOnTheDynamicBoard": true,
+        "targetRingColour": "#c9903f",
+        "aimRingColour": "#ffcf7a",
+        "note": "valid-target rings are control information and appear only with the Pickaxe; no wall carries a mark of its own"
+      }
+    },
+    {
+      "n": 18,
+      "claim": "3 Babylon lights",
+      "pass": true,
+      "evidence": [
+        "chest-static-render-audit.json"
+      ],
+      "measured": [
+        {
+          "type": "DirectionalLight",
+          "name": "route-key-light"
+        },
+        {
+          "type": "HemisphericLight",
+          "name": "route-fill-light"
+        },
+        {
+          "type": "PointLight",
+          "name": "route-rim-light"
+        }
+      ]
+    },
+    {
+      "n": 19,
+      "claim": "lint/TS/build/diff passam",
+      "pass": true,
+      "evidence": [
+        "README.md §Validações"
+      ]
+    },
+    {
+      "n": 20,
+      "claim": "playtest manual aprovado e checkpoint local autorizado",
+      "pass": true,
+      "evidence": [
+        "external user playtest recorded in the 2026-08-13 checkpoint"
+      ],
+      "measured": {
+        "CHEST_MANUAL_PLAYTEST": "PASS",
+        "FREE_WALL_PICKAXE_MANUAL_PLAYTEST": "PASS",
+        "localCheckpointAuthorized": true,
+        "pushAuthorized": false
+      }
+    }
+  ],
+  "itemsPassed": 20,
+  "itemsFailed": [],
+  "itemsPending": [],
+  "verdict": "ROTA-CHEST-REWARDS-01_FREE_WALL_PICKAXE_MANUAL_PLAYTEST_PASS",
+  "note": "Functional validation and the external user browser playtest passed. A single local checkpoint commit is authorized; push and follow-up implementation remain out of scope."
+}

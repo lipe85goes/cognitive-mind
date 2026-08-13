@@ -45,7 +45,7 @@ function auditMap(map, difficulty, stage) {
   const blocks = API.decomposeBoardBlocks(walls);
 
   const all = [map.playerStart, map.guardianStart, map.exitPosition, ...stars, ...map.traps];
-  if (map.shield) all.push(map.shield);
+  if (map.chest) all.push(map.chest);
   for (const p of all) {
     if (!inBounds(p)) problems.push(`invalid coords ${kOf(p)}`);
     if (walls.has(kOf(p))) problems.push(`entity on wall ${kOf(p)}`);
@@ -77,8 +77,8 @@ function auditMap(map, difficulty, stage) {
     if ((distances.get(kOf(t)) ?? -1) < P.trapMinStartDistance) problems.push(`trap near start ${kOf(t)}`);
     if (stars.some((s) => md(s, t) < 2)) problems.push(`trap on a light ${kOf(t)}`);
   }
-  if (map.shield && (distances.get(kOf(map.shield)) ?? -1) < P.shieldMinStartDistance) {
-    problems.push("shield too close to start");
+  if (map.chest && (distances.get(kOf(map.chest)) ?? -1) < P.chestMinStartDistance) {
+    problems.push("chest too close to start");
   }
 
   // Escape width, judged on the route production actually resolves. Using the
@@ -154,7 +154,7 @@ fs.writeFileSync(path.join(OUT, "structural-1080-final.json"), JSON.stringify({
     "portal has an alternative route", "guardian not sealed", "guardian start distance",
     "light count", "no duplicate light", "light start distance",
     "light has an alternative route", "light reaches the portal", "light separation",
-    "trap count", "trap start distance", "trap not on a light", "shield distance",
+    "trap count", "trap start distance", "trap not on a light", "chest distance",
     "objective route exists", "objective route satisfies escape width",
   ],
 }, null, 2));

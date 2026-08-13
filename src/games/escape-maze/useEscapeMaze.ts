@@ -3,7 +3,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getPredatorNextPosition, manhattanDistance } from "@/engine/difficulty";
 import { calculateEscapeMazeScore } from "@/engine/scoring";
-import { playGentleErrorTone, playSuccessChime } from "@/lib/game-sounds";
+import {
+  playGentleErrorTone,
+  playStoneBreak,
+  playSuccessChime,
+} from "@/lib/game-sounds";
 import type {
   DifficultyLevel,
   GameResult,
@@ -239,6 +243,22 @@ const ARROW_DELTAS: Record<string, GridPosition> = {
   ArrowRight: { row: 0, col: 1 },
 };
 
+/** A direction is how the player names a wall, so it is how the Pickaxe aims. */
+export type BreakDirection = "up" | "down" | "left" | "right";
+
+const BREAK_DIRECTION_DELTAS: Record<BreakDirection, GridPosition> = {
+  up: { row: -1, col: 0 },
+  down: { row: 1, col: 0 },
+  left: { row: 0, col: -1 },
+  right: { row: 0, col: 1 },
+};
+
+/** One adjacent wall the Pickaxe may open, named by the direction it lies in. */
+export interface BreakTarget {
+  direction: BreakDirection;
+  cell: GridPosition;
+}
+
 /**
  * Janela mínima entre duas ações de movimento aceitas (ms). "Pensar em paz"
  * exige que um único gesto do Explorador conte como UMA ação: isto absorve
@@ -357,8 +377,14 @@ interface RouteStageQuality {
   starMinSeparation: number;
   trapMinStartDistance: number;
   trapMinSeparation: number;
-  shieldMinStartDistance: number;
-  shieldTargetDistance: number;
+  /**
+   * ROTA-CHEST-REWARDS-01: the Chest inherits the old shield's structural slot
+   * unchanged — same minimum distance, same target distance, same scoring, same
+   * validation gate. Only the meaning of the tile changed, so map acceptance
+   * rates are exactly what the pre-chest baseline measured.
+   */
+  chestMinStartDistance: number;
+  chestTargetDistance: number;
   wallRandomizationAttempts: number;
 }
 
@@ -373,8 +399,8 @@ const ROUTE_STAGE_QUALITY: Record<RouteStage, RouteStageQuality> = {
     starMinSeparation: 2,
     trapMinStartDistance: 4,
     trapMinSeparation: 3,
-    shieldMinStartDistance: 3,
-    shieldTargetDistance: 4,
+    chestMinStartDistance: 3,
+    chestTargetDistance: 4,
     wallRandomizationAttempts: 8,
   },
   2: {
@@ -387,8 +413,8 @@ const ROUTE_STAGE_QUALITY: Record<RouteStage, RouteStageQuality> = {
     starMinSeparation: 2,
     trapMinStartDistance: 3,
     trapMinSeparation: 2,
-    shieldMinStartDistance: 4,
-    shieldTargetDistance: 5,
+    chestMinStartDistance: 4,
+    chestTargetDistance: 5,
     wallRandomizationAttempts: 14,
   },
   3: {
@@ -401,8 +427,8 @@ const ROUTE_STAGE_QUALITY: Record<RouteStage, RouteStageQuality> = {
     starMinSeparation: 3,
     trapMinStartDistance: 4,
     trapMinSeparation: 2,
-    shieldMinStartDistance: 4,
-    shieldTargetDistance: 6,
+    chestMinStartDistance: 4,
+    chestTargetDistance: 6,
     wallRandomizationAttempts: 26,
   },
 };
@@ -475,8 +501,11 @@ export interface MazeMap {
   collectibleStars: GridPosition[];
   /** Walkable hazard tiles (Gameplay 2.0). Never affect path/guardian/walls. */
   traps: GridPosition[];
-  /** Single walkable shield power-up tile, or null. Purely additive overlay. */
-  shield: GridPosition | null;
+  /**
+   * The reward chest: one walkable tile, an optional detour. Replaces the old
+   * shield collectible entirely (ROTA-CHEST-REWARDS-01) and inherits its slot.
+   */
+  chest: GridPosition | null;
 }
 
 export type GameStatus = "setup" | "playing" | "won" | "lost";
@@ -843,11 +872,17 @@ function chooseStars(
 }
 
 /**
- * Place a few trap tiles and one shield on free walkable cells. Because these
- * sit only on walkable tiles, they never change path validity, wall counts or
- * the guardian AI — they are purely additive overlays on the finished maze.
+ * Place a few trap tiles and the reward chest on free walkable cells. Because
+ * these sit only on walkable tiles, they never change path validity, wall counts
+ * or the guardian AI — they are purely additive overlays on the finished maze.
+ *
+ * ROTA-CHEST-REWARDS-01: this is the old `chooseTrapsAndShield`, renamed. The
+ * chest keeps the shield's exact placement rule — a cell around
+ * `chestTargetDistance` from the start, off the lights and the start zone,
+ * preferring open ground — because that rule already produced "a detour worth
+ * considering", which is precisely what the chest is.
  */
-function chooseTrapsAndShield(
+function chooseTrapsAndChest(
   walls: Set<string>,
   playerStart: GridPosition,
   guardianStart: GridPosition,
@@ -855,7 +890,7 @@ function chooseTrapsAndShield(
   stars: GridPosition[],
   difficulty: DifficultyLevel,
   routeStage: RouteStage,
-): { traps: GridPosition[]; shield: GridPosition | null } {
+): { traps: GridPosition[]; chest: GridPosition | null } {
   const profile = ROUTE_STAGE_QUALITY[routeStage];
   const distances = getReachableDistances(playerStart, walls);
   const blocked = new Set<string>([
@@ -866,24 +901,24 @@ function chooseTrapsAndShield(
     ...stars.map(posKey),
   ]);
 
-  const shieldCandidates: Array<{ pos: GridPosition; score: number }> = [];
+  const chestCandidates: Array<{ pos: GridPosition; score: number }> = [];
   distances.forEach((distance, key) => {
     const pos = keyToPosition(key);
     if (blocked.has(key) || walls.has(key)) return;
-    if (distance < profile.shieldMinStartDistance) return;
+    if (distance < profile.chestMinStartDistance) return;
 
     const exitDistance = findPathLength(pos, exitPosition, walls) ?? 0;
-    shieldCandidates.push({
+    chestCandidates.push({
       pos,
       score:
-        30 - Math.abs(distance - profile.shieldTargetDistance) * 4 +
+        30 - Math.abs(distance - profile.chestTargetDistance) * 4 +
         exitDistance * 0.6 +
         getNeighbors(pos, walls).length,
     });
   });
-  shieldCandidates.sort((a, b) => b.score - a.score);
-  const shield = shieldCandidates[0]?.pos ?? null;
-  if (shield) blocked.add(posKey(shield));
+  chestCandidates.sort((a, b) => b.score - a.score);
+  const chest = chestCandidates[0]?.pos ?? null;
+  if (chest) blocked.add(posKey(chest));
 
   // ROTA-MAPS-DIFFICULTY-01: traps are placed for the mechanic they will carry,
   // not for spacing. The score is the defender's detour if that cell became
@@ -979,7 +1014,7 @@ function chooseTrapsAndShield(
     if (accepts(candidate.pos)) traps.push(candidate.pos);
   }
 
-  return { traps, shield };
+  return { traps, chest };
 }
 
 /**
@@ -1601,9 +1636,22 @@ function hasStrategicIdentity(
   return longest >= 3;
 }
 
+/*
+ * ROTA-CHEST-REWARDS-01 (revisao pos-playtest): a certificacao de paredes
+ * quebraveis vivia aqui e decidia quais paredes a Picareta podia abrir.
+ *
+ * O produto mudou: a Picareta abre QUALQUER parede interna do labirinto ao lado
+ * do Explorer, e a dificuldade passou a ser escolher qual. A regra deixou de ser
+ * uma permissao de runtime, entao saiu da producao — mas nao foi apagada, porque
+ * a medicao que ela produziu (324 mapas) e o motivo pelo qual a mecanica existe.
+ *
+ * Ela agora vive como analise offline em
+ * `tools/validation/breakable-wall-certifier.mjs`, e nada em src/ a importa.
+ * Ver `docs/archive/route-chest-rewards-01/pickaxe-free-wall-choice-contract.md`.
+ */
 /**
  * Structural pre-check: everything `isValidMap` decides that does not depend on
- * traps or the shield.
+ * traps, the chest or the breakable walls.
  *
  * ROTA-DUAL-GUARDIANS-MAPS-01A-RUNTIME-PERF: trap selection is by far the most
  * expensive step in building a candidate. `scoreTrapForFuture` runs two graph
@@ -1614,7 +1662,7 @@ function hasStrategicIdentity(
  * geometry. Measured in production: p90 7.0 s, max 15.1 s.
  *
  * This runs first, on the cheap half of the candidate. It is a strict subset of
- * the full check — the trap, shield and idle-dead-end rules still run in
+ * the full check — the trap, chest and idle-dead-end rules still run in
  * `isValidMap` afterwards — so a map accepted here is not accepted by a weaker
  * standard, it has simply not been fully judged yet. No gate is removed and no
  * threshold moves.
@@ -1739,9 +1787,16 @@ function isValidMap(
       !map.collectibleStars.some((star) => manhattanDistance(star, trap) < 2)
     );
   });
-  const shieldDistance = map.shield ? distances.get(posKey(map.shield)) : undefined;
-  const shieldUseful =
-    shieldDistance !== undefined && shieldDistance >= profile.shieldMinStartDistance;
+  const chestDistance = map.chest ? distances.get(posKey(map.chest)) : undefined;
+  const chestUseful =
+    chestDistance !== undefined && chestDistance >= profile.chestMinStartDistance;
+  /**
+   * ROTA-CHEST-REWARDS-01 (revisão pós-playtest): there used to be a gate here
+   * requiring at least one CERTIFIED breakable wall. It is gone because the
+   * Pickaxe no longer asks the generator for permission — every wall on the
+   * board is a legal target, and every certified map has walls by definition
+   * (the wall-count limits per mode are 13-28). Nothing to check.
+   */
 
   // --- play quality, not just solvability -----------------------------------
   const brief = DIFFICULTY_PLAY_BRIEF[difficulty];
@@ -1764,7 +1819,7 @@ function isValidMap(
     map.walls,
     map.playerStart,
     objective.cells,
-    [...map.collectibleStars, ...map.traps, ...(map.shield ? [map.shield] : [])],
+    [...map.collectibleStars, ...map.traps, ...(map.chest ? [map.chest] : [])],
   );
   const alternativeRoute = sharesBlock(blocks, map.playerStart, map.exitPosition);
   const lightsHaveAlternatives = map.collectibleStars.every((star) =>
@@ -1807,7 +1862,7 @@ function isValidMap(
     starsSeparated &&
     map.traps.length === expectedTraps &&
     trapsValid &&
-    shieldUseful &&
+    chestUseful &&
     getNeighbors(map.guardianStart, map.walls).length >= 2
   );
 }
@@ -2142,7 +2197,7 @@ function buildCandidate(
   );
   if (!analysis) return null;
 
-  const { traps, shield } = chooseTrapsAndShield(
+  const { traps, chest } = chooseTrapsAndChest(
     walls,
     PLAYER_START,
     guardianStart,
@@ -2160,7 +2215,7 @@ function buildCandidate(
       exitPosition,
       collectibleStars,
       traps,
-      shield,
+      chest,
     },
     analysis,
   };
@@ -2244,6 +2299,66 @@ export function generateMaze(
 
 type CompleteFn = (result: Omit<GameResult, "id" | "playedAt">) => void;
 
+/**
+ * The two rewards the Chest offers in v1. The Explorer takes exactly one.
+ *
+ * "Never both" is a property of the type, not a rule someone has to remember to
+ * check: there is a single slot, so holding one is holding not-the-other.
+ */
+export type ChestReward = "pickaxe" | "second-chance";
+
+/**
+ * What the defenders' half of a turn needs to know. It is passed explicitly
+ * rather than read from state because a turn can resolve at three different
+ * moments — a normal step, the resumption after a reward choice, and a wall
+ * break — and in two of those the state React holds is deliberately not the
+ * state the defenders must answer to.
+ */
+interface DefenderPhaseInput {
+  playerPosition: GridPosition;
+  guardianFrom: GridPosition;
+  sentinelFrom: SentinelState;
+  /** The board the defenders see. Already open when a wall was just broken. */
+  graphWalls: Set<string>;
+  zone: PortalDefenceZone;
+  armedTraps: Set<string>;
+  turnNumber: number;
+  errorsSoFar: number;
+  starsCollected: number;
+  trapsTriggeredCount: number;
+  chestOpenedNow: boolean;
+  rewardNow: ChestReward | null;
+  rewardSpentNow: boolean;
+  brokenWallNow: string | null;
+  /** True only while an unspent Second Chance is held. */
+  secondChanceReady: boolean;
+  /**
+   * What to say when the turn ends without anyone being caught. A function
+   * because the step's own message ranks against how close the Hunter ended up,
+   * and that is only known once the defenders have answered.
+   */
+  calmMessage: (guardianAfter: GridPosition) => string;
+}
+
+/**
+ * ROTA-CHEST-REWARDS-01 — Second Chance, resolved by undoing the move that
+ * produced the overlap.
+ *
+ * Whoever stepped into the other's cell goes back to the cell it occupied when
+ * this turn began, and the turn ends there. When a defender was the one who
+ * stepped in, BOTH defenders go back — not as a favour, but because it is the
+ * only phrasing that cannot produce an overlap: every piece returns to a cell
+ * that only it occupied at the start of the turn, and those three cells were
+ * distinct.
+ *
+ * The turn is still counted and the charge is still spent, so nothing here
+ * hands the Explorer a second action.
+ */
+const SECOND_CHANCE_EXPLORER_MESSAGE =
+  "Segunda Chance: você resistiu e não avançou.";
+const SECOND_CHANCE_DEFENDER_MESSAGE =
+  "Segunda Chance: você resistiu e os defensores recuaram.";
+
 /** Turn-based maze escape: reach the exit before the guardian catches you. */
 export function useEscapeMaze(onComplete: CompleteFn, initialRouteNumber = 1) {
   const normalizedInitialRouteNumber = Math.max(
@@ -2257,15 +2372,44 @@ export function useEscapeMaze(onComplete: CompleteFn, initialRouteNumber = 1) {
   );
   const [player, setPlayer] = useState<GridPosition>(mazeMap.playerStart);
   const [guardian, setGuardian] = useState<GridPosition>(mazeMap.guardianStart);
-  // The Sentinel's region depends only on the map, so it is derived, not stored.
+
+  // --- Chest state (ROTA-CHEST-REWARDS-01) ----------------------------------
+  // Four fields, and everything the product and the future solver need is
+  // derived from them. There is no fifth field for "a choice is pending" and no
+  // separate spent-flag per reward, because both would be a second copy of
+  // something these already say.
+  const [chestOpened, setChestOpened] = useState(false);
+  const [rewardSelected, setRewardSelected] = useState<ChestReward | null>(null);
+  const [rewardSpent, setRewardSpent] = useState(false);
+  /** The one wall the Pickaxe opened this route, or null. */
+  const [brokenWall, setBrokenWall] = useState<string | null>(null);
+
+  /**
+   * The board as it stands right now.
+   *
+   * A broken wall is simply not a wall any more — for the Explorer, the Hunter
+   * and the Sentinel alike, because every walkability question in this file goes
+   * through `getNeighbors` on one set. With nothing broken this IS
+   * `mazeMap.walls`, the same object, so every pre-chest behaviour is untouched
+   * by identity rather than by comparison.
+   */
+  const walls = useMemo(() => {
+    if (brokenWall === null) return mazeMap.walls;
+    const opened = new Set(mazeMap.walls);
+    opened.delete(brokenWall);
+    return opened;
+  }, [mazeMap, brokenWall]);
+
+  // The Sentinel's region follows the board, so a broken wall reshapes its
+  // territory the same way a differently-generated map would have.
   const portalDefenceZone = useMemo(
     () =>
       computePortalDefenceZone(
         mazeMap.playerStart,
         mazeMap.exitPosition,
-        mazeMap.walls,
+        walls,
       ),
-    [mazeMap],
+    [mazeMap, walls],
   );
   const [sentinel, setSentinel] = useState<SentinelState>(() =>
     createSentinelState(mazeMap, portalDefenceZone),
@@ -2280,8 +2424,6 @@ export function useEscapeMaze(onComplete: CompleteFn, initialRouteNumber = 1) {
   const [moveTick, setMoveTick] = useState(0);
   // Gameplay 2.0 state — lives here in the brain, not in the Canvas.
   const [triggeredTraps, setTriggeredTraps] = useState<string[]>([]);
-  const [shieldCollected, setShieldCollected] = useState(false);
-  const [shieldUsed, setShieldUsed] = useState(false);
 
   // Carimbo do último input de movimento processado (teclado, D-pad ou toque).
   // Ref (não estado): nunca re-renderiza e se solta sozinho com o tempo.
@@ -2292,7 +2434,48 @@ export function useEscapeMaze(onComplete: CompleteFn, initialRouteNumber = 1) {
     () => new Set(triggeredTraps),
     [triggeredTraps],
   );
-  const shieldActive = shieldCollected && !shieldUsed;
+
+  // --- Chest, derived -------------------------------------------------------
+  /** The Chest is open and the Explorer has not decided yet. Nothing may move. */
+  const rewardChoicePending = chestOpened && rewardSelected === null;
+  const pickaxeAvailable = rewardSelected === "pickaxe" && !rewardSpent;
+  const pickaxeSpent = rewardSelected === "pickaxe" && rewardSpent;
+  const secondChanceAvailable = rewardSelected === "second-chance" && !rewardSpent;
+  const secondChanceSpent = rewardSelected === "second-chance" && rewardSpent;
+  /**
+   * The walls the Explorer could open from where it stands.
+   *
+   * ROTA-CHEST-REWARDS-01 (revisão pós-playtest): this used to be an
+   * intersection with a certified set. It is now simply "the walls next to me",
+   * because every internal wall of the maze is a legal target and the whole
+   * difficulty of the Pickaxe is choosing which one.
+   *
+   * The four orthogonal neighbours are walked in a fixed order — up, down, left,
+   * right — so the list the view renders never depends on iteration order of a
+   * set, and two adjacent walls always appear in the same two places.
+   *
+   * Empty whenever the action is unavailable, so the view has nothing to decide.
+   */
+  const breakTargets = useMemo(() => {
+    if (status !== "playing" || rewardChoicePending || !pickaxeAvailable) return [];
+    return (["up", "down", "left", "right"] as const)
+      .map((direction) => ({
+        direction,
+        cell: {
+          row: player.row + BREAK_DIRECTION_DELTAS[direction].row,
+          col: player.col + BREAK_DIRECTION_DELTAS[direction].col,
+        },
+      }))
+      .filter(
+        ({ cell }) =>
+          cell.row >= 0 &&
+          cell.row < ROWS &&
+          cell.col >= 0 &&
+          cell.col < COLS &&
+          walls.has(posKey(cell)),
+      );
+  }, [status, rewardChoicePending, pickaxeAvailable, walls, player]);
+
   const totalLights = mazeMap.collectibleStars.length;
   const collectedCount = collectedStars.length;
   const portalActive = totalLights === 0 || collectedCount >= totalLights;
@@ -2340,8 +2523,13 @@ export function useEscapeMaze(onComplete: CompleteFn, initialRouteNumber = 1) {
       setBlockedShake(0);
       setMoveTick(0);
       setTriggeredTraps([]);
-      setShieldCollected(false);
-      setShieldUsed(false);
+      // ROTA-CHEST-REWARDS-01 §19/§21: a new route restores the board and the
+      // decision. Broken walls close again because they were never written to
+      // the map definition — `brokenWall` is the only thing that opened them.
+      setChestOpened(false);
+      setRewardSelected(null);
+      setRewardSpent(false);
+      setBrokenWall(null);
       setStatus(nextStatus);
       setMessage(
         nextStatus === "playing"
@@ -2364,8 +2552,10 @@ export function useEscapeMaze(onComplete: CompleteFn, initialRouteNumber = 1) {
         starsCollected: number;
         totalStars: number;
         trapsTriggered: number;
-        shieldCollected: boolean;
-        shieldUsed: boolean;
+        chestOpened: boolean;
+        reward: ChestReward | null;
+        rewardSpent: boolean;
+        wallBroken: boolean;
       },
     ) => {
       setStatus(won ? "won" : "lost");
@@ -2410,8 +2600,15 @@ export function useEscapeMaze(onComplete: CompleteFn, initialRouteNumber = 1) {
           nextRouteStage: nextRouteProgression.label,
           // Additive optional fields (Gameplay 2.0); old results simply omit them.
           trapsTriggered: finalStats.trapsTriggered,
-          shieldCollected: finalStats.shieldCollected,
-          shieldUsed: finalStats.shieldUsed,
+          chestOpened: finalStats.chestOpened,
+          rewardChosen:
+            finalStats.reward === "pickaxe"
+              ? "Picareta"
+              : finalStats.reward === "second-chance"
+                ? "Segunda Chance"
+                : "Nenhuma",
+          rewardSpent: finalStats.rewardSpent,
+          wallBroken: finalStats.wallBroken,
         },
       });
     },
@@ -2437,8 +2634,99 @@ export function useEscapeMaze(onComplete: CompleteFn, initialRouteNumber = 1) {
     setRouteNumber(1);
     startNewMaze(nextDifficulty, "setup", 1);
   };
+  /**
+   * The defenders' half of a turn: Hunter first, then Sentinel on the state the
+   * Hunter has already produced, so the two never resolve a shared destination
+   * by render order. Unchanged from 01B except for one thing — when an unspent
+   * Second Chance is held, a capture undoes the defenders' answer instead of
+   * ending the route.
+   *
+   * "Undoes" is literal: this function simply does not commit the moves it
+   * computed. Every piece therefore stays on the cell it held when the turn
+   * began, which is why no overlap is possible — those cells were distinct.
+   */
+  const runDefenderPhase = (input: DefenderPhaseInput) => {
+    const statsAt = (finalErrors: number) => ({
+      turns: input.turnNumber,
+      blockedMoves,
+      errors: finalErrors,
+      difficulty,
+      routeNumber,
+      routeStageLabel: routeProgression.label,
+      starsCollected: input.starsCollected,
+      totalStars: mazeMap.collectibleStars.length,
+      trapsTriggered: input.trapsTriggeredCount,
+      chestOpened: input.chestOpenedNow,
+      reward: input.rewardNow,
+      rewardSpent: input.rewardSpentNow,
+      wallBroken: input.brokenWallNow !== null,
+    });
+
+    const nextGuardian = chooseGuardianMove(
+      input.guardianFrom,
+      input.playerPosition,
+      mazeMap.exitPosition,
+      input.graphWalls,
+      difficulty,
+      input.armedTraps,
+    );
+
+    if (positionsEqual(nextGuardian, input.playerPosition)) {
+      if (input.secondChanceReady) {
+        setRewardSpent(true);
+        setMessage(SECOND_CHANCE_DEFENDER_MESSAGE);
+        return;
+      }
+      setGuardian(nextGuardian);
+      const caughtErrors = input.errorsSoFar + 1;
+      setErrors(caughtErrors);
+      endGame(false, statsAt(caughtErrors));
+      return;
+    }
+
+    const nextSentinel = decideSentinelMove(
+      input.sentinelFrom,
+      input.playerPosition,
+      mazeMap.exitPosition,
+      input.graphWalls,
+      input.zone,
+      SENTINEL_COMMIT_TURNS,
+      input.armedTraps,
+    );
+    const sentinelBlocked =
+      positionsEqual(nextSentinel.position, nextGuardian) &&
+      !positionsEqual(nextSentinel.position, input.sentinelFrom.position);
+    const settledSentinel: SentinelState = sentinelBlocked
+      ? { ...nextSentinel, position: input.sentinelFrom.position }
+      : nextSentinel;
+
+    if (positionsEqual(settledSentinel.position, input.playerPosition)) {
+      if (input.secondChanceReady) {
+        // The Hunter's move is dropped along with the Sentinel's. Keeping it
+        // would be the one case where a piece could land on the cell another is
+        // being returned to, and dropping both costs nothing the design wants.
+        setRewardSpent(true);
+        setMessage(SECOND_CHANCE_DEFENDER_MESSAGE);
+        return;
+      }
+      setGuardian(nextGuardian);
+      setSentinel(settledSentinel);
+      const caughtErrors = input.errorsSoFar + 1;
+      setErrors(caughtErrors);
+      endGame(false, statsAt(caughtErrors));
+      return;
+    }
+
+    setGuardian(nextGuardian);
+    setSentinel(settledSentinel);
+    setMessage(input.calmMessage(nextGuardian));
+  };
+
   const tryMovePlayer = (delta: GridPosition) => {
     if (status !== "playing") return;
+    // ROTA-CHEST-REWARDS-01 §12: while the Chest waits for a decision, nothing
+    // else in the game may happen — not a step, not a defender.
+    if (rewardChoicePending) return;
 
     // Um gesto = uma ação: ignora um segundo disparo do MESMO gesto chegando
     // logo atrás do primeiro (qualquer origem de input). Nunca trava: a janela
@@ -2451,45 +2739,73 @@ export function useEscapeMaze(onComplete: CompleteFn, initialRouteNumber = 1) {
       row: player.row + delta.row,
       col: player.col + delta.col,
     };
+    const nextKey = posKey(next);
+    const outOfBoard =
+      next.row < 0 || next.row >= ROWS || next.col < 0 || next.col >= COLS;
 
-    if (
-      next.row < 0 ||
-      next.row >= ROWS ||
-      next.col < 0 ||
-      next.col >= COLS ||
-      mazeMap.walls.has(posKey(next))
-    ) {
+    if (outOfBoard || walls.has(nextKey)) {
       setBlockedMoves((n) => n + 1);
       setBlockedShake((n) => n + 1);
       playGentleErrorTone();
-      setMessage("Caminho bloqueado. Escolha outra direção.");
+      // §10/§18: walking into a wall never spends the Pickaxe — not even into a
+      // wall the Pickaxe could open. It only points at the action that would.
+      // The hint says "you could open this one", never "you should".
+      setMessage(
+        !outOfBoard && pickaxeAvailable
+          ? "Parede no caminho. A Picareta pode abri-la."
+          : "Caminho bloqueado. Escolha outra direção.",
+      );
       return;
     }
 
     const nextTurn = turns + 1;
-    const nextKey = posKey(next);
     const stepOnGuardian = positionsEqual(next, guardian);
     const stepOnSentinel = positionsEqual(next, sentinel.position);
 
-    // --- Gameplay 2.0 overlays (walkable, never alter maze rules) ---
-    // A trap only matters when we aren't already losing to the guardian.
+    // --- the Explorer walked into a defender ---------------------------------
+    // Resolved before anything is committed, so an intercepted capture leaves no
+    // trace on the board: the step simply did not happen.
+    if (stepOnGuardian || stepOnSentinel) {
+      if (secondChanceAvailable) {
+        setRewardSpent(true);
+        setTurns(nextTurn);
+        setMoveTick((t) => t + 1);
+        setMessage(SECOND_CHANCE_EXPLORER_MESSAGE);
+        return;
+      }
+      const caughtErrors = errors + 1;
+      setTurns(nextTurn);
+      setPlayer(next);
+      setMoveTick((t) => t + 1);
+      setErrors(caughtErrors);
+      endGame(false, {
+        turns: nextTurn,
+        blockedMoves,
+        errors: caughtErrors,
+        difficulty,
+        routeNumber,
+        routeStageLabel: routeProgression.label,
+        starsCollected: collectedStars.length,
+        totalStars: mazeMap.collectibleStars.length,
+        trapsTriggered: triggeredTraps.length,
+        chestOpened,
+        reward: rewardSelected,
+        rewardSpent,
+        wallBroken: brokenWall !== null,
+      });
+      return;
+    }
+
+    // --- Gameplay 2.0 overlays (walkable, never alter maze rules) ------------
     const isUntriggeredTrap =
-      !stepOnGuardian &&
       mazeMap.traps.some((trap) => positionsEqual(trap, next)) &&
       !triggeredTrapSet.has(nextKey);
-    // ROTA-TRAPS-STRATEGY-01-CLOSEOUT: arming a trap is not a mistake.
-    // The trap stopped being a punishment and became the Explorer's own
-    // instrument, so stepping on it costs nothing: no error, no shake, no error
-    // tone, and no shield spent. The shield keeps its current contract and is
-    // simply no longer consumed here — it is redesigned in ROTA-CHEST-REWARDS-01,
-    // not invented a new job in this mission.
-    const collectShield =
-      mazeMap.shield !== null &&
-      positionsEqual(next, mazeMap.shield) &&
-      !shieldCollected;
-
-    // Errors come from the guardian step only. Traps no longer contribute.
-    const errorsAfterStep = errors + (stepOnGuardian ? 1 : 0);
+    // ROTA-TRAPS-STRATEGY-01-CLOSEOUT: arming a trap is not a mistake. It costs
+    // no error, no shake and no error tone.
+    const arrivesAtChest =
+      mazeMap.chest !== null &&
+      positionsEqual(next, mazeMap.chest) &&
+      !chestOpened;
 
     const collectedStar =
       mazeMap.collectibleStars.some((star) => positionsEqual(star, next)) &&
@@ -2500,21 +2816,7 @@ export function useEscapeMaze(onComplete: CompleteFn, initialRouteNumber = 1) {
     const nextTotalLights = mazeMap.collectibleStars.length;
     const nextPortalActive =
       nextTotalLights === 0 || nextCollectedStars.length >= nextTotalLights;
-
-    // Post-step snapshots for the completion result (state updates are async).
-    const finalStats = (finalTurns: number, finalErrors: number) => ({
-      turns: finalTurns,
-      blockedMoves,
-      errors: finalErrors,
-      difficulty,
-      routeNumber,
-      routeStageLabel: routeProgression.label,
-      starsCollected: nextCollectedStars.length,
-      totalStars: mazeMap.collectibleStars.length,
-      trapsTriggered: triggeredTraps.length + (isUntriggeredTrap ? 1 : 0),
-      shieldCollected: shieldCollected || collectShield,
-      shieldUsed,
-    });
+    const nextTrapsTriggered = triggeredTraps.length + (isUntriggeredTrap ? 1 : 0);
 
     setTurns(nextTurn);
     setPlayer(next);
@@ -2523,17 +2825,23 @@ export function useEscapeMaze(onComplete: CompleteFn, initialRouteNumber = 1) {
     if (isUntriggeredTrap) {
       setTriggeredTraps((prev) => [...prev, nextKey]);
     }
-    if (collectShield) {
-      setShieldCollected(true);
-    }
-    if (stepOnGuardian || stepOnSentinel) {
-      setErrors(errorsAfterStep);
-      endGame(false, finalStats(nextTurn, errorsAfterStep));
-      return;
-    }
 
     if (positionsEqual(next, mazeMap.exitPosition) && nextPortalActive) {
-      endGame(true, finalStats(nextTurn, errorsAfterStep));
+      endGame(true, {
+        turns: nextTurn,
+        blockedMoves,
+        errors,
+        difficulty,
+        routeNumber,
+        routeStageLabel: routeProgression.label,
+        starsCollected: nextCollectedStars.length,
+        totalStars: mazeMap.collectibleStars.length,
+        trapsTriggered: nextTrapsTriggered,
+        chestOpened,
+        reward: rewardSelected,
+        rewardSpent,
+        wallBroken: brokenWall !== null,
+      });
       return;
     }
 
@@ -2545,71 +2853,158 @@ export function useEscapeMaze(onComplete: CompleteFn, initialRouteNumber = 1) {
       ? new Set<string>([...triggeredTrapSet, nextKey])
       : triggeredTrapSet;
 
-    const nextGuardian = chooseGuardianMove(
-      guardian,
-      next,
-      mazeMap.exitPosition,
-      mazeMap.walls,
-      difficulty,
-      armedTraps,
-    );
-    setGuardian(nextGuardian);
-
-    if (positionsEqual(nextGuardian, next)) {
-      const caughtErrors = errorsAfterStep + 1;
-      setErrors(caughtErrors);
-      endGame(false, finalStats(nextTurn, caughtErrors));
+    // --- the Chest pauses the turn ------------------------------------------
+    // §12: the Explorer arrives, the Chest opens, and the turn STOPS here. The
+    // defenders have not answered yet and will not until a reward is chosen, so
+    // there is no race between the UI and the runtime and no hidden turn.
+    if (arrivesAtChest) {
+      setChestOpened(true);
+      setMessage("Baú encontrado. Escolha a sua ferramenta.");
       return;
     }
 
-    // The Sentinel moves last, on the state the Hunter has already produced, so
-    // the two never resolve a shared destination by render order.
-    const nextSentinel = decideSentinelMove(
-      sentinel,
-      next,
-      mazeMap.exitPosition,
-      mazeMap.walls,
-      portalDefenceZone,
-      SENTINEL_COMMIT_TURNS,
+    runDefenderPhase({
+      playerPosition: next,
+      guardianFrom: guardian,
+      sentinelFrom: sentinel,
+      graphWalls: walls,
+      zone: portalDefenceZone,
       armedTraps,
-    );
-    const sentinelBlocked =
-      positionsEqual(nextSentinel.position, nextGuardian) &&
-      !positionsEqual(nextSentinel.position, sentinel.position);
-    const settledSentinel: SentinelState = sentinelBlocked
-      ? { ...nextSentinel, position: sentinel.position }
-      : nextSentinel;
-    setSentinel(settledSentinel);
-
-    if (positionsEqual(settledSentinel.position, next)) {
-      const caughtErrors = errorsAfterStep + 1;
-      setErrors(caughtErrors);
-      endGame(false, finalStats(nextTurn, caughtErrors));
-      return;
-    }
-
-    const guardianClose = manhattanDistance(nextGuardian, next) <= 2;
-    const exitClose = manhattanDistance(next, mazeMap.exitPosition) <= 2;
-
-    setMessage(
-      isUntriggeredTrap
-        ? "Armadilha ativada. Os defensores precisam contornar."
-        : collectShield
-            ? "Escudo coletado."
-            : collectedStar
-              ? nextPortalActive
-                ? "Portal ativado! Vá até a saída."
-                : "Luz-chave coletada."
-              : positionsEqual(next, mazeMap.exitPosition)
-                ? "O portal ainda precisa das luzes da rota."
-              : guardianClose
+      turnNumber: nextTurn,
+      errorsSoFar: errors,
+      starsCollected: nextCollectedStars.length,
+      trapsTriggeredCount: nextTrapsTriggered,
+      chestOpenedNow: chestOpened,
+      rewardNow: rewardSelected,
+      rewardSpentNow: rewardSpent,
+      brokenWallNow: brokenWall,
+      secondChanceReady: secondChanceAvailable,
+      // Same priority the route has always used: what the Explorer just did
+      // first, then how close the Hunter got, then the portal, then calm.
+      calmMessage: (guardianAfter) =>
+        isUntriggeredTrap
+          ? "Armadilha ativada. Os defensores precisam contornar."
+          : collectedStar
+            ? nextPortalActive
+              ? "Portal ativado! Vá até a saída."
+              : "Luz-chave coletada."
+            : positionsEqual(next, mazeMap.exitPosition)
+              ? "O portal ainda precisa das luzes da rota."
+              : manhattanDistance(guardianAfter, next) <= 2
                 ? "O Caçador está próximo. Pense no próximo caminho."
-                : exitClose
-                  ? portalActive
+                : manhattanDistance(next, mazeMap.exitPosition) <= 2
+                  ? nextPortalActive
                     ? "A saída está próxima."
                     : "O portal ainda precisa de todas as luzes."
                   : "Boa jogada. O Caçador se moveu.",
+    });
+  };
+
+  /**
+   * §13/§43: the reward is the Explorer's decision. No RNG, no draw, no
+   * weighting — a branch the player takes, which is exactly how the next
+   * mission's solver will model it.
+   *
+   * §12.6/§12.7: choosing is not a turn of its own. The turn the Chest paused
+   * resumes here, at the point it paused, with the defenders answering the
+   * position the Explorer already reached.
+   */
+  const chooseReward = (reward: ChestReward) => {
+    if (status !== "playing" || !rewardChoicePending) return;
+    setRewardSelected(reward);
+    runDefenderPhase({
+      playerPosition: player,
+      guardianFrom: guardian,
+      sentinelFrom: sentinel,
+      graphWalls: walls,
+      zone: portalDefenceZone,
+      armedTraps: triggeredTrapSet,
+      turnNumber: turns,
+      errorsSoFar: errors,
+      starsCollected: collectedStars.length,
+      trapsTriggeredCount: triggeredTraps.length,
+      chestOpenedNow: true,
+      rewardNow: reward,
+      rewardSpentNow: false,
+      brokenWallNow: brokenWall,
+      // A Second Chance taken here is armed immediately: it protects the rest of
+      // the very turn in which it was chosen.
+      secondChanceReady: reward === "second-chance",
+      calmMessage: () =>
+        reward === "pickaxe"
+          ? // Post-playtest: this used to say "procure uma parede rachada",
+            // which was the game pointing at the answer. It now states the
+            // rule and leaves the decision where it belongs.
+            "Picareta na mão. Você pode abrir uma parede — só uma."
+          : "Segunda Chance guardada. Você resiste a uma captura.",
+    });
+  };
+
+  /**
+   * §16: breaking is a real play. It costs the turn, the Explorer does not move,
+   * and the wall is already open when the defenders answer — which is what makes
+   * the trade-off honest instead of a one-sided gift.
+   *
+   * ROTA-CHEST-REWARDS-01 (revisão pós-playtest) — PICKAXE_TARGET =
+   * ANY_INTERNAL_MAZE_WALL.
+   *
+   * Every guard below is PHYSICAL: does this wall exist, is it inside the grid,
+   * is the Explorer standing next to it, is the Pickaxe still in hand. There is
+   * deliberately no guard asking whether opening it is a GOOD idea — no shortest
+   * path check, no portal check, no "would this help the Hunter". The Pickaxe
+   * does not decide for the player, and opening the wrong wall is allowed to
+   * leave the Explorer worse off. That is the mechanic.
+   *
+   * The exclusions §4 lists — portal, chest, trap, light, the three entities,
+   * the board frame, decoration — need no code: every one of them lives on a
+   * WALKABLE cell or outside the 9x9 logical grid, so none of them can be in
+   * `walls`. `walls.has(wallKey)` is the whole of "is a real internal maze
+   * wall". The controlled tests assert each exclusion rather than trusting it.
+   */
+  const breakWall = (wall: GridPosition) => {
+    if (status !== "playing" || rewardChoicePending) return;
+    if (!pickaxeAvailable) return;
+    if (wall.row < 0 || wall.row >= ROWS || wall.col < 0 || wall.col >= COLS) return;
+    const wallKey = posKey(wall);
+    // Still standing, and reachable from where the Explorer actually is.
+    if (!walls.has(wallKey)) return;
+    if (manhattanDistance(wall, player) !== 1) return;
+
+    const opened = new Set(walls);
+    opened.delete(wallKey);
+    const openedZone = computePortalDefenceZone(
+      mazeMap.playerStart,
+      mazeMap.exitPosition,
+      opened,
     );
+    const nextTurn = turns + 1;
+
+    setBrokenWall(wallKey);
+    setRewardSpent(true);
+    setTurns(nextTurn);
+    setMoveTick((t) => t + 1);
+    playStoneBreak();
+
+    runDefenderPhase({
+      playerPosition: player,
+      guardianFrom: guardian,
+      sentinelFrom: sentinel,
+      // Already open. The Hunter and the Sentinel recompute on the new board in
+      // this same turn — they do not learn about it one turn late.
+      graphWalls: opened,
+      zone: openedZone,
+      armedTraps: triggeredTrapSet,
+      turnNumber: nextTurn,
+      errorsSoFar: errors,
+      starsCollected: collectedStars.length,
+      trapsTriggeredCount: triggeredTraps.length,
+      chestOpenedNow: chestOpened,
+      rewardNow: rewardSelected,
+      rewardSpentNow: true,
+      brokenWallNow: wallKey,
+      secondChanceReady: false,
+      calmMessage: () => "Parede aberta. O caminho novo serve para todos.",
+    });
   };
 
   // Optional keyboard support: arrow keys mirror the on-screen move buttons.
@@ -2618,6 +3013,17 @@ export function useEscapeMaze(onComplete: CompleteFn, initialRouteNumber = 1) {
     if (status !== "playing") return;
 
     const handleKeyDown = (event: KeyboardEvent) => {
+      // §17: Enter opens the wall only when there is exactly ONE within reach,
+      // because only then is there nothing to choose. With two or more the
+      // choice is the whole point, and it belongs to the direction buttons —
+      // never to a guess about which one the player meant.
+      if (event.key === "Enter") {
+        if (breakTargets.length !== 1) return;
+        event.preventDefault();
+        if (event.repeat) return;
+        breakWall(breakTargets[0].cell);
+        return;
+      }
       const delta = ARROW_DELTAS[event.key];
       if (!delta) return;
       event.preventDefault();
@@ -2637,6 +3043,8 @@ export function useEscapeMaze(onComplete: CompleteFn, initialRouteNumber = 1) {
     routeNumber,
     routeProgression,
     mazeMap,
+    /** The board as it stands — `mazeMap.walls` until the Pickaxe opens one. */
+    walls,
     player,
     guardian,
     sentinel: sentinel.position,
@@ -2657,13 +3065,27 @@ export function useEscapeMaze(onComplete: CompleteFn, initialRouteNumber = 1) {
     // Gameplay 2.0 — read-only views for the HUD and the 3D board.
     triggeredTrapSet,
     trapsTriggered: triggeredTraps.length,
-    shieldCollected,
-    shieldUsed,
-    shieldActive,
+    // ROTA-CHEST-REWARDS-01 — every piece of chest state is observable here, so
+    // nothing strategic hides in a ref, in the UI or in the renderer (§42).
+    chestPosition: mazeMap.chest,
+    chestOpened,
+    rewardSelected,
+    /** The single charge, spent. The four raw fields are the whole chest state. */
+    rewardSpent,
+    rewardChoicePending,
+    pickaxeAvailable,
+    pickaxeSpent,
+    secondChanceAvailable,
+    secondChanceSpent,
+    brokenWall,
+    /** Adjacent walls, in a fixed direction order. The only Pickaxe affordance. */
+    breakTargets,
     startGame,
     restartGame,
     continueJourney,
     changeDifficulty,
     tryMovePlayer,
+    chooseReward,
+    breakWall,
   };
 }

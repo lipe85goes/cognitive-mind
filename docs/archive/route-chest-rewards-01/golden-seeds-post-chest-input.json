@@ -1,0 +1,628 @@
+{
+  "mission": "ROTA-CHEST-REWARDS-01",
+  "section": "§41 GOLDEN_PRE_CHEST_SEEDS",
+  "preChestBaselineCommit": "eb26368",
+  "statement": "Input for ROTA-DYNAMIC-SOLVABILITY-02. Chest position, available rewards and the Pickaxe's legal targets are recorded. Since the post-playtest revision the Pickaxe may open ANY internal maze wall, so the target list IS the map's wall list. No solvability conclusion is drawn here, and none of these maps was tuned.",
+  "PICKAXE_TARGET_POLICY": "ANY_INTERNAL_MAZE_WALL",
+  "CERTIFIED_WALL_RUNTIME_RESTRICTION": false,
+  "solver02Note": "With one use and N internal walls, the Explorer's branching at any cell is BREAK_WALL(w) for each adjacent standing wall, plus not breaking. Which wall leads to a winning region is exactly what ROTA-DYNAMIC-SOLVABILITY-02 exists to answer, and nothing here pre-empts it.",
+  "DYNAMIC_SOLVABILITY_02_REQUIRED": true,
+  "MAP_REPAIR_PERFORMED": false,
+  "SOLVER_RUN_IN_THIS_MISSION": false,
+  "records": [
+    {
+      "seed": 8801214,
+      "difficulty": "hard",
+      "routeNumber": 1,
+      "preChestVerdict": "PROVED_UNSOLVABLE_PRE_CHEST",
+      "postChestVerdict": "NOT_EVALUATED_IN_THIS_MISSION",
+      "map": {
+        "playerStart": "8,0",
+        "guardianStart": "0,3",
+        "portal": "2,7",
+        "lights": [
+          "8,5",
+          "5,2",
+          "4,1",
+          "7,3",
+          "7,6"
+        ],
+        "traps": [
+          "0,2",
+          "3,2",
+          "2,0",
+          "1,7"
+        ],
+        "walls": [
+          "0,0",
+          "1,3",
+          "1,5",
+          "2,5",
+          "3,1",
+          "3,4",
+          "4,3",
+          "4,4",
+          "4,6",
+          "4,7",
+          "5,0",
+          "5,6",
+          "5,7",
+          "6,2",
+          "6,3",
+          "6,4",
+          "6,5",
+          "7,4",
+          "7,7",
+          "7,8"
+        ],
+        "wallCount": 20,
+        "portalZone": [
+          "2,7",
+          "1,7",
+          "3,7",
+          "2,6",
+          "2,8",
+          "0,7",
+          "1,6",
+          "1,8",
+          "3,6",
+          "3,8"
+        ],
+        "portalAccesses": [
+          "0,6",
+          "3,5",
+          "4,8"
+        ]
+      },
+      "chest": {
+        "position": "8,4",
+        "rewardsAvailable": [
+          "PICKAXE",
+          "SECOND_CHANCE"
+        ],
+        "rewardSelectionRandom": false
+      },
+      "pickaxe": {
+        "targetPolicy": "ANY_INTERNAL_MAZE_WALL",
+        "uses": 1,
+        "legalTargets": [
+          "0,0",
+          "1,3",
+          "1,5",
+          "2,5",
+          "3,1",
+          "3,4",
+          "4,3",
+          "4,4",
+          "4,6",
+          "4,7",
+          "5,0",
+          "5,6",
+          "5,7",
+          "6,2",
+          "6,3",
+          "6,4",
+          "6,5",
+          "7,4",
+          "7,7",
+          "7,8"
+        ],
+        "legalTargetCount": 20,
+        "wallsWithAtLeastOneWalkableNeighbour": 20,
+        "generatorPreselection": null,
+        "permanentVisualHint": null,
+        "retiredCertifierOpinion": {
+          "authority": "none",
+          "certifiedCount": 13,
+          "certified": [
+            {
+              "cell": "1,5",
+              "score": 16,
+              "effect": {
+                "degree": 3,
+                "cyclesGained": 2,
+                "objectiveMovesSaved": 0,
+                "portalAccessesGained": 1,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 0,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            },
+            {
+              "cell": "2,5",
+              "score": 16,
+              "effect": {
+                "degree": 3,
+                "cyclesGained": 2,
+                "objectiveMovesSaved": 0,
+                "portalAccessesGained": 1,
+                "portalZoneCellsGained": 1,
+                "escapeCellsGained": 0,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            },
+            {
+              "cell": "4,6",
+              "score": 13,
+              "effect": {
+                "degree": 2,
+                "cyclesGained": 1,
+                "objectiveMovesSaved": 0,
+                "portalAccessesGained": 1,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 0,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            },
+            {
+              "cell": "4,7",
+              "score": 11,
+              "effect": {
+                "degree": 2,
+                "cyclesGained": 1,
+                "objectiveMovesSaved": 0,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 1,
+                "escapeCellsGained": 1,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            },
+            {
+              "cell": "5,0",
+              "score": 14,
+              "effect": {
+                "degree": 3,
+                "cyclesGained": 2,
+                "objectiveMovesSaved": 0,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 1,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            },
+            {
+              "cell": "5,6",
+              "score": 11,
+              "effect": {
+                "degree": 2,
+                "cyclesGained": 1,
+                "objectiveMovesSaved": 0,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 1,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            },
+            {
+              "cell": "5,7",
+              "score": 19,
+              "effect": {
+                "degree": 2,
+                "cyclesGained": 1,
+                "objectiveMovesSaved": 0,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 2,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            },
+            {
+              "cell": "6,2",
+              "score": 30,
+              "effect": {
+                "degree": 3,
+                "cyclesGained": 2,
+                "objectiveMovesSaved": 2,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 0,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            },
+            {
+              "cell": "6,3",
+              "score": 35,
+              "effect": {
+                "degree": 2,
+                "cyclesGained": 1,
+                "objectiveMovesSaved": 2,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 1,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            },
+            {
+              "cell": "6,5",
+              "score": 22,
+              "effect": {
+                "degree": 3,
+                "cyclesGained": 2,
+                "objectiveMovesSaved": 0,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 2,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            },
+            {
+              "cell": "7,4",
+              "score": 30,
+              "effect": {
+                "degree": 3,
+                "cyclesGained": 2,
+                "objectiveMovesSaved": 0,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 3,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            },
+            {
+              "cell": "7,7",
+              "score": 16,
+              "effect": {
+                "degree": 3,
+                "cyclesGained": 2,
+                "objectiveMovesSaved": 0,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 1,
+                "alternativeRouteCellsGained": 1,
+                "hunterMovesSaved": 0
+              }
+            },
+            {
+              "cell": "7,8",
+              "score": 15,
+              "effect": {
+                "degree": 2,
+                "cyclesGained": 1,
+                "objectiveMovesSaved": 0,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 1,
+                "alternativeRouteCellsGained": 2,
+                "hunterMovesSaved": 0
+              }
+            }
+          ],
+          "rejectedByRetiredCertifier": [
+            {
+              "cell": "0,0",
+              "reason": "NO_TOPOLOGICAL_EFFECT"
+            },
+            {
+              "cell": "1,3",
+              "reason": "NO_TOPOLOGICAL_EFFECT"
+            },
+            {
+              "cell": "3,1",
+              "reason": "NO_TOPOLOGICAL_EFFECT"
+            },
+            {
+              "cell": "3,4",
+              "reason": "NO_TOPOLOGICAL_EFFECT"
+            },
+            {
+              "cell": "4,3",
+              "reason": "NO_TOPOLOGICAL_EFFECT"
+            },
+            {
+              "cell": "4,4",
+              "reason": "NO_TOPOLOGICAL_EFFECT"
+            },
+            {
+              "cell": "6,4",
+              "reason": "WOULD_ADD_DEAD_END"
+            }
+          ]
+        }
+      },
+      "tuning": {
+        "hardcodedForThisSeed": false,
+        "specialWall": false,
+        "specialTemplate": false,
+        "specialDifficultyException": false,
+        "dedicatedSpawn": false,
+        "dedicatedReward": false,
+        "wallGuaranteedToSolveThisSeed": false
+      }
+    },
+    {
+      "seed": 8801107,
+      "difficulty": "medium",
+      "routeNumber": 1,
+      "preChestVerdict": "PROVED_UNSOLVABLE_PRE_CHEST",
+      "postChestVerdict": "NOT_EVALUATED_IN_THIS_MISSION",
+      "map": {
+        "playerStart": "8,0",
+        "guardianStart": "0,3",
+        "portal": "2,7",
+        "lights": [
+          "8,5",
+          "7,4",
+          "5,2",
+          "3,0"
+        ],
+        "traps": [
+          "7,8",
+          "1,2",
+          "1,8"
+        ],
+        "walls": [
+          "1,5",
+          "2,2",
+          "2,3",
+          "2,6",
+          "3,2",
+          "3,3",
+          "3,4",
+          "3,6",
+          "3,7",
+          "4,1",
+          "4,6",
+          "4,7",
+          "5,4",
+          "5,5",
+          "5,6",
+          "6,1",
+          "6,2",
+          "6,6",
+          "7,3",
+          "8,7"
+        ],
+        "wallCount": 20,
+        "portalZone": [
+          "2,7",
+          "1,7",
+          "2,8",
+          "0,7",
+          "1,6",
+          "1,8",
+          "3,8"
+        ],
+        "portalAccesses": [
+          "0,6",
+          "4,8"
+        ]
+      },
+      "chest": {
+        "position": "5,1",
+        "rewardsAvailable": [
+          "PICKAXE",
+          "SECOND_CHANCE"
+        ],
+        "rewardSelectionRandom": false
+      },
+      "pickaxe": {
+        "targetPolicy": "ANY_INTERNAL_MAZE_WALL",
+        "uses": 1,
+        "legalTargets": [
+          "1,5",
+          "2,2",
+          "2,3",
+          "2,6",
+          "3,2",
+          "3,3",
+          "3,4",
+          "3,6",
+          "3,7",
+          "4,1",
+          "4,6",
+          "4,7",
+          "5,4",
+          "5,5",
+          "5,6",
+          "6,1",
+          "6,2",
+          "6,6",
+          "7,3",
+          "8,7"
+        ],
+        "legalTargetCount": 20,
+        "wallsWithAtLeastOneWalkableNeighbour": 20,
+        "generatorPreselection": null,
+        "permanentVisualHint": null,
+        "retiredCertifierOpinion": {
+          "authority": "none",
+          "certifiedCount": 9,
+          "certified": [
+            {
+              "cell": "1,5",
+              "score": 19,
+              "effect": {
+                "degree": 4,
+                "cyclesGained": 3,
+                "objectiveMovesSaved": 0,
+                "portalAccessesGained": 1,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 0,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            },
+            {
+              "cell": "2,6",
+              "score": 34,
+              "effect": {
+                "degree": 3,
+                "cyclesGained": 2,
+                "objectiveMovesSaved": 0,
+                "portalAccessesGained": 2,
+                "portalZoneCellsGained": 2,
+                "escapeCellsGained": 1,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            },
+            {
+              "cell": "3,7",
+              "score": 19,
+              "effect": {
+                "degree": 2,
+                "cyclesGained": 1,
+                "objectiveMovesSaved": 0,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 1,
+                "escapeCellsGained": 2,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            },
+            {
+              "cell": "4,1",
+              "score": 33,
+              "effect": {
+                "degree": 4,
+                "cyclesGained": 3,
+                "objectiveMovesSaved": 0,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 3,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            },
+            {
+              "cell": "4,7",
+              "score": 19,
+              "effect": {
+                "degree": 2,
+                "cyclesGained": 1,
+                "objectiveMovesSaved": 0,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 2,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            },
+            {
+              "cell": "6,1",
+              "score": 22,
+              "effect": {
+                "degree": 3,
+                "cyclesGained": 2,
+                "objectiveMovesSaved": 0,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 2,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            },
+            {
+              "cell": "6,2",
+              "score": 14,
+              "effect": {
+                "degree": 3,
+                "cyclesGained": 2,
+                "objectiveMovesSaved": 0,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 1,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            },
+            {
+              "cell": "7,3",
+              "score": 17,
+              "effect": {
+                "degree": 4,
+                "cyclesGained": 3,
+                "objectiveMovesSaved": 0,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 1,
+                "alternativeRouteCellsGained": 0,
+                "hunterMovesSaved": 0
+              }
+            },
+            {
+              "cell": "8,7",
+              "score": 8,
+              "effect": {
+                "degree": 3,
+                "cyclesGained": 2,
+                "objectiveMovesSaved": 0,
+                "portalAccessesGained": 0,
+                "portalZoneCellsGained": 0,
+                "escapeCellsGained": 0,
+                "alternativeRouteCellsGained": 1,
+                "hunterMovesSaved": 0
+              }
+            }
+          ],
+          "rejectedByRetiredCertifier": [
+            {
+              "cell": "2,2",
+              "reason": "NO_TOPOLOGICAL_EFFECT"
+            },
+            {
+              "cell": "2,3",
+              "reason": "NO_TOPOLOGICAL_EFFECT"
+            },
+            {
+              "cell": "3,2",
+              "reason": "NO_TOPOLOGICAL_EFFECT"
+            },
+            {
+              "cell": "3,3",
+              "reason": "WOULD_ADD_DEAD_END"
+            },
+            {
+              "cell": "3,4",
+              "reason": "NO_TOPOLOGICAL_EFFECT"
+            },
+            {
+              "cell": "3,6",
+              "reason": "WOULD_ADD_DEAD_END"
+            },
+            {
+              "cell": "4,6",
+              "reason": "WOULD_ADD_DEAD_END"
+            },
+            {
+              "cell": "5,4",
+              "reason": "NO_TOPOLOGICAL_EFFECT"
+            },
+            {
+              "cell": "5,5",
+              "reason": "NO_TOPOLOGICAL_EFFECT"
+            },
+            {
+              "cell": "5,6",
+              "reason": "WOULD_ADD_DEAD_END"
+            },
+            {
+              "cell": "6,6",
+              "reason": "NO_TOPOLOGICAL_EFFECT"
+            }
+          ]
+        }
+      },
+      "tuning": {
+        "hardcodedForThisSeed": false,
+        "specialWall": false,
+        "specialTemplate": false,
+        "specialDifficultyException": false,
+        "dedicatedSpawn": false,
+        "dedicatedReward": false,
+        "wallGuaranteedToSolveThisSeed": false
+      }
+    }
+  ]
+}

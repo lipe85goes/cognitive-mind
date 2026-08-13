@@ -19,7 +19,7 @@ import { RouteTile3D } from "@/components/three/route/RouteTile3D";
 import { RouteToken3D } from "@/components/three/route/RouteToken3D";
 import { RouteCollectible3D } from "@/components/three/route/RouteCollectible3D";
 import { RouteTrap3D } from "@/components/three/route/RouteTrap3D";
-import { RouteShield3D } from "@/components/three/route/RouteShield3D";
+import { RouteChest3D } from "@/components/three/route/RouteChest3D";
 import type { GridPosition } from "@/types/game";
 
 const CELL = 0.6;
@@ -33,6 +33,7 @@ function toXZ(row: number, col: number): [number, number] {
 }
 
 interface RouteBoardSceneProps {
+  /** The board as it stands — already without the wall the Pickaxe opened. */
   walls: Set<string>;
   exitPosition: GridPosition;
   stars: GridPosition[];
@@ -45,9 +46,14 @@ interface RouteBoardSceneProps {
   /** Trap tiles (Gameplay 2.0); spent ones are read from `triggeredTrapSet`. */
   traps: GridPosition[];
   triggeredTrapSet: Set<string>;
-  /** The single shield power-up, hidden once collected. */
-  shield: GridPosition | null;
-  shieldCollected: boolean;
+  /** The reward chest; it stays on the board once opened, visibly spent. */
+  chest: GridPosition | null;
+  chestOpened: boolean;
+  /** Adjacent walls the Pickaxe could open right now — contextual, never a hint. */
+  breakTargets: string[];
+  /** The one being pointed at, so it is clear which will open. */
+  aimedWall: string | null;
+  brokenWall: string | null;
   /** Tiles within the guardian's reach, as "row,col" keys (danger preview). */
   dangerTiles: Set<string>;
   reducedMotion: boolean;
@@ -130,8 +136,11 @@ export function RouteBoardScene({
   moveTargets,
   traps,
   triggeredTrapSet,
-  shield,
-  shieldCollected,
+  chest,
+  chestOpened,
+  breakTargets,
+  aimedWall,
+  brokenWall,
   dangerTiles,
   reducedMotion,
   onMove,
@@ -140,7 +149,8 @@ export function RouteBoardScene({
   const [gx, gz] = toXZ(guardian.row, guardian.col);
   const [sx, sz] = toXZ(sentinel.row, sentinel.col);
   const [ex, ez] = toXZ(exitPosition.row, exitPosition.col);
-  const shieldXZ = shield ? toXZ(shield.row, shield.col) : null;
+  const chestXZ = chest ? toXZ(chest.row, chest.col) : null;
+  const breakTargetKeys = new Set(breakTargets);
 
   const visibleStars = stars.filter(
     (star) =>
@@ -241,6 +251,9 @@ export function RouteBoardScene({
               isWall={walls.has(key)}
               isMove={isMove}
               isDanger={dangerTiles.has(key)}
+              isBreakTarget={breakTargetKeys.has(key) && walls.has(key)}
+              isBreakAim={aimedWall === key}
+              isBroken={brokenWall === key}
               onSelect={
                 isMove
                   ? () =>
@@ -286,11 +299,12 @@ export function RouteBoardScene({
         );
       })}
 
-      {shieldXZ && !shieldCollected && (
-        <RouteShield3D
-          x={shieldXZ[0]}
-          z={shieldXZ[1]}
+      {chestXZ && (
+        <RouteChest3D
+          x={chestXZ[0]}
+          z={chestXZ[1]}
           baseY={TILE_TOP}
+          opened={chestOpened}
           reducedMotion={reducedMotion}
         />
       )}
