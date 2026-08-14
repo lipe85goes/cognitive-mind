@@ -1,0 +1,153 @@
+{
+  "mission": "ROTA-DUAL-GUARDIANS-MAPS-01B-PLAYTEST-CLOSE",
+  "method": "a mid-commitment Sentinel is built, then the map is replaced exactly as startNewMaze does",
+  "meshLifecycle": "renderDynamicBoard builds a new root and disposes the previous one wholesale, so no Sentinel, Hunter or duplicated mesh can outlive a rebuild. Verified statically in sentinel-static-render-audit.json.",
+  "stateLeaks": 0,
+  "scenarios": [
+    {
+      "scenario": "iniciar Rota",
+      "from": "rota1/easy",
+      "to": "rota1/easy",
+      "dirtyStateBefore": {
+        "position": "3,6",
+        "target": "3,5",
+        "commitLeft": 1
+      },
+      "stateAfterReset": {
+        "position": "1,8",
+        "target": null,
+        "commitLeft": 0
+      },
+      "problems": []
+    },
+    {
+      "scenario": "restart da mesma Rota",
+      "from": "rota1/easy",
+      "to": "rota1/easy",
+      "dirtyStateBefore": {
+        "position": "3,6",
+        "target": "3,5",
+        "commitLeft": 1
+      },
+      "stateAfterReset": {
+        "position": "1,7",
+        "target": null,
+        "commitLeft": 0
+      },
+      "problems": []
+    },
+    {
+      "scenario": "derrota -> tentar novamente",
+      "from": "rota2/medium",
+      "to": "rota2/medium",
+      "dirtyStateBefore": {
+        "position": "1,6",
+        "target": "1,5",
+        "commitLeft": 3
+      },
+      "stateAfterReset": {
+        "position": "1,8",
+        "target": null,
+        "commitLeft": 0
+      },
+      "problems": []
+    },
+    {
+      "scenario": "vitória -> próxima Rota",
+      "from": "rota1/medium",
+      "to": "rota2/medium",
+      "dirtyStateBefore": {
+        "position": "1,6",
+        "target": "3,6",
+        "commitLeft": 2
+      },
+      "stateAfterReset": {
+        "position": "1,8",
+        "target": null,
+        "commitLeft": 0
+      },
+      "problems": []
+    },
+    {
+      "scenario": "Rota 1 -> Rota 2",
+      "from": "rota1/hard",
+      "to": "rota2/hard",
+      "dirtyStateBefore": {
+        "position": "1,8",
+        "target": "5,8",
+        "commitLeft": 2
+      },
+      "stateAfterReset": {
+        "position": "1,7",
+        "target": null,
+        "commitLeft": 0
+      },
+      "problems": []
+    },
+    {
+      "scenario": "Rota 2 -> Rota 3",
+      "from": "rota2/hard",
+      "to": "rota3/hard",
+      "dirtyStateBefore": {
+        "position": "2,7",
+        "target": "2,6",
+        "commitLeft": 3
+      },
+      "stateAfterReset": {
+        "position": "1,8",
+        "target": null,
+        "commitLeft": 0
+      },
+      "problems": []
+    },
+    {
+      "scenario": "mudança de modo",
+      "from": "rota3/easy",
+      "to": "rota3/hard",
+      "dirtyStateBefore": {
+        "position": "1,8",
+        "target": null,
+        "commitLeft": 0
+      },
+      "stateAfterReset": {
+        "position": "1,7",
+        "target": null,
+        "commitLeft": 0
+      },
+      "problems": []
+    },
+    {
+      "scenario": "voltar Home e reentrar",
+      "from": "rota3/medium",
+      "to": "rota3/medium",
+      "dirtyStateBefore": {
+        "position": "1,6",
+        "target": "1,5",
+        "commitLeft": 3
+      },
+      "stateAfterReset": {
+        "position": "1,8",
+        "target": null,
+        "commitLeft": 0
+      },
+      "problems": []
+    },
+    {
+      "scenario": "nova sessão",
+      "from": "rota2/easy",
+      "to": "rota1/easy",
+      "dirtyStateBefore": {
+        "position": "0,8",
+        "target": "3,7",
+        "commitLeft": 3
+      },
+      "stateAfterReset": {
+        "position": "1,7",
+        "target": null,
+        "commitLeft": 0
+      },
+      "problems": []
+    }
+  ],
+  "gateMet": true
+}

@@ -1,0 +1,26 @@
+{
+  "mission": "ROTA-DIFFICULTY-04-BASELINE",
+  "suite": "difficulty-baseline-focused",
+  "options": {
+    "geometrySeeds": 1,
+    "uiSeeds": 1,
+    "policySeeds": 1,
+    "maxTurns": 12,
+    "quiet": true
+  },
+  "fingerprints": {
+    "first": "7b4ee688ab17ad6afd2c86db021f83f94a91bb281a5570d09b497d1ce9e1e8a2",
+    "second": "7b4ee688ab17ad6afd2c86db021f83f94a91bb281a5570d09b497d1ce9e1e8a2",
+    "equal": true
+  },
+  "matrixRows": 9,
+  "ui": {
+    "samples": 9,
+    "deterministic": 9,
+    "directIdentityMatches": 0,
+    "routeResetCount": 4
+  },
+  "policyRuns": 36,
+  "failures": [],
+  "gateMet": true
+}

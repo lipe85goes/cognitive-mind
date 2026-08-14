@@ -1,0 +1,664 @@
+{
+  "mission": "ROTA-DUAL-GUARDIANS-MAPS-01B",
+  "scenario": "Explorer stationary at its start, far from the portal",
+  "claim": "the Sentinel never leaves the portal region and makes no progress toward a distant Explorer; the Hunter is not bound to that region",
+  "note": "The Hunter minimises MANHATTAN distance, so a wall can make it lose ground on path distance. That is the approved policy, not a defect, and the role claim does not depend on it.",
+  "leashBudget": 4,
+  "rolesDistinct": true,
+  "cases": [
+    {
+      "seed": 7400000,
+      "explorer": "8,0",
+      "portal": "0,7",
+      "hunterLeftTerritory": true,
+      "hunterMaxDistanceFromPortal": 15,
+      "hunterPathGainToExplorer": 9,
+      "sentinelStayedTerritorial": true,
+      "sentinelMaxDistanceFromPortal": 1,
+      "sentinelApproachGain": 0,
+      "turns": [
+        {
+          "turn": 1,
+          "hunterToExplorer": 10,
+          "hunterToPortal": 5,
+          "sentinelToExplorer": 16,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 2,
+          "hunterToExplorer": 9,
+          "hunterToPortal": 6,
+          "sentinelToExplorer": 16,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 3,
+          "hunterToExplorer": 8,
+          "hunterToPortal": 7,
+          "sentinelToExplorer": 16,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 4,
+          "hunterToExplorer": 7,
+          "hunterToPortal": 8,
+          "sentinelToExplorer": 16,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 5,
+          "hunterToExplorer": 6,
+          "hunterToPortal": 9,
+          "sentinelToExplorer": 16,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 6,
+          "hunterToExplorer": 5,
+          "hunterToPortal": 10,
+          "sentinelToExplorer": 16,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 7,
+          "hunterToExplorer": 4,
+          "hunterToPortal": 11,
+          "sentinelToExplorer": 16,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 8,
+          "hunterToExplorer": 3,
+          "hunterToPortal": 12,
+          "sentinelToExplorer": 16,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 9,
+          "hunterToExplorer": 2,
+          "hunterToPortal": 13,
+          "sentinelToExplorer": 16,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 10,
+          "hunterToExplorer": 1,
+          "hunterToPortal": 14,
+          "sentinelToExplorer": 16,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 11,
+          "hunterToExplorer": 0,
+          "hunterToPortal": 15,
+          "sentinelToExplorer": 16,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 12,
+          "hunterToExplorer": 1,
+          "hunterToPortal": 14,
+          "sentinelToExplorer": 16,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        }
+      ]
+    },
+    {
+      "seed": 7400001,
+      "explorer": "8,0",
+      "portal": "0,7",
+      "hunterLeftTerritory": true,
+      "hunterMaxDistanceFromPortal": 15,
+      "hunterPathGainToExplorer": 9,
+      "sentinelStayedTerritorial": true,
+      "sentinelMaxDistanceFromPortal": 1,
+      "sentinelApproachGain": 0,
+      "turns": [
+        {
+          "turn": 1,
+          "hunterToExplorer": 10,
+          "hunterToPortal": 5,
+          "sentinelToExplorer": 14,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 2,
+          "hunterToExplorer": 9,
+          "hunterToPortal": 6,
+          "sentinelToExplorer": 14,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 3,
+          "hunterToExplorer": 8,
+          "hunterToPortal": 7,
+          "sentinelToExplorer": 14,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 4,
+          "hunterToExplorer": 7,
+          "hunterToPortal": 8,
+          "sentinelToExplorer": 14,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 5,
+          "hunterToExplorer": 6,
+          "hunterToPortal": 9,
+          "sentinelToExplorer": 14,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 6,
+          "hunterToExplorer": 5,
+          "hunterToPortal": 10,
+          "sentinelToExplorer": 14,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 7,
+          "hunterToExplorer": 4,
+          "hunterToPortal": 11,
+          "sentinelToExplorer": 14,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 8,
+          "hunterToExplorer": 3,
+          "hunterToPortal": 12,
+          "sentinelToExplorer": 14,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 9,
+          "hunterToExplorer": 2,
+          "hunterToPortal": 13,
+          "sentinelToExplorer": 14,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 10,
+          "hunterToExplorer": 1,
+          "hunterToPortal": 14,
+          "sentinelToExplorer": 14,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 11,
+          "hunterToExplorer": 0,
+          "hunterToPortal": 15,
+          "sentinelToExplorer": 14,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 12,
+          "hunterToExplorer": 1,
+          "hunterToPortal": 14,
+          "sentinelToExplorer": 14,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        }
+      ]
+    },
+    {
+      "seed": 7400002,
+      "explorer": "8,0",
+      "portal": "0,8",
+      "hunterLeftTerritory": true,
+      "hunterMaxDistanceFromPortal": 13,
+      "hunterPathGainToExplorer": 7,
+      "sentinelStayedTerritorial": true,
+      "sentinelMaxDistanceFromPortal": 1,
+      "sentinelApproachGain": 0,
+      "turns": [
+        {
+          "turn": 1,
+          "hunterToExplorer": 12,
+          "hunterToPortal": 6,
+          "sentinelToExplorer": 15,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 2,
+          "hunterToExplorer": 11,
+          "hunterToPortal": 7,
+          "sentinelToExplorer": 15,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 3,
+          "hunterToExplorer": 10,
+          "hunterToPortal": 8,
+          "sentinelToExplorer": 15,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 4,
+          "hunterToExplorer": 9,
+          "hunterToPortal": 9,
+          "sentinelToExplorer": 15,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 5,
+          "hunterToExplorer": 8,
+          "hunterToPortal": 10,
+          "sentinelToExplorer": 15,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 6,
+          "hunterToExplorer": 7,
+          "hunterToPortal": 11,
+          "sentinelToExplorer": 15,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 7,
+          "hunterToExplorer": 6,
+          "hunterToPortal": 12,
+          "sentinelToExplorer": 15,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 8,
+          "hunterToExplorer": 7,
+          "hunterToPortal": 11,
+          "sentinelToExplorer": 15,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 9,
+          "hunterToExplorer": 6,
+          "hunterToPortal": 12,
+          "sentinelToExplorer": 15,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 10,
+          "hunterToExplorer": 7,
+          "hunterToPortal": 11,
+          "sentinelToExplorer": 15,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 11,
+          "hunterToExplorer": 6,
+          "hunterToPortal": 12,
+          "sentinelToExplorer": 15,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 12,
+          "hunterToExplorer": 5,
+          "hunterToPortal": 13,
+          "sentinelToExplorer": 15,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        }
+      ]
+    },
+    {
+      "seed": 7400003,
+      "explorer": "8,0",
+      "portal": "0,7",
+      "hunterLeftTerritory": true,
+      "hunterMaxDistanceFromPortal": 9,
+      "hunterPathGainToExplorer": -1,
+      "sentinelStayedTerritorial": true,
+      "sentinelMaxDistanceFromPortal": 1,
+      "sentinelApproachGain": 0,
+      "turns": [
+        {
+          "turn": 1,
+          "hunterToExplorer": 12,
+          "hunterToPortal": 7,
+          "sentinelToExplorer": 14,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 2,
+          "hunterToExplorer": 13,
+          "hunterToPortal": 8,
+          "sentinelToExplorer": 14,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 3,
+          "hunterToExplorer": 12,
+          "hunterToPortal": 7,
+          "sentinelToExplorer": 14,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 4,
+          "hunterToExplorer": 13,
+          "hunterToPortal": 8,
+          "sentinelToExplorer": 14,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 5,
+          "hunterToExplorer": 14,
+          "hunterToPortal": 9,
+          "sentinelToExplorer": 14,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 6,
+          "hunterToExplorer": 13,
+          "hunterToPortal": 8,
+          "sentinelToExplorer": 14,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 7,
+          "hunterToExplorer": 12,
+          "hunterToPortal": 7,
+          "sentinelToExplorer": 14,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 8,
+          "hunterToExplorer": 13,
+          "hunterToPortal": 8,
+          "sentinelToExplorer": 14,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 9,
+          "hunterToExplorer": 12,
+          "hunterToPortal": 7,
+          "sentinelToExplorer": 14,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 10,
+          "hunterToExplorer": 13,
+          "hunterToPortal": 8,
+          "sentinelToExplorer": 14,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 11,
+          "hunterToExplorer": 14,
+          "hunterToPortal": 9,
+          "sentinelToExplorer": 14,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 12,
+          "hunterToExplorer": 13,
+          "hunterToPortal": 8,
+          "sentinelToExplorer": 14,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        }
+      ]
+    },
+    {
+      "seed": 7400004,
+      "explorer": "8,0",
+      "portal": "0,7",
+      "hunterLeftTerritory": true,
+      "hunterMaxDistanceFromPortal": 7,
+      "hunterPathGainToExplorer": -3,
+      "sentinelStayedTerritorial": true,
+      "sentinelMaxDistanceFromPortal": 1,
+      "sentinelApproachGain": 0,
+      "turns": [
+        {
+          "turn": 1,
+          "hunterToExplorer": 12,
+          "hunterToPortal": 5,
+          "sentinelToExplorer": 16,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 2,
+          "hunterToExplorer": 13,
+          "hunterToPortal": 6,
+          "sentinelToExplorer": 16,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 3,
+          "hunterToExplorer": 14,
+          "hunterToPortal": 7,
+          "sentinelToExplorer": 16,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 4,
+          "hunterToExplorer": 13,
+          "hunterToPortal": 6,
+          "sentinelToExplorer": 16,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 5,
+          "hunterToExplorer": 14,
+          "hunterToPortal": 7,
+          "sentinelToExplorer": 16,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 6,
+          "hunterToExplorer": 13,
+          "hunterToPortal": 6,
+          "sentinelToExplorer": 16,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 7,
+          "hunterToExplorer": 14,
+          "hunterToPortal": 7,
+          "sentinelToExplorer": 16,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 8,
+          "hunterToExplorer": 13,
+          "hunterToPortal": 6,
+          "sentinelToExplorer": 16,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 9,
+          "hunterToExplorer": 14,
+          "hunterToPortal": 7,
+          "sentinelToExplorer": 16,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 10,
+          "hunterToExplorer": 15,
+          "hunterToPortal": 6,
+          "sentinelToExplorer": 16,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 11,
+          "hunterToExplorer": 14,
+          "hunterToPortal": 7,
+          "sentinelToExplorer": 16,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 12,
+          "hunterToExplorer": 15,
+          "hunterToPortal": 6,
+          "sentinelToExplorer": 16,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        }
+      ]
+    },
+    {
+      "seed": 7400005,
+      "explorer": "8,0",
+      "portal": "0,7",
+      "hunterLeftTerritory": true,
+      "hunterMaxDistanceFromPortal": 16,
+      "hunterPathGainToExplorer": 9,
+      "sentinelStayedTerritorial": true,
+      "sentinelMaxDistanceFromPortal": 1,
+      "sentinelApproachGain": 0,
+      "turns": [
+        {
+          "turn": 1,
+          "hunterToExplorer": 10,
+          "hunterToPortal": 5,
+          "sentinelToExplorer": 16,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 2,
+          "hunterToExplorer": 9,
+          "hunterToPortal": 6,
+          "sentinelToExplorer": 16,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 3,
+          "hunterToExplorer": 8,
+          "hunterToPortal": 7,
+          "sentinelToExplorer": 16,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 4,
+          "hunterToExplorer": 7,
+          "hunterToPortal": 8,
+          "sentinelToExplorer": 16,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 5,
+          "hunterToExplorer": 6,
+          "hunterToPortal": 9,
+          "sentinelToExplorer": 16,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 6,
+          "hunterToExplorer": 5,
+          "hunterToPortal": 10,
+          "sentinelToExplorer": 16,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 7,
+          "hunterToExplorer": 4,
+          "hunterToPortal": 11,
+          "sentinelToExplorer": 16,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 8,
+          "hunterToExplorer": 3,
+          "hunterToPortal": 12,
+          "sentinelToExplorer": 16,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 9,
+          "hunterToExplorer": 2,
+          "hunterToPortal": 13,
+          "sentinelToExplorer": 16,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 10,
+          "hunterToExplorer": 1,
+          "hunterToPortal": 14,
+          "sentinelToExplorer": 16,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 11,
+          "hunterToExplorer": 0,
+          "hunterToPortal": 15,
+          "sentinelToExplorer": 16,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        },
+        {
+          "turn": 12,
+          "hunterToExplorer": 1,
+          "hunterToPortal": 16,
+          "sentinelToExplorer": 16,
+          "sentinelToPortal": 1,
+          "sentinelInZone": true
+        }
+      ]
+    }
+  ]
+}
