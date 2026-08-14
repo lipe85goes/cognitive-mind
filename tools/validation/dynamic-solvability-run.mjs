@@ -11,7 +11,9 @@ import {
   existential, guaranteed, witness, classify, hunterSupport,
 } from "./dynamic-solver.mjs";
 
-const OUT = path.resolve("docs/archive/route-dynamic-solvability-01");
+const OUT = path.resolve(
+  process.env.ROUTE_VALIDATION_OUT ?? "docs/archive/route-dynamic-solvability-01",
+);
 fs.mkdirSync(path.join(OUT, "witnesses"), { recursive: true });
 const kOf = (p) => API.posKey(p);
 const makeMap = (seed, difficulty, stage) => { setSeed(seed); return API.generateMaze(difficulty, stage); };

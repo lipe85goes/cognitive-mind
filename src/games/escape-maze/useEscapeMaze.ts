@@ -2307,6 +2307,144 @@ type CompleteFn = (result: Omit<GameResult, "id" | "playedAt">) => void;
  */
 export type ChestReward = "pickaxe" | "second-chance";
 
+export interface DynamicMazeStateSnapshot {
+  mazeMap: MazeMap;
+  player: GridPosition;
+  guardian: GridPosition;
+  sentinel: GridPosition;
+  collectedStars: Iterable<string>;
+  triggeredTraps: Iterable<string>;
+  chestOpened: boolean;
+  rewardSelected: ChestReward | null;
+  rewardSpent: boolean;
+  brokenWall: string | null;
+  status: GameStatus;
+}
+
+export interface DynamicSolvabilityInspection {
+  valid: boolean;
+  topologicallySolvable: boolean;
+  solvable: boolean;
+  issues: string[];
+  effectiveWalls: Set<string>;
+  unreachableObjectives: string[];
+}
+
+/**
+ * Pure runtime contract for Rota's logical board.
+ *
+ * "Solvable" here is deliberately topological: every unfinished objective can
+ * still be reached on the current wall graph. Mobile defenders remain threats,
+ * not permanent walls, and their adversarial outcome is analysed separately by
+ * the exact dynamic solver. This function detects impossible state, stale wall
+ * topology and genuine objective softlocks without depending on React or render.
+ */
+export function inspectDynamicMazeState(
+  snapshot: DynamicMazeStateSnapshot,
+): DynamicSolvabilityInspection {
+  const {
+    mazeMap,
+    player,
+    guardian,
+    sentinel,
+    chestOpened,
+    rewardSelected,
+    rewardSpent,
+    brokenWall,
+    status,
+  } = snapshot;
+  const issues: string[] = [];
+  const effectiveWalls = new Set(mazeMap.walls);
+  if (brokenWall !== null) {
+    if (!mazeMap.walls.has(brokenWall)) issues.push("BROKEN_WALL_NOT_IN_BASE_MAP");
+    effectiveWalls.delete(brokenWall);
+  }
+
+  const collected = new Set(snapshot.collectedStars);
+  const armedTraps = new Set(snapshot.triggeredTraps);
+  const starKeys = new Set(mazeMap.collectibleStars.map(posKey));
+  const trapKeys = new Set(mazeMap.traps.map(posKey));
+  const insideBoard = (cell: GridPosition) =>
+    Number.isInteger(cell.row) &&
+    Number.isInteger(cell.col) &&
+    cell.row >= 0 &&
+    cell.row < ROWS &&
+    cell.col >= 0 &&
+    cell.col < COLS;
+  const mobile = [
+    ["PLAYER", player],
+    ["HUNTER", guardian],
+    ["SENTINEL", sentinel],
+  ] as const;
+  for (const [label, cell] of mobile) {
+    if (!insideBoard(cell)) issues.push(`${label}_OUT_OF_BOUNDS`);
+    else if (effectiveWalls.has(posKey(cell))) issues.push(`${label}_ON_WALL`);
+  }
+
+  if (positionsEqual(guardian, sentinel)) issues.push("DEFENDER_CO_OCCUPANCY");
+  if (
+    status === "playing" &&
+    (positionsEqual(player, guardian) || positionsEqual(player, sentinel))
+  ) {
+    issues.push("PLAYER_DEFENDER_CO_OCCUPANCY");
+  }
+  if (positionsEqual(guardian, mazeMap.exitPosition)) issues.push("HUNTER_ON_PORTAL");
+  if (positionsEqual(sentinel, mazeMap.exitPosition)) issues.push("SENTINEL_ON_PORTAL");
+
+  for (const key of collected) {
+    if (!starKeys.has(key)) issues.push("UNKNOWN_COLLECTED_LIGHT");
+  }
+  for (const key of armedTraps) {
+    if (!trapKeys.has(key)) issues.push("UNKNOWN_ARMED_TRAP");
+  }
+  if (armedTraps.has(posKey(guardian))) issues.push("HUNTER_ON_ARMED_TRAP");
+  if (armedTraps.has(posKey(sentinel))) issues.push("SENTINEL_ON_ARMED_TRAP");
+
+  if (!chestOpened) {
+    if (rewardSelected !== null) issues.push("REWARD_BEFORE_CHEST");
+    if (rewardSpent) issues.push("REWARD_SPENT_BEFORE_CHEST");
+    if (brokenWall !== null) issues.push("WALL_BROKEN_BEFORE_CHEST");
+    if (mazeMap.chest && positionsEqual(player, mazeMap.chest)) {
+      issues.push("PLAYER_ON_UNOPENED_CHEST");
+    }
+  } else if (rewardSelected === null) {
+    if (rewardSpent) issues.push("PENDING_REWARD_ALREADY_SPENT");
+    if (mazeMap.chest && !positionsEqual(player, mazeMap.chest)) {
+      issues.push("PENDING_REWARD_AWAY_FROM_CHEST");
+    }
+  }
+  if (rewardSelected !== null && !chestOpened) issues.push("SELECTED_REWARD_WITH_CLOSED_CHEST");
+  if (rewardSpent && rewardSelected === null) issues.push("SPENT_REWARD_WITHOUT_SELECTION");
+  if (rewardSelected === "pickaxe" && rewardSpent && brokenWall === null) {
+    issues.push("SPENT_PICKAXE_WITHOUT_OPEN_WALL");
+  }
+  if (brokenWall !== null && (rewardSelected !== "pickaxe" || !rewardSpent)) {
+    issues.push("OPEN_WALL_WITHOUT_SPENT_PICKAXE");
+  }
+
+  const reachable = insideBoard(player)
+    ? getReachableDistances(player, effectiveWalls)
+    : new Map<string, number>();
+  const unfinishedObjectives = mazeMap.collectibleStars
+    .map(posKey)
+    .filter((key) => !collected.has(key));
+  unfinishedObjectives.push(posKey(mazeMap.exitPosition));
+  if (!chestOpened && mazeMap.chest) unfinishedObjectives.push(posKey(mazeMap.chest));
+  const unreachableObjectives = unfinishedObjectives.filter((key) => !reachable.has(key));
+  if (unreachableObjectives.length > 0) issues.push("UNREACHABLE_OBJECTIVE");
+
+  const topologicallySolvable = unreachableObjectives.length === 0;
+  const valid = issues.length === 0;
+  return {
+    valid,
+    topologicallySolvable,
+    solvable: valid && topologicallySolvable,
+    issues,
+    effectiveWalls,
+    unreachableObjectives,
+  };
+}
+
 /**
  * What the defenders' half of a turn needs to know. It is passed explicitly
  * rather than read from state because a turn can resolve at three different
@@ -2668,7 +2806,7 @@ export function useEscapeMaze(onComplete: CompleteFn, initialRouteNumber = 1) {
       mazeMap.exitPosition,
       input.graphWalls,
       difficulty,
-      input.armedTraps,
+      new Set([...input.armedTraps, posKey(input.sentinelFrom.position)]),
     );
 
     if (positionsEqual(nextGuardian, input.playerPosition)) {
@@ -3049,6 +3187,7 @@ export function useEscapeMaze(onComplete: CompleteFn, initialRouteNumber = 1) {
     guardian,
     sentinel: sentinel.position,
     sentinelTarget: sentinel.target,
+    sentinelCommitLeft: sentinel.commitLeft,
     portalDefenceZone,
     collectedSet,
     collectedCount,
@@ -3078,6 +3217,19 @@ export function useEscapeMaze(onComplete: CompleteFn, initialRouteNumber = 1) {
     secondChanceAvailable,
     secondChanceSpent,
     brokenWall,
+    dynamicSolvability: inspectDynamicMazeState({
+      mazeMap,
+      player,
+      guardian,
+      sentinel: sentinel.position,
+      collectedStars,
+      triggeredTraps,
+      chestOpened,
+      rewardSelected,
+      rewardSpent,
+      brokenWall,
+      status,
+    }),
     /** Adjacent walls, in a fixed direction order. The only Pickaxe affordance. */
     breakTargets,
     startGame,

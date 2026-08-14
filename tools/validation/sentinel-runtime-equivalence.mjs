@@ -21,7 +21,9 @@ import { loadInstrumented } from "./instrumented-generator.mjs";
 import { portalZone, sentinelStep, ZONE_RADIUS, SENTINEL_LEASH } from "./dual-guardian-lab.mjs";
 import { key, eq, neighbors, bfs, pathLength } from "./route-lab.mjs";
 
-const OUT = path.resolve("docs/archive/route-dual-guardians-maps-01b");
+const OUT = path.resolve(
+  process.env.ROUTE_VALIDATION_OUT ?? "docs/archive/route-dual-guardians-maps-01b",
+);
 fs.mkdirSync(OUT, { recursive: true });
 
 const LAB = loadInstrumented({ bare: true });
@@ -94,7 +96,10 @@ for (const stage of [1, 2, 3]) {
         player = opts[0];
         if (eq(player, map.exitPosition)) break;
 
-        hunter = API.chooseGuardianMove(hunter, player, map.exitPosition, map.walls, difficulty);
+        hunter = API.chooseGuardianMove(
+          hunter, player, map.exitPosition, map.walls, difficulty,
+          new Set([API.posKey(runtimeState.position)]),
+        );
         if (eq(hunter, player)) break;
 
         const beforeCommit = runtimeState.commitLeft;
@@ -236,7 +241,10 @@ for (let i = 0; i < 6; i += 1) {
   const player = { ...map.playerStart };
   const turns = [];
   for (let turn = 1; turn <= 12; turn += 1) {
-    hunter = API.chooseGuardianMove(hunter, player, map.exitPosition, map.walls, "hard");
+    hunter = API.chooseGuardianMove(
+      hunter, player, map.exitPosition, map.walls, "hard",
+      new Set([API.posKey(state.position)]),
+    );
     state = API.decideSentinelMove(state, player, map.exitPosition, map.walls, zone);
     turns.push({
       turn,

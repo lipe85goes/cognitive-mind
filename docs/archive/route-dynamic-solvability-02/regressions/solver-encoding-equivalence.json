@@ -1,0 +1,343 @@
+{
+  "mission": "ROTA-DYNAMIC-SOLVABILITY-01",
+  "PRE_CHEST_BASELINE": true,
+  "generatedAt": "2026-08-14T01:08:01.709Z",
+  "claim": "oldStringKey(A) == oldStringKey(B) iff packedKey(A) == packedKey(B); optimized successors and attractors are identity-equivalent to the reference implementation.",
+  "encoding": {
+    "statesTested": 36009,
+    "contextsTested": 9,
+    "contracts": [
+      {
+        "seed": 9710100,
+        "route": 1,
+        "mode": "easy",
+        "boardCells": 81,
+        "accessCount": 5,
+        "lightCount": 3,
+        "trapCount": 2,
+        "commitValues": 4,
+        "componentBits": {
+          "explorerPosition": 7,
+          "hunterPosition": 7,
+          "sentinelPosition": 7,
+          "committedAccess": 3,
+          "commitTurnsRemaining": 2,
+          "collectedLights": 3,
+          "activeTraps": 2
+        },
+        "conservativeBitSum": 31,
+        "mixedRadixStateCardinality": 408146688,
+        "maximumPackedKey": 408146687,
+        "mixedRadixRequiredBits": 29,
+        "numberSafe": true
+      },
+      {
+        "seed": 9710101,
+        "route": 1,
+        "mode": "medium",
+        "boardCells": 81,
+        "accessCount": 4,
+        "lightCount": 4,
+        "trapCount": 3,
+        "commitValues": 4,
+        "componentBits": {
+          "explorerPosition": 7,
+          "hunterPosition": 7,
+          "sentinelPosition": 7,
+          "committedAccess": 3,
+          "commitTurnsRemaining": 2,
+          "collectedLights": 4,
+          "activeTraps": 3
+        },
+        "conservativeBitSum": 33,
+        "mixedRadixStateCardinality": 1360488960,
+        "maximumPackedKey": 1360488959,
+        "mixedRadixRequiredBits": 31,
+        "numberSafe": true
+      },
+      {
+        "seed": 9710102,
+        "route": 1,
+        "mode": "hard",
+        "boardCells": 81,
+        "accessCount": 2,
+        "lightCount": 5,
+        "trapCount": 4,
+        "commitValues": 4,
+        "componentBits": {
+          "explorerPosition": 7,
+          "hunterPosition": 7,
+          "sentinelPosition": 7,
+          "committedAccess": 2,
+          "commitTurnsRemaining": 2,
+          "collectedLights": 5,
+          "activeTraps": 4
+        },
+        "conservativeBitSum": 34,
+        "mixedRadixStateCardinality": 3265173504,
+        "maximumPackedKey": 3265173503,
+        "mixedRadixRequiredBits": 32,
+        "numberSafe": true
+      },
+      {
+        "seed": 9710200,
+        "route": 2,
+        "mode": "easy",
+        "boardCells": 81,
+        "accessCount": 2,
+        "lightCount": 3,
+        "trapCount": 3,
+        "commitValues": 4,
+        "componentBits": {
+          "explorerPosition": 7,
+          "hunterPosition": 7,
+          "sentinelPosition": 7,
+          "committedAccess": 2,
+          "commitTurnsRemaining": 2,
+          "collectedLights": 3,
+          "activeTraps": 3
+        },
+        "conservativeBitSum": 31,
+        "mixedRadixStateCardinality": 408146688,
+        "maximumPackedKey": 408146687,
+        "mixedRadixRequiredBits": 29,
+        "numberSafe": true
+      },
+      {
+        "seed": 9710201,
+        "route": 2,
+        "mode": "medium",
+        "boardCells": 81,
+        "accessCount": 3,
+        "lightCount": 4,
+        "trapCount": 4,
+        "commitValues": 4,
+        "componentBits": {
+          "explorerPosition": 7,
+          "hunterPosition": 7,
+          "sentinelPosition": 7,
+          "committedAccess": 2,
+          "commitTurnsRemaining": 2,
+          "collectedLights": 4,
+          "activeTraps": 4
+        },
+        "conservativeBitSum": 33,
+        "mixedRadixStateCardinality": 2176782336,
+        "maximumPackedKey": 2176782335,
+        "mixedRadixRequiredBits": 32,
+        "numberSafe": true
+      },
+      {
+        "seed": 9710202,
+        "route": 2,
+        "mode": "hard",
+        "boardCells": 81,
+        "accessCount": 3,
+        "lightCount": 5,
+        "trapCount": 5,
+        "commitValues": 4,
+        "componentBits": {
+          "explorerPosition": 7,
+          "hunterPosition": 7,
+          "sentinelPosition": 7,
+          "committedAccess": 2,
+          "commitTurnsRemaining": 2,
+          "collectedLights": 5,
+          "activeTraps": 5
+        },
+        "conservativeBitSum": 35,
+        "mixedRadixStateCardinality": 8707129344,
+        "maximumPackedKey": 8707129343,
+        "mixedRadixRequiredBits": 34,
+        "numberSafe": true
+      },
+      {
+        "seed": 9710300,
+        "route": 3,
+        "mode": "easy",
+        "boardCells": 81,
+        "accessCount": 3,
+        "lightCount": 4,
+        "trapCount": 4,
+        "commitValues": 4,
+        "componentBits": {
+          "explorerPosition": 7,
+          "hunterPosition": 7,
+          "sentinelPosition": 7,
+          "committedAccess": 2,
+          "commitTurnsRemaining": 2,
+          "collectedLights": 4,
+          "activeTraps": 4
+        },
+        "conservativeBitSum": 33,
+        "mixedRadixStateCardinality": 2176782336,
+        "maximumPackedKey": 2176782335,
+        "mixedRadixRequiredBits": 32,
+        "numberSafe": true
+      },
+      {
+        "seed": 9710301,
+        "route": 3,
+        "mode": "medium",
+        "boardCells": 81,
+        "accessCount": 3,
+        "lightCount": 5,
+        "trapCount": 5,
+        "commitValues": 4,
+        "componentBits": {
+          "explorerPosition": 7,
+          "hunterPosition": 7,
+          "sentinelPosition": 7,
+          "committedAccess": 2,
+          "commitTurnsRemaining": 2,
+          "collectedLights": 5,
+          "activeTraps": 5
+        },
+        "conservativeBitSum": 35,
+        "mixedRadixStateCardinality": 8707129344,
+        "maximumPackedKey": 8707129343,
+        "mixedRadixRequiredBits": 34,
+        "numberSafe": true
+      },
+      {
+        "seed": 9710302,
+        "route": 3,
+        "mode": "hard",
+        "boardCells": 81,
+        "accessCount": 3,
+        "lightCount": 6,
+        "trapCount": 6,
+        "commitValues": 4,
+        "componentBits": {
+          "explorerPosition": 7,
+          "hunterPosition": 7,
+          "sentinelPosition": 7,
+          "committedAccess": 2,
+          "commitTurnsRemaining": 2,
+          "collectedLights": 6,
+          "activeTraps": 6
+        },
+        "conservativeBitSum": 37,
+        "mixedRadixStateCardinality": 34828517376,
+        "maximumPackedKey": 34828517375,
+        "mixedRadixRequiredBits": 36,
+        "numberSafe": true
+      }
+    ],
+    "allBoardPositionsTestedPerComponent": true,
+    "allCommitCountersTested": true,
+    "allLightMasksTested": true,
+    "allTrapMasksTested": true,
+    "roundTripMismatches": 0,
+    "falseMerges": 0,
+    "falseSplits": 0,
+    "samples": [],
+    "gateMet": true
+  },
+  "successorSets": {
+    "pairsTested": 6480,
+    "contextsTested": 9,
+    "contextResults": [
+      {
+        "seed": 9720100,
+        "route": 1,
+        "mode": "easy",
+        "reachableStatesSampled": 180,
+        "pairsTested": 720
+      },
+      {
+        "seed": 9720101,
+        "route": 1,
+        "mode": "medium",
+        "reachableStatesSampled": 180,
+        "pairsTested": 720
+      },
+      {
+        "seed": 9720102,
+        "route": 1,
+        "mode": "hard",
+        "reachableStatesSampled": 180,
+        "pairsTested": 720
+      },
+      {
+        "seed": 9720200,
+        "route": 2,
+        "mode": "easy",
+        "reachableStatesSampled": 180,
+        "pairsTested": 720
+      },
+      {
+        "seed": 9720201,
+        "route": 2,
+        "mode": "medium",
+        "reachableStatesSampled": 180,
+        "pairsTested": 720
+      },
+      {
+        "seed": 9720202,
+        "route": 2,
+        "mode": "hard",
+        "reachableStatesSampled": 180,
+        "pairsTested": 720
+      },
+      {
+        "seed": 9720300,
+        "route": 3,
+        "mode": "easy",
+        "reachableStatesSampled": 180,
+        "pairsTested": 720
+      },
+      {
+        "seed": 9720301,
+        "route": 3,
+        "mode": "medium",
+        "reachableStatesSampled": 180,
+        "pairsTested": 720
+      },
+      {
+        "seed": 9720302,
+        "route": 3,
+        "mode": "hard",
+        "reachableStatesSampled": 180,
+        "pairsTested": 720
+      }
+    ],
+    "mismatches": 0,
+    "samples": [],
+    "identityComparedNotOnlyCount": true,
+    "gateMet": true
+  },
+  "attractors": {
+    "statesCompared": 5267,
+    "cases": [
+      {
+        "seed": 9730000,
+        "mode": "easy",
+        "states": 1663,
+        "existentialMismatches": 0,
+        "guaranteedMismatches": 0
+      },
+      {
+        "seed": 9730001,
+        "mode": "medium",
+        "states": 1762,
+        "existentialMismatches": 0,
+        "guaranteedMismatches": 0
+      },
+      {
+        "seed": 9730002,
+        "mode": "hard",
+        "states": 1842,
+        "existentialMismatches": 0,
+        "guaranteedMismatches": 0
+      }
+    ],
+    "existentialMismatches": 0,
+    "guaranteedMismatches": 0,
+    "samples": [],
+    "gateMet": true
+  },
+  "gateMet": true,
+  "serializationMs": 0.09529999999995198,
+  "serializationBytes": 8914
+}

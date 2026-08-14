@@ -19,7 +19,9 @@ import {
   walkableNeighbours,
 } from "./route-runtime-harness.mjs";
 
-const OUT = path.resolve("docs/archive/route-chest-rewards-01");
+const OUT = path.resolve(
+  process.env.ROUTE_VALIDATION_OUT ?? "docs/archive/route-chest-rewards-01",
+);
 fs.mkdirSync(OUT, { recursive: true });
 
 const RT = loadRouteRuntime();
@@ -73,13 +75,9 @@ const overlapReports = [];
  * activation must not INTRODUCE an overlap: every piece returns to the cell it
  * held when the turn began, so whatever was true then is still true.
  *
- * Hunter-and-Sentinel co-occupancy is measured separately and compared against
- * the start of the same turn, because it is a pre-existing property of the
- * engine — `chooseGuardianMove` excludes the portal and armed traps from the
- * Hunter's legal cells, never the Sentinel's — and it is observable in plain
- * play with no Chest, no reward and no broken wall (see the note in the JSON).
- * §38 forbids changing the Hunter's policy here, so this measures the condition
- * instead of hiding it.
+ * Hunter-and-Sentinel co-occupancy is forbidden by the shared defender-phase
+ * contract. A Second Chance may restore only the two distinct cells held at the
+ * beginning of the turn.
  */
 function checkOverlap(game, before, label, extra = {}) {
   const cells = {
@@ -109,7 +107,7 @@ function checkOverlap(game, before, label, extra = {}) {
     ...extra,
   };
   overlapReports.push(report);
-  return explorerClear && !onWall && inBoard && !introducedAnOverlap;
+  return explorerClear && !onWall && inBoard && !defendersShareAfter;
 }
 
 /**
@@ -279,10 +277,10 @@ const saves = [];
         (r) => r.defendersSharedBefore,
       ).length,
       violations: overlapReports.filter(
-        (r) => !r.explorerClear || r.onWall || !r.inBoard || r.introducedAnOverlap,
+        (r) => !r.explorerClear || r.onWall || !r.inBoard || r.defendersShareAfter,
       ),
       proof:
-        "every piece returns to the cell it held when the turn began, so the resolution cannot introduce an overlap that was not already there",
+        "every piece returns to its distinct start-of-turn cell; defender co-occupancy is forbidden",
     },
   );
 }
@@ -396,15 +394,12 @@ fs.writeFileSync(
         "no two pieces ever share a cell after an activation",
         "same state, same capture, same resolution",
       ],
-      preExistingEngineCondition: {
-        id: "HUNTER_MAY_STAND_ON_THE_SENTINEL",
-        introducedByThisMission: false,
+      occupancyContract: {
+        id: "DEFENDER_CO_OCCUPANCY_FORBIDDEN",
         detail:
-          "chooseGuardianMove excludes the portal and armed traps from the Hunter's legal cells, never the Sentinel's, while decideSentinelMove is guarded against the reverse. The two defenders can therefore share a cell.",
-        measuredInPlainPlay:
-          "23 of 1466 turns across 9 combinations x 8 seeds, with no wall broken and no Second Chance involved",
-        whyNotFixedHere:
-          "§38 forbids changing the Hunter's policy in this mission; the Second Chance resolution neither creates nor worsens it, because every piece returns to the cell it already held.",
+          "Hunter destinations exclude the Sentinel's current cell; Sentinel settlement excludes the Hunter's destination.",
+        measuredBy:
+          "ROTA-DYNAMIC-SOLVABILITY-02 broad campaign and this Second Chance regression",
       },
       tests,
       allPass,

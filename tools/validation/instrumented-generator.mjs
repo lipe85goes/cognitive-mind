@@ -31,6 +31,7 @@ export const __diag = {
   buildCandidate, isValidMap, generateMaze, routeCellsHaveEscape, computeObjectiveRoute,
   resolveObjectiveRoute, admissibleRouteCells, escapeGeometryIsPossible,
   computePortalDefenceZone, createSentinelState, decideSentinelMove, chooseGuardianMove,
+  inspectDynamicMazeState,
   decomposeBoardBlocks, sharesBlock, getNeighbors, getReachableDistances, findPathLength,
   findPathCells, chooseStars, getRouteStageTemplates, ROUTE_STAGE_EXIT_CANDIDATES,
   ROUTE_STAGE_QUALITY, ROUTE_STAGE_TEMPLATES, MAX_GENERATION_ATTEMPTS, RECOVERY_ROUNDS,

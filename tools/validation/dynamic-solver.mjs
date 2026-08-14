@@ -55,8 +55,17 @@ export function predatorSupport(hunter, player, walls, difficulty) {
   return neighbours;
 }
 
-export function hunterSupport(hunter, player, exitPosition, walls, difficulty, armed) {
-  const illegal = (cell) => same(cell, exitPosition) || armed.has(kOf(cell));
+export function hunterSupport(
+  hunter,
+  player,
+  exitPosition,
+  walls,
+  difficulty,
+  armed,
+  sentinelPosition = null,
+) {
+  const illegal = (cell) => same(cell, exitPosition) || armed.has(kOf(cell)) ||
+    (sentinelPosition !== null && same(cell, sentinelPosition));
   const support = new Map();
   const add = (cell) => support.set(kOf(cell), cell);
 
@@ -148,7 +157,15 @@ export function successors(ctx, st, action) {
 
   const outcomes = [];
   const seen = new Set();
-  for (const h of hunterSupport(toCell(st.h), next, map.exitPosition, map.walls, difficulty, armed)) {
+  for (const h of hunterSupport(
+    toCell(st.h),
+    next,
+    map.exitPosition,
+    map.walls,
+    difficulty,
+    armed,
+    toCell(st.s),
+  )) {
     if (same(h, next)) { if (!seen.has("LOSS")) { seen.add("LOSS"); outcomes.push({ terminal: "LOSS" }); } continue; }
     const sentinelBefore = {
       position: toCell(st.s),

@@ -69,7 +69,7 @@ function addUnique(target, value) {
   target.push(value);
 }
 
-function hunterSupport(meta, hunter, player, traps, output) {
+function hunterSupport(meta, hunter, player, traps, sentinel, output) {
   output.length = 0;
   const neighbours = meta.baseNeighbours[hunter];
   if (neighbours.length === 0) {
@@ -94,7 +94,10 @@ function hunterSupport(meta, hunter, player, traps, output) {
       }
     }
   }
-  const illegal = (id) => id === meta.exitId || Boolean(meta.trapBitByCell[id] & traps);
+  const illegal = (id) =>
+    id === meta.exitId ||
+    id === sentinel ||
+    Boolean(meta.trapBitByCell[id] & traps);
   let anyIllegal = false;
   for (const next of preferred) {
     if (illegal(next)) anyIllegal = true;
@@ -193,7 +196,7 @@ export function enumeratePackedSuccessors(
     return { hasWin: true, hasLoss: false, stateCount: 0 };
   }
   const hunterOutcomes = [];
-  hunterSupport(meta, state.h, next, traps, hunterOutcomes);
+  hunterSupport(meta, state.h, next, traps, state.s, hunterOutcomes);
   const seen = [];
   let hasLoss = false;
   for (const hunter of hunterOutcomes) {

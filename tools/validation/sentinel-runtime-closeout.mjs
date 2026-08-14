@@ -19,7 +19,9 @@ import path from "node:path";
 import { loadInstrumented } from "./instrumented-generator.mjs";
 import { key, eq, neighbors, bfs, pathLength } from "./route-lab.mjs";
 
-const OUT = path.resolve("docs/archive/route-dual-guardians-maps-01b");
+const OUT = path.resolve(
+  process.env.ROUTE_VALIDATION_OUT ?? "docs/archive/route-dual-guardians-maps-01b",
+);
 fs.mkdirSync(OUT, { recursive: true });
 const LAB = loadInstrumented({ bare: true });
 const API = LAB.API;
@@ -224,7 +226,10 @@ for (const stage of ROUTES) {
           if (hit >= 0) remaining.splice(hit, 1);
           if (!remaining.length && eq(player, map.exitPosition)) { outcomes.won += 1; done = true; break; }
 
-          hunter = API.chooseGuardianMove(hunter, player, map.exitPosition, map.walls, difficulty);
+          hunter = API.chooseGuardianMove(
+            hunter, player, map.exitPosition, map.walls, difficulty,
+            new Set([API.posKey(state.position)]),
+          );
           if (eq(hunter, player)) { outcomes.caughtHunter += 1; done = true; break; }
 
           const before = state;

@@ -25,7 +25,9 @@ import { packedSuccessorSet } from "./dynamic-solver-packed-successors.mjs";
 import { explorePacked } from "./dynamic-solver-packed-graph.mjs";
 import { solvePackedGraph } from "./dynamic-solver-packed-solve.mjs";
 
-const OUT = path.resolve("docs/archive/route-dynamic-solvability-01");
+const OUT = path.resolve(
+  process.env.ROUTE_VALIDATION_OUT ?? "docs/archive/route-dynamic-solvability-01",
+);
 const REPORT_PATH = path.join(OUT, "solver-encoding-equivalence.json");
 const MODES = ["easy", "medium", "hard"];
 const ROUTES = [1, 2, 3];
