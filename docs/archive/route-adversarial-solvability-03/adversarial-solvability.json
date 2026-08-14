@@ -1,0 +1,1130 @@
+{
+  "mission": "ROTA-ADVERSARIAL-SOLVABILITY-03",
+  "generatedAt": "2026-08-14T03:27:13.484Z",
+  "scope": "Exact PRE_CHEST and Second Chance; exact-transition diagnostic search for full Chest runtime",
+  "fullBudget": 1000000,
+  "fullTimeoutMs": 120000,
+  "results": [
+    {
+      "seed": 8801107,
+      "route": 1,
+      "mode": "medium",
+      "initial": {
+        "explorer": "8,0",
+        "hunter": "0,3",
+        "sentinel": "1,7",
+        "portal": "2,7",
+        "chest": "5,1",
+        "lights": [
+          "8,5",
+          "7,4",
+          "5,2",
+          "3,0"
+        ],
+        "traps": [
+          "7,8",
+          "1,2",
+          "1,8"
+        ],
+        "accesses": [
+          "0,6",
+          "4,8"
+        ]
+      },
+      "secondChance": {
+        "exact": true,
+        "states": 608766,
+        "processed": 608766,
+        "transitions": 3932822,
+        "captures": 73680,
+        "terminalLosses": 48426,
+        "exhausted": true,
+        "truncated": false,
+        "possibleWin": false,
+        "witness": null,
+        "elapsedMs": 1493.2703000000001
+      },
+      "fullRuntime": {
+        "exactTransitions": true,
+        "searchOrder": "A_STAR_DIAGNOSTIC",
+        "absenceIsProof": false,
+        "states": 7969,
+        "processed": 3980,
+        "transitions": 33217,
+        "captureBranches": 151,
+        "terminalLosses": 692,
+        "topologyVariants": 19,
+        "budget": 1000000,
+        "timedOut": false,
+        "truncated": false,
+        "possibleWin": true,
+        "witness": [
+          {
+            "action": "MOVE_UP",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "7,0",
+              "hunter": "1,3",
+              "sentinel": "1,7",
+              "sentinelTarget": null,
+              "commitLeft": 0,
+              "lights": 0,
+              "traps": 0,
+              "reward": "PRE_CHEST",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_UP",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "6,0",
+              "hunter": "1,4",
+              "sentinel": "1,7",
+              "sentinelTarget": null,
+              "commitLeft": 0,
+              "lights": 0,
+              "traps": 0,
+              "reward": "PRE_CHEST",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_UP",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "5,0",
+              "hunter": "2,4",
+              "sentinel": "1,7",
+              "sentinelTarget": null,
+              "commitLeft": 0,
+              "lights": 0,
+              "traps": 0,
+              "reward": "PRE_CHEST",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_RIGHT_CHOOSE_PICKAXE",
+            "event": "CHEST_PICKAXE",
+            "state": {
+              "explorer": "5,1",
+              "hunter": "1,4",
+              "sentinel": "1,7",
+              "sentinelTarget": null,
+              "commitLeft": 0,
+              "lights": 0,
+              "traps": 0,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_RIGHT",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "5,2",
+              "hunter": "0,4",
+              "sentinel": "1,7",
+              "sentinelTarget": null,
+              "commitLeft": 0,
+              "lights": 4,
+              "traps": 0,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_LEFT",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "5,1",
+              "hunter": "0,3",
+              "sentinel": "1,7",
+              "sentinelTarget": null,
+              "commitLeft": 0,
+              "lights": 4,
+              "traps": 0,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_LEFT",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "5,0",
+              "hunter": "0,2",
+              "sentinel": "1,7",
+              "sentinelTarget": null,
+              "commitLeft": 0,
+              "lights": 4,
+              "traps": 0,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_UP",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "4,0",
+              "hunter": "1,2",
+              "sentinel": "1,7",
+              "sentinelTarget": null,
+              "commitLeft": 0,
+              "lights": 4,
+              "traps": 0,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_UP",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "3,0",
+              "hunter": "0,2",
+              "sentinel": "1,7",
+              "sentinelTarget": null,
+              "commitLeft": 0,
+              "lights": 12,
+              "traps": 0,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_DOWN",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "4,0",
+              "hunter": "1,2",
+              "sentinel": "1,7",
+              "sentinelTarget": null,
+              "commitLeft": 0,
+              "lights": 12,
+              "traps": 0,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_DOWN",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "5,0",
+              "hunter": "1,3",
+              "sentinel": "1,7",
+              "sentinelTarget": null,
+              "commitLeft": 0,
+              "lights": 12,
+              "traps": 0,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_RIGHT",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "5,1",
+              "hunter": "0,3",
+              "sentinel": "1,7",
+              "sentinelTarget": null,
+              "commitLeft": 0,
+              "lights": 12,
+              "traps": 0,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_RIGHT",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "5,2",
+              "hunter": "1,3",
+              "sentinel": "1,7",
+              "sentinelTarget": null,
+              "commitLeft": 0,
+              "lights": 12,
+              "traps": 0,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_RIGHT",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "5,3",
+              "hunter": "0,3",
+              "sentinel": "1,7",
+              "sentinelTarget": null,
+              "commitLeft": 0,
+              "lights": 12,
+              "traps": 0,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_DOWN",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "6,3",
+              "hunter": "1,3",
+              "sentinel": "1,7",
+              "sentinelTarget": null,
+              "commitLeft": 0,
+              "lights": 12,
+              "traps": 0,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_RIGHT",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "6,4",
+              "hunter": "0,3",
+              "sentinel": "1,7",
+              "sentinelTarget": null,
+              "commitLeft": 0,
+              "lights": 12,
+              "traps": 0,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_DOWN",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "7,4",
+              "hunter": "1,3",
+              "sentinel": "1,7",
+              "sentinelTarget": null,
+              "commitLeft": 0,
+              "lights": 14,
+              "traps": 0,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_DOWN",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "8,4",
+              "hunter": "1,2",
+              "sentinel": "1,7",
+              "sentinelTarget": null,
+              "commitLeft": 0,
+              "lights": 14,
+              "traps": 0,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_RIGHT",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "8,5",
+              "hunter": "0,2",
+              "sentinel": "1,7",
+              "sentinelTarget": null,
+              "commitLeft": 0,
+              "lights": 15,
+              "traps": 0,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_UP",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "7,5",
+              "hunter": "0,3",
+              "sentinel": "1,8",
+              "sentinelTarget": "4,8",
+              "commitLeft": 3,
+              "lights": 15,
+              "traps": 0,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_UP",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "6,5",
+              "hunter": "0,4",
+              "sentinel": "2,8",
+              "sentinelTarget": null,
+              "commitLeft": 0,
+              "lights": 15,
+              "traps": 0,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_LEFT",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "6,4",
+              "hunter": "0,5",
+              "sentinel": "2,8",
+              "sentinelTarget": null,
+              "commitLeft": 0,
+              "lights": 15,
+              "traps": 0,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_LEFT",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "6,3",
+              "hunter": "0,6",
+              "sentinel": "2,8",
+              "sentinelTarget": null,
+              "commitLeft": 0,
+              "lights": 15,
+              "traps": 0,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_UP",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "5,3",
+              "hunter": "0,7",
+              "sentinel": "2,8",
+              "sentinelTarget": null,
+              "commitLeft": 0,
+              "lights": 15,
+              "traps": 0,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_UP",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "4,3",
+              "hunter": "1,7",
+              "sentinel": "2,8",
+              "sentinelTarget": null,
+              "commitLeft": 0,
+              "lights": 15,
+              "traps": 0,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_RIGHT",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "4,4",
+              "hunter": "0,7",
+              "sentinel": "2,8",
+              "sentinelTarget": null,
+              "commitLeft": 0,
+              "lights": 15,
+              "traps": 0,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_RIGHT",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "4,5",
+              "hunter": "1,7",
+              "sentinel": "2,8",
+              "sentinelTarget": null,
+              "commitLeft": 0,
+              "lights": 15,
+              "traps": 0,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_UP",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "3,5",
+              "hunter": "0,7",
+              "sentinel": "1,8",
+              "sentinelTarget": "0,6",
+              "commitLeft": 3,
+              "lights": 15,
+              "traps": 0,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_UP",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "2,5",
+              "hunter": "1,7",
+              "sentinel": "0,8",
+              "sentinelTarget": "0,6",
+              "commitLeft": 2,
+              "lights": 15,
+              "traps": 0,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "BREAK_2,6",
+            "event": "PICKAXE_BREAK",
+            "state": {
+              "explorer": "2,5",
+              "hunter": "1,6",
+              "sentinel": "0,7",
+              "sentinelTarget": "0,6",
+              "commitLeft": 1,
+              "lights": 15,
+              "traps": 0,
+              "reward": "PICKAXE_SPENT",
+              "rewardSpent": true,
+              "brokenWall": "2,6"
+            }
+          },
+          {
+            "action": "MOVE_RIGHT",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "2,6",
+              "hunter": "0,6",
+              "sentinel": "0,7",
+              "sentinelTarget": "0,6",
+              "commitLeft": 0,
+              "lights": 15,
+              "traps": 0,
+              "reward": "PICKAXE_SPENT",
+              "rewardSpent": true,
+              "brokenWall": "2,6"
+            }
+          },
+          {
+            "action": "MOVE_RIGHT",
+            "event": "WIN",
+            "state": "WIN"
+          }
+        ],
+        "elapsedMs": 11789.0147
+      }
+    },
+    {
+      "seed": 8801214,
+      "route": 1,
+      "mode": "hard",
+      "initial": {
+        "explorer": "8,0",
+        "hunter": "0,3",
+        "sentinel": "1,7",
+        "portal": "2,7",
+        "chest": "8,4",
+        "lights": [
+          "8,5",
+          "5,2",
+          "4,1",
+          "7,3",
+          "7,6"
+        ],
+        "traps": [
+          "0,2",
+          "3,2",
+          "2,0",
+          "1,7"
+        ],
+        "accesses": [
+          "0,6",
+          "3,5",
+          "4,8"
+        ]
+      },
+      "secondChance": {
+        "exact": true,
+        "states": 391874,
+        "processed": 391874,
+        "transitions": 1503089,
+        "captures": 66658,
+        "terminalLosses": 36408,
+        "exhausted": true,
+        "truncated": false,
+        "possibleWin": false,
+        "witness": null,
+        "elapsedMs": 999.9054000000015
+      },
+      "fullRuntime": {
+        "exactTransitions": true,
+        "searchOrder": "A_STAR_DIAGNOSTIC",
+        "absenceIsProof": false,
+        "states": 1522,
+        "processed": 628,
+        "transitions": 2772,
+        "captureBranches": 128,
+        "terminalLosses": 330,
+        "topologyVariants": 18,
+        "budget": 1000000,
+        "timedOut": false,
+        "truncated": false,
+        "possibleWin": true,
+        "witness": [
+          {
+            "action": "MOVE_UP",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "7,0",
+              "hunter": "0,2",
+              "sentinel": "1,7",
+              "sentinelTarget": null,
+              "commitLeft": 0,
+              "lights": 0,
+              "traps": 0,
+              "reward": "PRE_CHEST",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_RIGHT",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "7,1",
+              "hunter": "0,1",
+              "sentinel": "1,7",
+              "sentinelTarget": null,
+              "commitLeft": 0,
+              "lights": 0,
+              "traps": 0,
+              "reward": "PRE_CHEST",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_RIGHT",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "7,2",
+              "hunter": "1,1",
+              "sentinel": "1,7",
+              "sentinelTarget": null,
+              "commitLeft": 0,
+              "lights": 0,
+              "traps": 0,
+              "reward": "PRE_CHEST",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_RIGHT",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "7,3",
+              "hunter": "2,1",
+              "sentinel": "1,7",
+              "sentinelTarget": null,
+              "commitLeft": 0,
+              "lights": 8,
+              "traps": 0,
+              "reward": "PRE_CHEST",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_DOWN",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "8,3",
+              "hunter": "2,2",
+              "sentinel": "1,7",
+              "sentinelTarget": null,
+              "commitLeft": 0,
+              "lights": 8,
+              "traps": 0,
+              "reward": "PRE_CHEST",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_RIGHT_CHOOSE_PICKAXE",
+            "event": "CHEST_PICKAXE",
+            "state": {
+              "explorer": "8,4",
+              "hunter": "3,2",
+              "sentinel": "1,7",
+              "sentinelTarget": null,
+              "commitLeft": 0,
+              "lights": 8,
+              "traps": 0,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_RIGHT",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "8,5",
+              "hunter": "4,2",
+              "sentinel": "1,7",
+              "sentinelTarget": null,
+              "commitLeft": 0,
+              "lights": 9,
+              "traps": 0,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_UP",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "7,5",
+              "hunter": "5,2",
+              "sentinel": "1,8",
+              "sentinelTarget": "4,8",
+              "commitLeft": 3,
+              "lights": 9,
+              "traps": 0,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_RIGHT",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "7,6",
+              "hunter": "5,3",
+              "sentinel": "2,8",
+              "sentinelTarget": "4,8",
+              "commitLeft": 2,
+              "lights": 25,
+              "traps": 0,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_DOWN",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "8,6",
+              "hunter": "5,4",
+              "sentinel": "3,8",
+              "sentinelTarget": "4,8",
+              "commitLeft": 1,
+              "lights": 25,
+              "traps": 0,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_LEFT",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "8,5",
+              "hunter": "5,5",
+              "sentinel": "2,8",
+              "sentinelTarget": null,
+              "commitLeft": 0,
+              "lights": 25,
+              "traps": 0,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_LEFT",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "8,4",
+              "hunter": "5,4",
+              "sentinel": "2,8",
+              "sentinelTarget": null,
+              "commitLeft": 0,
+              "lights": 25,
+              "traps": 0,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_LEFT",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "8,3",
+              "hunter": "5,3",
+              "sentinel": "2,8",
+              "sentinelTarget": null,
+              "commitLeft": 0,
+              "lights": 25,
+              "traps": 0,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_UP",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "7,3",
+              "hunter": "5,2",
+              "sentinel": "2,8",
+              "sentinelTarget": null,
+              "commitLeft": 0,
+              "lights": 25,
+              "traps": 0,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_LEFT",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "7,2",
+              "hunter": "4,2",
+              "sentinel": "2,8",
+              "sentinelTarget": null,
+              "commitLeft": 0,
+              "lights": 25,
+              "traps": 0,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_LEFT",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "7,1",
+              "hunter": "4,1",
+              "sentinel": "2,8",
+              "sentinelTarget": null,
+              "commitLeft": 0,
+              "lights": 25,
+              "traps": 0,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_LEFT",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "7,0",
+              "hunter": "4,0",
+              "sentinel": "2,8",
+              "sentinelTarget": null,
+              "commitLeft": 0,
+              "lights": 25,
+              "traps": 0,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_UP",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "6,0",
+              "hunter": "3,0",
+              "sentinel": "2,8",
+              "sentinelTarget": null,
+              "commitLeft": 0,
+              "lights": 25,
+              "traps": 0,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_RIGHT",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "6,1",
+              "hunter": "4,0",
+              "sentinel": "2,8",
+              "sentinelTarget": null,
+              "commitLeft": 0,
+              "lights": 25,
+              "traps": 0,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_UP",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "5,1",
+              "hunter": "4,1",
+              "sentinel": "3,8",
+              "sentinelTarget": "3,5",
+              "commitLeft": 3,
+              "lights": 25,
+              "traps": 0,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_RIGHT",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "5,2",
+              "hunter": "5,1",
+              "sentinel": "3,7",
+              "sentinelTarget": "3,5",
+              "commitLeft": 2,
+              "lights": 27,
+              "traps": 0,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_UP",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "4,2",
+              "hunter": "5,2",
+              "sentinel": "3,6",
+              "sentinelTarget": "3,5",
+              "commitLeft": 1,
+              "lights": 27,
+              "traps": 0,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_LEFT",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "4,1",
+              "hunter": "5,1",
+              "sentinel": "2,6",
+              "sentinelTarget": null,
+              "commitLeft": 0,
+              "lights": 31,
+              "traps": 0,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_RIGHT",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "4,2",
+              "hunter": "4,1",
+              "sentinel": "3,6",
+              "sentinelTarget": "3,5",
+              "commitLeft": 3,
+              "lights": 31,
+              "traps": 0,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_UP",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "3,2",
+              "hunter": "4,2",
+              "sentinel": "2,6",
+              "sentinelTarget": null,
+              "commitLeft": 0,
+              "lights": 31,
+              "traps": 2,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "MOVE_RIGHT",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "3,3",
+              "hunter": "5,2",
+              "sentinel": "1,6",
+              "sentinelTarget": "0,6",
+              "commitLeft": 3,
+              "lights": 31,
+              "traps": 2,
+              "reward": "PICKAXE_READY",
+              "rewardSpent": false,
+              "brokenWall": null
+            }
+          },
+          {
+            "action": "BREAK_3,4",
+            "event": "PICKAXE_BREAK",
+            "state": {
+              "explorer": "3,3",
+              "hunter": "5,3",
+              "sentinel": "0,6",
+              "sentinelTarget": "0,6",
+              "commitLeft": 2,
+              "lights": 31,
+              "traps": 2,
+              "reward": "PICKAXE_SPENT",
+              "rewardSpent": true,
+              "brokenWall": "3,4"
+            }
+          },
+          {
+            "action": "MOVE_RIGHT",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "3,4",
+              "hunter": "5,4",
+              "sentinel": "0,6",
+              "sentinelTarget": "0,6",
+              "commitLeft": 1,
+              "lights": 31,
+              "traps": 2,
+              "reward": "PICKAXE_SPENT",
+              "rewardSpent": true,
+              "brokenWall": "3,4"
+            }
+          },
+          {
+            "action": "MOVE_RIGHT",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "3,5",
+              "hunter": "5,5",
+              "sentinel": "0,6",
+              "sentinelTarget": "0,6",
+              "commitLeft": 0,
+              "lights": 31,
+              "traps": 2,
+              "reward": "PICKAXE_SPENT",
+              "rewardSpent": true,
+              "brokenWall": "3,4"
+            }
+          },
+          {
+            "action": "MOVE_RIGHT",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "3,6",
+              "hunter": "4,5",
+              "sentinel": "1,6",
+              "sentinelTarget": "3,5",
+              "commitLeft": 3,
+              "lights": 31,
+              "traps": 2,
+              "reward": "PICKAXE_SPENT",
+              "rewardSpent": true,
+              "brokenWall": "3,4"
+            }
+          },
+          {
+            "action": "MOVE_RIGHT",
+            "event": "NORMAL",
+            "state": {
+              "explorer": "3,7",
+              "hunter": "3,5",
+              "sentinel": "2,6",
+              "sentinelTarget": "3,5",
+              "commitLeft": 2,
+              "lights": 31,
+              "traps": 2,
+              "reward": "PICKAXE_SPENT",
+              "rewardSpent": true,
+              "brokenWall": "3,4"
+            }
+          },
+          {
+            "action": "MOVE_UP",
+            "event": "WIN",
+            "state": "WIN"
+          }
+        ],
+        "elapsedMs": 1137.0702
+      }
+    }
+  ]
+}

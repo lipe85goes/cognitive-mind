@@ -11,7 +11,10 @@ import fs from "node:fs";
 import path from "node:path";
 import { loadRouteRuntime, cellKey, sameCell } from "./route-runtime-harness.mjs";
 
-const OUT = path.resolve("docs/archive/route-chest-rewards-01");
+const OUT = path.resolve(
+  process.env.ROUTE_VALIDATION_OUTPUT_DIR ??
+    "docs/archive/route-chest-rewards-01",
+);
 fs.mkdirSync(OUT, { recursive: true });
 
 const RT = loadRouteRuntime();

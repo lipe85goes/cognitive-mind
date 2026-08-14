@@ -1,0 +1,1373 @@
+{
+  "mission": "ROTA-ADVERSARIAL-SOLVABILITY-03",
+  "source": "docs\\archive\\route-dynamic-solvability-02a\\hash-1\\suspect-seeds-analysis.json",
+  "casesExpected": 7,
+  "casesAnalyzed": 7,
+  "officialStateLimitVerdictsPreserved": true,
+  "exactPossibleWitnessesValidated": 7,
+  "guaranteedPartialAttractorCandidates": [
+    8801204,
+    8801207
+  ],
+  "fullGraphPriority": [
+    8801014,
+    8801204
+  ],
+  "cases": [
+    {
+      "seed": 8801008,
+      "route": 1,
+      "mode": "easy",
+      "officialVerdict": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "officialVerdictPreserved": true,
+      "states": 1000198,
+      "processedStates": 931328,
+      "transitions": 6556644,
+      "effectiveBranching": 7.0401018760307865,
+      "frontier": 68870,
+      "frontierRatio": 0.068856366439445,
+      "peakFrontier": 81628,
+      "growthBand": "LARGE_OPEN_FRONTIER",
+      "estimatedTotalStates": null,
+      "estimateReason": "An open BFS frontier is a strict lower bound, not a statistically valid estimator of the remaining finite graph.",
+      "exactLowerBounds": {
+        "possibleWin": true,
+        "witnessLength": 21,
+        "witnessValidatedAgainstExactSuccessors": true,
+        "guaranteedAttractorMembershipInPartialGraph": false,
+        "guaranteedReclassificationAllowed": false,
+        "guaranteedReason": "The official truncated verdict remains unchanged until a standalone closed policy certificate or complete graph is validated."
+      },
+      "attractorsInObservedGraph": {
+        "existential": 870420,
+        "guaranteed": 84823
+      },
+      "checkpointResume": {
+        "useful": true,
+        "requiredState": [
+          "packed node arrays and key-to-id index",
+          "processed BFS head and frontier",
+          "action and successor buffers",
+          "shortest-witness parent arrays",
+          "solver version and map/state-contract fingerprints"
+        ],
+        "warning": "A JSON-only frontier is insufficient; deterministic node IDs and typed-array buffers must resume together."
+      },
+      "witnessValidation": {
+        "valid": true,
+        "failure": null,
+        "steps": [
+          {
+            "index": 1,
+            "action": "UP",
+            "target": "7,0|0,2|1,7|-1|0|0|0",
+            "matched": true
+          },
+          {
+            "index": 2,
+            "action": "UP",
+            "target": "6,0|1,2|1,7|-1|0|0|0",
+            "matched": true
+          },
+          {
+            "index": 3,
+            "action": "UP",
+            "target": "5,0|0,2|1,7|-1|0|0|0",
+            "matched": true
+          },
+          {
+            "index": 4,
+            "action": "UP",
+            "target": "4,0|1,2|1,7|1|3|0|0",
+            "matched": true
+          },
+          {
+            "index": 5,
+            "action": "RIGHT",
+            "target": "4,1|0,2|1,7|1|2|1|0",
+            "matched": true
+          },
+          {
+            "index": 6,
+            "action": "DOWN",
+            "target": "5,1|1,2|1,7|1|1|1|0",
+            "matched": true
+          },
+          {
+            "index": 7,
+            "action": "RIGHT",
+            "target": "5,2|0,2|1,7|1|0|1|0",
+            "matched": true
+          },
+          {
+            "index": 8,
+            "action": "DOWN",
+            "target": "6,2|1,2|1,7|1|3|1|0",
+            "matched": true
+          },
+          {
+            "index": 9,
+            "action": "DOWN",
+            "target": "7,2|0,2|1,7|-1|0|1|0",
+            "matched": true
+          },
+          {
+            "index": 10,
+            "action": "RIGHT",
+            "target": "7,3|1,2|1,7|1|3|1|0",
+            "matched": true
+          },
+          {
+            "index": 11,
+            "action": "RIGHT",
+            "target": "7,4|0,2|1,7|1|2|5|0",
+            "matched": true
+          },
+          {
+            "index": 12,
+            "action": "DOWN",
+            "target": "8,4|1,2|1,7|1|1|5|0",
+            "matched": true
+          },
+          {
+            "index": 13,
+            "action": "RIGHT",
+            "target": "8,5|0,2|1,7|1|0|7|0",
+            "matched": true
+          },
+          {
+            "index": 14,
+            "action": "UP",
+            "target": "7,5|1,2|1,7|1|3|7|0",
+            "matched": true
+          },
+          {
+            "index": 15,
+            "action": "UP",
+            "target": "6,5|0,2|1,7|1|2|7|0",
+            "matched": true
+          },
+          {
+            "index": 16,
+            "action": "UP",
+            "target": "5,5|1,2|1,7|1|1|7|0",
+            "matched": true
+          },
+          {
+            "index": 17,
+            "action": "UP",
+            "target": "4,5|0,2|1,7|1|0|7|0",
+            "matched": true
+          },
+          {
+            "index": 18,
+            "action": "UP",
+            "target": "3,5|1,2|1,7|1|3|7|0",
+            "matched": true
+          },
+          {
+            "index": 19,
+            "action": "RIGHT",
+            "target": "3,6|0,2|1,7|1|2|7|0",
+            "matched": true
+          },
+          {
+            "index": 20,
+            "action": "UP",
+            "target": "2,6|1,2|1,7|1|1|7|0",
+            "matched": true
+          },
+          {
+            "index": 21,
+            "action": "RIGHT",
+            "target": "WIN",
+            "matched": true
+          }
+        ]
+      }
+    },
+    {
+      "seed": 8801012,
+      "route": 1,
+      "mode": "easy",
+      "officialVerdict": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "officialVerdictPreserved": true,
+      "states": 1000211,
+      "processedStates": 925184,
+      "transitions": 6861905,
+      "effectiveBranching": 7.4168003337714445,
+      "frontier": 75027,
+      "frontierRatio": 0.07501117264257241,
+      "peakFrontier": 82745,
+      "growthBand": "LARGE_OPEN_FRONTIER",
+      "estimatedTotalStates": null,
+      "estimateReason": "An open BFS frontier is a strict lower bound, not a statistically valid estimator of the remaining finite graph.",
+      "exactLowerBounds": {
+        "possibleWin": true,
+        "witnessLength": 21,
+        "witnessValidatedAgainstExactSuccessors": true,
+        "guaranteedAttractorMembershipInPartialGraph": false,
+        "guaranteedReclassificationAllowed": false,
+        "guaranteedReason": "The official truncated verdict remains unchanged until a standalone closed policy certificate or complete graph is validated."
+      },
+      "attractorsInObservedGraph": {
+        "existential": 828078,
+        "guaranteed": 95461
+      },
+      "checkpointResume": {
+        "useful": true,
+        "requiredState": [
+          "packed node arrays and key-to-id index",
+          "processed BFS head and frontier",
+          "action and successor buffers",
+          "shortest-witness parent arrays",
+          "solver version and map/state-contract fingerprints"
+        ],
+        "warning": "A JSON-only frontier is insufficient; deterministic node IDs and typed-array buffers must resume together."
+      },
+      "witnessValidation": {
+        "valid": true,
+        "failure": null,
+        "steps": [
+          {
+            "index": 1,
+            "action": "UP",
+            "target": "7,0|3,6|1,7|-1|0|0|0",
+            "matched": true
+          },
+          {
+            "index": 2,
+            "action": "UP",
+            "target": "6,0|2,6|1,7|-1|0|0|0",
+            "matched": true
+          },
+          {
+            "index": 3,
+            "action": "UP",
+            "target": "5,0|3,6|1,7|-1|0|0|0",
+            "matched": true
+          },
+          {
+            "index": 4,
+            "action": "UP",
+            "target": "4,0|2,6|1,7|1|3|0|0",
+            "matched": true
+          },
+          {
+            "index": 5,
+            "action": "RIGHT",
+            "target": "4,1|3,6|1,7|1|2|1|0",
+            "matched": true
+          },
+          {
+            "index": 6,
+            "action": "DOWN",
+            "target": "5,1|2,6|1,7|1|1|1|0",
+            "matched": true
+          },
+          {
+            "index": 7,
+            "action": "RIGHT",
+            "target": "5,2|3,6|1,7|1|0|3|0",
+            "matched": true
+          },
+          {
+            "index": 8,
+            "action": "DOWN",
+            "target": "6,2|2,6|1,7|1|3|3|0",
+            "matched": true
+          },
+          {
+            "index": 9,
+            "action": "DOWN",
+            "target": "7,2|3,6|1,7|-1|0|3|0",
+            "matched": true
+          },
+          {
+            "index": 10,
+            "action": "DOWN",
+            "target": "8,2|2,6|1,7|-1|0|3|0",
+            "matched": true
+          },
+          {
+            "index": 11,
+            "action": "RIGHT",
+            "target": "8,3|3,6|1,7|-1|0|3|0",
+            "matched": true
+          },
+          {
+            "index": 12,
+            "action": "RIGHT",
+            "target": "8,4|2,6|1,7|1|3|3|0",
+            "matched": true
+          },
+          {
+            "index": 13,
+            "action": "RIGHT",
+            "target": "8,5|3,6|1,7|1|2|7|0",
+            "matched": true
+          },
+          {
+            "index": 14,
+            "action": "UP",
+            "target": "7,5|2,6|1,7|1|1|7|0",
+            "matched": true
+          },
+          {
+            "index": 15,
+            "action": "UP",
+            "target": "6,5|3,6|1,7|1|0|7|0",
+            "matched": true
+          },
+          {
+            "index": 16,
+            "action": "UP",
+            "target": "5,5|2,6|1,7|1|3|7|0",
+            "matched": true
+          },
+          {
+            "index": 17,
+            "action": "UP",
+            "target": "4,5|3,6|1,7|1|2|7|0",
+            "matched": true
+          },
+          {
+            "index": 18,
+            "action": "UP",
+            "target": "3,5|3,7|1,7|-1|0|7|1",
+            "matched": true
+          },
+          {
+            "index": 19,
+            "action": "RIGHT",
+            "target": "3,6|3,8|1,7|-1|0|7|1",
+            "matched": true
+          },
+          {
+            "index": 20,
+            "action": "UP",
+            "target": "2,6|2,8|1,7|-1|0|7|1",
+            "matched": true
+          },
+          {
+            "index": 21,
+            "action": "RIGHT",
+            "target": "WIN",
+            "matched": true
+          }
+        ]
+      }
+    },
+    {
+      "seed": 8801014,
+      "route": 1,
+      "mode": "easy",
+      "officialVerdict": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "officialVerdictPreserved": true,
+      "states": 1000220,
+      "processedStates": 992768,
+      "transitions": 7108635,
+      "effectiveBranching": 7.160419151302218,
+      "frontier": 7452,
+      "frontierRatio": 0.0074503609205974685,
+      "peakFrontier": 53661,
+      "growthBand": "SMALL_OPEN_FRONTIER_HIGH_COMPLETION_PRIORITY",
+      "estimatedTotalStates": null,
+      "estimateReason": "An open BFS frontier is a strict lower bound, not a statistically valid estimator of the remaining finite graph.",
+      "exactLowerBounds": {
+        "possibleWin": true,
+        "witnessLength": 19,
+        "witnessValidatedAgainstExactSuccessors": true,
+        "guaranteedAttractorMembershipInPartialGraph": false,
+        "guaranteedReclassificationAllowed": false,
+        "guaranteedReason": "The official truncated verdict remains unchanged until a standalone closed policy certificate or complete graph is validated."
+      },
+      "attractorsInObservedGraph": {
+        "existential": 988065,
+        "guaranteed": 109496
+      },
+      "checkpointResume": {
+        "useful": true,
+        "requiredState": [
+          "packed node arrays and key-to-id index",
+          "processed BFS head and frontier",
+          "action and successor buffers",
+          "shortest-witness parent arrays",
+          "solver version and map/state-contract fingerprints"
+        ],
+        "warning": "A JSON-only frontier is insufficient; deterministic node IDs and typed-array buffers must resume together."
+      },
+      "witnessValidation": {
+        "valid": true,
+        "failure": null,
+        "steps": [
+          {
+            "index": 1,
+            "action": "UP",
+            "target": "7,0|0,5|1,7|-1|0|0|0",
+            "matched": true
+          },
+          {
+            "index": 2,
+            "action": "UP",
+            "target": "6,0|1,5|1,7|-1|0|0|0",
+            "matched": true
+          },
+          {
+            "index": 3,
+            "action": "UP",
+            "target": "5,0|0,5|1,7|-1|0|0|0",
+            "matched": true
+          },
+          {
+            "index": 4,
+            "action": "UP",
+            "target": "4,0|1,5|1,7|1|3|0|0",
+            "matched": true
+          },
+          {
+            "index": 5,
+            "action": "RIGHT",
+            "target": "4,1|0,5|1,7|1|2|1|0",
+            "matched": true
+          },
+          {
+            "index": 6,
+            "action": "DOWN",
+            "target": "5,1|1,5|1,7|1|1|1|0",
+            "matched": true
+          },
+          {
+            "index": 7,
+            "action": "RIGHT",
+            "target": "5,2|0,5|1,7|1|0|5|0",
+            "matched": true
+          },
+          {
+            "index": 8,
+            "action": "DOWN",
+            "target": "6,2|1,5|1,7|1|3|5|0",
+            "matched": true
+          },
+          {
+            "index": 9,
+            "action": "DOWN",
+            "target": "7,2|0,5|1,7|-1|0|5|0",
+            "matched": true
+          },
+          {
+            "index": 10,
+            "action": "RIGHT",
+            "target": "7,3|1,5|1,7|1|3|5|0",
+            "matched": true
+          },
+          {
+            "index": 11,
+            "action": "RIGHT",
+            "target": "7,4|0,5|1,7|1|2|7|0",
+            "matched": true
+          },
+          {
+            "index": 12,
+            "action": "RIGHT",
+            "target": "7,5|1,5|1,7|1|1|7|0",
+            "matched": true
+          },
+          {
+            "index": 13,
+            "action": "UP",
+            "target": "6,5|0,5|1,7|1|0|7|0",
+            "matched": true
+          },
+          {
+            "index": 14,
+            "action": "UP",
+            "target": "5,5|1,5|1,7|1|3|7|0",
+            "matched": true
+          },
+          {
+            "index": 15,
+            "action": "UP",
+            "target": "4,5|0,5|1,7|1|2|7|0",
+            "matched": true
+          },
+          {
+            "index": 16,
+            "action": "UP",
+            "target": "3,5|1,5|1,7|1|1|7|0",
+            "matched": true
+          },
+          {
+            "index": 17,
+            "action": "RIGHT",
+            "target": "3,6|0,5|1,7|1|0|7|0",
+            "matched": true
+          },
+          {
+            "index": 18,
+            "action": "UP",
+            "target": "2,6|1,5|1,7|1|3|7|0",
+            "matched": true
+          },
+          {
+            "index": 19,
+            "action": "RIGHT",
+            "target": "WIN",
+            "matched": true
+          }
+        ]
+      }
+    },
+    {
+      "seed": 8801108,
+      "route": 1,
+      "mode": "medium",
+      "officialVerdict": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "officialVerdictPreserved": true,
+      "states": 1000021,
+      "processedStates": 950272,
+      "transitions": 6421805,
+      "effectiveBranching": 6.757859854862608,
+      "frontier": 49749,
+      "frontierRatio": 0.04974795529293885,
+      "peakFrontier": 79188,
+      "growthBand": "MODERATE_OPEN_FRONTIER",
+      "estimatedTotalStates": null,
+      "estimateReason": "An open BFS frontier is a strict lower bound, not a statistically valid estimator of the remaining finite graph.",
+      "exactLowerBounds": {
+        "possibleWin": true,
+        "witnessLength": 28,
+        "witnessValidatedAgainstExactSuccessors": true,
+        "guaranteedAttractorMembershipInPartialGraph": false,
+        "guaranteedReclassificationAllowed": false,
+        "guaranteedReason": "The official truncated verdict remains unchanged until a standalone closed policy certificate or complete graph is validated."
+      },
+      "attractorsInObservedGraph": {
+        "existential": 772416,
+        "guaranteed": 31517
+      },
+      "checkpointResume": {
+        "useful": true,
+        "requiredState": [
+          "packed node arrays and key-to-id index",
+          "processed BFS head and frontier",
+          "action and successor buffers",
+          "shortest-witness parent arrays",
+          "solver version and map/state-contract fingerprints"
+        ],
+        "warning": "A JSON-only frontier is insufficient; deterministic node IDs and typed-array buffers must resume together."
+      },
+      "witnessValidation": {
+        "valid": true,
+        "failure": null,
+        "steps": [
+          {
+            "index": 1,
+            "action": "RIGHT",
+            "target": "8,1|2,7|1,8|-1|0|0|0",
+            "matched": true
+          },
+          {
+            "index": 2,
+            "action": "RIGHT",
+            "target": "8,2|1,7|1,8|-1|0|0|0",
+            "matched": true
+          },
+          {
+            "index": 3,
+            "action": "RIGHT",
+            "target": "8,3|0,7|1,8|-1|0|0|0",
+            "matched": true
+          },
+          {
+            "index": 4,
+            "action": "RIGHT",
+            "target": "8,4|1,7|1,8|-1|0|0|0",
+            "matched": true
+          },
+          {
+            "index": 5,
+            "action": "RIGHT",
+            "target": "8,5|0,7|1,8|2|3|1|0",
+            "matched": true
+          },
+          {
+            "index": 6,
+            "action": "UP",
+            "target": "7,5|1,7|1,8|2|2|1|0",
+            "matched": true
+          },
+          {
+            "index": 7,
+            "action": "LEFT",
+            "target": "7,4|0,7|1,8|2|1|3|0",
+            "matched": true
+          },
+          {
+            "index": 8,
+            "action": "UP",
+            "target": "6,4|1,7|1,8|-1|0|3|0",
+            "matched": true
+          },
+          {
+            "index": 9,
+            "action": "LEFT",
+            "target": "6,3|0,7|1,7|3|3|3|0",
+            "matched": true
+          },
+          {
+            "index": 10,
+            "action": "UP",
+            "target": "5,3|0,6|2,7|3|2|3|0",
+            "matched": true
+          },
+          {
+            "index": 11,
+            "action": "LEFT",
+            "target": "5,2|1,6|2,6|3|1|11|0",
+            "matched": true
+          },
+          {
+            "index": 12,
+            "action": "LEFT",
+            "target": "5,1|0,6|2,7|-1|0|11|0",
+            "matched": true
+          },
+          {
+            "index": 13,
+            "action": "LEFT",
+            "target": "5,0|1,6|2,7|-1|0|11|0",
+            "matched": true
+          },
+          {
+            "index": 14,
+            "action": "UP",
+            "target": "4,0|0,6|2,7|-1|0|11|0",
+            "matched": true
+          },
+          {
+            "index": 15,
+            "action": "UP",
+            "target": "3,0|1,6|2,7|-1|0|15|0",
+            "matched": true
+          },
+          {
+            "index": 16,
+            "action": "UP",
+            "target": "2,0|0,6|2,7|-1|0|15|0",
+            "matched": true
+          },
+          {
+            "index": 17,
+            "action": "UP",
+            "target": "1,0|1,6|2,6|3|3|15|0",
+            "matched": true
+          },
+          {
+            "index": 18,
+            "action": "UP",
+            "target": "0,0|0,6|2,7|-1|0|15|0",
+            "matched": true
+          },
+          {
+            "index": 19,
+            "action": "RIGHT",
+            "target": "0,1|1,6|1,7|0|3|15|0",
+            "matched": true
+          },
+          {
+            "index": 20,
+            "action": "DOWN",
+            "target": "1,1|0,6|0,7|0|2|15|0",
+            "matched": true
+          },
+          {
+            "index": 21,
+            "action": "RIGHT",
+            "target": "1,2|1,6|0,7|0|1|15|0",
+            "matched": true
+          },
+          {
+            "index": 22,
+            "action": "RIGHT",
+            "target": "1,3|0,6|0,7|0|0|15|0",
+            "matched": true
+          },
+          {
+            "index": 23,
+            "action": "RIGHT",
+            "target": "1,4|1,6|1,7|3|3|15|0",
+            "matched": true
+          },
+          {
+            "index": 24,
+            "action": "DOWN",
+            "target": "2,4|0,6|2,7|3|2|15|0",
+            "matched": true
+          },
+          {
+            "index": 25,
+            "action": "RIGHT",
+            "target": "2,5|1,6|2,7|-1|0|15|2",
+            "matched": true
+          },
+          {
+            "index": 26,
+            "action": "RIGHT",
+            "target": "2,6|0,6|1,7|1|3|15|2",
+            "matched": true
+          },
+          {
+            "index": 27,
+            "action": "RIGHT",
+            "target": "2,7|1,6|1,7|1|2|15|2",
+            "matched": true
+          },
+          {
+            "index": 28,
+            "action": "RIGHT",
+            "target": "WIN",
+            "matched": true
+          }
+        ]
+      }
+    },
+    {
+      "seed": 8801110,
+      "route": 1,
+      "mode": "medium",
+      "officialVerdict": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "officialVerdictPreserved": true,
+      "states": 1000302,
+      "processedStates": 946688,
+      "transitions": 6086814,
+      "effectiveBranching": 6.429588206462953,
+      "frontier": 53614,
+      "frontierRatio": 0.05359781346033498,
+      "peakFrontier": 69617,
+      "growthBand": "MODERATE_OPEN_FRONTIER",
+      "estimatedTotalStates": null,
+      "estimateReason": "An open BFS frontier is a strict lower bound, not a statistically valid estimator of the remaining finite graph.",
+      "exactLowerBounds": {
+        "possibleWin": true,
+        "witnessLength": 30,
+        "witnessValidatedAgainstExactSuccessors": true,
+        "guaranteedAttractorMembershipInPartialGraph": false,
+        "guaranteedReclassificationAllowed": false,
+        "guaranteedReason": "The official truncated verdict remains unchanged until a standalone closed policy certificate or complete graph is validated."
+      },
+      "attractorsInObservedGraph": {
+        "existential": 842799,
+        "guaranteed": 16251
+      },
+      "checkpointResume": {
+        "useful": true,
+        "requiredState": [
+          "packed node arrays and key-to-id index",
+          "processed BFS head and frontier",
+          "action and successor buffers",
+          "shortest-witness parent arrays",
+          "solver version and map/state-contract fingerprints"
+        ],
+        "warning": "A JSON-only frontier is insufficient; deterministic node IDs and typed-array buffers must resume together."
+      },
+      "witnessValidation": {
+        "valid": true,
+        "failure": null,
+        "steps": [
+          {
+            "index": 1,
+            "action": "RIGHT",
+            "target": "8,1|1,4|3,8|-1|0|0|0",
+            "matched": true
+          },
+          {
+            "index": 2,
+            "action": "RIGHT",
+            "target": "8,2|0,4|3,8|-1|0|0|0",
+            "matched": true
+          },
+          {
+            "index": 3,
+            "action": "RIGHT",
+            "target": "8,3|1,4|3,8|-1|0|0|0",
+            "matched": true
+          },
+          {
+            "index": 4,
+            "action": "RIGHT",
+            "target": "8,4|0,4|3,8|-1|0|0|0",
+            "matched": true
+          },
+          {
+            "index": 5,
+            "action": "RIGHT",
+            "target": "8,5|1,4|4,8|0|3|1|0",
+            "matched": true
+          },
+          {
+            "index": 6,
+            "action": "UP",
+            "target": "7,5|0,4|5,8|0|2|1|0",
+            "matched": true
+          },
+          {
+            "index": 7,
+            "action": "LEFT",
+            "target": "7,4|1,4|5,8|0|1|5|0",
+            "matched": true
+          },
+          {
+            "index": 8,
+            "action": "UP",
+            "target": "6,4|0,4|4,8|-1|0|5|0",
+            "matched": true
+          },
+          {
+            "index": 9,
+            "action": "UP",
+            "target": "5,4|1,4|3,8|-1|0|5|0",
+            "matched": true
+          },
+          {
+            "index": 10,
+            "action": "UP",
+            "target": "4,4|0,4|3,8|-1|0|5|0",
+            "matched": true
+          },
+          {
+            "index": 11,
+            "action": "LEFT",
+            "target": "4,3|1,4|3,8|-1|0|5|0",
+            "matched": true
+          },
+          {
+            "index": 12,
+            "action": "LEFT",
+            "target": "4,2|0,4|3,8|-1|0|5|0",
+            "matched": true
+          },
+          {
+            "index": 13,
+            "action": "DOWN",
+            "target": "5,2|1,4|3,8|-1|0|13|0",
+            "matched": true
+          },
+          {
+            "index": 14,
+            "action": "LEFT",
+            "target": "5,1|0,4|3,8|-1|0|13|0",
+            "matched": true
+          },
+          {
+            "index": 15,
+            "action": "LEFT",
+            "target": "5,0|1,4|3,8|-1|0|13|0",
+            "matched": true
+          },
+          {
+            "index": 16,
+            "action": "UP",
+            "target": "4,0|0,4|3,8|-1|0|13|0",
+            "matched": true
+          },
+          {
+            "index": 17,
+            "action": "UP",
+            "target": "3,0|1,4|3,8|-1|0|15|0",
+            "matched": true
+          },
+          {
+            "index": 18,
+            "action": "UP",
+            "target": "2,0|0,4|3,8|-1|0|15|0",
+            "matched": true
+          },
+          {
+            "index": 19,
+            "action": "UP",
+            "target": "1,0|1,4|3,8|-1|0|15|1",
+            "matched": true
+          },
+          {
+            "index": 20,
+            "action": "RIGHT",
+            "target": "1,1|0,4|3,8|-1|0|15|1",
+            "matched": true
+          },
+          {
+            "index": 21,
+            "action": "RIGHT",
+            "target": "1,2|1,4|3,7|1|3|15|1",
+            "matched": true
+          },
+          {
+            "index": 22,
+            "action": "UP",
+            "target": "0,2|0,4|2,7|1|2|15|1",
+            "matched": true
+          },
+          {
+            "index": 23,
+            "action": "RIGHT",
+            "target": "0,3|1,4|1,7|1|1|15|5",
+            "matched": true
+          },
+          {
+            "index": 24,
+            "action": "RIGHT",
+            "target": "0,4|2,4|0,7|1|0|15|5",
+            "matched": true
+          },
+          {
+            "index": 25,
+            "action": "RIGHT",
+            "target": "0,5|1,4|0,7|1|3|15|5",
+            "matched": true
+          },
+          {
+            "index": 26,
+            "action": "RIGHT",
+            "target": "0,6|0,4|0,7|1|2|15|5",
+            "matched": true
+          },
+          {
+            "index": 27,
+            "action": "DOWN",
+            "target": "1,6|1,4|0,7|1|1|15|5",
+            "matched": true
+          },
+          {
+            "index": 28,
+            "action": "RIGHT",
+            "target": "1,7|0,4|0,7|1|0|15|5",
+            "matched": true
+          },
+          {
+            "index": 29,
+            "action": "DOWN",
+            "target": "2,7|1,4|0,7|1|3|15|5",
+            "matched": true
+          },
+          {
+            "index": 30,
+            "action": "RIGHT",
+            "target": "WIN",
+            "matched": true
+          }
+        ]
+      }
+    },
+    {
+      "seed": 8801204,
+      "route": 1,
+      "mode": "hard",
+      "officialVerdict": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "officialVerdictPreserved": true,
+      "states": 1000210,
+      "processedStates": 996864,
+      "transitions": 3715463,
+      "effectiveBranching": 3.72715134662301,
+      "frontier": 3346,
+      "frontierRatio": 0.003345297487527619,
+      "peakFrontier": 20446,
+      "growthBand": "SMALL_OPEN_FRONTIER_HIGH_COMPLETION_PRIORITY",
+      "estimatedTotalStates": null,
+      "estimateReason": "An open BFS frontier is a strict lower bound, not a statistically valid estimator of the remaining finite graph.",
+      "exactLowerBounds": {
+        "possibleWin": true,
+        "witnessLength": 31,
+        "witnessValidatedAgainstExactSuccessors": true,
+        "guaranteedAttractorMembershipInPartialGraph": true,
+        "guaranteedReclassificationAllowed": false,
+        "guaranteedReason": "The official truncated verdict remains unchanged until a standalone closed policy certificate or complete graph is validated."
+      },
+      "attractorsInObservedGraph": {
+        "existential": 985820,
+        "guaranteed": 605296
+      },
+      "checkpointResume": {
+        "useful": true,
+        "requiredState": [
+          "packed node arrays and key-to-id index",
+          "processed BFS head and frontier",
+          "action and successor buffers",
+          "shortest-witness parent arrays",
+          "solver version and map/state-contract fingerprints"
+        ],
+        "warning": "A JSON-only frontier is insufficient; deterministic node IDs and typed-array buffers must resume together."
+      },
+      "witnessValidation": {
+        "valid": true,
+        "failure": null,
+        "steps": [
+          {
+            "index": 1,
+            "action": "RIGHT",
+            "target": "8,1|0,2|1,7|-1|0|0|0",
+            "matched": true
+          },
+          {
+            "index": 2,
+            "action": "RIGHT",
+            "target": "8,2|1,2|1,7|-1|0|0|0",
+            "matched": true
+          },
+          {
+            "index": 3,
+            "action": "RIGHT",
+            "target": "8,3|2,2|1,7|-1|0|0|0",
+            "matched": true
+          },
+          {
+            "index": 4,
+            "action": "RIGHT",
+            "target": "8,4|3,2|1,7|-1|0|0|0",
+            "matched": true
+          },
+          {
+            "index": 5,
+            "action": "RIGHT",
+            "target": "8,5|3,3|1,7|-1|0|1|0",
+            "matched": true
+          },
+          {
+            "index": 6,
+            "action": "RIGHT",
+            "target": "8,6|3,2|1,8|2|3|1|0",
+            "matched": true
+          },
+          {
+            "index": 7,
+            "action": "RIGHT",
+            "target": "8,7|3,3|2,8|2|2|17|0",
+            "matched": true
+          },
+          {
+            "index": 8,
+            "action": "UP",
+            "target": "7,7|3,2|3,8|2|1|17|0",
+            "matched": true
+          },
+          {
+            "index": 9,
+            "action": "LEFT",
+            "target": "7,6|3,3|4,8|2|0|25|0",
+            "matched": true
+          },
+          {
+            "index": 10,
+            "action": "UP",
+            "target": "6,6|3,2|4,8|2|3|25|0",
+            "matched": true
+          },
+          {
+            "index": 11,
+            "action": "LEFT",
+            "target": "6,5|3,3|4,8|2|2|25|0",
+            "matched": true
+          },
+          {
+            "index": 12,
+            "action": "UP",
+            "target": "5,5|3,2|4,8|2|1|25|0",
+            "matched": true
+          },
+          {
+            "index": 13,
+            "action": "LEFT",
+            "target": "5,4|3,3|3,8|-1|0|25|0",
+            "matched": true
+          },
+          {
+            "index": 14,
+            "action": "LEFT",
+            "target": "5,3|3,2|2,8|-1|0|25|0",
+            "matched": true
+          },
+          {
+            "index": 15,
+            "action": "LEFT",
+            "target": "5,2|4,2|2,8|-1|0|29|0",
+            "matched": true
+          },
+          {
+            "index": 16,
+            "action": "LEFT",
+            "target": "5,1|5,2|2,8|-1|0|29|0",
+            "matched": true
+          },
+          {
+            "index": 17,
+            "action": "UP",
+            "target": "4,1|5,1|2,8|-1|0|31|0",
+            "matched": true
+          },
+          {
+            "index": 18,
+            "action": "RIGHT",
+            "target": "4,2|4,1|2,8|-1|0|31|0",
+            "matched": true
+          },
+          {
+            "index": 19,
+            "action": "UP",
+            "target": "3,2|4,2|2,8|-1|0|31|2",
+            "matched": true
+          },
+          {
+            "index": 20,
+            "action": "UP",
+            "target": "2,2|5,2|1,8|0|3|31|2",
+            "matched": true
+          },
+          {
+            "index": 21,
+            "action": "UP",
+            "target": "1,2|4,2|0,8|0|2|31|2",
+            "matched": true
+          },
+          {
+            "index": 22,
+            "action": "UP",
+            "target": "0,2|5,2|0,7|0|1|31|3",
+            "matched": true
+          },
+          {
+            "index": 23,
+            "action": "RIGHT",
+            "target": "0,3|4,2|0,6|0|0|31|3",
+            "matched": true
+          },
+          {
+            "index": 24,
+            "action": "RIGHT",
+            "target": "0,4|5,2|0,6|0|3|31|3",
+            "matched": true
+          },
+          {
+            "index": 25,
+            "action": "DOWN",
+            "target": "1,4|4,2|0,6|0|2|31|3",
+            "matched": true
+          },
+          {
+            "index": 26,
+            "action": "DOWN",
+            "target": "2,4|5,2|0,6|0|1|31|3",
+            "matched": true
+          },
+          {
+            "index": 27,
+            "action": "RIGHT",
+            "target": "2,5|4,2|0,6|0|0|31|3",
+            "matched": true
+          },
+          {
+            "index": 28,
+            "action": "DOWN",
+            "target": "3,5|5,2|1,6|1|3|31|3",
+            "matched": true
+          },
+          {
+            "index": 29,
+            "action": "RIGHT",
+            "target": "3,6|4,2|1,7|1|2|31|3",
+            "matched": true
+          },
+          {
+            "index": 30,
+            "action": "RIGHT",
+            "target": "3,7|5,2|0,7|1|1|31|11",
+            "matched": true
+          },
+          {
+            "index": 31,
+            "action": "UP",
+            "target": "WIN",
+            "matched": true
+          }
+        ]
+      }
+    },
+    {
+      "seed": 8801207,
+      "route": 1,
+      "mode": "hard",
+      "officialVerdict": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "officialVerdictPreserved": true,
+      "states": 1000179,
+      "processedStates": 897536,
+      "transitions": 3167611,
+      "effectiveBranching": 3.529230025313748,
+      "frontier": 102643,
+      "frontierRatio": 0.10262463019119578,
+      "peakFrontier": 107986,
+      "growthBand": "LARGE_OPEN_FRONTIER",
+      "estimatedTotalStates": null,
+      "estimateReason": "An open BFS frontier is a strict lower bound, not a statistically valid estimator of the remaining finite graph.",
+      "exactLowerBounds": {
+        "possibleWin": true,
+        "witnessLength": 22,
+        "witnessValidatedAgainstExactSuccessors": true,
+        "guaranteedAttractorMembershipInPartialGraph": true,
+        "guaranteedReclassificationAllowed": false,
+        "guaranteedReason": "The official truncated verdict remains unchanged until a standalone closed policy certificate or complete graph is validated."
+      },
+      "attractorsInObservedGraph": {
+        "existential": 533048,
+        "guaranteed": 501124
+      },
+      "checkpointResume": {
+        "useful": true,
+        "requiredState": [
+          "packed node arrays and key-to-id index",
+          "processed BFS head and frontier",
+          "action and successor buffers",
+          "shortest-witness parent arrays",
+          "solver version and map/state-contract fingerprints"
+        ],
+        "warning": "A JSON-only frontier is insufficient; deterministic node IDs and typed-array buffers must resume together."
+      },
+      "witnessValidation": {
+        "valid": true,
+        "failure": null,
+        "steps": [
+          {
+            "index": 1,
+            "action": "UP",
+            "target": "7,0|0,2|1,8|-1|0|0|0",
+            "matched": true
+          },
+          {
+            "index": 2,
+            "action": "UP",
+            "target": "6,0|0,1|1,8|-1|0|0|0",
+            "matched": true
+          },
+          {
+            "index": 3,
+            "action": "RIGHT",
+            "target": "6,1|1,1|1,8|-1|0|16|0",
+            "matched": true
+          },
+          {
+            "index": 4,
+            "action": "UP",
+            "target": "5,1|2,1|1,8|-1|0|16|0",
+            "matched": true
+          },
+          {
+            "index": 5,
+            "action": "RIGHT",
+            "target": "5,2|2,2|1,7|3|3|18|0",
+            "matched": true
+          },
+          {
+            "index": 6,
+            "action": "LEFT",
+            "target": "5,1|3,2|1,8|-1|0|18|0",
+            "matched": true
+          },
+          {
+            "index": 7,
+            "action": "DOWN",
+            "target": "6,1|4,2|1,8|-1|0|18|0",
+            "matched": true
+          },
+          {
+            "index": 8,
+            "action": "DOWN",
+            "target": "7,1|5,2|1,8|-1|0|18|0",
+            "matched": true
+          },
+          {
+            "index": 9,
+            "action": "RIGHT",
+            "target": "7,2|4,2|1,8|-1|0|18|0",
+            "matched": true
+          },
+          {
+            "index": 10,
+            "action": "RIGHT",
+            "target": "7,3|5,2|1,8|-1|0|22|0",
+            "matched": true
+          },
+          {
+            "index": 11,
+            "action": "DOWN",
+            "target": "8,3|5,3|1,8|-1|0|22|0",
+            "matched": true
+          },
+          {
+            "index": 12,
+            "action": "RIGHT",
+            "target": "8,4|5,4|1,8|-1|0|22|0",
+            "matched": true
+          },
+          {
+            "index": 13,
+            "action": "RIGHT",
+            "target": "8,5|5,5|1,8|2|3|23|0",
+            "matched": true
+          },
+          {
+            "index": 14,
+            "action": "UP",
+            "target": "7,5|6,5|1,8|2|2|23|0",
+            "matched": true
+          },
+          {
+            "index": 15,
+            "action": "RIGHT",
+            "target": "7,6|7,5|1,8|2|1|31|0",
+            "matched": true
+          },
+          {
+            "index": 16,
+            "action": "UP",
+            "target": "6,6|6,5|1,8|2|0|31|0",
+            "matched": true
+          },
+          {
+            "index": 17,
+            "action": "RIGHT",
+            "target": "6,7|6,6|1,8|2|3|31|0",
+            "matched": true
+          },
+          {
+            "index": 18,
+            "action": "UP",
+            "target": "5,7|6,7|1,8|2|2|31|0",
+            "matched": true
+          },
+          {
+            "index": 19,
+            "action": "RIGHT",
+            "target": "5,8|5,7|1,8|2|1|31|0",
+            "matched": true
+          },
+          {
+            "index": 20,
+            "action": "UP",
+            "target": "4,8|5,8|1,8|2|0|31|0",
+            "matched": true
+          },
+          {
+            "index": 21,
+            "action": "UP",
+            "target": "3,8|4,8|1,7|2|3|31|4",
+            "matched": true
+          },
+          {
+            "index": 22,
+            "action": "UP",
+            "target": "WIN",
+            "matched": true
+          }
+        ]
+      }
+    }
+  ],
+  "gateMet": true
+}

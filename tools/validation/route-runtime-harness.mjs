@@ -90,10 +90,49 @@ function createReactShim() {
  * One loaded copy of the hook module, plus a factory for independent runs.
  * Loading is not cheap (TypeScript in a vm), so a suite loads once and mounts
  * many routes.
+ *
+ * `directDifficulty` is diagnostic-only. Production renders an initial easy
+ * map before the user can select medium/hard, while exact validation seeds are
+ * defined as direct `generateMaze(difficulty, route)` calls. The option aligns
+ * those two generation regimes inside the sandbox without changing production
+ * or the default harness path.
  */
-export function loadRouteRuntime() {
+export function loadRouteRuntime({ directDifficulty = false } = {}) {
   const react = createReactShim();
-  const LAB = loadInstrumented({ bare: true, react: react.shim });
+  const directDifficultyTransform = directDifficulty
+    ? (source) => {
+        const difficultyState =
+          'const [difficulty, setDifficulty] = useState<DifficultyLevel>("easy");';
+        const initialMap = 'generateMaze("easy", normalizedInitialRouteNumber),';
+        if (!source.includes(difficultyState) || !source.includes(initialMap)) {
+          throw new Error("directDifficulty transform: production hook shape changed");
+        }
+        const diagnosticDifficulty =
+          '(globalThis as { __routeHarnessDifficulty?: DifficultyLevel })' +
+          '.__routeHarnessDifficulty ?? "easy"';
+        const startGame =
+          /  const startGame = \(\) => \{\r?\n    startNewMaze\(difficulty, "playing"\);\r?\n  \};/;
+        const diagnosticStartGame = `  const startGame = () => {
+    setStatus("playing");
+  };`;
+        if (!startGame.test(source)) {
+          throw new Error("directDifficulty transform: startGame shape changed");
+        }
+        return source
+          .replace(
+            difficultyState,
+            `const [difficulty, setDifficulty] = useState<DifficultyLevel>(${diagnosticDifficulty});`,
+          )
+          .replace(
+            initialMap,
+            `generateMaze(${diagnosticDifficulty}, normalizedInitialRouteNumber),`,
+          )
+          .replace(startGame, diagnosticStartGame);
+      }
+    : undefined;
+  const LAB = loadInstrumented({
+    bare: true, react: react.shim, transform: directDifficultyTransform,
+  });
   const useEscapeMaze = LAB.exports.useEscapeMaze;
   if (typeof useEscapeMaze !== "function") {
     throw new Error("useEscapeMaze is not exported: the hook's shape changed.");
@@ -109,6 +148,7 @@ export function loadRouteRuntime() {
    */
   function mount({ seed, difficulty = "easy", routeNumber = 1 }) {
     LAB.setSeed(seed);
+    if (directDifficulty) LAB.sb.__routeHarnessDifficulty = difficulty;
 
     const store = react.createStore();
     const completions = [];
@@ -140,7 +180,7 @@ export function loadRouteRuntime() {
       return game;
     };
 
-    if (difficulty !== "easy") act((g) => g.changeDifficulty(difficulty));
+    if (!directDifficulty && difficulty !== "easy") act((g) => g.changeDifficulty(difficulty));
     act((g) => g.startGame());
 
     return {

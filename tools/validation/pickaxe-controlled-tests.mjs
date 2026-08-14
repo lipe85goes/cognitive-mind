@@ -27,7 +27,10 @@ import {
 } from "./route-runtime-harness.mjs";
 import { auditBreakableWalls } from "./breakable-wall-certifier.mjs";
 
-const OUT = path.resolve("docs/archive/route-chest-rewards-01");
+const OUT = path.resolve(
+  process.env.ROUTE_VALIDATION_OUTPUT_DIR ??
+    "docs/archive/route-chest-rewards-01",
+);
 fs.mkdirSync(OUT, { recursive: true });
 
 const RT = loadRouteRuntime();

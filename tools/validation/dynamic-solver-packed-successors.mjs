@@ -181,13 +181,16 @@ export function enumeratePackedSuccessors(
   canonicalOrNumericState,
   actionIndex,
   emit,
-  { activateTraps = true, profile = null } = {},
+  { activateTraps = true, profile = null, onCapture = null } = {},
 ) {
   const meta = preparePackedContext(ctx);
   const state = canonicalToNumeric(canonicalOrNumericState);
   const next = meta.moveTarget[state.e * ACTIONS.length + actionIndex];
   if (next < 0) return null;
   if (next === state.h || next === state.s) {
+    onCapture?.({
+      kind: "EXPLORER", next, lights: state.lights, traps: state.traps,
+    });
     return { hasWin: false, hasLoss: true, stateCount: 0 };
   }
   const lights = state.lights | meta.lightBitByCell[next];
@@ -201,12 +204,14 @@ export function enumeratePackedSuccessors(
   let hasLoss = false;
   for (const hunter of hunterOutcomes) {
     if (hunter === next) {
+      onCapture?.({ kind: "HUNTER", next, lights, traps });
       hasLoss = true;
       continue;
     }
     const sentinel = sentinelMove(meta, state.s, state.t, state.c, next, traps);
     const settledSentinel = sentinel.s === hunter && sentinel.s !== state.s ? state.s : sentinel.s;
     if (settledSentinel === next) {
+      onCapture?.({ kind: "SENTINEL", next, lights, traps });
       hasLoss = true;
       continue;
     }
