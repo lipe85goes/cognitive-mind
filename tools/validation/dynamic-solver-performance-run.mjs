@@ -16,7 +16,9 @@ import { explorePacked } from "./dynamic-solver-packed-graph.mjs";
 import { solvePackedGraph } from "./dynamic-solver-packed-solve.mjs";
 import { analyzePackedScc } from "./dynamic-solver-packed-scc.mjs";
 
-const OUT = path.resolve("docs/archive/route-dynamic-solvability-01");
+const OUT = path.resolve(
+  process.env.ROUTE_VALIDATION_OUT ?? "docs/archive/route-dynamic-solvability-01",
+);
 const TARGET = path.join(OUT, "solver-performance.json");
 const REFERENCE_BUDGET = Number(process.argv.includes("--reference-budget")
   ? process.argv[process.argv.indexOf("--reference-budget") + 1]
@@ -57,6 +59,7 @@ function profiledSuccessors(ctx, state, action, profile) {
   const seen = new Set();
   for (const hunter of hunterSupport(
     toCell(state.h), next, map.exitPosition, map.walls, difficulty, armed,
+    toCell(state.s),
   )) {
     if (same(hunter, next)) {
       if (!seen.has("LOSS")) {

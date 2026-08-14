@@ -1,0 +1,11 @@
+{
+  "mission": "ROTA-DYNAMIC-SOLVABILITY-01",
+  "PRE_CHEST_BASELINE": true,
+  "claim": "SOUNDNESS: every outcome the runtime produces is inside SUCCESSORS. Sampling cannot prove COMPLETENESS; that is argued from the branch structure in rng-support-contract.md.",
+  "transitionsObserved": 32880,
+  "outsideSupport": 0,
+  "branchesEnumerated": 1242,
+  "branchesObservedAtLeastOnce": 1241,
+  "outsideSamples": [],
+  "gateMet": true
+}

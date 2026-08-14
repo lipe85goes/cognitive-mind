@@ -1,0 +1,623 @@
+{
+  "mission": "ROTA-DYNAMIC-SOLVABILITY-01",
+  "PRE_CHEST_BASELINE": true,
+  "source": "docs/archive/route-traps-strategy-01/trap-runtime-gameplay.json potentialLocks",
+  "note": "The archived records hold seed/route/mode but not the full suspicious state, so every case is reconstructed from the seed and analysed from the INITIAL state. Suspicious-state analysis needs a capture the traps mission did not store.",
+  "budget": 5000,
+  "runner": "PACKED_EXACT",
+  "casesCompleted": 12,
+  "totalRuntimeMs": 2710.5103,
+  "verdictCounts": {
+    "INCONCLUSIVE_RESOURCE_LIMIT": 12
+  },
+  "cases": [
+    {
+      "seed": 8801008,
+      "route": 1,
+      "mode": "easy",
+      "portal": "2,7",
+      "accesses": [
+        "0,6",
+        "3,5",
+        "4,8"
+      ],
+      "archivedClassification": "POTENTIAL_SENTINEL_OSCILLATION_LOCK",
+      "archivedAlternatingBetween": [
+        "home",
+        "3,5"
+      ],
+      "archivedActiveTraps": [],
+      "archivedLightsLeft": 0,
+      "RECONSTRUCTED_FROM_SEED": true,
+      "suspiciousStateArchived": false,
+      "initialExistential": false,
+      "initialGuaranteed": false,
+      "verdict": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "statesExplored": 5067,
+      "processedStates": 3072,
+      "transitions": 22405,
+      "truncated": true,
+      "resourceLimit": "STATE_LIMIT",
+      "frontier": 1995,
+      "peakFrontier": 1995,
+      "reachableNonWinning": 5067,
+      "reachableWinning": 0,
+      "existentialAttractorStates": 0,
+      "guaranteedAttractorStates": 0,
+      "shortestExistentialWin": null,
+      "shortestExistentialWitness": null,
+      "graphElapsedMs": 52.97159999999985,
+      "solveProfile": {
+        "predecessorBuildMs": 3.853900000000067,
+        "existentialMs": 0.3393999999998414,
+        "guaranteedMs": 0.8883000000005268,
+        "totalMs": 5.229800000000068
+      },
+      "memory": {
+        "typedArrayBytes": 601296,
+        "estimatedMapBytes": 202680,
+        "estimatedTotalBytes": 803976
+      },
+      "elapsedMs": 319.21559999999954
+    },
+    {
+      "seed": 8801012,
+      "route": 1,
+      "mode": "easy",
+      "portal": "2,7",
+      "accesses": [
+        "0,6",
+        "3,5",
+        "4,8"
+      ],
+      "archivedClassification": "POTENTIAL_SENTINEL_OSCILLATION_LOCK",
+      "archivedAlternatingBetween": [
+        "home",
+        "3,5"
+      ],
+      "archivedActiveTraps": [
+        "3,5"
+      ],
+      "archivedLightsLeft": 0,
+      "RECONSTRUCTED_FROM_SEED": true,
+      "suspiciousStateArchived": false,
+      "initialExistential": false,
+      "initialGuaranteed": false,
+      "verdict": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "statesExplored": 5279,
+      "processedStates": 3072,
+      "transitions": 24326,
+      "truncated": true,
+      "resourceLimit": "STATE_LIMIT",
+      "frontier": 2207,
+      "peakFrontier": 2209,
+      "reachableNonWinning": 5279,
+      "reachableWinning": 0,
+      "existentialAttractorStates": 0,
+      "guaranteedAttractorStates": 0,
+      "shortestExistentialWin": null,
+      "shortestExistentialWitness": null,
+      "graphElapsedMs": 39.52949999999964,
+      "solveProfile": {
+        "predecessorBuildMs": 1.4129999999995562,
+        "existentialMs": 0.034399999999550346,
+        "guaranteedMs": 0.23099999999976717,
+        "totalMs": 1.9643000000005486
+      },
+      "memory": {
+        "typedArrayBytes": 601296,
+        "estimatedMapBytes": 211160,
+        "estimatedTotalBytes": 812456
+      },
+      "elapsedMs": 99.00830000000042
+    },
+    {
+      "seed": 8801014,
+      "route": 1,
+      "mode": "easy",
+      "portal": "2,7",
+      "accesses": [
+        "0,6",
+        "3,5",
+        "4,8"
+      ],
+      "archivedClassification": "POTENTIAL_SENTINEL_OSCILLATION_LOCK",
+      "archivedAlternatingBetween": [
+        "home",
+        "3,5"
+      ],
+      "archivedActiveTraps": [
+        "3,3"
+      ],
+      "archivedLightsLeft": 0,
+      "RECONSTRUCTED_FROM_SEED": true,
+      "suspiciousStateArchived": false,
+      "initialExistential": false,
+      "initialGuaranteed": false,
+      "verdict": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "statesExplored": 5266,
+      "processedStates": 3328,
+      "transitions": 26096,
+      "truncated": true,
+      "resourceLimit": "STATE_LIMIT",
+      "frontier": 1938,
+      "peakFrontier": 1939,
+      "reachableNonWinning": 5266,
+      "reachableWinning": 0,
+      "existentialAttractorStates": 0,
+      "guaranteedAttractorStates": 0,
+      "shortestExistentialWin": null,
+      "shortestExistentialWitness": null,
+      "graphElapsedMs": 29.919600000000173,
+      "solveProfile": {
+        "predecessorBuildMs": 0.3749000000007072,
+        "existentialMs": 0.04219999999986612,
+        "guaranteedMs": 0.07560000000012224,
+        "totalMs": 0.5337999999992462
+      },
+      "memory": {
+        "typedArrayBytes": 601296,
+        "estimatedMapBytes": 210640,
+        "estimatedTotalBytes": 811936
+      },
+      "elapsedMs": 161.76499999999942
+    },
+    {
+      "seed": 8801107,
+      "route": 1,
+      "mode": "medium",
+      "portal": "2,7",
+      "accesses": [
+        "0,6",
+        "4,8"
+      ],
+      "archivedClassification": "POTENTIAL_SENTINEL_OSCILLATION_LOCK",
+      "archivedAlternatingBetween": [
+        "home",
+        "4,8",
+        "0,6"
+      ],
+      "archivedActiveTraps": [
+        "1,2"
+      ],
+      "archivedLightsLeft": 0,
+      "RECONSTRUCTED_FROM_SEED": true,
+      "suspiciousStateArchived": false,
+      "initialExistential": false,
+      "initialGuaranteed": false,
+      "verdict": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "statesExplored": 5039,
+      "processedStates": 3072,
+      "transitions": 20954,
+      "truncated": true,
+      "resourceLimit": "STATE_LIMIT",
+      "frontier": 1967,
+      "peakFrontier": 1984,
+      "reachableNonWinning": 5039,
+      "reachableWinning": 0,
+      "existentialAttractorStates": 0,
+      "guaranteedAttractorStates": 0,
+      "shortestExistentialWin": null,
+      "shortestExistentialWitness": null,
+      "graphElapsedMs": 31.47530000000006,
+      "solveProfile": {
+        "predecessorBuildMs": 0.25060000000030414,
+        "existentialMs": 0.014699999999720603,
+        "guaranteedMs": 0.03920000000016444,
+        "totalMs": 0.3283000000001266
+      },
+      "memory": {
+        "typedArrayBytes": 601296,
+        "estimatedMapBytes": 201560,
+        "estimatedTotalBytes": 802856
+      },
+      "elapsedMs": 75.16859999999997
+    },
+    {
+      "seed": 8801108,
+      "route": 1,
+      "mode": "medium",
+      "portal": "2,8",
+      "accesses": [
+        "0,7",
+        "1,6",
+        "5,8",
+        "2,5"
+      ],
+      "archivedClassification": "POTENTIAL_SENTINEL_OSCILLATION_LOCK",
+      "archivedAlternatingBetween": [
+        "home",
+        "5,8",
+        "2,5"
+      ],
+      "archivedActiveTraps": [],
+      "archivedLightsLeft": 0,
+      "RECONSTRUCTED_FROM_SEED": true,
+      "suspiciousStateArchived": false,
+      "initialExistential": false,
+      "initialGuaranteed": false,
+      "verdict": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "statesExplored": 5171,
+      "processedStates": 3072,
+      "transitions": 21772,
+      "truncated": true,
+      "resourceLimit": "STATE_LIMIT",
+      "frontier": 2099,
+      "peakFrontier": 2099,
+      "reachableNonWinning": 5171,
+      "reachableWinning": 0,
+      "existentialAttractorStates": 0,
+      "guaranteedAttractorStates": 0,
+      "shortestExistentialWin": null,
+      "shortestExistentialWitness": null,
+      "graphElapsedMs": 32.99589999999989,
+      "solveProfile": {
+        "predecessorBuildMs": 0.3500000000003638,
+        "existentialMs": 0.0158000000001266,
+        "guaranteedMs": 0.05199999999967986,
+        "totalMs": 0.4279999999998836
+      },
+      "memory": {
+        "typedArrayBytes": 601296,
+        "estimatedMapBytes": 206840,
+        "estimatedTotalBytes": 808136
+      },
+      "elapsedMs": 124.44949999999972
+    },
+    {
+      "seed": 8801109,
+      "route": 1,
+      "mode": "medium",
+      "portal": "2,7",
+      "accesses": [
+        "0,6",
+        "3,5"
+      ],
+      "archivedClassification": "POTENTIAL_SENTINEL_OSCILLATION_LOCK",
+      "archivedAlternatingBetween": [
+        "home",
+        "3,5"
+      ],
+      "archivedActiveTraps": [],
+      "archivedLightsLeft": 0,
+      "RECONSTRUCTED_FROM_SEED": true,
+      "suspiciousStateArchived": false,
+      "initialExistential": false,
+      "initialGuaranteed": false,
+      "verdict": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "statesExplored": 5253,
+      "processedStates": 3328,
+      "transitions": 24392,
+      "truncated": true,
+      "resourceLimit": "STATE_LIMIT",
+      "frontier": 1925,
+      "peakFrontier": 1926,
+      "reachableNonWinning": 5253,
+      "reachableWinning": 0,
+      "existentialAttractorStates": 0,
+      "guaranteedAttractorStates": 0,
+      "shortestExistentialWin": null,
+      "shortestExistentialWitness": null,
+      "graphElapsedMs": 37.45589999999993,
+      "solveProfile": {
+        "predecessorBuildMs": 0.9970000000002983,
+        "existentialMs": 0.01749999999992724,
+        "guaranteedMs": 0.054200000000491855,
+        "totalMs": 1.1489000000001397
+      },
+      "memory": {
+        "typedArrayBytes": 601296,
+        "estimatedMapBytes": 210120,
+        "estimatedTotalBytes": 811416
+      },
+      "elapsedMs": 319.28470000000016
+    },
+    {
+      "seed": 8801110,
+      "route": 1,
+      "mode": "medium",
+      "portal": "2,8",
+      "accesses": [
+        "5,8",
+        "0,7",
+        "1,6"
+      ],
+      "archivedClassification": "POTENTIAL_SENTINEL_OSCILLATION_LOCK",
+      "archivedAlternatingBetween": [
+        "home",
+        "5,8"
+      ],
+      "archivedActiveTraps": [],
+      "archivedLightsLeft": 1,
+      "RECONSTRUCTED_FROM_SEED": true,
+      "suspiciousStateArchived": false,
+      "initialExistential": false,
+      "initialGuaranteed": false,
+      "verdict": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "statesExplored": 5194,
+      "processedStates": 3328,
+      "transitions": 23410,
+      "truncated": true,
+      "resourceLimit": "STATE_LIMIT",
+      "frontier": 1866,
+      "peakFrontier": 1904,
+      "reachableNonWinning": 5194,
+      "reachableWinning": 0,
+      "existentialAttractorStates": 0,
+      "guaranteedAttractorStates": 0,
+      "shortestExistentialWin": null,
+      "shortestExistentialWitness": null,
+      "graphElapsedMs": 37.06750000000011,
+      "solveProfile": {
+        "predecessorBuildMs": 0.376100000000406,
+        "existentialMs": 0.01769999999942229,
+        "guaranteedMs": 0.049799999999777356,
+        "totalMs": 0.456199999999626
+      },
+      "memory": {
+        "typedArrayBytes": 601296,
+        "estimatedMapBytes": 207760,
+        "estimatedTotalBytes": 809056
+      },
+      "elapsedMs": 92.90439999999944
+    },
+    {
+      "seed": 8801204,
+      "route": 1,
+      "mode": "hard",
+      "portal": "2,7",
+      "accesses": [
+        "0,6",
+        "3,5",
+        "4,8"
+      ],
+      "archivedClassification": "POTENTIAL_SENTINEL_OSCILLATION_LOCK",
+      "archivedAlternatingBetween": [
+        "home",
+        "0,6"
+      ],
+      "archivedActiveTraps": [
+        "3,2"
+      ],
+      "archivedLightsLeft": 3,
+      "RECONSTRUCTED_FROM_SEED": true,
+      "suspiciousStateArchived": false,
+      "initialExistential": false,
+      "initialGuaranteed": false,
+      "verdict": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "statesExplored": 5195,
+      "processedStates": 3840,
+      "transitions": 14321,
+      "truncated": true,
+      "resourceLimit": "STATE_LIMIT",
+      "frontier": 1355,
+      "peakFrontier": 1356,
+      "reachableNonWinning": 5195,
+      "reachableWinning": 0,
+      "existentialAttractorStates": 0,
+      "guaranteedAttractorStates": 0,
+      "shortestExistentialWin": null,
+      "shortestExistentialWitness": null,
+      "graphElapsedMs": 76.90050000000065,
+      "solveProfile": {
+        "predecessorBuildMs": 4.050600000000486,
+        "existentialMs": 1.0575999999991836,
+        "guaranteedMs": 1.4692999999997483,
+        "totalMs": 6.651100000000042
+      },
+      "memory": {
+        "typedArrayBytes": 535760,
+        "estimatedMapBytes": 207800,
+        "estimatedTotalBytes": 743560
+      },
+      "elapsedMs": 136.45859999999993
+    },
+    {
+      "seed": 8801207,
+      "route": 1,
+      "mode": "hard",
+      "portal": "2,8",
+      "accesses": [
+        "0,7",
+        "1,6",
+        "5,8",
+        "3,6"
+      ],
+      "archivedClassification": "POTENTIAL_SENTINEL_OSCILLATION_LOCK",
+      "archivedAlternatingBetween": [
+        "home",
+        "5,8",
+        "3,6"
+      ],
+      "archivedActiveTraps": [
+        "3,8"
+      ],
+      "archivedLightsLeft": 0,
+      "RECONSTRUCTED_FROM_SEED": true,
+      "suspiciousStateArchived": false,
+      "initialExistential": false,
+      "initialGuaranteed": false,
+      "verdict": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "statesExplored": 5284,
+      "processedStates": 3584,
+      "transitions": 12894,
+      "truncated": true,
+      "resourceLimit": "STATE_LIMIT",
+      "frontier": 1700,
+      "peakFrontier": 1700,
+      "reachableNonWinning": 5284,
+      "reachableWinning": 0,
+      "existentialAttractorStates": 0,
+      "guaranteedAttractorStates": 0,
+      "shortestExistentialWin": null,
+      "shortestExistentialWitness": null,
+      "graphElapsedMs": 44.699899999999616,
+      "solveProfile": {
+        "predecessorBuildMs": 0.47009999999954744,
+        "existentialMs": 0.03899999999975989,
+        "guaranteedMs": 0.16370000000006257,
+        "totalMs": 0.7956999999996697
+      },
+      "memory": {
+        "typedArrayBytes": 535760,
+        "estimatedMapBytes": 211360,
+        "estimatedTotalBytes": 747120
+      },
+      "elapsedMs": 106.13299999999981
+    },
+    {
+      "seed": 8801212,
+      "route": 1,
+      "mode": "hard",
+      "portal": "2,8",
+      "accesses": [
+        "0,7",
+        "1,6",
+        "5,8"
+      ],
+      "archivedClassification": "POTENTIAL_SENTINEL_OSCILLATION_LOCK",
+      "archivedAlternatingBetween": [
+        "home",
+        "5,8"
+      ],
+      "archivedActiveTraps": [
+        "7,8"
+      ],
+      "archivedLightsLeft": 0,
+      "RECONSTRUCTED_FROM_SEED": true,
+      "suspiciousStateArchived": false,
+      "initialExistential": false,
+      "initialGuaranteed": false,
+      "verdict": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "statesExplored": 5068,
+      "processedStates": 4096,
+      "transitions": 14446,
+      "truncated": true,
+      "resourceLimit": "STATE_LIMIT",
+      "frontier": 972,
+      "peakFrontier": 972,
+      "reachableNonWinning": 5068,
+      "reachableWinning": 0,
+      "existentialAttractorStates": 0,
+      "guaranteedAttractorStates": 0,
+      "shortestExistentialWin": null,
+      "shortestExistentialWitness": null,
+      "graphElapsedMs": 30.836100000000442,
+      "solveProfile": {
+        "predecessorBuildMs": 0.3532999999997628,
+        "existentialMs": 0.11210000000028231,
+        "guaranteedMs": 0.17189999999936845,
+        "totalMs": 0.64679999999953
+      },
+      "memory": {
+        "typedArrayBytes": 535760,
+        "estimatedMapBytes": 202720,
+        "estimatedTotalBytes": 738480
+      },
+      "elapsedMs": 134.41379999999936
+    },
+    {
+      "seed": 8801214,
+      "route": 1,
+      "mode": "hard",
+      "portal": "2,7",
+      "accesses": [
+        "0,6",
+        "3,5",
+        "4,8"
+      ],
+      "archivedClassification": "POTENTIAL_SENTINEL_OSCILLATION_LOCK",
+      "archivedAlternatingBetween": [
+        "home",
+        "3,5",
+        "4,8"
+      ],
+      "archivedActiveTraps": [],
+      "archivedLightsLeft": 0,
+      "RECONSTRUCTED_FROM_SEED": true,
+      "suspiciousStateArchived": false,
+      "initialExistential": false,
+      "initialGuaranteed": false,
+      "verdict": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "statesExplored": 5282,
+      "processedStates": 4096,
+      "transitions": 15677,
+      "truncated": true,
+      "resourceLimit": "STATE_LIMIT",
+      "frontier": 1186,
+      "peakFrontier": 1197,
+      "reachableNonWinning": 5282,
+      "reachableWinning": 0,
+      "existentialAttractorStates": 0,
+      "guaranteedAttractorStates": 0,
+      "shortestExistentialWin": null,
+      "shortestExistentialWitness": null,
+      "graphElapsedMs": 34.83520000000044,
+      "solveProfile": {
+        "predecessorBuildMs": 0.38469999999961146,
+        "existentialMs": 0.025900000000547152,
+        "guaranteedMs": 0.18130000000019209,
+        "totalMs": 0.5986000000002605
+      },
+      "memory": {
+        "typedArrayBytes": 535760,
+        "estimatedMapBytes": 211280,
+        "estimatedTotalBytes": 747040
+      },
+      "elapsedMs": 93.88169999999991
+    },
+    {
+      "seed": 8802000,
+      "route": 2,
+      "mode": "easy",
+      "portal": "0,7",
+      "accesses": [
+        "2,6",
+        "1,5",
+        "0,4"
+      ],
+      "archivedClassification": "POTENTIAL_SENTINEL_OSCILLATION_LOCK",
+      "archivedAlternatingBetween": [
+        "1,5",
+        "2,6"
+      ],
+      "archivedActiveTraps": [
+        "5,1",
+        "2,0",
+        "2,4"
+      ],
+      "archivedLightsLeft": 1,
+      "RECONSTRUCTED_FROM_SEED": true,
+      "suspiciousStateArchived": false,
+      "initialExistential": false,
+      "initialGuaranteed": false,
+      "verdict": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "statesExplored": 5181,
+      "processedStates": 3840,
+      "transitions": 28019,
+      "truncated": true,
+      "resourceLimit": "STATE_LIMIT",
+      "frontier": 1341,
+      "peakFrontier": 1341,
+      "reachableNonWinning": 5181,
+      "reachableWinning": 0,
+      "existentialAttractorStates": 0,
+      "guaranteedAttractorStates": 0,
+      "shortestExistentialWin": null,
+      "shortestExistentialWitness": null,
+      "graphElapsedMs": 33.26090000000022,
+      "solveProfile": {
+        "predecessorBuildMs": 0.3878000000004249,
+        "existentialMs": 0.02690000000075088,
+        "guaranteedMs": 0.16820000000006985,
+        "totalMs": 0.5970000000006621
+      },
+      "memory": {
+        "typedArrayBytes": 601296,
+        "estimatedMapBytes": 207240,
+        "estimatedTotalBytes": 808536
+      },
+      "elapsedMs": 1036.9012000000002
+    }
+  ]
+}

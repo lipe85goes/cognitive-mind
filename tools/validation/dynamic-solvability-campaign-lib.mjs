@@ -374,6 +374,8 @@ export function analyzeCase({ seed, route, mode, limits, archived = null, includ
     guaranteedPolicy: guaranteedPolicySummary(graph, solved),
     witnessMetrics: witnessMetrics(witness),
     reachableWinning: solved.existentialCount,
+    existentialAttractorStates: solved.existentialCount,
+    guaranteedAttractorStates: solved.guaranteedCount,
     reachableNonWinning: graph.nodes.count - solved.existentialCount,
     auxiliaryClassifications,
     suspicious,

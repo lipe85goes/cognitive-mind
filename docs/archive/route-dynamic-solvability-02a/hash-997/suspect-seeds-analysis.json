@@ -1,0 +1,1680 @@
+{
+  "mission": "ROTA-DYNAMIC-SOLVABILITY-01",
+  "PRE_CHEST_BASELINE": true,
+  "executionEnvironment": {
+    "node": "v24.15.0",
+    "pythonHashSeed": "997"
+  },
+  "source": "docs/archive/route-traps-strategy-01/trap-runtime-gameplay.json potentialLocks",
+  "note": "The archived records hold seed/route/mode but not the full suspicious state, so every case is reconstructed from the seed and analysed from the INITIAL state. Suspicious-state analysis needs a capture the traps mission did not store.",
+  "budget": 1000000,
+  "runner": "PACKED_EXACT",
+  "casesCompleted": 12,
+  "totalRuntimeMs": 54756.4824,
+  "verdictCounts": {
+    "INCONCLUSIVE_RESOURCE_LIMIT": 7,
+    "PROVED_UNSOLVABLE_PRE_CHEST": 2,
+    "POSSIBLE_BUT_NOT_GUARANTEED_PRE_CHEST": 2,
+    "GUARANTEED_SOLVABLE_PRE_CHEST": 1
+  },
+  "cases": [
+    {
+      "seed": 8801008,
+      "route": 1,
+      "mode": "easy",
+      "portal": "2,7",
+      "accesses": [
+        "0,6",
+        "3,5",
+        "4,8"
+      ],
+      "archivedClassification": "POTENTIAL_SENTINEL_OSCILLATION_LOCK",
+      "archivedAlternatingBetween": [
+        "home",
+        "3,5"
+      ],
+      "archivedActiveTraps": [],
+      "archivedLightsLeft": 0,
+      "RECONSTRUCTED_FROM_SEED": true,
+      "suspiciousStateArchived": false,
+      "initialExistential": true,
+      "initialGuaranteed": false,
+      "verdict": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "statesExplored": 1000198,
+      "processedStates": 931328,
+      "transitions": 6556644,
+      "truncated": true,
+      "resourceLimit": "STATE_LIMIT",
+      "frontier": 68870,
+      "peakFrontier": 81628,
+      "reachableNonWinning": 129778,
+      "reachableWinning": 870420,
+      "existentialAttractorStates": 870420,
+      "guaranteedAttractorStates": 84823,
+      "shortestExistentialWin": 21,
+      "shortestExistentialWitness": [
+        {
+          "action": "UP",
+          "state": "7,0|0,2|1,7|-1|0|0|0"
+        },
+        {
+          "action": "UP",
+          "state": "6,0|1,2|1,7|-1|0|0|0"
+        },
+        {
+          "action": "UP",
+          "state": "5,0|0,2|1,7|-1|0|0|0"
+        },
+        {
+          "action": "UP",
+          "state": "4,0|1,2|1,7|1|3|0|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "4,1|0,2|1,7|1|2|1|0"
+        },
+        {
+          "action": "DOWN",
+          "state": "5,1|1,2|1,7|1|1|1|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "5,2|0,2|1,7|1|0|1|0"
+        },
+        {
+          "action": "DOWN",
+          "state": "6,2|1,2|1,7|1|3|1|0"
+        },
+        {
+          "action": "DOWN",
+          "state": "7,2|0,2|1,7|-1|0|1|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "7,3|1,2|1,7|1|3|1|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "7,4|0,2|1,7|1|2|5|0"
+        },
+        {
+          "action": "DOWN",
+          "state": "8,4|1,2|1,7|1|1|5|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "8,5|0,2|1,7|1|0|7|0"
+        },
+        {
+          "action": "UP",
+          "state": "7,5|1,2|1,7|1|3|7|0"
+        },
+        {
+          "action": "UP",
+          "state": "6,5|0,2|1,7|1|2|7|0"
+        },
+        {
+          "action": "UP",
+          "state": "5,5|1,2|1,7|1|1|7|0"
+        },
+        {
+          "action": "UP",
+          "state": "4,5|0,2|1,7|1|0|7|0"
+        },
+        {
+          "action": "UP",
+          "state": "3,5|1,2|1,7|1|3|7|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "3,6|0,2|1,7|1|2|7|0"
+        },
+        {
+          "action": "UP",
+          "state": "2,6|1,2|1,7|1|1|7|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "WIN"
+        }
+      ],
+      "graphElapsedMs": 5591.0228,
+      "solveProfile": {
+        "predecessorBuildMs": 106.08590000000004,
+        "existentialMs": 91.33040000000074,
+        "guaranteedMs": 35.09720000000016,
+        "totalMs": 232.7501000000011
+      },
+      "memory": {
+        "typedArrayBytes": 110100480,
+        "estimatedMapBytes": 40007920,
+        "estimatedTotalBytes": 150108400
+      },
+      "elapsedMs": 6064.5939
+    },
+    {
+      "seed": 8801012,
+      "route": 1,
+      "mode": "easy",
+      "portal": "2,7",
+      "accesses": [
+        "0,6",
+        "3,5",
+        "4,8"
+      ],
+      "archivedClassification": "POTENTIAL_SENTINEL_OSCILLATION_LOCK",
+      "archivedAlternatingBetween": [
+        "home",
+        "3,5"
+      ],
+      "archivedActiveTraps": [
+        "3,5"
+      ],
+      "archivedLightsLeft": 0,
+      "RECONSTRUCTED_FROM_SEED": true,
+      "suspiciousStateArchived": false,
+      "initialExistential": true,
+      "initialGuaranteed": false,
+      "verdict": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "statesExplored": 1000211,
+      "processedStates": 925184,
+      "transitions": 6861905,
+      "truncated": true,
+      "resourceLimit": "STATE_LIMIT",
+      "frontier": 75027,
+      "peakFrontier": 82745,
+      "reachableNonWinning": 172133,
+      "reachableWinning": 828078,
+      "existentialAttractorStates": 828078,
+      "guaranteedAttractorStates": 95461,
+      "shortestExistentialWin": 21,
+      "shortestExistentialWitness": [
+        {
+          "action": "UP",
+          "state": "7,0|3,6|1,7|-1|0|0|0"
+        },
+        {
+          "action": "UP",
+          "state": "6,0|2,6|1,7|-1|0|0|0"
+        },
+        {
+          "action": "UP",
+          "state": "5,0|3,6|1,7|-1|0|0|0"
+        },
+        {
+          "action": "UP",
+          "state": "4,0|2,6|1,7|1|3|0|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "4,1|3,6|1,7|1|2|1|0"
+        },
+        {
+          "action": "DOWN",
+          "state": "5,1|2,6|1,7|1|1|1|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "5,2|3,6|1,7|1|0|3|0"
+        },
+        {
+          "action": "DOWN",
+          "state": "6,2|2,6|1,7|1|3|3|0"
+        },
+        {
+          "action": "DOWN",
+          "state": "7,2|3,6|1,7|-1|0|3|0"
+        },
+        {
+          "action": "DOWN",
+          "state": "8,2|2,6|1,7|-1|0|3|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "8,3|3,6|1,7|-1|0|3|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "8,4|2,6|1,7|1|3|3|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "8,5|3,6|1,7|1|2|7|0"
+        },
+        {
+          "action": "UP",
+          "state": "7,5|2,6|1,7|1|1|7|0"
+        },
+        {
+          "action": "UP",
+          "state": "6,5|3,6|1,7|1|0|7|0"
+        },
+        {
+          "action": "UP",
+          "state": "5,5|2,6|1,7|1|3|7|0"
+        },
+        {
+          "action": "UP",
+          "state": "4,5|3,6|1,7|1|2|7|0"
+        },
+        {
+          "action": "UP",
+          "state": "3,5|3,7|1,7|-1|0|7|1"
+        },
+        {
+          "action": "RIGHT",
+          "state": "3,6|3,8|1,7|-1|0|7|1"
+        },
+        {
+          "action": "UP",
+          "state": "2,6|2,8|1,7|-1|0|7|1"
+        },
+        {
+          "action": "RIGHT",
+          "state": "WIN"
+        }
+      ],
+      "graphElapsedMs": 5717.1098,
+      "solveProfile": {
+        "predecessorBuildMs": 98.3094000000001,
+        "existentialMs": 91.58840000000055,
+        "guaranteedMs": 27.25550000000294,
+        "totalMs": 217.3827000000001
+      },
+      "memory": {
+        "typedArrayBytes": 110100480,
+        "estimatedMapBytes": 40008440,
+        "estimatedTotalBytes": 150108920
+      },
+      "elapsedMs": 6000.306099999998
+    },
+    {
+      "seed": 8801014,
+      "route": 1,
+      "mode": "easy",
+      "portal": "2,7",
+      "accesses": [
+        "0,6",
+        "3,5",
+        "4,8"
+      ],
+      "archivedClassification": "POTENTIAL_SENTINEL_OSCILLATION_LOCK",
+      "archivedAlternatingBetween": [
+        "home",
+        "3,5"
+      ],
+      "archivedActiveTraps": [
+        "3,3"
+      ],
+      "archivedLightsLeft": 0,
+      "RECONSTRUCTED_FROM_SEED": true,
+      "suspiciousStateArchived": false,
+      "initialExistential": true,
+      "initialGuaranteed": false,
+      "verdict": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "statesExplored": 1000220,
+      "processedStates": 992768,
+      "transitions": 7108635,
+      "truncated": true,
+      "resourceLimit": "STATE_LIMIT",
+      "frontier": 7452,
+      "peakFrontier": 53661,
+      "reachableNonWinning": 12155,
+      "reachableWinning": 988065,
+      "existentialAttractorStates": 988065,
+      "guaranteedAttractorStates": 109496,
+      "shortestExistentialWin": 19,
+      "shortestExistentialWitness": [
+        {
+          "action": "UP",
+          "state": "7,0|0,5|1,7|-1|0|0|0"
+        },
+        {
+          "action": "UP",
+          "state": "6,0|1,5|1,7|-1|0|0|0"
+        },
+        {
+          "action": "UP",
+          "state": "5,0|0,5|1,7|-1|0|0|0"
+        },
+        {
+          "action": "UP",
+          "state": "4,0|1,5|1,7|1|3|0|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "4,1|0,5|1,7|1|2|1|0"
+        },
+        {
+          "action": "DOWN",
+          "state": "5,1|1,5|1,7|1|1|1|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "5,2|0,5|1,7|1|0|5|0"
+        },
+        {
+          "action": "DOWN",
+          "state": "6,2|1,5|1,7|1|3|5|0"
+        },
+        {
+          "action": "DOWN",
+          "state": "7,2|0,5|1,7|-1|0|5|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "7,3|1,5|1,7|1|3|5|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "7,4|0,5|1,7|1|2|7|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "7,5|1,5|1,7|1|1|7|0"
+        },
+        {
+          "action": "UP",
+          "state": "6,5|0,5|1,7|1|0|7|0"
+        },
+        {
+          "action": "UP",
+          "state": "5,5|1,5|1,7|1|3|7|0"
+        },
+        {
+          "action": "UP",
+          "state": "4,5|0,5|1,7|1|2|7|0"
+        },
+        {
+          "action": "UP",
+          "state": "3,5|1,5|1,7|1|1|7|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "3,6|0,5|1,7|1|0|7|0"
+        },
+        {
+          "action": "UP",
+          "state": "2,6|1,5|1,7|1|3|7|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "WIN"
+        }
+      ],
+      "graphElapsedMs": 6076.629199999999,
+      "solveProfile": {
+        "predecessorBuildMs": 107.70360000000073,
+        "existentialMs": 112.73470000000088,
+        "guaranteedMs": 29.858899999999267,
+        "totalMs": 250.36309999999867
+      },
+      "memory": {
+        "typedArrayBytes": 110100480,
+        "estimatedMapBytes": 40008800,
+        "estimatedTotalBytes": 150109280
+      },
+      "elapsedMs": 6449.381300000001
+    },
+    {
+      "seed": 8801107,
+      "route": 1,
+      "mode": "medium",
+      "portal": "2,7",
+      "accesses": [
+        "0,6",
+        "4,8"
+      ],
+      "archivedClassification": "POTENTIAL_SENTINEL_OSCILLATION_LOCK",
+      "archivedAlternatingBetween": [
+        "home",
+        "4,8",
+        "0,6"
+      ],
+      "archivedActiveTraps": [
+        "1,2"
+      ],
+      "archivedLightsLeft": 0,
+      "RECONSTRUCTED_FROM_SEED": true,
+      "suspiciousStateArchived": false,
+      "initialExistential": false,
+      "initialGuaranteed": false,
+      "verdict": "PROVED_UNSOLVABLE_PRE_CHEST",
+      "statesExplored": 209244,
+      "processedStates": 209244,
+      "transitions": 1350521,
+      "truncated": false,
+      "resourceLimit": null,
+      "frontier": 0,
+      "peakFrontier": 10178,
+      "reachableNonWinning": 209244,
+      "reachableWinning": 0,
+      "existentialAttractorStates": 0,
+      "guaranteedAttractorStates": 0,
+      "shortestExistentialWin": null,
+      "shortestExistentialWitness": null,
+      "graphElapsedMs": 1163.4481000000014,
+      "solveProfile": {
+        "predecessorBuildMs": 26.56420000000071,
+        "existentialMs": 1.6765999999988708,
+        "guaranteedMs": 10.240300000001298,
+        "totalMs": 38.77679999999964
+      },
+      "memory": {
+        "typedArrayBytes": 27525120,
+        "estimatedMapBytes": 8369760,
+        "estimatedTotalBytes": 35894880
+      },
+      "elapsedMs": 1332.6809999999969
+    },
+    {
+      "seed": 8801108,
+      "route": 1,
+      "mode": "medium",
+      "portal": "2,8",
+      "accesses": [
+        "0,7",
+        "1,6",
+        "5,8",
+        "2,5"
+      ],
+      "archivedClassification": "POTENTIAL_SENTINEL_OSCILLATION_LOCK",
+      "archivedAlternatingBetween": [
+        "home",
+        "5,8",
+        "2,5"
+      ],
+      "archivedActiveTraps": [],
+      "archivedLightsLeft": 0,
+      "RECONSTRUCTED_FROM_SEED": true,
+      "suspiciousStateArchived": false,
+      "initialExistential": true,
+      "initialGuaranteed": false,
+      "verdict": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "statesExplored": 1000021,
+      "processedStates": 950272,
+      "transitions": 6421805,
+      "truncated": true,
+      "resourceLimit": "STATE_LIMIT",
+      "frontier": 49749,
+      "peakFrontier": 79188,
+      "reachableNonWinning": 227605,
+      "reachableWinning": 772416,
+      "existentialAttractorStates": 772416,
+      "guaranteedAttractorStates": 31517,
+      "shortestExistentialWin": 28,
+      "shortestExistentialWitness": [
+        {
+          "action": "RIGHT",
+          "state": "8,1|2,7|1,8|-1|0|0|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "8,2|1,7|1,8|-1|0|0|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "8,3|0,7|1,8|-1|0|0|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "8,4|1,7|1,8|-1|0|0|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "8,5|0,7|1,8|2|3|1|0"
+        },
+        {
+          "action": "UP",
+          "state": "7,5|1,7|1,8|2|2|1|0"
+        },
+        {
+          "action": "LEFT",
+          "state": "7,4|0,7|1,8|2|1|3|0"
+        },
+        {
+          "action": "UP",
+          "state": "6,4|1,7|1,8|-1|0|3|0"
+        },
+        {
+          "action": "LEFT",
+          "state": "6,3|0,7|1,7|3|3|3|0"
+        },
+        {
+          "action": "UP",
+          "state": "5,3|0,6|2,7|3|2|3|0"
+        },
+        {
+          "action": "LEFT",
+          "state": "5,2|1,6|2,6|3|1|11|0"
+        },
+        {
+          "action": "LEFT",
+          "state": "5,1|0,6|2,7|-1|0|11|0"
+        },
+        {
+          "action": "LEFT",
+          "state": "5,0|1,6|2,7|-1|0|11|0"
+        },
+        {
+          "action": "UP",
+          "state": "4,0|0,6|2,7|-1|0|11|0"
+        },
+        {
+          "action": "UP",
+          "state": "3,0|1,6|2,7|-1|0|15|0"
+        },
+        {
+          "action": "UP",
+          "state": "2,0|0,6|2,7|-1|0|15|0"
+        },
+        {
+          "action": "UP",
+          "state": "1,0|1,6|2,6|3|3|15|0"
+        },
+        {
+          "action": "UP",
+          "state": "0,0|0,6|2,7|-1|0|15|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "0,1|1,6|1,7|0|3|15|0"
+        },
+        {
+          "action": "DOWN",
+          "state": "1,1|0,6|0,7|0|2|15|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "1,2|1,6|0,7|0|1|15|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "1,3|0,6|0,7|0|0|15|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "1,4|1,6|1,7|3|3|15|0"
+        },
+        {
+          "action": "DOWN",
+          "state": "2,4|0,6|2,7|3|2|15|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "2,5|1,6|2,7|-1|0|15|2"
+        },
+        {
+          "action": "RIGHT",
+          "state": "2,6|0,6|1,7|1|3|15|2"
+        },
+        {
+          "action": "RIGHT",
+          "state": "2,7|1,6|1,7|1|2|15|2"
+        },
+        {
+          "action": "RIGHT",
+          "state": "WIN"
+        }
+      ],
+      "graphElapsedMs": 5440.771199999999,
+      "solveProfile": {
+        "predecessorBuildMs": 96.92299999999886,
+        "existentialMs": 70.45899999999892,
+        "guaranteedMs": 15.548500000000786,
+        "totalMs": 182.98760000000038
+      },
+      "memory": {
+        "typedArrayBytes": 110100480,
+        "estimatedMapBytes": 40000840,
+        "estimatedTotalBytes": 150101320
+      },
+      "elapsedMs": 5720.716199999999
+    },
+    {
+      "seed": 8801109,
+      "route": 1,
+      "mode": "medium",
+      "portal": "2,7",
+      "accesses": [
+        "0,6",
+        "3,5"
+      ],
+      "archivedClassification": "POTENTIAL_SENTINEL_OSCILLATION_LOCK",
+      "archivedAlternatingBetween": [
+        "home",
+        "3,5"
+      ],
+      "archivedActiveTraps": [],
+      "archivedLightsLeft": 0,
+      "RECONSTRUCTED_FROM_SEED": true,
+      "suspiciousStateArchived": false,
+      "initialExistential": true,
+      "initialGuaranteed": false,
+      "verdict": "POSSIBLE_BUT_NOT_GUARANTEED_PRE_CHEST",
+      "statesExplored": 474775,
+      "processedStates": 474775,
+      "transitions": 3063981,
+      "truncated": false,
+      "resourceLimit": null,
+      "frontier": 0,
+      "peakFrontier": 20456,
+      "reachableNonWinning": 208,
+      "reachableWinning": 474567,
+      "existentialAttractorStates": 474567,
+      "guaranteedAttractorStates": 41265,
+      "shortestExistentialWin": 19,
+      "shortestExistentialWitness": [
+        {
+          "action": "UP",
+          "state": "7,0|0,2|1,7|-1|0|0|0"
+        },
+        {
+          "action": "UP",
+          "state": "6,0|1,2|1,7|-1|0|0|0"
+        },
+        {
+          "action": "UP",
+          "state": "5,0|0,2|1,7|-1|0|0|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "5,1|1,2|1,7|1|3|0|0"
+        },
+        {
+          "action": "UP",
+          "state": "4,1|0,2|1,7|1|2|2|0"
+        },
+        {
+          "action": "DOWN",
+          "state": "5,1|1,2|1,7|1|1|2|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "5,2|0,2|1,7|1|0|6|0"
+        },
+        {
+          "action": "DOWN",
+          "state": "6,2|1,2|1,7|1|3|6|0"
+        },
+        {
+          "action": "DOWN",
+          "state": "7,2|0,2|1,7|-1|0|6|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "7,3|1,2|1,7|1|3|6|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "7,4|0,2|1,7|1|2|7|0"
+        },
+        {
+          "action": "UP",
+          "state": "6,4|1,2|1,7|1|1|7|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "6,5|0,2|1,7|1|0|15|0"
+        },
+        {
+          "action": "UP",
+          "state": "5,5|1,2|1,7|1|3|15|0"
+        },
+        {
+          "action": "UP",
+          "state": "4,5|0,2|1,7|1|2|15|0"
+        },
+        {
+          "action": "UP",
+          "state": "3,5|1,2|1,7|1|1|15|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "3,6|0,2|1,7|1|0|15|0"
+        },
+        {
+          "action": "UP",
+          "state": "2,6|1,2|1,7|1|3|15|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "WIN"
+        }
+      ],
+      "graphElapsedMs": 2730.6384,
+      "solveProfile": {
+        "predecessorBuildMs": 47.01559999999881,
+        "existentialMs": 38.55780000000232,
+        "guaranteedMs": 12.566299999998591,
+        "totalMs": 98.19320000000153
+      },
+      "memory": {
+        "typedArrayBytes": 55050240,
+        "estimatedMapBytes": 18991000,
+        "estimatedTotalBytes": 74041240
+      },
+      "elapsedMs": 3196.8610999999983
+    },
+    {
+      "seed": 8801110,
+      "route": 1,
+      "mode": "medium",
+      "portal": "2,8",
+      "accesses": [
+        "5,8",
+        "0,7",
+        "1,6"
+      ],
+      "archivedClassification": "POTENTIAL_SENTINEL_OSCILLATION_LOCK",
+      "archivedAlternatingBetween": [
+        "home",
+        "5,8"
+      ],
+      "archivedActiveTraps": [],
+      "archivedLightsLeft": 1,
+      "RECONSTRUCTED_FROM_SEED": true,
+      "suspiciousStateArchived": false,
+      "initialExistential": true,
+      "initialGuaranteed": false,
+      "verdict": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "statesExplored": 1000302,
+      "processedStates": 946688,
+      "transitions": 6086814,
+      "truncated": true,
+      "resourceLimit": "STATE_LIMIT",
+      "frontier": 53614,
+      "peakFrontier": 69617,
+      "reachableNonWinning": 157503,
+      "reachableWinning": 842799,
+      "existentialAttractorStates": 842799,
+      "guaranteedAttractorStates": 16251,
+      "shortestExistentialWin": 30,
+      "shortestExistentialWitness": [
+        {
+          "action": "RIGHT",
+          "state": "8,1|1,4|3,8|-1|0|0|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "8,2|0,4|3,8|-1|0|0|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "8,3|1,4|3,8|-1|0|0|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "8,4|0,4|3,8|-1|0|0|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "8,5|1,4|4,8|0|3|1|0"
+        },
+        {
+          "action": "UP",
+          "state": "7,5|0,4|5,8|0|2|1|0"
+        },
+        {
+          "action": "LEFT",
+          "state": "7,4|1,4|5,8|0|1|5|0"
+        },
+        {
+          "action": "UP",
+          "state": "6,4|0,4|4,8|-1|0|5|0"
+        },
+        {
+          "action": "UP",
+          "state": "5,4|1,4|3,8|-1|0|5|0"
+        },
+        {
+          "action": "UP",
+          "state": "4,4|0,4|3,8|-1|0|5|0"
+        },
+        {
+          "action": "LEFT",
+          "state": "4,3|1,4|3,8|-1|0|5|0"
+        },
+        {
+          "action": "LEFT",
+          "state": "4,2|0,4|3,8|-1|0|5|0"
+        },
+        {
+          "action": "DOWN",
+          "state": "5,2|1,4|3,8|-1|0|13|0"
+        },
+        {
+          "action": "LEFT",
+          "state": "5,1|0,4|3,8|-1|0|13|0"
+        },
+        {
+          "action": "LEFT",
+          "state": "5,0|1,4|3,8|-1|0|13|0"
+        },
+        {
+          "action": "UP",
+          "state": "4,0|0,4|3,8|-1|0|13|0"
+        },
+        {
+          "action": "UP",
+          "state": "3,0|1,4|3,8|-1|0|15|0"
+        },
+        {
+          "action": "UP",
+          "state": "2,0|0,4|3,8|-1|0|15|0"
+        },
+        {
+          "action": "UP",
+          "state": "1,0|1,4|3,8|-1|0|15|1"
+        },
+        {
+          "action": "RIGHT",
+          "state": "1,1|0,4|3,8|-1|0|15|1"
+        },
+        {
+          "action": "RIGHT",
+          "state": "1,2|1,4|3,7|1|3|15|1"
+        },
+        {
+          "action": "UP",
+          "state": "0,2|0,4|2,7|1|2|15|1"
+        },
+        {
+          "action": "RIGHT",
+          "state": "0,3|1,4|1,7|1|1|15|5"
+        },
+        {
+          "action": "RIGHT",
+          "state": "0,4|2,4|0,7|1|0|15|5"
+        },
+        {
+          "action": "RIGHT",
+          "state": "0,5|1,4|0,7|1|3|15|5"
+        },
+        {
+          "action": "RIGHT",
+          "state": "0,6|0,4|0,7|1|2|15|5"
+        },
+        {
+          "action": "DOWN",
+          "state": "1,6|1,4|0,7|1|1|15|5"
+        },
+        {
+          "action": "RIGHT",
+          "state": "1,7|0,4|0,7|1|0|15|5"
+        },
+        {
+          "action": "DOWN",
+          "state": "2,7|1,4|0,7|1|3|15|5"
+        },
+        {
+          "action": "RIGHT",
+          "state": "WIN"
+        }
+      ],
+      "graphElapsedMs": 5327.852100000004,
+      "solveProfile": {
+        "predecessorBuildMs": 93.93630000000121,
+        "existentialMs": 70.52889999999752,
+        "guaranteedMs": 14.068299999998999,
+        "totalMs": 178.58870000000024
+      },
+      "memory": {
+        "typedArrayBytes": 110100480,
+        "estimatedMapBytes": 40012080,
+        "estimatedTotalBytes": 150112560
+      },
+      "elapsedMs": 5547.676800000001
+    },
+    {
+      "seed": 8801204,
+      "route": 1,
+      "mode": "hard",
+      "portal": "2,7",
+      "accesses": [
+        "0,6",
+        "3,5",
+        "4,8"
+      ],
+      "archivedClassification": "POTENTIAL_SENTINEL_OSCILLATION_LOCK",
+      "archivedAlternatingBetween": [
+        "home",
+        "0,6"
+      ],
+      "archivedActiveTraps": [
+        "3,2"
+      ],
+      "archivedLightsLeft": 3,
+      "RECONSTRUCTED_FROM_SEED": true,
+      "suspiciousStateArchived": false,
+      "initialExistential": true,
+      "initialGuaranteed": true,
+      "verdict": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "statesExplored": 1000210,
+      "processedStates": 996864,
+      "transitions": 3715463,
+      "truncated": true,
+      "resourceLimit": "STATE_LIMIT",
+      "frontier": 3346,
+      "peakFrontier": 20446,
+      "reachableNonWinning": 14390,
+      "reachableWinning": 985820,
+      "existentialAttractorStates": 985820,
+      "guaranteedAttractorStates": 605296,
+      "shortestExistentialWin": 31,
+      "shortestExistentialWitness": [
+        {
+          "action": "RIGHT",
+          "state": "8,1|0,2|1,7|-1|0|0|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "8,2|1,2|1,7|-1|0|0|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "8,3|2,2|1,7|-1|0|0|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "8,4|3,2|1,7|-1|0|0|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "8,5|3,3|1,7|-1|0|1|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "8,6|3,2|1,8|2|3|1|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "8,7|3,3|2,8|2|2|17|0"
+        },
+        {
+          "action": "UP",
+          "state": "7,7|3,2|3,8|2|1|17|0"
+        },
+        {
+          "action": "LEFT",
+          "state": "7,6|3,3|4,8|2|0|25|0"
+        },
+        {
+          "action": "UP",
+          "state": "6,6|3,2|4,8|2|3|25|0"
+        },
+        {
+          "action": "LEFT",
+          "state": "6,5|3,3|4,8|2|2|25|0"
+        },
+        {
+          "action": "UP",
+          "state": "5,5|3,2|4,8|2|1|25|0"
+        },
+        {
+          "action": "LEFT",
+          "state": "5,4|3,3|3,8|-1|0|25|0"
+        },
+        {
+          "action": "LEFT",
+          "state": "5,3|3,2|2,8|-1|0|25|0"
+        },
+        {
+          "action": "LEFT",
+          "state": "5,2|4,2|2,8|-1|0|29|0"
+        },
+        {
+          "action": "LEFT",
+          "state": "5,1|5,2|2,8|-1|0|29|0"
+        },
+        {
+          "action": "UP",
+          "state": "4,1|5,1|2,8|-1|0|31|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "4,2|4,1|2,8|-1|0|31|0"
+        },
+        {
+          "action": "UP",
+          "state": "3,2|4,2|2,8|-1|0|31|2"
+        },
+        {
+          "action": "UP",
+          "state": "2,2|5,2|1,8|0|3|31|2"
+        },
+        {
+          "action": "UP",
+          "state": "1,2|4,2|0,8|0|2|31|2"
+        },
+        {
+          "action": "UP",
+          "state": "0,2|5,2|0,7|0|1|31|3"
+        },
+        {
+          "action": "RIGHT",
+          "state": "0,3|4,2|0,6|0|0|31|3"
+        },
+        {
+          "action": "RIGHT",
+          "state": "0,4|5,2|0,6|0|3|31|3"
+        },
+        {
+          "action": "DOWN",
+          "state": "1,4|4,2|0,6|0|2|31|3"
+        },
+        {
+          "action": "DOWN",
+          "state": "2,4|5,2|0,6|0|1|31|3"
+        },
+        {
+          "action": "RIGHT",
+          "state": "2,5|4,2|0,6|0|0|31|3"
+        },
+        {
+          "action": "DOWN",
+          "state": "3,5|5,2|1,6|1|3|31|3"
+        },
+        {
+          "action": "RIGHT",
+          "state": "3,6|4,2|1,7|1|2|31|3"
+        },
+        {
+          "action": "RIGHT",
+          "state": "3,7|5,2|0,7|1|1|31|11"
+        },
+        {
+          "action": "UP",
+          "state": "WIN"
+        }
+      ],
+      "graphElapsedMs": 5860.3692999999985,
+      "solveProfile": {
+        "predecessorBuildMs": 89.14509999999427,
+        "existentialMs": 114.49700000000303,
+        "guaranteedMs": 121.95820000000094,
+        "totalMs": 335.8637999999992
+      },
+      "memory": {
+        "typedArrayBytes": 93323264,
+        "estimatedMapBytes": 40008400,
+        "estimatedTotalBytes": 133331664
+      },
+      "elapsedMs": 6242.893400000001
+    },
+    {
+      "seed": 8801207,
+      "route": 1,
+      "mode": "hard",
+      "portal": "2,8",
+      "accesses": [
+        "0,7",
+        "1,6",
+        "5,8",
+        "3,6"
+      ],
+      "archivedClassification": "POTENTIAL_SENTINEL_OSCILLATION_LOCK",
+      "archivedAlternatingBetween": [
+        "home",
+        "5,8",
+        "3,6"
+      ],
+      "archivedActiveTraps": [
+        "3,8"
+      ],
+      "archivedLightsLeft": 0,
+      "RECONSTRUCTED_FROM_SEED": true,
+      "suspiciousStateArchived": false,
+      "initialExistential": true,
+      "initialGuaranteed": true,
+      "verdict": "INCONCLUSIVE_RESOURCE_LIMIT",
+      "statesExplored": 1000179,
+      "processedStates": 897536,
+      "transitions": 3167611,
+      "truncated": true,
+      "resourceLimit": "STATE_LIMIT",
+      "frontier": 102643,
+      "peakFrontier": 107986,
+      "reachableNonWinning": 467131,
+      "reachableWinning": 533048,
+      "existentialAttractorStates": 533048,
+      "guaranteedAttractorStates": 501124,
+      "shortestExistentialWin": 22,
+      "shortestExistentialWitness": [
+        {
+          "action": "UP",
+          "state": "7,0|0,2|1,8|-1|0|0|0"
+        },
+        {
+          "action": "UP",
+          "state": "6,0|0,1|1,8|-1|0|0|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "6,1|1,1|1,8|-1|0|16|0"
+        },
+        {
+          "action": "UP",
+          "state": "5,1|2,1|1,8|-1|0|16|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "5,2|2,2|1,7|3|3|18|0"
+        },
+        {
+          "action": "LEFT",
+          "state": "5,1|3,2|1,8|-1|0|18|0"
+        },
+        {
+          "action": "DOWN",
+          "state": "6,1|4,2|1,8|-1|0|18|0"
+        },
+        {
+          "action": "DOWN",
+          "state": "7,1|5,2|1,8|-1|0|18|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "7,2|4,2|1,8|-1|0|18|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "7,3|5,2|1,8|-1|0|22|0"
+        },
+        {
+          "action": "DOWN",
+          "state": "8,3|5,3|1,8|-1|0|22|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "8,4|5,4|1,8|-1|0|22|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "8,5|5,5|1,8|2|3|23|0"
+        },
+        {
+          "action": "UP",
+          "state": "7,5|6,5|1,8|2|2|23|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "7,6|7,5|1,8|2|1|31|0"
+        },
+        {
+          "action": "UP",
+          "state": "6,6|6,5|1,8|2|0|31|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "6,7|6,6|1,8|2|3|31|0"
+        },
+        {
+          "action": "UP",
+          "state": "5,7|6,7|1,8|2|2|31|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "5,8|5,7|1,8|2|1|31|0"
+        },
+        {
+          "action": "UP",
+          "state": "4,8|5,8|1,8|2|0|31|0"
+        },
+        {
+          "action": "UP",
+          "state": "3,8|4,8|1,7|2|3|31|4"
+        },
+        {
+          "action": "UP",
+          "state": "WIN"
+        }
+      ],
+      "graphElapsedMs": 4434.533000000003,
+      "solveProfile": {
+        "predecessorBuildMs": 84.61119999999937,
+        "existentialMs": 67.11669999999867,
+        "guaranteedMs": 101.9994000000006,
+        "totalMs": 253.78499999999622
+      },
+      "memory": {
+        "typedArrayBytes": 93323264,
+        "estimatedMapBytes": 40007160,
+        "estimatedTotalBytes": 133330424
+      },
+      "elapsedMs": 4732.694499999998
+    },
+    {
+      "seed": 8801212,
+      "route": 1,
+      "mode": "hard",
+      "portal": "2,8",
+      "accesses": [
+        "0,7",
+        "1,6",
+        "5,8"
+      ],
+      "archivedClassification": "POTENTIAL_SENTINEL_OSCILLATION_LOCK",
+      "archivedAlternatingBetween": [
+        "home",
+        "5,8"
+      ],
+      "archivedActiveTraps": [
+        "7,8"
+      ],
+      "archivedLightsLeft": 0,
+      "RECONSTRUCTED_FROM_SEED": true,
+      "suspiciousStateArchived": false,
+      "initialExistential": true,
+      "initialGuaranteed": true,
+      "verdict": "GUARANTEED_SOLVABLE_PRE_CHEST",
+      "statesExplored": 875737,
+      "processedStates": 875737,
+      "transitions": 3129445,
+      "truncated": false,
+      "resourceLimit": null,
+      "frontier": 0,
+      "peakFrontier": 28488,
+      "reachableNonWinning": 3938,
+      "reachableWinning": 871799,
+      "existentialAttractorStates": 871799,
+      "guaranteedAttractorStates": 609825,
+      "shortestExistentialWin": 28,
+      "shortestExistentialWitness": [
+        {
+          "action": "UP",
+          "state": "7,0|1,3|1,8|-1|0|0|0"
+        },
+        {
+          "action": "UP",
+          "state": "6,0|2,3|1,8|-1|0|0|0"
+        },
+        {
+          "action": "UP",
+          "state": "5,0|1,3|1,8|-1|0|16|0"
+        },
+        {
+          "action": "UP",
+          "state": "4,0|2,3|1,8|-1|0|16|0"
+        },
+        {
+          "action": "UP",
+          "state": "3,0|1,3|1,8|-1|0|20|0"
+        },
+        {
+          "action": "DOWN",
+          "state": "4,0|2,3|1,8|-1|0|20|0"
+        },
+        {
+          "action": "DOWN",
+          "state": "5,0|1,3|1,8|-1|0|20|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "5,1|2,3|1,8|-1|0|20|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "5,2|1,3|1,8|-1|0|22|0"
+        },
+        {
+          "action": "LEFT",
+          "state": "5,1|2,3|1,8|-1|0|22|0"
+        },
+        {
+          "action": "LEFT",
+          "state": "5,0|1,3|1,8|-1|0|22|0"
+        },
+        {
+          "action": "DOWN",
+          "state": "6,0|2,3|1,8|-1|0|22|0"
+        },
+        {
+          "action": "DOWN",
+          "state": "7,0|1,3|1,8|-1|0|22|0"
+        },
+        {
+          "action": "DOWN",
+          "state": "8,0|2,3|1,8|-1|0|22|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "8,1|1,3|1,8|-1|0|22|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "8,2|2,3|1,8|-1|0|22|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "8,3|1,3|1,8|-1|0|22|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "8,4|2,3|1,8|-1|0|22|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "8,5|2,4|1,8|2|3|23|0"
+        },
+        {
+          "action": "UP",
+          "state": "7,5|3,4|1,8|2|2|23|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "7,6|4,4|1,8|2|1|31|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "7,7|4,5|1,8|2|0|31|0"
+        },
+        {
+          "action": "UP",
+          "state": "6,7|3,5|1,8|2|3|31|0"
+        },
+        {
+          "action": "UP",
+          "state": "5,7|4,5|1,8|2|2|31|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "5,8|3,5|1,8|2|1|31|0"
+        },
+        {
+          "action": "UP",
+          "state": "4,8|4,5|1,8|2|0|31|0"
+        },
+        {
+          "action": "UP",
+          "state": "3,8|3,5|1,8|2|3|31|0"
+        },
+        {
+          "action": "UP",
+          "state": "WIN"
+        }
+      ],
+      "graphElapsedMs": 4587.127800000002,
+      "solveProfile": {
+        "predecessorBuildMs": 74.86089999999967,
+        "existentialMs": 87.68299999999726,
+        "guaranteedMs": 100.6021000000037,
+        "totalMs": 273.13180000000284
+      },
+      "memory": {
+        "typedArrayBytes": 93323264,
+        "estimatedMapBytes": 35029480,
+        "estimatedTotalBytes": 128352744
+      },
+      "elapsedMs": 5117.032700000003
+    },
+    {
+      "seed": 8801214,
+      "route": 1,
+      "mode": "hard",
+      "portal": "2,7",
+      "accesses": [
+        "0,6",
+        "3,5",
+        "4,8"
+      ],
+      "archivedClassification": "POTENTIAL_SENTINEL_OSCILLATION_LOCK",
+      "archivedAlternatingBetween": [
+        "home",
+        "3,5",
+        "4,8"
+      ],
+      "archivedActiveTraps": [],
+      "archivedLightsLeft": 0,
+      "RECONSTRUCTED_FROM_SEED": true,
+      "suspiciousStateArchived": false,
+      "initialExistential": false,
+      "initialGuaranteed": false,
+      "verdict": "PROVED_UNSOLVABLE_PRE_CHEST",
+      "statesExplored": 178433,
+      "processedStates": 178433,
+      "transitions": 682024,
+      "truncated": false,
+      "resourceLimit": null,
+      "frontier": 0,
+      "peakFrontier": 8055,
+      "reachableNonWinning": 178433,
+      "reachableWinning": 0,
+      "existentialAttractorStates": 0,
+      "guaranteedAttractorStates": 0,
+      "shortestExistentialWin": null,
+      "shortestExistentialWitness": null,
+      "graphElapsedMs": 857.2865999999995,
+      "solveProfile": {
+        "predecessorBuildMs": 15.942299999995157,
+        "existentialMs": 1.0152999999991152,
+        "guaranteedMs": 2.3078999999997905,
+        "totalMs": 19.43739999999525
+      },
+      "memory": {
+        "typedArrayBytes": 17563648,
+        "estimatedMapBytes": 7137320,
+        "estimatedTotalBytes": 24700968
+      },
+      "elapsedMs": 951.4863000000041
+    },
+    {
+      "seed": 8802000,
+      "route": 2,
+      "mode": "easy",
+      "portal": "0,7",
+      "accesses": [
+        "2,6",
+        "1,5",
+        "0,4"
+      ],
+      "archivedClassification": "POTENTIAL_SENTINEL_OSCILLATION_LOCK",
+      "archivedAlternatingBetween": [
+        "1,5",
+        "2,6"
+      ],
+      "archivedActiveTraps": [
+        "5,1",
+        "2,0",
+        "2,4"
+      ],
+      "archivedLightsLeft": 1,
+      "RECONSTRUCTED_FROM_SEED": true,
+      "suspiciousStateArchived": false,
+      "initialExistential": true,
+      "initialGuaranteed": false,
+      "verdict": "POSSIBLE_BUT_NOT_GUARANTEED_PRE_CHEST",
+      "statesExplored": 435296,
+      "processedStates": 435296,
+      "transitions": 3000597,
+      "truncated": false,
+      "resourceLimit": null,
+      "frontier": 0,
+      "peakFrontier": 16613,
+      "reachableNonWinning": 440,
+      "reachableWinning": 434856,
+      "existentialAttractorStates": 434856,
+      "guaranteedAttractorStates": 102735,
+      "shortestExistentialWin": 41,
+      "shortestExistentialWitness": [
+        {
+          "action": "UP",
+          "state": "7,0|1,5|1,7|-1|0|0|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "7,1|0,5|1,7|-1|0|0|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "7,2|1,5|1,7|-1|0|0|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "7,3|0,5|1,7|-1|0|0|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "7,4|1,5|1,7|-1|0|0|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "7,5|0,5|1,7|-1|0|0|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "7,6|1,5|1,7|-1|0|0|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "7,7|0,5|2,7|0|3|0|0"
+        },
+        {
+          "action": "UP",
+          "state": "6,7|1,5|2,6|0|2|0|0"
+        },
+        {
+          "action": "UP",
+          "state": "5,7|0,5|2,6|0|1|0|0"
+        },
+        {
+          "action": "UP",
+          "state": "4,7|1,5|2,6|0|0|0|0"
+        },
+        {
+          "action": "LEFT",
+          "state": "4,6|0,5|2,6|0|3|4|0"
+        },
+        {
+          "action": "DOWN",
+          "state": "5,6|1,5|2,6|0|2|4|0"
+        },
+        {
+          "action": "RIGHT",
+          "state": "5,7|0,5|2,6|0|1|4|0"
+        },
+        {
+          "action": "DOWN",
+          "state": "6,7|1,5|2,6|0|0|4|0"
+        },
+        {
+          "action": "DOWN",
+          "state": "7,7|0,5|2,6|0|3|4|0"
+        },
+        {
+          "action": "LEFT",
+          "state": "7,6|1,5|2,7|-1|0|4|0"
+        },
+        {
+          "action": "LEFT",
+          "state": "7,5|0,5|1,7|-1|0|4|0"
+        },
+        {
+          "action": "LEFT",
+          "state": "7,4|1,5|1,7|-1|0|4|0"
+        },
+        {
+          "action": "UP",
+          "state": "6,4|0,5|1,7|-1|0|4|0"
+        },
+        {
+          "action": "LEFT",
+          "state": "6,3|1,5|1,7|-1|0|4|0"
+        },
+        {
+          "action": "UP",
+          "state": "5,3|0,5|1,7|-1|0|4|0"
+        },
+        {
+          "action": "UP",
+          "state": "4,3|1,5|1,7|-1|0|4|0"
+        },
+        {
+          "action": "LEFT",
+          "state": "4,2|0,5|1,7|-1|0|4|0"
+        },
+        {
+          "action": "LEFT",
+          "state": "4,1|1,5|1,7|-1|0|4|0"
+        },
+        {
+          "action": "LEFT",
+          "state": "4,0|0,5|1,7|-1|0|4|0"
+        },
+        {
+          "action": "UP",
+          "state": "3,0|1,5|1,7|-1|0|4|0"
+        },
+        {
+          "action": "UP",
+          "state": "2,0|0,5|2,7|0|3|4|4"
+        },
+        {
+          "action": "UP",
+          "state": "1,0|1,5|2,6|0|2|4|4"
+        },
+        {
+          "action": "RIGHT",
+          "state": "1,1|0,5|2,6|0|1|4|4"
+        },
+        {
+          "action": "RIGHT",
+          "state": "1,2|1,5|2,6|0|0|6|4"
+        },
+        {
+          "action": "RIGHT",
+          "state": "1,3|0,5|2,5|1|3|6|4"
+        },
+        {
+          "action": "DOWN",
+          "state": "2,3|1,5|2,5|1|2|6|4"
+        },
+        {
+          "action": "RIGHT",
+          "state": "2,4|0,5|1,5|1|1|6|5"
+        },
+        {
+          "action": "RIGHT",
+          "state": "2,5|0,4|1,5|1|0|6|5"
+        },
+        {
+          "action": "RIGHT",
+          "state": "2,6|1,4|2,5|0|3|6|5"
+        },
+        {
+          "action": "RIGHT",
+          "state": "2,7|0,4|2,6|0|2|6|5"
+        },
+        {
+          "action": "UP",
+          "state": "1,7|1,4|2,6|0|1|6|5"
+        },
+        {
+          "action": "RIGHT",
+          "state": "1,8|0,4|2,6|0|0|7|5"
+        },
+        {
+          "action": "UP",
+          "state": "0,8|1,4|2,6|0|3|7|5"
+        },
+        {
+          "action": "LEFT",
+          "state": "WIN"
+        }
+      ],
+      "graphElapsedMs": 2543.871600000006,
+      "solveProfile": {
+        "predecessorBuildMs": 45.99399999999878,
+        "existentialMs": 39.57529999999679,
+        "guaranteedMs": 19.29189999999653,
+        "totalMs": 104.90999999999622
+      },
+      "memory": {
+        "typedArrayBytes": 55050240,
+        "estimatedMapBytes": 17411840,
+        "estimatedTotalBytes": 72462080
+      },
+      "elapsedMs": 3381.0135999999984
+    }
+  ]
+}

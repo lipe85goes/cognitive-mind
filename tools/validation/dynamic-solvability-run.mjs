@@ -7,17 +7,21 @@
 import fs from "node:fs";
 import path from "node:path";
 import {
-  API, setSeed, buildContext, initialState, encode, explore,
-  existential, guaranteed, witness, classify, hunterSupport,
+  API, setSeed, buildContext, initialState, encode, hunterSupport,
 } from "./dynamic-solver.mjs";
 
+import { analyzeCase } from "./dynamic-solvability-campaign-lib.mjs";
 const OUT = path.resolve(
   process.env.ROUTE_VALIDATION_OUT ?? "docs/archive/route-dynamic-solvability-01",
 );
 fs.mkdirSync(path.join(OUT, "witnesses"), { recursive: true });
 const kOf = (p) => API.posKey(p);
 const makeMap = (seed, difficulty, stage) => { setSeed(seed); return API.generateMaze(difficulty, stage); };
-const report = { mission: "ROTA-DYNAMIC-SOLVABILITY-01", PRE_CHEST_BASELINE: true };
+const report = {
+  mission: "ROTA-DYNAMIC-SOLVABILITY-01",
+  PRE_CHEST_BASELINE: true,
+  executionEnvironment: { node: process.version, pythonHashSeed: process.env.PYTHONHASHSEED ?? null },
+};
 
 // ===========================================================================
 // SOUNDNESS — every runtime outcome must be inside the enumerated support
@@ -136,18 +140,13 @@ const suspects = JSON.parse(
 ).potentialLocks;
 const BUDGET = Number(process.argv.includes("--budget") ? process.argv[process.argv.indexOf("--budget") + 1] : 250_000);
 const seedResults = [];
+const campaignStarted = performance.now();
 for (const s of suspects) {
-  const map = makeMap(s.seed, s.mode, s.route);
-  const ctx = buildContext(map, s.mode);
-  const t0 = Date.now();
-  const graph = explore(ctx, BUDGET);
-  const ex = existential(graph);
-  const gu = guaranteed(graph);
-  const verdict = classify(graph, ex, gu);
-  const w = witness(graph, ex);
-  const elapsed = Date.now() - t0;
-  const reachable = [...graph.nodes.keys()];
-  const nonWinning = reachable.filter((k) => !ex.has(k)).length;
+  const result = analyzeCase({
+    seed: s.seed, route: s.route, mode: s.mode,
+    limits: { maxStates: BUDGET },
+  });
+  const w = result.shortestExistentialWitness;
   const entry = {
     seed: s.seed, route: s.route, mode: s.mode,
     portal: s.portal, accesses: s.accesses,
@@ -157,19 +156,29 @@ for (const s of suspects) {
     archivedLightsLeft: s.lightsLeft,
     RECONSTRUCTED_FROM_SEED: true,
     suspiciousStateArchived: false,
-    initialExistential: ex.has(graph.start),
-    initialGuaranteed: gu.has(graph.start),
-    verdict,
-    statesExplored: graph.explored,
-    transitions: graph.transitions,
-    truncated: graph.truncated,
-    reachableNonWinning: nonWinning,
-    reachableWinning: reachable.length - nonWinning,
-    shortestExistentialWin: w ? w.length : null,
-    elapsedMs: elapsed,
+    initialExistential: result.initial.existential,
+    initialGuaranteed: result.initial.guaranteed,
+    verdict: result.classification,
+    statesExplored: result.states,
+    processedStates: result.processedStates,
+    transitions: result.transitions,
+    truncated: result.truncated,
+    resourceLimit: result.resourceLimit,
+    frontier: result.frontier,
+    peakFrontier: result.peakFrontier,
+    reachableNonWinning: result.reachableNonWinning,
+    reachableWinning: result.reachableWinning,
+    existentialAttractorStates: result.existentialAttractorStates,
+    guaranteedAttractorStates: result.guaranteedAttractorStates,
+    shortestExistentialWin: result.shortestExistentialWin,
+    shortestExistentialWitness: w,
+    graphElapsedMs: result.graphElapsedMs,
+    solveProfile: result.solveProfile,
+    memory: result.memory,
+    elapsedMs: result.elapsedMs,
   };
   seedResults.push(entry);
-  console.log(`  seed ${s.seed} rota${s.route}/${s.mode}: ${verdict} · estados ${graph.explored}${graph.truncated ? " (TRUNCADO)" : ""} · vitória mais curta ${w ? w.length : "-"} · ${elapsed}ms`);
+  console.log(`  seed ${s.seed} rota${s.route}/${s.mode}: ${entry.verdict} · estados ${entry.statesExplored}${entry.truncated ? " (TRUNCADO)" : ""} · vitória mais curta ${w ? w.length : "-"} · ${entry.elapsedMs.toFixed(1)}ms`);
   if (w && w.length) {
     fs.writeFileSync(
       path.join(OUT, "witnesses", `seed-${s.seed}-${s.mode}-r${s.route}.json`),
@@ -189,6 +198,9 @@ fs.writeFileSync(path.join(OUT, "suspect-seeds-analysis.json"), JSON.stringify({
   source: "docs/archive/route-traps-strategy-01/trap-runtime-gameplay.json potentialLocks",
   note: "The archived records hold seed/route/mode but not the full suspicious state, so every case is reconstructed from the seed and analysed from the INITIAL state. Suspicious-state analysis needs a capture the traps mission did not store.",
   budget: BUDGET,
+  runner: "PACKED_EXACT",
+  casesCompleted: seedResults.length,
+  totalRuntimeMs: performance.now() - campaignStarted,
   verdictCounts: counts,
   cases: seedResults,
 }, null, 2));
