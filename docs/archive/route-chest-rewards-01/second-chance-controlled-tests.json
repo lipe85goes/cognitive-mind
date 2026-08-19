@@ -12,21 +12,19 @@
     "no two pieces ever share a cell after an activation",
     "same state, same capture, same resolution"
   ],
-  "preExistingEngineCondition": {
-    "id": "HUNTER_MAY_STAND_ON_THE_SENTINEL",
-    "introducedByThisMission": false,
-    "detail": "chooseGuardianMove excludes the portal and armed traps from the Hunter's legal cells, never the Sentinel's, while decideSentinelMove is guarded against the reverse. The two defenders can therefore share a cell.",
-    "measuredInPlainPlay": "23 of 1466 turns across 9 combinations x 8 seeds, with no wall broken and no Second Chance involved",
-    "whyNotFixedHere": "§38 forbids changing the Hunter's policy in this mission; the Second Chance resolution neither creates nor worsens it, because every piece returns to the cell it already held."
+  "occupancyContract": {
+    "id": "DEFENDER_CO_OCCUPANCY_FORBIDDEN",
+    "detail": "Hunter destinations exclude the Sentinel's current cell; Sentinel settlement excludes the Hunter's destination.",
+    "measuredBy": "ROTA-DYNAMIC-SOLVABILITY-02 broad campaign and this Second Chance regression"
   },
   "tests": [
     {
       "id": "P",
       "name": "HUNTER_CAPTURE",
       "pass": true,
-      "captures": 13,
+      "captures": 17,
       "byExplorerWalkingIn": 12,
-      "byDefenderWalkingIn": 7,
+      "byDefenderWalkingIn": 6,
       "sample": [
         {
           "seed": 8100001,
@@ -64,17 +62,17 @@
           "kind": "defender-walked-in",
           "victim": "hunter-or-sentinel",
           "before": {
-            "player": "1,6",
-            "guardian": "1,8",
-            "sentinel": "0,7",
-            "turns": 25,
+            "player": "3,6",
+            "guardian": "3,8",
+            "sentinel": "1,7",
+            "turns": 17,
             "spent": false
           },
           "after": {
-            "player": "1,7",
-            "guardian": "1,8",
-            "sentinel": "0,7",
-            "turns": 26,
+            "player": "3,7",
+            "guardian": "3,8",
+            "sentinel": "1,7",
+            "turns": 18,
             "status": "playing",
             "rewardSpent": true,
             "secondChanceAvailable": false,
@@ -89,22 +87,22 @@
           "noOverlap": true
         },
         {
-          "seed": 8101000,
-          "combo": "medium/r2",
+          "seed": 8100004,
+          "combo": "easy/r1",
           "kind": "defender-walked-in",
           "victim": "hunter-or-sentinel",
           "before": {
-            "player": "3,0",
-            "guardian": "1,0",
-            "sentinel": "1,7",
-            "turns": 5,
+            "player": "2,4",
+            "guardian": "3,3",
+            "sentinel": "0,7",
+            "turns": 16,
             "spent": false
           },
           "after": {
-            "player": "2,0",
-            "guardian": "1,0",
-            "sentinel": "1,7",
-            "turns": 6,
+            "player": "3,4",
+            "guardian": "3,3",
+            "sentinel": "0,7",
+            "turns": 17,
             "status": "playing",
             "rewardSpent": true,
             "secondChanceAvailable": false,
@@ -124,7 +122,7 @@
       "id": "Q",
       "name": "SENTINEL_CAPTURE",
       "pass": true,
-      "captures": 6,
+      "captures": 1,
       "sample": [
         {
           "seed": 8100000,
@@ -133,7 +131,7 @@
           "victim": "sentinel",
           "before": {
             "player": "4,5",
-            "guardian": "0,7",
+            "guardian": "0,1",
             "sentinel": "4,6",
             "turns": 11,
             "spent": false,
@@ -142,73 +140,9 @@
           },
           "after": {
             "player": "4,5",
-            "guardian": "0,7",
+            "guardian": "0,1",
             "sentinel": "4,6",
             "turns": 12,
-            "status": "playing",
-            "rewardSpent": true,
-            "secondChanceAvailable": false,
-            "secondChanceSpent": true,
-            "message": "Segunda Chance: você resistiu e não avançou."
-          },
-          "survived": true,
-          "chargeConsumed": true,
-          "turnCounted": true,
-          "explorerStayedPut": true,
-          "defendersReturned": true,
-          "noOverlap": true
-        },
-        {
-          "seed": 8100002,
-          "combo": "easy/r1",
-          "kind": "explorer-walked-in",
-          "victim": "sentinel",
-          "before": {
-            "player": "1,5",
-            "guardian": "0,8",
-            "sentinel": "1,6",
-            "turns": 14,
-            "spent": false,
-            "into": "1,6",
-            "victim": "sentinel"
-          },
-          "after": {
-            "player": "1,5",
-            "guardian": "0,8",
-            "sentinel": "1,6",
-            "turns": 15,
-            "status": "playing",
-            "rewardSpent": true,
-            "secondChanceAvailable": false,
-            "secondChanceSpent": true,
-            "message": "Segunda Chance: você resistiu e não avançou."
-          },
-          "survived": true,
-          "chargeConsumed": true,
-          "turnCounted": true,
-          "explorerStayedPut": true,
-          "defendersReturned": true,
-          "noOverlap": true
-        },
-        {
-          "seed": 8100003,
-          "combo": "easy/r1",
-          "kind": "explorer-walked-in",
-          "victim": "sentinel",
-          "before": {
-            "player": "0,5",
-            "guardian": "1,8",
-            "sentinel": "0,6",
-            "turns": 15,
-            "spent": false,
-            "into": "0,6",
-            "victim": "sentinel"
-          },
-          "after": {
-            "player": "0,5",
-            "guardian": "1,8",
-            "sentinel": "0,6",
-            "turns": 16,
             "status": "playing",
             "rewardSpent": true,
             "secondChanceAvailable": false,
@@ -228,14 +162,14 @@
       "id": "S",
       "name": "NO_OVERLAP",
       "pass": true,
-      "activationsChecked": 19,
+      "activationsChecked": 18,
       "explorerSharedACellWithADefender": 0,
       "landedOnAWall": 0,
       "landedOffBoard": 0,
       "overlapsIntroducedByTheResolution": 0,
-      "defenderCoOccupancyCarriedInFromBeforeTheTurn": 1,
+      "defenderCoOccupancyCarriedInFromBeforeTheTurn": 0,
       "violations": [],
-      "proof": "every piece returns to the cell it held when the turn began, so the resolution cannot introduce an overlap that was not already there"
+      "proof": "every piece returns to its distinct start-of-turn cell; defender co-occupancy is forbidden"
     },
     {
       "id": "R",
@@ -255,7 +189,7 @@
           "rewardInResult": "Segunda Chance"
         },
         {
-          "seed": 8401003,
+          "seed": 8401000,
           "combo": "medium/r2",
           "firstSurvived": true,
           "secondStatus": "lost",
@@ -305,14 +239,14 @@
           "combo": "medium/r2",
           "identical": true,
           "resolution": {
-            "player": "4,1",
-            "guardian": "4,1",
-            "sentinel": "1,8",
-            "turns": 11,
+            "player": "4,8",
+            "guardian": "4,8",
+            "sentinel": "3,8",
+            "turns": 16,
             "status": "lost",
             "rewardSpent": true,
             "message": "Rota registrada. Você pode observar outro caminho com calma.",
-            "walls": "1,3|1,6|2,2|2,5|2,6|3,0|3,2|4,4|4,6|4,7|5,2|5,3|5,4|6,1|6,2|6,4|6,5|7,6|8,3"
+            "walls": "0,2|1,4|2,0|2,3|2,5|2,7|3,0|3,1|3,5|4,6|5,0|5,3|5,4|5,6|5,7|6,2|6,5|7,5|8,3|8,7|8,8"
           }
         },
         {
@@ -320,14 +254,14 @@
           "combo": "hard/r3",
           "identical": true,
           "resolution": {
-            "player": "0,3",
-            "guardian": "0,2",
-            "sentinel": "0,6",
-            "turns": 16,
+            "player": "1,2",
+            "guardian": "1,3",
+            "sentinel": "1,7",
+            "turns": 10,
             "status": "playing",
             "rewardSpent": true,
             "message": "Segunda Chance: você resistiu e não avançou.",
-            "walls": "1,3|1,6|2,2|2,5|3,0|3,2|4,1|4,4|4,6|4,7|4,8|5,3|5,4|6,1|6,3|6,4|7,6|7,8|8,2|8,3"
+            "walls": "0,1|0,2|0,3|0,5|1,5|2,1|2,2|2,3|2,7|3,3|3,6|3,7|4,2|4,3|4,5|4,6|4,7|5,1|5,3|5,4|6,7|7,2|7,6|8,2|8,3|8,4|8,5|8,6|8,7"
           }
         }
       ]

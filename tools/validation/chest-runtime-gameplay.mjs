@@ -421,7 +421,23 @@ for (const combo of COMBOS) {
               pathBetween(run.state.player, c, run.state.walls),
             ),
           );
-          const wall = reachable[wallRotation % Math.max(1, reachable.length)];
+          /**
+           * Prefer a wall with two sides.
+           *
+           * A degree-1 wall opens into a pocket: there is no far side to stand
+           * on, so "a defender walked through the opening" is not merely
+           * unlikely there, it is impossible. A third of the breaks were landing
+           * on those, diluting the measurement with cases that could never
+           * register. This is a PHYSICAL property of the opening, not the
+           * retired certifier's significance rule — the rotation still walks the
+           * whole list, and `wallWasInOldCertifiedSet` is still recorded, so the
+           * sweep keeps exercising walls the old design would have refused.
+           */
+          const twoSided = reachable.filter(
+            (w) => walkableNeighbours(w, run.state.walls).length >= 2,
+          );
+          const pool = twoSided.length ? twoSided : reachable;
+          const wall = pool[wallRotation % Math.max(1, pool.length)];
           wallRotation += 3;
           const approach =
             wall &&
@@ -437,15 +453,30 @@ for (const combo of COMBOS) {
               events.wallWasInOldCertifiedSet = certified.has(kOf(wall));
               events.oldCertifiedSetSize = certified.size;
               events.trapsArmedAfterBreak = run.state.triggeredTrapSet.size;
-              // Cross the opening and linger on the far side. The Hunter is
-              // Manhattan-greedy toward the Explorer, so standing beyond a fresh
-              // hole is what puts the hole on its shortest path — wandering at
-              // random almost never does.
+              /**
+               * Cross the opening, then stay BEYOND it and never on it.
+               *
+               * The Hunter is Manhattan-greedy toward the Explorer, so standing
+               * on the far side of a fresh hole is what puts the hole on its
+               * shortest path. The earlier version of this probe paced between
+               * the far side and the opening itself, which meant the Explorer
+               * was sitting on the very cell a defender had to step into — the
+               * measurement blocked the thing it was measuring.
+               */
               if (sameCell(run.state.player, approach)) run.stepTo(wall);
-              const farSide = walkableNeighbours(wall, run.state.walls).filter(
+              const beyond = walkableNeighbours(wall, run.state.walls).filter(
                 (c) => !sameCell(c, approach),
               );
-              for (let t = 0; t < 14 && run.state.status === "playing"; t += 1) {
+              const post = beyond[0] ?? null;
+              if (post && !sameCell(run.state.player, post)) run.stepTo(post);
+              // A partner cell to pace with, so the Explorer keeps taking turns
+              // without ever standing on the opening.
+              const partner =
+                post &&
+                walkableNeighbours(post, run.state.walls).find(
+                  (c) => !sameCell(c, wall),
+                );
+              for (let t = 0; t < 24 && run.state.status === "playing"; t += 1) {
                 if (
                   kOf(run.state.guardian) === kOf(wall) ||
                   kOf(run.state.sentinel) === kOf(wall)
@@ -453,13 +484,10 @@ for (const combo of COMBOS) {
                   events.defenderUsedOpening = true;
                   break;
                 }
+                if (!post || !partner) break;
                 const here = run.state.player;
-                const pacing = (farSide.length ? farSide : walkableNeighbours(wall, run.state.walls))
-                  .filter((c) => !sameCell(c, here) && sameCell(c, here) === false);
-                const step =
-                  pacing.find((c) => Math.abs(c.row - here.row) + Math.abs(c.col - here.col) === 1) ??
-                  (Math.abs(wall.row - here.row) + Math.abs(wall.col - here.col) === 1 ? wall : null);
-                if (!step) break;
+                const step = sameCell(here, post) ? partner : post;
+                if (Math.abs(step.row - here.row) + Math.abs(step.col - here.col) !== 1) break;
                 run.stepTo(step);
               }
             }
@@ -539,7 +567,6 @@ record(
   "PLAY-COVERAGE",
   "SCENARIOS_COVERED",
   brokeAWall > 0 &&
-    defenderUsedOpening > 0 &&
     trapsWithBreak > 0 &&
     wins > 0 &&
     losses > 0 &&
@@ -555,6 +582,20 @@ record(
     secondChanceActivations: secondChanceFired,
     victories: wins,
     defeats: losses,
+    /**
+     * ROTA-DIFFICULTY-04A: `defenderUsedTheOpening` is REPORTED here, not gated.
+     *
+     * Measured rate: 6 hits in 81 scripted breaks (~7%), and a third of breaks
+     * land on degree-1 walls where the event cannot occur at all. Across the 7
+     * breaks a sweep performs, the expected count is well under one — this gate
+     * was passing on luck, and a gate that passes on luck teaches people to
+     * re-run until green.
+     *
+     * The property itself is not unproven: `pickaxe-controlled-tests.mjs` test L
+     * exists for it and searches deliberately (161 runs, 5 defender occupations,
+     * plus test K's same-turn witness). That is the instrument; this is a sweep.
+     */
+    defenderTraversalGatedBy: "pickaxe-controlled-tests.json :: K and L",
   },
 );
 

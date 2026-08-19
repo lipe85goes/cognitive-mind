@@ -35,25 +35,44 @@ assert(first.geometrySamples.length === 9, "GEOMETRY_SAMPLE_COUNT");
 assert(first.uiVsValidationGeneration.uiSamples.length === 9, "UI_SAMPLE_COUNT");
 assert(first.uiVsValidationGeneration.determinismChecks === 9, "UI_DETERMINISM_CHECKS");
 assert(first.uiVsValidationGeneration.deterministicSamples === 9, "UI_NONDETERMINISTIC");
+/**
+ * Still zero, and still NOT a defect.
+ *
+ * ROTA-DIFFICULTY-04A investigated this separately from the route reset and
+ * classified it EXPECTED_RNG_SEQUENCE_DIFFERENCE: the hook generates a board on
+ * mount, and another on mode selection, before the player presses Start, so its
+ * map is drawn further along the same RNG stream than a single direct
+ * `generateMaze` call. Replaying that exact sequence directly reproduces the UI
+ * map byte for byte (54/54) — see `route-difficulty-identity-tests.mjs` test F.
+ */
 assert(
   first.uiVsValidationGeneration.directIdentityMatches === 0,
   "DIRECT_AND_UI_UNEXPECTEDLY_IDENTICAL",
 );
-assert(first.uiVsValidationGeneration.routeResetCount === 4, "ROUTE_RESET_COUNT");
+/**
+ * ROTA-DIFFICULTY-04A: these two assertions used to pin the DEFECT — four
+ * combinations (R2/R3 x medium/hard) whose Route was silently reset to 1 by
+ * `changeDifficulty`. That was the right thing for a baseline to record; it is
+ * the wrong thing to keep asserting once the cause is fixed. They now pin the
+ * contract instead: selecting a mode never changes the Route.
+ */
+assert(first.uiVsValidationGeneration.routeResetCount === 0, "ROUTE_RESET_COUNT", {
+  observed: first.uiVsValidationGeneration.routeResetCount,
+  baselineBeforeFix: 4,
+});
 assert(
-  JSON.stringify(
-    first.uiVsValidationGeneration.routeResetRequestedCombinations.sort(),
-  ) ===
-    JSON.stringify(
-      [
-        "route2/hard",
-        "route2/medium",
-        "route3/hard",
-        "route3/medium",
-      ].sort(),
-    ),
+  first.uiVsValidationGeneration.routeResetRequestedCombinations.length === 0,
   "ROUTE_RESET_COMBINATIONS",
   first.uiVsValidationGeneration.routeResetRequestedCombinations,
+);
+assert(
+  first.uiVsValidationGeneration.requestedCombinationPreserved ===
+    first.uiVsValidationGeneration.uiSamples.length,
+  "REQUESTED_COMBINATION_NOT_PRESERVED",
+  {
+    preserved: first.uiVsValidationGeneration.requestedCombinationPreserved,
+    samples: first.uiVsValidationGeneration.uiSamples.length,
+  },
 );
 assert(first.policyRuns.length === 36, "POLICY_RUN_COUNT");
 assert(first.integrity.generationFailures.length === 0, "GENERATION_FAILURE");

@@ -25,20 +25,20 @@
       "id": "REG-TRAPS",
       "name": "TRAPS_UNCHANGED",
       "pass": true,
-      "trapsArmedOnArrival": 33,
+      "trapsArmedOnArrival": 41,
       "trapsThatFailedToArm": 0,
-      "explorerRecrossedArmedTrap": 30,
+      "explorerRecrossedArmedTrap": 33,
       "hunterOnArmedTrap": 0,
       "sentinelOnArmedTrap": 0,
       "penaltiesToExplorer": 0,
-      "runsWithSeveralArmed": 11,
+      "runsWithSeveralArmed": 16,
       "armedAfterReset": 0
     },
     {
       "id": "REG-PORTAL",
       "name": "PORTAL_AND_LIGHTS_UNCHANGED",
       "pass": true,
-      "portalRefusedWithoutLights": 3,
+      "portalRefusedWithoutLights": 5,
       "winsBeforeTheObjective": 0,
       "lightRequirementChangedByABreak": 0,
       "lightCollectedByABreak": 0,
@@ -51,8 +51,8 @@
       "scenariosPlayed": 18,
       "expected": 18,
       "crashes": 0,
-      "victories": 10,
-      "defeats": 8,
+      "victories": 4,
+      "defeats": 14,
       "resetsClean": 18
     },
     {
@@ -60,13 +60,14 @@
       "name": "SCENARIOS_COVERED",
       "pass": true,
       "wallBreaks": 7,
-      "wallsBrokenOutsideTheOldCertifiedSet": 4,
-      "wallsBrokenInsideTheOldCertifiedSet": 3,
+      "wallsBrokenOutsideTheOldCertifiedSet": 5,
+      "wallsBrokenInsideTheOldCertifiedSet": 2,
       "defenderUsedTheOpening": 1,
-      "trapsAndBreakInTheSameRoute": 6,
-      "secondChanceActivations": 3,
-      "victories": 10,
-      "defeats": 8
+      "trapsAndBreakInTheSameRoute": 7,
+      "secondChanceActivations": 7,
+      "victories": 4,
+      "defeats": 14,
+      "defenderTraversalGatedBy": "pickaxe-controlled-tests.json :: K and L"
     }
   ],
   "scenarios": [
@@ -76,7 +77,7 @@
       "reward": "pickaxe",
       "outcome": "won",
       "status": "won",
-      "turns": 45,
+      "turns": 55,
       "lights": "3/3",
       "events": {
         "chestOpened": true,
@@ -183,7 +184,7 @@
       "reward": "pickaxe",
       "outcome": "lost",
       "status": "lost",
-      "turns": 51,
+      "turns": 63,
       "lights": "5/5",
       "events": {
         "chestOpened": true,
@@ -238,8 +239,8 @@
       "reward": "pickaxe",
       "outcome": "lost",
       "status": "lost",
-      "turns": 25,
-      "lights": "1/3",
+      "turns": 67,
+      "lights": "2/3",
       "events": {
         "chestOpened": true,
         "reward": "pickaxe",
@@ -248,8 +249,8 @@
         "trapsArmedBeforeBreak": 3,
         "trapsArmedAfterBreak": 3,
         "secondChanceFired": false,
-        "wall": "3,8",
-        "wallWasInOldCertifiedSet": true,
+        "wall": "5,2",
+        "wallWasInOldCertifiedSet": false,
         "oldCertifiedSetSize": 10
       },
       "completion": {
@@ -293,23 +294,26 @@
       "reward": "pickaxe",
       "outcome": "lost",
       "status": "lost",
-      "turns": 9,
+      "turns": 39,
       "lights": "1/4",
       "events": {
         "chestOpened": true,
         "reward": "pickaxe",
-        "wallBroken": false,
-        "defenderUsedOpening": false,
-        "trapsArmedBeforeBreak": 0,
-        "trapsArmedAfterBreak": 0,
-        "secondChanceFired": false
+        "wallBroken": true,
+        "defenderUsedOpening": true,
+        "trapsArmedBeforeBreak": 1,
+        "trapsArmedAfterBreak": 1,
+        "secondChanceFired": false,
+        "wall": "5,2",
+        "wallWasInOldCertifiedSet": true,
+        "oldCertifiedSetSize": 18
       },
       "completion": {
         "won": false,
         "chestOpened": true,
         "rewardChosen": "Picareta",
-        "rewardSpent": false,
-        "wallBroken": false
+        "rewardSpent": true,
+        "wallBroken": true
       },
       "resetClean": true
     },
@@ -317,210 +321,45 @@
       "combo": "r2/medium",
       "seed": 9920000,
       "reward": "second-chance",
-      "outcome": "won",
-      "status": "won",
-      "turns": 28,
-      "lights": "4/4",
-      "events": {
-        "chestOpened": true,
-        "reward": "second-chance",
-        "wallBroken": false,
-        "defenderUsedOpening": false,
-        "trapsArmedBeforeBreak": 0,
-        "trapsArmedAfterBreak": 0,
-        "secondChanceFired": false
-      },
-      "completion": {
-        "won": true,
-        "chestOpened": true,
-        "rewardChosen": "Segunda Chance",
-        "rewardSpent": false,
-        "wallBroken": false
-      },
-      "resetClean": true
-    },
-    {
-      "combo": "r2/hard",
-      "seed": 9920000,
-      "reward": "pickaxe",
-      "outcome": "won",
-      "status": "won",
-      "turns": 79,
-      "lights": "5/5",
-      "events": {
-        "chestOpened": true,
-        "reward": "pickaxe",
-        "wallBroken": true,
-        "defenderUsedOpening": false,
-        "trapsArmedBeforeBreak": 0,
-        "trapsArmedAfterBreak": 2,
-        "secondChanceFired": false,
-        "wall": "6,1",
-        "wallWasInOldCertifiedSet": true,
-        "oldCertifiedSetSize": 7
-      },
-      "completion": {
-        "won": true,
-        "chestOpened": true,
-        "rewardChosen": "Picareta",
-        "rewardSpent": true,
-        "wallBroken": true
-      },
-      "resetClean": true
-    },
-    {
-      "combo": "r2/hard",
-      "seed": 9920000,
-      "reward": "second-chance",
-      "outcome": "won",
-      "status": "won",
-      "turns": 22,
-      "lights": "5/5",
-      "events": {
-        "chestOpened": true,
-        "reward": "second-chance",
-        "wallBroken": false,
-        "defenderUsedOpening": false,
-        "trapsArmedBeforeBreak": 0,
-        "trapsArmedAfterBreak": 0,
-        "secondChanceFired": false
-      },
-      "completion": {
-        "won": true,
-        "chestOpened": true,
-        "rewardChosen": "Segunda Chance",
-        "rewardSpent": false,
-        "wallBroken": false
-      },
-      "resetClean": true
-    },
-    {
-      "combo": "r3/easy",
-      "seed": 9930000,
-      "reward": "pickaxe",
-      "outcome": "won",
-      "status": "won",
-      "turns": 61,
-      "lights": "4/4",
-      "events": {
-        "chestOpened": true,
-        "reward": "pickaxe",
-        "wallBroken": true,
-        "defenderUsedOpening": false,
-        "trapsArmedBeforeBreak": 2,
-        "trapsArmedAfterBreak": 2,
-        "secondChanceFired": false,
-        "wall": "8,2",
-        "wallWasInOldCertifiedSet": true,
-        "oldCertifiedSetSize": 8
-      },
-      "completion": {
-        "won": true,
-        "chestOpened": true,
-        "rewardChosen": "Picareta",
-        "rewardSpent": true,
-        "wallBroken": true
-      },
-      "resetClean": true
-    },
-    {
-      "combo": "r3/easy",
-      "seed": 9930000,
-      "reward": "second-chance",
-      "outcome": "won",
-      "status": "won",
-      "turns": 24,
-      "lights": "4/4",
-      "events": {
-        "chestOpened": true,
-        "reward": "second-chance",
-        "wallBroken": false,
-        "defenderUsedOpening": false,
-        "trapsArmedBeforeBreak": 0,
-        "trapsArmedAfterBreak": 0,
-        "secondChanceFired": false
-      },
-      "completion": {
-        "won": true,
-        "chestOpened": true,
-        "rewardChosen": "Segunda Chance",
-        "rewardSpent": false,
-        "wallBroken": false
-      },
-      "resetClean": true
-    },
-    {
-      "combo": "r3/medium",
-      "seed": 9930000,
-      "reward": "pickaxe",
       "outcome": "lost",
       "status": "lost",
-      "turns": 60,
-      "lights": "4/4",
+      "turns": 20,
+      "lights": "2/4",
       "events": {
         "chestOpened": true,
-        "reward": "pickaxe",
-        "wallBroken": true,
-        "defenderUsedOpening": true,
-        "trapsArmedBeforeBreak": 1,
-        "trapsArmedAfterBreak": 2,
-        "secondChanceFired": false,
-        "wall": "1,5",
-        "wallWasInOldCertifiedSet": false,
-        "oldCertifiedSetSize": 8
+        "reward": "second-chance",
+        "wallBroken": false,
+        "defenderUsedOpening": false,
+        "trapsArmedBeforeBreak": 0,
+        "trapsArmedAfterBreak": 0,
+        "secondChanceFired": true
       },
       "completion": {
         "won": false,
         "chestOpened": true,
-        "rewardChosen": "Picareta",
-        "rewardSpent": true,
-        "wallBroken": true
-      },
-      "resetClean": true
-    },
-    {
-      "combo": "r3/medium",
-      "seed": 9930000,
-      "reward": "second-chance",
-      "outcome": "won",
-      "status": "won",
-      "turns": 24,
-      "lights": "4/4",
-      "events": {
-        "chestOpened": true,
-        "reward": "second-chance",
-        "wallBroken": false,
-        "defenderUsedOpening": false,
-        "trapsArmedBeforeBreak": 0,
-        "trapsArmedAfterBreak": 0,
-        "secondChanceFired": false
-      },
-      "completion": {
-        "won": true,
-        "chestOpened": true,
         "rewardChosen": "Segunda Chance",
-        "rewardSpent": false,
+        "rewardSpent": true,
         "wallBroken": false
       },
       "resetClean": true
     },
     {
-      "combo": "r3/hard",
-      "seed": 9930000,
+      "combo": "r2/hard",
+      "seed": 9920000,
       "reward": "pickaxe",
       "outcome": "lost",
       "status": "lost",
-      "turns": 37,
-      "lights": "2/5",
+      "turns": 53,
+      "lights": "1/5",
       "events": {
         "chestOpened": true,
         "reward": "pickaxe",
         "wallBroken": true,
         "defenderUsedOpening": false,
         "trapsArmedBeforeBreak": 0,
-        "trapsArmedAfterBreak": 0,
+        "trapsArmedAfterBreak": 3,
         "secondChanceFired": false,
-        "wall": "2,3",
+        "wall": "6,2",
         "wallWasInOldCertifiedSet": false,
         "oldCertifiedSetSize": 14
       },
@@ -534,13 +373,68 @@
       "resetClean": true
     },
     {
-      "combo": "r3/hard",
+      "combo": "r2/hard",
+      "seed": 9920000,
+      "reward": "second-chance",
+      "outcome": "lost",
+      "status": "lost",
+      "turns": 12,
+      "lights": "0/5",
+      "events": {
+        "chestOpened": true,
+        "reward": "second-chance",
+        "wallBroken": false,
+        "defenderUsedOpening": false,
+        "trapsArmedBeforeBreak": 0,
+        "trapsArmedAfterBreak": 0,
+        "secondChanceFired": true
+      },
+      "completion": {
+        "won": false,
+        "chestOpened": true,
+        "rewardChosen": "Segunda Chance",
+        "rewardSpent": true,
+        "wallBroken": false
+      },
+      "resetClean": true
+    },
+    {
+      "combo": "r3/easy",
+      "seed": 9930000,
+      "reward": "pickaxe",
+      "outcome": "lost",
+      "status": "lost",
+      "turns": 52,
+      "lights": "1/4",
+      "events": {
+        "chestOpened": true,
+        "reward": "pickaxe",
+        "wallBroken": true,
+        "defenderUsedOpening": false,
+        "trapsArmedBeforeBreak": 2,
+        "trapsArmedAfterBreak": 2,
+        "secondChanceFired": false,
+        "wall": "2,3",
+        "wallWasInOldCertifiedSet": false,
+        "oldCertifiedSetSize": 8
+      },
+      "completion": {
+        "won": false,
+        "chestOpened": true,
+        "rewardChosen": "Picareta",
+        "rewardSpent": true,
+        "wallBroken": true
+      },
+      "resetClean": true
+    },
+    {
+      "combo": "r3/easy",
       "seed": 9930000,
       "reward": "second-chance",
       "outcome": "won",
       "status": "won",
-      "turns": 25,
-      "lights": "5/5",
+      "turns": 24,
+      "lights": "4/4",
       "events": {
         "chestOpened": true,
         "reward": "second-chance",
@@ -555,6 +449,113 @@
         "chestOpened": true,
         "rewardChosen": "Segunda Chance",
         "rewardSpent": false,
+        "wallBroken": false
+      },
+      "resetClean": true
+    },
+    {
+      "combo": "r3/medium",
+      "seed": 9930000,
+      "reward": "pickaxe",
+      "outcome": "lost",
+      "status": "lost",
+      "turns": 27,
+      "lights": "1/5",
+      "events": {
+        "chestOpened": true,
+        "reward": "pickaxe",
+        "wallBroken": true,
+        "defenderUsedOpening": false,
+        "trapsArmedBeforeBreak": 1,
+        "trapsArmedAfterBreak": 2,
+        "secondChanceFired": false,
+        "wall": "2,4",
+        "wallWasInOldCertifiedSet": true,
+        "oldCertifiedSetSize": 14
+      },
+      "completion": {
+        "won": false,
+        "chestOpened": true,
+        "rewardChosen": "Picareta",
+        "rewardSpent": true,
+        "wallBroken": true
+      },
+      "resetClean": true
+    },
+    {
+      "combo": "r3/medium",
+      "seed": 9930000,
+      "reward": "second-chance",
+      "outcome": "lost",
+      "status": "lost",
+      "turns": 14,
+      "lights": "1/5",
+      "events": {
+        "chestOpened": true,
+        "reward": "second-chance",
+        "wallBroken": false,
+        "defenderUsedOpening": false,
+        "trapsArmedBeforeBreak": 0,
+        "trapsArmedAfterBreak": 0,
+        "secondChanceFired": true
+      },
+      "completion": {
+        "won": false,
+        "chestOpened": true,
+        "rewardChosen": "Segunda Chance",
+        "rewardSpent": true,
+        "wallBroken": false
+      },
+      "resetClean": true
+    },
+    {
+      "combo": "r3/hard",
+      "seed": 9930000,
+      "reward": "pickaxe",
+      "outcome": "lost",
+      "status": "lost",
+      "turns": 25,
+      "lights": "1/6",
+      "events": {
+        "chestOpened": true,
+        "reward": "pickaxe",
+        "wallBroken": false,
+        "defenderUsedOpening": false,
+        "trapsArmedBeforeBreak": 1,
+        "trapsArmedAfterBreak": 0,
+        "secondChanceFired": false
+      },
+      "completion": {
+        "won": false,
+        "chestOpened": true,
+        "rewardChosen": "Picareta",
+        "rewardSpent": false,
+        "wallBroken": false
+      },
+      "resetClean": true
+    },
+    {
+      "combo": "r3/hard",
+      "seed": 9930000,
+      "reward": "second-chance",
+      "outcome": "lost",
+      "status": "lost",
+      "turns": 22,
+      "lights": "3/6",
+      "events": {
+        "chestOpened": true,
+        "reward": "second-chance",
+        "wallBroken": false,
+        "defenderUsedOpening": false,
+        "trapsArmedBeforeBreak": 0,
+        "trapsArmedAfterBreak": 0,
+        "secondChanceFired": true
+      },
+      "completion": {
+        "won": false,
+        "chestOpened": true,
+        "rewardChosen": "Segunda Chance",
+        "rewardSpent": true,
         "wallBroken": false
       },
       "resetClean": true

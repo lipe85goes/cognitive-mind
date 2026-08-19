@@ -27,7 +27,7 @@
         },
         {
           "combo": "medium/r2",
-          "chest": "5,1",
+          "chest": "6,3",
           "chestOpened": false,
           "rewardSelected": null,
           "pickaxeAvailable": false,
@@ -36,7 +36,7 @@
         },
         {
           "combo": "hard/r3",
-          "chest": "5,1",
+          "chest": "2,0",
           "chestOpened": false,
           "rewardSelected": null,
           "pickaxeAvailable": false,
@@ -67,7 +67,7 @@
           "rewardSelected": null
         },
         {
-          "seed": 6102000,
+          "seed": 6102001,
           "combo": "hard/r3",
           "playerOnChest": true,
           "chestOpened": true,
@@ -98,49 +98,49 @@
           "turnsAfterChoice": 4,
           "choiceIsNotATurn": true,
           "defendersAfterChoice": {
-            "guardian": "0,6",
+            "guardian": "0,8",
             "sentinel": "1,7"
           }
         },
         {
           "seed": 6101000,
           "defendersBeforeChest": {
-            "guardian": "2,7",
-            "sentinel": "1,8",
-            "turns": 3
-          },
-          "defendersDuringPause": {
-            "guardian": "2,7",
-            "sentinel": "1,8",
+            "guardian": "1,4",
+            "sentinel": "1,7",
             "turns": 4
           },
+          "defendersDuringPause": {
+            "guardian": "1,4",
+            "sentinel": "1,7",
+            "turns": 5
+          },
           "defendersStill": true,
-          "turnsDuringPause": 4,
-          "turnsAfterChoice": 4,
+          "turnsDuringPause": 5,
+          "turnsAfterChoice": 5,
           "choiceIsNotATurn": true,
           "defendersAfterChoice": {
-            "guardian": "3,7",
-            "sentinel": "1,8"
+            "guardian": "2,4",
+            "sentinel": "1,7"
           }
         },
         {
-          "seed": 6102000,
+          "seed": 6102001,
           "defendersBeforeChest": {
-            "guardian": "1,1",
+            "guardian": "0,2",
             "sentinel": "1,7",
-            "turns": 3
+            "turns": 5
           },
           "defendersDuringPause": {
-            "guardian": "1,1",
+            "guardian": "0,2",
             "sentinel": "1,7",
-            "turns": 4
+            "turns": 6
           },
           "defendersStill": true,
-          "turnsDuringPause": 4,
-          "turnsAfterChoice": 4,
+          "turnsDuringPause": 6,
+          "turnsAfterChoice": 6,
           "choiceIsNotATurn": true,
           "defendersAfterChoice": {
-            "guardian": "2,1",
+            "guardian": "1,2",
             "sentinel": "1,7"
           }
         }

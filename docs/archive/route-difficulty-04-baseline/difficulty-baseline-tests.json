@@ -9,8 +9,8 @@
     "quiet": true
   },
   "fingerprints": {
-    "first": "7b4ee688ab17ad6afd2c86db021f83f94a91bb281a5570d09b497d1ce9e1e8a2",
-    "second": "7b4ee688ab17ad6afd2c86db021f83f94a91bb281a5570d09b497d1ce9e1e8a2",
+    "first": "92478c79894ee9a6082ac5a547bbce15a02ed1edf0a93095a168fe47ce2ee5ad",
+    "second": "92478c79894ee9a6082ac5a547bbce15a02ed1edf0a93095a168fe47ce2ee5ad",
     "equal": true
   },
   "matrixRows": 9,
@@ -18,7 +18,7 @@
     "samples": 9,
     "deterministic": 9,
     "directIdentityMatches": 0,
-    "routeResetCount": 4
+    "routeResetCount": 0
   },
   "policyRuns": 36,
   "failures": [],

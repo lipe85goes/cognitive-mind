@@ -81,13 +81,7 @@
     "staticRender": true
   },
   "knownPreExistingConditions": [
-    {
-      "id": "HUNTER_MAY_STAND_ON_THE_SENTINEL",
-      "introducedByThisMission": false,
-      "detail": "chooseGuardianMove excludes the portal and armed traps from the Hunter's legal cells, never the Sentinel's, while decideSentinelMove is guarded against the reverse. The two defenders can therefore share a cell.",
-      "measuredInPlainPlay": "23 of 1466 turns across 9 combinations x 8 seeds, with no wall broken and no Second Chance involved",
-      "whyNotFixedHere": "§38 forbids changing the Hunter's policy in this mission; the Second Chance resolution neither creates nor worsens it, because every piece returns to the cell it already held."
-    }
+    null
   ],
   "acceptance": [
     {
@@ -122,9 +116,9 @@
         "chest-runtime-gameplay.json PLAY-COVERAGE"
       ],
       "measured": {
-        "inControlledTests": 4,
-        "inGameplaySweep": 4,
-        "insideOldSetForComparison": 3
+        "inControlledTests": 6,
+        "inGameplaySweep": 5,
+        "insideOldSetForComparison": 2
       }
     },
     {
@@ -233,13 +227,13 @@
         "id": "REG-TRAPS",
         "name": "TRAPS_UNCHANGED",
         "pass": true,
-        "trapsArmedOnArrival": 33,
+        "trapsArmedOnArrival": 41,
         "trapsThatFailedToArm": 0,
-        "explorerRecrossedArmedTrap": 30,
+        "explorerRecrossedArmedTrap": 33,
         "hunterOnArmedTrap": 0,
         "sentinelOnArmedTrap": 0,
         "penaltiesToExplorer": 0,
-        "runsWithSeveralArmed": 11,
+        "runsWithSeveralArmed": 16,
         "armedAfterReset": 0
       }
     },
@@ -282,7 +276,7 @@
         "id": "REG-PORTAL",
         "name": "PORTAL_AND_LIGHTS_UNCHANGED",
         "pass": true,
-        "portalRefusedWithoutLights": 3,
+        "portalRefusedWithoutLights": 5,
         "winsBeforeTheObjective": 0,
         "lightRequirementChangedByABreak": 0,
         "lightCollectedByABreak": 0,

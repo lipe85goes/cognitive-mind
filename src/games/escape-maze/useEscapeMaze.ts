@@ -2767,10 +2767,24 @@ export function useEscapeMaze(onComplete: CompleteFn, initialRouteNumber = 1) {
     startNewMaze(difficulty, "playing", nextRouteNumber);
   };
 
+  /**
+   * Mode is a property of the route being set up, not of the campaign.
+   *
+   * ROTA-DIFFICULTY-04A: this used to `setRouteNumber(1)` and generate Route 1.
+   * That was correct when it was written — in `0d7e7fa` the hook could only ever
+   * mount at Route 1, so "back to 1" and "back to where this session started"
+   * were the same sentence. Two days later `3bde618` added `initialRouteNumber`
+   * so a session could mount straight into Route N, and updated the state
+   * INITIALISER without revisiting this line. From then on, a player handed
+   * Route 2 and choosing Desafiador silently received Route 1.
+   *
+   * The route the player was given is preserved. Returning to Route 1 is still
+   * possible and still explicit — it is what entering the world from Home does,
+   * by mounting a fresh session (`openActivity` → `initialRouteNumber` cleared).
+   */
   const changeDifficulty = (nextDifficulty: DifficultyLevel) => {
     setDifficulty(nextDifficulty);
-    setRouteNumber(1);
-    startNewMaze(nextDifficulty, "setup", 1);
+    startNewMaze(nextDifficulty, "setup", routeNumber);
   };
   /**
    * The defenders' half of a turn: Hunter first, then Sentinel on the state the
