@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getPredatorNextPosition, manhattanDistance } from "@/engine/difficulty";
+import { beginSeededGeneration, routeRandom } from "@/engine/route-random";
 import { calculateEscapeMazeScore } from "@/engine/scoring";
 import {
   playGentleErrorTone,
@@ -523,7 +524,7 @@ function cloneGrid(grid: number[][]): number[][] {
 }
 
 function randomItem<T>(items: readonly T[]): T {
-  return items[Math.floor(Math.random() * items.length)];
+  return items[Math.floor(routeRandom() * items.length)];
 }
 
 function gridToWalls(grid: number[][]): Set<string> {
@@ -724,8 +725,8 @@ function randomizeWalls(
   };
 
   for (let attempt = 0; attempt < profile.wallRandomizationAttempts; attempt++) {
-    const row = Math.floor(Math.random() * ROWS);
-    const col = Math.floor(Math.random() * COLS);
+    const row = Math.floor(routeRandom() * ROWS);
+    const col = Math.floor(routeRandom() * COLS);
     const key = `${row},${col}`;
     if (protectedCells.has(key)) continue;
 
@@ -821,7 +822,7 @@ function chooseStars(
 
       candidates.push({
         pos,
-        score: stageScore + guardianDistance * 0.4 + Math.random() * 0.25,
+        score: stageScore + guardianDistance * 0.4 + routeRandom() * 0.25,
       });
     }
   }
@@ -942,7 +943,7 @@ function chooseTrapsAndChest(
       baseGuardianPath,
     );
     if (future <= 0) return; // would seal the defender off, or change nothing
-    trapCandidates.push({ pos, score: future + Math.random() * 0.25 });
+    trapCandidates.push({ pos, score: future + routeRandom() * 0.25 });
   });
   trapCandidates.sort((a, b) => b.score - a.score);
 
@@ -2113,7 +2114,7 @@ function chooseGuardianMove(
   );
   if (alternatives.length === 0) return guardian;
 
-  if (difficulty === "easy" && Math.random() < 0.45) {
+  if (difficulty === "easy" && routeRandom() < 0.45) {
     return randomItem(alternatives);
   }
 
@@ -2248,6 +2249,10 @@ export function generateMaze(
   difficulty: DifficultyLevel,
   routeNumber = 1,
 ): MazeMap {
+  // ROTA-DIFFICULTY-04C: a no-op unless a diagnostic seed is armed, and nothing
+  // in the product arms one. When armed it restarts the seeded stream here, so
+  // a scenario is the same board on Launch, on Start and on every Restart.
+  beginSeededGeneration();
   const routeStage = getRouteStage(routeNumber);
   const exitCandidates = ROUTE_STAGE_EXIT_CANDIDATES[routeStage];
   const templates = getRouteStageTemplates(routeStage);

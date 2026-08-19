@@ -1,3 +1,4 @@
+import { routeRandom } from "@/engine/route-random";
 import type { DifficultyLevel, GridPosition } from "@/types/game";
 
 /** Manhattan distance between two grid cells. */
@@ -40,7 +41,7 @@ export function getValidNeighbors(
 }
 
 function pickRandom<T>(items: T[]): T {
-  return items[Math.floor(Math.random() * items.length)];
+  return items[Math.floor(routeRandom() * items.length)];
 }
 
 /**
@@ -63,7 +64,7 @@ export function getPredatorNextPosition(
   const currentDistance = manhattanDistance(predator, player);
 
   if (difficulty === "easy") {
-    if (Math.random() < 0.5) {
+    if (routeRandom() < 0.5) {
       return pickRandom(neighbors);
     }
     const notCloser = neighbors.filter(
@@ -80,7 +81,7 @@ export function getPredatorNextPosition(
   );
 
   if (difficulty === "medium") {
-    if (closer.length > 0 && Math.random() < 0.75) {
+    if (closer.length > 0 && routeRandom() < 0.75) {
       const bestDistance = Math.min(
         ...closer.map((n) => manhattanDistance(n, player)),
       );

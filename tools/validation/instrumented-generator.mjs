@@ -25,6 +25,7 @@ import { createSeededRandom } from "./route-lab.mjs";
 const ROOT = process.cwd();
 const HOOK = path.join(ROOT, "src/games/escape-maze/useEscapeMaze.ts");
 const DIFF = path.join(ROOT, "src/engine/difficulty.ts");
+const RANDOM = path.join(ROOT, "src/engine/route-random.ts");
 
 const EXPORT_SURFACE = `
 export const __diag = {
@@ -157,10 +158,31 @@ export function loadInstrumented({ transform, bare = false, react } = {}) {
   const seededMath = Object.create(Math);
   seededMath.random = () => random();
 
+  /**
+   * ROTA-DIFFICULTY-04C: the Rota's RNG seam. Instantiated ONCE and handed to
+   * both modules that import it, because a seed armed through one has to be the
+   * seed the other draws from — two copies would silently desynchronise the
+   * Hunter from generation.
+   *
+   * `Math` inside it is the sandbox's seeded `Math`, so the tooling's existing
+   * `setSeed` path keeps working untouched when no diagnostic seed is armed.
+   */
+  const rMod = { exports: {} };
+  const rS = {
+    module: rMod, exports: rMod.exports, console, Math: seededMath, Set, Map,
+    require() { throw new Error("unexpected import"); },
+  };
+  rS.globalThis = rS;
+  vm.createContext(rS);
+  new vm.Script(compile(fs.readFileSync(RANDOM, "utf8"))).runInContext(rS);
+
   const dMod = { exports: {} };
   const dS = {
     module: dMod, exports: dMod.exports, console, Math: seededMath, Set, Map,
-    require() { throw new Error("unexpected import"); },
+    require(r) {
+      if (r === "@/engine/route-random") return rMod.exports;
+      throw new Error("unexpected import " + r);
+    },
   };
   dS.globalThis = dS;
   vm.createContext(dS);
@@ -184,6 +206,7 @@ export function loadInstrumented({ transform, bare = false, react } = {}) {
         );
       }
       if (r === "@/engine/difficulty") return dMod.exports;
+      if (r === "@/engine/route-random") return rMod.exports;
       if (r === "@/engine/scoring") return { calculateEscapeMazeScore: () => 0 };
       if (r === "@/lib/game-sounds") {
         return {
@@ -303,6 +326,8 @@ export function loadInstrumented({ transform, bare = false, react } = {}) {
     API,
     /** The module's real export surface — `useEscapeMaze` included. */
     exports: hMod.exports,
+    /** The shared RNG seam, as both production modules see it. */
+    routeRandom: rMod.exports,
     sb,
     setSeed,
     replayGeneration,

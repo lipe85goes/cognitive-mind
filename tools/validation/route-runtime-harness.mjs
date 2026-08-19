@@ -220,7 +220,7 @@ export function loadRouteRuntime({ directDifficulty = false } = {}) {
     };
   }
 
-  return { LAB, API: LAB.API, mount };
+  return { LAB, API: LAB.API, routeRandom: LAB.routeRandom, mount };
 }
 
 /** Board helpers that read the runtime's own walls, broken cell included. */
