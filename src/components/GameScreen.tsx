@@ -19,6 +19,7 @@ export function GameScreen({
   onComplete,
   onExit,
   initialRouteNumber,
+  initialDifficulty,
   onEntryReady,
   onEntryError,
   skipIntro = false,
@@ -75,6 +76,7 @@ export function GameScreen({
           onComplete={onComplete}
           onExit={onExit}
           initialRouteNumber={initialRouteNumber}
+          initialDifficulty={initialDifficulty}
           onEntryReady={() => setGameReady(true)}
           onEntryError={onEntryError}
         />

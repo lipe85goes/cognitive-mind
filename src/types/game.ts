@@ -48,6 +48,16 @@ export interface GameComponentProps {
   onExit: () => void;
   /** Optional continuation hook for games with internal route/session progression. */
   initialRouteNumber?: number;
+  /**
+   * The mode a continuing journey was already being played on.
+   *
+   * ROTA-DIFFICULTY-04B: progression remounts the game component, so the mode
+   * the player chose died with the previous instance and every new Route began
+   * on the default. This carries it across the same boundary that already
+   * carries the Route, and only for a continuation — a fresh entry leaves it
+   * undefined and gets the normal default.
+   */
+  initialDifficulty?: DifficultyLevel;
   /** Entry shell callback after essential visual assets have painted. */
   onEntryReady?: () => void;
   /** Entry shell callback for failures that would expose an incomplete world. */

@@ -20,9 +20,24 @@ import { getRecentResults, saveGameResult } from "@/engine/storage";
 import type {
   Activity,
   DashboardView,
+  DifficultyLevel,
   GameId,
   GameResult,
 } from "@/types/game";
+
+const DIFFICULTY_LEVELS: readonly DifficultyLevel[] = ["easy", "medium", "hard"];
+
+/**
+ * `GameResult.details` is a loose record, so the mode a finished route reports
+ * has to be narrowed before it can be handed back to a new session. Anything
+ * unrecognised yields undefined, which is exactly the fresh-entry default.
+ */
+function readDifficulty(value: unknown): DifficultyLevel | undefined {
+  return typeof value === "string" &&
+    (DIFFICULTY_LEVELS as readonly string[]).includes(value)
+    ? (value as DifficultyLevel)
+    : undefined;
+}
 
 /**
  * Production home: 2.5D world atelier, game routing, and recent results.
@@ -39,6 +54,13 @@ export default function HomePage() {
   /** Bumped to remount game components on each new session. */
   const [gameSession, setGameSession] = useState(0);
   const [initialRouteNumber, setInitialRouteNumber] = useState<number | undefined>();
+  /**
+   * Set only while a journey continues, and cleared on a fresh entry. It is the
+   * mode's carrier BETWEEN instances; during play the game component owns it.
+   */
+  const [initialDifficulty, setInitialDifficulty] = useState<
+    DifficultyLevel | undefined
+  >();
   const [skipGameIntro, setSkipGameIntro] = useState(false);
   const {
     state: entryState,
@@ -104,6 +126,9 @@ export default function HomePage() {
     setSelectedDashboardGameId(activity.gameId);
     setActiveGameId(activity.gameId);
     setInitialRouteNumber(undefined);
+    // A new entry from Home is a new journey: it must not inherit the mode of
+    // whatever was played before it.
+    setInitialDifficulty(undefined);
     setSkipGameIntro(false);
     setGameSession((n) => n + 1);
   };
@@ -137,15 +162,28 @@ export default function HomePage() {
       if (!startWorldEntry(lastResult.gameId)) return;
 
       setDashboardNotice(null);
+      const isRouteJourney = lastResult.gameId === "escape-maze";
       const nextRouteNumber =
-        lastResult.gameId === "escape-maze" &&
-        typeof lastResult.details.nextRouteNumber === "number"
+        isRouteJourney && typeof lastResult.details.nextRouteNumber === "number"
           ? lastResult.details.nextRouteNumber
           : undefined;
+      /**
+       * ROTA-DIFFICULTY-04B: the finished route already reports the mode it was
+       * played on — `endGame` has always written `details.difficulty`. Carrying
+       * it here is the missing half of the continuation that already carries the
+       * Route, and it is read from the same place, under the same guard.
+       *
+       * Tied to `nextRouteNumber` on purpose: the mode travels only when a
+       * journey travels, so it can never leak into an unrelated session.
+       */
+      const nextDifficulty = nextRouteNumber
+        ? readDifficulty(lastResult.details.difficulty)
+        : undefined;
 
       setSelectedDashboardGameId(lastResult.gameId);
       setActiveGameId(lastResult.gameId);
       setInitialRouteNumber(nextRouteNumber);
+      setInitialDifficulty(nextDifficulty);
       setSkipGameIntro(Boolean(nextRouteNumber));
       setGameSession((n) => n + 1);
     }
@@ -192,6 +230,7 @@ export default function HomePage() {
           gameId={activeGameId}
           sessionKey={gameSession}
           initialRouteNumber={initialRouteNumber}
+          initialDifficulty={initialDifficulty}
           skipIntro={skipGameIntro}
           onComplete={handleGameComplete}
           onExit={returnHome}

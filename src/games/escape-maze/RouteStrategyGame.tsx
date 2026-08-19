@@ -170,6 +170,7 @@ export function RouteStrategyGame({
   onComplete,
   onExit,
   initialRouteNumber,
+  initialDifficulty,
   onEntryReady,
   onEntryError,
 }: GameComponentProps) {
@@ -182,7 +183,7 @@ export function RouteStrategyGame({
    */
   const [aimedWall, setAimedWall] = useState<string | null>(null);
   const detailsTriggerRef = useRef<HTMLButtonElement>(null);
-  const game = useEscapeMaze(onComplete, initialRouteNumber);
+  const game = useEscapeMaze(onComplete, initialRouteNumber, initialDifficulty);
   const {
     difficulty,
     routeNumber,

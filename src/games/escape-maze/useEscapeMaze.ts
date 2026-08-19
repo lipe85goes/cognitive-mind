@@ -2498,15 +2498,29 @@ const SECOND_CHANCE_DEFENDER_MESSAGE =
   "Segunda Chance: você resistiu e os defensores recuaram.";
 
 /** Turn-based maze escape: reach the exit before the guardian catches you. */
-export function useEscapeMaze(onComplete: CompleteFn, initialRouteNumber = 1) {
+export function useEscapeMaze(
+  onComplete: CompleteFn,
+  initialRouteNumber = 1,
+  /**
+   * ROTA-DIFFICULTY-04B: the mode a continuing journey arrives on.
+   *
+   * Progression remounts this hook, so the player's choice used to die with the
+   * previous instance and every Route after the first began on the default. The
+   * caller now hands it back, from the same result the Route comes from.
+   *
+   * Omitted for a fresh entry, which is what keeps a new journey from
+   * inheriting the mode of an old one — see `openActivity` in `app/page.tsx`.
+   */
+  initialDifficulty: DifficultyLevel = "easy",
+) {
   const normalizedInitialRouteNumber = Math.max(
     1,
     Math.floor(initialRouteNumber),
   );
-  const [difficulty, setDifficulty] = useState<DifficultyLevel>("easy");
+  const [difficulty, setDifficulty] = useState<DifficultyLevel>(initialDifficulty);
   const [routeNumber, setRouteNumber] = useState(normalizedInitialRouteNumber);
   const [mazeMap, setMazeMap] = useState<MazeMap>(() =>
-    generateMaze("easy", normalizedInitialRouteNumber),
+    generateMaze(initialDifficulty, normalizedInitialRouteNumber),
   );
   const [player, setPlayer] = useState<GridPosition>(mazeMap.playerStart);
   const [guardian, setGuardian] = useState<GridPosition>(mazeMap.guardianStart);

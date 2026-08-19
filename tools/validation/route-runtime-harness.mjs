@@ -91,43 +91,34 @@ function createReactShim() {
  * Loading is not cheap (TypeScript in a vm), so a suite loads once and mounts
  * many routes.
  *
- * `directDifficulty` is diagnostic-only. Production renders an initial easy
- * map before the user can select medium/hard, while exact validation seeds are
- * defined as direct `generateMaze(difficulty, route)` calls. The option aligns
- * those two generation regimes inside the sandbox without changing production
- * or the default harness path.
+ * `directDifficulty` is diagnostic-only. Exact validation seeds are defined as a
+ * single direct `generateMaze(difficulty, route)` call, while production draws
+ * more than one board on the way to the setup screen. The option aligns those
+ * two regimes inside the sandbox, without changing production or the default
+ * harness path.
+ *
+ * ROTA-DIFFICULTY-04B shrank it. It used to rewrite three things; two of them —
+ * mounting on the requested mode, and generating the first board for that mode
+ * — are now what `initialDifficulty` does in production, so the harness asks
+ * for them instead of patching them in. What remains is the one thing
+ * production legitimately does and a one-call comparison cannot afford:
+ * `startGame` generating a SECOND board.
  */
 export function loadRouteRuntime({ directDifficulty = false } = {}) {
   const react = createReactShim();
   const directDifficultyTransform = directDifficulty
     ? (source) => {
-        const difficultyState =
-          'const [difficulty, setDifficulty] = useState<DifficultyLevel>("easy");';
-        const initialMap = 'generateMaze("easy", normalizedInitialRouteNumber),';
-        if (!source.includes(difficultyState) || !source.includes(initialMap)) {
-          throw new Error("directDifficulty transform: production hook shape changed");
-        }
-        const diagnosticDifficulty =
-          '(globalThis as { __routeHarnessDifficulty?: DifficultyLevel })' +
-          '.__routeHarnessDifficulty ?? "easy"';
         const startGame =
           /  const startGame = \(\) => \{\r?\n    startNewMaze\(difficulty, "playing"\);\r?\n  \};/;
-        const diagnosticStartGame = `  const startGame = () => {
-    setStatus("playing");
-  };`;
         if (!startGame.test(source)) {
           throw new Error("directDifficulty transform: startGame shape changed");
         }
-        return source
-          .replace(
-            difficultyState,
-            `const [difficulty, setDifficulty] = useState<DifficultyLevel>(${diagnosticDifficulty});`,
-          )
-          .replace(
-            initialMap,
-            `generateMaze(${diagnosticDifficulty}, normalizedInitialRouteNumber),`,
-          )
-          .replace(startGame, diagnosticStartGame);
+        return source.replace(
+          startGame,
+          `  const startGame = () => {
+    setStatus("playing");
+  };`,
+        );
       }
     : undefined;
   const LAB = loadInstrumented({
@@ -145,10 +136,25 @@ export function loadRouteRuntime({ directDifficulty = false } = {}) {
    * Mount a route and play it. `difficulty` is applied through the product's own
    * `changeDifficulty` + `startGame`, so the run goes through the same path a
    * player does — no state is written from outside.
+   *
+   * ROTA-DIFFICULTY-04B: `initialDifficulty` models the OTHER entry path — a
+   * continuation remount, where `app/page.tsx` hands the mode back to a brand
+   * new instance instead of the player re-selecting it. Passing it skips the
+   * `changeDifficulty` tap, because that is precisely what the product does.
+   * Passing `autoStart: false` stops before `startGame()`, which is what the
+   * player sees on arrival: the setup screen, with a mode already chosen.
    */
-  function mount({ seed, difficulty = "easy", routeNumber = 1 }) {
+  function mount({
+    seed,
+    difficulty = "easy",
+    routeNumber = 1,
+    initialDifficulty,
+    autoStart = true,
+  }) {
     LAB.setSeed(seed);
-    if (directDifficulty) LAB.sb.__routeHarnessDifficulty = difficulty;
+    // In diagnostic mode the requested mode is handed to the hook the same way
+    // a continuation hands it over, rather than patched into the source.
+    const mountDifficulty = directDifficulty ? difficulty : initialDifficulty;
 
     const store = react.createStore();
     const completions = [];
@@ -158,7 +164,11 @@ export function loadRouteRuntime({ directDifficulty = false } = {}) {
     // a component, because that is exactly what this is: the one place the route
     // is rendered.
     const RouteHarness = () =>
-      useEscapeMaze((result) => completions.push(result), routeNumber);
+      useEscapeMaze(
+        (result) => completions.push(result),
+        routeNumber,
+        mountDifficulty,
+      );
 
     const render = () => {
       react.beginRender(store);
@@ -180,8 +190,10 @@ export function loadRouteRuntime({ directDifficulty = false } = {}) {
       return game;
     };
 
-    if (!directDifficulty && difficulty !== "easy") act((g) => g.changeDifficulty(difficulty));
-    act((g) => g.startGame());
+    if (mountDifficulty === undefined && difficulty !== "easy") {
+      act((g) => g.changeDifficulty(difficulty));
+    }
+    if (autoStart) act((g) => g.startGame());
 
     return {
       get state() {
