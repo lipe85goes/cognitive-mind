@@ -1,0 +1,108 @@
+{
+  "mission": "ROTA-DIFFICULTY-05-REBALANCE",
+  "suite": "difficulty-rebalance-focused",
+  "fingerprints": {
+    "first": "bf4ea2a54b33dd68eca2fd62203c8052516bb19ff65b97aa78086f52dcf0a2ac",
+    "second": "bf4ea2a54b33dd68eca2fd62203c8052516bb19ff65b97aa78086f52dcf0a2ac",
+    "equal": true
+  },
+  "parameters": {
+    "wallLimits": {
+      "easy": {
+        "min": 13,
+        "max": 18
+      },
+      "medium": {
+        "min": 18,
+        "max": 23
+      },
+      "hard": {
+        "min": 25,
+        "max": 30
+      }
+    },
+    "baseObjectives": {
+      "easy": 3,
+      "medium": 4,
+      "hard": 6
+    },
+    "hardPlayBrief": {
+      "minDecisionRatio": 0.46,
+      "maxForcedStreak": 6,
+      "maxIdleDeadEnds": 2,
+      "guardianStartDistance": {
+        "min": 6,
+        "max": 11
+      }
+    },
+    "route3ObjectiveSeparation": {
+      "easy": 3,
+      "medium": 3,
+      "hard": 4
+    }
+  },
+  "witnesses": [
+    {
+      "seed": 12420031,
+      "route": 2,
+      "mode": "easy",
+      "shouldChange": false,
+      "beforeHash": "e6099b10eaf1c09416c93daed62af44fa892e8ebda335edb0194a7fc954da5d3",
+      "afterHash": "e6099b10eaf1c09416c93daed62af44fa892e8ebda335edb0194a7fc954da5d3",
+      "repeatedHash": "e6099b10eaf1c09416c93daed62af44fa892e8ebda335edb0194a7fc954da5d3",
+      "deterministic": true,
+      "hashChanged": false,
+      "valid": true
+    },
+    {
+      "seed": 12430048,
+      "route": 3,
+      "mode": "easy",
+      "shouldChange": false,
+      "beforeHash": "b38bdf8592700e6c0e2e2d4332d81b4adeeca35bbe8cdb25950466a3fb29decd",
+      "afterHash": "b38bdf8592700e6c0e2e2d4332d81b4adeeca35bbe8cdb25950466a3fb29decd",
+      "repeatedHash": "b38bdf8592700e6c0e2e2d4332d81b4adeeca35bbe8cdb25950466a3fb29decd",
+      "deterministic": true,
+      "hashChanged": false,
+      "valid": true
+    },
+    {
+      "seed": 12421027,
+      "route": 2,
+      "mode": "medium",
+      "shouldChange": false,
+      "beforeHash": "02fd43714f291287bed482a2a1c4c920e0f2b50939cfeea7c5db4dbd82022285",
+      "afterHash": "02fd43714f291287bed482a2a1c4c920e0f2b50939cfeea7c5db4dbd82022285",
+      "repeatedHash": "02fd43714f291287bed482a2a1c4c920e0f2b50939cfeea7c5db4dbd82022285",
+      "deterministic": true,
+      "hashChanged": false,
+      "valid": true
+    },
+    {
+      "seed": 12432116,
+      "route": 3,
+      "mode": "hard",
+      "shouldChange": true,
+      "beforeHash": "0c73d3d8c394a1d5ca80bf8eff653cc62e4653268b18bebbbbd658324b31df1e",
+      "afterHash": "561a1d25e59ccb7cd6dec603b14c7bbe6639da2347f0c81a025511b789d6a33c",
+      "repeatedHash": "561a1d25e59ccb7cd6dec603b14c7bbe6639da2347f0c81a025511b789d6a33c",
+      "deterministic": true,
+      "hashChanged": true,
+      "valid": true
+    },
+    {
+      "seed": 12432045,
+      "route": 3,
+      "mode": "hard",
+      "shouldChange": true,
+      "beforeHash": "a13c78a9f3379a02f3431c276d7001115a14ab0c6f33f6e01320622d11ad5042",
+      "afterHash": "145a55682fd34a90d23248258c14723e545df4a518923eb8263b64cf7d635073",
+      "repeatedHash": "145a55682fd34a90d23248258c14723e545df4a518923eb8263b64cf7d635073",
+      "deterministic": true,
+      "hashChanged": true,
+      "valid": true
+    }
+  ],
+  "failures": [],
+  "gateMet": true
+}

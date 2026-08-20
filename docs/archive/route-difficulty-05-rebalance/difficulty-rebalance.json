@@ -1,0 +1,7137 @@
+{
+  "mission": "ROTA-DIFFICULTY-05-REBALANCE",
+  "semantics": {
+    "automatedPolicies": "Comparative regression instruments only; never a human win-rate estimate.",
+    "hardGate": "Every Route must gain walls, objective burden and at least two independent structural-pressure signals.",
+    "humanStatus": "A green report produces a candidate for human playtest, not a final balance verdict.",
+    "routeCoherence": "Walls must increase strictly. Adjacent objective means may be a near tie within 0.25 moves across 120 seeds; larger inversions fail."
+  },
+  "baseline": {
+    "path": "docs/archive/route-difficulty-04-baseline/difficulty-baseline.json",
+    "sha256": "25f028d5d1a044c1c10ed4fe5e06552cb26c644812ba9c7d43cda7d46ae3db42",
+    "fingerprint": "ce71fcfc08b0bd522fb56791d4efb4c1f3f9fcd55a0a15eb1ead95864d34fced",
+    "sample": {
+      "geometrySeedsPerCombination": 120,
+      "uiSeedsPerCombination": 30,
+      "policySeedsPerCombination": 24,
+      "policyCount": 4,
+      "maxTurns": 160,
+      "directGeometryMaps": 1080,
+      "uiGenerationAttempts": 270,
+      "policyRuns": 864,
+      "seedFormula": "base + route*10000 + modeIndex*1000 + sample; bases geometry=12400000, ui=13300000, policy=14200000"
+    }
+  },
+  "after": {
+    "fingerprint": "5a395dcd31bb9748cd5c8aa42e8dcccb4d8dfe27b046234d5e851339b7c5279c",
+    "sample": {
+      "geometrySeedsPerCombination": 120,
+      "uiSeedsPerCombination": 30,
+      "policySeedsPerCombination": 24,
+      "policyCount": 4,
+      "maxTurns": 160,
+      "directGeometryMaps": 1080,
+      "uiGenerationAttempts": 270,
+      "policyRuns": 864,
+      "seedFormula": "base + route*10000 + modeIndex*1000 + sample; bases geometry=12400000, ui=13300000, policy=14200000"
+    },
+    "progression": {
+      "difficulty": [
+        {
+          "axis": "difficulty",
+          "route": 1,
+          "field": "wallCount",
+          "expectedDirection": "higher",
+          "values": {
+            "easy": 14.7583,
+            "medium": 18.925,
+            "hard": 22.625
+          },
+          "monotonic": true
+        },
+        {
+          "axis": "difficulty",
+          "route": 1,
+          "field": "objectiveMoves",
+          "expectedDirection": "higher",
+          "values": {
+            "easy": 19.7583,
+            "medium": 23.1167,
+            "hard": 25.9333
+          },
+          "monotonic": true
+        },
+        {
+          "axis": "difficulty",
+          "route": 1,
+          "field": "objectiveLongestForcedStreak",
+          "expectedDirection": "higher",
+          "values": {
+            "easy": 1.1417,
+            "medium": 1.7083,
+            "hard": 2.6917
+          },
+          "monotonic": true
+        },
+        {
+          "axis": "difficulty",
+          "route": 1,
+          "field": "guardianStartDistance",
+          "expectedDirection": "lower",
+          "values": {
+            "easy": 11.85,
+            "medium": 12.125,
+            "hard": 11.65
+          },
+          "monotonic": false
+        },
+        {
+          "axis": "difficulty",
+          "route": 1,
+          "field": "lightCount",
+          "expectedDirection": "higher",
+          "values": {
+            "easy": 3,
+            "medium": 4,
+            "hard": 6
+          },
+          "monotonic": true
+        },
+        {
+          "axis": "difficulty",
+          "route": 1,
+          "field": "trapCount",
+          "expectedDirection": "higher",
+          "values": {
+            "easy": 2,
+            "medium": 3,
+            "hard": 4
+          },
+          "monotonic": true
+        },
+        {
+          "axis": "difficulty",
+          "route": 2,
+          "field": "wallCount",
+          "expectedDirection": "higher",
+          "values": {
+            "easy": 17.525,
+            "medium": 21.375,
+            "hard": 25.6
+          },
+          "monotonic": true
+        },
+        {
+          "axis": "difficulty",
+          "route": 2,
+          "field": "objectiveMoves",
+          "expectedDirection": "higher",
+          "values": {
+            "easy": 26.4333,
+            "medium": 27.5,
+            "hard": 30.7667
+          },
+          "monotonic": true
+        },
+        {
+          "axis": "difficulty",
+          "route": 2,
+          "field": "objectiveLongestForcedStreak",
+          "expectedDirection": "higher",
+          "values": {
+            "easy": 1.625,
+            "medium": 2.325,
+            "hard": 3.1167
+          },
+          "monotonic": true
+        },
+        {
+          "axis": "difficulty",
+          "route": 2,
+          "field": "guardianStartDistance",
+          "expectedDirection": "lower",
+          "values": {
+            "easy": 11.7167,
+            "medium": 11.5083,
+            "hard": 12.0667
+          },
+          "monotonic": false
+        },
+        {
+          "axis": "difficulty",
+          "route": 2,
+          "field": "lightCount",
+          "expectedDirection": "higher",
+          "values": {
+            "easy": 3,
+            "medium": 4,
+            "hard": 6
+          },
+          "monotonic": true
+        },
+        {
+          "axis": "difficulty",
+          "route": 2,
+          "field": "trapCount",
+          "expectedDirection": "higher",
+          "values": {
+            "easy": 3,
+            "medium": 4,
+            "hard": 5
+          },
+          "monotonic": true
+        },
+        {
+          "axis": "difficulty",
+          "route": 3,
+          "field": "wallCount",
+          "expectedDirection": "higher",
+          "values": {
+            "easy": 18.5417,
+            "medium": 22.2083,
+            "hard": 27.15
+          },
+          "monotonic": true
+        },
+        {
+          "axis": "difficulty",
+          "route": 3,
+          "field": "objectiveMoves",
+          "expectedDirection": "higher",
+          "values": {
+            "easy": 26.4167,
+            "medium": 28.8833,
+            "hard": 34.6833
+          },
+          "monotonic": true
+        },
+        {
+          "axis": "difficulty",
+          "route": 3,
+          "field": "objectiveLongestForcedStreak",
+          "expectedDirection": "higher",
+          "values": {
+            "easy": 2.025,
+            "medium": 2.2333,
+            "hard": 3.6167
+          },
+          "monotonic": true
+        },
+        {
+          "axis": "difficulty",
+          "route": 3,
+          "field": "guardianStartDistance",
+          "expectedDirection": "lower",
+          "values": {
+            "easy": 12.0333,
+            "medium": 11.9083,
+            "hard": 10.9833
+          },
+          "monotonic": true
+        },
+        {
+          "axis": "difficulty",
+          "route": 3,
+          "field": "lightCount",
+          "expectedDirection": "higher",
+          "values": {
+            "easy": 4,
+            "medium": 5,
+            "hard": 6
+          },
+          "monotonic": true
+        },
+        {
+          "axis": "difficulty",
+          "route": 3,
+          "field": "trapCount",
+          "expectedDirection": "higher",
+          "values": {
+            "easy": 4,
+            "medium": 5,
+            "hard": 6
+          },
+          "monotonic": true
+        }
+      ],
+      "route": [
+        {
+          "axis": "route",
+          "mode": "easy",
+          "field": "wallCount",
+          "expectedDirection": "higher",
+          "values": {
+            "route1": 14.7583,
+            "route2": 17.525,
+            "route3": 18.5417
+          },
+          "monotonic": true
+        },
+        {
+          "axis": "route",
+          "mode": "easy",
+          "field": "objectiveMoves",
+          "expectedDirection": "higher",
+          "values": {
+            "route1": 19.7583,
+            "route2": 26.4333,
+            "route3": 26.4167
+          },
+          "monotonic": false
+        },
+        {
+          "axis": "route",
+          "mode": "easy",
+          "field": "objectiveLongestForcedStreak",
+          "expectedDirection": "higher",
+          "values": {
+            "route1": 1.1417,
+            "route2": 1.625,
+            "route3": 2.025
+          },
+          "monotonic": true
+        },
+        {
+          "axis": "route",
+          "mode": "easy",
+          "field": "cycleRank",
+          "expectedDirection": "lower",
+          "values": {
+            "route1": 27.8917,
+            "route2": 24.525,
+            "route3": 24.8083
+          },
+          "monotonic": false
+        },
+        {
+          "axis": "route",
+          "mode": "medium",
+          "field": "wallCount",
+          "expectedDirection": "higher",
+          "values": {
+            "route1": 18.925,
+            "route2": 21.375,
+            "route3": 22.2083
+          },
+          "monotonic": true
+        },
+        {
+          "axis": "route",
+          "mode": "medium",
+          "field": "objectiveMoves",
+          "expectedDirection": "higher",
+          "values": {
+            "route1": 23.1167,
+            "route2": 27.5,
+            "route3": 28.8833
+          },
+          "monotonic": true
+        },
+        {
+          "axis": "route",
+          "mode": "medium",
+          "field": "objectiveLongestForcedStreak",
+          "expectedDirection": "higher",
+          "values": {
+            "route1": 1.7083,
+            "route2": 2.325,
+            "route3": 2.2333
+          },
+          "monotonic": false
+        },
+        {
+          "axis": "route",
+          "mode": "medium",
+          "field": "cycleRank",
+          "expectedDirection": "lower",
+          "values": {
+            "route1": 21.725,
+            "route2": 18.6333,
+            "route3": 19.85
+          },
+          "monotonic": false
+        },
+        {
+          "axis": "route",
+          "mode": "hard",
+          "field": "wallCount",
+          "expectedDirection": "higher",
+          "values": {
+            "route1": 22.625,
+            "route2": 25.6,
+            "route3": 27.15
+          },
+          "monotonic": true
+        },
+        {
+          "axis": "route",
+          "mode": "hard",
+          "field": "objectiveMoves",
+          "expectedDirection": "higher",
+          "values": {
+            "route1": 25.9333,
+            "route2": 30.7667,
+            "route3": 34.6833
+          },
+          "monotonic": true
+        },
+        {
+          "axis": "route",
+          "mode": "hard",
+          "field": "objectiveLongestForcedStreak",
+          "expectedDirection": "higher",
+          "values": {
+            "route1": 2.6917,
+            "route2": 3.1167,
+            "route3": 3.6167
+          },
+          "monotonic": true
+        },
+        {
+          "axis": "route",
+          "mode": "hard",
+          "field": "cycleRank",
+          "expectedDirection": "lower",
+          "values": {
+            "route1": 16.475,
+            "route2": 12.4667,
+            "route3": 13.2167
+          },
+          "monotonic": false
+        }
+      ],
+      "difficultyMonotonic": 16,
+      "difficultyChecks": 18,
+      "routeMonotonic": 7,
+      "routeChecks": 12
+    }
+  },
+  "selectedChanges": {
+    "hardWallLimits": {
+      "before": {
+        "min": 23,
+        "max": 28
+      },
+      "after": {
+        "min": 25,
+        "max": 30
+      }
+    },
+    "hardBaseObjectives": {
+      "before": 5,
+      "after": 6
+    },
+    "hardMinDecisionRatio": {
+      "before": 0.5,
+      "after": 0.46
+    },
+    "hardMaxForcedStreak": {
+      "before": 5,
+      "after": 6
+    },
+    "route3ObjectiveSeparation": {
+      "easy": {
+        "before": 3,
+        "after": 3
+      },
+      "medium": {
+        "before": 3,
+        "after": 3
+      },
+      "hard": {
+        "before": 3,
+        "after": 4
+      }
+    },
+    "traps": "unchanged",
+    "hunterPolicy": "unchanged",
+    "sentinelPolicy": "unchanged",
+    "chestAndRewards": "unchanged"
+  },
+  "routeDifficultyMatrix": [
+    {
+      "route": 1,
+      "mode": "easy",
+      "mapsBefore": 120,
+      "mapsAfter": 120,
+      "metrics": {
+        "wallCount": {
+          "before": 14.7583,
+          "after": 14.7583,
+          "delta": 0,
+          "percent": 0
+        },
+        "walkableCells": {
+          "before": 66.2417,
+          "after": 66.2417,
+          "delta": 0,
+          "percent": 0
+        },
+        "lightCount": {
+          "before": 3,
+          "after": 3,
+          "delta": 0,
+          "percent": 0
+        },
+        "trapCount": {
+          "before": 2,
+          "after": 2,
+          "delta": 0,
+          "percent": 0
+        },
+        "objectiveMoves": {
+          "before": 19.7583,
+          "after": 19.7583,
+          "delta": 0,
+          "percent": 0
+        },
+        "objectiveDecisionRatio": {
+          "before": 0.7616,
+          "after": 0.7616,
+          "delta": 0,
+          "percent": 0
+        },
+        "objectiveLongestForcedStreak": {
+          "before": 1.1417,
+          "after": 1.1417,
+          "delta": 0,
+          "percent": 0
+        },
+        "junctions": {
+          "before": 46.2667,
+          "after": 46.2667,
+          "delta": 0,
+          "percent": 0
+        },
+        "deadEnds": {
+          "before": 0.1167,
+          "after": 0.1167,
+          "delta": 0,
+          "percent": 0
+        },
+        "corridorRatio": {
+          "before": 0.2999,
+          "after": 0.2999,
+          "delta": 0,
+          "percent": 0
+        },
+        "cycleRank": {
+          "before": 27.8917,
+          "after": 27.8917,
+          "delta": 0,
+          "percent": 0
+        },
+        "articulationPoints": {
+          "before": 0.1167,
+          "after": 0.1167,
+          "delta": 0,
+          "percent": 0
+        },
+        "objectiveArticulationPoints": {
+          "before": 0.1167,
+          "after": 0.1167,
+          "delta": 0,
+          "percent": 0
+        },
+        "guardianStartDistance": {
+          "before": 11.85,
+          "after": 11.85,
+          "delta": 0,
+          "percent": 0
+        },
+        "portalDistance": {
+          "before": 13.225,
+          "after": 13.225,
+          "delta": 0,
+          "percent": 0
+        },
+        "portalZoneCells": {
+          "before": 9.0917,
+          "after": 9.0917,
+          "delta": 0,
+          "percent": 0
+        },
+        "portalAccesses": {
+          "before": 3.5583,
+          "after": 3.5583,
+          "delta": 0,
+          "percent": 0
+        },
+        "chestDistance": {
+          "before": 4,
+          "after": 4,
+          "delta": 0,
+          "percent": 0
+        },
+        "chestDetour": {
+          "before": 0.2167,
+          "after": 0.2167,
+          "delta": 0,
+          "percent": 0
+        },
+        "pickaxeBeneficialWalls": {
+          "before": 0.0583,
+          "after": 0.0583,
+          "delta": 0,
+          "percent": 0
+        },
+        "pickaxeBestImprovement": {
+          "before": 0.05,
+          "after": 0.05,
+          "delta": 0,
+          "percent": 0
+        },
+        "chestAdjacentPickaxeImprovement": {
+          "before": 0.0167,
+          "after": 0.0167,
+          "delta": 0,
+          "percent": 0
+        }
+      },
+      "pickaxeBeneficialMapRate": {
+        "before": 0.025,
+        "after": 0.025,
+        "delta": 0,
+        "percent": 0
+      },
+      "chestAdjacentPickaxeBeneficialRate": {
+        "before": 0.0083,
+        "after": 0.0083,
+        "delta": 0,
+        "percent": 0
+      }
+    },
+    {
+      "route": 1,
+      "mode": "medium",
+      "mapsBefore": 120,
+      "mapsAfter": 120,
+      "metrics": {
+        "wallCount": {
+          "before": 18.925,
+          "after": 18.925,
+          "delta": 0,
+          "percent": 0
+        },
+        "walkableCells": {
+          "before": 62.075,
+          "after": 62.075,
+          "delta": 0,
+          "percent": 0
+        },
+        "lightCount": {
+          "before": 4,
+          "after": 4,
+          "delta": 0,
+          "percent": 0
+        },
+        "trapCount": {
+          "before": 3,
+          "after": 3,
+          "delta": 0,
+          "percent": 0
+        },
+        "objectiveMoves": {
+          "before": 23.1167,
+          "after": 23.1167,
+          "delta": 0,
+          "percent": 0
+        },
+        "objectiveDecisionRatio": {
+          "before": 0.7084,
+          "after": 0.7084,
+          "delta": 0,
+          "percent": 0
+        },
+        "objectiveLongestForcedStreak": {
+          "before": 1.7083,
+          "after": 1.7083,
+          "delta": 0,
+          "percent": 0
+        },
+        "junctions": {
+          "before": 38.3583,
+          "after": 38.3583,
+          "delta": 0,
+          "percent": 0
+        },
+        "deadEnds": {
+          "before": 1.2417,
+          "after": 1.2417,
+          "delta": 0,
+          "percent": 0
+        },
+        "corridorRatio": {
+          "before": 0.3625,
+          "after": 0.3625,
+          "delta": 0,
+          "percent": 0
+        },
+        "cycleRank": {
+          "before": 21.725,
+          "after": 21.725,
+          "delta": 0,
+          "percent": 0
+        },
+        "articulationPoints": {
+          "before": 1.7667,
+          "after": 1.7667,
+          "delta": 0,
+          "percent": 0
+        },
+        "objectiveArticulationPoints": {
+          "before": 0.35,
+          "after": 0.35,
+          "delta": 0,
+          "percent": 0
+        },
+        "guardianStartDistance": {
+          "before": 12.125,
+          "after": 12.125,
+          "delta": 0,
+          "percent": 0
+        },
+        "portalDistance": {
+          "before": 14,
+          "after": 14,
+          "delta": 0,
+          "percent": 0
+        },
+        "portalZoneCells": {
+          "before": 8.15,
+          "after": 8.15,
+          "delta": 0,
+          "percent": 0
+        },
+        "portalAccesses": {
+          "before": 3.15,
+          "after": 3.15,
+          "delta": 0,
+          "percent": 0
+        },
+        "chestDistance": {
+          "before": 4,
+          "after": 4,
+          "delta": 0,
+          "percent": 0
+        },
+        "chestDetour": {
+          "before": 0.1167,
+          "after": 0.1167,
+          "delta": 0,
+          "percent": 0
+        },
+        "pickaxeBeneficialWalls": {
+          "before": 0.975,
+          "after": 0.975,
+          "delta": 0,
+          "percent": 0
+        },
+        "pickaxeBestImprovement": {
+          "before": 1.0167,
+          "after": 1.0167,
+          "delta": 0,
+          "percent": 0
+        },
+        "chestAdjacentPickaxeImprovement": {
+          "before": 0.1333,
+          "after": 0.1333,
+          "delta": 0,
+          "percent": 0
+        }
+      },
+      "pickaxeBeneficialMapRate": {
+        "before": 0.425,
+        "after": 0.425,
+        "delta": 0,
+        "percent": 0
+      },
+      "chestAdjacentPickaxeBeneficialRate": {
+        "before": 0.0667,
+        "after": 0.0667,
+        "delta": 0,
+        "percent": 0
+      }
+    },
+    {
+      "route": 1,
+      "mode": "hard",
+      "mapsBefore": 120,
+      "mapsAfter": 120,
+      "metrics": {
+        "wallCount": {
+          "before": 21.275,
+          "after": 22.625,
+          "delta": 1.35,
+          "percent": 6.35
+        },
+        "walkableCells": {
+          "before": 59.725,
+          "after": 58.375,
+          "delta": -1.35,
+          "percent": -2.26
+        },
+        "lightCount": {
+          "before": 5,
+          "after": 6,
+          "delta": 1,
+          "percent": 20
+        },
+        "trapCount": {
+          "before": 4,
+          "after": 4,
+          "delta": 0,
+          "percent": 0
+        },
+        "objectiveMoves": {
+          "before": 24.3,
+          "after": 25.9333,
+          "delta": 1.6333,
+          "percent": 6.72
+        },
+        "objectiveDecisionRatio": {
+          "before": 0.6642,
+          "after": 0.6378,
+          "delta": -0.0264,
+          "percent": -3.97
+        },
+        "objectiveLongestForcedStreak": {
+          "before": 2.2917,
+          "after": 2.6917,
+          "delta": 0.4,
+          "percent": 17.45
+        },
+        "junctions": {
+          "before": 33.5417,
+          "after": 31.1667,
+          "delta": -2.375,
+          "percent": -7.08
+        },
+        "deadEnds": {
+          "before": 2.0583,
+          "after": 2.5,
+          "delta": 0.4417,
+          "percent": 21.46
+        },
+        "corridorRatio": {
+          "before": 0.4043,
+          "after": 0.4235,
+          "delta": 0.0192,
+          "percent": 4.75
+        },
+        "cycleRank": {
+          "before": 18.3583,
+          "after": 16.475,
+          "delta": -1.8833,
+          "percent": -10.26
+        },
+        "articulationPoints": {
+          "before": 3.3417,
+          "after": 4.3583,
+          "delta": 1.0166,
+          "percent": 30.42
+        },
+        "objectiveArticulationPoints": {
+          "before": 0.625,
+          "after": 1.0417,
+          "delta": 0.4167,
+          "percent": 66.67
+        },
+        "guardianStartDistance": {
+          "before": 11.4833,
+          "after": 11.65,
+          "delta": 0.1667,
+          "percent": 1.45
+        },
+        "portalDistance": {
+          "before": 14,
+          "after": 14.2833,
+          "delta": 0.2833,
+          "percent": 2.02
+        },
+        "portalZoneCells": {
+          "before": 8.1917,
+          "after": 7.7917,
+          "delta": -0.4,
+          "percent": -4.88
+        },
+        "portalAccesses": {
+          "before": 2.7417,
+          "after": 2.6,
+          "delta": -0.1417,
+          "percent": -5.17
+        },
+        "chestDistance": {
+          "before": 4,
+          "after": 4,
+          "delta": 0,
+          "percent": 0
+        },
+        "chestDetour": {
+          "before": 0.2,
+          "after": 0.3833,
+          "delta": 0.1833,
+          "percent": 91.65
+        },
+        "pickaxeBeneficialWalls": {
+          "before": 1.5,
+          "after": 1.4083,
+          "delta": -0.0917,
+          "percent": -6.11
+        },
+        "pickaxeBestImprovement": {
+          "before": 1.45,
+          "after": 1.4333,
+          "delta": -0.0167,
+          "percent": -1.15
+        },
+        "chestAdjacentPickaxeImprovement": {
+          "before": 0.25,
+          "after": 0.4,
+          "delta": 0.15,
+          "percent": 60
+        }
+      },
+      "pickaxeBeneficialMapRate": {
+        "before": 0.5583,
+        "after": 0.575,
+        "delta": 0.0167,
+        "percent": 2.99
+      },
+      "chestAdjacentPickaxeBeneficialRate": {
+        "before": 0.1167,
+        "after": 0.1583,
+        "delta": 0.0416,
+        "percent": 35.65
+      }
+    },
+    {
+      "route": 2,
+      "mode": "easy",
+      "mapsBefore": 120,
+      "mapsAfter": 120,
+      "metrics": {
+        "wallCount": {
+          "before": 17.525,
+          "after": 17.525,
+          "delta": 0,
+          "percent": 0
+        },
+        "walkableCells": {
+          "before": 63.475,
+          "after": 63.475,
+          "delta": 0,
+          "percent": 0
+        },
+        "lightCount": {
+          "before": 3,
+          "after": 3,
+          "delta": 0,
+          "percent": 0
+        },
+        "trapCount": {
+          "before": 3,
+          "after": 3,
+          "delta": 0,
+          "percent": 0
+        },
+        "objectiveMoves": {
+          "before": 26.4333,
+          "after": 26.4333,
+          "delta": 0,
+          "percent": 0
+        },
+        "objectiveDecisionRatio": {
+          "before": 0.8193,
+          "after": 0.8193,
+          "delta": 0,
+          "percent": 0
+        },
+        "objectiveLongestForcedStreak": {
+          "before": 1.625,
+          "after": 1.625,
+          "delta": 0,
+          "percent": 0
+        },
+        "junctions": {
+          "before": 40.6,
+          "after": 40.6,
+          "delta": 0,
+          "percent": 0
+        },
+        "deadEnds": {
+          "before": 1.5667,
+          "after": 1.5667,
+          "delta": 0,
+          "percent": 0
+        },
+        "corridorRatio": {
+          "before": 0.3358,
+          "after": 0.3358,
+          "delta": 0,
+          "percent": 0
+        },
+        "cycleRank": {
+          "before": 24.525,
+          "after": 24.525,
+          "delta": 0,
+          "percent": 0
+        },
+        "articulationPoints": {
+          "before": 1.8083,
+          "after": 1.8083,
+          "delta": 0,
+          "percent": 0
+        },
+        "objectiveArticulationPoints": {
+          "before": 1.625,
+          "after": 1.625,
+          "delta": 0,
+          "percent": 0
+        },
+        "guardianStartDistance": {
+          "before": 11.7167,
+          "after": 11.7167,
+          "delta": 0,
+          "percent": 0
+        },
+        "portalDistance": {
+          "before": 15.4333,
+          "after": 15.4333,
+          "delta": 0,
+          "percent": 0
+        },
+        "portalZoneCells": {
+          "before": 6.9083,
+          "after": 6.9083,
+          "delta": 0,
+          "percent": 0
+        },
+        "portalAccesses": {
+          "before": 2.7917,
+          "after": 2.7917,
+          "delta": 0,
+          "percent": 0
+        },
+        "chestDistance": {
+          "before": 5,
+          "after": 5,
+          "delta": 0,
+          "percent": 0
+        },
+        "chestDetour": {
+          "before": 1.65,
+          "after": 1.65,
+          "delta": 0,
+          "percent": 0
+        },
+        "pickaxeBeneficialWalls": {
+          "before": 2.6333,
+          "after": 2.6333,
+          "delta": 0,
+          "percent": 0
+        },
+        "pickaxeBestImprovement": {
+          "before": 2.2667,
+          "after": 2.2667,
+          "delta": 0,
+          "percent": 0
+        },
+        "chestAdjacentPickaxeImprovement": {
+          "before": 0.4167,
+          "after": 0.4167,
+          "delta": 0,
+          "percent": 0
+        }
+      },
+      "pickaxeBeneficialMapRate": {
+        "before": 0.8167,
+        "after": 0.8167,
+        "delta": 0,
+        "percent": 0
+      },
+      "chestAdjacentPickaxeBeneficialRate": {
+        "before": 0.2,
+        "after": 0.2,
+        "delta": 0,
+        "percent": 0
+      }
+    },
+    {
+      "route": 2,
+      "mode": "medium",
+      "mapsBefore": 120,
+      "mapsAfter": 120,
+      "metrics": {
+        "wallCount": {
+          "before": 21.375,
+          "after": 21.375,
+          "delta": 0,
+          "percent": 0
+        },
+        "walkableCells": {
+          "before": 59.625,
+          "after": 59.625,
+          "delta": 0,
+          "percent": 0
+        },
+        "lightCount": {
+          "before": 4,
+          "after": 4,
+          "delta": 0,
+          "percent": 0
+        },
+        "trapCount": {
+          "before": 4,
+          "after": 4,
+          "delta": 0,
+          "percent": 0
+        },
+        "objectiveMoves": {
+          "before": 27.5,
+          "after": 27.5,
+          "delta": 0,
+          "percent": 0
+        },
+        "objectiveDecisionRatio": {
+          "before": 0.7307,
+          "after": 0.7307,
+          "delta": 0,
+          "percent": 0
+        },
+        "objectiveLongestForcedStreak": {
+          "before": 2.325,
+          "after": 2.325,
+          "delta": 0,
+          "percent": 0
+        },
+        "junctions": {
+          "before": 32.45,
+          "after": 32.45,
+          "delta": 0,
+          "percent": 0
+        },
+        "deadEnds": {
+          "before": 2.6333,
+          "after": 2.6333,
+          "delta": 0,
+          "percent": 0
+        },
+        "corridorRatio": {
+          "before": 0.4121,
+          "after": 0.4121,
+          "delta": 0,
+          "percent": 0
+        },
+        "cycleRank": {
+          "before": 18.6333,
+          "after": 18.6333,
+          "delta": 0,
+          "percent": 0
+        },
+        "articulationPoints": {
+          "before": 3.7917,
+          "after": 3.7917,
+          "delta": 0,
+          "percent": 0
+        },
+        "objectiveArticulationPoints": {
+          "before": 2.025,
+          "after": 2.025,
+          "delta": 0,
+          "percent": 0
+        },
+        "guardianStartDistance": {
+          "before": 11.5083,
+          "after": 11.5083,
+          "delta": 0,
+          "percent": 0
+        },
+        "portalDistance": {
+          "before": 15.65,
+          "after": 15.65,
+          "delta": 0,
+          "percent": 0
+        },
+        "portalZoneCells": {
+          "before": 6.6167,
+          "after": 6.6167,
+          "delta": 0,
+          "percent": 0
+        },
+        "portalAccesses": {
+          "before": 2.5,
+          "after": 2.5,
+          "delta": 0,
+          "percent": 0
+        },
+        "chestDistance": {
+          "before": 5,
+          "after": 5,
+          "delta": 0,
+          "percent": 0
+        },
+        "chestDetour": {
+          "before": 2.1833,
+          "after": 2.1833,
+          "delta": 0,
+          "percent": 0
+        },
+        "pickaxeBeneficialWalls": {
+          "before": 2.5583,
+          "after": 2.5583,
+          "delta": 0,
+          "percent": 0
+        },
+        "pickaxeBestImprovement": {
+          "before": 2.2167,
+          "after": 2.2167,
+          "delta": 0,
+          "percent": 0
+        },
+        "chestAdjacentPickaxeImprovement": {
+          "before": 0.3,
+          "after": 0.3,
+          "delta": 0,
+          "percent": 0
+        }
+      },
+      "pickaxeBeneficialMapRate": {
+        "before": 0.7917,
+        "after": 0.7917,
+        "delta": 0,
+        "percent": 0
+      },
+      "chestAdjacentPickaxeBeneficialRate": {
+        "before": 0.15,
+        "after": 0.15,
+        "delta": 0,
+        "percent": 0
+      }
+    },
+    {
+      "route": 2,
+      "mode": "hard",
+      "mapsBefore": 120,
+      "mapsAfter": 120,
+      "metrics": {
+        "wallCount": {
+          "before": 24.075,
+          "after": 25.6,
+          "delta": 1.525,
+          "percent": 6.33
+        },
+        "walkableCells": {
+          "before": 56.925,
+          "after": 55.4,
+          "delta": -1.525,
+          "percent": -2.68
+        },
+        "lightCount": {
+          "before": 5,
+          "after": 6,
+          "delta": 1,
+          "percent": 20
+        },
+        "trapCount": {
+          "before": 5,
+          "after": 5,
+          "delta": 0,
+          "percent": 0
+        },
+        "objectiveMoves": {
+          "before": 28.7083,
+          "after": 30.7667,
+          "delta": 2.0584,
+          "percent": 7.17
+        },
+        "objectiveDecisionRatio": {
+          "before": 0.6803,
+          "after": 0.6647,
+          "delta": -0.0156,
+          "percent": -2.29
+        },
+        "objectiveLongestForcedStreak": {
+          "before": 2.7083,
+          "after": 3.1167,
+          "delta": 0.4084,
+          "percent": 15.08
+        },
+        "junctions": {
+          "before": 27.475,
+          "after": 24.9167,
+          "delta": -2.5583,
+          "percent": -9.31
+        },
+        "deadEnds": {
+          "before": 3.6083,
+          "after": 4.2417,
+          "delta": 0.6334,
+          "percent": 17.55
+        },
+        "corridorRatio": {
+          "before": 0.4542,
+          "after": 0.4738,
+          "delta": 0.0196,
+          "percent": 4.32
+        },
+        "cycleRank": {
+          "before": 14.5,
+          "after": 12.4667,
+          "delta": -2.0333,
+          "percent": -14.02
+        },
+        "articulationPoints": {
+          "before": 5.6167,
+          "after": 6.2917,
+          "delta": 0.675,
+          "percent": 12.02
+        },
+        "objectiveArticulationPoints": {
+          "before": 2.325,
+          "after": 3.125,
+          "delta": 0.8,
+          "percent": 34.41
+        },
+        "guardianStartDistance": {
+          "before": 11.6333,
+          "after": 12.0667,
+          "delta": 0.4334,
+          "percent": 3.73
+        },
+        "portalDistance": {
+          "before": 16.175,
+          "after": 16.5667,
+          "delta": 0.3917,
+          "percent": 2.42
+        },
+        "portalZoneCells": {
+          "before": 6.5333,
+          "after": 6.4083,
+          "delta": -0.125,
+          "percent": -1.91
+        },
+        "portalAccesses": {
+          "before": 2.3,
+          "after": 2.2333,
+          "delta": -0.0667,
+          "percent": -2.9
+        },
+        "chestDistance": {
+          "before": 5,
+          "after": 5,
+          "delta": 0,
+          "percent": 0
+        },
+        "chestDetour": {
+          "before": 2.3667,
+          "after": 2.4333,
+          "delta": 0.0666,
+          "percent": 2.81
+        },
+        "pickaxeBeneficialWalls": {
+          "before": 2.2667,
+          "after": 2.175,
+          "delta": -0.0917,
+          "percent": -4.05
+        },
+        "pickaxeBestImprovement": {
+          "before": 2.1333,
+          "after": 1.65,
+          "delta": -0.4833,
+          "percent": -22.66
+        },
+        "chestAdjacentPickaxeImprovement": {
+          "before": 0.3667,
+          "after": 0.4,
+          "delta": 0.0333,
+          "percent": 9.08
+        }
+      },
+      "pickaxeBeneficialMapRate": {
+        "before": 0.7667,
+        "after": 0.6667,
+        "delta": -0.1,
+        "percent": -13.04
+      },
+      "chestAdjacentPickaxeBeneficialRate": {
+        "before": 0.175,
+        "after": 0.1917,
+        "delta": 0.0167,
+        "percent": 9.54
+      }
+    },
+    {
+      "route": 3,
+      "mode": "easy",
+      "mapsBefore": 120,
+      "mapsAfter": 120,
+      "metrics": {
+        "wallCount": {
+          "before": 18.5417,
+          "after": 18.5417,
+          "delta": 0,
+          "percent": 0
+        },
+        "walkableCells": {
+          "before": 62.4583,
+          "after": 62.4583,
+          "delta": 0,
+          "percent": 0
+        },
+        "lightCount": {
+          "before": 4,
+          "after": 4,
+          "delta": 0,
+          "percent": 0
+        },
+        "trapCount": {
+          "before": 4,
+          "after": 4,
+          "delta": 0,
+          "percent": 0
+        },
+        "objectiveMoves": {
+          "before": 26.4167,
+          "after": 26.4167,
+          "delta": 0,
+          "percent": 0
+        },
+        "objectiveDecisionRatio": {
+          "before": 0.7631,
+          "after": 0.7631,
+          "delta": 0,
+          "percent": 0
+        },
+        "objectiveLongestForcedStreak": {
+          "before": 2.025,
+          "after": 2.025,
+          "delta": 0,
+          "percent": 0
+        },
+        "junctions": {
+          "before": 40.4917,
+          "after": 40.4917,
+          "delta": 0,
+          "percent": 0
+        },
+        "deadEnds": {
+          "before": 1.375,
+          "after": 1.375,
+          "delta": 0,
+          "percent": 0
+        },
+        "corridorRatio": {
+          "before": 0.3298,
+          "after": 0.3298,
+          "delta": 0,
+          "percent": 0
+        },
+        "cycleRank": {
+          "before": 24.8083,
+          "after": 24.8083,
+          "delta": 0,
+          "percent": 0
+        },
+        "articulationPoints": {
+          "before": 1.9167,
+          "after": 1.9167,
+          "delta": 0,
+          "percent": 0
+        },
+        "objectiveArticulationPoints": {
+          "before": 1.15,
+          "after": 1.15,
+          "delta": 0,
+          "percent": 0
+        },
+        "guardianStartDistance": {
+          "before": 12.0333,
+          "after": 12.0333,
+          "delta": 0,
+          "percent": 0
+        },
+        "portalDistance": {
+          "before": 15.55,
+          "after": 15.55,
+          "delta": 0,
+          "percent": 0
+        },
+        "portalZoneCells": {
+          "before": 6.2667,
+          "after": 6.2667,
+          "delta": 0,
+          "percent": 0
+        },
+        "portalAccesses": {
+          "before": 2.9083,
+          "after": 2.9083,
+          "delta": 0,
+          "percent": 0
+        },
+        "chestDistance": {
+          "before": 6,
+          "after": 6,
+          "delta": 0,
+          "percent": 0
+        },
+        "chestDetour": {
+          "before": 1.5833,
+          "after": 1.5833,
+          "delta": 0,
+          "percent": 0
+        },
+        "pickaxeBeneficialWalls": {
+          "before": 1.9833,
+          "after": 1.9833,
+          "delta": 0,
+          "percent": 0
+        },
+        "pickaxeBestImprovement": {
+          "before": 2,
+          "after": 2,
+          "delta": 0,
+          "percent": 0
+        },
+        "chestAdjacentPickaxeImprovement": {
+          "before": 0.4833,
+          "after": 0.4833,
+          "delta": 0,
+          "percent": 0
+        }
+      },
+      "pickaxeBeneficialMapRate": {
+        "before": 0.7667,
+        "after": 0.7667,
+        "delta": 0,
+        "percent": 0
+      },
+      "chestAdjacentPickaxeBeneficialRate": {
+        "before": 0.1333,
+        "after": 0.1333,
+        "delta": 0,
+        "percent": 0
+      }
+    },
+    {
+      "route": 3,
+      "mode": "medium",
+      "mapsBefore": 120,
+      "mapsAfter": 120,
+      "metrics": {
+        "wallCount": {
+          "before": 22.2083,
+          "after": 22.2083,
+          "delta": 0,
+          "percent": 0
+        },
+        "walkableCells": {
+          "before": 58.7917,
+          "after": 58.7917,
+          "delta": 0,
+          "percent": 0
+        },
+        "lightCount": {
+          "before": 5,
+          "after": 5,
+          "delta": 0,
+          "percent": 0
+        },
+        "trapCount": {
+          "before": 5,
+          "after": 5,
+          "delta": 0,
+          "percent": 0
+        },
+        "objectiveMoves": {
+          "before": 28.8833,
+          "after": 28.8833,
+          "delta": 0,
+          "percent": 0
+        },
+        "objectiveDecisionRatio": {
+          "before": 0.7445,
+          "after": 0.7445,
+          "delta": 0,
+          "percent": 0
+        },
+        "objectiveLongestForcedStreak": {
+          "before": 2.2333,
+          "after": 2.2333,
+          "delta": 0,
+          "percent": 0
+        },
+        "junctions": {
+          "before": 34.775,
+          "after": 34.775,
+          "delta": 0,
+          "percent": 0
+        },
+        "deadEnds": {
+          "before": 2.6917,
+          "after": 2.6917,
+          "delta": 0,
+          "percent": 0
+        },
+        "corridorRatio": {
+          "before": 0.3631,
+          "after": 0.3631,
+          "delta": 0,
+          "percent": 0
+        },
+        "cycleRank": {
+          "before": 19.85,
+          "after": 19.85,
+          "delta": 0,
+          "percent": 0
+        },
+        "articulationPoints": {
+          "before": 4.1,
+          "after": 4.1,
+          "delta": 0,
+          "percent": 0
+        },
+        "objectiveArticulationPoints": {
+          "before": 1.7583,
+          "after": 1.7583,
+          "delta": 0,
+          "percent": 0
+        },
+        "guardianStartDistance": {
+          "before": 11.9083,
+          "after": 11.9083,
+          "delta": 0,
+          "percent": 0
+        },
+        "portalDistance": {
+          "before": 15.6667,
+          "after": 15.6667,
+          "delta": 0,
+          "percent": 0
+        },
+        "portalZoneCells": {
+          "before": 6.35,
+          "after": 6.35,
+          "delta": 0,
+          "percent": 0
+        },
+        "portalAccesses": {
+          "before": 2.9333,
+          "after": 2.9333,
+          "delta": 0,
+          "percent": 0
+        },
+        "chestDistance": {
+          "before": 6,
+          "after": 6,
+          "delta": 0,
+          "percent": 0
+        },
+        "chestDetour": {
+          "before": 2.2667,
+          "after": 2.2667,
+          "delta": 0,
+          "percent": 0
+        },
+        "pickaxeBeneficialWalls": {
+          "before": 2.2417,
+          "after": 2.2417,
+          "delta": 0,
+          "percent": 0
+        },
+        "pickaxeBestImprovement": {
+          "before": 2.1333,
+          "after": 2.1333,
+          "delta": 0,
+          "percent": 0
+        },
+        "chestAdjacentPickaxeImprovement": {
+          "before": 0.3167,
+          "after": 0.3167,
+          "delta": 0,
+          "percent": 0
+        }
+      },
+      "pickaxeBeneficialMapRate": {
+        "before": 0.7583,
+        "after": 0.7583,
+        "delta": 0,
+        "percent": 0
+      },
+      "chestAdjacentPickaxeBeneficialRate": {
+        "before": 0.1167,
+        "after": 0.1167,
+        "delta": 0,
+        "percent": 0
+      }
+    },
+    {
+      "route": 3,
+      "mode": "hard",
+      "mapsBefore": 120,
+      "mapsAfter": 120,
+      "metrics": {
+        "wallCount": {
+          "before": 25.6333,
+          "after": 27.15,
+          "delta": 1.5167,
+          "percent": 5.92
+        },
+        "walkableCells": {
+          "before": 55.3667,
+          "after": 53.85,
+          "delta": -1.5167,
+          "percent": -2.74
+        },
+        "lightCount": {
+          "before": 6,
+          "after": 6,
+          "delta": 0,
+          "percent": 0
+        },
+        "trapCount": {
+          "before": 6,
+          "after": 6,
+          "delta": 0,
+          "percent": 0
+        },
+        "objectiveMoves": {
+          "before": 31.25,
+          "after": 34.6833,
+          "delta": 3.4333,
+          "percent": 10.99
+        },
+        "objectiveDecisionRatio": {
+          "before": 0.6733,
+          "after": 0.6386,
+          "delta": -0.0347,
+          "percent": -5.15
+        },
+        "objectiveLongestForcedStreak": {
+          "before": 3.0917,
+          "after": 3.6167,
+          "delta": 0.525,
+          "percent": 16.98
+        },
+        "junctions": {
+          "before": 27.4333,
+          "after": 25.45,
+          "delta": -1.9833,
+          "percent": -7.23
+        },
+        "deadEnds": {
+          "before": 3.9167,
+          "after": 4.1667,
+          "delta": 0.25,
+          "percent": 6.38
+        },
+        "corridorRatio": {
+          "before": 0.4341,
+          "after": 0.4503,
+          "delta": 0.0162,
+          "percent": 3.73
+        },
+        "cycleRank": {
+          "before": 14.7167,
+          "after": 13.2167,
+          "delta": -1.5,
+          "percent": -10.19
+        },
+        "articulationPoints": {
+          "before": 6.8083,
+          "after": 7.0417,
+          "delta": 0.2334,
+          "percent": 3.43
+        },
+        "objectiveArticulationPoints": {
+          "before": 2.6167,
+          "after": 3.0667,
+          "delta": 0.45,
+          "percent": 17.2
+        },
+        "guardianStartDistance": {
+          "before": 11.0833,
+          "after": 10.9833,
+          "delta": -0.1,
+          "percent": -0.9
+        },
+        "portalDistance": {
+          "before": 15.65,
+          "after": 15.6833,
+          "delta": 0.0333,
+          "percent": 0.21
+        },
+        "portalZoneCells": {
+          "before": 6.1583,
+          "after": 6.1167,
+          "delta": -0.0416,
+          "percent": -0.68
+        },
+        "portalAccesses": {
+          "before": 2.55,
+          "after": 2.7167,
+          "delta": 0.1667,
+          "percent": 6.54
+        },
+        "chestDistance": {
+          "before": 6,
+          "after": 5.9917,
+          "delta": -0.0083,
+          "percent": -0.14
+        },
+        "chestDetour": {
+          "before": 2.2667,
+          "after": 1.5167,
+          "delta": -0.75,
+          "percent": -33.09
+        },
+        "pickaxeBeneficialWalls": {
+          "before": 2.1833,
+          "after": 2.9583,
+          "delta": 0.775,
+          "percent": 35.5
+        },
+        "pickaxeBestImprovement": {
+          "before": 2.0667,
+          "after": 2.6167,
+          "delta": 0.55,
+          "percent": 26.61
+        },
+        "chestAdjacentPickaxeImprovement": {
+          "before": 0.3667,
+          "after": 0.3667,
+          "delta": 0,
+          "percent": 0
+        }
+      },
+      "pickaxeBeneficialMapRate": {
+        "before": 0.675,
+        "after": 0.8083,
+        "delta": 0.1333,
+        "percent": 19.75
+      },
+      "chestAdjacentPickaxeBeneficialRate": {
+        "before": 0.1333,
+        "after": 0.1167,
+        "delta": -0.0166,
+        "percent": -12.45
+      }
+    }
+  ],
+  "hardEvidence": [
+    {
+      "route": 1,
+      "wallIncrease": 1.35,
+      "objectiveMoveIncrease": 1.6333,
+      "structuralAxes": {
+        "fewerJunctions": true,
+        "moreCorridor": true,
+        "moreArticulation": true,
+        "longerForcedRuns": true
+      },
+      "structuralAxesMet": 4,
+      "materiallyHarder": true
+    },
+    {
+      "route": 2,
+      "wallIncrease": 1.525,
+      "objectiveMoveIncrease": 2.0584,
+      "structuralAxes": {
+        "fewerJunctions": true,
+        "moreCorridor": true,
+        "moreArticulation": true,
+        "longerForcedRuns": true
+      },
+      "structuralAxesMet": 4,
+      "materiallyHarder": true
+    },
+    {
+      "route": 3,
+      "wallIncrease": 1.5167,
+      "objectiveMoveIncrease": 3.4333,
+      "structuralAxes": {
+        "fewerJunctions": true,
+        "moreCorridor": true,
+        "moreArticulation": false,
+        "longerForcedRuns": true
+      },
+      "structuralAxesMet": 3,
+      "materiallyHarder": true
+    }
+  ],
+  "progression": {
+    "difficulty": [
+      {
+        "route": 1,
+        "values": {
+          "easy": {
+            "walls": 14.7583,
+            "objectiveMoves": 19.7583,
+            "decisionRatio": 0.7616
+          },
+          "medium": {
+            "walls": 18.925,
+            "objectiveMoves": 23.1167,
+            "decisionRatio": 0.7084
+          },
+          "hard": {
+            "walls": 22.625,
+            "objectiveMoves": 25.9333,
+            "decisionRatio": 0.6378
+          }
+        },
+        "coherent": true
+      },
+      {
+        "route": 2,
+        "values": {
+          "easy": {
+            "walls": 17.525,
+            "objectiveMoves": 26.4333,
+            "decisionRatio": 0.8193
+          },
+          "medium": {
+            "walls": 21.375,
+            "objectiveMoves": 27.5,
+            "decisionRatio": 0.7307
+          },
+          "hard": {
+            "walls": 25.6,
+            "objectiveMoves": 30.7667,
+            "decisionRatio": 0.6647
+          }
+        },
+        "coherent": true
+      },
+      {
+        "route": 3,
+        "values": {
+          "easy": {
+            "walls": 18.5417,
+            "objectiveMoves": 26.4167,
+            "decisionRatio": 0.7631
+          },
+          "medium": {
+            "walls": 22.2083,
+            "objectiveMoves": 28.8833,
+            "decisionRatio": 0.7445
+          },
+          "hard": {
+            "walls": 27.15,
+            "objectiveMoves": 34.6833,
+            "decisionRatio": 0.6386
+          }
+        },
+        "coherent": true
+      }
+    ],
+    "routes": [
+      {
+        "mode": "easy",
+        "values": {
+          "route1": {
+            "walls": 14.7583,
+            "objectiveMoves": 19.7583
+          },
+          "route2": {
+            "walls": 17.525,
+            "objectiveMoves": 26.4333
+          },
+          "route3": {
+            "walls": 18.5417,
+            "objectiveMoves": 26.4167
+          }
+        },
+        "objectiveMoveDeltas": {
+          "route1To2": 6.675,
+          "route2To3": -0.0166
+        },
+        "objectiveNearTieTolerance": 0.25,
+        "coherent": true
+      },
+      {
+        "mode": "medium",
+        "values": {
+          "route1": {
+            "walls": 18.925,
+            "objectiveMoves": 23.1167
+          },
+          "route2": {
+            "walls": 21.375,
+            "objectiveMoves": 27.5
+          },
+          "route3": {
+            "walls": 22.2083,
+            "objectiveMoves": 28.8833
+          }
+        },
+        "objectiveMoveDeltas": {
+          "route1To2": 4.3833,
+          "route2To3": 1.3833
+        },
+        "objectiveNearTieTolerance": 0.25,
+        "coherent": true
+      },
+      {
+        "mode": "hard",
+        "values": {
+          "route1": {
+            "walls": 22.625,
+            "objectiveMoves": 25.9333
+          },
+          "route2": {
+            "walls": 25.6,
+            "objectiveMoves": 30.7667
+          },
+          "route3": {
+            "walls": 27.15,
+            "objectiveMoves": 34.6833
+          }
+        },
+        "objectiveMoveDeltas": {
+          "route1To2": 4.8334,
+          "route2To3": 3.9166
+        },
+        "objectiveNearTieTolerance": 0.25,
+        "coherent": true
+      }
+    ],
+    "easy": [
+      {
+        "route": 1,
+        "decisionRatioDelta": 0,
+        "forcedStreakDelta": 0,
+        "accessible": true
+      },
+      {
+        "route": 2,
+        "decisionRatioDelta": 0,
+        "forcedStreakDelta": 0,
+        "accessible": true
+      },
+      {
+        "route": 3,
+        "decisionRatioDelta": 0,
+        "forcedStreakDelta": 0,
+        "accessible": true
+      }
+    ]
+  },
+  "witnesses": [
+    {
+      "seed": 12420031,
+      "route": 2,
+      "mode": "easy",
+      "expectedMapChange": false,
+      "presentBefore": true,
+      "presentAfter": true,
+      "beforeHash": "e6099b10eaf1c09416c93daed62af44fa892e8ebda335edb0194a7fc954da5d3",
+      "afterHash": "e6099b10eaf1c09416c93daed62af44fa892e8ebda335edb0194a7fc954da5d3",
+      "hashChanged": false,
+      "expectedHashChangeObserved": true,
+      "metrics": {
+        "wallCount": {
+          "before": 18,
+          "after": 18,
+          "delta": 0,
+          "percent": 0
+        },
+        "walkableCells": {
+          "before": 63,
+          "after": 63,
+          "delta": 0,
+          "percent": 0
+        },
+        "lightCount": {
+          "before": 3,
+          "after": 3,
+          "delta": 0,
+          "percent": 0
+        },
+        "trapCount": {
+          "before": 3,
+          "after": 3,
+          "delta": 0,
+          "percent": 0
+        },
+        "objectiveMoves": {
+          "before": 28,
+          "after": 28,
+          "delta": 0,
+          "percent": 0
+        },
+        "objectiveDecisionRatio": {
+          "before": 0.75,
+          "after": 0.75,
+          "delta": 0,
+          "percent": 0
+        },
+        "objectiveLongestForcedStreak": {
+          "before": 1,
+          "after": 1,
+          "delta": 0,
+          "percent": 0
+        },
+        "junctions": {
+          "before": 38,
+          "after": 38,
+          "delta": 0,
+          "percent": 0
+        },
+        "deadEnds": {
+          "before": 2,
+          "after": 2,
+          "delta": 0,
+          "percent": 0
+        },
+        "corridorRatio": {
+          "before": 0.3651,
+          "after": 0.3651,
+          "delta": 0,
+          "percent": 0
+        },
+        "cycleRank": {
+          "before": 23,
+          "after": 23,
+          "delta": 0,
+          "percent": 0
+        },
+        "articulationPoints": {
+          "before": 2,
+          "after": 2,
+          "delta": 0,
+          "percent": 0
+        },
+        "objectiveArticulationPoints": {
+          "before": 2,
+          "after": 2,
+          "delta": 0,
+          "percent": 0
+        },
+        "guardianStartDistance": {
+          "before": 9,
+          "after": 9,
+          "delta": 0,
+          "percent": 0
+        },
+        "portalDistance": {
+          "before": 16,
+          "after": 16,
+          "delta": 0,
+          "percent": 0
+        },
+        "portalZoneCells": {
+          "before": 6,
+          "after": 6,
+          "delta": 0,
+          "percent": 0
+        },
+        "portalAccesses": {
+          "before": 2,
+          "after": 2,
+          "delta": 0,
+          "percent": 0
+        },
+        "chestDistance": {
+          "before": 5,
+          "after": 5,
+          "delta": 0,
+          "percent": 0
+        },
+        "chestDetour": {
+          "before": 2,
+          "after": 2,
+          "delta": 0,
+          "percent": 0
+        },
+        "pickaxeBeneficialWalls": {
+          "before": 4,
+          "after": 4,
+          "delta": 0,
+          "percent": 0
+        },
+        "pickaxeBestImprovement": {
+          "before": 2,
+          "after": 2,
+          "delta": 0,
+          "percent": 0
+        },
+        "chestAdjacentPickaxeImprovement": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        }
+      },
+      "beforePickaxeBestWall": "3,1",
+      "afterPickaxeBestWall": "3,1"
+    },
+    {
+      "seed": 12430048,
+      "route": 3,
+      "mode": "easy",
+      "expectedMapChange": false,
+      "presentBefore": true,
+      "presentAfter": true,
+      "beforeHash": "b38bdf8592700e6c0e2e2d4332d81b4adeeca35bbe8cdb25950466a3fb29decd",
+      "afterHash": "b38bdf8592700e6c0e2e2d4332d81b4adeeca35bbe8cdb25950466a3fb29decd",
+      "hashChanged": false,
+      "expectedHashChangeObserved": true,
+      "metrics": {
+        "wallCount": {
+          "before": 19,
+          "after": 19,
+          "delta": 0,
+          "percent": 0
+        },
+        "walkableCells": {
+          "before": 62,
+          "after": 62,
+          "delta": 0,
+          "percent": 0
+        },
+        "lightCount": {
+          "before": 4,
+          "after": 4,
+          "delta": 0,
+          "percent": 0
+        },
+        "trapCount": {
+          "before": 4,
+          "after": 4,
+          "delta": 0,
+          "percent": 0
+        },
+        "objectiveMoves": {
+          "before": 20,
+          "after": 20,
+          "delta": 0,
+          "percent": 0
+        },
+        "objectiveDecisionRatio": {
+          "before": 0.85,
+          "after": 0.85,
+          "delta": 0,
+          "percent": 0
+        },
+        "objectiveLongestForcedStreak": {
+          "before": 2,
+          "after": 2,
+          "delta": 0,
+          "percent": 0
+        },
+        "junctions": {
+          "before": 43,
+          "after": 43,
+          "delta": 0,
+          "percent": 0
+        },
+        "deadEnds": {
+          "before": 1,
+          "after": 1,
+          "delta": 0,
+          "percent": 0
+        },
+        "corridorRatio": {
+          "before": 0.2903,
+          "after": 0.2903,
+          "delta": 0,
+          "percent": 0
+        },
+        "cycleRank": {
+          "before": 27,
+          "after": 27,
+          "delta": 0,
+          "percent": 0
+        },
+        "articulationPoints": {
+          "before": 1,
+          "after": 1,
+          "delta": 0,
+          "percent": 0
+        },
+        "objectiveArticulationPoints": {
+          "before": 1,
+          "after": 1,
+          "delta": 0,
+          "percent": 0
+        },
+        "guardianStartDistance": {
+          "before": 11,
+          "after": 11,
+          "delta": 0,
+          "percent": 0
+        },
+        "portalDistance": {
+          "before": 16,
+          "after": 16,
+          "delta": 0,
+          "percent": 0
+        },
+        "portalZoneCells": {
+          "before": 6,
+          "after": 6,
+          "delta": 0,
+          "percent": 0
+        },
+        "portalAccesses": {
+          "before": 3,
+          "after": 3,
+          "delta": 0,
+          "percent": 0
+        },
+        "chestDistance": {
+          "before": 6,
+          "after": 6,
+          "delta": 0,
+          "percent": 0
+        },
+        "chestDetour": {
+          "before": 10,
+          "after": 10,
+          "delta": 0,
+          "percent": 0
+        },
+        "pickaxeBeneficialWalls": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "pickaxeBestImprovement": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "chestAdjacentPickaxeImprovement": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        }
+      },
+      "beforePickaxeBestWall": null,
+      "afterPickaxeBestWall": null
+    },
+    {
+      "seed": 12421027,
+      "route": 2,
+      "mode": "medium",
+      "expectedMapChange": false,
+      "presentBefore": true,
+      "presentAfter": true,
+      "beforeHash": "02fd43714f291287bed482a2a1c4c920e0f2b50939cfeea7c5db4dbd82022285",
+      "afterHash": "02fd43714f291287bed482a2a1c4c920e0f2b50939cfeea7c5db4dbd82022285",
+      "hashChanged": false,
+      "expectedHashChangeObserved": true,
+      "metrics": {
+        "wallCount": {
+          "before": 21,
+          "after": 21,
+          "delta": 0,
+          "percent": 0
+        },
+        "walkableCells": {
+          "before": 60,
+          "after": 60,
+          "delta": 0,
+          "percent": 0
+        },
+        "lightCount": {
+          "before": 4,
+          "after": 4,
+          "delta": 0,
+          "percent": 0
+        },
+        "trapCount": {
+          "before": 4,
+          "after": 4,
+          "delta": 0,
+          "percent": 0
+        },
+        "objectiveMoves": {
+          "before": 27,
+          "after": 27,
+          "delta": 0,
+          "percent": 0
+        },
+        "objectiveDecisionRatio": {
+          "before": 0.8148,
+          "after": 0.8148,
+          "delta": 0,
+          "percent": 0
+        },
+        "objectiveLongestForcedStreak": {
+          "before": 2,
+          "after": 2,
+          "delta": 0,
+          "percent": 0
+        },
+        "junctions": {
+          "before": 34,
+          "after": 34,
+          "delta": 0,
+          "percent": 0
+        },
+        "deadEnds": {
+          "before": 1,
+          "after": 1,
+          "delta": 0,
+          "percent": 0
+        },
+        "corridorRatio": {
+          "before": 0.4167,
+          "after": 0.4167,
+          "delta": 0,
+          "percent": 0
+        },
+        "cycleRank": {
+          "before": 23,
+          "after": 23,
+          "delta": 0,
+          "percent": 0
+        },
+        "articulationPoints": {
+          "before": 7,
+          "after": 7,
+          "delta": 0,
+          "percent": 0
+        },
+        "objectiveArticulationPoints": {
+          "before": 2,
+          "after": 2,
+          "delta": 0,
+          "percent": 0
+        },
+        "guardianStartDistance": {
+          "before": 15,
+          "after": 15,
+          "delta": 0,
+          "percent": 0
+        },
+        "portalDistance": {
+          "before": 15,
+          "after": 15,
+          "delta": 0,
+          "percent": 0
+        },
+        "portalZoneCells": {
+          "before": 6,
+          "after": 6,
+          "delta": 0,
+          "percent": 0
+        },
+        "portalAccesses": {
+          "before": 3,
+          "after": 3,
+          "delta": 0,
+          "percent": 0
+        },
+        "chestDistance": {
+          "before": 5,
+          "after": 5,
+          "delta": 0,
+          "percent": 0
+        },
+        "chestDetour": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "pickaxeBeneficialWalls": {
+          "before": 7,
+          "after": 7,
+          "delta": 0,
+          "percent": 0
+        },
+        "pickaxeBestImprovement": {
+          "before": 10,
+          "after": 10,
+          "delta": 0,
+          "percent": 0
+        },
+        "chestAdjacentPickaxeImprovement": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        }
+      },
+      "beforePickaxeBestWall": "3,3",
+      "afterPickaxeBestWall": "3,3"
+    },
+    {
+      "seed": 12432116,
+      "route": 3,
+      "mode": "hard",
+      "expectedMapChange": true,
+      "presentBefore": true,
+      "presentAfter": true,
+      "beforeHash": "0c73d3d8c394a1d5ca80bf8eff653cc62e4653268b18bebbbbd658324b31df1e",
+      "afterHash": "561a1d25e59ccb7cd6dec603b14c7bbe6639da2347f0c81a025511b789d6a33c",
+      "hashChanged": true,
+      "expectedHashChangeObserved": true,
+      "metrics": {
+        "wallCount": {
+          "before": 25,
+          "after": 27,
+          "delta": 2,
+          "percent": 8
+        },
+        "walkableCells": {
+          "before": 56,
+          "after": 54,
+          "delta": -2,
+          "percent": -3.57
+        },
+        "lightCount": {
+          "before": 6,
+          "after": 6,
+          "delta": 0,
+          "percent": 0
+        },
+        "trapCount": {
+          "before": 6,
+          "after": 6,
+          "delta": 0,
+          "percent": 0
+        },
+        "objectiveMoves": {
+          "before": 33,
+          "after": 32,
+          "delta": -1,
+          "percent": -3.03
+        },
+        "objectiveDecisionRatio": {
+          "before": 0.4545,
+          "after": 0.7188,
+          "delta": 0.2642,
+          "percent": 58.13
+        },
+        "objectiveLongestForcedStreak": {
+          "before": 10,
+          "after": 2,
+          "delta": -8,
+          "percent": -80
+        },
+        "junctions": {
+          "before": 22,
+          "after": 29,
+          "delta": 7,
+          "percent": 31.82
+        },
+        "deadEnds": {
+          "before": 2,
+          "after": 2,
+          "delta": 0,
+          "percent": 0
+        },
+        "corridorRatio": {
+          "before": 0.5714,
+          "after": 0.4259,
+          "delta": -0.1455,
+          "percent": -25.46
+        },
+        "cycleRank": {
+          "before": 13,
+          "after": 16,
+          "delta": 3,
+          "percent": 23.08
+        },
+        "articulationPoints": {
+          "before": 5,
+          "after": 5,
+          "delta": 0,
+          "percent": 0
+        },
+        "objectiveArticulationPoints": {
+          "before": 0,
+          "after": 1,
+          "delta": 1,
+          "percent": null
+        },
+        "guardianStartDistance": {
+          "before": 15,
+          "after": 11,
+          "delta": -4,
+          "percent": -26.67
+        },
+        "portalDistance": {
+          "before": 19,
+          "after": 16,
+          "delta": -3,
+          "percent": -15.79
+        },
+        "portalZoneCells": {
+          "before": 5,
+          "after": 6,
+          "delta": 1,
+          "percent": 20
+        },
+        "portalAccesses": {
+          "before": 3,
+          "after": 2,
+          "delta": -1,
+          "percent": -33.33
+        },
+        "chestDistance": {
+          "before": 6,
+          "after": 6,
+          "delta": 0,
+          "percent": 0
+        },
+        "chestDetour": {
+          "before": 0,
+          "after": 4,
+          "delta": 4,
+          "percent": null
+        },
+        "pickaxeBeneficialWalls": {
+          "before": 5,
+          "after": 5,
+          "delta": 0,
+          "percent": 0
+        },
+        "pickaxeBestImprovement": {
+          "before": 8,
+          "after": 4,
+          "delta": -4,
+          "percent": -50
+        },
+        "chestAdjacentPickaxeImprovement": {
+          "before": 8,
+          "after": 0,
+          "delta": -8,
+          "percent": -100
+        }
+      },
+      "beforePickaxeBestWall": "3,2",
+      "afterPickaxeBestWall": "2,3"
+    },
+    {
+      "seed": 12432045,
+      "route": 3,
+      "mode": "hard",
+      "expectedMapChange": true,
+      "presentBefore": true,
+      "presentAfter": true,
+      "beforeHash": "a13c78a9f3379a02f3431c276d7001115a14ab0c6f33f6e01320622d11ad5042",
+      "afterHash": "145a55682fd34a90d23248258c14723e545df4a518923eb8263b64cf7d635073",
+      "hashChanged": true,
+      "expectedHashChangeObserved": true,
+      "metrics": {
+        "wallCount": {
+          "before": 26,
+          "after": 27,
+          "delta": 1,
+          "percent": 3.85
+        },
+        "walkableCells": {
+          "before": 55,
+          "after": 54,
+          "delta": -1,
+          "percent": -1.82
+        },
+        "lightCount": {
+          "before": 6,
+          "after": 6,
+          "delta": 0,
+          "percent": 0
+        },
+        "trapCount": {
+          "before": 6,
+          "after": 6,
+          "delta": 0,
+          "percent": 0
+        },
+        "objectiveMoves": {
+          "before": 43,
+          "after": 34,
+          "delta": -9,
+          "percent": -20.93
+        },
+        "objectiveDecisionRatio": {
+          "before": 0.5581,
+          "after": 0.7059,
+          "delta": 0.1477,
+          "percent": 26.47
+        },
+        "objectiveLongestForcedStreak": {
+          "before": 5,
+          "after": 5,
+          "delta": 0,
+          "percent": 0
+        },
+        "junctions": {
+          "before": 24,
+          "after": 31,
+          "delta": 7,
+          "percent": 29.17
+        },
+        "deadEnds": {
+          "before": 5,
+          "after": 3,
+          "delta": -2,
+          "percent": -40
+        },
+        "corridorRatio": {
+          "before": 0.4727,
+          "after": 0.3704,
+          "delta": -0.1024,
+          "percent": -21.65
+        },
+        "cycleRank": {
+          "before": 11,
+          "after": 16,
+          "delta": 5,
+          "percent": 45.45
+        },
+        "articulationPoints": {
+          "before": 5,
+          "after": 4,
+          "delta": -1,
+          "percent": -20
+        },
+        "objectiveArticulationPoints": {
+          "before": 5,
+          "after": 3,
+          "delta": -2,
+          "percent": -40
+        },
+        "guardianStartDistance": {
+          "before": 11,
+          "after": 11,
+          "delta": 0,
+          "percent": 0
+        },
+        "portalDistance": {
+          "before": 15,
+          "after": 16,
+          "delta": 1,
+          "percent": 6.67
+        },
+        "portalZoneCells": {
+          "before": 7,
+          "after": 6,
+          "delta": -1,
+          "percent": -14.29
+        },
+        "portalAccesses": {
+          "before": 3,
+          "after": 4,
+          "delta": 1,
+          "percent": 33.33
+        },
+        "chestDistance": {
+          "before": 6,
+          "after": 6,
+          "delta": 0,
+          "percent": 0
+        },
+        "chestDetour": {
+          "before": 0,
+          "after": 4,
+          "delta": 4,
+          "percent": null
+        },
+        "pickaxeBeneficialWalls": {
+          "before": 10,
+          "after": 4,
+          "delta": -6,
+          "percent": -60
+        },
+        "pickaxeBestImprovement": {
+          "before": 6,
+          "after": 4,
+          "delta": -2,
+          "percent": -33.33
+        },
+        "chestAdjacentPickaxeImprovement": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        }
+      },
+      "beforePickaxeBestWall": "4,5",
+      "afterPickaxeBestWall": "2,4"
+    }
+  ],
+  "policyComparison": [
+    {
+      "route": 1,
+      "mode": "easy",
+      "policy": "OBJECTIVE_ROUTE_GREEDY_SECOND_CHANCE",
+      "runsBefore": 24,
+      "runsAfter": 24,
+      "outcomesBefore": {
+        "won": 17,
+        "caught-hunter": 0,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 0,
+        "timeout": 7
+      },
+      "outcomesAfter": {
+        "won": 17,
+        "caught-hunter": 0,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 0,
+        "timeout": 7
+      },
+      "metrics": {
+        "winRate": {
+          "before": 0.7083,
+          "after": 0.7083,
+          "delta": 0,
+          "percent": 0
+        },
+        "timeoutRate": {
+          "before": 0.2917,
+          "after": 0.2917,
+          "delta": 0,
+          "percent": 0
+        },
+        "hunterThreatShare": {
+          "before": 0.011,
+          "after": 0.011,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelThreatShare": {
+          "before": 0.709,
+          "after": 0.709,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelPortalBlockShare": {
+          "before": 0.7234,
+          "after": 0.7234,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelZoneShare": {
+          "before": 0.2745,
+          "after": 0.2745,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelCommittedShare": {
+          "before": 0.8957,
+          "after": 0.8957,
+          "delta": 0,
+          "percent": 0
+        },
+        "effectiveHunterBranching": {
+          "before": 2.5244,
+          "after": 2.5244,
+          "delta": 0,
+          "percent": 0
+        },
+        "potentialHunterCaptureShare": {
+          "before": 0.0014,
+          "after": 0.0014,
+          "delta": 0,
+          "percent": 0
+        },
+        "potentialSentinelCaptureShare": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "chestOpenRate": {
+          "before": 0.9167,
+          "after": 0.9167,
+          "delta": 0,
+          "percent": 0
+        },
+        "rewardSpentRate": {
+          "before": 0.0833,
+          "after": 0.0833,
+          "delta": 0,
+          "percent": 0
+        },
+        "secondChanceActivations": {
+          "before": 2,
+          "after": 2,
+          "delta": 0,
+          "percent": 0
+        },
+        "wallsBroken": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        }
+      },
+      "turns": {
+        "before": 60.7083,
+        "after": 60.7083,
+        "delta": 0,
+        "percent": 0
+      },
+      "winningTurns": {
+        "before": 19.8235,
+        "after": 19.8235,
+        "delta": 0,
+        "percent": 0
+      }
+    },
+    {
+      "route": 1,
+      "mode": "easy",
+      "policy": "THREAT_AWARE_SECOND_CHANCE",
+      "runsBefore": 24,
+      "runsAfter": 24,
+      "outcomesBefore": {
+        "won": 5,
+        "caught-hunter": 0,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 0,
+        "timeout": 19
+      },
+      "outcomesAfter": {
+        "won": 5,
+        "caught-hunter": 0,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 0,
+        "timeout": 19
+      },
+      "metrics": {
+        "winRate": {
+          "before": 0.2083,
+          "after": 0.2083,
+          "delta": 0,
+          "percent": 0
+        },
+        "timeoutRate": {
+          "before": 0.7917,
+          "after": 0.7917,
+          "delta": 0,
+          "percent": 0
+        },
+        "hunterThreatShare": {
+          "before": 0.0132,
+          "after": 0.0132,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelThreatShare": {
+          "before": 0.0003,
+          "after": 0.0003,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelPortalBlockShare": {
+          "before": 0.2958,
+          "after": 0.2958,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelZoneShare": {
+          "before": 0.6992,
+          "after": 0.6992,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelCommittedShare": {
+          "before": 0.9537,
+          "after": 0.9537,
+          "delta": 0,
+          "percent": 0
+        },
+        "effectiveHunterBranching": {
+          "before": 2.6114,
+          "after": 2.6114,
+          "delta": 0,
+          "percent": 0
+        },
+        "potentialHunterCaptureShare": {
+          "before": 0.0006,
+          "after": 0.0006,
+          "delta": 0,
+          "percent": 0
+        },
+        "potentialSentinelCaptureShare": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "chestOpenRate": {
+          "before": 0.9167,
+          "after": 0.9167,
+          "delta": 0,
+          "percent": 0
+        },
+        "rewardSpentRate": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "secondChanceActivations": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "wallsBroken": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        }
+      },
+      "turns": {
+        "before": 132.4167,
+        "after": 132.4167,
+        "delta": 0,
+        "percent": 0
+      },
+      "winningTurns": {
+        "before": 27.6,
+        "after": 27.6,
+        "delta": 0,
+        "percent": 0
+      }
+    },
+    {
+      "route": 1,
+      "mode": "easy",
+      "policy": "CHEST_AWARE_SECOND_CHANCE",
+      "runsBefore": 24,
+      "runsAfter": 24,
+      "outcomesBefore": {
+        "won": 7,
+        "caught-hunter": 0,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 0,
+        "timeout": 17
+      },
+      "outcomesAfter": {
+        "won": 7,
+        "caught-hunter": 0,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 0,
+        "timeout": 17
+      },
+      "metrics": {
+        "winRate": {
+          "before": 0.2917,
+          "after": 0.2917,
+          "delta": 0,
+          "percent": 0
+        },
+        "timeoutRate": {
+          "before": 0.7083,
+          "after": 0.7083,
+          "delta": 0,
+          "percent": 0
+        },
+        "hunterThreatShare": {
+          "before": 0.0131,
+          "after": 0.0131,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelThreatShare": {
+          "before": 0.0003,
+          "after": 0.0003,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelPortalBlockShare": {
+          "before": 0.2653,
+          "after": 0.2653,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelZoneShare": {
+          "before": 0.723,
+          "after": 0.723,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelCommittedShare": {
+          "before": 0.9505,
+          "after": 0.9505,
+          "delta": 0,
+          "percent": 0
+        },
+        "effectiveHunterBranching": {
+          "before": 2.6048,
+          "after": 2.6048,
+          "delta": 0,
+          "percent": 0
+        },
+        "potentialHunterCaptureShare": {
+          "before": 0.0007,
+          "after": 0.0007,
+          "delta": 0,
+          "percent": 0
+        },
+        "potentialSentinelCaptureShare": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "chestOpenRate": {
+          "before": 1,
+          "after": 1,
+          "delta": 0,
+          "percent": 0
+        },
+        "rewardSpentRate": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "secondChanceActivations": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "wallsBroken": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        }
+      },
+      "turns": {
+        "before": 121.25,
+        "after": 121.25,
+        "delta": 0,
+        "percent": 0
+      },
+      "winningTurns": {
+        "before": 27.1429,
+        "after": 27.1429,
+        "delta": 0,
+        "percent": 0
+      }
+    },
+    {
+      "route": 1,
+      "mode": "easy",
+      "policy": "CHEST_AWARE_PICKAXE",
+      "runsBefore": 24,
+      "runsAfter": 24,
+      "outcomesBefore": {
+        "won": 8,
+        "caught-hunter": 0,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 0,
+        "timeout": 16
+      },
+      "outcomesAfter": {
+        "won": 8,
+        "caught-hunter": 0,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 0,
+        "timeout": 16
+      },
+      "metrics": {
+        "winRate": {
+          "before": 0.3333,
+          "after": 0.3333,
+          "delta": 0,
+          "percent": 0
+        },
+        "timeoutRate": {
+          "before": 0.6667,
+          "after": 0.6667,
+          "delta": 0,
+          "percent": 0
+        },
+        "hunterThreatShare": {
+          "before": 0.0122,
+          "after": 0.0122,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelThreatShare": {
+          "before": 0.0082,
+          "after": 0.0082,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelPortalBlockShare": {
+          "before": 0.1683,
+          "after": 0.1683,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelZoneShare": {
+          "before": 0.7106,
+          "after": 0.7106,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelCommittedShare": {
+          "before": 0.9481,
+          "after": 0.9481,
+          "delta": 0,
+          "percent": 0
+        },
+        "effectiveHunterBranching": {
+          "before": 2.6049,
+          "after": 2.6049,
+          "delta": 0,
+          "percent": 0
+        },
+        "potentialHunterCaptureShare": {
+          "before": 0.0007,
+          "after": 0.0007,
+          "delta": 0,
+          "percent": 0
+        },
+        "potentialSentinelCaptureShare": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "chestOpenRate": {
+          "before": 1,
+          "after": 1,
+          "delta": 0,
+          "percent": 0
+        },
+        "rewardSpentRate": {
+          "before": 0.375,
+          "after": 0.375,
+          "delta": 0,
+          "percent": 0
+        },
+        "secondChanceActivations": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "wallsBroken": {
+          "before": 9,
+          "after": 9,
+          "delta": 0,
+          "percent": 0
+        }
+      },
+      "turns": {
+        "before": 116.3333,
+        "after": 116.3333,
+        "delta": 0,
+        "percent": 0
+      },
+      "winningTurns": {
+        "before": 29,
+        "after": 29,
+        "delta": 0,
+        "percent": 0
+      }
+    },
+    {
+      "route": 1,
+      "mode": "medium",
+      "policy": "OBJECTIVE_ROUTE_GREEDY_SECOND_CHANCE",
+      "runsBefore": 24,
+      "runsAfter": 24,
+      "outcomesBefore": {
+        "won": 12,
+        "caught-hunter": 1,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 5,
+        "timeout": 6
+      },
+      "outcomesAfter": {
+        "won": 12,
+        "caught-hunter": 1,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 5,
+        "timeout": 6
+      },
+      "metrics": {
+        "winRate": {
+          "before": 0.5,
+          "after": 0.5,
+          "delta": 0,
+          "percent": 0
+        },
+        "timeoutRate": {
+          "before": 0.25,
+          "after": 0.25,
+          "delta": 0,
+          "percent": 0
+        },
+        "hunterThreatShare": {
+          "before": 0.3876,
+          "after": 0.3876,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelThreatShare": {
+          "before": 0.5944,
+          "after": 0.5944,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelPortalBlockShare": {
+          "before": 0.7142,
+          "after": 0.7142,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelZoneShare": {
+          "before": 0.2945,
+          "after": 0.2945,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelCommittedShare": {
+          "before": 0.8153,
+          "after": 0.8153,
+          "delta": 0,
+          "percent": 0
+        },
+        "effectiveHunterBranching": {
+          "before": 2.5395,
+          "after": 2.5395,
+          "delta": 0,
+          "percent": 0
+        },
+        "potentialHunterCaptureShare": {
+          "before": 0.0067,
+          "after": 0.0067,
+          "delta": 0,
+          "percent": 0
+        },
+        "potentialSentinelCaptureShare": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "chestOpenRate": {
+          "before": 0.875,
+          "after": 0.875,
+          "delta": 0,
+          "percent": 0
+        },
+        "rewardSpentRate": {
+          "before": 0.1667,
+          "after": 0.1667,
+          "delta": 0,
+          "percent": 0
+        },
+        "secondChanceActivations": {
+          "before": 4,
+          "after": 4,
+          "delta": 0,
+          "percent": 0
+        },
+        "wallsBroken": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        }
+      },
+      "turns": {
+        "before": 62.25,
+        "after": 62.25,
+        "delta": 0,
+        "percent": 0
+      },
+      "winningTurns": {
+        "before": 25.6667,
+        "after": 25.6667,
+        "delta": 0,
+        "percent": 0
+      }
+    },
+    {
+      "route": 1,
+      "mode": "medium",
+      "policy": "THREAT_AWARE_SECOND_CHANCE",
+      "runsBefore": 24,
+      "runsAfter": 24,
+      "outcomesBefore": {
+        "won": 8,
+        "caught-hunter": 0,
+        "caught-sentinel": 1,
+        "lost-other": 0,
+        "no-legal-move": 3,
+        "timeout": 12
+      },
+      "outcomesAfter": {
+        "won": 8,
+        "caught-hunter": 0,
+        "caught-sentinel": 1,
+        "lost-other": 0,
+        "no-legal-move": 3,
+        "timeout": 12
+      },
+      "metrics": {
+        "winRate": {
+          "before": 0.3333,
+          "after": 0.3333,
+          "delta": 0,
+          "percent": 0
+        },
+        "timeoutRate": {
+          "before": 0.5,
+          "after": 0.5,
+          "delta": 0,
+          "percent": 0
+        },
+        "hunterThreatShare": {
+          "before": 0.1718,
+          "after": 0.1718,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelThreatShare": {
+          "before": 0.0744,
+          "after": 0.0744,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelPortalBlockShare": {
+          "before": 0.4497,
+          "after": 0.4497,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelZoneShare": {
+          "before": 0.4804,
+          "after": 0.4804,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelCommittedShare": {
+          "before": 0.8153,
+          "after": 0.8153,
+          "delta": 0,
+          "percent": 0
+        },
+        "effectiveHunterBranching": {
+          "before": 2.5873,
+          "after": 2.5873,
+          "delta": 0,
+          "percent": 0
+        },
+        "potentialHunterCaptureShare": {
+          "before": 0.0017,
+          "after": 0.0017,
+          "delta": 0,
+          "percent": 0
+        },
+        "potentialSentinelCaptureShare": {
+          "before": 0.0003,
+          "after": 0.0003,
+          "delta": 0,
+          "percent": 0
+        },
+        "chestOpenRate": {
+          "before": 0.9167,
+          "after": 0.9167,
+          "delta": 0,
+          "percent": 0
+        },
+        "rewardSpentRate": {
+          "before": 0.1667,
+          "after": 0.1667,
+          "delta": 0,
+          "percent": 0
+        },
+        "secondChanceActivations": {
+          "before": 4,
+          "after": 4,
+          "delta": 0,
+          "percent": 0
+        },
+        "wallsBroken": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        }
+      },
+      "turns": {
+        "before": 119.3333,
+        "after": 119.3333,
+        "delta": 0,
+        "percent": 0
+      },
+      "winningTurns": {
+        "before": 88.5,
+        "after": 88.5,
+        "delta": 0,
+        "percent": 0
+      }
+    },
+    {
+      "route": 1,
+      "mode": "medium",
+      "policy": "CHEST_AWARE_SECOND_CHANCE",
+      "runsBefore": 24,
+      "runsAfter": 24,
+      "outcomesBefore": {
+        "won": 9,
+        "caught-hunter": 0,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 3,
+        "timeout": 12
+      },
+      "outcomesAfter": {
+        "won": 9,
+        "caught-hunter": 0,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 3,
+        "timeout": 12
+      },
+      "metrics": {
+        "winRate": {
+          "before": 0.375,
+          "after": 0.375,
+          "delta": 0,
+          "percent": 0
+        },
+        "timeoutRate": {
+          "before": 0.5,
+          "after": 0.5,
+          "delta": 0,
+          "percent": 0
+        },
+        "hunterThreatShare": {
+          "before": 0.1624,
+          "after": 0.1624,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelThreatShare": {
+          "before": 0.0733,
+          "after": 0.0733,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelPortalBlockShare": {
+          "before": 0.4587,
+          "after": 0.4587,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelZoneShare": {
+          "before": 0.4537,
+          "after": 0.4537,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelCommittedShare": {
+          "before": 0.8125,
+          "after": 0.8125,
+          "delta": 0,
+          "percent": 0
+        },
+        "effectiveHunterBranching": {
+          "before": 2.5628,
+          "after": 2.5628,
+          "delta": 0,
+          "percent": 0
+        },
+        "potentialHunterCaptureShare": {
+          "before": 0.0011,
+          "after": 0.0011,
+          "delta": 0,
+          "percent": 0
+        },
+        "potentialSentinelCaptureShare": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "chestOpenRate": {
+          "before": 1,
+          "after": 1,
+          "delta": 0,
+          "percent": 0
+        },
+        "rewardSpentRate": {
+          "before": 0.125,
+          "after": 0.125,
+          "delta": 0,
+          "percent": 0
+        },
+        "secondChanceActivations": {
+          "before": 3,
+          "after": 3,
+          "delta": 0,
+          "percent": 0
+        },
+        "wallsBroken": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        }
+      },
+      "turns": {
+        "before": 116.4583,
+        "after": 116.4583,
+        "delta": 0,
+        "percent": 0
+      },
+      "winningTurns": {
+        "before": 79,
+        "after": 79,
+        "delta": 0,
+        "percent": 0
+      }
+    },
+    {
+      "route": 1,
+      "mode": "medium",
+      "policy": "CHEST_AWARE_PICKAXE",
+      "runsBefore": 24,
+      "runsAfter": 24,
+      "outcomesBefore": {
+        "won": 8,
+        "caught-hunter": 7,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 1,
+        "timeout": 8
+      },
+      "outcomesAfter": {
+        "won": 8,
+        "caught-hunter": 7,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 1,
+        "timeout": 8
+      },
+      "metrics": {
+        "winRate": {
+          "before": 0.3333,
+          "after": 0.3333,
+          "delta": 0,
+          "percent": 0
+        },
+        "timeoutRate": {
+          "before": 0.3333,
+          "after": 0.3333,
+          "delta": 0,
+          "percent": 0
+        },
+        "hunterThreatShare": {
+          "before": 0.1649,
+          "after": 0.1649,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelThreatShare": {
+          "before": 0.074,
+          "after": 0.074,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelPortalBlockShare": {
+          "before": 0.4227,
+          "after": 0.4227,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelZoneShare": {
+          "before": 0.5631,
+          "after": 0.5631,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelCommittedShare": {
+          "before": 0.7983,
+          "after": 0.7983,
+          "delta": 0,
+          "percent": 0
+        },
+        "effectiveHunterBranching": {
+          "before": 2.664,
+          "after": 2.664,
+          "delta": 0,
+          "percent": 0
+        },
+        "potentialHunterCaptureShare": {
+          "before": 0.0033,
+          "after": 0.0033,
+          "delta": 0,
+          "percent": 0
+        },
+        "potentialSentinelCaptureShare": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "chestOpenRate": {
+          "before": 1,
+          "after": 1,
+          "delta": 0,
+          "percent": 0
+        },
+        "rewardSpentRate": {
+          "before": 0.7917,
+          "after": 0.7917,
+          "delta": 0,
+          "percent": 0
+        },
+        "secondChanceActivations": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "wallsBroken": {
+          "before": 19,
+          "after": 19,
+          "delta": 0,
+          "percent": 0
+        }
+      },
+      "turns": {
+        "before": 88.4167,
+        "after": 88.4167,
+        "delta": 0,
+        "percent": 0
+      },
+      "winningTurns": {
+        "before": 64.125,
+        "after": 64.125,
+        "delta": 0,
+        "percent": 0
+      }
+    },
+    {
+      "route": 1,
+      "mode": "hard",
+      "policy": "OBJECTIVE_ROUTE_GREEDY_SECOND_CHANCE",
+      "runsBefore": 24,
+      "runsAfter": 24,
+      "outcomesBefore": {
+        "won": 10,
+        "caught-hunter": 0,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 4,
+        "timeout": 10
+      },
+      "outcomesAfter": {
+        "won": 9,
+        "caught-hunter": 0,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 5,
+        "timeout": 10
+      },
+      "metrics": {
+        "winRate": {
+          "before": 0.4167,
+          "after": 0.375,
+          "delta": -0.0417,
+          "percent": -10.01
+        },
+        "timeoutRate": {
+          "before": 0.4167,
+          "after": 0.4167,
+          "delta": 0,
+          "percent": 0
+        },
+        "hunterThreatShare": {
+          "before": 0.3508,
+          "after": 0.4032,
+          "delta": 0.0524,
+          "percent": 14.94
+        },
+        "sentinelThreatShare": {
+          "before": 0.5198,
+          "after": 0.566,
+          "delta": 0.0462,
+          "percent": 8.89
+        },
+        "sentinelPortalBlockShare": {
+          "before": 0.7791,
+          "after": 0.7782,
+          "delta": -0.0009,
+          "percent": -0.12
+        },
+        "sentinelZoneShare": {
+          "before": 0.2552,
+          "after": 0.3286,
+          "delta": 0.0734,
+          "percent": 28.76
+        },
+        "sentinelCommittedShare": {
+          "before": 0.8404,
+          "after": 0.745,
+          "delta": -0.0954,
+          "percent": -11.35
+        },
+        "effectiveHunterBranching": {
+          "before": 1.4298,
+          "after": 1.4703,
+          "delta": 0.0405,
+          "percent": 2.83
+        },
+        "potentialHunterCaptureShare": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "potentialSentinelCaptureShare": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "chestOpenRate": {
+          "before": 0.9167,
+          "after": 0.9583,
+          "delta": 0.0416,
+          "percent": 4.54
+        },
+        "rewardSpentRate": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "secondChanceActivations": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "wallsBroken": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        }
+      },
+      "turns": {
+        "before": 80.1667,
+        "after": 82.6667,
+        "delta": 2.5,
+        "percent": 3.12
+      },
+      "winningTurns": {
+        "before": 24.5,
+        "after": 29.1111,
+        "delta": 4.6111,
+        "percent": 18.82
+      }
+    },
+    {
+      "route": 1,
+      "mode": "hard",
+      "policy": "THREAT_AWARE_SECOND_CHANCE",
+      "runsBefore": 24,
+      "runsAfter": 24,
+      "outcomesBefore": {
+        "won": 3,
+        "caught-hunter": 0,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 5,
+        "timeout": 16
+      },
+      "outcomesAfter": {
+        "won": 2,
+        "caught-hunter": 0,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 5,
+        "timeout": 17
+      },
+      "metrics": {
+        "winRate": {
+          "before": 0.125,
+          "after": 0.0833,
+          "delta": -0.0417,
+          "percent": -33.36
+        },
+        "timeoutRate": {
+          "before": 0.6667,
+          "after": 0.7083,
+          "delta": 0.0416,
+          "percent": 6.24
+        },
+        "hunterThreatShare": {
+          "before": 0.1153,
+          "after": 0.1144,
+          "delta": -0.0009,
+          "percent": -0.78
+        },
+        "sentinelThreatShare": {
+          "before": 0.0247,
+          "after": 0.0389,
+          "delta": 0.0142,
+          "percent": 57.49
+        },
+        "sentinelPortalBlockShare": {
+          "before": 0.427,
+          "after": 0.4035,
+          "delta": -0.0235,
+          "percent": -5.5
+        },
+        "sentinelZoneShare": {
+          "before": 0.5326,
+          "after": 0.5017,
+          "delta": -0.0309,
+          "percent": -5.8
+        },
+        "sentinelCommittedShare": {
+          "before": 0.7252,
+          "after": 0.7261,
+          "delta": 0.0009,
+          "percent": 0.12
+        },
+        "effectiveHunterBranching": {
+          "before": 1.419,
+          "after": 1.4634,
+          "delta": 0.0444,
+          "percent": 3.13
+        },
+        "potentialHunterCaptureShare": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "potentialSentinelCaptureShare": {
+          "before": 0,
+          "after": 0.0003,
+          "delta": 0.0003,
+          "percent": null
+        },
+        "chestOpenRate": {
+          "before": 0.9583,
+          "after": 0.9167,
+          "delta": -0.0416,
+          "percent": -4.34
+        },
+        "rewardSpentRate": {
+          "before": 0,
+          "after": 0.0417,
+          "delta": 0.0417,
+          "percent": null
+        },
+        "secondChanceActivations": {
+          "before": 0,
+          "after": 1,
+          "delta": 1,
+          "percent": null
+        },
+        "wallsBroken": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        }
+      },
+      "turns": {
+        "before": 119.625,
+        "after": 123.0833,
+        "delta": 3.4583,
+        "percent": 2.89
+      },
+      "winningTurns": {
+        "before": 54,
+        "after": 56.5,
+        "delta": 2.5,
+        "percent": 4.63
+      }
+    },
+    {
+      "route": 1,
+      "mode": "hard",
+      "policy": "CHEST_AWARE_SECOND_CHANCE",
+      "runsBefore": 24,
+      "runsAfter": 24,
+      "outcomesBefore": {
+        "won": 2,
+        "caught-hunter": 0,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 6,
+        "timeout": 16
+      },
+      "outcomesAfter": {
+        "won": 2,
+        "caught-hunter": 0,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 6,
+        "timeout": 16
+      },
+      "metrics": {
+        "winRate": {
+          "before": 0.0833,
+          "after": 0.0833,
+          "delta": 0,
+          "percent": 0
+        },
+        "timeoutRate": {
+          "before": 0.6667,
+          "after": 0.6667,
+          "delta": 0,
+          "percent": 0
+        },
+        "hunterThreatShare": {
+          "before": 0.1185,
+          "after": 0.1267,
+          "delta": 0.0082,
+          "percent": 6.92
+        },
+        "sentinelThreatShare": {
+          "before": 0.0236,
+          "after": 0.0408,
+          "delta": 0.0172,
+          "percent": 72.88
+        },
+        "sentinelPortalBlockShare": {
+          "before": 0.4247,
+          "after": 0.437,
+          "delta": 0.0123,
+          "percent": 2.9
+        },
+        "sentinelZoneShare": {
+          "before": 0.5652,
+          "after": 0.4704,
+          "delta": -0.0948,
+          "percent": -16.77
+        },
+        "sentinelCommittedShare": {
+          "before": 0.7435,
+          "after": 0.7178,
+          "delta": -0.0257,
+          "percent": -3.46
+        },
+        "effectiveHunterBranching": {
+          "before": 1.5315,
+          "after": 1.4803,
+          "delta": -0.0512,
+          "percent": -3.34
+        },
+        "potentialHunterCaptureShare": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "potentialSentinelCaptureShare": {
+          "before": 0,
+          "after": 0.0004,
+          "delta": 0.0004,
+          "percent": null
+        },
+        "chestOpenRate": {
+          "before": 1,
+          "after": 1,
+          "delta": 0,
+          "percent": 0
+        },
+        "rewardSpentRate": {
+          "before": 0,
+          "after": 0.0417,
+          "delta": 0.0417,
+          "percent": null
+        },
+        "secondChanceActivations": {
+          "before": 0,
+          "after": 1,
+          "delta": 1,
+          "percent": null
+        },
+        "wallsBroken": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        }
+      },
+      "turns": {
+        "before": 119.875,
+        "after": 118.4167,
+        "delta": -1.4583,
+        "percent": -1.22
+      },
+      "winningTurns": {
+        "before": 35,
+        "after": 56.5,
+        "delta": 21.5,
+        "percent": 61.43
+      }
+    },
+    {
+      "route": 1,
+      "mode": "hard",
+      "policy": "CHEST_AWARE_PICKAXE",
+      "runsBefore": 24,
+      "runsAfter": 24,
+      "outcomesBefore": {
+        "won": 0,
+        "caught-hunter": 11,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 2,
+        "timeout": 11
+      },
+      "outcomesAfter": {
+        "won": 3,
+        "caught-hunter": 12,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 0,
+        "timeout": 9
+      },
+      "metrics": {
+        "winRate": {
+          "before": 0,
+          "after": 0.125,
+          "delta": 0.125,
+          "percent": null
+        },
+        "timeoutRate": {
+          "before": 0.4583,
+          "after": 0.375,
+          "delta": -0.0833,
+          "percent": -18.18
+        },
+        "hunterThreatShare": {
+          "before": 0.1994,
+          "after": 0.2104,
+          "delta": 0.011,
+          "percent": 5.52
+        },
+        "sentinelThreatShare": {
+          "before": 0.0771,
+          "after": 0.026,
+          "delta": -0.0511,
+          "percent": -66.28
+        },
+        "sentinelPortalBlockShare": {
+          "before": 0.3858,
+          "after": 0.5428,
+          "delta": 0.157,
+          "percent": 40.69
+        },
+        "sentinelZoneShare": {
+          "before": 0.5105,
+          "after": 0.4707,
+          "delta": -0.0398,
+          "percent": -7.8
+        },
+        "sentinelCommittedShare": {
+          "before": 0.7347,
+          "after": 0.7251,
+          "delta": -0.0096,
+          "percent": -1.31
+        },
+        "effectiveHunterBranching": {
+          "before": 1.4367,
+          "after": 1.3682,
+          "delta": -0.0685,
+          "percent": -4.77
+        },
+        "potentialHunterCaptureShare": {
+          "before": 0.0051,
+          "after": 0.0065,
+          "delta": 0.0014,
+          "percent": 27.45
+        },
+        "potentialSentinelCaptureShare": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "chestOpenRate": {
+          "before": 1,
+          "after": 1,
+          "delta": 0,
+          "percent": 0
+        },
+        "rewardSpentRate": {
+          "before": 0.75,
+          "after": 0.7917,
+          "delta": 0.0417,
+          "percent": 5.56
+        },
+        "secondChanceActivations": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "wallsBroken": {
+          "before": 18,
+          "after": 19,
+          "delta": 1,
+          "percent": 5.56
+        }
+      },
+      "turns": {
+        "before": 89.2083,
+        "after": 76.8333,
+        "delta": -12.375,
+        "percent": -13.87
+      },
+      "winningTurns": {
+        "before": null,
+        "after": 40,
+        "delta": null,
+        "percent": null
+      }
+    },
+    {
+      "route": 2,
+      "mode": "easy",
+      "policy": "OBJECTIVE_ROUTE_GREEDY_SECOND_CHANCE",
+      "runsBefore": 24,
+      "runsAfter": 24,
+      "outcomesBefore": {
+        "won": 10,
+        "caught-hunter": 1,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 0,
+        "timeout": 13
+      },
+      "outcomesAfter": {
+        "won": 10,
+        "caught-hunter": 1,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 0,
+        "timeout": 13
+      },
+      "metrics": {
+        "winRate": {
+          "before": 0.4167,
+          "after": 0.4167,
+          "delta": 0,
+          "percent": 0
+        },
+        "timeoutRate": {
+          "before": 0.5417,
+          "after": 0.5417,
+          "delta": 0,
+          "percent": 0
+        },
+        "hunterThreatShare": {
+          "before": 0.0233,
+          "after": 0.0233,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelThreatShare": {
+          "before": 0.8056,
+          "after": 0.8056,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelPortalBlockShare": {
+          "before": 0.7559,
+          "after": 0.7559,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelZoneShare": {
+          "before": 0.1282,
+          "after": 0.1282,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelCommittedShare": {
+          "before": 0.9126,
+          "after": 0.9126,
+          "delta": 0,
+          "percent": 0
+        },
+        "effectiveHunterBranching": {
+          "before": 2.5293,
+          "after": 2.5293,
+          "delta": 0,
+          "percent": 0
+        },
+        "potentialHunterCaptureShare": {
+          "before": 0.0008,
+          "after": 0.0008,
+          "delta": 0,
+          "percent": 0
+        },
+        "potentialSentinelCaptureShare": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "chestOpenRate": {
+          "before": 0.5,
+          "after": 0.5,
+          "delta": 0,
+          "percent": 0
+        },
+        "rewardSpentRate": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "secondChanceActivations": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "wallsBroken": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        }
+      },
+      "turns": {
+        "before": 98.1667,
+        "after": 98.1667,
+        "delta": 0,
+        "percent": 0
+      },
+      "winningTurns": {
+        "before": 25.6,
+        "after": 25.6,
+        "delta": 0,
+        "percent": 0
+      }
+    },
+    {
+      "route": 2,
+      "mode": "easy",
+      "policy": "THREAT_AWARE_SECOND_CHANCE",
+      "runsBefore": 24,
+      "runsAfter": 24,
+      "outcomesBefore": {
+        "won": 0,
+        "caught-hunter": 0,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 0,
+        "timeout": 24
+      },
+      "outcomesAfter": {
+        "won": 0,
+        "caught-hunter": 0,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 0,
+        "timeout": 24
+      },
+      "metrics": {
+        "winRate": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "timeoutRate": {
+          "before": 1,
+          "after": 1,
+          "delta": 0,
+          "percent": 0
+        },
+        "hunterThreatShare": {
+          "before": 0.0021,
+          "after": 0.0021,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelThreatShare": {
+          "before": 0.0008,
+          "after": 0.0008,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelPortalBlockShare": {
+          "before": 0.6258,
+          "after": 0.6258,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelZoneShare": {
+          "before": 0.081,
+          "after": 0.081,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelCommittedShare": {
+          "before": 0.9458,
+          "after": 0.9458,
+          "delta": 0,
+          "percent": 0
+        },
+        "effectiveHunterBranching": {
+          "before": 2.5289,
+          "after": 2.5289,
+          "delta": 0,
+          "percent": 0
+        },
+        "potentialHunterCaptureShare": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "potentialSentinelCaptureShare": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "chestOpenRate": {
+          "before": 0.4583,
+          "after": 0.4583,
+          "delta": 0,
+          "percent": 0
+        },
+        "rewardSpentRate": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "secondChanceActivations": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "wallsBroken": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        }
+      },
+      "turns": {
+        "before": 160,
+        "after": 160,
+        "delta": 0,
+        "percent": 0
+      },
+      "winningTurns": {
+        "before": null,
+        "after": null,
+        "delta": null,
+        "percent": null
+      }
+    },
+    {
+      "route": 2,
+      "mode": "easy",
+      "policy": "CHEST_AWARE_SECOND_CHANCE",
+      "runsBefore": 24,
+      "runsAfter": 24,
+      "outcomesBefore": {
+        "won": 0,
+        "caught-hunter": 0,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 0,
+        "timeout": 24
+      },
+      "outcomesAfter": {
+        "won": 0,
+        "caught-hunter": 0,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 0,
+        "timeout": 24
+      },
+      "metrics": {
+        "winRate": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "timeoutRate": {
+          "before": 1,
+          "after": 1,
+          "delta": 0,
+          "percent": 0
+        },
+        "hunterThreatShare": {
+          "before": 0.0034,
+          "after": 0.0034,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelThreatShare": {
+          "before": 0.001,
+          "after": 0.001,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelPortalBlockShare": {
+          "before": 0.5885,
+          "after": 0.5885,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelZoneShare": {
+          "before": 0.0888,
+          "after": 0.0888,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelCommittedShare": {
+          "before": 0.9357,
+          "after": 0.9357,
+          "delta": 0,
+          "percent": 0
+        },
+        "effectiveHunterBranching": {
+          "before": 2.5036,
+          "after": 2.5036,
+          "delta": 0,
+          "percent": 0
+        },
+        "potentialHunterCaptureShare": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "potentialSentinelCaptureShare": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "chestOpenRate": {
+          "before": 1,
+          "after": 1,
+          "delta": 0,
+          "percent": 0
+        },
+        "rewardSpentRate": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "secondChanceActivations": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "wallsBroken": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        }
+      },
+      "turns": {
+        "before": 160,
+        "after": 160,
+        "delta": 0,
+        "percent": 0
+      },
+      "winningTurns": {
+        "before": null,
+        "after": null,
+        "delta": null,
+        "percent": null
+      }
+    },
+    {
+      "route": 2,
+      "mode": "easy",
+      "policy": "CHEST_AWARE_PICKAXE",
+      "runsBefore": 24,
+      "runsAfter": 24,
+      "outcomesBefore": {
+        "won": 0,
+        "caught-hunter": 0,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 0,
+        "timeout": 24
+      },
+      "outcomesAfter": {
+        "won": 0,
+        "caught-hunter": 0,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 0,
+        "timeout": 24
+      },
+      "metrics": {
+        "winRate": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "timeoutRate": {
+          "before": 1,
+          "after": 1,
+          "delta": 0,
+          "percent": 0
+        },
+        "hunterThreatShare": {
+          "before": 0.0086,
+          "after": 0.0086,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelThreatShare": {
+          "before": 0.0086,
+          "after": 0.0086,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelPortalBlockShare": {
+          "before": 0.5409,
+          "after": 0.5409,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelZoneShare": {
+          "before": 0.0833,
+          "after": 0.0833,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelCommittedShare": {
+          "before": 0.9398,
+          "after": 0.9398,
+          "delta": 0,
+          "percent": 0
+        },
+        "effectiveHunterBranching": {
+          "before": 2.4935,
+          "after": 2.4935,
+          "delta": 0,
+          "percent": 0
+        },
+        "potentialHunterCaptureShare": {
+          "before": 0.0003,
+          "after": 0.0003,
+          "delta": 0,
+          "percent": 0
+        },
+        "potentialSentinelCaptureShare": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "chestOpenRate": {
+          "before": 1,
+          "after": 1,
+          "delta": 0,
+          "percent": 0
+        },
+        "rewardSpentRate": {
+          "before": 0.7083,
+          "after": 0.7083,
+          "delta": 0,
+          "percent": 0
+        },
+        "secondChanceActivations": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "wallsBroken": {
+          "before": 17,
+          "after": 17,
+          "delta": 0,
+          "percent": 0
+        }
+      },
+      "turns": {
+        "before": 160,
+        "after": 160,
+        "delta": 0,
+        "percent": 0
+      },
+      "winningTurns": {
+        "before": null,
+        "after": null,
+        "delta": null,
+        "percent": null
+      }
+    },
+    {
+      "route": 2,
+      "mode": "medium",
+      "policy": "OBJECTIVE_ROUTE_GREEDY_SECOND_CHANCE",
+      "runsBefore": 24,
+      "runsAfter": 24,
+      "outcomesBefore": {
+        "won": 4,
+        "caught-hunter": 4,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 5,
+        "timeout": 11
+      },
+      "outcomesAfter": {
+        "won": 4,
+        "caught-hunter": 4,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 5,
+        "timeout": 11
+      },
+      "metrics": {
+        "winRate": {
+          "before": 0.1667,
+          "after": 0.1667,
+          "delta": 0,
+          "percent": 0
+        },
+        "timeoutRate": {
+          "before": 0.4583,
+          "after": 0.4583,
+          "delta": 0,
+          "percent": 0
+        },
+        "hunterThreatShare": {
+          "before": 0.1641,
+          "after": 0.1641,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelThreatShare": {
+          "before": 0.6978,
+          "after": 0.6978,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelPortalBlockShare": {
+          "before": 0.6929,
+          "after": 0.6929,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelZoneShare": {
+          "before": 0.2502,
+          "after": 0.2502,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelCommittedShare": {
+          "before": 0.7894,
+          "after": 0.7894,
+          "delta": 0,
+          "percent": 0
+        },
+        "effectiveHunterBranching": {
+          "before": 2.3776,
+          "after": 2.3776,
+          "delta": 0,
+          "percent": 0
+        },
+        "potentialHunterCaptureShare": {
+          "before": 0.0039,
+          "after": 0.0039,
+          "delta": 0,
+          "percent": 0
+        },
+        "potentialSentinelCaptureShare": {
+          "before": 0.0005,
+          "after": 0.0005,
+          "delta": 0,
+          "percent": 0
+        },
+        "chestOpenRate": {
+          "before": 0.5,
+          "after": 0.5,
+          "delta": 0,
+          "percent": 0
+        },
+        "rewardSpentRate": {
+          "before": 0.125,
+          "after": 0.125,
+          "delta": 0,
+          "percent": 0
+        },
+        "secondChanceActivations": {
+          "before": 3,
+          "after": 3,
+          "delta": 0,
+          "percent": 0
+        },
+        "wallsBroken": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        }
+      },
+      "turns": {
+        "before": 85.0833,
+        "after": 85.0833,
+        "delta": 0,
+        "percent": 0
+      },
+      "winningTurns": {
+        "before": 29.75,
+        "after": 29.75,
+        "delta": 0,
+        "percent": 0
+      }
+    },
+    {
+      "route": 2,
+      "mode": "medium",
+      "policy": "THREAT_AWARE_SECOND_CHANCE",
+      "runsBefore": 24,
+      "runsAfter": 24,
+      "outcomesBefore": {
+        "won": 1,
+        "caught-hunter": 1,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 4,
+        "timeout": 18
+      },
+      "outcomesAfter": {
+        "won": 1,
+        "caught-hunter": 1,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 4,
+        "timeout": 18
+      },
+      "metrics": {
+        "winRate": {
+          "before": 0.0417,
+          "after": 0.0417,
+          "delta": 0,
+          "percent": 0
+        },
+        "timeoutRate": {
+          "before": 0.75,
+          "after": 0.75,
+          "delta": 0,
+          "percent": 0
+        },
+        "hunterThreatShare": {
+          "before": 0.0869,
+          "after": 0.0869,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelThreatShare": {
+          "before": 0.0108,
+          "after": 0.0108,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelPortalBlockShare": {
+          "before": 0.4983,
+          "after": 0.4983,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelZoneShare": {
+          "before": 0.3904,
+          "after": 0.3904,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelCommittedShare": {
+          "before": 0.71,
+          "after": 0.71,
+          "delta": 0,
+          "percent": 0
+        },
+        "effectiveHunterBranching": {
+          "before": 2.4752,
+          "after": 2.4752,
+          "delta": 0,
+          "percent": 0
+        },
+        "potentialHunterCaptureShare": {
+          "before": 0.0009,
+          "after": 0.0009,
+          "delta": 0,
+          "percent": 0
+        },
+        "potentialSentinelCaptureShare": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "chestOpenRate": {
+          "before": 0.6667,
+          "after": 0.6667,
+          "delta": 0,
+          "percent": 0
+        },
+        "rewardSpentRate": {
+          "before": 0.0833,
+          "after": 0.0833,
+          "delta": 0,
+          "percent": 0
+        },
+        "secondChanceActivations": {
+          "before": 2,
+          "after": 2,
+          "delta": 0,
+          "percent": 0
+        },
+        "wallsBroken": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        }
+      },
+      "turns": {
+        "before": 135.2083,
+        "after": 135.2083,
+        "delta": 0,
+        "percent": 0
+      },
+      "winningTurns": {
+        "before": 63,
+        "after": 63,
+        "delta": 0,
+        "percent": 0
+      }
+    },
+    {
+      "route": 2,
+      "mode": "medium",
+      "policy": "CHEST_AWARE_SECOND_CHANCE",
+      "runsBefore": 24,
+      "runsAfter": 24,
+      "outcomesBefore": {
+        "won": 0,
+        "caught-hunter": 0,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 7,
+        "timeout": 17
+      },
+      "outcomesAfter": {
+        "won": 0,
+        "caught-hunter": 0,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 7,
+        "timeout": 17
+      },
+      "metrics": {
+        "winRate": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "timeoutRate": {
+          "before": 0.7083,
+          "after": 0.7083,
+          "delta": 0,
+          "percent": 0
+        },
+        "hunterThreatShare": {
+          "before": 0.0887,
+          "after": 0.0887,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelThreatShare": {
+          "before": 0.014,
+          "after": 0.014,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelPortalBlockShare": {
+          "before": 0.4277,
+          "after": 0.4277,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelZoneShare": {
+          "before": 0.4197,
+          "after": 0.4197,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelCommittedShare": {
+          "before": 0.6616,
+          "after": 0.6616,
+          "delta": 0,
+          "percent": 0
+        },
+        "effectiveHunterBranching": {
+          "before": 2.4252,
+          "after": 2.4252,
+          "delta": 0,
+          "percent": 0
+        },
+        "potentialHunterCaptureShare": {
+          "before": 0.0016,
+          "after": 0.0016,
+          "delta": 0,
+          "percent": 0
+        },
+        "potentialSentinelCaptureShare": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "chestOpenRate": {
+          "before": 1,
+          "after": 1,
+          "delta": 0,
+          "percent": 0
+        },
+        "rewardSpentRate": {
+          "before": 0.2083,
+          "after": 0.2083,
+          "delta": 0,
+          "percent": 0
+        },
+        "secondChanceActivations": {
+          "before": 5,
+          "after": 5,
+          "delta": 0,
+          "percent": 0
+        },
+        "wallsBroken": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        }
+      },
+      "turns": {
+        "before": 134.3333,
+        "after": 134.3333,
+        "delta": 0,
+        "percent": 0
+      },
+      "winningTurns": {
+        "before": null,
+        "after": null,
+        "delta": null,
+        "percent": null
+      }
+    },
+    {
+      "route": 2,
+      "mode": "medium",
+      "policy": "CHEST_AWARE_PICKAXE",
+      "runsBefore": 24,
+      "runsAfter": 24,
+      "outcomesBefore": {
+        "won": 0,
+        "caught-hunter": 9,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 1,
+        "timeout": 14
+      },
+      "outcomesAfter": {
+        "won": 0,
+        "caught-hunter": 9,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 1,
+        "timeout": 14
+      },
+      "metrics": {
+        "winRate": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "timeoutRate": {
+          "before": 0.5833,
+          "after": 0.5833,
+          "delta": 0,
+          "percent": 0
+        },
+        "hunterThreatShare": {
+          "before": 0.1358,
+          "after": 0.1358,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelThreatShare": {
+          "before": 0.0482,
+          "after": 0.0482,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelPortalBlockShare": {
+          "before": 0.4169,
+          "after": 0.4169,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelZoneShare": {
+          "before": 0.2345,
+          "after": 0.2345,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelCommittedShare": {
+          "before": 0.8639,
+          "after": 0.8639,
+          "delta": 0,
+          "percent": 0
+        },
+        "effectiveHunterBranching": {
+          "before": 2.5789,
+          "after": 2.5789,
+          "delta": 0,
+          "percent": 0
+        },
+        "potentialHunterCaptureShare": {
+          "before": 0.0042,
+          "after": 0.0042,
+          "delta": 0,
+          "percent": 0
+        },
+        "potentialSentinelCaptureShare": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "chestOpenRate": {
+          "before": 1,
+          "after": 1,
+          "delta": 0,
+          "percent": 0
+        },
+        "rewardSpentRate": {
+          "before": 0.7083,
+          "after": 0.7083,
+          "delta": 0,
+          "percent": 0
+        },
+        "secondChanceActivations": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "wallsBroken": {
+          "before": 17,
+          "after": 17,
+          "delta": 0,
+          "percent": 0
+        }
+      },
+      "turns": {
+        "before": 108.0417,
+        "after": 108.0417,
+        "delta": 0,
+        "percent": 0
+      },
+      "winningTurns": {
+        "before": null,
+        "after": null,
+        "delta": null,
+        "percent": null
+      }
+    },
+    {
+      "route": 2,
+      "mode": "hard",
+      "policy": "OBJECTIVE_ROUTE_GREEDY_SECOND_CHANCE",
+      "runsBefore": 24,
+      "runsAfter": 24,
+      "outcomesBefore": {
+        "won": 3,
+        "caught-hunter": 0,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 8,
+        "timeout": 13
+      },
+      "outcomesAfter": {
+        "won": 3,
+        "caught-hunter": 0,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 12,
+        "timeout": 9
+      },
+      "metrics": {
+        "winRate": {
+          "before": 0.125,
+          "after": 0.125,
+          "delta": 0,
+          "percent": 0
+        },
+        "timeoutRate": {
+          "before": 0.5417,
+          "after": 0.375,
+          "delta": -0.1667,
+          "percent": -30.77
+        },
+        "hunterThreatShare": {
+          "before": 0.2632,
+          "after": 0.2339,
+          "delta": -0.0293,
+          "percent": -11.13
+        },
+        "sentinelThreatShare": {
+          "before": 0.5722,
+          "after": 0.7387,
+          "delta": 0.1665,
+          "percent": 29.1
+        },
+        "sentinelPortalBlockShare": {
+          "before": 0.6825,
+          "after": 0.7812,
+          "delta": 0.0987,
+          "percent": 14.46
+        },
+        "sentinelZoneShare": {
+          "before": 0.3981,
+          "after": 0.2188,
+          "delta": -0.1793,
+          "percent": -45.04
+        },
+        "sentinelCommittedShare": {
+          "before": 0.7122,
+          "after": 0.8293,
+          "delta": 0.1171,
+          "percent": 16.44
+        },
+        "effectiveHunterBranching": {
+          "before": 1.4929,
+          "after": 1.5064,
+          "delta": 0.0135,
+          "percent": 0.9
+        },
+        "potentialHunterCaptureShare": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "potentialSentinelCaptureShare": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "chestOpenRate": {
+          "before": 0.1667,
+          "after": 0.25,
+          "delta": 0.0833,
+          "percent": 49.97
+        },
+        "rewardSpentRate": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "secondChanceActivations": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "wallsBroken": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        }
+      },
+      "turns": {
+        "before": 96.7083,
+        "after": 74.4583,
+        "delta": -22.25,
+        "percent": -23.01
+      },
+      "winningTurns": {
+        "before": 28,
+        "after": 42.3333,
+        "delta": 14.3333,
+        "percent": 51.19
+      }
+    },
+    {
+      "route": 2,
+      "mode": "hard",
+      "policy": "THREAT_AWARE_SECOND_CHANCE",
+      "runsBefore": 24,
+      "runsAfter": 24,
+      "outcomesBefore": {
+        "won": 0,
+        "caught-hunter": 0,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 6,
+        "timeout": 18
+      },
+      "outcomesAfter": {
+        "won": 1,
+        "caught-hunter": 0,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 4,
+        "timeout": 19
+      },
+      "metrics": {
+        "winRate": {
+          "before": 0,
+          "after": 0.0417,
+          "delta": 0.0417,
+          "percent": null
+        },
+        "timeoutRate": {
+          "before": 0.75,
+          "after": 0.7917,
+          "delta": 0.0417,
+          "percent": 5.56
+        },
+        "hunterThreatShare": {
+          "before": 0.1025,
+          "after": 0.0528,
+          "delta": -0.0497,
+          "percent": -48.49
+        },
+        "sentinelThreatShare": {
+          "before": 0.0013,
+          "after": 0.0049,
+          "delta": 0.0036,
+          "percent": 276.92
+        },
+        "sentinelPortalBlockShare": {
+          "before": 0.512,
+          "after": 0.5417,
+          "delta": 0.0297,
+          "percent": 5.8
+        },
+        "sentinelZoneShare": {
+          "before": 0.4774,
+          "after": 0.3006,
+          "delta": -0.1768,
+          "percent": -37.03
+        },
+        "sentinelCommittedShare": {
+          "before": 0.7426,
+          "after": 0.7254,
+          "delta": -0.0172,
+          "percent": -2.32
+        },
+        "effectiveHunterBranching": {
+          "before": 1.4012,
+          "after": 1.4577,
+          "delta": 0.0565,
+          "percent": 4.03
+        },
+        "potentialHunterCaptureShare": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "potentialSentinelCaptureShare": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "chestOpenRate": {
+          "before": 0.2083,
+          "after": 0.1667,
+          "delta": -0.0416,
+          "percent": -19.97
+        },
+        "rewardSpentRate": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "secondChanceActivations": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "wallsBroken": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        }
+      },
+      "turns": {
+        "before": 130.125,
+        "after": 136.5417,
+        "delta": 6.4167,
+        "percent": 4.93
+      },
+      "winningTurns": {
+        "before": null,
+        "after": 112,
+        "delta": null,
+        "percent": null
+      }
+    },
+    {
+      "route": 2,
+      "mode": "hard",
+      "policy": "CHEST_AWARE_SECOND_CHANCE",
+      "runsBefore": 24,
+      "runsAfter": 24,
+      "outcomesBefore": {
+        "won": 0,
+        "caught-hunter": 0,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 5,
+        "timeout": 19
+      },
+      "outcomesAfter": {
+        "won": 0,
+        "caught-hunter": 0,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 8,
+        "timeout": 16
+      },
+      "metrics": {
+        "winRate": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "timeoutRate": {
+          "before": 0.7917,
+          "after": 0.6667,
+          "delta": -0.125,
+          "percent": -15.79
+        },
+        "hunterThreatShare": {
+          "before": 0.0684,
+          "after": 0.0775,
+          "delta": 0.0091,
+          "percent": 13.3
+        },
+        "sentinelThreatShare": {
+          "before": 0.0037,
+          "after": 0.0029,
+          "delta": -0.0008,
+          "percent": -21.62
+        },
+        "sentinelPortalBlockShare": {
+          "before": 0.5746,
+          "after": 0.3966,
+          "delta": -0.178,
+          "percent": -30.98
+        },
+        "sentinelZoneShare": {
+          "before": 0.3978,
+          "after": 0.388,
+          "delta": -0.0098,
+          "percent": -2.46
+        },
+        "sentinelCommittedShare": {
+          "before": 0.7687,
+          "after": 0.6913,
+          "delta": -0.0774,
+          "percent": -10.07
+        },
+        "effectiveHunterBranching": {
+          "before": 1.4486,
+          "after": 1.4551,
+          "delta": 0.0065,
+          "percent": 0.45
+        },
+        "potentialHunterCaptureShare": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "potentialSentinelCaptureShare": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "chestOpenRate": {
+          "before": 0.9167,
+          "after": 0.9167,
+          "delta": 0,
+          "percent": 0
+        },
+        "rewardSpentRate": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "secondChanceActivations": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "wallsBroken": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        }
+      },
+      "turns": {
+        "before": 134.5833,
+        "after": 116.0833,
+        "delta": -18.5,
+        "percent": -13.75
+      },
+      "winningTurns": {
+        "before": null,
+        "after": null,
+        "delta": null,
+        "percent": null
+      }
+    },
+    {
+      "route": 2,
+      "mode": "hard",
+      "policy": "CHEST_AWARE_PICKAXE",
+      "runsBefore": 24,
+      "runsAfter": 24,
+      "outcomesBefore": {
+        "won": 0,
+        "caught-hunter": 12,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 0,
+        "timeout": 12
+      },
+      "outcomesAfter": {
+        "won": 1,
+        "caught-hunter": 10,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 1,
+        "timeout": 12
+      },
+      "metrics": {
+        "winRate": {
+          "before": 0,
+          "after": 0.0417,
+          "delta": 0.0417,
+          "percent": null
+        },
+        "timeoutRate": {
+          "before": 0.5,
+          "after": 0.5,
+          "delta": 0,
+          "percent": 0
+        },
+        "hunterThreatShare": {
+          "before": 0.1186,
+          "after": 0.1342,
+          "delta": 0.0156,
+          "percent": 13.15
+        },
+        "sentinelThreatShare": {
+          "before": 0.0056,
+          "after": 0.0009,
+          "delta": -0.0047,
+          "percent": -83.93
+        },
+        "sentinelPortalBlockShare": {
+          "before": 0.3942,
+          "after": 0.445,
+          "delta": 0.0508,
+          "percent": 12.89
+        },
+        "sentinelZoneShare": {
+          "before": 0.5178,
+          "after": 0.4627,
+          "delta": -0.0551,
+          "percent": -10.64
+        },
+        "sentinelCommittedShare": {
+          "before": 0.7193,
+          "after": 0.6247,
+          "delta": -0.0946,
+          "percent": -13.15
+        },
+        "effectiveHunterBranching": {
+          "before": 1.3525,
+          "after": 1.4203,
+          "delta": 0.0678,
+          "percent": 5.01
+        },
+        "potentialHunterCaptureShare": {
+          "before": 0.0056,
+          "after": 0.0044,
+          "delta": -0.0012,
+          "percent": -21.43
+        },
+        "potentialSentinelCaptureShare": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "chestOpenRate": {
+          "before": 0.9167,
+          "after": 0.9167,
+          "delta": 0,
+          "percent": 0
+        },
+        "rewardSpentRate": {
+          "before": 0.8333,
+          "after": 0.8333,
+          "delta": 0,
+          "percent": 0
+        },
+        "secondChanceActivations": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "wallsBroken": {
+          "before": 20,
+          "after": 20,
+          "delta": 0,
+          "percent": 0
+        }
+      },
+      "turns": {
+        "before": 89.9583,
+        "after": 94.375,
+        "delta": 4.4167,
+        "percent": 4.91
+      },
+      "winningTurns": {
+        "before": null,
+        "after": 77,
+        "delta": null,
+        "percent": null
+      }
+    },
+    {
+      "route": 3,
+      "mode": "easy",
+      "policy": "OBJECTIVE_ROUTE_GREEDY_SECOND_CHANCE",
+      "runsBefore": 24,
+      "runsAfter": 24,
+      "outcomesBefore": {
+        "won": 12,
+        "caught-hunter": 3,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 0,
+        "timeout": 9
+      },
+      "outcomesAfter": {
+        "won": 12,
+        "caught-hunter": 3,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 0,
+        "timeout": 9
+      },
+      "metrics": {
+        "winRate": {
+          "before": 0.5,
+          "after": 0.5,
+          "delta": 0,
+          "percent": 0
+        },
+        "timeoutRate": {
+          "before": 0.375,
+          "after": 0.375,
+          "delta": 0,
+          "percent": 0
+        },
+        "hunterThreatShare": {
+          "before": 0.0249,
+          "after": 0.0249,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelThreatShare": {
+          "before": 0.7549,
+          "after": 0.7549,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelPortalBlockShare": {
+          "before": 0.7984,
+          "after": 0.7984,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelZoneShare": {
+          "before": 0.1699,
+          "after": 0.1699,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelCommittedShare": {
+          "before": 0.8824,
+          "after": 0.8824,
+          "delta": 0,
+          "percent": 0
+        },
+        "effectiveHunterBranching": {
+          "before": 2.5528,
+          "after": 2.5528,
+          "delta": 0,
+          "percent": 0
+        },
+        "potentialHunterCaptureShare": {
+          "before": 0.0062,
+          "after": 0.0062,
+          "delta": 0,
+          "percent": 0
+        },
+        "potentialSentinelCaptureShare": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "chestOpenRate": {
+          "before": 0.5833,
+          "after": 0.5833,
+          "delta": 0,
+          "percent": 0
+        },
+        "rewardSpentRate": {
+          "before": 0.0417,
+          "after": 0.0417,
+          "delta": 0,
+          "percent": 0
+        },
+        "secondChanceActivations": {
+          "before": 1,
+          "after": 1,
+          "delta": 0,
+          "percent": 0
+        },
+        "wallsBroken": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        }
+      },
+      "turns": {
+        "before": 80.4167,
+        "after": 80.4167,
+        "delta": 0,
+        "percent": 0
+      },
+      "winningTurns": {
+        "before": 28.5,
+        "after": 28.5,
+        "delta": 0,
+        "percent": 0
+      }
+    },
+    {
+      "route": 3,
+      "mode": "easy",
+      "policy": "THREAT_AWARE_SECOND_CHANCE",
+      "runsBefore": 24,
+      "runsAfter": 24,
+      "outcomesBefore": {
+        "won": 1,
+        "caught-hunter": 0,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 0,
+        "timeout": 23
+      },
+      "outcomesAfter": {
+        "won": 1,
+        "caught-hunter": 0,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 0,
+        "timeout": 23
+      },
+      "metrics": {
+        "winRate": {
+          "before": 0.0417,
+          "after": 0.0417,
+          "delta": 0,
+          "percent": 0
+        },
+        "timeoutRate": {
+          "before": 0.9583,
+          "after": 0.9583,
+          "delta": 0,
+          "percent": 0
+        },
+        "hunterThreatShare": {
+          "before": 0.0169,
+          "after": 0.0169,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelThreatShare": {
+          "before": 0.0057,
+          "after": 0.0057,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelPortalBlockShare": {
+          "before": 0.5173,
+          "after": 0.5173,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelZoneShare": {
+          "before": 0.1738,
+          "after": 0.1738,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelCommittedShare": {
+          "before": 0.9398,
+          "after": 0.9398,
+          "delta": 0,
+          "percent": 0
+        },
+        "effectiveHunterBranching": {
+          "before": 2.5523,
+          "after": 2.5523,
+          "delta": 0,
+          "percent": 0
+        },
+        "potentialHunterCaptureShare": {
+          "before": 0.0008,
+          "after": 0.0008,
+          "delta": 0,
+          "percent": 0
+        },
+        "potentialSentinelCaptureShare": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "chestOpenRate": {
+          "before": 0.5417,
+          "after": 0.5417,
+          "delta": 0,
+          "percent": 0
+        },
+        "rewardSpentRate": {
+          "before": 0.0417,
+          "after": 0.0417,
+          "delta": 0,
+          "percent": 0
+        },
+        "secondChanceActivations": {
+          "before": 1,
+          "after": 1,
+          "delta": 0,
+          "percent": 0
+        },
+        "wallsBroken": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        }
+      },
+      "turns": {
+        "before": 159.875,
+        "after": 159.875,
+        "delta": 0,
+        "percent": 0
+      },
+      "winningTurns": {
+        "before": 157,
+        "after": 157,
+        "delta": 0,
+        "percent": 0
+      }
+    },
+    {
+      "route": 3,
+      "mode": "easy",
+      "policy": "CHEST_AWARE_SECOND_CHANCE",
+      "runsBefore": 24,
+      "runsAfter": 24,
+      "outcomesBefore": {
+        "won": 0,
+        "caught-hunter": 0,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 0,
+        "timeout": 24
+      },
+      "outcomesAfter": {
+        "won": 0,
+        "caught-hunter": 0,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 0,
+        "timeout": 24
+      },
+      "metrics": {
+        "winRate": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "timeoutRate": {
+          "before": 1,
+          "after": 1,
+          "delta": 0,
+          "percent": 0
+        },
+        "hunterThreatShare": {
+          "before": 0.0021,
+          "after": 0.0021,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelThreatShare": {
+          "before": 0.0052,
+          "after": 0.0052,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelPortalBlockShare": {
+          "before": 0.5427,
+          "after": 0.5427,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelZoneShare": {
+          "before": 0.144,
+          "after": 0.144,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelCommittedShare": {
+          "before": 0.9349,
+          "after": 0.9349,
+          "delta": 0,
+          "percent": 0
+        },
+        "effectiveHunterBranching": {
+          "before": 2.5797,
+          "after": 2.5797,
+          "delta": 0,
+          "percent": 0
+        },
+        "potentialHunterCaptureShare": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "potentialSentinelCaptureShare": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "chestOpenRate": {
+          "before": 1,
+          "after": 1,
+          "delta": 0,
+          "percent": 0
+        },
+        "rewardSpentRate": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "secondChanceActivations": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "wallsBroken": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        }
+      },
+      "turns": {
+        "before": 160,
+        "after": 160,
+        "delta": 0,
+        "percent": 0
+      },
+      "winningTurns": {
+        "before": null,
+        "after": null,
+        "delta": null,
+        "percent": null
+      }
+    },
+    {
+      "route": 3,
+      "mode": "easy",
+      "policy": "CHEST_AWARE_PICKAXE",
+      "runsBefore": 24,
+      "runsAfter": 24,
+      "outcomesBefore": {
+        "won": 0,
+        "caught-hunter": 0,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 0,
+        "timeout": 24
+      },
+      "outcomesAfter": {
+        "won": 0,
+        "caught-hunter": 0,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 0,
+        "timeout": 24
+      },
+      "metrics": {
+        "winRate": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "timeoutRate": {
+          "before": 1,
+          "after": 1,
+          "delta": 0,
+          "percent": 0
+        },
+        "hunterThreatShare": {
+          "before": 0.0021,
+          "after": 0.0021,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelThreatShare": {
+          "before": 0.0063,
+          "after": 0.0063,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelPortalBlockShare": {
+          "before": 0.5602,
+          "after": 0.5602,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelZoneShare": {
+          "before": 0.1477,
+          "after": 0.1477,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelCommittedShare": {
+          "before": 0.9398,
+          "after": 0.9398,
+          "delta": 0,
+          "percent": 0
+        },
+        "effectiveHunterBranching": {
+          "before": 2.563,
+          "after": 2.563,
+          "delta": 0,
+          "percent": 0
+        },
+        "potentialHunterCaptureShare": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "potentialSentinelCaptureShare": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "chestOpenRate": {
+          "before": 1,
+          "after": 1,
+          "delta": 0,
+          "percent": 0
+        },
+        "rewardSpentRate": {
+          "before": 0.5833,
+          "after": 0.5833,
+          "delta": 0,
+          "percent": 0
+        },
+        "secondChanceActivations": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "wallsBroken": {
+          "before": 14,
+          "after": 14,
+          "delta": 0,
+          "percent": 0
+        }
+      },
+      "turns": {
+        "before": 160,
+        "after": 160,
+        "delta": 0,
+        "percent": 0
+      },
+      "winningTurns": {
+        "before": null,
+        "after": null,
+        "delta": null,
+        "percent": null
+      }
+    },
+    {
+      "route": 3,
+      "mode": "medium",
+      "policy": "OBJECTIVE_ROUTE_GREEDY_SECOND_CHANCE",
+      "runsBefore": 24,
+      "runsAfter": 24,
+      "outcomesBefore": {
+        "won": 3,
+        "caught-hunter": 8,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 4,
+        "timeout": 9
+      },
+      "outcomesAfter": {
+        "won": 3,
+        "caught-hunter": 8,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 4,
+        "timeout": 9
+      },
+      "metrics": {
+        "winRate": {
+          "before": 0.125,
+          "after": 0.125,
+          "delta": 0,
+          "percent": 0
+        },
+        "timeoutRate": {
+          "before": 0.375,
+          "after": 0.375,
+          "delta": 0,
+          "percent": 0
+        },
+        "hunterThreatShare": {
+          "before": 0.2357,
+          "after": 0.2357,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelThreatShare": {
+          "before": 0.5146,
+          "after": 0.5146,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelPortalBlockShare": {
+          "before": 0.6727,
+          "after": 0.6727,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelZoneShare": {
+          "before": 0.342,
+          "after": 0.342,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelCommittedShare": {
+          "before": 0.6822,
+          "after": 0.6822,
+          "delta": 0,
+          "percent": 0
+        },
+        "effectiveHunterBranching": {
+          "before": 2.306,
+          "after": 2.306,
+          "delta": 0,
+          "percent": 0
+        },
+        "potentialHunterCaptureShare": {
+          "before": 0.0084,
+          "after": 0.0084,
+          "delta": 0,
+          "percent": 0
+        },
+        "potentialSentinelCaptureShare": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "chestOpenRate": {
+          "before": 0.25,
+          "after": 0.25,
+          "delta": 0,
+          "percent": 0
+        },
+        "rewardSpentRate": {
+          "before": 0.2083,
+          "after": 0.2083,
+          "delta": 0,
+          "percent": 0
+        },
+        "secondChanceActivations": {
+          "before": 5,
+          "after": 5,
+          "delta": 0,
+          "percent": 0
+        },
+        "wallsBroken": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        }
+      },
+      "turns": {
+        "before": 74.0833,
+        "after": 74.0833,
+        "delta": 0,
+        "percent": 0
+      },
+      "winningTurns": {
+        "before": 42,
+        "after": 42,
+        "delta": 0,
+        "percent": 0
+      }
+    },
+    {
+      "route": 3,
+      "mode": "medium",
+      "policy": "THREAT_AWARE_SECOND_CHANCE",
+      "runsBefore": 24,
+      "runsAfter": 24,
+      "outcomesBefore": {
+        "won": 1,
+        "caught-hunter": 5,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 2,
+        "timeout": 16
+      },
+      "outcomesAfter": {
+        "won": 1,
+        "caught-hunter": 5,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 2,
+        "timeout": 16
+      },
+      "metrics": {
+        "winRate": {
+          "before": 0.0417,
+          "after": 0.0417,
+          "delta": 0,
+          "percent": 0
+        },
+        "timeoutRate": {
+          "before": 0.6667,
+          "after": 0.6667,
+          "delta": 0,
+          "percent": 0
+        },
+        "hunterThreatShare": {
+          "before": 0.1913,
+          "after": 0.1913,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelThreatShare": {
+          "before": 0.0433,
+          "after": 0.0433,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelPortalBlockShare": {
+          "before": 0.6012,
+          "after": 0.6012,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelZoneShare": {
+          "before": 0.3033,
+          "after": 0.3033,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelCommittedShare": {
+          "before": 0.7358,
+          "after": 0.7358,
+          "delta": 0,
+          "percent": 0
+        },
+        "effectiveHunterBranching": {
+          "before": 2.5012,
+          "after": 2.5012,
+          "delta": 0,
+          "percent": 0
+        },
+        "potentialHunterCaptureShare": {
+          "before": 0.0038,
+          "after": 0.0038,
+          "delta": 0,
+          "percent": 0
+        },
+        "potentialSentinelCaptureShare": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "chestOpenRate": {
+          "before": 0.375,
+          "after": 0.375,
+          "delta": 0,
+          "percent": 0
+        },
+        "rewardSpentRate": {
+          "before": 0.125,
+          "after": 0.125,
+          "delta": 0,
+          "percent": 0
+        },
+        "secondChanceActivations": {
+          "before": 3,
+          "after": 3,
+          "delta": 0,
+          "percent": 0
+        },
+        "wallsBroken": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        }
+      },
+      "turns": {
+        "before": 121.2917,
+        "after": 121.2917,
+        "delta": 0,
+        "percent": 0
+      },
+      "winningTurns": {
+        "before": 82,
+        "after": 82,
+        "delta": 0,
+        "percent": 0
+      }
+    },
+    {
+      "route": 3,
+      "mode": "medium",
+      "policy": "CHEST_AWARE_SECOND_CHANCE",
+      "runsBefore": 24,
+      "runsAfter": 24,
+      "outcomesBefore": {
+        "won": 2,
+        "caught-hunter": 0,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 3,
+        "timeout": 19
+      },
+      "outcomesAfter": {
+        "won": 2,
+        "caught-hunter": 0,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 3,
+        "timeout": 19
+      },
+      "metrics": {
+        "winRate": {
+          "before": 0.0833,
+          "after": 0.0833,
+          "delta": 0,
+          "percent": 0
+        },
+        "timeoutRate": {
+          "before": 0.7917,
+          "after": 0.7917,
+          "delta": 0,
+          "percent": 0
+        },
+        "hunterThreatShare": {
+          "before": 0.2706,
+          "after": 0.2706,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelThreatShare": {
+          "before": 0.0134,
+          "after": 0.0134,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelPortalBlockShare": {
+          "before": 0.5656,
+          "after": 0.5656,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelZoneShare": {
+          "before": 0.4234,
+          "after": 0.4234,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelCommittedShare": {
+          "before": 0.6226,
+          "after": 0.6226,
+          "delta": 0,
+          "percent": 0
+        },
+        "effectiveHunterBranching": {
+          "before": 2.4832,
+          "after": 2.4832,
+          "delta": 0,
+          "percent": 0
+        },
+        "potentialHunterCaptureShare": {
+          "before": 0.0027,
+          "after": 0.0027,
+          "delta": 0,
+          "percent": 0
+        },
+        "potentialSentinelCaptureShare": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "chestOpenRate": {
+          "before": 0.9583,
+          "after": 0.9583,
+          "delta": 0,
+          "percent": 0
+        },
+        "rewardSpentRate": {
+          "before": 0.375,
+          "after": 0.375,
+          "delta": 0,
+          "percent": 0
+        },
+        "secondChanceActivations": {
+          "before": 9,
+          "after": 9,
+          "delta": 0,
+          "percent": 0
+        },
+        "wallsBroken": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        }
+      },
+      "turns": {
+        "before": 136.5833,
+        "after": 136.5833,
+        "delta": 0,
+        "percent": 0
+      },
+      "winningTurns": {
+        "before": 62.5,
+        "after": 62.5,
+        "delta": 0,
+        "percent": 0
+      }
+    },
+    {
+      "route": 3,
+      "mode": "medium",
+      "policy": "CHEST_AWARE_PICKAXE",
+      "runsBefore": 24,
+      "runsAfter": 24,
+      "outcomesBefore": {
+        "won": 1,
+        "caught-hunter": 7,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 2,
+        "timeout": 14
+      },
+      "outcomesAfter": {
+        "won": 1,
+        "caught-hunter": 7,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 2,
+        "timeout": 14
+      },
+      "metrics": {
+        "winRate": {
+          "before": 0.0417,
+          "after": 0.0417,
+          "delta": 0,
+          "percent": 0
+        },
+        "timeoutRate": {
+          "before": 0.5833,
+          "after": 0.5833,
+          "delta": 0,
+          "percent": 0
+        },
+        "hunterThreatShare": {
+          "before": 0.1876,
+          "after": 0.1876,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelThreatShare": {
+          "before": 0.0088,
+          "after": 0.0088,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelPortalBlockShare": {
+          "before": 0.5189,
+          "after": 0.5189,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelZoneShare": {
+          "before": 0.377,
+          "after": 0.377,
+          "delta": 0,
+          "percent": 0
+        },
+        "sentinelCommittedShare": {
+          "before": 0.6583,
+          "after": 0.6583,
+          "delta": 0,
+          "percent": 0
+        },
+        "effectiveHunterBranching": {
+          "before": 2.3906,
+          "after": 2.3906,
+          "delta": 0,
+          "percent": 0
+        },
+        "potentialHunterCaptureShare": {
+          "before": 0.0026,
+          "after": 0.0026,
+          "delta": 0,
+          "percent": 0
+        },
+        "potentialSentinelCaptureShare": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "chestOpenRate": {
+          "before": 0.9583,
+          "after": 0.9583,
+          "delta": 0,
+          "percent": 0
+        },
+        "rewardSpentRate": {
+          "before": 0.5833,
+          "after": 0.5833,
+          "delta": 0,
+          "percent": 0
+        },
+        "secondChanceActivations": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "wallsBroken": {
+          "before": 14,
+          "after": 14,
+          "delta": 0,
+          "percent": 0
+        }
+      },
+      "turns": {
+        "before": 113.2917,
+        "after": 113.2917,
+        "delta": 0,
+        "percent": 0
+      },
+      "winningTurns": {
+        "before": 58,
+        "after": 58,
+        "delta": 0,
+        "percent": 0
+      }
+    },
+    {
+      "route": 3,
+      "mode": "hard",
+      "policy": "OBJECTIVE_ROUTE_GREEDY_SECOND_CHANCE",
+      "runsBefore": 24,
+      "runsAfter": 24,
+      "outcomesBefore": {
+        "won": 2,
+        "caught-hunter": 0,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 6,
+        "timeout": 16
+      },
+      "outcomesAfter": {
+        "won": 3,
+        "caught-hunter": 0,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 8,
+        "timeout": 13
+      },
+      "metrics": {
+        "winRate": {
+          "before": 0.0833,
+          "after": 0.125,
+          "delta": 0.0417,
+          "percent": 50.06
+        },
+        "timeoutRate": {
+          "before": 0.6667,
+          "after": 0.5417,
+          "delta": -0.125,
+          "percent": -18.75
+        },
+        "hunterThreatShare": {
+          "before": 0.2365,
+          "after": 0.3102,
+          "delta": 0.0737,
+          "percent": 31.16
+        },
+        "sentinelThreatShare": {
+          "before": 0.5277,
+          "after": 0.3805,
+          "delta": -0.1472,
+          "percent": -27.89
+        },
+        "sentinelPortalBlockShare": {
+          "before": 0.6814,
+          "after": 0.4998,
+          "delta": -0.1816,
+          "percent": -26.65
+        },
+        "sentinelZoneShare": {
+          "before": 0.3996,
+          "after": 0.5961,
+          "delta": 0.1965,
+          "percent": 49.17
+        },
+        "sentinelCommittedShare": {
+          "before": 0.6723,
+          "after": 0.4316,
+          "delta": -0.2407,
+          "percent": -35.8
+        },
+        "effectiveHunterBranching": {
+          "before": 1.4973,
+          "after": 1.3294,
+          "delta": -0.1679,
+          "percent": -11.21
+        },
+        "potentialHunterCaptureShare": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "potentialSentinelCaptureShare": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "chestOpenRate": {
+          "before": 0.5417,
+          "after": 0.3333,
+          "delta": -0.2084,
+          "percent": -38.47
+        },
+        "rewardSpentRate": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "secondChanceActivations": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "wallsBroken": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        }
+      },
+      "turns": {
+        "before": 115.2083,
+        "after": 99.5417,
+        "delta": -15.6666,
+        "percent": -13.6
+      },
+      "winningTurns": {
+        "before": 44,
+        "after": 44.3333,
+        "delta": 0.3333,
+        "percent": 0.76
+      }
+    },
+    {
+      "route": 3,
+      "mode": "hard",
+      "policy": "THREAT_AWARE_SECOND_CHANCE",
+      "runsBefore": 24,
+      "runsAfter": 24,
+      "outcomesBefore": {
+        "won": 0,
+        "caught-hunter": 0,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 3,
+        "timeout": 21
+      },
+      "outcomesAfter": {
+        "won": 0,
+        "caught-hunter": 0,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 3,
+        "timeout": 21
+      },
+      "metrics": {
+        "winRate": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "timeoutRate": {
+          "before": 0.875,
+          "after": 0.875,
+          "delta": 0,
+          "percent": 0
+        },
+        "hunterThreatShare": {
+          "before": 0.0814,
+          "after": 0.0993,
+          "delta": 0.0179,
+          "percent": 21.99
+        },
+        "sentinelThreatShare": {
+          "before": 0.0113,
+          "after": 0.0215,
+          "delta": 0.0102,
+          "percent": 90.27
+        },
+        "sentinelPortalBlockShare": {
+          "before": 0.7086,
+          "after": 0.4909,
+          "delta": -0.2177,
+          "percent": -30.72
+        },
+        "sentinelZoneShare": {
+          "before": 0.3979,
+          "after": 0.4148,
+          "delta": 0.0169,
+          "percent": 4.25
+        },
+        "sentinelCommittedShare": {
+          "before": 0.6653,
+          "after": 0.676,
+          "delta": 0.0107,
+          "percent": 1.61
+        },
+        "effectiveHunterBranching": {
+          "before": 1.4654,
+          "after": 1.3939,
+          "delta": -0.0715,
+          "percent": -4.88
+        },
+        "potentialHunterCaptureShare": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "potentialSentinelCaptureShare": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "chestOpenRate": {
+          "before": 0.5833,
+          "after": 0.4167,
+          "delta": -0.1666,
+          "percent": -28.56
+        },
+        "rewardSpentRate": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "secondChanceActivations": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "wallsBroken": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        }
+      },
+      "turns": {
+        "before": 144.4167,
+        "after": 147.25,
+        "delta": 2.8333,
+        "percent": 1.96
+      },
+      "winningTurns": {
+        "before": null,
+        "after": null,
+        "delta": null,
+        "percent": null
+      }
+    },
+    {
+      "route": 3,
+      "mode": "hard",
+      "policy": "CHEST_AWARE_SECOND_CHANCE",
+      "runsBefore": 24,
+      "runsAfter": 24,
+      "outcomesBefore": {
+        "won": 0,
+        "caught-hunter": 0,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 5,
+        "timeout": 19
+      },
+      "outcomesAfter": {
+        "won": 0,
+        "caught-hunter": 0,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 3,
+        "timeout": 21
+      },
+      "metrics": {
+        "winRate": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "timeoutRate": {
+          "before": 0.7917,
+          "after": 0.875,
+          "delta": 0.0833,
+          "percent": 10.52
+        },
+        "hunterThreatShare": {
+          "before": 0.1048,
+          "after": 0.0826,
+          "delta": -0.0222,
+          "percent": -21.18
+        },
+        "sentinelThreatShare": {
+          "before": 0.0093,
+          "after": 0.0037,
+          "delta": -0.0056,
+          "percent": -60.22
+        },
+        "sentinelPortalBlockShare": {
+          "before": 0.513,
+          "after": 0.5343,
+          "delta": 0.0213,
+          "percent": 4.15
+        },
+        "sentinelZoneShare": {
+          "before": 0.406,
+          "after": 0.4846,
+          "delta": 0.0786,
+          "percent": 19.36
+        },
+        "sentinelCommittedShare": {
+          "before": 0.6605,
+          "after": 0.6144,
+          "delta": -0.0461,
+          "percent": -6.98
+        },
+        "effectiveHunterBranching": {
+          "before": 1.4576,
+          "after": 1.3942,
+          "delta": -0.0634,
+          "percent": -4.35
+        },
+        "potentialHunterCaptureShare": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "potentialSentinelCaptureShare": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "chestOpenRate": {
+          "before": 0.9167,
+          "after": 0.9583,
+          "delta": 0.0416,
+          "percent": 4.54
+        },
+        "rewardSpentRate": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "secondChanceActivations": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "wallsBroken": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        }
+      },
+      "turns": {
+        "before": 134.75,
+        "after": 145.75,
+        "delta": 11,
+        "percent": 8.16
+      },
+      "winningTurns": {
+        "before": null,
+        "after": null,
+        "delta": null,
+        "percent": null
+      }
+    },
+    {
+      "route": 3,
+      "mode": "hard",
+      "policy": "CHEST_AWARE_PICKAXE",
+      "runsBefore": 24,
+      "runsAfter": 24,
+      "outcomesBefore": {
+        "won": 0,
+        "caught-hunter": 7,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 2,
+        "timeout": 15
+      },
+      "outcomesAfter": {
+        "won": 0,
+        "caught-hunter": 8,
+        "caught-sentinel": 0,
+        "lost-other": 0,
+        "no-legal-move": 1,
+        "timeout": 15
+      },
+      "metrics": {
+        "winRate": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "timeoutRate": {
+          "before": 0.625,
+          "after": 0.625,
+          "delta": 0,
+          "percent": 0
+        },
+        "hunterThreatShare": {
+          "before": 0.2254,
+          "after": 0.1475,
+          "delta": -0.0779,
+          "percent": -34.56
+        },
+        "sentinelThreatShare": {
+          "before": 0.0361,
+          "after": 0.0026,
+          "delta": -0.0335,
+          "percent": -92.8
+        },
+        "sentinelPortalBlockShare": {
+          "before": 0.5346,
+          "after": 0.3922,
+          "delta": -0.1424,
+          "percent": -26.64
+        },
+        "sentinelZoneShare": {
+          "before": 0.429,
+          "after": 0.5599,
+          "delta": 0.1309,
+          "percent": 30.51
+        },
+        "sentinelCommittedShare": {
+          "before": 0.6736,
+          "after": 0.561,
+          "delta": -0.1126,
+          "percent": -16.72
+        },
+        "effectiveHunterBranching": {
+          "before": 1.4587,
+          "after": 1.3409,
+          "delta": -0.1178,
+          "percent": -8.08
+        },
+        "potentialHunterCaptureShare": {
+          "before": 0.0026,
+          "after": 0.003,
+          "delta": 0.0004,
+          "percent": 15.38
+        },
+        "potentialSentinelCaptureShare": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "chestOpenRate": {
+          "before": 0.9167,
+          "after": 0.9583,
+          "delta": 0.0416,
+          "percent": 4.54
+        },
+        "rewardSpentRate": {
+          "before": 0.5833,
+          "after": 0.5833,
+          "delta": 0,
+          "percent": 0
+        },
+        "secondChanceActivations": {
+          "before": 0,
+          "after": 0,
+          "delta": 0,
+          "percent": null
+        },
+        "wallsBroken": {
+          "before": 14,
+          "after": 14,
+          "delta": 0,
+          "percent": 0
+        }
+      },
+      "turns": {
+        "before": 110.9167,
+        "after": 111.3333,
+        "delta": 0.4166,
+        "percent": 0.38
+      },
+      "winningTurns": {
+        "before": null,
+        "after": null,
+        "delta": null,
+        "percent": null
+      }
+    }
+  ],
+  "integrity": {
+    "generationFailures": 0,
+    "invalidUiStates": 0,
+    "invalidPolicyRuns": 0,
+    "policyMapMismatches": 0
+  },
+  "gates": {
+    "afterBaselineGate": true,
+    "sampleComparable": true,
+    "hardMateriallyIncreased": true,
+    "easyAccessible": true,
+    "difficultyCoherent": true,
+    "routeCoherent": true,
+    "witnessHashContract": true,
+    "runtimeIntegrity": true
+  },
+  "gateMet": true
+}

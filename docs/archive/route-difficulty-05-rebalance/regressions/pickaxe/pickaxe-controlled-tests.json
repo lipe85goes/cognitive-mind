@@ -1,0 +1,563 @@
+{
+  "mission": "ROTA-CHEST-REWARDS-01",
+  "suite": "PICKAXE_FREE_WALL_CHOICE",
+  "designRevision": "post-playtest: PICKAXE_TARGET moved from CERTIFIED_BREAKABLE_WALL to ANY_INTERNAL_MAZE_WALL",
+  "driver": "tools/validation/route-runtime-harness.mjs drives the real useEscapeMaze hook",
+  "contract": [
+    "one use, and any internal maze wall the Explorer is standing next to",
+    "the retired certifier does not restrict the runtime: walls it refused are legal targets",
+    "no eligibility check — a weak or even self-harming choice is allowed",
+    "not remote, not the frame, not the portal, not an entity",
+    "walking into a wall never spends the Pickaxe",
+    "two adjacent walls are two named, distinguishable choices",
+    "breaking costs a turn and the Explorer does not move",
+    "the wall is open BEFORE the defenders answer, in that same turn",
+    "a broken wall is walkable by the Explorer, the Hunter and the Sentinel",
+    "restart closes it; the map definition was never written to",
+    "the whole Pickaxe state is readable without the UI"
+  ],
+  "tests": [
+    {
+      "id": "A",
+      "name": "ANY_INTERNAL_WALL",
+      "pass": true,
+      "runs": 18,
+      "everyAdjacentWallOffered": true,
+      "sample": [
+        {
+          "combo": "easy/r1",
+          "seed": 7200000,
+          "wallsNextToExplorer": [
+            "6,1"
+          ],
+          "offeredAsTargets": [
+            "6,1"
+          ],
+          "allAdjacentWallsOffered": true,
+          "oldCertifiedSetSize": 9,
+          "chosen": "6,1",
+          "chosenWasCertifiedBefore": true,
+          "opened": true,
+          "wallsBefore": 15,
+          "wallsAfter": 14
+        },
+        {
+          "combo": "easy/r1",
+          "seed": 7200001,
+          "wallsNextToExplorer": [
+            "6,1"
+          ],
+          "offeredAsTargets": [
+            "6,1"
+          ],
+          "allAdjacentWallsOffered": true,
+          "oldCertifiedSetSize": 8,
+          "chosen": "6,1",
+          "chosenWasCertifiedBefore": true,
+          "opened": true,
+          "wallsBefore": 15,
+          "wallsAfter": 14
+        },
+        {
+          "combo": "easy/r1",
+          "seed": 7200002,
+          "wallsNextToExplorer": [
+            "5,3"
+          ],
+          "offeredAsTargets": [
+            "5,3"
+          ],
+          "allAdjacentWallsOffered": true,
+          "oldCertifiedSetSize": 8,
+          "chosen": "5,3",
+          "chosenWasCertifiedBefore": false,
+          "opened": true,
+          "wallsBefore": 15,
+          "wallsAfter": 14
+        }
+      ]
+    },
+    {
+      "id": "B",
+      "name": "NO_CERTIFIED_RESTRICTION",
+      "pass": true,
+      "wallsBrokenThatTheOldCertifierRefused": 4,
+      "runsWhereAnUncertifiedWallWasAdjacent": 4,
+      "note": "the retired certifier is consulted here only to name walls it would have refused; it has no authority over the runtime"
+    },
+    {
+      "id": "C",
+      "name": "ONE_USE",
+      "pass": true,
+      "runs": [
+        {
+          "seed": 7100000,
+          "wall": "6,1",
+          "secondAttempt": {
+            "wall": "1,6",
+            "targetsOffered": 0,
+            "wallsUnchanged": true,
+            "turnsUnchanged": true,
+            "brokenUnchanged": true
+          }
+        },
+        {
+          "seed": 7101000,
+          "wall": "7,5",
+          "secondAttempt": {
+            "wall": "2,0",
+            "targetsOffered": 0,
+            "wallsUnchanged": true,
+            "turnsUnchanged": true,
+            "brokenUnchanged": true
+          }
+        },
+        {
+          "seed": 7102000,
+          "wall": "7,2",
+          "secondAttempt": {
+            "wall": "0,0",
+            "targetsOffered": 0,
+            "wallsUnchanged": true,
+            "turnsUnchanged": true,
+            "brokenUnchanged": true
+          }
+        }
+      ],
+      "note": "the second attempt targets an arbitrary standing wall, not a marked one"
+    },
+    {
+      "id": "J",
+      "name": "TURN_COST",
+      "pass": true,
+      "runs": [
+        {
+          "seed": 7100000,
+          "explorerStayed": true,
+          "turnCost": 1,
+          "defendersAnswered": true
+        },
+        {
+          "seed": 7101000,
+          "explorerStayed": true,
+          "turnCost": 1,
+          "defendersAnswered": true
+        },
+        {
+          "seed": 7102000,
+          "explorerStayed": true,
+          "turnCost": 1,
+          "defendersAnswered": true
+        }
+      ],
+      "defenderPhaseObservedOnBreakTurn": true
+    },
+    {
+      "id": "M",
+      "name": "RESET",
+      "pass": true,
+      "runs": [
+        {
+          "seed": 7100000,
+          "brokenWall": null,
+          "noOpenWall": true,
+          "pickaxeAvailable": false,
+          "rewardSpent": false,
+          "breakTargets": 0
+        },
+        {
+          "seed": 7101000,
+          "brokenWall": null,
+          "noOpenWall": true,
+          "pickaxeAvailable": false,
+          "rewardSpent": false,
+          "breakTargets": 0
+        },
+        {
+          "seed": 7102000,
+          "brokenWall": null,
+          "noOpenWall": true,
+          "pickaxeAvailable": false,
+          "rewardSpent": false,
+          "breakTargets": 0
+        }
+      ],
+      "mapDefinitionUntouched": [
+        {
+          "seed": 7100000,
+          "freshWalls": 15,
+          "freshWallSet": "1,6|2,2|2,5|3,0|3,2|4,4|4,6|4,7|5,3|5,4|6,1|6,3|6,4|7,6|8,3"
+        },
+        {
+          "seed": 7101000,
+          "freshWalls": 18,
+          "freshWallSet": "2,0|2,3|2,5|2,7|3,0|3,1|3,5|4,6|5,3|5,4|6,0|6,2|6,3|6,5|7,5|8,3|8,7|8,8"
+        },
+        {
+          "seed": 7102000,
+          "freshWalls": 27,
+          "freshWallSet": "0,0|0,3|1,0|1,1|1,7|2,4|2,5|2,6|3,0|3,2|3,3|3,5|3,6|4,0|4,5|4,8|5,3|5,8|6,4|6,6|7,2|7,4|7,8|8,2|8,5|8,7|8,8"
+        }
+      ],
+      "note": "a restart draws a NEW map, so the check is that nothing is open and the definition was never written to"
+    },
+    {
+      "id": "N",
+      "name": "SOLVER_STATE_EXPLICIT",
+      "pass": true,
+      "runs": [
+        {
+          "seed": 7100000,
+          "rewardSelected": "pickaxe",
+          "rewardSpent": true,
+          "pickaxeAvailable": false,
+          "pickaxeSpent": true,
+          "brokenWall": "6,1",
+          "wallIdentityIsACell": true
+        },
+        {
+          "seed": 7101000,
+          "rewardSelected": "pickaxe",
+          "rewardSpent": true,
+          "pickaxeAvailable": false,
+          "pickaxeSpent": true,
+          "brokenWall": "7,5",
+          "wallIdentityIsACell": true
+        },
+        {
+          "seed": 7102000,
+          "rewardSelected": "pickaxe",
+          "rewardSpent": true,
+          "pickaxeAvailable": false,
+          "pickaxeSpent": true,
+          "brokenWall": "7,2",
+          "wallIdentityIsACell": true
+        }
+      ],
+      "note": "reward selected, pickaxe available/spent, broken wall and its cell identity are all readable from the hook, with no UI involved (§21)"
+    },
+    {
+      "id": "D",
+      "name": "NO_REMOTE_BREAK",
+      "pass": true,
+      "runs": 3,
+      "sample": [
+        {
+          "label": "remote-wall",
+          "cell": "1,6",
+          "refused": true,
+          "group": "D"
+        }
+      ]
+    },
+    {
+      "id": "E",
+      "name": "NO_FRAME_BREAK",
+      "pass": true,
+      "runs": 3,
+      "note": "the board frame and everything outside the 9x9 grid are not maze walls",
+      "sample": [
+        {
+          "label": "off-board",
+          "cell": "-1,1",
+          "refused": true,
+          "group": "E"
+        },
+        {
+          "label": "off-board",
+          "cell": "9,1",
+          "refused": true,
+          "group": "E"
+        },
+        {
+          "label": "off-board",
+          "cell": "5,-1",
+          "refused": true,
+          "group": "E"
+        },
+        {
+          "label": "off-board",
+          "cell": "5,9",
+          "refused": true,
+          "group": "E"
+        }
+      ]
+    },
+    {
+      "id": "F",
+      "name": "NO_PORTAL_BREAK",
+      "pass": true,
+      "runs": 3,
+      "sample": [
+        {
+          "label": "portal",
+          "cell": "2,7",
+          "refused": true,
+          "group": "F",
+          "isAWall": false
+        }
+      ]
+    },
+    {
+      "id": "G",
+      "name": "NO_ENTITY_BREAK",
+      "pass": true,
+      "runs": 3,
+      "entitiesThatTurnedOutToBeWalls": 0,
+      "note": "chest, trap, light and the three pieces all occupy walkable cells, so none of them is ever in `walls`",
+      "sample": [
+        {
+          "label": "chest",
+          "cell": "5,1",
+          "refused": true,
+          "group": "G",
+          "isAWall": false
+        },
+        {
+          "label": "trap",
+          "cell": "3,5",
+          "refused": true,
+          "group": "G",
+          "isAWall": false
+        },
+        {
+          "label": "light",
+          "cell": "4,1",
+          "refused": true,
+          "group": "G",
+          "isAWall": false
+        },
+        {
+          "label": "hunter",
+          "cell": "2,6",
+          "refused": true,
+          "group": "G",
+          "isAWall": false
+        },
+        {
+          "label": "sentinel",
+          "cell": "1,7",
+          "refused": true,
+          "group": "G",
+          "isAWall": false
+        },
+        {
+          "label": "explorer",
+          "cell": "5,1",
+          "refused": true,
+          "group": "G",
+          "isAWall": false
+        }
+      ]
+    },
+    {
+      "id": "H",
+      "name": "EXPLICIT_ACTION",
+      "pass": true,
+      "runs": [
+        {
+          "seed": 7500000,
+          "combo": "easy/r1",
+          "wall": "6,1",
+          "pickaxeKept": true,
+          "wallStillStanding": true,
+          "nothingBroken": true,
+          "countedAsBlocked": true,
+          "noTurnSpent": true,
+          "message": "Parede no caminho. A Picareta pode abri-la."
+        },
+        {
+          "seed": 7500000,
+          "combo": "medium/r2",
+          "wall": "5,3",
+          "pickaxeKept": true,
+          "wallStillStanding": true,
+          "nothingBroken": true,
+          "countedAsBlocked": true,
+          "noTurnSpent": true,
+          "message": "Parede no caminho. A Picareta pode abri-la."
+        },
+        {
+          "seed": 7500000,
+          "combo": "hard/r3",
+          "wall": "8,3",
+          "pickaxeKept": true,
+          "wallStillStanding": true,
+          "nothingBroken": true,
+          "countedAsBlocked": true,
+          "noTurnSpent": true,
+          "message": "Parede no caminho. A Picareta pode abri-la."
+        }
+      ]
+    },
+    {
+      "id": "I",
+      "name": "MULTIPLE_ADJACENT",
+      "pass": true,
+      "runs": [
+        {
+          "seed": 7600000,
+          "combo": "easy/r1",
+          "adjacentWalls": 2,
+          "directions": [
+            "left",
+            "right"
+          ],
+          "directionsAreUnique": true,
+          "directionsAreTruthful": true,
+          "chosen": {
+            "direction": "right",
+            "cell": "3,2"
+          },
+          "openedExactlyTheChosenOne": true
+        },
+        {
+          "seed": 7600000,
+          "combo": "medium/r2",
+          "adjacentWalls": 2,
+          "directions": [
+            "up",
+            "right"
+          ],
+          "directionsAreUnique": true,
+          "directionsAreTruthful": true,
+          "chosen": {
+            "direction": "right",
+            "cell": "7,4"
+          },
+          "openedExactlyTheChosenOne": true
+        },
+        {
+          "seed": 7600000,
+          "combo": "hard/r3",
+          "adjacentWalls": 2,
+          "directions": [
+            "up",
+            "down"
+          ],
+          "directionsAreUnique": true,
+          "directionsAreTruthful": true,
+          "chosen": {
+            "direction": "down",
+            "cell": "8,3"
+          },
+          "openedExactlyTheChosenOne": true
+        }
+      ],
+      "note": "targets are named by direction and walked in a fixed order, so nothing depends on invisible array order (§17)"
+    },
+    {
+      "id": "K",
+      "name": "SAME_TURN_TOPOLOGY",
+      "pass": true,
+      "runsSearched": 161,
+      "witness": {
+        "seed": 7700040,
+        "combo": "medium/r2",
+        "wall": "3,1",
+        "hunterWasAdjacent": true,
+        "hunterOnOpeningSameTurn": true,
+        "sentinelOnOpeningSameTurn": false,
+        "explorerCrossed": true
+      },
+      "proof": "the closed and opened boards differ in exactly the broken cell, so a defender standing on it at the end of the break turn is a move the closed board could not produce"
+    },
+    {
+      "id": "L",
+      "name": "ALL_ENTITIES_USE_OPENING",
+      "pass": true,
+      "explorerCrossings": 161,
+      "defenderOccupations": 5,
+      "runsObserved": 161,
+      "note": "a broken wall leaves the ONE wall set every walkability question goes through; there is no player-only hole"
+    },
+    {
+      "id": "BAD_CHOICE",
+      "name": "BAD_STRATEGIC_CHOICE_IS_STILL_LEGAL",
+      "pass": true,
+      "fixtures": 6,
+      "poorOptionsThatSavedTheExplorerNothing": 6,
+      "fixturesWhereABetterOptionExisted": 6,
+      "BAD_STRATEGIC_CHOICE_IS_STILL_LEGAL": true,
+      "sample": [
+        {
+          "combo": "easy/r1",
+          "seed": 7900000,
+          "adjacentWalls": [
+            {
+              "direction": "left",
+              "cell": "3,0",
+              "explorerMovesSaved": 0,
+              "hunterMovesSaved": 0
+            },
+            {
+              "direction": "right",
+              "cell": "3,2",
+              "explorerMovesSaved": 2,
+              "hunterMovesSaved": 0
+            }
+          ],
+          "helpfulOption": {
+            "direction": "right",
+            "cell": "3,2",
+            "explorerMovesSaved": 2,
+            "hunterMovesSaved": 0
+          },
+          "poorOption": {
+            "direction": "left",
+            "cell": "3,0",
+            "explorerMovesSaved": 0,
+            "hunterMovesSaved": 0
+          },
+          "brokeThePoorOption": true,
+          "runtimeRefused": false,
+          "explorerMovesSavedByTheChoice": 0,
+          "hunterMovesSavedByTheChoice": 0
+        },
+        {
+          "combo": "easy/r1",
+          "seed": 7900001,
+          "adjacentWalls": [
+            {
+              "direction": "left",
+              "cell": "3,0",
+              "explorerMovesSaved": 0,
+              "hunterMovesSaved": 0
+            },
+            {
+              "direction": "right",
+              "cell": "3,2",
+              "explorerMovesSaved": 2,
+              "hunterMovesSaved": 2
+            }
+          ],
+          "helpfulOption": {
+            "direction": "right",
+            "cell": "3,2",
+            "explorerMovesSaved": 2,
+            "hunterMovesSaved": 2
+          },
+          "poorOption": {
+            "direction": "left",
+            "cell": "3,0",
+            "explorerMovesSaved": 0,
+            "hunterMovesSaved": 0
+          },
+          "brokeThePoorOption": true,
+          "runtimeRefused": false,
+          "explorerMovesSavedByTheChoice": 0,
+          "hunterMovesSavedByTheChoice": 0
+        }
+      ],
+      "note": "both walls were legal; the runtime has no rewardEligibility(wall) and never refuses a choice for being weak (§8/§28)"
+    },
+    {
+      "id": "DEFENDER_BENEFIT",
+      "name": "OPENING_MAY_FAVOUR_A_DEFENDER",
+      "pass": true,
+      "fixturesWhereAnOpeningShortenedTheHunterPath": 4,
+      "note": "§29 — no invisible protection for the Explorer: an opening that helps the Hunter is allowed to be made and is not silently blocked"
+    }
+  ],
+  "allPass": true
+}

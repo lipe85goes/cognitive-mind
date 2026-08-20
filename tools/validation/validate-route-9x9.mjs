@@ -241,6 +241,12 @@ function loadRouteGenerator() {
       if (request === "@/engine/scoring") {
         return { calculateEscapeMazeScore: () => 0 };
       }
+      if (request === "@/engine/route-random") {
+        return {
+          beginSeededGeneration: () => undefined,
+          routeRandom: () => seededMath.random(),
+        };
+      }
       if (request === "@/lib/game-sounds") {
         return {
           playGentleErrorTone: () => undefined,

@@ -1,0 +1,101 @@
+{
+  "mission": "ROTA-TRAPS-STRATEGY-01",
+  "contract": [
+    "dormant: walkable by Explorer, Hunter and Sentinel",
+    "armed: walkable by the Explorer only",
+    "arms on the Explorer's arrival, before the defenders answer in that same turn",
+    "stays armed for the rest of the map; a new map starts dormant",
+    "each trap is independent; arming is idempotent"
+  ],
+  "tests": [
+    {
+      "id": "A",
+      "name": "INACTIVE_EXPLORER",
+      "pass": true,
+      "trap": "1,3",
+      "reachable": true
+    },
+    {
+      "id": "B",
+      "name": "INACTIVE_HUNTER",
+      "pass": true,
+      "from": "0,3",
+      "trapIsALegalNeighbour": true
+    },
+    {
+      "id": "C",
+      "name": "INACTIVE_SENTINEL",
+      "pass": true,
+      "note": "dormant trap is an ordinary cell: not in any blocked set",
+      "blockedSetSize": 0
+    },
+    {
+      "id": "D",
+      "name": "ACTIVATION",
+      "pass": true,
+      "trap": "1,3",
+      "note": "the hook builds this set locally from the step, before the defenders answer"
+    },
+    {
+      "id": "E",
+      "name": "ACTIVE_EXPLORER",
+      "pass": true,
+      "note": "the armed set is passed only to the defenders; the Explorer's move validation never sees it",
+      "exitsFromTrap": 3
+    },
+    {
+      "id": "F",
+      "name": "ACTIVE_HUNTER",
+      "pass": true,
+      "from": "0,3",
+      "trap": "1,3",
+      "enteredWhileDormant": 40,
+      "enteredWhileArmed": 0
+    },
+    {
+      "id": "G",
+      "name": "ACTIVE_SENTINEL",
+      "pass": true,
+      "statesDriven": 120,
+      "enteredArmedTrap": 0
+    },
+    {
+      "id": "H",
+      "name": "SAME_TURN",
+      "pass": true,
+      "hunterDestination": "0,4",
+      "sentinelDestination": "1,7",
+      "crossings": 0
+    },
+    {
+      "id": "I",
+      "name": "MULTIPLE",
+      "pass": true,
+      "trapsArmed": 6,
+      "violations": 0,
+      "note": "each trap has independent state; no hidden one-at-a-time rule"
+    },
+    {
+      "id": "J",
+      "name": "RESET",
+      "pass": true,
+      "note": "startNewMaze clears triggeredTraps; the armed set is derived from it, so a new map starts dormant",
+      "mapATraps": 6,
+      "mapBTraps": 6
+    },
+    {
+      "id": "K",
+      "name": "IDEMPOTENCE",
+      "pass": true,
+      "note": "the armed set is a Set keyed by cell; re-entering an armed trap cannot change it",
+      "sizeAfterFirst": 1,
+      "sizeAfterSecond": 1
+    }
+  ],
+  "emptySetRegression": {
+    "statesCompared": 486,
+    "hunterDivergences": 0,
+    "sentinelDivergences": 0
+  },
+  "allPass": true
+}

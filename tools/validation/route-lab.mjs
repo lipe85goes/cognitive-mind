@@ -91,7 +91,8 @@ export const __lab = {
   MAZE_TEMPLATES, STAGE_ONE_TEMPLATES, ROUTE_STAGE_TEMPLATES,
   ROUTE_STAGE_QUALITY, WALL_LIMITS, BASE_STAR_COUNT, BASE_TRAP_COUNT,
   generateMaze, getRouteStage, getMinimumPathLength, getRouteStageTemplates,
-  getWallLimits, getStarCount, getTrapCount, isValidMap, chooseGuardianMove,
+  getWallLimits, getStarCount, getStarMinSeparation, getTrapCount, isValidMap,
+  chooseGuardianMove,
 };
 `;
 }

@@ -1,0 +1,26 @@
+{
+  "mission": "ROTA-DUAL-GUARDIANS-MAPS-01B",
+  "source": "tools/validation/dual-guardian-lab.mjs sentinelStep, tuning { patrol: true, commitTurns: 3 }",
+  "mapsWalked": 36,
+  "statesCompared": 690,
+  "divergences": 0,
+  "divergenceSamples": [],
+  "situationCoverage": {
+    "patrol": 325,
+    "commitStart": 365,
+    "commitHeld": 114,
+    "commitExpired": 104,
+    "retargetAfterCommit": 93,
+    "explorerFar": 237,
+    "multipleAccesses": 36,
+    "repositioned": 96,
+    "leashed": 323,
+    "stayed": 594
+  },
+  "constants": {
+    "ZONE_RADIUS": 2,
+    "SENTINEL_LEASH": 2,
+    "commitTurns": 3
+  },
+  "gateMet": true
+}

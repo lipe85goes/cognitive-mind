@@ -901,6 +901,7 @@ function parameterTable(api) {
         currentValue: {
           wallLimits: api.getWallLimits(mode, route),
           lights: api.getStarCount(mode, route),
+          objectiveSeparation: api.getStarMinSeparation(mode, route),
           traps: api.getTrapCount(mode, route),
         },
         effect: "Directly changes density, objective count and defender-blocking trap opportunities.",

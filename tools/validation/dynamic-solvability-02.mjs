@@ -14,7 +14,10 @@ import {
   walkableNeighbours,
 } from "./route-runtime-harness.mjs";
 
-const OUT = path.resolve("docs/archive/route-dynamic-solvability-02");
+const OUT = path.resolve(
+  process.env.ROUTE_VALIDATION_OUT ??
+    "docs/archive/route-dynamic-solvability-02",
+);
 fs.mkdirSync(OUT, { recursive: true });
 const RT = loadRouteRuntime();
 const { API, LAB } = RT;

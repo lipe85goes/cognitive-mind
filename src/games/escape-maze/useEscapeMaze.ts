@@ -301,7 +301,7 @@ const ROUTE_STAGE_COPY: Record<
 const WALL_LIMITS: Record<DifficultyLevel, { min: number; max: number }> = {
   easy: { min: 13, max: 18 },
   medium: { min: 18, max: 23 },
-  hard: { min: 23, max: 28 },
+  hard: { min: 25, max: 30 },
 };
 
 /**
@@ -314,7 +314,7 @@ const WALL_LIMITS: Record<DifficultyLevel, { min: number; max: number }> = {
 const BASE_STAR_COUNT: Record<DifficultyLevel, number> = {
   easy: 3,
   medium: 4,
-  hard: 5,
+  hard: 6,
 };
 
 /** A small, calm number of trap tiles per difficulty (Gameplay 2.0). */
@@ -361,8 +361,8 @@ const DIFFICULTY_PLAY_BRIEF: Record<DifficultyLevel, DifficultyPlayBrief> = {
     guardianStartDistance: { min: 7, max: 12 },
   },
   hard: {
-    minDecisionRatio: 0.5,
-    maxForcedStreak: 5,
+    minDecisionRatio: 0.46,
+    maxForcedStreak: 6,
     maxIdleDeadEnds: 2,
     guardianStartDistance: { min: 6, max: 11 },
   },
@@ -472,6 +472,14 @@ function getStarCount(difficulty: DifficultyLevel, stage: RouteStage): number {
   // both axes progress without either dominating.
   if (stage === 3) return Math.min(6, BASE_STAR_COUNT[difficulty] + 1);
   return BASE_STAR_COUNT[difficulty];
+}
+
+function getStarMinSeparation(
+  difficulty: DifficultyLevel,
+  stage: RouteStage,
+): number {
+  const base = ROUTE_STAGE_QUALITY[stage].starMinSeparation;
+  return difficulty === "hard" && stage === 3 ? base + 1 : base;
 }
 
 function getTrapCount(difficulty: DifficultyLevel, stage: RouteStage): number {
@@ -790,6 +798,7 @@ function chooseStars(
   const blocked = protectedKeys(playerStart, guardianStart, exitPosition);
   const distances = getReachableDistances(playerStart, walls);
   const targetCount = getStarCount(difficulty, routeStage);
+  const minSeparation = getStarMinSeparation(difficulty, routeStage);
   const candidates: Array<{ pos: GridPosition; score: number }> = [];
 
   for (let row = 0; row < ROWS; row++) {
@@ -835,7 +844,7 @@ function chooseStars(
   const ordered = candidates.map((candidate) => candidate.pos);
   const separated = (chosen: GridPosition[], next: GridPosition) =>
     chosen.every(
-      (star) => manhattanDistance(star, next) >= profile.starMinSeparation,
+      (star) => manhattanDistance(star, next) >= minSeparation,
     );
 
   const search = (from: number, chosen: GridPosition[]): GridPosition[] | null => {
@@ -1724,7 +1733,8 @@ function isStructurallyValid(
     collectibleStars.every(
       (other, otherIndex) =>
         index === otherIndex ||
-        manhattanDistance(star, other) >= profile.starMinSeparation,
+        manhattanDistance(star, other) >=
+          getStarMinSeparation(difficulty, routeStage),
     ),
   );
   if (!starsSeparated) return null;
@@ -1777,7 +1787,8 @@ function isValidMap(
     map.collectibleStars.every(
       (other, otherIndex) =>
         index === otherIndex ||
-        manhattanDistance(star, other) >= profile.starMinSeparation,
+        manhattanDistance(star, other) >=
+          getStarMinSeparation(difficulty, routeStage),
     ),
   );
   const trapsValid = map.traps.every((trap) => {

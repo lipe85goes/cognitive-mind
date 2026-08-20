@@ -15,7 +15,9 @@ import path from "node:path";
 import { loadInstrumented } from "./instrumented-generator.mjs";
 import { key, eq, neighbors, bfs } from "./route-lab.mjs";
 
-const OUT = path.resolve("docs/archive/route-traps-strategy-01");
+const OUT = path.resolve(
+  process.env.ROUTE_VALIDATION_OUT ?? "docs/archive/route-traps-strategy-01",
+);
 fs.mkdirSync(OUT, { recursive: true });
 const LAB = loadInstrumented({ bare: true });
 const API = LAB.API;

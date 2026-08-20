@@ -18,7 +18,10 @@ import path from "node:path";
 import crypto from "node:crypto";
 import { loadRouteRuntime, walkableNeighbours } from "./route-runtime-harness.mjs";
 
-const OUT = path.resolve("docs/archive/route-difficulty-04c-diagnostic-launcher");
+const OUT = path.resolve(
+  process.env.ROUTE_VALIDATION_OUT ??
+    "docs/archive/route-difficulty-04c-diagnostic-launcher",
+);
 fs.mkdirSync(OUT, { recursive: true });
 
 const RUNTIME = loadRouteRuntime();
@@ -68,14 +71,18 @@ const BASELINE = JSON.parse(
 const recordedSample = (seed) =>
   BASELINE.geometrySamples.find((s) => s.seed === seed) ?? null;
 
-/** The witnesses named by the mission, with the baseline's own seed formula. */
+/**
+ * The witnesses named by the missions, with the baseline's own seed formula.
+ * ROTA-DIFFICULTY-05 intentionally keeps the Easy/Medium maps identical and
+ * changes the two Hard maps through the selected generation thresholds.
+ */
 const MODES = ["easy", "medium", "hard"];
 const WITNESSES = [
-  { id: "A", seed: 12432045, route: 3, mode: "hard", note: "objective route de 43 moves" },
-  { id: "B", seed: 12432116, route: 3, mode: "hard", note: "forced streak de 10" },
-  { id: "C", seed: 12430048, route: 3, mode: "easy", note: "Chest detour de 10" },
-  { id: "D", seed: 12421027, route: 2, mode: "medium", note: "Pickaxe melhora 10 moves" },
-  { id: "E", seed: 12420031, route: 2, mode: "easy", note: "Hunter inicia a distancia 9" },
+  { id: "A", seed: 12432045, route: 3, mode: "hard", expectedMapChange: true, note: "objective route de 43 moves before rebalance" },
+  { id: "B", seed: 12432116, route: 3, mode: "hard", expectedMapChange: true, note: "forced streak de 10 before rebalance" },
+  { id: "C", seed: 12430048, route: 3, mode: "easy", expectedMapChange: false, note: "Chest detour de 10 unchanged" },
+  { id: "D", seed: 12421027, route: 2, mode: "medium", expectedMapChange: false, note: "Pickaxe melhora 10 moves unchanged" },
+  { id: "E", seed: 12420031, route: 2, mode: "easy", expectedMapChange: false, note: "Hunter inicia a distancia 9 unchanged" },
 ];
 
 // ===========================================================================
@@ -159,7 +166,7 @@ const generationDeterminism = [];
 }
 
 // ===========================================================================
-// C — the baseline witnesses reproduce
+// C — same-seed BEFORE/AFTER witness contract
 // ===========================================================================
 const witnessReproduction = [];
 {
@@ -180,9 +187,10 @@ const witnessReproduction = [];
     const seamHash = fingerprint(API.generateMaze(w.mode, w.route));
     RANDOM.clearRouteRandomSeed();
 
-    // And what the baseline actually RECORDED for this seed, months of commits
-    // ago. This is the check that cannot drift.
+    // And what the immutable BEFORE baseline actually RECORDED for this seed.
+    // Easy/Medium must still match it; the selected Hard maps must not.
     const recorded = recordedSample(w.seed);
+    const matchesRecordedBefore = recorded ? seamHash === recorded.mapHash : false;
 
     // The seed really does decode to the route/mode the mission stated.
     const decodedRoute = Math.floor((w.seed - 12_400_000) / 10_000);
@@ -192,9 +200,15 @@ const witnessReproduction = [];
       ...w,
       toolingHash,
       seamHash,
-      recordedHash: recorded?.mapHash ?? null,
+      beforeHash: recorded?.mapHash ?? null,
+      afterHash: seamHash,
       reproducesTooling: toolingHash === seamHash,
-      reproducesRecordedBaseline: recorded ? seamHash === recorded.mapHash : false,
+      matchesRecordedBefore,
+      expectedMapChangeObserved: recorded
+        ? w.expectedMapChange
+          ? !matchesRecordedBefore
+          : matchesRecordedBefore
+        : false,
       recordedObjectiveMoves: recorded?.objectiveMoves ?? null,
       recordedForcedStreak: recorded?.objectiveLongestForcedStreak ?? null,
       recordedChestDetour: recorded?.chestDetour ?? null,
@@ -208,11 +222,11 @@ const witnessReproduction = [];
   }
   record(
     "C",
-    "BASELINE_WITNESS_REPRODUCTION",
+    "SAME_SEED_BEFORE_AFTER_CONTRACT",
     witnessReproduction.every(
       (w) =>
         w.reproducesTooling &&
-        w.reproducesRecordedBaseline &&
+        w.expectedMapChangeObserved &&
         w.seedAgreesWithStatedScenario,
     ),
     {
@@ -220,13 +234,15 @@ const witnessReproduction = [];
         id: w.id,
         scenario: `R${w.route}/${w.mode}`,
         seed: w.seed,
-        matchesRecordedBaselineHash: w.reproducesRecordedBaseline,
-        recordedTrait: w.note,
-        recordedObjectiveMoves: w.recordedObjectiveMoves,
+        expectedMapChange: w.expectedMapChange,
+        expectedMapChangeObserved: w.expectedMapChangeObserved,
+        beforeHash: w.beforeHash,
+        afterHash: w.afterHash,
+        beforeTrait: w.note,
       })),
       seedFormula: "12400000 + route*10000 + modeIndex*1000 + sample",
       note:
-        "compared against the mapHash STORED in difficulty-baseline.json, not against a re-run — the launcher lands the operator on the exact board the baseline flagged",
+        "compared against the immutable BEFORE mapHash: Easy/Medium remain exact while the two selected Hard witnesses change deterministically",
     },
   );
 }
@@ -458,7 +474,7 @@ fs.writeFileSync(
   path.join(OUT, "diagnostic-launcher.json"),
   JSON.stringify(
     {
-      mission: "ROTA-DIFFICULTY-04C-DIAGNOSTIC-LAUNCHER",
+      mission: "ROTA-DIFFICULTY-05-REBALANCE-LAUNCHER-REGRESSION",
       seam: "src/engine/route-random.ts",
       launcher: "src/app/lab/route-launcher/page.tsx (dev-only, URL-only)",
       canProductionGameplayBeSeeded:

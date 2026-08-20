@@ -1,0 +1,172 @@
+{
+  "mission": "ROTA-01A-STAR-SELECTION-PROOF",
+  "replayOf2330": {
+    "cases": 2330,
+    "success": 2330,
+    "gate13Failures": 0,
+    "starsVerified": 13980
+  },
+  "fourSeedRegression": [
+    {
+      "seed": 902627,
+      "attempts": 2,
+      "threw": false,
+      "certified": true
+    },
+    {
+      "seed": 907474,
+      "attempts": 1,
+      "threw": false,
+      "certified": true
+    },
+    {
+      "seed": 907548,
+      "attempts": 8,
+      "threw": false,
+      "certified": true
+    },
+    {
+      "seed": 908399,
+      "attempts": 3,
+      "threw": false,
+      "certified": true
+    }
+  ],
+  "seedsSucceeded": 4,
+  "baseline": {
+    "902627": 3,
+    "907474": 10,
+    "907548": 2,
+    "908399": 2
+  },
+  "controlledTests": [
+    {
+      "id": "A",
+      "name": "EXACT CAPACITY",
+      "pass": true
+    },
+    {
+      "id": "B",
+      "name": "GREEDY TRAP",
+      "pass": true
+    },
+    {
+      "id": "C",
+      "name": "TRUE INSUFFICIENT CAPACITY",
+      "pass": true
+    },
+    {
+      "id": "D",
+      "name": "BOTTLENECK HIGH SCORE",
+      "pass": true
+    },
+    {
+      "id": "E",
+      "name": "DETERMINISM",
+      "pass": true
+    },
+    {
+      "id": "F",
+      "name": "DEFENSIVE GATE 13",
+      "pass": true
+    }
+  ],
+  "contractPreserved": {
+    "requiredStars": 6,
+    "starMinStartDistance": 4,
+    "starMinExitDistance": 2,
+    "starMinSeparation": 4,
+    "gate13StillInValidator": true
+  },
+  "productionChangeRegressionSweep": {
+    "generated": 540,
+    "threw": 0,
+    "countViolations": 0,
+    "separationViolations": 0,
+    "perCombo": [
+      {
+        "difficulty": "easy",
+        "stage": 1,
+        "requiredStars": 3,
+        "minSeparation": 2,
+        "threw": 0,
+        "badCount": 0,
+        "badSep": 0
+      },
+      {
+        "difficulty": "easy",
+        "stage": 2,
+        "requiredStars": 3,
+        "minSeparation": 2,
+        "threw": 0,
+        "badCount": 0,
+        "badSep": 0
+      },
+      {
+        "difficulty": "easy",
+        "stage": 3,
+        "requiredStars": 4,
+        "minSeparation": 3,
+        "threw": 0,
+        "badCount": 0,
+        "badSep": 0
+      },
+      {
+        "difficulty": "medium",
+        "stage": 1,
+        "requiredStars": 4,
+        "minSeparation": 2,
+        "threw": 0,
+        "badCount": 0,
+        "badSep": 0
+      },
+      {
+        "difficulty": "medium",
+        "stage": 2,
+        "requiredStars": 4,
+        "minSeparation": 2,
+        "threw": 0,
+        "badCount": 0,
+        "badSep": 0
+      },
+      {
+        "difficulty": "medium",
+        "stage": 3,
+        "requiredStars": 5,
+        "minSeparation": 3,
+        "threw": 0,
+        "badCount": 0,
+        "badSep": 0
+      },
+      {
+        "difficulty": "hard",
+        "stage": 1,
+        "requiredStars": 6,
+        "minSeparation": 2,
+        "threw": 0,
+        "badCount": 0,
+        "badSep": 0
+      },
+      {
+        "difficulty": "hard",
+        "stage": 2,
+        "requiredStars": 6,
+        "minSeparation": 2,
+        "threw": 0,
+        "badCount": 0,
+        "badSep": 0
+      },
+      {
+        "difficulty": "hard",
+        "stage": 3,
+        "requiredStars": 6,
+        "minSeparation": 4,
+        "threw": 0,
+        "badCount": 0,
+        "badSep": 0
+      }
+    ]
+  },
+  "allControlledTestsPass": true,
+  "verdict": "CLOSED"
+}

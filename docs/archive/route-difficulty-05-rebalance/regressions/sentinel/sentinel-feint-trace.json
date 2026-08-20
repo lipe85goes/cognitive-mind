@@ -1,0 +1,58 @@
+{
+  "mission": "ROTA-DUAL-GUARDIANS-MAPS-01B",
+  "commitTurns": 3,
+  "gateMet": true,
+  "seed": 7200000,
+  "doorA": "2,7",
+  "doorB": "0,5",
+  "accesses": [
+    "2,7",
+    "0,5"
+  ],
+  "committedTo": "2,7",
+  "heldThroughSwitch": true,
+  "targetAfterCommitExpired": "0,5",
+  "reaimedToNewDoor": true,
+  "trace": [
+    {
+      "turn": 1,
+      "threatenedDoor": "2,7",
+      "sentinel": "1,7",
+      "committedTarget": "2,7",
+      "commitLeft": 3,
+      "note": "Explorer threatens door A — Sentinel commits"
+    },
+    {
+      "turn": 2,
+      "threatenedDoor": "0,5",
+      "sentinel": "2,7",
+      "committedTarget": "2,7",
+      "commitLeft": 2,
+      "note": "Explorer switched to door B"
+    },
+    {
+      "turn": 3,
+      "threatenedDoor": "0,5",
+      "sentinel": "2,7",
+      "committedTarget": "2,7",
+      "commitLeft": 1,
+      "note": "Explorer switched to door B"
+    },
+    {
+      "turn": 4,
+      "threatenedDoor": "0,5",
+      "sentinel": "2,7",
+      "committedTarget": "2,7",
+      "commitLeft": 0,
+      "note": "Explorer switched to door B"
+    },
+    {
+      "turn": 5,
+      "threatenedDoor": "0,5",
+      "sentinel": "1,7",
+      "committedTarget": "0,5",
+      "commitLeft": 3,
+      "note": "commitment expired — may re-aim"
+    }
+  ]
+}

@@ -32,7 +32,7 @@ const DIFFICULTY_LABEL: Record<DifficultyLevel, string> = {
   hard: "hard (Desafiador)",
 };
 
-/** The witnesses ROTA-DIFFICULTY-04-BASELINE flagged, in the suggested order. */
+/** The same-seed BEFORE/AFTER witnesses, in the suggested playtest order. */
 const SCENARIOS: ReadonlyArray<{
   id: string;
   seed: number;
@@ -43,8 +43,10 @@ const SCENARIOS: ReadonlyArray<{
   { id: "BASE-1", seed: 12420031, routeNumber: 2, difficulty: "easy", why: "Hunter começa a distância 9 — pressão baixa, referência de normalidade" },
   { id: "BASE-2", seed: 12430048, routeNumber: 3, difficulty: "easy", why: "Chest detour de 10 — o baú vale o desvio?" },
   { id: "BASE-3", seed: 12421027, routeNumber: 2, difficulty: "medium", why: "Pickaxe melhora 10 moves — a Picareta compensa o turno?" },
-  { id: "OUT-1", seed: 12432116, routeNumber: 3, difficulty: "hard", why: "forced streak de 10 — o mapa joga sozinho por 10 passos?" },
-  { id: "OUT-2", seed: 12432045, routeNumber: 3, difficulty: "hard", why: "objective route de 43 moves — a rota mais longa medida" },
+  { id: "HARD-1", seed: 12412046, routeNumber: 1, difficulty: "hard", why: "amostra representativa — mais walls, decisões e exposição já na Route 1" },
+  { id: "HARD-2", seed: 12422073, routeNumber: 2, difficulty: "hard", why: "amostra representativa — observe o compromisso de rota e os choke points" },
+  { id: "OUT-1", seed: 12432116, routeNumber: 3, difficulty: "hard", why: "mesma seed após o rebalance — compare com o antigo forced streak de 10" },
+  { id: "OUT-2", seed: 12432045, routeNumber: 3, difficulty: "hard", why: "mesma seed após o rebalance — compare com a antiga rota de 43 moves" },
 ];
 
 interface ActiveSession {

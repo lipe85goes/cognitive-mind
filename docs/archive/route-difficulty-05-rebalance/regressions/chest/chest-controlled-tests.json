@@ -1,0 +1,328 @@
+{
+  "mission": "ROTA-CHEST-REWARDS-01",
+  "suite": "CHEST",
+  "driver": "tools/validation/route-runtime-harness.mjs drives the real useEscapeMaze hook",
+  "contract": [
+    "the Chest is closed until the Explorer enters its cell",
+    "entering opens it and PAUSES the turn: no defender acts while the choice is open",
+    "choosing is not a turn of its own; the same turn resumes with Hunter then Sentinel",
+    "exactly one reward is ever held; choosing one removes the other for that route",
+    "an opened Chest never opens again",
+    "restart and the next route restore the closed Chest and drop the reward"
+  ],
+  "tests": [
+    {
+      "id": "A",
+      "name": "CHEST_CLOSED",
+      "pass": true,
+      "runs": [
+        {
+          "combo": "easy/r1",
+          "chest": "5,1",
+          "chestOpened": false,
+          "rewardSelected": null,
+          "pickaxeAvailable": false,
+          "secondChanceAvailable": false,
+          "rewardChoicePending": false
+        },
+        {
+          "combo": "medium/r2",
+          "chest": "6,3",
+          "chestOpened": false,
+          "rewardSelected": null,
+          "pickaxeAvailable": false,
+          "secondChanceAvailable": false,
+          "rewardChoicePending": false
+        },
+        {
+          "combo": "hard/r3",
+          "chest": "8,4",
+          "chestOpened": false,
+          "rewardSelected": null,
+          "pickaxeAvailable": false,
+          "secondChanceAvailable": false,
+          "rewardChoicePending": false
+        }
+      ]
+    },
+    {
+      "id": "B",
+      "name": "CHEST_OPEN",
+      "pass": true,
+      "runs": [
+        {
+          "seed": 6100000,
+          "combo": "easy/r1",
+          "playerOnChest": true,
+          "chestOpened": true,
+          "rewardChoicePending": true,
+          "rewardSelected": null
+        },
+        {
+          "seed": 6101000,
+          "combo": "medium/r2",
+          "playerOnChest": true,
+          "chestOpened": true,
+          "rewardChoicePending": true,
+          "rewardSelected": null
+        },
+        {
+          "seed": 6102000,
+          "combo": "hard/r3",
+          "playerOnChest": true,
+          "chestOpened": true,
+          "rewardChoicePending": true,
+          "rewardSelected": null
+        }
+      ]
+    },
+    {
+      "id": "C",
+      "name": "CHOICE_PAUSE",
+      "pass": true,
+      "runs": [
+        {
+          "seed": 6100000,
+          "defendersBeforeChest": {
+            "guardian": "0,7",
+            "sentinel": "1,7",
+            "turns": 3
+          },
+          "defendersDuringPause": {
+            "guardian": "0,7",
+            "sentinel": "1,7",
+            "turns": 4
+          },
+          "defendersStill": true,
+          "turnsDuringPause": 4,
+          "turnsAfterChoice": 4,
+          "choiceIsNotATurn": true,
+          "defendersAfterChoice": {
+            "guardian": "0,8",
+            "sentinel": "1,7"
+          }
+        },
+        {
+          "seed": 6101000,
+          "defendersBeforeChest": {
+            "guardian": "1,4",
+            "sentinel": "1,7",
+            "turns": 4
+          },
+          "defendersDuringPause": {
+            "guardian": "1,4",
+            "sentinel": "1,7",
+            "turns": 5
+          },
+          "defendersStill": true,
+          "turnsDuringPause": 5,
+          "turnsAfterChoice": 5,
+          "choiceIsNotATurn": true,
+          "defendersAfterChoice": {
+            "guardian": "1,5",
+            "sentinel": "1,7"
+          }
+        },
+        {
+          "seed": 6102000,
+          "defendersBeforeChest": {
+            "guardian": "4,2",
+            "sentinel": "1,7",
+            "turns": 5
+          },
+          "defendersDuringPause": {
+            "guardian": "4,2",
+            "sentinel": "1,7",
+            "turns": 6
+          },
+          "defendersStill": true,
+          "turnsDuringPause": 6,
+          "turnsAfterChoice": 6,
+          "choiceIsNotATurn": true,
+          "defendersAfterChoice": {
+            "guardian": "4,1",
+            "sentinel": "1,7"
+          }
+        }
+      ],
+      "defenderPhaseObservedAfterChoice": true
+    },
+    {
+      "id": "D",
+      "name": "PICKAXE_SELECTED",
+      "pass": true,
+      "runs": [
+        {
+          "reward": "pickaxe",
+          "combo": "easy/r1",
+          "seed": 6300000,
+          "rewardSelected": "pickaxe",
+          "pickaxeAvailable": true,
+          "secondChanceAvailable": false,
+          "bothHeld": false
+        },
+        {
+          "reward": "pickaxe",
+          "combo": "medium/r2",
+          "seed": 6301000,
+          "rewardSelected": "pickaxe",
+          "pickaxeAvailable": true,
+          "secondChanceAvailable": false,
+          "bothHeld": false
+        },
+        {
+          "reward": "pickaxe",
+          "combo": "hard/r3",
+          "seed": 6302000,
+          "rewardSelected": "pickaxe",
+          "pickaxeAvailable": true,
+          "secondChanceAvailable": false,
+          "bothHeld": false
+        }
+      ]
+    },
+    {
+      "id": "E",
+      "name": "SECOND_CHANCE_SELECTED",
+      "pass": true,
+      "runs": [
+        {
+          "reward": "second-chance",
+          "combo": "easy/r1",
+          "seed": 6300000,
+          "rewardSelected": "second-chance",
+          "pickaxeAvailable": false,
+          "secondChanceAvailable": true,
+          "bothHeld": false
+        },
+        {
+          "reward": "second-chance",
+          "combo": "medium/r2",
+          "seed": 6301000,
+          "rewardSelected": "second-chance",
+          "pickaxeAvailable": false,
+          "secondChanceAvailable": true,
+          "bothHeld": false
+        },
+        {
+          "reward": "second-chance",
+          "combo": "hard/r3",
+          "seed": 6302000,
+          "rewardSelected": "second-chance",
+          "pickaxeAvailable": false,
+          "secondChanceAvailable": true,
+          "bothHeld": false
+        }
+      ]
+    },
+    {
+      "id": "F",
+      "name": "NO_DOUBLE_REWARD",
+      "pass": true,
+      "runsChecked": 6,
+      "note": "structural: `rewardSelected` is a single slot, so holding one is holding not-the-other"
+    },
+    {
+      "id": "G",
+      "name": "CHEST_ALREADY_OPEN",
+      "pass": true,
+      "runs": [
+        {
+          "seed": 6400000,
+          "combo": "easy/r1",
+          "backOnChest": true,
+          "rewardChoicePending": false,
+          "chestOpened": true,
+          "rewardUnchanged": true
+        },
+        {
+          "seed": 6401000,
+          "combo": "medium/r2",
+          "backOnChest": true,
+          "rewardChoicePending": false,
+          "chestOpened": true,
+          "rewardUnchanged": true
+        },
+        {
+          "seed": 6402000,
+          "combo": "hard/r3",
+          "backOnChest": true,
+          "rewardChoicePending": false,
+          "chestOpened": true,
+          "rewardUnchanged": true
+        }
+      ]
+    },
+    {
+      "id": "H",
+      "name": "RESET",
+      "pass": true,
+      "runs": [
+        {
+          "seed": 6500000,
+          "combo": "easy/r1",
+          "held": {
+            "chestOpened": true,
+            "reward": "pickaxe"
+          },
+          "afterRestart": {
+            "chestOpened": false,
+            "rewardSelected": null,
+            "rewardSpent": false,
+            "brokenWall": null,
+            "turns": 0
+          },
+          "afterNextRoute": {
+            "chestOpened": false,
+            "rewardSelected": null,
+            "rewardSpent": false,
+            "brokenWall": null
+          }
+        },
+        {
+          "seed": 6501000,
+          "combo": "medium/r2",
+          "held": {
+            "chestOpened": true,
+            "reward": "pickaxe"
+          },
+          "afterRestart": {
+            "chestOpened": false,
+            "rewardSelected": null,
+            "rewardSpent": false,
+            "brokenWall": null,
+            "turns": 0
+          },
+          "afterNextRoute": {
+            "chestOpened": false,
+            "rewardSelected": null,
+            "rewardSpent": false,
+            "brokenWall": null
+          }
+        },
+        {
+          "seed": 6502000,
+          "combo": "hard/r3",
+          "held": {
+            "chestOpened": true,
+            "reward": "pickaxe"
+          },
+          "afterRestart": {
+            "chestOpened": false,
+            "rewardSelected": null,
+            "rewardSpent": false,
+            "brokenWall": null,
+            "turns": 0
+          },
+          "afterNextRoute": {
+            "chestOpened": false,
+            "rewardSelected": null,
+            "rewardSpent": false,
+            "brokenWall": null
+          }
+        }
+      ]
+    }
+  ],
+  "allPass": true
+}

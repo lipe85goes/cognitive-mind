@@ -1,0 +1,64 @@
+{
+  "mission": "ROTA-DYNAMIC-SOLVABILITY-02",
+  "contractVersion": 1,
+  "maps": {
+    "requested": 2340,
+    "generated": 2340,
+    "generationThrows": 0,
+    "initialValid": 2340,
+    "initialTopologicallySolvable": 2340,
+    "internalWallsOpened": 48956,
+    "connectivityRegressions": 0
+  },
+  "occupancy": {
+    "defenderOverlaps": 0,
+    "preventedHunterEntries": 615,
+    "playerDefenderPlayingDetected": true,
+    "defenderDefenderDetected": true,
+    "playerChestPendingAllowed": true,
+    "sentinelChestAllowed": true,
+    "inactivePortalPlayerAllowed": true,
+    "sentinelPortalDetected": true,
+    "terminalCaptureAllowed": true
+  },
+  "sentinel": {
+    "turns": 16024,
+    "moves": 730,
+    "stationaryPolicyDecisions": 15284,
+    "stationaryAtTarget": 1033,
+    "stationaryHomeGuard": 13947,
+    "stationaryNoStrictImprovement": 304,
+    "settlementOccupancyBlocks": 10,
+    "unexplainedStalls": 0,
+    "longestStationaryRun": 120,
+    "longestStationarySample": {
+      "seed": 9520016,
+      "route": 3,
+      "difficulty": "hard",
+      "turn": 120,
+      "length": 120,
+      "player": "6,0",
+      "hunter": "1,2",
+      "sentinel": "1,8",
+      "target": null,
+      "commitLeft": 0
+    }
+  },
+  "runtime": {
+    "runs": 72,
+    "observedStates": 3798,
+    "invalidPlayingStates": 0,
+    "topologicalSoftlocks": 0,
+    "chestPauses": 72,
+    "pickaxeSelections": 36,
+    "secondChanceSelections": 36,
+    "wallsBroken": 36,
+    "rejectedSecondPickaxeUses": 36,
+    "restarts": 9,
+    "cleanRestarts": 9,
+    "wins": 13,
+    "losses": 19
+  },
+  "failures": [],
+  "gateMet": true
+}

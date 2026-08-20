@@ -18,7 +18,10 @@ import path from "node:path";
 import crypto from "node:crypto";
 import { loadRouteRuntime } from "./route-runtime-harness.mjs";
 
-const OUT = path.resolve("docs/archive/route-difficulty-04a-ui-identity-fix");
+const OUT = path.resolve(
+  process.env.ROUTE_VALIDATION_OUT ??
+    "docs/archive/route-difficulty-04a-ui-identity-fix",
+);
 fs.mkdirSync(OUT, { recursive: true });
 
 const RUNTIME = loadRouteRuntime();

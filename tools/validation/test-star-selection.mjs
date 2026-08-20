@@ -24,10 +24,13 @@ import { createSeededRandom, key } from "./route-lab.mjs";
 const ROOT = process.cwd();
 const HOOK = path.join(ROOT, "src/games/escape-maze/useEscapeMaze.ts");
 const DIFF = path.join(ROOT, "src/engine/difficulty.ts");
-const OUT = path.resolve("docs/archive/route-dual-guardians-maps-01a");
+const OUT = path.resolve(
+  process.env.ROUTE_VALIDATION_OUT ??
+    "docs/archive/route-dual-guardians-maps-01a",
+);
 fs.mkdirSync(OUT, { recursive: true });
 
-const source = fs.readFileSync(HOOK, "utf8");
+const source = fs.readFileSync(HOOK, "utf8").replaceAll("\r\n", "\n");
 const must = (needle, label) => {
   const n = source.split(needle).length - 1;
   if (n !== 1) throw new Error(`anchor ${label} appears ${n}x; expected 1`);
@@ -72,7 +75,8 @@ const TRACE_ORDERED = `${A_ORDERED}
   if (__t) {
     __t.ordered = candidates.map((c) => ({ pos: c.pos, score: c.score }));
     __t.nodes = 0; __t.backtracks = 0; __t.maxDepth = 0;
-    __t.targetCount = targetCount; __t.minSep = profile.starMinSeparation;
+    __t.targetCount = targetCount;
+    __t.minSep = getStarMinSeparation(difficulty, routeStage);
   }`;
 
 const TRACE_SEARCH = `  const search = (from: number, chosen: GridPosition[]): GridPosition[] | null => {
@@ -90,7 +94,8 @@ const TRACE_POP = `      const complete = search(index + 1, chosen);
 const EXPORTS = `
 export const __t = {
   generateMaze, chooseStars, decomposeBoardBlocks, sharesBlock, isStructurallyValid,
-  ROUTE_STAGE_QUALITY, getStarCount, PLAYER_START, START_SAFE_CELLS, posKey,
+  ROUTE_STAGE_QUALITY, getStarCount, getStarMinSeparation, PLAYER_START,
+  START_SAFE_CELLS, posKey,
   getNeighbors, getReachableDistances,
 };
 `;
@@ -105,8 +110,23 @@ function build(src) {
   let random = createSeededRandom(1);
   const seededMath = Object.create(Math);
   seededMath.random = () => random();
+  const routeRandomModule = {
+    beginSeededGeneration: () => undefined,
+    routeRandom: () => seededMath.random(),
+  };
   const dMod = { exports: {} };
-  const dS = { module: dMod, exports: dMod.exports, console, Math: seededMath, Set, Map, require() { throw new Error("x"); } };
+  const dS = {
+    module: dMod,
+    exports: dMod.exports,
+    console,
+    Math: seededMath,
+    Set,
+    Map,
+    require(r) {
+      if (r === "@/engine/route-random") return routeRandomModule;
+      throw new Error("import " + r);
+    },
+  };
   dS.globalThis = dS;
   vm.createContext(dS);
   new vm.Script(compile(fs.readFileSync(DIFF, "utf8"))).runInContext(dS);
@@ -117,6 +137,7 @@ function build(src) {
     require(r) {
       if (r === "react") return { useCallback: (c) => c, useEffect: () => {}, useMemo: (f) => f(), useRef: (v) => ({ current: v }), useState: (v) => [typeof v === "function" ? v() : v, () => {}] };
       if (r === "@/engine/difficulty") return dMod.exports;
+      if (r === "@/engine/route-random") return routeRandomModule;
       if (r === "@/engine/scoring") return { calculateEscapeMazeScore: () => 0 };
       if (r === "@/lib/game-sounds") return { playGentleErrorTone: () => {}, playSuccessChime: () => {} };
       throw new Error("import " + r);
@@ -141,7 +162,7 @@ const OLD = build(source.replace(A_ELIGIBILITY, "        distanceFromExit < prof
 const P = PROD.api.ROUTE_STAGE_QUALITY[3];
 const NEED = PROD.api.getStarCount("hard", 3);
 const START = PROD.api.PLAYER_START;
-const SEP = P.starMinSeparation;
+const SEP = PROD.api.getStarMinSeparation("hard", 3);
 const SEEDS = [902627, 907474, 907548, 908399];
 const toCell = (k) => { const [row, col] = k.split(",").map(Number); return { row, col }; };
 const md = (a, b) => Math.abs(a.row - b.row) + Math.abs(a.col - b.col);
@@ -601,7 +622,7 @@ const sweep = { generated: 0, threw: 0, countViolations: 0, separationViolations
 for (const difficulty of ["easy", "medium", "hard"]) {
   for (const stage of [1, 2, 3]) {
     const need = PROD.api.getStarCount(difficulty, stage);
-    const sep = PROD.api.ROUTE_STAGE_QUALITY[stage].starMinSeparation;
+    const sep = PROD.api.getStarMinSeparation(difficulty, stage);
     let threw = 0, badCount = 0, badSep = 0;
     for (let i = 0; i < 60; i += 1) {
       let map = null;

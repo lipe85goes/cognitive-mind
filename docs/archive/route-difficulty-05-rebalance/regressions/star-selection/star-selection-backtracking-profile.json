@@ -1,0 +1,20 @@
+{
+  "mission": "ROTA-01A-STAR-SELECTION-PROOF-FINALIZE",
+  "observed2330": {
+    "cases": 2330,
+    "GREEDY_FIRST_PATH_SUCCESS": 2330,
+    "BACKTRACK_REQUIRED": 0,
+    "interpretation": "On every candidate the fix was built for, adding sharesBlock to eligibility was sufficient on its own: score-ordered greedy reached a complete valid set with no backtracking. The backtracking did NOT cause the 2330/2330 result."
+  },
+  "controlledGreedyTrap": {
+    "BACKTRACK_REQUIRED": true,
+    "success": true,
+    "eligibleCells": 29,
+    "searchNodes": 152,
+    "backtracks": 145,
+    "maxDepth": 6,
+    "greedyReached": 5,
+    "required": 6
+  },
+  "conclusion": "sharesBlock eligibility is the causal mechanism for the 2330 observed cases. Bounded backtracking is a safety net for configurations that are possible but were not observed in that sample; test B gives it independent controlled coverage."
+}

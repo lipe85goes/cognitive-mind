@@ -1,0 +1,500 @@
+{
+  "mission": "ROTA-DIFFICULTY-04B-REMOUNT-PERSISTENCE",
+  "followUpFrom": "ROTA-DIFFICULTY-04A-UI-IDENTITY-FIX",
+  "driver": "tools/validation/route-runtime-harness.mjs drives the real useEscapeMaze",
+  "ownership": {
+    "duringPlay": "useEscapeMaze owns `difficulty` — authoritative, single copy",
+    "betweenInstances": "app/page.tsx `initialDifficulty`, set only by playAgain and cleared by openActivity",
+    "transport": "GameResult.details.difficulty, already written by endGame before this mission",
+    "rootCause": "the transport existed; playAgain read only details.nextRouteNumber from it"
+  },
+  "remountMatrix": [
+    {
+      "from": {
+        "route": 1,
+        "mode": "easy"
+      },
+      "seed": 15410000,
+      "outcome": "won",
+      "playedRoute": 1,
+      "playedMode": "easy",
+      "detailsDifficulty": "easy",
+      "detailsNextRouteNumber": 2,
+      "carriedRoute": 2,
+      "carriedMode": "easy",
+      "arrivedRoute": 2,
+      "arrivedMode": "easy",
+      "arrivedStatus": "setup",
+      "expected": {
+        "route": 2,
+        "mode": "easy"
+      },
+      "pass": true
+    },
+    {
+      "from": {
+        "route": 1,
+        "mode": "medium"
+      },
+      "seed": 15411000,
+      "outcome": "lost",
+      "playedRoute": 1,
+      "playedMode": "medium",
+      "detailsDifficulty": "medium",
+      "detailsNextRouteNumber": 2,
+      "carriedRoute": 2,
+      "carriedMode": "medium",
+      "arrivedRoute": 2,
+      "arrivedMode": "medium",
+      "arrivedStatus": "setup",
+      "expected": {
+        "route": 2,
+        "mode": "medium"
+      },
+      "pass": true
+    },
+    {
+      "from": {
+        "route": 1,
+        "mode": "hard"
+      },
+      "seed": 15412000,
+      "outcome": "lost",
+      "playedRoute": 1,
+      "playedMode": "hard",
+      "detailsDifficulty": "hard",
+      "detailsNextRouteNumber": 2,
+      "carriedRoute": 2,
+      "carriedMode": "hard",
+      "arrivedRoute": 2,
+      "arrivedMode": "hard",
+      "arrivedStatus": "setup",
+      "expected": {
+        "route": 2,
+        "mode": "hard"
+      },
+      "pass": true
+    },
+    {
+      "from": {
+        "route": 2,
+        "mode": "easy"
+      },
+      "seed": 15420000,
+      "outcome": "lost",
+      "playedRoute": 2,
+      "playedMode": "easy",
+      "detailsDifficulty": "easy",
+      "detailsNextRouteNumber": 3,
+      "carriedRoute": 3,
+      "carriedMode": "easy",
+      "arrivedRoute": 3,
+      "arrivedMode": "easy",
+      "arrivedStatus": "setup",
+      "expected": {
+        "route": 3,
+        "mode": "easy"
+      },
+      "pass": true
+    },
+    {
+      "from": {
+        "route": 2,
+        "mode": "medium"
+      },
+      "seed": 15421000,
+      "outcome": "lost",
+      "playedRoute": 2,
+      "playedMode": "medium",
+      "detailsDifficulty": "medium",
+      "detailsNextRouteNumber": 3,
+      "carriedRoute": 3,
+      "carriedMode": "medium",
+      "arrivedRoute": 3,
+      "arrivedMode": "medium",
+      "arrivedStatus": "setup",
+      "expected": {
+        "route": 3,
+        "mode": "medium"
+      },
+      "pass": true
+    },
+    {
+      "from": {
+        "route": 2,
+        "mode": "hard"
+      },
+      "seed": 15422000,
+      "outcome": "lost",
+      "playedRoute": 2,
+      "playedMode": "hard",
+      "detailsDifficulty": "hard",
+      "detailsNextRouteNumber": 3,
+      "carriedRoute": 3,
+      "carriedMode": "hard",
+      "arrivedRoute": 3,
+      "arrivedMode": "hard",
+      "arrivedStatus": "setup",
+      "expected": {
+        "route": 3,
+        "mode": "hard"
+      },
+      "pass": true
+    }
+  ],
+  "restarts": [
+    {
+      "route": 1,
+      "mode": "easy",
+      "before": {
+        "route": 1,
+        "mode": "easy"
+      },
+      "after": {
+        "route": 1,
+        "mode": "easy"
+      },
+      "pass": true
+    },
+    {
+      "route": 1,
+      "mode": "medium",
+      "before": {
+        "route": 1,
+        "mode": "medium"
+      },
+      "after": {
+        "route": 1,
+        "mode": "medium"
+      },
+      "pass": true
+    },
+    {
+      "route": 1,
+      "mode": "hard",
+      "before": {
+        "route": 1,
+        "mode": "hard"
+      },
+      "after": {
+        "route": 1,
+        "mode": "hard"
+      },
+      "pass": true
+    },
+    {
+      "route": 2,
+      "mode": "easy",
+      "before": {
+        "route": 2,
+        "mode": "easy"
+      },
+      "after": {
+        "route": 2,
+        "mode": "easy"
+      },
+      "pass": true
+    },
+    {
+      "route": 2,
+      "mode": "medium",
+      "before": {
+        "route": 2,
+        "mode": "medium"
+      },
+      "after": {
+        "route": 2,
+        "mode": "medium"
+      },
+      "pass": true
+    },
+    {
+      "route": 2,
+      "mode": "hard",
+      "before": {
+        "route": 2,
+        "mode": "hard"
+      },
+      "after": {
+        "route": 2,
+        "mode": "hard"
+      },
+      "pass": true
+    },
+    {
+      "route": 3,
+      "mode": "easy",
+      "before": {
+        "route": 3,
+        "mode": "easy"
+      },
+      "after": {
+        "route": 3,
+        "mode": "easy"
+      },
+      "pass": true
+    },
+    {
+      "route": 3,
+      "mode": "medium",
+      "before": {
+        "route": 3,
+        "mode": "medium"
+      },
+      "after": {
+        "route": 3,
+        "mode": "medium"
+      },
+      "pass": true
+    },
+    {
+      "route": 3,
+      "mode": "hard",
+      "before": {
+        "route": 3,
+        "mode": "hard"
+      },
+      "after": {
+        "route": 3,
+        "mode": "hard"
+      },
+      "pass": true
+    }
+  ],
+  "midRouteChanges": [
+    {
+      "arrivedOn": "easy",
+      "changedTo": "hard",
+      "arrived": {
+        "route": 2,
+        "mode": "easy"
+      },
+      "afterChange": {
+        "route": 2,
+        "mode": "hard"
+      },
+      "routeHeldDuringChange": true,
+      "detailsDifficulty": "hard",
+      "carriedMode": "hard",
+      "nextRoute": 3,
+      "nextMode": "hard",
+      "pass": true
+    },
+    {
+      "arrivedOn": "easy",
+      "changedTo": "medium",
+      "arrived": {
+        "route": 2,
+        "mode": "easy"
+      },
+      "afterChange": {
+        "route": 2,
+        "mode": "medium"
+      },
+      "routeHeldDuringChange": true,
+      "detailsDifficulty": "medium",
+      "carriedMode": "medium",
+      "nextRoute": 3,
+      "nextMode": "medium",
+      "pass": true
+    },
+    {
+      "arrivedOn": "hard",
+      "changedTo": "easy",
+      "arrived": {
+        "route": 2,
+        "mode": "hard"
+      },
+      "afterChange": {
+        "route": 2,
+        "mode": "easy"
+      },
+      "routeHeldDuringChange": true,
+      "detailsDifficulty": "easy",
+      "carriedMode": "easy",
+      "nextRoute": 3,
+      "nextMode": "easy",
+      "pass": true
+    }
+  ],
+  "freshEntries": [
+    {
+      "previousJourney": "R1/easy",
+      "previousCarriedMode": "easy",
+      "freshRoute": 1,
+      "freshMode": "easy",
+      "pass": true
+    },
+    {
+      "previousJourney": "R1/medium",
+      "previousCarriedMode": "medium",
+      "freshRoute": 1,
+      "freshMode": "easy",
+      "pass": true
+    },
+    {
+      "previousJourney": "R1/hard",
+      "previousCarriedMode": "hard",
+      "freshRoute": 1,
+      "freshMode": "easy",
+      "pass": true
+    }
+  ],
+  "journeyEnd": [
+    {
+      "from": "R3/easy",
+      "carriedRoute": 4,
+      "carriedMode": "easy",
+      "arrived": {
+        "route": 4,
+        "mode": "easy",
+        "stage": 1
+      },
+      "stageWrapsToOne": true,
+      "pass": true
+    },
+    {
+      "from": "R3/medium",
+      "carriedRoute": 4,
+      "carriedMode": "medium",
+      "arrived": {
+        "route": 4,
+        "mode": "medium",
+        "stage": 1
+      },
+      "stageWrapsToOne": true,
+      "pass": true
+    },
+    {
+      "from": "R3/hard",
+      "carriedRoute": 4,
+      "carriedMode": "hard",
+      "arrived": {
+        "route": 4,
+        "mode": "hard",
+        "stage": 1
+      },
+      "stageWrapsToOne": true,
+      "pass": true
+    }
+  ],
+  "tests": [
+    {
+      "id": "A",
+      "name": "REMOUNT_MATRIX",
+      "pass": true,
+      "rows": 6,
+      "passed": 6,
+      "failed": [],
+      "note": "the mode is read from the result the game itself emitted, through the same narrowing playAgain uses"
+    },
+    {
+      "id": "B",
+      "name": "ARRIVING_INSTANCE_GENERATES_THE_CARRIED_COMBINATION",
+      "pass": true,
+      "checks": [
+        {
+          "from": "R1/easy",
+          "carried": "R2/easy",
+          "matchesCarriedCombination": true,
+          "matchesOldEasyDefault": true
+        },
+        {
+          "from": "R1/medium",
+          "carried": "R2/medium",
+          "matchesCarriedCombination": true,
+          "matchesOldEasyDefault": false
+        },
+        {
+          "from": "R1/hard",
+          "carried": "R2/hard",
+          "matchesCarriedCombination": true,
+          "matchesOldEasyDefault": false
+        },
+        {
+          "from": "R2/easy",
+          "carried": "R3/easy",
+          "matchesCarriedCombination": true,
+          "matchesOldEasyDefault": true
+        },
+        {
+          "from": "R2/medium",
+          "carried": "R3/medium",
+          "matchesCarriedCombination": true,
+          "matchesOldEasyDefault": false
+        },
+        {
+          "from": "R2/hard",
+          "carried": "R3/hard",
+          "matchesCarriedCombination": true,
+          "matchesOldEasyDefault": false
+        }
+      ],
+      "note": "for easy journeys the carried map IS the old default map, which is the correct no-op; for medium/hard it is provably not"
+    },
+    {
+      "id": "C",
+      "name": "RESTART_PRESERVES_BOTH",
+      "pass": true,
+      "cases": 9,
+      "failed": []
+    },
+    {
+      "id": "D",
+      "name": "MID_ROUTE_CHANGE_TRAVELS",
+      "pass": true,
+      "cases": 3,
+      "failed": [],
+      "note": "ROTA-DIFFICULTY-04A guarantees the Route survives the change; this proves the new mode is what travels onward"
+    },
+    {
+      "id": "E",
+      "name": "NEW_ENTRY_INHERITS_NOTHING",
+      "pass": true,
+      "cases": 3,
+      "defaults": {
+        "route": 1,
+        "mode": "easy"
+      },
+      "note": "openActivity clears both carriers, so the hook's own defaults apply; the previous journey's mode is visible in the payload and provably not adopted"
+    },
+    {
+      "id": "F",
+      "name": "ROUTE_THREE_BOUNDARY",
+      "pass": true,
+      "cases": 3,
+      "model": "routes are unbounded; stage = ((route - 1) % 3) + 1, so Route 4 is stage 1",
+      "changedByThisMission": false,
+      "note": "no terminal Route exists today; the carry is verified across the stage wrap rather than a stop being invented"
+    },
+    {
+      "id": "G",
+      "name": "NO_LEAK_ACROSS_BOUNDARY",
+      "pass": true,
+      "cases": [
+        {
+          "label": "non-route game result",
+          "carried": {}
+        },
+        {
+          "label": "route result without nextRouteNumber",
+          "carried": {}
+        },
+        {
+          "label": "route result with an unrecognised mode",
+          "carried": {
+            "nextRouteNumber": 2
+          }
+        },
+        {
+          "label": "route result with a non-string mode",
+          "carried": {
+            "nextRouteNumber": 2
+          }
+        }
+      ],
+      "note": "an unrecognised or absent mode yields undefined, which is exactly the fresh-entry default — no throw, no fallback branch"
+    }
+  ],
+  "allPass": true
+}

@@ -21,7 +21,10 @@ import fs from "node:fs";
 import path from "node:path";
 import { loadRouteRuntime, cellKey, pathBetween } from "./route-runtime-harness.mjs";
 
-const OUT = path.resolve("docs/archive/route-difficulty-04b-remount-persistence");
+const OUT = path.resolve(
+  process.env.ROUTE_VALIDATION_OUT ??
+    "docs/archive/route-difficulty-04b-remount-persistence",
+);
 fs.mkdirSync(OUT, { recursive: true });
 
 const RUNTIME = loadRouteRuntime();
