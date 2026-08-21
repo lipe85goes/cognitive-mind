@@ -9,15 +9,15 @@ import { useWorldEntryController } from "@/components/world-entry/useWorldEntryC
 import { ACTIVITIES } from "@/data/activities";
 import { getWorldMeta } from "@/data/worlds";
 import { PLAYABLE_STAGE_IDS } from "@/engine/stage-progress";
-import { saveGameResult } from "@/engine/storage";
+import { createTransientGameResult } from "@/engine/storage";
 import type { Activity, GameId, GameResult } from "@/types/game";
 
 type View = "home" | "game" | "result";
 
 /**
  * Isolated 3D-home lab route. It reuses the real game flow (GameScreen, reward
- * modal, storage, WorldEntryTransition) so "Entrar" plays the actual games,
- * while production "/" can evolve independently.
+ * modal and WorldEntryTransition) while keeping diagnostic results transient.
+ * The parent lab layout exposes this prototype only in local development.
  */
 export default function Lab3DHomePage() {
   const [view, setView] = useState<View>("home");
@@ -68,7 +68,7 @@ export default function Lab3DHomePage() {
   };
 
   const handleGameComplete = (partial: Omit<GameResult, "id" | "playedAt">) => {
-    const saved = saveGameResult(partial);
+    const saved = createTransientGameResult(partial);
     setLastResult(saved);
     setView("result");
   };

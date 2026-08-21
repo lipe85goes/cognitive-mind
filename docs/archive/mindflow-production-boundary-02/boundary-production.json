@@ -1,0 +1,142 @@
+{
+  "mission": "MINDFLOW-PRODUCTION-BOUNDARY-02",
+  "mode": "production",
+  "baseUrl": "http://127.0.0.1:3057",
+  "generatedAt": "2026-08-21T23:47:11.263Z",
+  "boundaryContract": {
+    "serverComponent": true,
+    "developmentOnly": true,
+    "terminatesWithNotFound": true
+  },
+  "persistenceContract": {
+    "productUsesPersistentResult": true,
+    "launcherUsesTransientResult": true,
+    "lab3dUsesTransientResult": true
+  },
+  "storageRuntimeContract": {
+    "transientResultMaterialized": true,
+    "transientWrites": 0,
+    "persistentWrites": 1,
+    "normalResultPersisted": true
+  },
+  "rngContract": {
+    "seedArmCallers": [
+      "src/app/lab/route-launcher/page.tsx",
+      "src/engine/route-random.ts"
+    ],
+    "launcherIsOnlyCaller": true,
+    "launcherClearsOnUnmount": true,
+    "launcherClearsOnExit": true,
+    "normalFallbackIsMathRandom": true
+  },
+  "r3fContract": {
+    "labOwnsGameHome3d": true,
+    "gameHomeOwnsWorldSelector": true,
+    "worldSelectorUsesR3f": true
+  },
+  "manifestContract": {
+    "inspected": true,
+    "routeLauncherEmitted": true,
+    "lab3dHomeEmitted": true
+  },
+  "httpContract": {
+    "mode": "production",
+    "responses": {
+      "/": {
+        "status": 200,
+        "routeLauncherContent": false,
+        "lab3dContent": false,
+        "scriptCount": 10
+      },
+      "/lab/route-launcher": {
+        "status": 404,
+        "routeLauncherContent": false,
+        "lab3dContent": false,
+        "scriptCount": 7
+      },
+      "/lab/3d-home": {
+        "status": 404,
+        "routeLauncherContent": false,
+        "lab3dContent": false,
+        "scriptCount": 7
+      }
+    },
+    "pass": true
+  },
+  "checks": [
+    {
+      "id": "SERVER_SIDE_LAB_BOUNDARY",
+      "pass": true,
+      "serverComponent": true,
+      "developmentOnly": true,
+      "terminatesWithNotFound": true
+    },
+    {
+      "id": "EXPLICIT_RESULT_PERSISTENCE_BOUNDARY",
+      "pass": true,
+      "productUsesPersistentResult": true,
+      "launcherUsesTransientResult": true,
+      "lab3dUsesTransientResult": true
+    },
+    {
+      "id": "RESULT_STORAGE_RUNTIME_CONTRACT",
+      "pass": true,
+      "transientResultMaterialized": true,
+      "transientWrites": 0,
+      "persistentWrites": 1,
+      "normalResultPersisted": true
+    },
+    {
+      "id": "SEEDED_RNG_CONTAINMENT_SOURCE",
+      "pass": true,
+      "seedArmCallers": [
+        "src/app/lab/route-launcher/page.tsx",
+        "src/engine/route-random.ts"
+      ],
+      "launcherIsOnlyCaller": true,
+      "launcherClearsOnUnmount": true,
+      "launcherClearsOnExit": true,
+      "normalFallbackIsMathRandom": true
+    },
+    {
+      "id": "LAB_3D_HOME_R3F_OWNER_RETAINED",
+      "pass": true,
+      "labOwnsGameHome3d": true,
+      "gameHomeOwnsWorldSelector": true,
+      "worldSelectorUsesR3f": true
+    },
+    {
+      "id": "BUILD_MANIFEST_ROUTE_DISCLOSURE",
+      "pass": true,
+      "inspected": true,
+      "routeLauncherEmitted": true,
+      "lab3dHomeEmitted": true
+    },
+    {
+      "id": "HTTP_ROUTE_BOUNDARY",
+      "pass": true,
+      "mode": "production",
+      "responses": {
+        "/": {
+          "status": 200,
+          "routeLauncherContent": false,
+          "lab3dContent": false,
+          "scriptCount": 10
+        },
+        "/lab/route-launcher": {
+          "status": 404,
+          "routeLauncherContent": false,
+          "lab3dContent": false,
+          "scriptCount": 7
+        },
+        "/lab/3d-home": {
+          "status": 404,
+          "routeLauncherContent": false,
+          "lab3dContent": false,
+          "scriptCount": 7
+        }
+      }
+    }
+  ],
+  "allPass": true
+}

@@ -1,0 +1,396 @@
+{
+  "mission": "ROTA-DIFFICULTY-05-REBALANCE-LAUNCHER-REGRESSION",
+  "seam": "src/engine/route-random.ts",
+  "launcher": "src/app/lab/route-launcher/page.tsx (dev-only, URL-only)",
+  "canProductionGameplayBeSeeded": "yes, after adding one opt-in seam; before this mission there was none and the tooling could only seed inside a vm sandbox",
+  "generationDeterminism": [
+    {
+      "seed": 12432045,
+      "route": 3,
+      "mode": "hard",
+      "reArmedMatches": true,
+      "consecutiveMatches": true
+    },
+    {
+      "seed": 12432116,
+      "route": 3,
+      "mode": "hard",
+      "reArmedMatches": true,
+      "consecutiveMatches": true
+    },
+    {
+      "seed": 12430048,
+      "route": 3,
+      "mode": "easy",
+      "reArmedMatches": true,
+      "consecutiveMatches": true
+    },
+    {
+      "seed": 12421027,
+      "route": 2,
+      "mode": "medium",
+      "reArmedMatches": true,
+      "consecutiveMatches": true
+    },
+    {
+      "seed": 12420031,
+      "route": 2,
+      "mode": "easy",
+      "reArmedMatches": true,
+      "consecutiveMatches": true
+    }
+  ],
+  "witnessReproduction": [
+    {
+      "id": "A",
+      "seed": 12432045,
+      "route": 3,
+      "mode": "hard",
+      "expectedMapChange": true,
+      "note": "objective route de 43 moves before rebalance",
+      "toolingHash": "145a55682fd34a90d23248258c14723e545df4a518923eb8263b64cf7d635073",
+      "seamHash": "145a55682fd34a90d23248258c14723e545df4a518923eb8263b64cf7d635073",
+      "beforeHash": "a13c78a9f3379a02f3431c276d7001115a14ab0c6f33f6e01320622d11ad5042",
+      "afterHash": "145a55682fd34a90d23248258c14723e545df4a518923eb8263b64cf7d635073",
+      "reproducesTooling": true,
+      "matchesRecordedBefore": false,
+      "expectedMapChangeObserved": true,
+      "recordedObjectiveMoves": 43,
+      "recordedForcedStreak": 5,
+      "recordedChestDetour": 0,
+      "recordedPickaxeBestImprovement": 6,
+      "recordedGuardianStartDistance": 11,
+      "seedDecodesToRoute": 3,
+      "seedDecodesToMode": "hard",
+      "seedAgreesWithStatedScenario": true
+    },
+    {
+      "id": "B",
+      "seed": 12432116,
+      "route": 3,
+      "mode": "hard",
+      "expectedMapChange": true,
+      "note": "forced streak de 10 before rebalance",
+      "toolingHash": "561a1d25e59ccb7cd6dec603b14c7bbe6639da2347f0c81a025511b789d6a33c",
+      "seamHash": "561a1d25e59ccb7cd6dec603b14c7bbe6639da2347f0c81a025511b789d6a33c",
+      "beforeHash": "0c73d3d8c394a1d5ca80bf8eff653cc62e4653268b18bebbbbd658324b31df1e",
+      "afterHash": "561a1d25e59ccb7cd6dec603b14c7bbe6639da2347f0c81a025511b789d6a33c",
+      "reproducesTooling": true,
+      "matchesRecordedBefore": false,
+      "expectedMapChangeObserved": true,
+      "recordedObjectiveMoves": 33,
+      "recordedForcedStreak": 10,
+      "recordedChestDetour": 0,
+      "recordedPickaxeBestImprovement": 8,
+      "recordedGuardianStartDistance": 15,
+      "seedDecodesToRoute": 3,
+      "seedDecodesToMode": "hard",
+      "seedAgreesWithStatedScenario": true
+    },
+    {
+      "id": "C",
+      "seed": 12430048,
+      "route": 3,
+      "mode": "easy",
+      "expectedMapChange": false,
+      "note": "Chest detour de 10 unchanged",
+      "toolingHash": "b38bdf8592700e6c0e2e2d4332d81b4adeeca35bbe8cdb25950466a3fb29decd",
+      "seamHash": "b38bdf8592700e6c0e2e2d4332d81b4adeeca35bbe8cdb25950466a3fb29decd",
+      "beforeHash": "b38bdf8592700e6c0e2e2d4332d81b4adeeca35bbe8cdb25950466a3fb29decd",
+      "afterHash": "b38bdf8592700e6c0e2e2d4332d81b4adeeca35bbe8cdb25950466a3fb29decd",
+      "reproducesTooling": true,
+      "matchesRecordedBefore": true,
+      "expectedMapChangeObserved": true,
+      "recordedObjectiveMoves": 20,
+      "recordedForcedStreak": 2,
+      "recordedChestDetour": 10,
+      "recordedPickaxeBestImprovement": 0,
+      "recordedGuardianStartDistance": 11,
+      "seedDecodesToRoute": 3,
+      "seedDecodesToMode": "easy",
+      "seedAgreesWithStatedScenario": true
+    },
+    {
+      "id": "D",
+      "seed": 12421027,
+      "route": 2,
+      "mode": "medium",
+      "expectedMapChange": false,
+      "note": "Pickaxe melhora 10 moves unchanged",
+      "toolingHash": "02fd43714f291287bed482a2a1c4c920e0f2b50939cfeea7c5db4dbd82022285",
+      "seamHash": "02fd43714f291287bed482a2a1c4c920e0f2b50939cfeea7c5db4dbd82022285",
+      "beforeHash": "02fd43714f291287bed482a2a1c4c920e0f2b50939cfeea7c5db4dbd82022285",
+      "afterHash": "02fd43714f291287bed482a2a1c4c920e0f2b50939cfeea7c5db4dbd82022285",
+      "reproducesTooling": true,
+      "matchesRecordedBefore": true,
+      "expectedMapChangeObserved": true,
+      "recordedObjectiveMoves": 27,
+      "recordedForcedStreak": 2,
+      "recordedChestDetour": 0,
+      "recordedPickaxeBestImprovement": 10,
+      "recordedGuardianStartDistance": 15,
+      "seedDecodesToRoute": 2,
+      "seedDecodesToMode": "medium",
+      "seedAgreesWithStatedScenario": true
+    },
+    {
+      "id": "E",
+      "seed": 12420031,
+      "route": 2,
+      "mode": "easy",
+      "expectedMapChange": false,
+      "note": "Hunter inicia a distancia 9 unchanged",
+      "toolingHash": "e6099b10eaf1c09416c93daed62af44fa892e8ebda335edb0194a7fc954da5d3",
+      "seamHash": "e6099b10eaf1c09416c93daed62af44fa892e8ebda335edb0194a7fc954da5d3",
+      "beforeHash": "e6099b10eaf1c09416c93daed62af44fa892e8ebda335edb0194a7fc954da5d3",
+      "afterHash": "e6099b10eaf1c09416c93daed62af44fa892e8ebda335edb0194a7fc954da5d3",
+      "reproducesTooling": true,
+      "matchesRecordedBefore": true,
+      "expectedMapChangeObserved": true,
+      "recordedObjectiveMoves": 28,
+      "recordedForcedStreak": 1,
+      "recordedChestDetour": 2,
+      "recordedPickaxeBestImprovement": 2,
+      "recordedGuardianStartDistance": 9,
+      "seedDecodesToRoute": 2,
+      "seedDecodesToMode": "easy",
+      "seedAgreesWithStatedScenario": true
+    }
+  ],
+  "sessionDeterminism": [
+    {
+      "id": "A",
+      "scenario": "R3/hard",
+      "seed": 12432045,
+      "startIdentical": true,
+      "runtimeIdentical": true,
+      "endIdentical": true,
+      "turnsTraced": 9,
+      "start": {
+        "route": 3,
+        "mode": "hard",
+        "map": "145a55682fd34a90d23248258c14723e545df4a518923eb8263b64cf7d635073",
+        "player": "8,0",
+        "guardian": "1,4",
+        "sentinel": "1,8",
+        "chest": "6,4",
+        "lights": "1,2|1,7|3,5|4,8|7,3|7,7",
+        "traps": "0,4|0,6|2,0|3,7|4,0|4,6",
+        "status": "playing"
+      }
+    },
+    {
+      "id": "B",
+      "scenario": "R3/hard",
+      "seed": 12432116,
+      "startIdentical": true,
+      "runtimeIdentical": true,
+      "endIdentical": true,
+      "turnsTraced": 10,
+      "start": {
+        "route": 3,
+        "mode": "hard",
+        "map": "561a1d25e59ccb7cd6dec603b14c7bbe6639da2347f0c81a025511b789d6a33c",
+        "player": "8,0",
+        "guardian": "1,4",
+        "sentinel": "1,8",
+        "chest": "8,4",
+        "lights": "0,3|1,7|2,0|3,4|5,1|7,3",
+        "traps": "1,2|4,0|5,7|6,2|7,6|8,5",
+        "status": "playing"
+      }
+    },
+    {
+      "id": "C",
+      "scenario": "R3/easy",
+      "seed": 12430048,
+      "startIdentical": true,
+      "runtimeIdentical": true,
+      "endIdentical": true,
+      "turnsTraced": 12,
+      "start": {
+        "route": 3,
+        "mode": "easy",
+        "map": "b38bdf8592700e6c0e2e2d4332d81b4adeeca35bbe8cdb25950466a3fb29decd",
+        "player": "8,0",
+        "guardian": "1,4",
+        "sentinel": "1,8",
+        "chest": "2,0",
+        "lights": "1,7|4,6|7,3|7,8",
+        "traps": "1,2|2,1|4,0|6,2",
+        "status": "playing"
+      }
+    },
+    {
+      "id": "D",
+      "scenario": "R2/medium",
+      "seed": 12421027,
+      "startIdentical": true,
+      "runtimeIdentical": true,
+      "endIdentical": true,
+      "turnsTraced": 12,
+      "start": {
+        "route": 2,
+        "mode": "medium",
+        "map": "02fd43714f291287bed482a2a1c4c920e0f2b50939cfeea7c5db4dbd82022285",
+        "player": "8,0",
+        "guardian": "2,5",
+        "sentinel": "2,8",
+        "chest": "4,1",
+        "lights": "1,6|3,5|4,0|5,1",
+        "traps": "1,2|6,7|8,3|8,5",
+        "status": "playing"
+      }
+    },
+    {
+      "id": "E",
+      "scenario": "R2/easy",
+      "seed": 12420031,
+      "startIdentical": true,
+      "runtimeIdentical": true,
+      "endIdentical": true,
+      "turnsTraced": 12,
+      "start": {
+        "route": 2,
+        "mode": "easy",
+        "map": "e6099b10eaf1c09416c93daed62af44fa892e8ebda335edb0194a7fc954da5d3",
+        "player": "8,0",
+        "guardian": "2,3",
+        "sentinel": "1,8",
+        "chest": "7,4",
+        "lights": "1,1|4,6|5,7",
+        "traps": "2,2|4,2|5,1",
+        "status": "playing"
+      }
+    }
+  ],
+  "tests": [
+    {
+      "id": "A",
+      "name": "DISARMED_IS_UNCHANGED",
+      "pass": true,
+      "armedSeed": null,
+      "drawsInRange": true,
+      "distinctDrawsOf2000": 2000,
+      "generationsCompared": 9,
+      "identicalPairs": 0,
+      "note": "with nothing armed the seam is Math.random and generation stays stochastic — the same route/mode never repeated a board"
+    },
+    {
+      "id": "B",
+      "name": "GENERATION_DETERMINISM",
+      "pass": true,
+      "cases": 5,
+      "note": "a scenario is the same board on Launch, on Start and on every Restart of that session"
+    },
+    {
+      "id": "C",
+      "name": "SAME_SEED_BEFORE_AFTER_CONTRACT",
+      "pass": true,
+      "witnesses": [
+        {
+          "id": "A",
+          "scenario": "R3/hard",
+          "seed": 12432045,
+          "expectedMapChange": true,
+          "expectedMapChangeObserved": true,
+          "beforeHash": "a13c78a9f3379a02f3431c276d7001115a14ab0c6f33f6e01320622d11ad5042",
+          "afterHash": "145a55682fd34a90d23248258c14723e545df4a518923eb8263b64cf7d635073",
+          "beforeTrait": "objective route de 43 moves before rebalance"
+        },
+        {
+          "id": "B",
+          "scenario": "R3/hard",
+          "seed": 12432116,
+          "expectedMapChange": true,
+          "expectedMapChangeObserved": true,
+          "beforeHash": "0c73d3d8c394a1d5ca80bf8eff653cc62e4653268b18bebbbbd658324b31df1e",
+          "afterHash": "561a1d25e59ccb7cd6dec603b14c7bbe6639da2347f0c81a025511b789d6a33c",
+          "beforeTrait": "forced streak de 10 before rebalance"
+        },
+        {
+          "id": "C",
+          "scenario": "R3/easy",
+          "seed": 12430048,
+          "expectedMapChange": false,
+          "expectedMapChangeObserved": true,
+          "beforeHash": "b38bdf8592700e6c0e2e2d4332d81b4adeeca35bbe8cdb25950466a3fb29decd",
+          "afterHash": "b38bdf8592700e6c0e2e2d4332d81b4adeeca35bbe8cdb25950466a3fb29decd",
+          "beforeTrait": "Chest detour de 10 unchanged"
+        },
+        {
+          "id": "D",
+          "scenario": "R2/medium",
+          "seed": 12421027,
+          "expectedMapChange": false,
+          "expectedMapChangeObserved": true,
+          "beforeHash": "02fd43714f291287bed482a2a1c4c920e0f2b50939cfeea7c5db4dbd82022285",
+          "afterHash": "02fd43714f291287bed482a2a1c4c920e0f2b50939cfeea7c5db4dbd82022285",
+          "beforeTrait": "Pickaxe melhora 10 moves unchanged"
+        },
+        {
+          "id": "E",
+          "scenario": "R2/easy",
+          "seed": 12420031,
+          "expectedMapChange": false,
+          "expectedMapChangeObserved": true,
+          "beforeHash": "e6099b10eaf1c09416c93daed62af44fa892e8ebda335edb0194a7fc954da5d3",
+          "afterHash": "e6099b10eaf1c09416c93daed62af44fa892e8ebda335edb0194a7fc954da5d3",
+          "beforeTrait": "Hunter inicia a distancia 9 unchanged"
+        }
+      ],
+      "seedFormula": "12400000 + route*10000 + modeIndex*1000 + sample",
+      "note": "compared against the immutable BEFORE mapHash: Easy/Medium remain exact while the two selected Hard witnesses change deterministically"
+    },
+    {
+      "id": "D",
+      "name": "RUNTIME_RNG_DETERMINISM",
+      "pass": true,
+      "cases": 5,
+      "note": "identical start state AND identical defender positions turn by turn — the Hunter's draws are on the same seeded stream"
+    },
+    {
+      "id": "E",
+      "name": "NO_BLEED_AFTER_DIAGNOSTIC",
+      "pass": true,
+      "armedSeedDuring": 12432045,
+      "armedSeedAfter": null,
+      "generationStochasticAgain": true,
+      "neitherRepeatsTheSeededBoard": true,
+      "note": "clearRouteRandomSeed is what the launcher page's unmount effect calls; after it the product is stochastic again"
+    },
+    {
+      "id": "F",
+      "name": "INPUT_VALIDATION",
+      "pass": true,
+      "seedAndRouteCases": 14,
+      "modeCases": 6,
+      "rejected": [
+        "seed:\"4294967296\"",
+        "seed:\"-1\"",
+        "seed:\"1.5\"",
+        "seed:\"abc\"",
+        "seed:\"\"",
+        "seed:\"1e3\"",
+        "route:\"0\"",
+        "route:\"-2\"",
+        "route:\"abc\""
+      ],
+      "note": "Route 4 is accepted because routes are unbounded by design; this mission does not decide where a journey ends"
+    },
+    {
+      "id": "G",
+      "name": "DEV_ONLY_AND_CONTAINED",
+      "pass": true,
+      "homeLinksToLauncher": false,
+      "launcherReachableOnlyByUrl": true,
+      "productArmsASeed": false,
+      "launcherDisarmsOnUnmount": true,
+      "usesStorage": false,
+      "replacesGlobalMathRandom": false,
+      "seamBoundsSeedRange": true,
+      "note": "nothing links to /lab/route-launcher, nothing in the product arms a seed, the page disarms on unmount, and no storage or global assignment is involved"
+    }
+  ],
+  "allPass": true
+}

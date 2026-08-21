@@ -7,7 +7,7 @@ import {
   clearRouteRandomSeed,
   getArmedRouteSeed,
 } from "@/engine/route-random";
-import { saveGameResult } from "@/engine/storage";
+import { createTransientGameResult } from "@/engine/storage";
 import type { DifficultyLevel, GameResult } from "@/types/game";
 
 /**
@@ -19,10 +19,9 @@ import type { DifficultyLevel, GameResult } from "@/types/game";
  * There is no second engine here and no gameplay rule is restated — the page's
  * whole job is to supply three inputs and then get out of the way.
  *
- * It is reachable only by typing `/lab/route-launcher`. Nothing links to it, it
- * is absent from the Home, and the seeded stream is armed on Launch and
- * disarmed when this page unmounts, so a normal journey started afterwards is
- * stochastic exactly as before.
+ * The parent lab layout exposes it only in local development. Nothing links to
+ * it, diagnostic results stay transient, and the seeded stream is disarmed
+ * when this page unmounts so normal journeys remain stochastic.
  */
 
 const DIFFICULTIES: readonly DifficultyLevel[] = ["easy", "medium", "hard"];
@@ -170,7 +169,9 @@ export default function RouteLauncherPage() {
           initialRouteNumber={session.routeNumber}
           initialDifficulty={session.difficulty}
           skipIntro
-          onComplete={(partial) => setLastResult(saveGameResult(partial))}
+          onComplete={(partial) =>
+            setLastResult(createTransientGameResult(partial))
+          }
           onExit={exitDiagnostic}
         />
       </main>

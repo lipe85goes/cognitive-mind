@@ -1,0 +1,1028 @@
+{
+  "mission": "ROTA-DIFFICULTY-04A-UI-IDENTITY-FIX",
+  "baseline": "ROTA-DIFFICULTY-04-BASELINE",
+  "driver": "tools/validation/route-runtime-harness.mjs drives the real useEscapeMaze",
+  "rootCause": {
+    "symbol": "changeDifficulty",
+    "wasDoing": "setRouteNumber(1) + startNewMaze(mode, 'setup', 1)",
+    "nowDoing": "startNewMaze(mode, 'setup', routeNumber)",
+    "introducedIn": "0d7e7fa feat(route-strategy): add playable route progression",
+    "becameWrongIn": "3bde618 feat(route-strategy): add route completion continuity loop — added initialRouteNumber and updated the state initialiser without revisiting changeDifficulty",
+    "classification": "LATENT_REGRESSION_FROM_INCOMPLETE_FOLLOW_UP",
+    "notLegacyDeadCode": true,
+    "notAnIntentionalCurrentRule": true,
+    "notAWorkaround": true
+  },
+  "matrix": [
+    {
+      "requested": {
+        "route": 1,
+        "mode": "easy"
+      },
+      "seed": 13310000,
+      "uiRouteNumber": 1,
+      "uiRouteLabel": "Exploração inicial",
+      "uiDifficulty": "easy",
+      "runtimeStage": 1,
+      "status": "playing",
+      "generatedPortal": "2,7",
+      "generatedRouteStages": [
+        1
+      ],
+      "generatedWallCount": 15,
+      "generatedLights": 3,
+      "generatedTraps": 2,
+      "generatedModes": [
+        "easy"
+      ],
+      "fingerprint": "1b2439d364c0bfac4f03ab35b64ba151aa689d58a3fe6c902fae85f27b9f177e",
+      "uiRoutePreserved": true,
+      "uiDifficultyPreserved": true,
+      "generationRouteAgrees": true,
+      "generationModeAgrees": true,
+      "matchesRequestedCombination": true,
+      "matchesAnyOtherCombination": [],
+      "identityHolds": true
+    },
+    {
+      "requested": {
+        "route": 1,
+        "mode": "medium"
+      },
+      "seed": 13311000,
+      "uiRouteNumber": 1,
+      "uiRouteLabel": "Exploração inicial",
+      "uiDifficulty": "medium",
+      "runtimeStage": 1,
+      "status": "playing",
+      "generatedPortal": "2,8",
+      "generatedRouteStages": [
+        1
+      ],
+      "generatedWallCount": 19,
+      "generatedLights": 4,
+      "generatedTraps": 3,
+      "generatedModes": [
+        "medium"
+      ],
+      "fingerprint": "37ae698521f2bcd9dbc63af17f5ce9c24fd9cff2d34c45d188d7fba70f9e318f",
+      "uiRoutePreserved": true,
+      "uiDifficultyPreserved": true,
+      "generationRouteAgrees": true,
+      "generationModeAgrees": true,
+      "matchesRequestedCombination": true,
+      "matchesAnyOtherCombination": [],
+      "identityHolds": true
+    },
+    {
+      "requested": {
+        "route": 1,
+        "mode": "hard"
+      },
+      "seed": 13312000,
+      "uiRouteNumber": 1,
+      "uiRouteLabel": "Exploração inicial",
+      "uiDifficulty": "hard",
+      "runtimeStage": 1,
+      "status": "playing",
+      "generatedPortal": "2,7",
+      "generatedRouteStages": [
+        1
+      ],
+      "generatedWallCount": 22,
+      "generatedLights": 6,
+      "generatedTraps": 4,
+      "generatedModes": [
+        "hard"
+      ],
+      "fingerprint": "6ebde9bde41d418e1e8f5ab0cdec2787682503fcbf8d2b083c9bfc5839af244e",
+      "uiRoutePreserved": true,
+      "uiDifficultyPreserved": true,
+      "generationRouteAgrees": true,
+      "generationModeAgrees": true,
+      "matchesRequestedCombination": true,
+      "matchesAnyOtherCombination": [],
+      "identityHolds": true
+    },
+    {
+      "requested": {
+        "route": 2,
+        "mode": "easy"
+      },
+      "seed": 13320000,
+      "uiRouteNumber": 2,
+      "uiRouteLabel": "Novas escolhas",
+      "uiDifficulty": "easy",
+      "runtimeStage": 2,
+      "status": "playing",
+      "generatedPortal": "1,8",
+      "generatedRouteStages": [
+        2
+      ],
+      "generatedWallCount": 17,
+      "generatedLights": 3,
+      "generatedTraps": 3,
+      "generatedModes": [
+        "easy"
+      ],
+      "fingerprint": "cd0bf3953d7224ec8037c4bcbe364a0db720399c797eca947a5e24552034544a",
+      "uiRoutePreserved": true,
+      "uiDifficultyPreserved": true,
+      "generationRouteAgrees": true,
+      "generationModeAgrees": true,
+      "matchesRequestedCombination": true,
+      "matchesAnyOtherCombination": [],
+      "identityHolds": true
+    },
+    {
+      "requested": {
+        "route": 2,
+        "mode": "medium"
+      },
+      "seed": 13321000,
+      "uiRouteNumber": 2,
+      "uiRouteLabel": "Novas escolhas",
+      "uiDifficulty": "medium",
+      "runtimeStage": 2,
+      "status": "playing",
+      "generatedPortal": "1,8",
+      "generatedRouteStages": [
+        2
+      ],
+      "generatedWallCount": 23,
+      "generatedLights": 4,
+      "generatedTraps": 4,
+      "generatedModes": [
+        "medium"
+      ],
+      "fingerprint": "50d8298c14ba0e3a691bf0af9e86ad97888e9165c3bcf36a6d261699739a6a57",
+      "uiRoutePreserved": true,
+      "uiDifficultyPreserved": true,
+      "generationRouteAgrees": true,
+      "generationModeAgrees": true,
+      "matchesRequestedCombination": true,
+      "matchesAnyOtherCombination": [],
+      "identityHolds": true
+    },
+    {
+      "requested": {
+        "route": 2,
+        "mode": "hard"
+      },
+      "seed": 13322000,
+      "uiRouteNumber": 2,
+      "uiRouteLabel": "Novas escolhas",
+      "uiDifficulty": "hard",
+      "runtimeStage": 2,
+      "status": "playing",
+      "generatedPortal": "0,7",
+      "generatedRouteStages": [
+        2,
+        3
+      ],
+      "generatedWallCount": 25,
+      "generatedLights": 6,
+      "generatedTraps": 5,
+      "generatedModes": [
+        "hard"
+      ],
+      "fingerprint": "af9f858d826054383e370566da4c627d4eb74ad649e28ec06c2511ce9a9548f8",
+      "uiRoutePreserved": true,
+      "uiDifficultyPreserved": true,
+      "generationRouteAgrees": true,
+      "generationModeAgrees": true,
+      "matchesRequestedCombination": true,
+      "matchesAnyOtherCombination": [],
+      "identityHolds": true
+    },
+    {
+      "requested": {
+        "route": 3,
+        "mode": "easy"
+      },
+      "seed": 13330000,
+      "uiRouteNumber": 3,
+      "uiRouteLabel": "Portal distante",
+      "uiDifficulty": "easy",
+      "runtimeStage": 3,
+      "status": "playing",
+      "generatedPortal": "0,7",
+      "generatedRouteStages": [
+        2,
+        3
+      ],
+      "generatedWallCount": 18,
+      "generatedLights": 4,
+      "generatedTraps": 4,
+      "generatedModes": [
+        "easy"
+      ],
+      "fingerprint": "956c410954cbe49701436fb4f741d3e13f8207e8405d4095e237c48a01c66c05",
+      "uiRoutePreserved": true,
+      "uiDifficultyPreserved": true,
+      "generationRouteAgrees": true,
+      "generationModeAgrees": true,
+      "matchesRequestedCombination": true,
+      "matchesAnyOtherCombination": [],
+      "identityHolds": true
+    },
+    {
+      "requested": {
+        "route": 3,
+        "mode": "medium"
+      },
+      "seed": 13331000,
+      "uiRouteNumber": 3,
+      "uiRouteLabel": "Portal distante",
+      "uiDifficulty": "medium",
+      "runtimeStage": 3,
+      "status": "playing",
+      "generatedPortal": "0,8",
+      "generatedRouteStages": [
+        2,
+        3
+      ],
+      "generatedWallCount": 23,
+      "generatedLights": 5,
+      "generatedTraps": 5,
+      "generatedModes": [
+        "medium"
+      ],
+      "fingerprint": "241baf31303ec6fa188f29509f90d4f7d17d6a1081a33b98b7d28091537df7ee",
+      "uiRoutePreserved": true,
+      "uiDifficultyPreserved": true,
+      "generationRouteAgrees": true,
+      "generationModeAgrees": true,
+      "matchesRequestedCombination": true,
+      "matchesAnyOtherCombination": [],
+      "identityHolds": true
+    },
+    {
+      "requested": {
+        "route": 3,
+        "mode": "hard"
+      },
+      "seed": 13332000,
+      "uiRouteNumber": 3,
+      "uiRouteLabel": "Portal distante",
+      "uiDifficulty": "hard",
+      "runtimeStage": 3,
+      "status": "playing",
+      "generatedPortal": "0,8",
+      "generatedRouteStages": [
+        2,
+        3
+      ],
+      "generatedWallCount": 27,
+      "generatedLights": 6,
+      "generatedTraps": 6,
+      "generatedModes": [
+        "hard"
+      ],
+      "fingerprint": "380bb3a92fbb004bd845bb082ffe7c61c523633288c0ed78a9c244c292d974d3",
+      "uiRoutePreserved": true,
+      "uiDifficultyPreserved": true,
+      "generationRouteAgrees": true,
+      "generationModeAgrees": true,
+      "matchesRequestedCombination": true,
+      "matchesAnyOtherCombination": [],
+      "identityHolds": true
+    }
+  ],
+  "transitions": [
+    {
+      "label": "R1 easy -> medium",
+      "seed": 13310007,
+      "before": {
+        "route": 1,
+        "mode": "easy",
+        "status": "playing",
+        "stage": 1
+      },
+      "trace": [
+        {
+          "action": "changeDifficulty(medium)",
+          "route": 1,
+          "mode": "medium",
+          "status": "setup",
+          "stage": 1
+        },
+        {
+          "action": "startGame()",
+          "route": 1,
+          "mode": "medium",
+          "status": "playing",
+          "stage": 1
+        }
+      ],
+      "after": {
+        "route": 1,
+        "mode": "medium",
+        "status": "playing",
+        "stage": 1
+      },
+      "expectedRoute": 1,
+      "expectedMode": "medium",
+      "routeCorrect": true,
+      "modeCorrect": true,
+      "pass": true
+    },
+    {
+      "label": "R1 medium -> hard",
+      "seed": 13310007,
+      "before": {
+        "route": 1,
+        "mode": "easy",
+        "status": "playing",
+        "stage": 1
+      },
+      "trace": [
+        {
+          "action": "changeDifficulty(medium)",
+          "route": 1,
+          "mode": "medium",
+          "status": "setup",
+          "stage": 1
+        },
+        {
+          "action": "changeDifficulty(hard)",
+          "route": 1,
+          "mode": "hard",
+          "status": "setup",
+          "stage": 1
+        },
+        {
+          "action": "startGame()",
+          "route": 1,
+          "mode": "hard",
+          "status": "playing",
+          "stage": 1
+        }
+      ],
+      "after": {
+        "route": 1,
+        "mode": "hard",
+        "status": "playing",
+        "stage": 1
+      },
+      "expectedRoute": 1,
+      "expectedMode": "hard",
+      "routeCorrect": true,
+      "modeCorrect": true,
+      "pass": true
+    },
+    {
+      "label": "R2 easy -> medium",
+      "seed": 13320007,
+      "before": {
+        "route": 2,
+        "mode": "easy",
+        "status": "playing",
+        "stage": 2
+      },
+      "trace": [
+        {
+          "action": "changeDifficulty(medium)",
+          "route": 2,
+          "mode": "medium",
+          "status": "setup",
+          "stage": 2
+        },
+        {
+          "action": "startGame()",
+          "route": 2,
+          "mode": "medium",
+          "status": "playing",
+          "stage": 2
+        }
+      ],
+      "after": {
+        "route": 2,
+        "mode": "medium",
+        "status": "playing",
+        "stage": 2
+      },
+      "expectedRoute": 2,
+      "expectedMode": "medium",
+      "routeCorrect": true,
+      "modeCorrect": true,
+      "pass": true
+    },
+    {
+      "label": "R2 medium -> hard",
+      "seed": 13320007,
+      "before": {
+        "route": 2,
+        "mode": "easy",
+        "status": "playing",
+        "stage": 2
+      },
+      "trace": [
+        {
+          "action": "changeDifficulty(medium)",
+          "route": 2,
+          "mode": "medium",
+          "status": "setup",
+          "stage": 2
+        },
+        {
+          "action": "changeDifficulty(hard)",
+          "route": 2,
+          "mode": "hard",
+          "status": "setup",
+          "stage": 2
+        },
+        {
+          "action": "startGame()",
+          "route": 2,
+          "mode": "hard",
+          "status": "playing",
+          "stage": 2
+        }
+      ],
+      "after": {
+        "route": 2,
+        "mode": "hard",
+        "status": "playing",
+        "stage": 2
+      },
+      "expectedRoute": 2,
+      "expectedMode": "hard",
+      "routeCorrect": true,
+      "modeCorrect": true,
+      "pass": true
+    },
+    {
+      "label": "R3 easy -> medium",
+      "seed": 13330007,
+      "before": {
+        "route": 3,
+        "mode": "easy",
+        "status": "playing",
+        "stage": 3
+      },
+      "trace": [
+        {
+          "action": "changeDifficulty(medium)",
+          "route": 3,
+          "mode": "medium",
+          "status": "setup",
+          "stage": 3
+        },
+        {
+          "action": "startGame()",
+          "route": 3,
+          "mode": "medium",
+          "status": "playing",
+          "stage": 3
+        }
+      ],
+      "after": {
+        "route": 3,
+        "mode": "medium",
+        "status": "playing",
+        "stage": 3
+      },
+      "expectedRoute": 3,
+      "expectedMode": "medium",
+      "routeCorrect": true,
+      "modeCorrect": true,
+      "pass": true
+    },
+    {
+      "label": "R3 medium -> hard",
+      "seed": 13330007,
+      "before": {
+        "route": 3,
+        "mode": "easy",
+        "status": "playing",
+        "stage": 3
+      },
+      "trace": [
+        {
+          "action": "changeDifficulty(medium)",
+          "route": 3,
+          "mode": "medium",
+          "status": "setup",
+          "stage": 3
+        },
+        {
+          "action": "changeDifficulty(hard)",
+          "route": 3,
+          "mode": "hard",
+          "status": "setup",
+          "stage": 3
+        },
+        {
+          "action": "startGame()",
+          "route": 3,
+          "mode": "hard",
+          "status": "playing",
+          "stage": 3
+        }
+      ],
+      "after": {
+        "route": 3,
+        "mode": "hard",
+        "status": "playing",
+        "stage": 3
+      },
+      "expectedRoute": 3,
+      "expectedMode": "hard",
+      "routeCorrect": true,
+      "modeCorrect": true,
+      "pass": true
+    },
+    {
+      "label": "R2 hard -> easy",
+      "seed": 13320007,
+      "before": {
+        "route": 2,
+        "mode": "easy",
+        "status": "playing",
+        "stage": 2
+      },
+      "trace": [
+        {
+          "action": "changeDifficulty(hard)",
+          "route": 2,
+          "mode": "hard",
+          "status": "setup",
+          "stage": 2
+        },
+        {
+          "action": "changeDifficulty(easy)",
+          "route": 2,
+          "mode": "easy",
+          "status": "setup",
+          "stage": 2
+        },
+        {
+          "action": "startGame()",
+          "route": 2,
+          "mode": "easy",
+          "status": "playing",
+          "stage": 2
+        }
+      ],
+      "after": {
+        "route": 2,
+        "mode": "easy",
+        "status": "playing",
+        "stage": 2
+      },
+      "expectedRoute": 2,
+      "expectedMode": "easy",
+      "routeCorrect": true,
+      "modeCorrect": true,
+      "pass": true
+    },
+    {
+      "label": "R3 hard, restart",
+      "seed": 13330007,
+      "before": {
+        "route": 3,
+        "mode": "easy",
+        "status": "playing",
+        "stage": 3
+      },
+      "trace": [
+        {
+          "action": "changeDifficulty(hard)",
+          "route": 3,
+          "mode": "hard",
+          "status": "setup",
+          "stage": 3
+        },
+        {
+          "action": "startGame()",
+          "route": 3,
+          "mode": "hard",
+          "status": "playing",
+          "stage": 3
+        },
+        {
+          "action": "restartGame()",
+          "route": 3,
+          "mode": "hard",
+          "status": "playing",
+          "stage": 3
+        }
+      ],
+      "after": {
+        "route": 3,
+        "mode": "hard",
+        "status": "playing",
+        "stage": 3
+      },
+      "expectedRoute": 3,
+      "expectedMode": "hard",
+      "routeCorrect": true,
+      "modeCorrect": true,
+      "pass": true
+    },
+    {
+      "label": "R2 hard, continueJourney",
+      "seed": 13320007,
+      "before": {
+        "route": 2,
+        "mode": "easy",
+        "status": "playing",
+        "stage": 2
+      },
+      "trace": [
+        {
+          "action": "changeDifficulty(hard)",
+          "route": 2,
+          "mode": "hard",
+          "status": "setup",
+          "stage": 2
+        },
+        {
+          "action": "startGame()",
+          "route": 2,
+          "mode": "hard",
+          "status": "playing",
+          "stage": 2
+        },
+        {
+          "action": "continueJourney()",
+          "route": 3,
+          "mode": "hard",
+          "status": "playing",
+          "stage": 3
+        }
+      ],
+      "after": {
+        "route": 3,
+        "mode": "hard",
+        "status": "playing",
+        "stage": 3
+      },
+      "expectedRoute": 3,
+      "expectedMode": "hard",
+      "routeCorrect": true,
+      "modeCorrect": true,
+      "pass": true
+    },
+    {
+      "label": "R2 -> R3 then change mode",
+      "seed": 13320007,
+      "before": {
+        "route": 2,
+        "mode": "easy",
+        "status": "playing",
+        "stage": 2
+      },
+      "trace": [
+        {
+          "action": "changeDifficulty(medium)",
+          "route": 2,
+          "mode": "medium",
+          "status": "setup",
+          "stage": 2
+        },
+        {
+          "action": "startGame()",
+          "route": 2,
+          "mode": "medium",
+          "status": "playing",
+          "stage": 2
+        },
+        {
+          "action": "continueJourney()",
+          "route": 3,
+          "mode": "medium",
+          "status": "playing",
+          "stage": 3
+        },
+        {
+          "action": "changeDifficulty(hard)",
+          "route": 3,
+          "mode": "hard",
+          "status": "setup",
+          "stage": 3
+        }
+      ],
+      "after": {
+        "route": 3,
+        "mode": "hard",
+        "status": "setup",
+        "stage": 3
+      },
+      "expectedRoute": 3,
+      "expectedMode": "hard",
+      "routeCorrect": true,
+      "modeCorrect": true,
+      "pass": true
+    }
+  ],
+  "lifecycle": [
+    {
+      "requested": {
+        "route": 1,
+        "mode": "easy"
+      },
+      "remountKeepsRoute": true,
+      "remountKeepsMode": true,
+      "explicitCampaignResetLandsOnRouteOne": true,
+      "explicitCampaignResetKeepsMode": true
+    },
+    {
+      "requested": {
+        "route": 1,
+        "mode": "medium"
+      },
+      "remountKeepsRoute": true,
+      "remountKeepsMode": true,
+      "explicitCampaignResetLandsOnRouteOne": true,
+      "explicitCampaignResetKeepsMode": true
+    },
+    {
+      "requested": {
+        "route": 1,
+        "mode": "hard"
+      },
+      "remountKeepsRoute": true,
+      "remountKeepsMode": true,
+      "explicitCampaignResetLandsOnRouteOne": true,
+      "explicitCampaignResetKeepsMode": true
+    },
+    {
+      "requested": {
+        "route": 2,
+        "mode": "easy"
+      },
+      "remountKeepsRoute": true,
+      "remountKeepsMode": true,
+      "explicitCampaignResetLandsOnRouteOne": true,
+      "explicitCampaignResetKeepsMode": true
+    },
+    {
+      "requested": {
+        "route": 2,
+        "mode": "medium"
+      },
+      "remountKeepsRoute": true,
+      "remountKeepsMode": true,
+      "explicitCampaignResetLandsOnRouteOne": true,
+      "explicitCampaignResetKeepsMode": true
+    },
+    {
+      "requested": {
+        "route": 2,
+        "mode": "hard"
+      },
+      "remountKeepsRoute": true,
+      "remountKeepsMode": true,
+      "explicitCampaignResetLandsOnRouteOne": true,
+      "explicitCampaignResetKeepsMode": true
+    },
+    {
+      "requested": {
+        "route": 3,
+        "mode": "easy"
+      },
+      "remountKeepsRoute": true,
+      "remountKeepsMode": true,
+      "explicitCampaignResetLandsOnRouteOne": true,
+      "explicitCampaignResetKeepsMode": true
+    },
+    {
+      "requested": {
+        "route": 3,
+        "mode": "medium"
+      },
+      "remountKeepsRoute": true,
+      "remountKeepsMode": true,
+      "explicitCampaignResetLandsOnRouteOne": true,
+      "explicitCampaignResetKeepsMode": true
+    },
+    {
+      "requested": {
+        "route": 3,
+        "mode": "hard"
+      },
+      "remountKeepsRoute": true,
+      "remountKeepsMode": true,
+      "explicitCampaignResetLandsOnRouteOne": true,
+      "explicitCampaignResetKeepsMode": true
+    }
+  ],
+  "resetReplay": [
+    {
+      "attempts": 270,
+      "preserved": 270,
+      "resets": 0
+    }
+  ],
+  "fingerprintStudy": [
+    {
+      "seed": 13310000,
+      "route": 1,
+      "mode": "easy",
+      "callsBeforeThePlayersMap": 1,
+      "uiHash": "1b2439d364c0bfac4f03ab35b64ba151aa689d58a3fe6c902fae85f27b9f177e",
+      "singleDirectCallHash": "7eabad6f26647e3c7068e2f34de6e13dee1757d1e31b4fe91137c1652f2cef0d",
+      "replayedSequenceHash": "1b2439d364c0bfac4f03ab35b64ba151aa689d58a3fe6c902fae85f27b9f177e",
+      "replayedSequenceReproducesUi": true,
+      "singleDirectCallEqualsUi": false
+    },
+    {
+      "seed": 13310001,
+      "route": 1,
+      "mode": "easy",
+      "callsBeforeThePlayersMap": 1,
+      "uiHash": "9105ab7a4fea1ebdd95e297488dd559eb08abcf31bfc6d840bc7a139d072afac",
+      "singleDirectCallHash": "ac5b5086376acfe81e19182fddc36424eb31f75a832d48555099d35cf54bcd04",
+      "replayedSequenceHash": "9105ab7a4fea1ebdd95e297488dd559eb08abcf31bfc6d840bc7a139d072afac",
+      "replayedSequenceReproducesUi": true,
+      "singleDirectCallEqualsUi": false
+    },
+    {
+      "seed": 13310002,
+      "route": 1,
+      "mode": "easy",
+      "callsBeforeThePlayersMap": 1,
+      "uiHash": "52eccb96b15697a134a14b9dbf703dff421025e34897ea49fb9eea90e3a0ff5b",
+      "singleDirectCallHash": "c76ea5d2ae880cb4e1f3d48d63805d108a86e63c8a257bb3e474f94bc03540d3",
+      "replayedSequenceHash": "52eccb96b15697a134a14b9dbf703dff421025e34897ea49fb9eea90e3a0ff5b",
+      "replayedSequenceReproducesUi": true,
+      "singleDirectCallEqualsUi": false
+    },
+    {
+      "seed": 13310003,
+      "route": 1,
+      "mode": "easy",
+      "callsBeforeThePlayersMap": 1,
+      "uiHash": "ef7a82f69595c69fc71e7c89bf17c9e0c06cf1017981246b4368090911df4337",
+      "singleDirectCallHash": "60417e9a016daed2a778b16d1eb1ab1092c170f3698ae5a3e395ea29585ee160",
+      "replayedSequenceHash": "ef7a82f69595c69fc71e7c89bf17c9e0c06cf1017981246b4368090911df4337",
+      "replayedSequenceReproducesUi": true,
+      "singleDirectCallEqualsUi": false
+    },
+    {
+      "seed": 13310004,
+      "route": 1,
+      "mode": "easy",
+      "callsBeforeThePlayersMap": 1,
+      "uiHash": "8840732c1e07ddaf63538146ce4dc3a33a969127c83d38bc63b9c75907ddd62b",
+      "singleDirectCallHash": "73b32b7699103ba815c4190c3b683e7b9b21662b27f75066daa0cfa4aa113aee",
+      "replayedSequenceHash": "8840732c1e07ddaf63538146ce4dc3a33a969127c83d38bc63b9c75907ddd62b",
+      "replayedSequenceReproducesUi": true,
+      "singleDirectCallEqualsUi": false
+    },
+    {
+      "seed": 13310005,
+      "route": 1,
+      "mode": "easy",
+      "callsBeforeThePlayersMap": 1,
+      "uiHash": "54cb14b6c822eb862d64ff0a57d2b845d455fb090cef38521070760b8bd75bb0",
+      "singleDirectCallHash": "a22b8003290fcc5f9c25671b256554ca88f65b726f48ef90ea8c0921314752f3",
+      "replayedSequenceHash": "54cb14b6c822eb862d64ff0a57d2b845d455fb090cef38521070760b8bd75bb0",
+      "replayedSequenceReproducesUi": true,
+      "singleDirectCallEqualsUi": false
+    },
+    {
+      "seed": 13311000,
+      "route": 1,
+      "mode": "medium",
+      "callsBeforeThePlayersMap": 2,
+      "uiHash": "37ae698521f2bcd9dbc63af17f5ce9c24fd9cff2d34c45d188d7fba70f9e318f",
+      "singleDirectCallHash": "4851eed977462478545dfcdbe1de4ac8a44d8b1d12d3052e0a0c48a4de7f9e39",
+      "replayedSequenceHash": "37ae698521f2bcd9dbc63af17f5ce9c24fd9cff2d34c45d188d7fba70f9e318f",
+      "replayedSequenceReproducesUi": true,
+      "singleDirectCallEqualsUi": false
+    },
+    {
+      "seed": 13311001,
+      "route": 1,
+      "mode": "medium",
+      "callsBeforeThePlayersMap": 2,
+      "uiHash": "0fd5b58010340759b1a30483174c795863f938615bb337ea7f944ca473eb8603",
+      "singleDirectCallHash": "98934e819dfc7cbb193364a510e711097eb2a3effc43fb4dd64a539deb197582",
+      "replayedSequenceHash": "0fd5b58010340759b1a30483174c795863f938615bb337ea7f944ca473eb8603",
+      "replayedSequenceReproducesUi": true,
+      "singleDirectCallEqualsUi": false
+    },
+    {
+      "seed": 13311002,
+      "route": 1,
+      "mode": "medium",
+      "callsBeforeThePlayersMap": 2,
+      "uiHash": "74b6a4531f632ce2784f98065394944c3dd85a4767a7fa24c76ece6f01a58350",
+      "singleDirectCallHash": "a5062b400586cf6e281dedd7b6540ddaa1778bf229b3606d1c9c2d4e11663b5c",
+      "replayedSequenceHash": "74b6a4531f632ce2784f98065394944c3dd85a4767a7fa24c76ece6f01a58350",
+      "replayedSequenceReproducesUi": true,
+      "singleDirectCallEqualsUi": false
+    }
+  ],
+  "tests": [
+    {
+      "id": "A",
+      "name": "ROUTE_DIFFICULTY_MATRIX_9x9",
+      "pass": true,
+      "combinations": 9,
+      "identityHolds": 9,
+      "exactMatchOnRequestedCombination": 9,
+      "falseMatchesOnAnyOtherCombination": 0,
+      "note": "the load-bearing check is the exact map identity: replaying the UI's generation sequence for the REQUESTED route/mode reproduces the player's board, and replaying it for any of the other eight does not"
+    },
+    {
+      "id": "B",
+      "name": "PREVIOUS_120_RESET_CASES",
+      "pass": true,
+      "attempts": 270,
+      "baselineRouteResetCount": 120,
+      "baselineRequestedCombinationPreserved": 150,
+      "nowPreserved": 270,
+      "nowReset": 0,
+      "previouslyAffectedCombinations": [
+        "route2/medium",
+        "route2/hard",
+        "route3/medium",
+        "route3/hard"
+      ],
+      "seedFormula": "13300000 + route*10000 + modeIndex*1000 + sample"
+    },
+    {
+      "id": "C",
+      "name": "TRANSITIONS",
+      "pass": true,
+      "transitions": 10,
+      "passed": 10,
+      "failed": []
+    },
+    {
+      "id": "D",
+      "name": "REMOUNT_AND_EXPLICIT_ROUTE_RESET",
+      "pass": true,
+      "cases": 9,
+      "note": "returning to Route 1 is still reachable and still explicit: it is what entering the world from Home does, by mounting a session with no initialRouteNumber"
+    },
+    {
+      "id": "E",
+      "name": "GENERATION_RECEIVES_THE_SELECTED_COMBINATION",
+      "pass": true,
+      "geometricMismatches": 0,
+      "exactIdentityMatches": 9,
+      "falseMatches": 0,
+      "geometryAloneIsAmbiguousFor": [
+        "S2/medium == S3/easy"
+      ],
+      "whyThatIsFine": "identity is established by exact map equality against the requested combination, which is unambiguous; the geometric read is only a corroborating cross-check",
+      "exitCandidatesPerStage": {
+        "1": [
+          "2,8",
+          "2,7"
+        ],
+        "2": [
+          "1,8",
+          "0,7",
+          "0,8"
+        ],
+        "3": [
+          "0,8",
+          "0,7"
+        ]
+      },
+      "lightCountsPerMode": {
+        "1": {
+          "easy": 3,
+          "medium": 4,
+          "hard": 6
+        },
+        "2": {
+          "easy": 3,
+          "medium": 4,
+          "hard": 6
+        },
+        "3": {
+          "easy": 4,
+          "medium": 5,
+          "hard": 6
+        }
+      }
+    },
+    {
+      "id": "F",
+      "name": "UI_VS_DIRECT_GENERATION",
+      "pass": true,
+      "samplesChecked": 54,
+      "replayedSequenceReproducesUi": 54,
+      "singleDirectCallEqualsUi": 0,
+      "classification": "EXPECTED_RNG_SEQUENCE_DIFFERENCE",
+      "conclusion": "the UI asks for the right combination; it simply draws its map further along the same RNG stream, because the hook generates a board on mount and another on mode selection before the player presses Start",
+      "notADefectBecause": "identity is only required when route, mode, seed AND initial RNG position are equivalent; here the last one is not, by design of the setup screen"
+    },
+    {
+      "id": "G",
+      "name": "ROUTE_ONE_BEHAVIOUR_UNCHANGED",
+      "pass": true,
+      "casesChecked": 24,
+      "identical": 24,
+      "note": "on Route 1 the old and new changeDifficulty are the same call, so every Route 1 map is bit-identical to the baseline"
+    }
+  ],
+  "allPass": true
+}

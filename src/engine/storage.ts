@@ -33,15 +33,22 @@ export function getRecentResults(): GameResult[] {
   }
 }
 
-/** Persist a new result at the front of the list. */
-export function saveGameResult(
+/** Materialize a result without writing it to the product history. */
+export function createTransientGameResult(
   result: Omit<GameResult, "id" | "playedAt">,
 ): GameResult {
-  const entry: GameResult = {
+  return {
     ...result,
     id: `${result.gameId}-${Date.now()}`,
     playedAt: new Date().toISOString(),
   };
+}
+
+/** Persist a new result at the front of the product history. */
+export function saveGameResult(
+  result: Omit<GameResult, "id" | "playedAt">,
+): GameResult {
+  const entry = createTransientGameResult(result);
 
   const existing = getRecentResults();
   const updated = [entry, ...existing].slice(0, MAX_RESULTS);
