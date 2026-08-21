@@ -11193,10 +11193,14 @@ button:disabled:focus-visible {
   display: block;
   width: 100%;
   height: 100%;
+  visibility: hidden;
   outline: none;
   /* Board gestures (orbit/pinch) stay on the canvas and never scroll the page;
      page scroll outside the board is unaffected. */
   touch-action: none;
+}
+.route-babylon-wrap[data-visual-state="ready"] .route-babylon-board {
+  visibility: visible;
 }
 .route-babylon-reset {
   position: absolute;

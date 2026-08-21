@@ -1,0 +1,94 @@
+{
+  "mission": "ROTA-VISUAL-STATE-06-LEGACY-PATH-AUDIT",
+  "classification": "LEGACY_VISUAL_PATH_ACTIVE",
+  "reproducedTransition": {
+    "stateBefore": "first Babylon mount; essential GLBs pending",
+    "transition": "initial renderBoard before essentialAssetLoads settle",
+    "stateAfter": "controller.ready after loaded assets/fallbacks and one complete frame",
+    "beforeFix": "procedural cream board was visible during pending",
+    "afterFix": "loading surface remains visible until the ready frame"
+  },
+  "checks": [
+    {
+      "id": "ACTIVE_RENDERER_OWNERSHIP",
+      "pass": true,
+      "activeRenderer": "RouteBabylonBoard",
+      "inactiveRendererRetained": true,
+      "note": "the retained React Three Fiber branch is unreachable while the production flag is true"
+    },
+    {
+      "id": "NO_ROUTE_STAGE_DIFFICULTY_THEME_INPUT",
+      "pass": true,
+      "forbiddenVisualInputs": [
+        "routeNumber",
+        "routeStage",
+        "difficulty"
+      ],
+      "hits": [],
+      "note": "Route number, cyclic stage and difficulty do not enter the Babylon visual state"
+    },
+    {
+      "id": "READY_FRAME_IS_THE_REVEAL_BOUNDARY",
+      "pass": true,
+      "startsHidden": true,
+      "revealsAfterReady": true,
+      "exposesState": true,
+      "pendingLoader": true,
+      "resetAfterReady": true,
+      "canvasHiddenByDefault": true,
+      "canvasRevealedExplicitly": true
+    },
+    {
+      "id": "FALLBACK_REMAINS_FAILURE_SAFE_BUT_PENDING_IS_HIDDEN",
+      "pass": true,
+      "boardStartsPending": true,
+      "wallStartsPending": true,
+      "proceduralBoardForNonLoaded": true,
+      "failedBoardKeepsFallback": true,
+      "pendingFrameExists": true,
+      "finalFrameAfterAssetSettlement": true
+    },
+    {
+      "id": "BABYLON_LIGHT_BUDGET",
+      "pass": true,
+      "count": 3,
+      "maxLights": 3,
+      "lights": [
+        {
+          "type": "DirectionalLight",
+          "name": "route-key-light"
+        },
+        {
+          "type": "HemisphericLight",
+          "name": "route-fill-light"
+        },
+        {
+          "type": "PointLight",
+          "name": "route-rim-light"
+        }
+      ]
+    },
+    {
+      "id": "SCENE_LIFECYCLE_OWNERSHIP",
+      "pass": true,
+      "controllerOwnedByMount": true,
+      "resizeObserverDisconnected": true,
+      "windowListenerRemoved": true,
+      "controllerDisposed": true,
+      "pointerListenersRemoved": true,
+      "renderLoopStopped": true,
+      "sceneDisposed": true,
+      "engineDisposed": true
+    },
+    {
+      "id": "MATERIAL_OWNERSHIP",
+      "pass": true,
+      "proceduralMaterialsControllerLocal": true,
+      "sentinelCacheControllerLocal": true,
+      "portalCacheControllerLocal": true,
+      "boardAssetTunedOnImport": true,
+      "cachedPortalMaterialsDisposed": true
+    }
+  ],
+  "allPass": true
+}

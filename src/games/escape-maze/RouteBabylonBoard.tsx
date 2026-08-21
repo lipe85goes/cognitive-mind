@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { LocateFixed } from "lucide-react";
 import {
   COLS,
@@ -66,6 +66,7 @@ export function RouteBabylonBoard({
   const onMoveRef = useRef(onMove);
   const onReadyRef = useRef(onReady);
   const onErrorRef = useRef(onError);
+  const [isVisualReady, setIsVisualReady] = useState(false);
 
   const state = useMemo<RouteBabylonState>(
     () => ({
@@ -162,7 +163,10 @@ export function RouteBabylonBoard({
         controller.resize();
 
         await controller.ready;
-        if (!cancelled) onReadyRef.current?.();
+        if (!cancelled) {
+          setIsVisualReady(true);
+          onReadyRef.current?.();
+        }
       } catch (error) {
         if (cancelled) return;
         const entryError =
@@ -189,7 +193,10 @@ export function RouteBabylonBoard({
   }, []);
 
   return (
-    <div className="route-babylon-wrap">
+    <div
+      className="route-babylon-wrap"
+      data-visual-state={isVisualReady ? "ready" : "loading"}
+    >
       <canvas
         ref={canvasRef}
         className="route-babylon-board"
@@ -211,15 +218,22 @@ export function RouteBabylonBoard({
         data-status={status}
         aria-hidden="true"
       />
-      <button
-        type="button"
-        className="route-babylon-reset"
-        onClick={() => controllerRef.current?.resetView()}
-        aria-label="Centralizar a visão do tabuleiro"
-      >
-        <LocateFixed className="h-4 w-4" aria-hidden />
-        Centralizar
-      </button>
+      {!isVisualReady && (
+        <div className="rsg-canvas-loading" role="status" aria-live="polite">
+          Preparando o tabuleiro Babylon…
+        </div>
+      )}
+      {isVisualReady && (
+        <button
+          type="button"
+          className="route-babylon-reset"
+          onClick={() => controllerRef.current?.resetView()}
+          aria-label="Centralizar a visão do tabuleiro"
+        >
+          <LocateFixed className="h-4 w-4" aria-hidden />
+          Centralizar
+        </button>
+      )}
     </div>
   );
 }
