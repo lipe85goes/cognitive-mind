@@ -27,7 +27,6 @@ export interface WorldVisualContract {
   accentSoft: string;
   accentDeep: string;
   atmosphere: string;
-  homeArt: string;
   transitionArt: string;
   introArt: string;
   artMode: WorldArtMode;
@@ -52,7 +51,6 @@ export const WORLD_VISUALS: Record<GameId, WorldVisualContract> = {
     accentSoft: "rgba(99, 221, 202, 0.24)",
     accentDeep: "#0d4c4a",
     atmosphere: "/illustrations/home/home-background-desktop.webp",
-    homeArt: "/illustrations/home/world-route-hero.webp",
     transitionArt: "/illustrations/home/world-route-hero.webp",
     introArt: "/illustrations/home/world-route-hero.webp",
     artMode: "rendered",
@@ -70,7 +68,6 @@ export const WORLD_VISUALS: Record<GameId, WorldVisualContract> = {
     accentSoft: "rgba(242, 198, 90, 0.22)",
     accentDeep: "#5c3a18",
     atmosphere: "/illustrations/memory-circuit/memory-room-bg.webp",
-    homeArt: "/illustrations/home/world-circuit-hero.webp",
     transitionArt: "/illustrations/home/world-circuit-hero.webp",
     introArt: "/illustrations/home/world-circuit-hero.webp",
     artMode: "rendered",
@@ -88,7 +85,6 @@ export const WORLD_VISUALS: Record<GameId, WorldVisualContract> = {
     accentSoft: "rgba(107, 199, 183, 0.2)",
     accentDeep: "#214b43",
     atmosphere: "/illustrations/home/home-background-desktop.webp",
-    homeArt: "/illustrations/home/world-panel.webp",
     transitionArt: "/illustrations/home/world-panel.webp",
     introArt: "/illustrations/home/world-panel.webp",
     artMode: "sprite",
@@ -106,7 +102,6 @@ export const WORLD_VISUALS: Record<GameId, WorldVisualContract> = {
     accentSoft: "rgba(182, 154, 218, 0.2)",
     accentDeep: "#432d59",
     atmosphere: "/illustrations/home/home-background-desktop.webp",
-    homeArt: "/illustrations/home/world-trail.webp",
     transitionArt: "/illustrations/home/world-trail.webp",
     introArt: "/illustrations/home/world-trail.webp",
     artMode: "sprite",
@@ -124,7 +119,6 @@ export const WORLD_VISUALS: Record<GameId, WorldVisualContract> = {
     accentSoft: "rgba(159, 201, 106, 0.2)",
     accentDeep: "#365124",
     atmosphere: "/illustrations/home/home-background-desktop.webp",
-    homeArt: "/illustrations/home/world-garden.webp",
     transitionArt: "/illustrations/home/world-garden.webp",
     introArt: "/illustrations/home/world-garden.webp",
     artMode: "sprite",

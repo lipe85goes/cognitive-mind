@@ -101,12 +101,3 @@ export const ACTIVITIES: Activity[] = [
     icon: "🎯",
   },
 ];
-
-/** Portuguese labels for skill areas (used when surfacing skills in UI). */
-export const SKILL_LABELS: Record<Activity["skill"], string> = {
-  attention: "Atenção",
-  memory: "Memória",
-  planning: "Planejamento",
-  reaction: "Reação",
-  spatial: "Espacial",
-};

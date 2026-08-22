@@ -1,16 +1,5 @@
 import type { GameResult } from "@/types/game";
 
-/**
- * Internal score tiers used as activation signals in the interface.
- * The scoring shape is preserved so saved results keep the same behavior.
- */
-export function calculateStars(score: number): number {
-  if (score >= 300) return 3;
-  if (score >= 150) return 2;
-  if (score > 0) return 1;
-  return 0;
-}
-
 /** Whether the session counts as a successful completion for rewards/confetti. */
 export function isSuccessfulResult(
   result: Pick<GameResult, "details" | "score">,
