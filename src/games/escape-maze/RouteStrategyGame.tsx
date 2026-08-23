@@ -48,20 +48,7 @@ import type {
 import "@/components/worlds/master-scene/world-master-scene.css";
 import "@/games/escape-maze/route-visual.css";
 
-/** WebGL is client-only: load the 3D board after mount with a calm fallback. */
-const RouteBoardScene = dynamic(
-  () =>
-    import("@/components/three/route/RouteBoardScene").then(
-      (mod) => mod.RouteBoardScene,
-    ),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="rsg-canvas-loading">Preparando o tabuleiro 3D…</div>
-    ),
-  },
-);
-
+/** WebGL is client-only: load the Babylon board after mount. */
 const RouteBabylonBoard = dynamic(
   () =>
     import("@/games/escape-maze/RouteBabylonBoard").then(
@@ -74,8 +61,6 @@ const RouteBabylonBoard = dynamic(
     ),
   },
 );
-
-const USE_BABYLON_ROUTE_BOARD = true;
 
 const DIFFICULTY_LABELS: Record<DifficultyLevel, string> = {
   easy: "Mais aberto",
@@ -598,50 +583,27 @@ export function RouteStrategyGame({
                 role="img"
                 aria-label="Tabuleiro 3D da rota: o explorador é você, o Caçador encapuzado persegue pelo tabuleiro, o Sentinela em teal guarda a região do portal, o portal é a saída e as luzes douradas o ativam."
               >
-                {USE_BABYLON_ROUTE_BOARD ? (
-                  <RouteBabylonBoard
-                    mazeMap={mazeMap}
-                    walls={walls}
-                    collectedSet={collectedSet}
-                    player={player}
-                    guardian={guardian}
-                    sentinel={sentinel}
-                    sentinelCommitted={sentinelTarget !== null}
-                    moveTargets={moveTargets}
-                    triggeredTrapSet={triggeredTrapSet}
-                    chestOpened={chestOpened}
-                    breakTargets={breakTargets.map(({ cell }) => posKey(cell))}
-                    aimedWall={aimedWall}
-                    brokenWall={brokenWall}
-                    dangerTiles={dangerTiles}
-                    reducedMotion={Boolean(reducedMotion)}
-                    status={status}
-                    onMove={tryMovePlayer}
-                    onReady={onEntryReady}
-                    onError={onEntryError}
-                  />
-                ) : (
-                  <RouteBoardScene
-                    walls={walls}
-                    exitPosition={mazeMap.exitPosition}
-                    stars={mazeMap.collectibleStars}
-                    collectedSet={collectedSet}
-                    player={player}
-                    guardian={guardian}
-                    sentinel={sentinel}
-                    moveTargets={moveTargets}
-                    traps={mazeMap.traps}
-                    triggeredTrapSet={triggeredTrapSet}
-                    chest={mazeMap.chest}
-                    chestOpened={chestOpened}
-                    breakTargets={breakTargets.map(({ cell }) => posKey(cell))}
-                    aimedWall={aimedWall}
-                    brokenWall={brokenWall}
-                    dangerTiles={dangerTiles}
-                    reducedMotion={Boolean(reducedMotion)}
-                    onMove={tryMovePlayer}
-                  />
-                )}
+                <RouteBabylonBoard
+                  mazeMap={mazeMap}
+                  walls={walls}
+                  collectedSet={collectedSet}
+                  player={player}
+                  guardian={guardian}
+                  sentinel={sentinel}
+                  sentinelCommitted={sentinelTarget !== null}
+                  moveTargets={moveTargets}
+                  triggeredTrapSet={triggeredTrapSet}
+                  chestOpened={chestOpened}
+                  breakTargets={breakTargets.map(({ cell }) => posKey(cell))}
+                  aimedWall={aimedWall}
+                  brokenWall={brokenWall}
+                  dangerTiles={dangerTiles}
+                  reducedMotion={Boolean(reducedMotion)}
+                  status={status}
+                  onMove={tryMovePlayer}
+                  onReady={onEntryReady}
+                  onError={onEntryError}
+                />
               </div>
             </motion.div>
 

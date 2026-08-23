@@ -1,10 +1,10 @@
 /**
  * ROTA-CHEST-REWARDS-01 — static render audit (§31, §32, §22).
  *
- * The environment cannot composite frames, so this reads the two renderers as
- * source and asserts the properties that a screenshot would otherwise have to
- * prove: three Babylon lights and no more, both renderers carrying the same
- * four states, and no trace of the old shield left in either.
+ * The environment cannot composite frames, so this reads the official Babylon
+ * renderer as source and asserts the properties that a screenshot would
+ * otherwise have to prove: three lights and no more, every Chest/Pickaxe state
+ * represented, and no trace of the old shield in the active render path.
  *
  * Usage: node tools/validation/chest-static-render-audit.mjs
  */
@@ -26,9 +26,6 @@ const codeOnly = (source) =>
   source.replace(/\/\*[\s\S]*?\*\//g, " ").replace(/(^|[^:])\/\/.*$/gm, "$1");
 const babylon = read("src/games/escape-maze/routeBabylonScene.ts");
 const babylonBoard = read("src/games/escape-maze/RouteBabylonBoard.tsx");
-const fallbackScene = read("src/components/three/route/RouteBoardScene.tsx");
-const fallbackTile = read("src/components/three/route/RouteTile3D.tsx");
-const fallbackChest = read("src/components/three/route/RouteChest3D.tsx");
 const game = read("src/games/escape-maze/RouteStrategyGame.tsx");
 const hook = read("src/games/escape-maze/useEscapeMaze.ts");
 const css = read("src/app/globals.css");
@@ -82,7 +79,7 @@ check(
   },
 );
 
-// --- §32: both renderers carry the same four states ------------------------
+// --- §32: the official renderer carries every required state ---------------
 const babylonStates = {
   chestClosed: babylon.includes("const opened = state.chestOpened") ||
     babylon.includes("const opened = state.chestOpened;"),
@@ -97,24 +94,10 @@ const babylonStates = {
     /aimedWallKey: string \| null;/.test(babylon) &&
     /brokenWallKey: string \| null;/.test(babylon),
 };
-const fallbackStates = {
-  chestClosed: fallbackChest.includes("opened ?") && fallbackScene.includes("<RouteChest3D"),
-  chestOpened: fallbackChest.includes("rotation={opened ? [-1.15, 0, 0]"),
-  breakTargetContextual: fallbackTile.includes("isBreakTarget"),
-  breakAim: fallbackTile.includes("isBreakAim"),
-  brokenWall: fallbackTile.includes("isBroken"),
-  stateFields:
-    fallbackScene.includes("chest: GridPosition | null;") &&
-    fallbackScene.includes("chestOpened: boolean;") &&
-    fallbackScene.includes("breakTargets: string[];") &&
-    fallbackScene.includes("aimedWall: string | null;") &&
-    fallbackScene.includes("brokenWall: string | null;"),
-};
 check(
-  "BOTH_RENDERERS_CARRY_EVERY_STATE",
-  Object.values(babylonStates).every(Boolean) &&
-    Object.values(fallbackStates).every(Boolean),
-  { babylon: babylonStates, fallback: fallbackStates },
+  "OFFICIAL_RENDERER_CARRIES_EVERY_STATE",
+  Object.values(babylonStates).every(Boolean),
+  { renderer: "RouteBabylonBoard", babylon: babylonStates },
 );
 
 // The Pickaxe and Second Chance states are visible in the HUD, not in a canvas.
@@ -140,21 +123,17 @@ check(
  * this continuation: NO PERMANENT MARK IDENTIFIES A "GOOD" WALL.
  *
  * The old design drew fissures on a certified subset. Those must be gone from
- * both renderers, and what replaced them must be contextual: born with the
- * Pickaxe, gone when it is spent.
+ * the official renderer, and what replaced them must be contextual: born with
+ * the Pickaxe, gone when it is spent.
  */
 const permanentHint = {
   babylonFissureRenderer: /renderWallFissures|route-wall-fissure|route-wall-chip/.test(
     codeOnly(babylon),
   ),
   babylonWeakWallMaterial: /wallWeak|wallFissure/.test(codeOnly(babylon)),
-  fallbackFissures: /FISSURES|isBreakable/.test(codeOnly(fallbackTile)),
   // A wall's own appearance must not branch on anything but "it is a wall".
   babylonWallMaterialBranches:
     /materials\.wall\b[^;]*\?|\?\s*materials\.wall\b/.test(codeOnly(babylon)),
-  fallbackWallColourBranches: /color=\{[^}]*\?[^}]*"#5a4423"/.test(
-    codeOnly(fallbackTile),
-  ),
   // The static board must not be rebuilt by target changes — they are dynamic.
   targetsInStaticSignature: /breakTargetKeys[\s\S]{0,120}getStaticBoardSignature|getStaticBoardSignature[\s\S]{0,400}breakTargetKeys/.test(
     codeOnly(babylon),
@@ -186,8 +165,6 @@ check("BREAK_TARGET_VISUAL_LANGUAGE", !Object.values(forbiddenOnTarget).some(Boo
 const shieldTraces = {
   babylonScene: /shield/i.test(codeOnly(babylon)),
   babylonBoard: /shield/i.test(codeOnly(babylonBoard)),
-  fallbackScene: /shield/i.test(codeOnly(fallbackScene)),
-  fallbackTile: /shield/i.test(codeOnly(fallbackTile)),
   hook: /shield/i.test(codeOnly(hook)),
   // The Hunter's and the Sentinel's legend icons are lucide's `Shield` /
   // `ShieldPlus` glyphs, which name a defender, not the removed pickup. What
@@ -214,11 +191,9 @@ check(
   "CHEST_STAYS_VISIBLY_SPENT",
   babylon.includes("chestSpent") &&
     babylon.includes("if (state.chest) renderChest(parent);") &&
-    !babylon.includes("!state.chestOpened) {\n      const pos") &&
-    fallbackScene.includes("{chestXZ && ("),
+    !babylon.includes("!state.chestOpened) {\n      const pos"),
   {
     babylonDrawsWhenOpened: babylon.includes("if (state.chest) renderChest(parent);"),
-    fallbackDrawsWhenOpened: fallbackScene.includes("{chestXZ && ("),
     note: "§26 — an opened chest stays on the board, lid back and ember out",
   },
 );
@@ -229,18 +204,11 @@ const strategyLeaks = {
     /chooseBreakableWalls|auditBreakableWalls|certifyBreakableWall/.test(
       codeOnly(babylon),
     ),
-  fallbackDecidesBreakable:
-    /chooseBreakableWalls|auditBreakableWalls|certifyBreakableWall/.test(
-      codeOnly(fallbackTile + fallbackScene),
-    ),
   babylonMutatesWalls: /walls\.(delete|add)\(/.test(codeOnly(babylon)),
-  fallbackMutatesWalls: /walls\.(delete|add)\(/.test(
-    codeOnly(fallbackTile + fallbackScene),
-  ),
 };
 check("NO_STRATEGY_IN_RENDER_LAYER", !Object.values(strategyLeaks).some(Boolean), {
   ...strategyLeaks,
-  note: "renderers receive breakableWallKeys / brokenWallKey and draw them; they never decide them",
+  note: "the renderer receives breakableWallKeys / brokenWallKey and draws them; it never decides them",
 });
 
 const allPass = checks.every((c) => c.pass);

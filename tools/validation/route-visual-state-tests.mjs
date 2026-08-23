@@ -4,7 +4,7 @@
  * The reported defect is temporal, not a theme mapping: the procedural
  * emergency board was visible while the approved GLBs were still pending.
  * These checks keep the readiness boundary, fallback semantics, renderer
- * reachability, light budget and lifecycle ownership explicit without relying
+ * ownership, light budget and lifecycle ownership explicit without relying
  * on pixel snapshots.
  *
  * Usage: node tools/validation/route-visual-state-tests.mjs
@@ -40,14 +40,41 @@ function check(id, pass, detail) {
   }
 }
 
-const activeRendererIsBabylon =
-  /const USE_BABYLON_ROUTE_BOARD = true;/.test(gameCode) &&
-  /USE_BABYLON_ROUTE_BOARD\s*\?\s*\(\s*<RouteBabylonBoard/.test(gameCode);
-check("ACTIVE_RENDERER_OWNERSHIP", activeRendererIsBabylon, {
-  activeRenderer: "RouteBabylonBoard",
-  inactiveRendererRetained: gameCode.includes("<RouteBoardScene"),
-  note: "the retained React Three Fiber branch is unreachable while the production flag is true",
-});
+const legacyRouteDirectory = path.join(ROOT, "src/components/three/route");
+const legacyRouteFiles = fs.existsSync(legacyRouteDirectory)
+  ? fs.readdirSync(legacyRouteDirectory).filter((file) => file.endsWith(".tsx"))
+  : [];
+const rendererImports = [
+  ...gameCode.matchAll(
+    /import\(["'](@\/(?:games\/escape-maze\/Route\w*Board|components\/three\/route\/[^"']+))["']\)/g,
+  ),
+].map((match) => match[1]);
+const rendererElements = [
+  ...gameCode.matchAll(/<(Route\w*Board)\b/g),
+].map((match) => match[1]);
+const rendererOwnership = {
+  rendererImports,
+  rendererElements,
+  legacyRouteFiles,
+  rendererFlagPresent: /const\s+USE_[A-Z0-9_]*ROUTE_BOARD\b/.test(gameCode),
+  alternateRendererBranchPresent:
+    /\?\s*\(\s*<Route\w*Board|:\s*\(\s*<Route\w*Board/.test(gameCode),
+};
+check(
+  "SINGLE_BABYLON_RENDERER_OWNERSHIP",
+  rendererImports.length === 1 &&
+    rendererImports[0] === "@/games/escape-maze/RouteBabylonBoard" &&
+    rendererElements.length === 1 &&
+    rendererElements[0] === "RouteBabylonBoard" &&
+    legacyRouteFiles.length === 0 &&
+    !rendererOwnership.rendererFlagPresent &&
+    !rendererOwnership.alternateRendererBranchPresent,
+  {
+    routeRendererCount: rendererElements.length,
+    routeRenderer: rendererElements[0] ?? null,
+    ...rendererOwnership,
+  },
+);
 
 const stateInterface =
   /export interface RouteBabylonState \{([\s\S]*?)\n\}/.exec(scene)?.[1] ?? "";
@@ -176,8 +203,8 @@ check(
 
 const allPass = checks.every(({ pass }) => pass);
 const evidence = {
-  mission: "ROTA-VISUAL-STATE-06-LEGACY-PATH-AUDIT",
-  classification: "LEGACY_VISUAL_PATH_ACTIVE",
+  mission: "MINDFLOW-CLEANUP-03B-R3F-ROUTE-LEGACY-REMOVAL",
+  classification: "BABYLON_SINGLE_RENDERER",
   reproducedTransition: {
     stateBefore: "first Babylon mount; essential GLBs pending",
     transition: "initial renderBoard before essentialAssetLoads settle",
