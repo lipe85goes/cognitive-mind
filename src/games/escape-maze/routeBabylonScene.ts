@@ -1200,6 +1200,10 @@ export function createRouteBabylonController(
       boardAssetStatus = "loaded";
       renderBoard();
     } catch (error) {
+      // ROTA-BABYLON-LIFECYCLE-07: a load that fails AFTER dispose belongs to a
+      // controller that no longer exists. It must not mutate its status and it
+      // must not speak — the fallback it would announce has nowhere to render.
+      if (disposed) return;
       boardAssetStatus = "failed";
       if (!boardAssetWarningLogged) {
         boardAssetWarningLogged = true;
@@ -1258,6 +1262,7 @@ export function createRouteBabylonController(
       wallAssetStatus = "loaded";
       renderBoard();
     } catch (error) {
+      if (disposed) return;
       wallAssetStatus = "failed";
       if (!wallAssetWarningLogged) {
         wallAssetWarningLogged = true;
@@ -1282,6 +1287,7 @@ export function createRouteBabylonController(
       playerAssetStatus = "loaded";
       renderBoard();
     } catch (error) {
+      if (disposed) return;
       playerAssetStatus = "failed";
       if (!playerAssetWarningLogged) {
         playerAssetWarningLogged = true;
@@ -1306,6 +1312,7 @@ export function createRouteBabylonController(
       guardianAssetStatus = "loaded";
       renderBoard();
     } catch (error) {
+      if (disposed) return;
       guardianAssetStatus = "failed";
       if (!guardianAssetWarningLogged) {
         guardianAssetWarningLogged = true;
@@ -1332,6 +1339,7 @@ export function createRouteBabylonController(
       asset.status = "loaded";
       renderBoard();
     } catch (error) {
+      if (disposed) return;
       asset.status = "failed";
       if (!asset.warningLogged) {
         asset.warningLogged = true;
@@ -2288,6 +2296,18 @@ export function createRouteBabylonController(
     scene.render();
   });
 
+  /**
+   * ROTA-BABYLON-LIFECYCLE-07: settles the readiness promise when the scene is
+   * torn down while it is still waiting for its first complete frame.
+   *
+   * That wait is `scene.onAfterRenderObservable.addOnce`, and `scene.dispose()`
+   * CLEARS observables without firing them — so without this, readiness waits
+   * for a frame that can never arrive. `RouteBabylonBoard` sits on
+   * `await controller.ready`, so the suspended continuation kept the canvas,
+   * the controller and the whole board state alive for the life of the page.
+   */
+  let rejectPendingReadyFrame: ((reason: Error) => void) | null = null;
+
   const ready = essentialAssetLoads.then(() => {
     if (disposed) {
       throw new Error("Route scene was disposed before entry readiness.");
@@ -2306,7 +2326,13 @@ export function createRouteBabylonController(
     writeProjectedCellCenters();
 
     return new Promise<void>((resolve, reject) => {
+      if (disposed) {
+        reject(new Error("Route scene was disposed before its ready frame."));
+        return;
+      }
+      rejectPendingReadyFrame = reject;
       scene.onAfterRenderObservable.addOnce(() => {
+        rejectPendingReadyFrame = null;
         if (disposed) {
           reject(new Error("Route scene was disposed before its ready frame."));
           return;
@@ -2316,23 +2342,48 @@ export function createRouteBabylonController(
     });
   });
 
+  /**
+   * ROTA-BABYLON-LIFECYCLE-07 — ownership lives HERE, not in the caller.
+   *
+   * Every method below used to act unconditionally and relied on the React
+   * owner nulling its ref at exactly the right moment. Measured against a
+   * disposed controller, one late `updateBoard` performed 48 operations on a
+   * dead scene, and `resize` reached `engine.resize()` — which fires
+   * `engine.onResizeObservable`, where the GlowLayer's RenderTargetTexture
+   * responds through a `_postProcessManager` that `dispose()` has already set
+   * to null. That is the async Babylon error this mission was opened for.
+   *
+   * A disposed controller is now inert: its methods return, they do not throw,
+   * and `dispose()` is idempotent. Nothing that still holds a reference can
+   * reach the scene or the engine.
+   */
   return {
     ready,
     updateBoard(nextState: RouteBabylonState) {
+      if (disposed) return;
       state = nextState;
       renderBoard();
     },
     resize() {
+      if (disposed) return;
       engine.resize();
       fitCamera();
       writeProjectedCellCenters();
     },
     resetView() {
+      if (disposed) return;
       fitCamera();
       writeProjectedCellCenters();
     },
     dispose() {
+      if (disposed) return;
       disposed = true;
+      // Settle readiness before anything is torn down: once the scene goes, the
+      // observable it waits on is cleared without ever firing.
+      rejectPendingReadyFrame?.(
+        new Error("Route scene was disposed before its ready frame."),
+      );
+      rejectPendingReadyFrame = null;
       canvas.removeEventListener("pointerdown", handlePointerDown);
       canvas.removeEventListener("pointermove", handlePointerMove);
       canvas.removeEventListener("pointerup", handlePointerUp);

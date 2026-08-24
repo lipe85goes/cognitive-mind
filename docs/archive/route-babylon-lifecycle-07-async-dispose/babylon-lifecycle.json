@@ -1,0 +1,132 @@
+{
+  "mission": "ROTA-BABYLON-LIFECYCLE-07-ASYNC-DISPOSE",
+  "harness": "tools/validation/babylon-lifecycle-harness.mjs — strict Babylon double; any action on a scene/engine whose ownership ended is a violation",
+  "driver": "the real createRouteBabylonController, compiled from source",
+  "tests": [
+    {
+      "id": "A",
+      "name": "DISPOSE_DURING_PENDING_LOAD",
+      "pass": true,
+      "importsInFlightAtDispose": 7,
+      "violationsAtDispose": 0,
+      "violationsAfterLateCompletion": 0,
+      "offendingActions": [],
+      "readyOutcome": "rejected",
+      "unhandledRejections": 0,
+      "scenesDisposed": 1,
+      "enginesDisposed": 1,
+      "renderLoopsStopped": 1
+    },
+    {
+      "id": "B",
+      "name": "RETRY_DURING_PENDING_STALE_IGNORED",
+      "pass": true,
+      "staleControllerViolations": 0,
+      "staleOffendingActions": [],
+      "newControllerViolations": 0,
+      "newControllerReady": "resolved",
+      "newControllerScenesDisposed": 0,
+      "unhandledRejections": 0,
+      "note": "the two controllers own separate scenes; a stale completion must not reach either one"
+    },
+    {
+      "id": "C",
+      "name": "NAVIGATE_AWAY_DURING_PENDING",
+      "pass": true,
+      "violations": [],
+      "canvasListenersLeft": 0,
+      "readyOutcome": "rejected",
+      "readySettled": true,
+      "unhandledRejections": 0,
+      "note": "a ready promise that never settles is a dangling continuation, so it is measured here too"
+    },
+    {
+      "id": "D",
+      "name": "READY_THEN_DISPOSE",
+      "pass": true,
+      "readyOutcome": "resolved",
+      "framesRenderedBeforeDispose": 1,
+      "framesRenderedAfterDispose": 0,
+      "violations": [],
+      "canvasListenersLeft": 0,
+      "glowLayersCreated": 1,
+      "glowLayersDisposed": 1
+    },
+    {
+      "id": "E",
+      "name": "ASSET_FAILURE_CONTRACT",
+      "pass": true,
+      "liveControllerReadyAfterFailure": "resolved",
+      "liveControllerViolations": [],
+      "disposedControllerViolations": [],
+      "unhandledRejections": 0,
+      "note": "a failed asset on a LIVE controller must still reveal the procedural fallback; on a disposed one it must do nothing at all"
+    },
+    {
+      "id": "F",
+      "name": "RAPID_CYCLES_AND_DOUBLE_MOUNT",
+      "pass": true,
+      "cycles": 30,
+      "totalViolations": 0,
+      "offendingActions": [],
+      "leakedCanvasListeners": 0,
+      "scenesCreated": 30,
+      "scenesDisposed": 30,
+      "enginesCreated": 30,
+      "enginesDisposed": 30,
+      "renderLoopsStarted": 30,
+      "renderLoopsStopped": 30,
+      "unhandledRejections": 0
+    },
+    {
+      "id": "G",
+      "name": "SCENE_SHAPE_UNCHANGED",
+      "pass": true,
+      "lightsCreated": 3,
+      "renderLoopsStarted": 1,
+      "note": "the lifecycle work must not add a light or a second render loop"
+    },
+    {
+      "id": "H",
+      "name": "DISPOSE_BEFORE_READY_FRAME",
+      "pass": true,
+      "readyBeforeDispose": "pending",
+      "readyAfterDispose": "rejected",
+      "readySettled": true,
+      "readyError": "Route scene was disposed before its ready frame.",
+      "violations": [],
+      "whyItMatters": "an unsettled ready leaves `await controller.ready` suspended forever, holding the canvas, controller and board state alive with it"
+    },
+    {
+      "id": "I",
+      "name": "STALE_REFERENCE_IS_INERT",
+      "pass": true,
+      "violationsAtDispose": 0,
+      "attempts": [
+        {
+          "label": "updateBoard",
+          "newViolations": 0,
+          "threw": null
+        },
+        {
+          "label": "resize",
+          "newViolations": 0,
+          "threw": null
+        },
+        {
+          "label": "resetView",
+          "newViolations": 0,
+          "threw": null
+        },
+        {
+          "label": "dispose twice",
+          "newViolations": 0,
+          "threw": null
+        }
+      ],
+      "note": "the controller must defend its own ownership, not rely on the React owner nulling a ref"
+    }
+  ],
+  "unhandledRejections": [],
+  "allPass": true
+}

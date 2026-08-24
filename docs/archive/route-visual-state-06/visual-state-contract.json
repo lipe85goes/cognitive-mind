@@ -1,6 +1,6 @@
 {
-  "mission": "ROTA-VISUAL-STATE-06-LEGACY-PATH-AUDIT",
-  "classification": "LEGACY_VISUAL_PATH_ACTIVE",
+  "mission": "MINDFLOW-CLEANUP-03B-R3F-ROUTE-LEGACY-REMOVAL",
+  "classification": "BABYLON_SINGLE_RENDERER",
   "reproducedTransition": {
     "stateBefore": "first Babylon mount; essential GLBs pending",
     "transition": "initial renderBoard before essentialAssetLoads settle",
@@ -10,11 +10,19 @@
   },
   "checks": [
     {
-      "id": "ACTIVE_RENDERER_OWNERSHIP",
+      "id": "SINGLE_BABYLON_RENDERER_OWNERSHIP",
       "pass": true,
-      "activeRenderer": "RouteBabylonBoard",
-      "inactiveRendererRetained": true,
-      "note": "the retained React Three Fiber branch is unreachable while the production flag is true"
+      "routeRendererCount": 1,
+      "routeRenderer": "RouteBabylonBoard",
+      "rendererImports": [
+        "@/games/escape-maze/RouteBabylonBoard"
+      ],
+      "rendererElements": [
+        "RouteBabylonBoard"
+      ],
+      "legacyRouteFiles": [],
+      "rendererFlagPresent": false,
+      "alternateRendererBranchPresent": false
     },
     {
       "id": "NO_ROUTE_STAGE_DIFFICULTY_THEME_INPUT",
@@ -45,6 +53,7 @@
       "wallStartsPending": true,
       "proceduralBoardForNonLoaded": true,
       "failedBoardKeepsFallback": true,
+      "everyAssetFailureRespectsOwnership": true,
       "pendingFrameExists": true,
       "finalFrameAfterAssetSettlement": true
     },

@@ -128,8 +128,22 @@ const fallbackContract = {
     /if \(boardAssetStatus !== "loaded"\) \{\s*renderBase\(nextRoot\);/.test(
       sceneCode,
     ),
+  /**
+   * ROTA-BABYLON-LIFECYCLE-07: an ownership guard now precedes the status
+   * assignment, so this no longer requires the assignment to be the FIRST
+   * statement in the catch — only that it is still in it, which is what keeps
+   * the procedural fallback after a failed load.
+   */
   failedBoardKeepsFallback:
-    /catch \(error\) \{\s*boardAssetStatus = "failed";/.test(sceneCode),
+    /catch \(error\) \{[\s\S]{0,320}?boardAssetStatus = "failed";/.test(sceneCode),
+  /**
+   * And the other half of that contract: a load that fails on a controller
+   * whose ownership already ended must not announce a fallback that has
+   * nowhere to render. Every asset catch carries the guard.
+   */
+  everyAssetFailureRespectsOwnership:
+    (sceneCode.match(/catch \(error\) \{[\s\S]{0,320}?if \(disposed\) return;/g) ?? [])
+      .length === 5,
   pendingFrameExists:
     initialRenderIndex >= 0 &&
     assetBatchIndex > initialRenderIndex &&
