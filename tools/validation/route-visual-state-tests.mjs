@@ -7,14 +7,14 @@
  * ownership, light budget and lifecycle ownership explicit without relying
  * on pixel snapshots.
  *
- * Usage: node tools/validation/route-visual-state-tests.mjs
+ * Usage: node tools/validation/route-visual-state-tests.mjs [--check|--update]
  */
 import fs from "node:fs";
 import path from "node:path";
+import { openEvidence } from "./evidence.mjs";
 
 const ROOT = process.cwd();
-const OUT = path.resolve("docs/archive/route-visual-state-06");
-fs.mkdirSync(OUT, { recursive: true });
+const EVIDENCE = openEvidence("docs/archive/route-visual-state-06");
 
 const read = (relativePath) =>
   fs.readFileSync(path.join(ROOT, relativePath), "utf8");
@@ -230,12 +230,9 @@ const evidence = {
   allPass,
 };
 
-fs.writeFileSync(
-  path.join(OUT, "visual-state-contract.json"),
-  `${JSON.stringify(evidence, null, 2)}\n`,
-);
+EVIDENCE.write("visual-state-contract.json", evidence);
 
 console.log(
   `\n${allPass ? "ROUTE_VISUAL_STATE_CONTRACT_OK" : "ROUTE_VISUAL_STATE_CONTRACT_FAILED"}`,
 );
-if (!allPass) process.exitCode = 1;
+process.exitCode = EVIDENCE.finish({ ok: allPass });

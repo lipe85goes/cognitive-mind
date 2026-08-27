@@ -11,18 +11,18 @@
  * The second is the one that could quietly go wrong, so it is tested first and
  * hardest.
  *
- * Usage: node tools/validation/diagnostic-launcher-tests.mjs
+ * Usage: node tools/validation/diagnostic-launcher-tests.mjs [--check|--update]
  */
 import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
 import { loadRouteRuntime, walkableNeighbours } from "./route-runtime-harness.mjs";
+import { openEvidence } from "./evidence.mjs";
 
-const OUT = path.resolve(
+const EVIDENCE = openEvidence(
   process.env.ROUTE_VALIDATION_OUT ??
     "docs/archive/route-difficulty-04c-diagnostic-launcher",
 );
-fs.mkdirSync(OUT, { recursive: true });
 
 const RUNTIME = loadRouteRuntime();
 const API = RUNTIME.API;
@@ -470,24 +470,17 @@ const sessionDeterminism = [];
 }
 
 const allPass = tests.every((t) => t.pass);
-fs.writeFileSync(
-  path.join(OUT, "diagnostic-launcher.json"),
-  JSON.stringify(
-    {
-      mission: "ROTA-DIFFICULTY-05-REBALANCE-LAUNCHER-REGRESSION",
-      seam: "src/engine/route-random.ts",
-      launcher: "src/app/lab/route-launcher/page.tsx (dev-only, URL-only)",
-      canProductionGameplayBeSeeded:
-        "yes, after adding one opt-in seam; before this mission there was none and the tooling could only seed inside a vm sandbox",
-      generationDeterminism,
-      witnessReproduction,
-      sessionDeterminism,
-      tests,
-      allPass,
-    },
-    null,
-    2,
-  ),
-);
+EVIDENCE.write("diagnostic-launcher.json", {
+  mission: "ROTA-DIFFICULTY-05-REBALANCE-LAUNCHER-REGRESSION",
+  seam: "src/engine/route-random.ts",
+  launcher: "src/app/lab/route-launcher/page.tsx (dev-only, URL-only)",
+  canProductionGameplayBeSeeded:
+    "yes, after adding one opt-in seam; before this mission there was none and the tooling could only seed inside a vm sandbox",
+  generationDeterminism,
+  witnessReproduction,
+  sessionDeterminism,
+  tests,
+  allPass,
+});
 console.log(`\n${allPass ? "DIAGNOSTIC_LAUNCHER_OK" : "DIAGNOSTIC_LAUNCHER_FAILED"}`);
-if (!allPass) process.exitCode = 1;
+process.exitCode = EVIDENCE.finish({ ok: allPass });

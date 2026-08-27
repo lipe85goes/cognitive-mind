@@ -15,17 +15,15 @@
  * `details` are put through THE SAME narrowing `playAgain` performs, and the
  * next instance is mounted from that — the real object, the real read.
  *
- * Usage: node tools/validation/difficulty-remount-persistence-tests.mjs
+ * Usage: node tools/validation/difficulty-remount-persistence-tests.mjs [--check|--update]
  */
-import fs from "node:fs";
-import path from "node:path";
 import { loadRouteRuntime, cellKey, pathBetween } from "./route-runtime-harness.mjs";
+import { openEvidence } from "./evidence.mjs";
 
-const OUT = path.resolve(
+const EVIDENCE = openEvidence(
   process.env.ROUTE_VALIDATION_OUT ??
     "docs/archive/route-difficulty-04b-remount-persistence",
 );
-fs.mkdirSync(OUT, { recursive: true });
 
 const RUNTIME = loadRouteRuntime();
 const API = RUNTIME.API;
@@ -426,33 +424,26 @@ const journeyEnd = [];
 }
 
 const allPass = tests.every((t) => t.pass);
-fs.writeFileSync(
-  path.join(OUT, "difficulty-remount-persistence.json"),
-  JSON.stringify(
-    {
-      mission: "ROTA-DIFFICULTY-04B-REMOUNT-PERSISTENCE",
-      followUpFrom: "ROTA-DIFFICULTY-04A-UI-IDENTITY-FIX",
-      driver: "tools/validation/route-runtime-harness.mjs drives the real useEscapeMaze",
-      ownership: {
-        duringPlay: "useEscapeMaze owns `difficulty` — authoritative, single copy",
-        betweenInstances:
-          "app/page.tsx `initialDifficulty`, set only by playAgain and cleared by openActivity",
-        transport:
-          "GameResult.details.difficulty, already written by endGame before this mission",
-        rootCause:
-          "the transport existed; playAgain read only details.nextRouteNumber from it",
-      },
-      remountMatrix,
-      restarts,
-      midRouteChanges,
-      freshEntries,
-      journeyEnd,
-      tests,
-      allPass,
-    },
-    null,
-    2,
-  ),
-);
+EVIDENCE.write("difficulty-remount-persistence.json", {
+  mission: "ROTA-DIFFICULTY-04B-REMOUNT-PERSISTENCE",
+  followUpFrom: "ROTA-DIFFICULTY-04A-UI-IDENTITY-FIX",
+  driver: "tools/validation/route-runtime-harness.mjs drives the real useEscapeMaze",
+  ownership: {
+    duringPlay: "useEscapeMaze owns `difficulty` — authoritative, single copy",
+    betweenInstances:
+      "app/page.tsx `initialDifficulty`, set only by playAgain and cleared by openActivity",
+    transport:
+      "GameResult.details.difficulty, already written by endGame before this mission",
+    rootCause:
+      "the transport existed; playAgain read only details.nextRouteNumber from it",
+  },
+  remountMatrix,
+  restarts,
+  midRouteChanges,
+  freshEntries,
+  journeyEnd,
+  tests,
+  allPass,
+});
 console.log(`\n${allPass ? "DIFFICULTY_REMOUNT_PERSISTENCE_OK" : "DIFFICULTY_REMOUNT_PERSISTENCE_FAILED"}`);
-if (!allPass) process.exitCode = 1;
+process.exitCode = EVIDENCE.finish({ ok: allPass });

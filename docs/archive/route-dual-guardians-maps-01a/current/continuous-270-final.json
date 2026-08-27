@@ -1,0 +1,2542 @@
+{
+  "mission": "ROTA-DUAL-GUARDIANS-MAPS-01A-FINAL-ACCEPTANCE",
+  "regime": "one PRNG per stream, no reseed between maps",
+  "masterSeed": 20260808,
+  "streams": [
+    {
+      "route": 1,
+      "mode": "easy",
+      "masterSeed": 20260808,
+      "maps": 30,
+      "certified": 30,
+      "threw": 0,
+      "recoveryActivations": 0,
+      "entries": [
+        {
+          "index": 0,
+          "attempts": 12,
+          "randomAttempts": 12,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 1,
+          "attempts": 10,
+          "randomAttempts": 10,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 2,
+          "attempts": 3,
+          "randomAttempts": 3,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 3,
+          "attempts": 6,
+          "randomAttempts": 6,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 4,
+          "attempts": 9,
+          "randomAttempts": 9,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 5,
+          "attempts": 5,
+          "randomAttempts": 5,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 6,
+          "attempts": 3,
+          "randomAttempts": 3,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 7,
+          "attempts": 15,
+          "randomAttempts": 15,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 8,
+          "attempts": 15,
+          "randomAttempts": 15,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 9,
+          "attempts": 1,
+          "randomAttempts": 1,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 10,
+          "attempts": 4,
+          "randomAttempts": 4,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 11,
+          "attempts": 4,
+          "randomAttempts": 4,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 12,
+          "attempts": 4,
+          "randomAttempts": 4,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 13,
+          "attempts": 11,
+          "randomAttempts": 11,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 14,
+          "attempts": 6,
+          "randomAttempts": 6,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 15,
+          "attempts": 15,
+          "randomAttempts": 15,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 16,
+          "attempts": 12,
+          "randomAttempts": 12,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 17,
+          "attempts": 14,
+          "randomAttempts": 14,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 18,
+          "attempts": 11,
+          "randomAttempts": 11,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 19,
+          "attempts": 3,
+          "randomAttempts": 3,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 20,
+          "attempts": 3,
+          "randomAttempts": 3,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 21,
+          "attempts": 8,
+          "randomAttempts": 8,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 22,
+          "attempts": 5,
+          "randomAttempts": 5,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 23,
+          "attempts": 8,
+          "randomAttempts": 8,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 24,
+          "attempts": 4,
+          "randomAttempts": 4,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 25,
+          "attempts": 9,
+          "randomAttempts": 9,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 26,
+          "attempts": 1,
+          "randomAttempts": 1,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 27,
+          "attempts": 10,
+          "randomAttempts": 10,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 28,
+          "attempts": 1,
+          "randomAttempts": 1,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 29,
+          "attempts": 4,
+          "randomAttempts": 4,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        }
+      ]
+    },
+    {
+      "route": 1,
+      "mode": "medium",
+      "masterSeed": 20260808,
+      "maps": 30,
+      "certified": 30,
+      "threw": 0,
+      "recoveryActivations": 0,
+      "entries": [
+        {
+          "index": 0,
+          "attempts": 1,
+          "randomAttempts": 1,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 1,
+          "attempts": 1,
+          "randomAttempts": 1,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 2,
+          "attempts": 2,
+          "randomAttempts": 2,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 3,
+          "attempts": 2,
+          "randomAttempts": 2,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 4,
+          "attempts": 1,
+          "randomAttempts": 1,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 5,
+          "attempts": 1,
+          "randomAttempts": 1,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 6,
+          "attempts": 4,
+          "randomAttempts": 4,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 7,
+          "attempts": 2,
+          "randomAttempts": 2,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 8,
+          "attempts": 2,
+          "randomAttempts": 2,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 9,
+          "attempts": 1,
+          "randomAttempts": 1,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 10,
+          "attempts": 5,
+          "randomAttempts": 5,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 11,
+          "attempts": 1,
+          "randomAttempts": 1,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 12,
+          "attempts": 3,
+          "randomAttempts": 3,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 13,
+          "attempts": 1,
+          "randomAttempts": 1,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 14,
+          "attempts": 9,
+          "randomAttempts": 9,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 15,
+          "attempts": 7,
+          "randomAttempts": 7,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 16,
+          "attempts": 2,
+          "randomAttempts": 2,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 17,
+          "attempts": 6,
+          "randomAttempts": 6,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 18,
+          "attempts": 5,
+          "randomAttempts": 5,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 19,
+          "attempts": 2,
+          "randomAttempts": 2,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 20,
+          "attempts": 2,
+          "randomAttempts": 2,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 21,
+          "attempts": 3,
+          "randomAttempts": 3,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 22,
+          "attempts": 6,
+          "randomAttempts": 6,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 23,
+          "attempts": 5,
+          "randomAttempts": 5,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 24,
+          "attempts": 5,
+          "randomAttempts": 5,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 25,
+          "attempts": 6,
+          "randomAttempts": 6,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 26,
+          "attempts": 2,
+          "randomAttempts": 2,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 27,
+          "attempts": 3,
+          "randomAttempts": 3,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 28,
+          "attempts": 2,
+          "randomAttempts": 2,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 29,
+          "attempts": 6,
+          "randomAttempts": 6,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        }
+      ]
+    },
+    {
+      "route": 1,
+      "mode": "hard",
+      "masterSeed": 20260808,
+      "maps": 30,
+      "certified": 30,
+      "threw": 0,
+      "recoveryActivations": 0,
+      "entries": [
+        {
+          "index": 0,
+          "attempts": 1,
+          "randomAttempts": 1,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 1,
+          "attempts": 3,
+          "randomAttempts": 3,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 2,
+          "attempts": 2,
+          "randomAttempts": 2,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 3,
+          "attempts": 6,
+          "randomAttempts": 6,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 4,
+          "attempts": 10,
+          "randomAttempts": 10,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 5,
+          "attempts": 8,
+          "randomAttempts": 8,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 6,
+          "attempts": 6,
+          "randomAttempts": 6,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 7,
+          "attempts": 1,
+          "randomAttempts": 1,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 8,
+          "attempts": 6,
+          "randomAttempts": 6,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 9,
+          "attempts": 2,
+          "randomAttempts": 2,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 10,
+          "attempts": 1,
+          "randomAttempts": 1,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 11,
+          "attempts": 17,
+          "randomAttempts": 17,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 12,
+          "attempts": 1,
+          "randomAttempts": 1,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 13,
+          "attempts": 6,
+          "randomAttempts": 6,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 14,
+          "attempts": 1,
+          "randomAttempts": 1,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 15,
+          "attempts": 8,
+          "randomAttempts": 8,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 16,
+          "attempts": 3,
+          "randomAttempts": 3,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 17,
+          "attempts": 11,
+          "randomAttempts": 11,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 18,
+          "attempts": 1,
+          "randomAttempts": 1,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 19,
+          "attempts": 2,
+          "randomAttempts": 2,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 20,
+          "attempts": 3,
+          "randomAttempts": 3,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 21,
+          "attempts": 3,
+          "randomAttempts": 3,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 22,
+          "attempts": 1,
+          "randomAttempts": 1,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 23,
+          "attempts": 9,
+          "randomAttempts": 9,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 24,
+          "attempts": 4,
+          "randomAttempts": 4,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 25,
+          "attempts": 8,
+          "randomAttempts": 8,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 26,
+          "attempts": 3,
+          "randomAttempts": 3,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 27,
+          "attempts": 12,
+          "randomAttempts": 12,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 28,
+          "attempts": 8,
+          "randomAttempts": 8,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 29,
+          "attempts": 7,
+          "randomAttempts": 7,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        }
+      ]
+    },
+    {
+      "route": 2,
+      "mode": "easy",
+      "masterSeed": 20260808,
+      "maps": 30,
+      "certified": 30,
+      "threw": 0,
+      "recoveryActivations": 0,
+      "entries": [
+        {
+          "index": 0,
+          "attempts": 5,
+          "randomAttempts": 5,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 1,
+          "attempts": 1,
+          "randomAttempts": 1,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 2,
+          "attempts": 3,
+          "randomAttempts": 3,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 3,
+          "attempts": 4,
+          "randomAttempts": 4,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 4,
+          "attempts": 13,
+          "randomAttempts": 13,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 5,
+          "attempts": 6,
+          "randomAttempts": 6,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 6,
+          "attempts": 16,
+          "randomAttempts": 16,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 7,
+          "attempts": 34,
+          "randomAttempts": 34,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 8,
+          "attempts": 11,
+          "randomAttempts": 11,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 9,
+          "attempts": 3,
+          "randomAttempts": 3,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 10,
+          "attempts": 1,
+          "randomAttempts": 1,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 11,
+          "attempts": 7,
+          "randomAttempts": 7,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 12,
+          "attempts": 20,
+          "randomAttempts": 20,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 13,
+          "attempts": 11,
+          "randomAttempts": 11,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 14,
+          "attempts": 8,
+          "randomAttempts": 8,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 15,
+          "attempts": 13,
+          "randomAttempts": 13,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 16,
+          "attempts": 5,
+          "randomAttempts": 5,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 17,
+          "attempts": 3,
+          "randomAttempts": 3,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 18,
+          "attempts": 9,
+          "randomAttempts": 9,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 19,
+          "attempts": 9,
+          "randomAttempts": 9,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 20,
+          "attempts": 20,
+          "randomAttempts": 20,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 21,
+          "attempts": 3,
+          "randomAttempts": 3,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 22,
+          "attempts": 3,
+          "randomAttempts": 3,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 23,
+          "attempts": 12,
+          "randomAttempts": 12,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 24,
+          "attempts": 1,
+          "randomAttempts": 1,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 25,
+          "attempts": 5,
+          "randomAttempts": 5,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 26,
+          "attempts": 30,
+          "randomAttempts": 30,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 27,
+          "attempts": 17,
+          "randomAttempts": 17,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 28,
+          "attempts": 5,
+          "randomAttempts": 5,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 29,
+          "attempts": 5,
+          "randomAttempts": 5,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        }
+      ]
+    },
+    {
+      "route": 2,
+      "mode": "medium",
+      "masterSeed": 20260808,
+      "maps": 30,
+      "certified": 30,
+      "threw": 0,
+      "recoveryActivations": 0,
+      "entries": [
+        {
+          "index": 0,
+          "attempts": 3,
+          "randomAttempts": 3,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 1,
+          "attempts": 2,
+          "randomAttempts": 2,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 2,
+          "attempts": 11,
+          "randomAttempts": 11,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 3,
+          "attempts": 6,
+          "randomAttempts": 6,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 4,
+          "attempts": 3,
+          "randomAttempts": 3,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 5,
+          "attempts": 1,
+          "randomAttempts": 1,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 6,
+          "attempts": 1,
+          "randomAttempts": 1,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 7,
+          "attempts": 1,
+          "randomAttempts": 1,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 8,
+          "attempts": 4,
+          "randomAttempts": 4,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 9,
+          "attempts": 10,
+          "randomAttempts": 10,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 10,
+          "attempts": 2,
+          "randomAttempts": 2,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 11,
+          "attempts": 2,
+          "randomAttempts": 2,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 12,
+          "attempts": 1,
+          "randomAttempts": 1,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 13,
+          "attempts": 2,
+          "randomAttempts": 2,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 14,
+          "attempts": 3,
+          "randomAttempts": 3,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 15,
+          "attempts": 5,
+          "randomAttempts": 5,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 16,
+          "attempts": 2,
+          "randomAttempts": 2,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 17,
+          "attempts": 2,
+          "randomAttempts": 2,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 18,
+          "attempts": 2,
+          "randomAttempts": 2,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 19,
+          "attempts": 5,
+          "randomAttempts": 5,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 20,
+          "attempts": 3,
+          "randomAttempts": 3,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 21,
+          "attempts": 1,
+          "randomAttempts": 1,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 22,
+          "attempts": 1,
+          "randomAttempts": 1,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 23,
+          "attempts": 2,
+          "randomAttempts": 2,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 24,
+          "attempts": 3,
+          "randomAttempts": 3,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 25,
+          "attempts": 4,
+          "randomAttempts": 4,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 26,
+          "attempts": 9,
+          "randomAttempts": 9,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 27,
+          "attempts": 1,
+          "randomAttempts": 1,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 28,
+          "attempts": 12,
+          "randomAttempts": 12,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 29,
+          "attempts": 6,
+          "randomAttempts": 6,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        }
+      ]
+    },
+    {
+      "route": 2,
+      "mode": "hard",
+      "masterSeed": 20260808,
+      "maps": 30,
+      "certified": 30,
+      "threw": 0,
+      "recoveryActivations": 0,
+      "entries": [
+        {
+          "index": 0,
+          "attempts": 2,
+          "randomAttempts": 2,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 1,
+          "attempts": 8,
+          "randomAttempts": 8,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 2,
+          "attempts": 9,
+          "randomAttempts": 9,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 3,
+          "attempts": 1,
+          "randomAttempts": 1,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 4,
+          "attempts": 12,
+          "randomAttempts": 12,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 5,
+          "attempts": 1,
+          "randomAttempts": 1,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 6,
+          "attempts": 2,
+          "randomAttempts": 2,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 7,
+          "attempts": 4,
+          "randomAttempts": 4,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 8,
+          "attempts": 7,
+          "randomAttempts": 7,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 9,
+          "attempts": 6,
+          "randomAttempts": 6,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 10,
+          "attempts": 6,
+          "randomAttempts": 6,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 11,
+          "attempts": 3,
+          "randomAttempts": 3,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 12,
+          "attempts": 5,
+          "randomAttempts": 5,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 13,
+          "attempts": 1,
+          "randomAttempts": 1,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 14,
+          "attempts": 9,
+          "randomAttempts": 9,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 15,
+          "attempts": 3,
+          "randomAttempts": 3,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 16,
+          "attempts": 5,
+          "randomAttempts": 5,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 17,
+          "attempts": 4,
+          "randomAttempts": 4,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 18,
+          "attempts": 6,
+          "randomAttempts": 6,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 19,
+          "attempts": 3,
+          "randomAttempts": 3,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 20,
+          "attempts": 4,
+          "randomAttempts": 4,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 21,
+          "attempts": 4,
+          "randomAttempts": 4,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 22,
+          "attempts": 1,
+          "randomAttempts": 1,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 23,
+          "attempts": 25,
+          "randomAttempts": 25,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 24,
+          "attempts": 1,
+          "randomAttempts": 1,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 25,
+          "attempts": 3,
+          "randomAttempts": 3,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 26,
+          "attempts": 22,
+          "randomAttempts": 22,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 27,
+          "attempts": 7,
+          "randomAttempts": 7,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 28,
+          "attempts": 11,
+          "randomAttempts": 11,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 29,
+          "attempts": 4,
+          "randomAttempts": 4,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        }
+      ]
+    },
+    {
+      "route": 3,
+      "mode": "easy",
+      "masterSeed": 20260808,
+      "maps": 30,
+      "certified": 30,
+      "threw": 0,
+      "recoveryActivations": 0,
+      "entries": [
+        {
+          "index": 0,
+          "attempts": 114,
+          "randomAttempts": 114,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 1,
+          "attempts": 4,
+          "randomAttempts": 4,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 2,
+          "attempts": 13,
+          "randomAttempts": 13,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 3,
+          "attempts": 45,
+          "randomAttempts": 45,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 4,
+          "attempts": 11,
+          "randomAttempts": 11,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 5,
+          "attempts": 61,
+          "randomAttempts": 61,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 6,
+          "attempts": 21,
+          "randomAttempts": 21,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 7,
+          "attempts": 54,
+          "randomAttempts": 54,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 8,
+          "attempts": 39,
+          "randomAttempts": 39,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 9,
+          "attempts": 10,
+          "randomAttempts": 10,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 10,
+          "attempts": 18,
+          "randomAttempts": 18,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 11,
+          "attempts": 4,
+          "randomAttempts": 4,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 12,
+          "attempts": 6,
+          "randomAttempts": 6,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 13,
+          "attempts": 6,
+          "randomAttempts": 6,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 14,
+          "attempts": 19,
+          "randomAttempts": 19,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 15,
+          "attempts": 14,
+          "randomAttempts": 14,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 16,
+          "attempts": 22,
+          "randomAttempts": 22,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 17,
+          "attempts": 18,
+          "randomAttempts": 18,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 18,
+          "attempts": 6,
+          "randomAttempts": 6,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 19,
+          "attempts": 30,
+          "randomAttempts": 30,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 20,
+          "attempts": 31,
+          "randomAttempts": 31,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 21,
+          "attempts": 54,
+          "randomAttempts": 54,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 22,
+          "attempts": 36,
+          "randomAttempts": 36,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 23,
+          "attempts": 54,
+          "randomAttempts": 54,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 24,
+          "attempts": 4,
+          "randomAttempts": 4,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 25,
+          "attempts": 13,
+          "randomAttempts": 13,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 26,
+          "attempts": 41,
+          "randomAttempts": 41,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 27,
+          "attempts": 16,
+          "randomAttempts": 16,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 28,
+          "attempts": 11,
+          "randomAttempts": 11,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 29,
+          "attempts": 25,
+          "randomAttempts": 25,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        }
+      ]
+    },
+    {
+      "route": 3,
+      "mode": "medium",
+      "masterSeed": 20260808,
+      "maps": 30,
+      "certified": 30,
+      "threw": 0,
+      "recoveryActivations": 0,
+      "entries": [
+        {
+          "index": 0,
+          "attempts": 20,
+          "randomAttempts": 20,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 1,
+          "attempts": 3,
+          "randomAttempts": 3,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 2,
+          "attempts": 15,
+          "randomAttempts": 15,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 3,
+          "attempts": 12,
+          "randomAttempts": 12,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 4,
+          "attempts": 6,
+          "randomAttempts": 6,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 5,
+          "attempts": 1,
+          "randomAttempts": 1,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 6,
+          "attempts": 4,
+          "randomAttempts": 4,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 7,
+          "attempts": 55,
+          "randomAttempts": 55,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 8,
+          "attempts": 15,
+          "randomAttempts": 15,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 9,
+          "attempts": 5,
+          "randomAttempts": 5,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 10,
+          "attempts": 11,
+          "randomAttempts": 11,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 11,
+          "attempts": 19,
+          "randomAttempts": 19,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 12,
+          "attempts": 40,
+          "randomAttempts": 40,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 13,
+          "attempts": 1,
+          "randomAttempts": 1,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 14,
+          "attempts": 39,
+          "randomAttempts": 39,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 15,
+          "attempts": 7,
+          "randomAttempts": 7,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 16,
+          "attempts": 12,
+          "randomAttempts": 12,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 17,
+          "attempts": 16,
+          "randomAttempts": 16,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 18,
+          "attempts": 2,
+          "randomAttempts": 2,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 19,
+          "attempts": 45,
+          "randomAttempts": 45,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 20,
+          "attempts": 26,
+          "randomAttempts": 26,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 21,
+          "attempts": 34,
+          "randomAttempts": 34,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 22,
+          "attempts": 20,
+          "randomAttempts": 20,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 23,
+          "attempts": 23,
+          "randomAttempts": 23,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 24,
+          "attempts": 4,
+          "randomAttempts": 4,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 25,
+          "attempts": 3,
+          "randomAttempts": 3,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 26,
+          "attempts": 20,
+          "randomAttempts": 20,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 27,
+          "attempts": 2,
+          "randomAttempts": 2,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 28,
+          "attempts": 17,
+          "randomAttempts": 17,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 29,
+          "attempts": 25,
+          "randomAttempts": 25,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        }
+      ]
+    },
+    {
+      "route": 3,
+      "mode": "hard",
+      "masterSeed": 20260808,
+      "maps": 30,
+      "certified": 30,
+      "threw": 0,
+      "recoveryActivations": 0,
+      "entries": [
+        {
+          "index": 0,
+          "attempts": 6,
+          "randomAttempts": 6,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 1,
+          "attempts": 11,
+          "randomAttempts": 11,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 2,
+          "attempts": 1,
+          "randomAttempts": 1,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 3,
+          "attempts": 2,
+          "randomAttempts": 2,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 4,
+          "attempts": 25,
+          "randomAttempts": 25,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 5,
+          "attempts": 1,
+          "randomAttempts": 1,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 6,
+          "attempts": 15,
+          "randomAttempts": 15,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 7,
+          "attempts": 8,
+          "randomAttempts": 8,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 8,
+          "attempts": 4,
+          "randomAttempts": 4,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 9,
+          "attempts": 13,
+          "randomAttempts": 13,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 10,
+          "attempts": 2,
+          "randomAttempts": 2,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 11,
+          "attempts": 5,
+          "randomAttempts": 5,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 12,
+          "attempts": 2,
+          "randomAttempts": 2,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 13,
+          "attempts": 10,
+          "randomAttempts": 10,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 14,
+          "attempts": 33,
+          "randomAttempts": 33,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 15,
+          "attempts": 10,
+          "randomAttempts": 10,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 16,
+          "attempts": 1,
+          "randomAttempts": 1,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 17,
+          "attempts": 3,
+          "randomAttempts": 3,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 18,
+          "attempts": 9,
+          "randomAttempts": 9,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 19,
+          "attempts": 3,
+          "randomAttempts": 3,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 20,
+          "attempts": 24,
+          "randomAttempts": 24,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 21,
+          "attempts": 3,
+          "randomAttempts": 3,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 22,
+          "attempts": 45,
+          "randomAttempts": 45,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 23,
+          "attempts": 30,
+          "randomAttempts": 30,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 24,
+          "attempts": 8,
+          "randomAttempts": 8,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 25,
+          "attempts": 17,
+          "randomAttempts": 17,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 26,
+          "attempts": 3,
+          "randomAttempts": 3,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 27,
+          "attempts": 8,
+          "randomAttempts": 8,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 28,
+          "attempts": 31,
+          "randomAttempts": 31,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 29,
+          "attempts": 69,
+          "randomAttempts": 69,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        }
+      ]
+    }
+  ],
+  "totals": {
+    "generated": 270,
+    "certified": 270,
+    "threw": 0,
+    "recoveryActivations": 0
+  }
+}

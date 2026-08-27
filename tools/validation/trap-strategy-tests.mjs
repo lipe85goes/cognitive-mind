@@ -8,17 +8,15 @@
  * Everything here drives the production functions the hook calls, which is
  * where the rules actually live.
  *
- * Usage: node tools/validation/trap-strategy-tests.mjs
+ * Usage: node tools/validation/trap-strategy-tests.mjs [--check|--update]
  */
-import fs from "node:fs";
-import path from "node:path";
 import { loadInstrumented } from "./instrumented-generator.mjs";
 import { key, eq, neighbors, bfs } from "./route-lab.mjs";
+import { openEvidence } from "./evidence.mjs";
 
-const OUT = path.resolve(
+const EVIDENCE = openEvidence(
   process.env.ROUTE_VALIDATION_OUT ?? "docs/archive/route-traps-strategy-01",
 );
-fs.mkdirSync(OUT, { recursive: true });
 const LAB = loadInstrumented({ bare: true });
 const API = LAB.API;
 const report = { mission: "ROTA-TRAPS-STRATEGY-01" };
@@ -270,7 +268,7 @@ for (const stage of [1, 2, 3]) {
 console.log(`  estados comparados: ${compared} · divergências Caçador: ${hunterDiffs} · Sentinela: ${sentinelDiffs}`);
 
 const allPass = tests.every((t) => t.pass) && hunterDiffs === 0 && sentinelDiffs === 0;
-fs.writeFileSync(path.join(OUT, "trap-controlled-tests.json"), JSON.stringify({
+EVIDENCE.write("trap-controlled-tests.json", {
   ...report,
   contract: [
     "dormant: walkable by Explorer, Hunter and Sentinel",
@@ -282,5 +280,7 @@ fs.writeFileSync(path.join(OUT, "trap-controlled-tests.json"), JSON.stringify({
   tests,
   emptySetRegression: { statesCompared: compared, hunterDivergences: hunterDiffs, sentinelDivergences: sentinelDiffs },
   allPass,
-}, null, 2));
+});
 console.log(`\n${allPass ? "TRAP_CONTRACT_OK" : "TRAP_CONTRACT_FAILED"}`);
+// This script previously ended here, so a failing trap contract still exited 0.
+process.exitCode = EVIDENCE.finish({ ok: allPass });

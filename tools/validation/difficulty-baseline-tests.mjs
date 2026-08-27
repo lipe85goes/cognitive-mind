@@ -1,10 +1,10 @@
 /**
  * Focused deterministic contracts for ROTA-DIFFICULTY-04-BASELINE.
+ *
+ * Usage: node tools/validation/difficulty-baseline-tests.mjs [--check|--update]
  */
-import fs from "node:fs";
-import path from "node:path";
-
 import { runDifficultyBaseline } from "./difficulty-baseline-run.mjs";
+import { openEvidence } from "./evidence.mjs";
 
 const failures = [];
 const assert = (condition, code, detail = null) => {
@@ -118,15 +118,11 @@ const report = {
   failures,
   gateMet: failures.length === 0,
 };
-const out = path.resolve(
+const EVIDENCE = openEvidence(
   process.env.ROUTE_VALIDATION_OUT ??
     "docs/archive/route-difficulty-04-baseline",
 );
-fs.mkdirSync(out, { recursive: true });
-fs.writeFileSync(
-  path.join(out, "difficulty-baseline-tests.json"),
-  JSON.stringify(report, null, 2),
-);
+EVIDENCE.write("difficulty-baseline-tests.json", report);
 console.log(JSON.stringify(report, null, 2));
 console.log(report.gateMet ? "DIFFICULTY_BASELINE_TESTS_OK" : "DIFFICULTY_BASELINE_TESTS_FAILED");
-if (!report.gateMet) process.exitCode = 1;
+process.exitCode = EVIDENCE.finish({ ok: report.gateMet });

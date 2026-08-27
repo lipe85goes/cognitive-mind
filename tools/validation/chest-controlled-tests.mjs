@@ -5,17 +5,15 @@
  * what passes here is the code that ships, including the turn order that makes
  * the reward choice safe.
  *
- * Usage: node tools/validation/chest-controlled-tests.mjs
+ * Usage: node tools/validation/chest-controlled-tests.mjs [--check|--update]
  */
-import fs from "node:fs";
-import path from "node:path";
 import { loadRouteRuntime, cellKey, sameCell } from "./route-runtime-harness.mjs";
+import { openEvidence } from "./evidence.mjs";
 
-const OUT = path.resolve(
+const EVIDENCE = openEvidence(
   process.env.ROUTE_VALIDATION_OUTPUT_DIR ??
     "docs/archive/route-chest-rewards-01",
 );
-fs.mkdirSync(OUT, { recursive: true });
 
 const RT = loadRouteRuntime();
 const tests = [];
@@ -390,28 +388,21 @@ if (fixtures.length !== COMBOS.length) {
 }
 
 const allPass = tests.every((t) => t.pass);
-fs.writeFileSync(
-  path.join(OUT, "chest-controlled-tests.json"),
-  JSON.stringify(
-    {
-      mission: "ROTA-CHEST-REWARDS-01",
-      suite: "CHEST",
-      driver:
-        "tools/validation/route-runtime-harness.mjs drives the real useEscapeMaze hook",
-      contract: [
-        "the Chest is closed until the Explorer enters its cell",
-        "entering opens it and PAUSES the turn: no defender acts while the choice is open",
-        "choosing is not a turn of its own; the same turn resumes with Hunter then Sentinel",
-        "exactly one reward is ever held; choosing one removes the other for that route",
-        "an opened Chest never opens again",
-        "restart and the next route restore the closed Chest and drop the reward",
-      ],
-      tests,
-      allPass,
-    },
-    null,
-    2,
-  ),
-);
+EVIDENCE.write("chest-controlled-tests.json", {
+  mission: "ROTA-CHEST-REWARDS-01",
+  suite: "CHEST",
+  driver:
+    "tools/validation/route-runtime-harness.mjs drives the real useEscapeMaze hook",
+  contract: [
+    "the Chest is closed until the Explorer enters its cell",
+    "entering opens it and PAUSES the turn: no defender acts while the choice is open",
+    "choosing is not a turn of its own; the same turn resumes with Hunter then Sentinel",
+    "exactly one reward is ever held; choosing one removes the other for that route",
+    "an opened Chest never opens again",
+    "restart and the next route restore the closed Chest and drop the reward",
+  ],
+  tests,
+  allPass,
+});
 console.log(`\n${allPass ? "CHEST_CONTRACT_OK" : "CHEST_CONTRACT_FAILED"}`);
-if (!allPass) process.exitCode = 1;
+process.exitCode = EVIDENCE.finish({ ok: allPass });

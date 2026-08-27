@@ -10,9 +10,10 @@ import fs from "node:fs";
 import path from "node:path";
 import vm from "node:vm";
 import ts from "typescript";
+import { openEvidence } from "./evidence.mjs";
 
 const ROOT = process.cwd();
-const OUT = path.resolve("docs/archive/mindflow-production-boundary-02");
+const EVIDENCE = openEvidence("docs/archive/mindflow-production-boundary-02");
 const mode = readArg("mode") ?? "source";
 const baseUrl = readArg("base-url")?.replace(/\/$/, "") ?? null;
 
@@ -22,8 +23,6 @@ if (!["source", "development", "production"].includes(mode)) {
 if (mode !== "source" && !baseUrl) {
   throw new Error(`--base-url is required for ${mode} mode.`);
 }
-
-fs.mkdirSync(OUT, { recursive: true });
 
 const checks = [];
 function check(id, pass, detail) {
@@ -194,15 +193,15 @@ const evidence = {
   checks,
   allPass,
 };
-fs.writeFileSync(
-  path.join(OUT, `boundary-${mode}.json`),
-  `${JSON.stringify(evidence, null, 2)}\n`,
-);
+// `generatedAt` is when the run happened, not what it concluded: it is the only
+// field that moved between identical verdicts, and it is what made this file
+// dirty the worktree on every run.
+EVIDENCE.write(`boundary-${mode}.json`, evidence, { metadata: ["generatedAt"] });
 
 console.log(
   `\n${allPass ? "PRODUCTION_DIAGNOSTIC_BOUNDARY_TESTS_OK" : "PRODUCTION_DIAGNOSTIC_BOUNDARY_TESTS_FAILED"}`,
 );
-if (!allPass) process.exitCode = 1;
+process.exitCode = EVIDENCE.finish({ ok: allPass });
 
 function readArg(name) {
   const prefix = `--${name}=`;

@@ -5,19 +5,17 @@
  * names, with a strict Babylon double that records any action taken on a scene
  * or engine whose ownership has already ended.
  *
- * Usage: node tools/validation/babylon-lifecycle-tests.mjs
+ * Usage: node tools/validation/babylon-lifecycle-tests.mjs [--check|--update]
  */
-import fs from "node:fs";
-import path from "node:path";
 import {
   loadSceneModule,
   createBabylonDouble,
   createCanvasDouble,
   createStateDouble,
 } from "./babylon-lifecycle-harness.mjs";
+import { openEvidence } from "./evidence.mjs";
 
-const OUT = path.resolve("docs/archive/route-babylon-lifecycle-07-async-dispose");
-fs.mkdirSync(OUT, { recursive: true });
+const EVIDENCE = openEvidence("docs/archive/route-babylon-lifecycle-07-async-dispose");
 
 const sceneModule = loadSceneModule();
 
@@ -426,24 +424,17 @@ function mountController(stateOverrides) {
 await flush(20);
 
 const allPass = tests.every((t) => t.pass) && unhandled.length === 0;
-fs.writeFileSync(
-  path.join(OUT, "babylon-lifecycle.json"),
-  JSON.stringify(
-    {
-      mission: "ROTA-BABYLON-LIFECYCLE-07-ASYNC-DISPOSE",
-      harness:
-        "tools/validation/babylon-lifecycle-harness.mjs — strict Babylon double; any action on a scene/engine whose ownership ended is a violation",
-      driver: "the real createRouteBabylonController, compiled from source",
-      tests,
-      unhandledRejections: unhandled,
-      allPass,
-    },
-    null,
-    2,
-  ),
-);
+EVIDENCE.write("babylon-lifecycle.json", {
+  mission: "ROTA-BABYLON-LIFECYCLE-07-ASYNC-DISPOSE",
+  harness:
+    "tools/validation/babylon-lifecycle-harness.mjs — strict Babylon double; any action on a scene/engine whose ownership ended is a violation",
+  driver: "the real createRouteBabylonController, compiled from source",
+  tests,
+  unhandledRejections: unhandled,
+  allPass,
+});
 console.log(
   `\nunhandled rejections: ${unhandled.length}${unhandled.length ? ` -> ${unhandled.slice(0, 3).join(" | ")}` : ""}`,
 );
 console.log(`${allPass ? "BABYLON_LIFECYCLE_OK" : "BABYLON_LIFECYCLE_FAILED"}`);
-if (!allPass) process.exitCode = 1;
+process.exitCode = EVIDENCE.finish({ ok: allPass });

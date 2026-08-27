@@ -14,10 +14,8 @@
  *     opening, traps and breaks coexisting, victory, defeat and reset. The bar
  *     is correctness and no crash, never a win rate.
  *
- * Usage: node tools/validation/chest-runtime-gameplay.mjs
+ * Usage: node tools/validation/chest-runtime-gameplay.mjs [--check|--update]
  */
-import fs from "node:fs";
-import path from "node:path";
 import {
   loadRouteRuntime,
   sameCell,
@@ -25,11 +23,11 @@ import {
   walkableNeighbours,
 } from "./route-runtime-harness.mjs";
 import { auditBreakableWalls } from "./breakable-wall-certifier.mjs";
+import { openEvidence } from "./evidence.mjs";
 
-const OUT = path.resolve(
+const EVIDENCE = openEvidence(
   process.env.ROUTE_VALIDATION_OUT ?? "docs/archive/route-chest-rewards-01",
 );
-fs.mkdirSync(OUT, { recursive: true });
 
 const RT = loadRouteRuntime();
 const API = RT.API;
@@ -600,21 +598,14 @@ record(
 );
 
 const allPass = checks.every((c) => c.pass);
-fs.writeFileSync(
-  path.join(OUT, "chest-runtime-gameplay.json"),
-  JSON.stringify(
-    {
-      mission: "ROTA-CHEST-REWARDS-01",
-      suite: "REGRESSION_AND_GAMEPLAY",
-      note:
-        "correctness only — win and loss counts are coverage, never a balance verdict (§47)",
-      checks,
-      scenarios,
-      allPass,
-    },
-    null,
-    2,
-  ),
-);
+EVIDENCE.write("chest-runtime-gameplay.json", {
+  mission: "ROTA-CHEST-REWARDS-01",
+  suite: "REGRESSION_AND_GAMEPLAY",
+  note:
+    "correctness only — win and loss counts are coverage, never a balance verdict (§47)",
+  checks,
+  scenarios,
+  allPass,
+});
 console.log(`\n${allPass ? "RUNTIME_GAMEPLAY_OK" : "RUNTIME_GAMEPLAY_FAILED"}`);
-if (!allPass) process.exitCode = 1;
+process.exitCode = EVIDENCE.finish({ ok: allPass });

@@ -7,10 +7,8 @@
  *   the Explorer walks into a defender  -> the Explorer's step is undone
  *   a defender walks into the Explorer  -> both defenders return to their cells
  *
- * Usage: node tools/validation/second-chance-controlled-tests.mjs
+ * Usage: node tools/validation/second-chance-controlled-tests.mjs [--check|--update]
  */
-import fs from "node:fs";
-import path from "node:path";
 import {
   loadRouteRuntime,
   cellKey,
@@ -18,11 +16,11 @@ import {
   pathBetween,
   walkableNeighbours,
 } from "./route-runtime-harness.mjs";
+import { openEvidence } from "./evidence.mjs";
 
-const OUT = path.resolve(
+const EVIDENCE = openEvidence(
   process.env.ROUTE_VALIDATION_OUT ?? "docs/archive/route-chest-rewards-01",
 );
-fs.mkdirSync(OUT, { recursive: true });
 
 const RT = loadRouteRuntime();
 const tests = [];
@@ -375,38 +373,31 @@ const saves = [];
 }
 
 const allPass = tests.every((t) => t.pass);
-fs.writeFileSync(
-  path.join(OUT, "second-chance-controlled-tests.json"),
-  JSON.stringify(
-    {
-      mission: "ROTA-CHEST-REWARDS-01",
-      suite: "SECOND_CHANCE",
-      driver:
-        "tools/validation/route-runtime-harness.mjs drives the real useEscapeMaze hook",
-      resolution:
-        "the move that produced the overlap is undone; when a defender was the one that moved in, BOTH defenders return to the cells they held at the start of the turn, and the turn ends there",
-      contract: [
-        "one charge",
-        "works against the Hunter and against the Sentinel",
-        "the first valid capture consumes the charge and does not end the route",
-        "the second capture defeats normally",
-        "the turn is still counted; the Explorer never gains a second action",
-        "no two pieces ever share a cell after an activation",
-        "same state, same capture, same resolution",
-      ],
-      occupancyContract: {
-        id: "DEFENDER_CO_OCCUPANCY_FORBIDDEN",
-        detail:
-          "Hunter destinations exclude the Sentinel's current cell; Sentinel settlement excludes the Hunter's destination.",
-        measuredBy:
-          "ROTA-DYNAMIC-SOLVABILITY-02 broad campaign and this Second Chance regression",
-      },
-      tests,
-      allPass,
-    },
-    null,
-    2,
-  ),
-);
+EVIDENCE.write("second-chance-controlled-tests.json", {
+  mission: "ROTA-CHEST-REWARDS-01",
+  suite: "SECOND_CHANCE",
+  driver:
+    "tools/validation/route-runtime-harness.mjs drives the real useEscapeMaze hook",
+  resolution:
+    "the move that produced the overlap is undone; when a defender was the one that moved in, BOTH defenders return to the cells they held at the start of the turn, and the turn ends there",
+  contract: [
+    "one charge",
+    "works against the Hunter and against the Sentinel",
+    "the first valid capture consumes the charge and does not end the route",
+    "the second capture defeats normally",
+    "the turn is still counted; the Explorer never gains a second action",
+    "no two pieces ever share a cell after an activation",
+    "same state, same capture, same resolution",
+  ],
+  occupancyContract: {
+    id: "DEFENDER_CO_OCCUPANCY_FORBIDDEN",
+    detail:
+      "Hunter destinations exclude the Sentinel's current cell; Sentinel settlement excludes the Hunter's destination.",
+    measuredBy:
+      "ROTA-DYNAMIC-SOLVABILITY-02 broad campaign and this Second Chance regression",
+  },
+  tests,
+  allPass,
+});
 console.log(`\n${allPass ? "SECOND_CHANCE_CONTRACT_OK" : "SECOND_CHANCE_CONTRACT_FAILED"}`);
-if (!allPass) process.exitCode = 1;
+process.exitCode = EVIDENCE.finish({ ok: allPass });

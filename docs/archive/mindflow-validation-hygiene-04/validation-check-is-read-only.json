@@ -1,0 +1,176 @@
+{
+  "mission": "MINDFLOW-VALIDATION-HYGIENE-04",
+  "claim": "Running the CORE validators normally modifies nothing. Proven by content hash AND mtime, so a write-then-restore would still fail this test.",
+  "method": "hash+mtime snapshot of every file under docs/archive, run each CORE validator as a subprocess in its default (check) mode, re-snapshot, and compare git status --porcelain before and after",
+  "coverage": "FULL",
+  "evidenceFilesWatched": 778,
+  "worktreeStatus": {
+    "before": " M docs/archive/route-chest-rewards-01/chest-controlled-tests.json\n M docs/archive/route-chest-rewards-01/chest-runtime-gameplay.json\n M docs/archive/route-chest-rewards-01/chest-static-render-audit.json\n M docs/archive/route-chest-rewards-01/pickaxe-controlled-tests.json\n M docs/archive/route-chest-rewards-01/second-chance-controlled-tests.json\n M docs/archive/route-difficulty-04-baseline/difficulty-baseline-tests.json\n M docs/archive/route-difficulty-04a-ui-identity-fix/route-difficulty-identity.json\n M docs/archive/route-difficulty-04c-diagnostic-launcher/diagnostic-launcher.json\n M docs/archive/route-traps-strategy-01/trap-controlled-tests.json\n M tools/validation/babylon-lifecycle-tests.mjs\n M tools/validation/chest-controlled-tests.mjs\n M tools/validation/chest-runtime-gameplay.mjs\n M tools/validation/chest-static-render-audit.mjs\n M tools/validation/diagnostic-launcher-tests.mjs\n M tools/validation/difficulty-baseline-tests.mjs\n M tools/validation/difficulty-rebalance-tests.mjs\n M tools/validation/difficulty-remount-persistence-tests.mjs\n M tools/validation/final-acceptance.mjs\n M tools/validation/instrumented-generator.mjs\n M tools/validation/pickaxe-controlled-tests.mjs\n M tools/validation/production-diagnostic-boundary-tests.mjs\n M tools/validation/route-difficulty-identity-tests.mjs\n M tools/validation/route-visual-state-tests.mjs\n M tools/validation/second-chance-controlled-tests.mjs\n M tools/validation/trap-strategy-tests.mjs\n?? docs/archive/mindflow-validation-hygiene-04/\n?? docs/archive/route-dual-guardians-maps-01a/README-current.md\n?? docs/archive/route-dual-guardians-maps-01a/current/\n?? tools/validation/README.md\n?? tools/validation/evidence.mjs\n?? tools/validation/validation-hygiene-tests.mjs\n",
+    "after": " M docs/archive/route-chest-rewards-01/chest-controlled-tests.json\n M docs/archive/route-chest-rewards-01/chest-runtime-gameplay.json\n M docs/archive/route-chest-rewards-01/chest-static-render-audit.json\n M docs/archive/route-chest-rewards-01/pickaxe-controlled-tests.json\n M docs/archive/route-chest-rewards-01/second-chance-controlled-tests.json\n M docs/archive/route-difficulty-04-baseline/difficulty-baseline-tests.json\n M docs/archive/route-difficulty-04a-ui-identity-fix/route-difficulty-identity.json\n M docs/archive/route-difficulty-04c-diagnostic-launcher/diagnostic-launcher.json\n M docs/archive/route-traps-strategy-01/trap-controlled-tests.json\n M tools/validation/babylon-lifecycle-tests.mjs\n M tools/validation/chest-controlled-tests.mjs\n M tools/validation/chest-runtime-gameplay.mjs\n M tools/validation/chest-static-render-audit.mjs\n M tools/validation/diagnostic-launcher-tests.mjs\n M tools/validation/difficulty-baseline-tests.mjs\n M tools/validation/difficulty-rebalance-tests.mjs\n M tools/validation/difficulty-remount-persistence-tests.mjs\n M tools/validation/final-acceptance.mjs\n M tools/validation/instrumented-generator.mjs\n M tools/validation/pickaxe-controlled-tests.mjs\n M tools/validation/production-diagnostic-boundary-tests.mjs\n M tools/validation/route-difficulty-identity-tests.mjs\n M tools/validation/route-visual-state-tests.mjs\n M tools/validation/second-chance-controlled-tests.mjs\n M tools/validation/trap-strategy-tests.mjs\n?? docs/archive/mindflow-validation-hygiene-04/\n?? docs/archive/route-dual-guardians-maps-01a/README-current.md\n?? docs/archive/route-dual-guardians-maps-01a/current/\n?? tools/validation/README.md\n?? tools/validation/evidence.mjs\n?? tools/validation/validation-hygiene-tests.mjs\n"
+  },
+  "runs": [
+    {
+      "script": "route-visual-state-tests.mjs",
+      "exitCode": 0,
+      "ok": true
+    },
+    {
+      "script": "chest-static-render-audit.mjs",
+      "exitCode": 0,
+      "ok": true
+    },
+    {
+      "script": "babylon-lifecycle-tests.mjs",
+      "exitCode": 0,
+      "ok": true
+    },
+    {
+      "script": "production-diagnostic-boundary-tests.mjs",
+      "exitCode": 0,
+      "ok": true
+    },
+    {
+      "script": "trap-strategy-tests.mjs",
+      "exitCode": 0,
+      "ok": true
+    },
+    {
+      "script": "chest-controlled-tests.mjs",
+      "exitCode": 0,
+      "ok": true
+    },
+    {
+      "script": "diagnostic-launcher-tests.mjs",
+      "exitCode": 0,
+      "ok": true
+    },
+    {
+      "script": "difficulty-remount-persistence-tests.mjs",
+      "exitCode": 0,
+      "ok": true
+    },
+    {
+      "script": "second-chance-controlled-tests.mjs",
+      "exitCode": 0,
+      "ok": true
+    },
+    {
+      "script": "chest-runtime-gameplay.mjs",
+      "exitCode": 0,
+      "ok": true
+    },
+    {
+      "script": "difficulty-rebalance-tests.mjs",
+      "exitCode": 0,
+      "ok": true
+    },
+    {
+      "script": "difficulty-baseline-tests.mjs",
+      "exitCode": 0,
+      "ok": true
+    },
+    {
+      "script": "pickaxe-controlled-tests.mjs",
+      "exitCode": 0,
+      "ok": true
+    },
+    {
+      "script": "route-difficulty-identity-tests.mjs",
+      "exitCode": 0,
+      "ok": true
+    }
+  ],
+  "timings": [
+    {
+      "script": "route-visual-state-tests.mjs",
+      "seconds": 0.1
+    },
+    {
+      "script": "chest-static-render-audit.mjs",
+      "seconds": 0.1
+    },
+    {
+      "script": "babylon-lifecycle-tests.mjs",
+      "seconds": 0.7
+    },
+    {
+      "script": "production-diagnostic-boundary-tests.mjs",
+      "seconds": 0.5
+    },
+    {
+      "script": "trap-strategy-tests.mjs",
+      "seconds": 5.2
+    },
+    {
+      "script": "chest-controlled-tests.mjs",
+      "seconds": 13.5
+    },
+    {
+      "script": "diagnostic-launcher-tests.mjs",
+      "seconds": 14.6
+    },
+    {
+      "script": "difficulty-remount-persistence-tests.mjs",
+      "seconds": 25
+    },
+    {
+      "script": "second-chance-controlled-tests.mjs",
+      "seconds": 25.8
+    },
+    {
+      "script": "chest-runtime-gameplay.mjs",
+      "seconds": 52.9
+    },
+    {
+      "script": "difficulty-rebalance-tests.mjs",
+      "seconds": 59.3
+    },
+    {
+      "script": "difficulty-baseline-tests.mjs",
+      "seconds": 56.2
+    },
+    {
+      "script": "pickaxe-controlled-tests.mjs",
+      "seconds": 102
+    },
+    {
+      "script": "route-difficulty-identity-tests.mjs",
+      "seconds": 297.9
+    }
+  ],
+  "checks": [
+    {
+      "id": "NO_EVIDENCE_CONTENT_CHANGED",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "id": "NO_EVIDENCE_FILE_TOUCHED",
+      "pass": true,
+      "detail": []
+    },
+    {
+      "id": "NO_EVIDENCE_FILE_CREATED_OR_DELETED",
+      "pass": true,
+      "detail": {
+        "created": [],
+        "deleted": []
+      }
+    },
+    {
+      "id": "GIT_STATUS_UNCHANGED",
+      "pass": true,
+      "detail": {
+        "identical": true
+      }
+    },
+    {
+      "id": "EVERY_CORE_VALIDATOR_PASSED_IN_CHECK_MODE",
+      "pass": true,
+      "detail": []
+    }
+  ],
+  "readOnly": true,
+  "coreBatteryPassed": true,
+  "allPass": true
+}

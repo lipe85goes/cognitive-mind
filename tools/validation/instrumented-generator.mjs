@@ -46,6 +46,44 @@ export const __diag = {
 };
 `;
 
+/**
+ * MINDFLOW-VALIDATION-HYGIENE-04 — the seam that makes source instrumentation
+ * line-ending independent.
+ *
+ * `instrument()` and every caller-supplied `transform` anchor on newline-shaped
+ * literals ("  return (\n", "\n  );", "\r\n"-free regexes). The repository is
+ * checked out with `core.autocrlf=true` and has no `.gitattributes`, so the git
+ * blob is LF while the working copy is CRLF — and whether a given file is LF or
+ * CRLF on disk depends on whether git last touched it. That made every textual
+ * anchor depend on checkout history rather than on the code, and it is what
+ * broke `final-acceptance` (the LF anchor "  return (\n" simply stopped
+ * matching, with no change to `isValidMap` itself).
+ *
+ * Normalising once, here, is deliberately preferred over widening each anchor to
+ * `\r?\n`: there is one read of production source, so there is one place to make
+ * every present and future anchor stable. Nothing is written to disk, and the
+ * text TypeScript compiles is semantically identical — line terminators are not
+ * part of the program.
+ */
+export const normalizeSource = (text) => text.replace(/\r\n/g, "\n");
+
+function readProductionSource(file) {
+  return normalizeSource(fs.readFileSync(file, "utf8"));
+}
+
+/**
+ * The exact production text `transform` will receive.
+ *
+ * A caller that builds an anchor by reading `useEscapeMaze.ts` itself gets
+ * whatever line endings the checkout happens to have, and its `replace` then
+ * silently matches nothing — the transform becomes a no-op and the harness
+ * measures unmodified production while believing it measured a counterfactual.
+ * Anchors must come from here so both sides are the same text.
+ */
+export function productionSource() {
+  return readProductionSource(HOOK);
+}
+
 function instrument(source) {
   const svStart = source.indexOf("function isStructurallyValid(");
   const svEnd = source.indexOf("function isValidMap(");
@@ -146,7 +184,7 @@ const compile = (src) =>
  * candidate. The file on disk is never written to.
  */
 export function loadInstrumented({ transform, bare = false, react } = {}) {
-  const raw = fs.readFileSync(HOOK, "utf8");
+  const raw = readProductionSource(HOOK);
   const base = transform ? transform(raw) : raw;
   // `bare` skips the diagnostics entirely and only appends the export surface.
   // Timing must be measured on the real control flow: the named-checks rewrite

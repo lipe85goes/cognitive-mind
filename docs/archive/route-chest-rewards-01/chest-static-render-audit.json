@@ -60,17 +60,10 @@
       "note": "chest ember and fissures are material + emissive + the existing GlowLayer"
     },
     {
-      "id": "BOTH_RENDERERS_CARRY_EVERY_STATE",
+      "id": "OFFICIAL_RENDERER_CARRIES_EVERY_STATE",
       "pass": true,
+      "renderer": "RouteBabylonBoard",
       "babylon": {
-        "chestClosed": true,
-        "chestOpened": true,
-        "breakTargetContextual": true,
-        "breakAim": true,
-        "brokenWall": true,
-        "stateFields": true
-      },
-      "fallback": {
         "chestClosed": true,
         "chestOpened": true,
         "breakTargetContextual": true,
@@ -98,9 +91,7 @@
       "pass": true,
       "babylonFissureRenderer": false,
       "babylonWeakWallMaterial": false,
-      "fallbackFissures": false,
       "babylonWallMaterialBranches": false,
-      "fallbackWallColourBranches": false,
       "targetsInStaticSignature": false,
       "contextualTargetsLiveOnTheDynamicBoard": true,
       "targetRingColour": "#c9903f",
@@ -120,8 +111,6 @@
       "pass": true,
       "babylonScene": false,
       "babylonBoard": false,
-      "fallbackScene": false,
-      "fallbackTile": false,
       "hook": false,
       "gameShieldWording": false,
       "detailLabels": false,
@@ -136,17 +125,14 @@
       "id": "CHEST_STAYS_VISIBLY_SPENT",
       "pass": true,
       "babylonDrawsWhenOpened": true,
-      "fallbackDrawsWhenOpened": true,
       "note": "§26 — an opened chest stays on the board, lid back and ember out"
     },
     {
       "id": "NO_STRATEGY_IN_RENDER_LAYER",
       "pass": true,
       "babylonDecidesBreakable": false,
-      "fallbackDecidesBreakable": false,
       "babylonMutatesWalls": false,
-      "fallbackMutatesWalls": false,
-      "note": "renderers receive breakableWallKeys / brokenWallKey and draw them; they never decide them"
+      "note": "the renderer receives breakableWallKeys / brokenWallKey and draws them; it never decides them"
     }
   ],
   "allPass": true

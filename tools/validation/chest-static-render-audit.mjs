@@ -6,14 +6,14 @@
  * otherwise have to prove: three lights and no more, every Chest/Pickaxe state
  * represented, and no trace of the old shield in the active render path.
  *
- * Usage: node tools/validation/chest-static-render-audit.mjs
+ * Usage: node tools/validation/chest-static-render-audit.mjs [--check|--update]
  */
 import fs from "node:fs";
 import path from "node:path";
+import { openEvidence } from "./evidence.mjs";
 
 const ROOT = process.cwd();
-const OUT = path.resolve("docs/archive/route-chest-rewards-01");
-fs.mkdirSync(OUT, { recursive: true });
+const EVIDENCE = openEvidence("docs/archive/route-chest-rewards-01");
 
 const read = (p) => fs.readFileSync(path.join(ROOT, p), "utf8");
 
@@ -212,20 +212,13 @@ check("NO_STRATEGY_IN_RENDER_LAYER", !Object.values(strategyLeaks).some(Boolean)
 });
 
 const allPass = checks.every((c) => c.pass);
-fs.writeFileSync(
-  path.join(OUT, "chest-static-render-audit.json"),
-  JSON.stringify(
-    {
-      mission: "ROTA-CHEST-REWARDS-01",
-      note: "Static source inspection only; this environment cannot composite frames.",
-      babylonLights: lightConstructions,
-      ROUTE_MAX_LIGHTS: Number(routeMaxLights),
-      checks,
-      allPass,
-    },
-    null,
-    2,
-  ),
-);
+EVIDENCE.write("chest-static-render-audit.json", {
+  mission: "ROTA-CHEST-REWARDS-01",
+  note: "Static source inspection only; this environment cannot composite frames.",
+  babylonLights: lightConstructions,
+  ROUTE_MAX_LIGHTS: Number(routeMaxLights),
+  checks,
+  allPass,
+});
 console.log(`\n${allPass ? "STATIC_RENDER_AUDIT_OK" : "STATIC_RENDER_AUDIT_FAILED"}`);
-if (!allPass) process.exitCode = 1;
+process.exitCode = EVIDENCE.finish({ ok: allPass });

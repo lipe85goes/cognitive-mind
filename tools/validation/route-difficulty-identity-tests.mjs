@@ -11,18 +11,16 @@
  * "UI selection" is expressed the way a player expresses it: mount the session,
  * tap a mode, tap Start.
  *
- * Usage: node tools/validation/route-difficulty-identity-tests.mjs
+ * Usage: node tools/validation/route-difficulty-identity-tests.mjs [--check|--update]
  */
-import fs from "node:fs";
-import path from "node:path";
 import crypto from "node:crypto";
 import { loadRouteRuntime } from "./route-runtime-harness.mjs";
+import { openEvidence } from "./evidence.mjs";
 
-const OUT = path.resolve(
+const EVIDENCE = openEvidence(
   process.env.ROUTE_VALIDATION_OUT ??
     "docs/archive/route-difficulty-04a-ui-identity-fix",
 );
-fs.mkdirSync(OUT, { recursive: true });
 
 const RUNTIME = loadRouteRuntime();
 const API = RUNTIME.API;
@@ -557,36 +555,29 @@ const fingerprintStudy = [];
 }
 
 const allPass = tests.every((t) => t.pass);
-fs.writeFileSync(
-  path.join(OUT, "route-difficulty-identity.json"),
-  JSON.stringify(
-    {
-      mission: "ROTA-DIFFICULTY-04A-UI-IDENTITY-FIX",
-      baseline: "ROTA-DIFFICULTY-04-BASELINE",
-      driver: "tools/validation/route-runtime-harness.mjs drives the real useEscapeMaze",
-      rootCause: {
-        symbol: "changeDifficulty",
-        wasDoing: "setRouteNumber(1) + startNewMaze(mode, 'setup', 1)",
-        nowDoing: "startNewMaze(mode, 'setup', routeNumber)",
-        introducedIn: "0d7e7fa feat(route-strategy): add playable route progression",
-        becameWrongIn:
-          "3bde618 feat(route-strategy): add route completion continuity loop — added initialRouteNumber and updated the state initialiser without revisiting changeDifficulty",
-        classification: "LATENT_REGRESSION_FROM_INCOMPLETE_FOLLOW_UP",
-        notLegacyDeadCode: true,
-        notAnIntentionalCurrentRule: true,
-        notAWorkaround: true,
-      },
-      matrix,
-      transitions,
-      lifecycle,
-      resetReplay,
-      fingerprintStudy,
-      tests,
-      allPass,
-    },
-    null,
-    2,
-  ),
-);
+EVIDENCE.write("route-difficulty-identity.json", {
+  mission: "ROTA-DIFFICULTY-04A-UI-IDENTITY-FIX",
+  baseline: "ROTA-DIFFICULTY-04-BASELINE",
+  driver: "tools/validation/route-runtime-harness.mjs drives the real useEscapeMaze",
+  rootCause: {
+    symbol: "changeDifficulty",
+    wasDoing: "setRouteNumber(1) + startNewMaze(mode, 'setup', 1)",
+    nowDoing: "startNewMaze(mode, 'setup', routeNumber)",
+    introducedIn: "0d7e7fa feat(route-strategy): add playable route progression",
+    becameWrongIn:
+      "3bde618 feat(route-strategy): add route completion continuity loop — added initialRouteNumber and updated the state initialiser without revisiting changeDifficulty",
+    classification: "LATENT_REGRESSION_FROM_INCOMPLETE_FOLLOW_UP",
+    notLegacyDeadCode: true,
+    notAnIntentionalCurrentRule: true,
+    notAWorkaround: true,
+  },
+  matrix,
+  transitions,
+  lifecycle,
+  resetReplay,
+  fingerprintStudy,
+  tests,
+  allPass,
+});
 console.log(`\n${allPass ? "ROUTE_DIFFICULTY_IDENTITY_OK" : "ROUTE_DIFFICULTY_IDENTITY_FAILED"}`);
-if (!allPass) process.exitCode = 1;
+process.exitCode = EVIDENCE.finish({ ok: allPass });

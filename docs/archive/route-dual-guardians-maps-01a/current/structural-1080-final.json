@@ -1,0 +1,243 @@
+{
+  "mission": "ROTA-DUAL-GUARDIANS-MAPS-01A-FINAL-ACCEPTANCE",
+  "regime": "seeded per map (deterministic regression)",
+  "combinations": [
+    {
+      "route": 1,
+      "mode": "easy",
+      "maps": 120,
+      "certified": 120,
+      "threw": 0,
+      "uncertified": 0,
+      "auditFailures": 0,
+      "templatesUsed": {
+        "0": 102,
+        "1": 16,
+        "2": 2
+      },
+      "exitsUsed": {
+        "2,7": 91,
+        "2,8": 29
+      },
+      "attempts": {
+        "p50": 5,
+        "p90": 16,
+        "max": 29
+      }
+    },
+    {
+      "route": 1,
+      "mode": "medium",
+      "maps": 120,
+      "certified": 120,
+      "threw": 0,
+      "uncertified": 0,
+      "auditFailures": 0,
+      "templatesUsed": {
+        "0": 24,
+        "1": 26,
+        "2": 70
+      },
+      "exitsUsed": {
+        "2,7": 77,
+        "2,8": 43
+      },
+      "attempts": {
+        "p50": 2,
+        "p90": 7,
+        "max": 14
+      }
+    },
+    {
+      "route": 1,
+      "mode": "hard",
+      "maps": 120,
+      "certified": 120,
+      "threw": 0,
+      "uncertified": 0,
+      "auditFailures": 0,
+      "templatesUsed": {
+        "0": 7,
+        "1": 25,
+        "2": 88
+      },
+      "exitsUsed": {
+        "2,7": 60,
+        "2,8": 60
+      },
+      "attempts": {
+        "p50": 4,
+        "p90": 12,
+        "max": 19
+      }
+    },
+    {
+      "route": 2,
+      "mode": "easy",
+      "maps": 120,
+      "certified": 120,
+      "threw": 0,
+      "uncertified": 0,
+      "auditFailures": 0,
+      "templatesUsed": {
+        "0": 38,
+        "1": 31,
+        "2": 51
+      },
+      "exitsUsed": {
+        "0,7": 39,
+        "1,8": 38,
+        "0,8": 43
+      },
+      "attempts": {
+        "p50": 7,
+        "p90": 28,
+        "max": 67
+      }
+    },
+    {
+      "route": 2,
+      "mode": "medium",
+      "maps": 120,
+      "certified": 120,
+      "threw": 0,
+      "uncertified": 0,
+      "auditFailures": 0,
+      "templatesUsed": {
+        "0": 21,
+        "1": 33,
+        "2": 66
+      },
+      "exitsUsed": {
+        "1,8": 40,
+        "0,8": 32,
+        "0,7": 48
+      },
+      "attempts": {
+        "p50": 4,
+        "p90": 14,
+        "max": 26
+      }
+    },
+    {
+      "route": 2,
+      "mode": "hard",
+      "maps": 120,
+      "certified": 120,
+      "threw": 0,
+      "uncertified": 0,
+      "auditFailures": 0,
+      "templatesUsed": {
+        "0": 9,
+        "1": 26,
+        "2": 85
+      },
+      "exitsUsed": {
+        "0,7": 32,
+        "1,8": 50,
+        "0,8": 38
+      },
+      "attempts": {
+        "p50": 4,
+        "p90": 11,
+        "max": 20
+      }
+    },
+    {
+      "route": 3,
+      "mode": "easy",
+      "maps": 120,
+      "certified": 120,
+      "threw": 0,
+      "uncertified": 0,
+      "auditFailures": 0,
+      "templatesUsed": {
+        "0": 29,
+        "1": 67,
+        "2": 24
+      },
+      "exitsUsed": {
+        "0,8": 66,
+        "0,7": 54
+      },
+      "attempts": {
+        "p50": 16,
+        "p90": 56,
+        "max": 164
+      }
+    },
+    {
+      "route": 3,
+      "mode": "medium",
+      "maps": 120,
+      "certified": 120,
+      "threw": 0,
+      "uncertified": 0,
+      "auditFailures": 0,
+      "templatesUsed": {
+        "0": 19,
+        "1": 76,
+        "2": 25
+      },
+      "exitsUsed": {
+        "0,8": 53,
+        "0,7": 67
+      },
+      "attempts": {
+        "p50": 9,
+        "p90": 27,
+        "max": 66
+      }
+    },
+    {
+      "route": 3,
+      "mode": "hard",
+      "maps": 120,
+      "certified": 120,
+      "threw": 0,
+      "uncertified": 0,
+      "auditFailures": 0,
+      "templatesUsed": {
+        "0": 25,
+        "1": 71,
+        "2": 24
+      },
+      "exitsUsed": {
+        "0,8": 68,
+        "0,7": 52
+      },
+      "attempts": {
+        "p50": 13,
+        "p90": 38,
+        "max": 70
+      }
+    }
+  ],
+  "totals": {
+    "generated": 1080,
+    "certified": 1080,
+    "threw": 0,
+    "auditFailures": 0
+  },
+  "auditSamples": [],
+  "auditedContracts": [
+    "coordinates in bounds",
+    "no entity on a wall",
+    "portal reachable",
+    "portal has an alternative route",
+    "guardian not sealed",
+    "guardian start distance",
+    "light count",
+    "no duplicate light",
+    "light start distance",
+    "light has an alternative route",
+    "light reaches the portal",
+    "light separation",
+    "trap count",
+    "trap start distance",
+    "trap not on a light",
+    "chest distance",
+    "objective route exists",
+    "objective route satisfies escape width"
+  ]
+}

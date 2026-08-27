@@ -12,14 +12,14 @@
       "id": "A",
       "name": "INACTIVE_EXPLORER",
       "pass": true,
-      "trap": "2,0",
+      "trap": "1,3",
       "reachable": true
     },
     {
       "id": "B",
       "name": "INACTIVE_HUNTER",
       "pass": true,
-      "from": "1,0",
+      "from": "0,3",
       "trapIsALegalNeighbour": true
     },
     {
@@ -33,7 +33,7 @@
       "id": "D",
       "name": "ACTIVATION",
       "pass": true,
-      "trap": "2,0",
+      "trap": "1,3",
       "note": "the hook builds this set locally from the step, before the defenders answer"
     },
     {
@@ -47,8 +47,8 @@
       "id": "F",
       "name": "ACTIVE_HUNTER",
       "pass": true,
-      "from": "1,0",
-      "trap": "2,0",
+      "from": "0,3",
+      "trap": "1,3",
       "enteredWhileDormant": 40,
       "enteredWhileArmed": 0
     },
@@ -63,8 +63,8 @@
       "id": "H",
       "name": "SAME_TURN",
       "pass": true,
-      "hunterDestination": "1,0",
-      "sentinelDestination": "1,8",
+      "hunterDestination": "0,4",
+      "sentinelDestination": "1,7",
       "crossings": 0
     },
     {

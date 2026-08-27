@@ -81,8 +81,8 @@
       "id": "B",
       "name": "NO_CERTIFIED_RESTRICTION",
       "pass": true,
-      "wallsBrokenThatTheOldCertifierRefused": 6,
-      "runsWhereAnUncertifiedWallWasAdjacent": 6,
+      "wallsBrokenThatTheOldCertifierRefused": 4,
+      "runsWhereAnUncertifiedWallWasAdjacent": 4,
       "note": "the retired certifier is consulted here only to name walls it would have refused; it has no authority over the runtime"
     },
     {
@@ -113,8 +113,8 @@
           }
         },
         {
-          "seed": 7102001,
-          "wall": "3,2",
+          "seed": 7102000,
+          "wall": "7,2",
           "secondAttempt": {
             "wall": "0,0",
             "targetsOffered": 0,
@@ -144,7 +144,7 @@
           "defendersAnswered": true
         },
         {
-          "seed": 7102001,
+          "seed": 7102000,
           "explorerStayed": true,
           "turnCost": 1,
           "defendersAnswered": true
@@ -174,7 +174,7 @@
           "breakTargets": 0
         },
         {
-          "seed": 7102001,
+          "seed": 7102000,
           "brokenWall": null,
           "noOpenWall": true,
           "pickaxeAvailable": false,
@@ -194,9 +194,9 @@
           "freshWallSet": "2,0|2,3|2,5|2,7|3,0|3,1|3,5|4,6|5,3|5,4|6,0|6,2|6,3|6,5|7,5|8,3|8,7|8,8"
         },
         {
-          "seed": 7102001,
-          "freshWalls": 28,
-          "freshWallSet": "0,0|0,1|0,3|0,4|0,6|1,6|2,1|2,3|2,4|3,2|3,5|3,6|4,3|4,8|5,1|5,3|5,4|5,5|5,6|6,2|6,4|6,5|6,7|8,2|8,4|8,5|8,7|8,8"
+          "seed": 7102000,
+          "freshWalls": 27,
+          "freshWallSet": "0,0|0,3|1,0|1,1|1,7|2,4|2,5|2,6|3,0|3,2|3,3|3,5|3,6|4,0|4,5|4,8|5,3|5,8|6,4|6,6|7,2|7,4|7,8|8,2|8,5|8,7|8,8"
         }
       ],
       "note": "a restart draws a NEW map, so the check is that nothing is open and the definition was never written to"
@@ -225,12 +225,12 @@
           "wallIdentityIsACell": true
         },
         {
-          "seed": 7102001,
+          "seed": 7102000,
           "rewardSelected": "pickaxe",
           "rewardSpent": true,
           "pickaxeAvailable": false,
           "pickaxeSpent": true,
-          "brokenWall": "3,2",
+          "brokenWall": "7,2",
           "wallIdentityIsACell": true
         }
       ],
@@ -380,7 +380,7 @@
         {
           "seed": 7500000,
           "combo": "hard/r3",
-          "wall": "3,2",
+          "wall": "8,3",
           "pickaxeKept": true,
           "wallStillStanding": true,
           "nothingBroken": true,
@@ -433,13 +433,13 @@
           "adjacentWalls": 2,
           "directions": [
             "up",
-            "right"
+            "down"
           ],
           "directionsAreUnique": true,
           "directionsAreTruthful": true,
           "chosen": {
-            "direction": "right",
-            "cell": "6,4"
+            "direction": "down",
+            "cell": "8,3"
           },
           "openedExactlyTheChosenOne": true
         }
@@ -555,7 +555,7 @@
       "id": "DEFENDER_BENEFIT",
       "name": "OPENING_MAY_FAVOUR_A_DEFENDER",
       "pass": true,
-      "fixturesWhereAnOpeningShortenedTheHunterPath": 3,
+      "fixturesWhereAnOpeningShortenedTheHunterPath": 4,
       "note": "§29 — no invisible protection for the Explorer: an opening that helps the Hunter is allowed to be made and is not silently blocked"
     }
   ],

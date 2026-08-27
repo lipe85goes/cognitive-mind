@@ -5,8 +5,9 @@ import path from "node:path";
 
 import { runDifficultyBaseline } from "./difficulty-baseline-run.mjs";
 import { loadInstrumented } from "./instrumented-generator.mjs";
+import { openEvidence } from "./evidence.mjs";
 
-const OUT = path.resolve(
+const EVIDENCE = openEvidence(
   process.env.ROUTE_VALIDATION_OUT ??
     "docs/archive/route-difficulty-05-rebalance/regressions/rebalance-focused",
 );
@@ -165,15 +166,11 @@ const report = {
   gateMet: failures.length === 0,
 };
 
-fs.mkdirSync(OUT, { recursive: true });
-fs.writeFileSync(
-  path.join(OUT, "difficulty-rebalance-tests.json"),
-  `${JSON.stringify(report, null, 2)}\n`,
-);
+EVIDENCE.write("difficulty-rebalance-tests.json", report);
 console.log(JSON.stringify(report, null, 2));
 console.log(
   report.gateMet
     ? "DIFFICULTY_REBALANCE_TESTS_OK"
     : "DIFFICULTY_REBALANCE_TESTS_FAILED",
 );
-if (!report.gateMet) process.exitCode = 1;
+process.exitCode = EVIDENCE.finish({ ok: report.gateMet });

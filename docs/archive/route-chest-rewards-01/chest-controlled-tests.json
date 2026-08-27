@@ -36,7 +36,7 @@
         },
         {
           "combo": "hard/r3",
-          "chest": "2,0",
+          "chest": "8,4",
           "chestOpened": false,
           "rewardSelected": null,
           "pickaxeAvailable": false,
@@ -67,7 +67,7 @@
           "rewardSelected": null
         },
         {
-          "seed": 6102001,
+          "seed": 6102000,
           "combo": "hard/r3",
           "playerOnChest": true,
           "chestOpened": true,
@@ -119,19 +119,19 @@
           "turnsAfterChoice": 5,
           "choiceIsNotATurn": true,
           "defendersAfterChoice": {
-            "guardian": "2,4",
+            "guardian": "1,5",
             "sentinel": "1,7"
           }
         },
         {
-          "seed": 6102001,
+          "seed": 6102000,
           "defendersBeforeChest": {
-            "guardian": "0,2",
+            "guardian": "4,2",
             "sentinel": "1,7",
             "turns": 5
           },
           "defendersDuringPause": {
-            "guardian": "0,2",
+            "guardian": "4,2",
             "sentinel": "1,7",
             "turns": 6
           },
@@ -140,7 +140,7 @@
           "turnsAfterChoice": 6,
           "choiceIsNotATurn": true,
           "defendersAfterChoice": {
-            "guardian": "1,2",
+            "guardian": "4,1",
             "sentinel": "1,7"
           }
         }

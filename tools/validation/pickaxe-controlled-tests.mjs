@@ -14,10 +14,8 @@
  * The old certifier is loaded here purely as a source of "walls the previous
  * design would have refused", so test B can prove they are now targets.
  *
- * Usage: node tools/validation/pickaxe-controlled-tests.mjs
+ * Usage: node tools/validation/pickaxe-controlled-tests.mjs [--check|--update]
  */
-import fs from "node:fs";
-import path from "node:path";
 import {
   loadRouteRuntime,
   cellKey,
@@ -26,12 +24,12 @@ import {
   walkableNeighbours,
 } from "./route-runtime-harness.mjs";
 import { auditBreakableWalls } from "./breakable-wall-certifier.mjs";
+import { openEvidence } from "./evidence.mjs";
 
-const OUT = path.resolve(
+const EVIDENCE = openEvidence(
   process.env.ROUTE_VALIDATION_OUTPUT_DIR ??
     "docs/archive/route-chest-rewards-01",
 );
-fs.mkdirSync(OUT, { recursive: true });
 
 const RT = loadRouteRuntime();
 const API = RT.API;
@@ -843,35 +841,28 @@ const fixtures = COMBOS.map((combo, index) =>
 }
 
 const allPass = tests.every((t) => t.pass);
-fs.writeFileSync(
-  path.join(OUT, "pickaxe-controlled-tests.json"),
-  JSON.stringify(
-    {
-      mission: "ROTA-CHEST-REWARDS-01",
-      suite: "PICKAXE_FREE_WALL_CHOICE",
-      designRevision:
-        "post-playtest: PICKAXE_TARGET moved from CERTIFIED_BREAKABLE_WALL to ANY_INTERNAL_MAZE_WALL",
-      driver:
-        "tools/validation/route-runtime-harness.mjs drives the real useEscapeMaze hook",
-      contract: [
-        "one use, and any internal maze wall the Explorer is standing next to",
-        "the retired certifier does not restrict the runtime: walls it refused are legal targets",
-        "no eligibility check — a weak or even self-harming choice is allowed",
-        "not remote, not the frame, not the portal, not an entity",
-        "walking into a wall never spends the Pickaxe",
-        "two adjacent walls are two named, distinguishable choices",
-        "breaking costs a turn and the Explorer does not move",
-        "the wall is open BEFORE the defenders answer, in that same turn",
-        "a broken wall is walkable by the Explorer, the Hunter and the Sentinel",
-        "restart closes it; the map definition was never written to",
-        "the whole Pickaxe state is readable without the UI",
-      ],
-      tests,
-      allPass,
-    },
-    null,
-    2,
-  ),
-);
+EVIDENCE.write("pickaxe-controlled-tests.json", {
+  mission: "ROTA-CHEST-REWARDS-01",
+  suite: "PICKAXE_FREE_WALL_CHOICE",
+  designRevision:
+    "post-playtest: PICKAXE_TARGET moved from CERTIFIED_BREAKABLE_WALL to ANY_INTERNAL_MAZE_WALL",
+  driver:
+    "tools/validation/route-runtime-harness.mjs drives the real useEscapeMaze hook",
+  contract: [
+    "one use, and any internal maze wall the Explorer is standing next to",
+    "the retired certifier does not restrict the runtime: walls it refused are legal targets",
+    "no eligibility check — a weak or even self-harming choice is allowed",
+    "not remote, not the frame, not the portal, not an entity",
+    "walking into a wall never spends the Pickaxe",
+    "two adjacent walls are two named, distinguishable choices",
+    "breaking costs a turn and the Explorer does not move",
+    "the wall is open BEFORE the defenders answer, in that same turn",
+    "a broken wall is walkable by the Explorer, the Hunter and the Sentinel",
+    "restart closes it; the map definition was never written to",
+    "the whole Pickaxe state is readable without the UI",
+  ],
+  tests,
+  allPass,
+});
 console.log(`\n${allPass ? "PICKAXE_CONTRACT_OK" : "PICKAXE_CONTRACT_FAILED"}`);
-if (!allPass) process.exitCode = 1;
+process.exitCode = EVIDENCE.finish({ ok: allPass });

@@ -14,14 +14,31 @@
  * Nothing here modifies production. The recovery proof shortens the random
  * phase in an in-memory copy only; the shipped cap is untouched.
  *
- * Usage: node tools/validation/final-acceptance.mjs
+ * Usage: node tools/validation/final-acceptance.mjs [--check|--update]
  */
-import fs from "node:fs";
-import path from "node:path";
-import { loadInstrumented } from "./instrumented-generator.mjs";
+import { loadInstrumented, productionSource } from "./instrumented-generator.mjs";
+import { openEvidence } from "./evidence.mjs";
 
-const OUT = path.resolve("docs/archive/route-dual-guardians-maps-01a");
-fs.mkdirSync(OUT, { recursive: true });
+/**
+ * MINDFLOW-VALIDATION-HYGIENE-04 — where this gate's baseline lives.
+ *
+ * The parent directory is the ROTA-DUAL-GUARDIANS-MAPS-01A record as written at
+ * that mission's close. Its per-map fingerprints (templatesUsed, exitsUsed,
+ * attempts, randomAttempts) are deterministic outputs of the generator AS IT WAS
+ * THEN, and generation has legitimately moved since — the RNG seam in 04C and
+ * the difficulty rebalance in 05 both changed which template a given seed picks.
+ * The mission verdicts still hold (1080/1080, 270/270, zero throws, zero audit
+ * failures); only the distributions moved.
+ *
+ * Rewriting that archive to today's numbers would falsify a closed mission's
+ * record, so the live baseline this gate checks against lives beside it instead.
+ * `docs/archive/route-dual-guardians-maps-01a/README-current.md` records the
+ * supersession and the measured drift.
+ */
+const EVIDENCE = openEvidence(
+  process.env.ROUTE_VALIDATION_OUT ??
+    "docs/archive/route-dual-guardians-maps-01a/current",
+);
 const ROUTES = [1, 2, 3];
 const MODES = ["easy", "medium", "hard"];
 
@@ -146,7 +163,7 @@ for (const stage of ROUTES) {
 }
 console.log(`  TOTAL: ${structural.totals.certified}/1080 · throws ${structural.totals.threw} · falhas de auditoria ${structural.totals.auditFailures}`);
 if (auditSamples.length) console.log(`  amostra: ${JSON.stringify(auditSamples.slice(0, 3))}`);
-fs.writeFileSync(path.join(OUT, "structural-1080-final.json"), JSON.stringify({
+EVIDENCE.write("structural-1080-final.json", {
   ...report, regime: "seeded per map (deterministic regression)",
   ...structural, auditSamples,
   auditedContracts: [
@@ -157,7 +174,7 @@ fs.writeFileSync(path.join(OUT, "structural-1080-final.json"), JSON.stringify({
     "trap count", "trap start distance", "trap not on a light", "chest distance",
     "objective route exists", "objective route satisfies escape width",
   ],
-}, null, 2));
+});
 
 // ===========================================================================
 // FASE 2 — continuous final, master-seeded streams
@@ -193,9 +210,9 @@ for (const stage of ROUTES) {
   }
 }
 console.log(`  TOTAL: ${continuous.totals.certified}/270 · throws ${continuous.totals.threw} · recovery ${continuous.totals.recoveryActivations}x`);
-fs.writeFileSync(path.join(OUT, "continuous-270-final.json"), JSON.stringify({
+EVIDENCE.write("continuous-270-final.json", {
   ...report, regime: "one PRNG per stream, no reseed between maps", ...continuous,
-}, null, 2));
+});
 
 // ===========================================================================
 // FASE 5 — deterministic recovery
@@ -204,10 +221,22 @@ console.log("\nFASE 5 — recovery determinística");
 // Shorten ONLY the random phase, in memory. The recovery sweep, every gate and
 // the throw are untouched, so whatever comes back came through the real gates.
 const SHORT_RANDOM = "const MAX_GENERATION_ATTEMPTS = 1;";
-const capLine = fs.readFileSync(path.join(process.cwd(), "src/games/escape-maze/useEscapeMaze.ts"), "utf8")
+// The anchor must come from the harness's own view of production, not from a
+// second read of the file: the two can differ in line endings, and a `replace`
+// that matches nothing would leave the production cap in place while this phase
+// reported on it as though it had been shortened.
+const capLine = productionSource()
   .split("\n").find((l) => l.startsWith("const MAX_GENERATION_ATTEMPTS"));
 if (!capLine) throw new Error("MAX_GENERATION_ATTEMPTS declaration not found");
-const RECOVERY = loadInstrumented({ transform: (src) => src.replace(capLine, SHORT_RANDOM) });
+const RECOVERY = loadInstrumented({
+  transform: (src) => {
+    const shortened = src.replace(capLine, SHORT_RANDOM);
+    if (shortened === src) {
+      throw new Error("recovery transform: MAX_GENERATION_ATTEMPTS cap was not replaced");
+    }
+    return shortened;
+  },
+});
 const recoveryCases = [];
 for (const stage of ROUTES) {
   for (const difficulty of MODES) {
@@ -247,7 +276,7 @@ console.log(`  todos passam a mesma auditoria de contratos: ${recoveryClean ? "s
 for (const c of recoveryCases) {
   console.log(`    rota${c.route}/${c.mode}: random ${c.randomAttempts} · recovery ${c.recoveryAttempts} · ${c.certified ? "certificado" : "LANÇOU"}`);
 }
-fs.writeFileSync(path.join(OUT, "deterministic-recovery-final.json"), JSON.stringify({
+EVIDENCE.write("deterministic-recovery-final.json", {
   ...report,
   method: "random phase capped at 1 attempt in an in-memory copy; recovery sweep, gates and throw untouched; production cap unchanged",
   productionCap: capLine.trim(),
@@ -256,7 +285,7 @@ fs.writeFileSync(path.join(OUT, "deterministic-recovery-final.json"), JSON.strin
   allPassContractAudit: recoveryClean,
   noUncertifiedFallbackPath: true,
   cases: recoveryCases,
-}, null, 2));
+});
 
 // ===========================================================================
 // FASE 6 — observational timing, final state
@@ -282,7 +311,11 @@ const timing = {
 };
 console.log(`  p50=${timing.p50} p75=${timing.p75} p90=${timing.p90} p95=${timing.p95} p99=${timing.p99} max=${timing.max}`);
 console.log(`  >500ms ${timing.over500ms} · >1s ${timing.over1s} · >1,5s ${timing.over1_5s} · >2s ${timing.over2s} · >3s ${timing.over3s}`);
-fs.writeFileSync(path.join(OUT, "generation-performance-final.json"), JSON.stringify({
+// FASE 6 is a measurement, not a gate: `route3HardFinal` is wall-clock timing on
+// this machine and differs on every run by construction. Declaring it RUN
+// METADATA keeps a normal --check from failing on noise, and keeps --update from
+// rewriting the archived numbers when nothing was actually decided differently.
+EVIDENCE.write("generation-performance-final.json", {
   ...report,
   browserMeasurement: "BROWSER_PERFORMANCE_NOT_REMEASURED",
   browserMeasurementReason:
@@ -297,7 +330,7 @@ fs.writeFileSync(path.join(OUT, "generation-performance-final.json"), JSON.strin
     p50: 365, p90: 1834, p95: 2051, max: 3178,
     caveat: "measured in a browser production build in an earlier session; not comparable to node figures",
   },
-}, null, 2));
+}, { metadata: ["route3HardFinal"] });
 
 // ===========================================================================
 console.log("\nresumo:");
@@ -305,8 +338,9 @@ const structuralOk = structural.totals.certified === 1080 && structural.totals.t
 const continuousOk = continuous.totals.certified === 270 && continuous.totals.threw === 0;
 console.log(`  estrutural 1080: ${structuralOk ? "OK" : "FALHOU"} (${structural.totals.certified}/1080, throws ${structural.totals.threw}, auditoria ${structural.totals.auditFailures})`);
 console.log(`  contínuo 270:    ${continuousOk ? "OK" : "FALHOU"} (${continuous.totals.certified}/270, throws ${continuous.totals.threw})`);
-console.log(`  recovery:        ${recoveryClean && recoveryCertified > 0 ? "OK" : "FALHOU"}`);
-fs.writeFileSync(path.join(OUT, "known-star-dependent-waste.json"), JSON.stringify({
+const recoveryOk = recoveryClean && recoveryCertified > 0;
+console.log(`  recovery:        ${recoveryOk ? "OK" : "FALHOU"}`);
+EVIDENCE.write("known-star-dependent-waste.json", {
   ...report,
   label: "KNOWN_STAR_DEPENDENT_GENERATION_WASTE",
   count: 25,
@@ -325,5 +359,9 @@ fs.writeFileSync(path.join(OUT, "known-star-dependent-waste.json"), JSON.stringi
     "require the chosen lights to sit in the admissible component — the second discards them earlier " +
     "without rescuing them.",
   status: "NON_BLOCKING_EFFICIENCY_OPPORTUNITY",
-}, null, 2));
-console.log("evidências escritas.");
+});
+
+// Every phase now reaches the exit code. Before this mission FASE 5 could report
+// FALHOU while the process still exited 0, so a broken recovery proof looked
+// like a passing run to anything that only read the status.
+process.exitCode = EVIDENCE.finish({ ok: structuralOk && continuousOk && recoveryOk });

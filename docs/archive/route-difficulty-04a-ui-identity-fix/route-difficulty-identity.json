@@ -85,17 +85,17 @@
       "uiDifficulty": "hard",
       "runtimeStage": 1,
       "status": "playing",
-      "generatedPortal": "2,8",
+      "generatedPortal": "2,7",
       "generatedRouteStages": [
         1
       ],
-      "generatedWallCount": 20,
-      "generatedLights": 5,
+      "generatedWallCount": 22,
+      "generatedLights": 6,
       "generatedTraps": 4,
       "generatedModes": [
         "hard"
       ],
-      "fingerprint": "649e95507a1b1ee06069bb5f9c4ed65a9e1b73b7b8f89dd69a38f1ea196d5707",
+      "fingerprint": "6ebde9bde41d418e1e8f5ab0cdec2787682503fcbf8d2b083c9bfc5839af244e",
       "uiRoutePreserved": true,
       "uiDifficultyPreserved": true,
       "generationRouteAgrees": true,
@@ -175,18 +175,18 @@
       "uiDifficulty": "hard",
       "runtimeStage": 2,
       "status": "playing",
-      "generatedPortal": "0,8",
+      "generatedPortal": "0,7",
       "generatedRouteStages": [
         2,
         3
       ],
-      "generatedWallCount": 23,
-      "generatedLights": 5,
+      "generatedWallCount": 25,
+      "generatedLights": 6,
       "generatedTraps": 5,
       "generatedModes": [
         "hard"
       ],
-      "fingerprint": "5c860f1f9ba9360fa1129e63704b9bbc5919cc8aed53ebfe806eacba2069c175",
+      "fingerprint": "af9f858d826054383e370566da4c627d4eb74ad649e28ec06c2511ce9a9548f8",
       "uiRoutePreserved": true,
       "uiDifficultyPreserved": true,
       "generationRouteAgrees": true,
@@ -268,18 +268,18 @@
       "uiDifficulty": "hard",
       "runtimeStage": 3,
       "status": "playing",
-      "generatedPortal": "0,7",
+      "generatedPortal": "0,8",
       "generatedRouteStages": [
         2,
         3
       ],
-      "generatedWallCount": 28,
+      "generatedWallCount": 27,
       "generatedLights": 6,
       "generatedTraps": 6,
       "generatedModes": [
         "hard"
       ],
-      "fingerprint": "b14b5c2e6df68d71615acbf1276dd96ba5c5beef0c41edf1fec693a39b5c244d",
+      "fingerprint": "380bb3a92fbb004bd845bb082ffe7c61c523633288c0ed78a9c244c292d974d3",
       "uiRoutePreserved": true,
       "uiDifficultyPreserved": true,
       "generationRouteAgrees": true,
@@ -968,8 +968,7 @@
       "exactIdentityMatches": 9,
       "falseMatches": 0,
       "geometryAloneIsAmbiguousFor": [
-        "S2/medium == S3/easy",
-        "S2/hard == S3/medium"
+        "S2/medium == S3/easy"
       ],
       "whyThatIsFine": "identity is established by exact map equality against the requested combination, which is unambiguous; the geometric read is only a corroborating cross-check",
       "exitCandidatesPerStage": {
@@ -991,12 +990,12 @@
         "1": {
           "easy": 3,
           "medium": 4,
-          "hard": 5
+          "hard": 6
         },
         "2": {
           "easy": 3,
           "medium": 4,
-          "hard": 5
+          "hard": 6
         },
         "3": {
           "easy": 4,

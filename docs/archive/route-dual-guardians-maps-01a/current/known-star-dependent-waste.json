@@ -1,0 +1,15 @@
+{
+  "mission": "ROTA-DUAL-GUARDIANS-MAPS-01A-FINAL-ACCEPTANCE",
+  "label": "KNOWN_STAR_DEPENDENT_GENERATION_WASTE",
+  "count": 25,
+  "source": "route-cells-have-escape-255-analysis.json, dimension=star_selection",
+  "description": "On these wall layouts a valid configuration exists, but only with a DIFFERENT set of lights. Route selection alone cannot reach it.",
+  "whyNotBlocking": [
+    "the current candidate is correctly REJECTED — no invalid map is accepted",
+    "no known generation throw is attributed to them",
+    "continuous route 3 passed 360/360 and 270/270 with them present",
+    "repairing them means reopening star selection, which is not required for correctness"
+  ],
+  "futureOpportunity": "Either include admissibility in chooseStars eligibility, or extend the early check to also require the chosen lights to sit in the admissible component — the second discards them earlier without rescuing them.",
+  "status": "NON_BLOCKING_EFFICIENCY_OPPORTUNITY"
+}
