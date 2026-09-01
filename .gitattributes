@@ -1,0 +1,61 @@
+# MindFlow — repository line-ending policy.
+#
+# Why this file exists
+# --------------------
+# Without it, how a file looks on disk depends on each developer's Git
+# installation. `core.autocrlf=true` is the Git for Windows installer default
+# and arrives in the SYSTEM config, so a Windows clone silently gets CRLF
+# working files while the blobs stay LF, and a macOS or Linux clone gets LF.
+# That made line endings a property of the machine rather than of the project,
+# and it broke real things: source-text tooling anchored on "\n" stopped
+# matching, and validators that rewrote their output in LF marked CRLF working
+# files as modified even when nothing about the content had changed.
+#
+# This file makes the policy explicit and portable: the same checkout on every
+# machine, whatever `core.autocrlf` happens to say.
+
+# ---------------------------------------------------------------------------
+# Default
+# ---------------------------------------------------------------------------
+# `text=auto` lets Git decide text vs binary by content, so a new format is
+# handled sensibly without a rule being written for it first.
+# `eol=lf` pins the working-tree ending for everything Git decided is text.
+# Together: LF in the index, LF on disk, on every platform. `core.autocrlf` no
+# longer participates for any governed file.
+#
+# LF is the canonical form here because this is a Node / Next.js repository:
+# the toolchain, the .mjs validation harnesses and the JSON evidence they read
+# are all LF-native, and the index is already 100% LF (680/680 text blobs), so
+# this pins the state the repository is already in rather than changing it.
+* text=auto eol=lf
+
+# ---------------------------------------------------------------------------
+# Binary
+# ---------------------------------------------------------------------------
+# Git's own heuristic already classifies every one of these correctly today.
+# Declaring them anyway removes the heuristic from the path: a .glb whose
+# header happens to look textual, or a small .ico, can never be line-ending
+# converted. `binary` is Git's macro for `-text -diff` — no conversion, and no
+# attempt to render a textual diff.
+#
+# Only formats actually present in the repository are listed.
+*.png   binary
+*.webp  binary
+*.ico   binary
+*.glb   binary
+
+# ---------------------------------------------------------------------------
+# Windows batch scripts
+# ---------------------------------------------------------------------------
+# There are none today. This rule is here because their failure mode is silent
+# and specific: cmd.exe can mis-execute a .bat/.cmd that has LF-only endings —
+# labels and multi-line blocks are the usual casualties — and the default above
+# would hand exactly that to anyone who adds one. Two lines now beats a
+# confusing bug later.
+#
+# Deliberately NOT extended to .ps1: PowerShell reads LF scripts correctly, and
+# the mojibake seen in this repository's history was a UTF-8 *encoding* issue,
+# not a line-ending one. CRLF would not have fixed it. See ENCODING FOLLOW-UP
+# in docs/archive/mindflow-repository-eol-policy-05/.
+*.bat   text eol=crlf
+*.cmd   text eol=crlf

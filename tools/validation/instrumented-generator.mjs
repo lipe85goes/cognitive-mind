@@ -185,7 +185,11 @@ const compile = (src) =>
  */
 export function loadInstrumented({ transform, bare = false, react } = {}) {
   const raw = readProductionSource(HOOK);
-  const base = transform ? transform(raw) : raw;
+  // Normalised again after `transform`, not only before it: a caller can splice
+  // in text that carries its own line endings (a literal read from another file,
+  // a string built on Windows), and `instrument()` must never be handed CRLF
+  // whatever route the text took to reach it.
+  const base = transform ? normalizeSource(transform(raw)) : raw;
   // `bare` skips the diagnostics entirely and only appends the export surface.
   // Timing must be measured on the real control flow: the named-checks rewrite
   // drops short-circuiting in isValidMap, which is overhead production never pays.

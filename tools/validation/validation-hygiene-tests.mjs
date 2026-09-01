@@ -37,6 +37,7 @@ const CORE = [
   { script: "babylon-lifecycle-tests.mjs" },
   { script: "production-diagnostic-boundary-tests.mjs" },
   { script: "trap-strategy-tests.mjs" },
+  { script: "cross-eol-tests.mjs" },
   { script: "chest-controlled-tests.mjs" },
   { script: "diagnostic-launcher-tests.mjs" },
   { script: "difficulty-remount-persistence-tests.mjs" },

@@ -1,0 +1,59 @@
+{
+  "mission": "MINDFLOW-REPOSITORY-EOL-POLICY-05",
+  "seam": "tools/validation/instrumented-generator.mjs — normalizeSource / productionSource",
+  "bugClass": "a tool reads production source, anchors on a newline-shaped literal, and silently stops matching when the checkout is CRLF",
+  "policy": ".gitattributes pins LF, but these checks hold with or without it",
+  "checks": [
+    {
+      "id": "PRODUCTION_SOURCE_IS_ALWAYS_LF",
+      "pass": true,
+      "carriageReturns": 0,
+      "note": "productionSource() normalises, so callers never see the checkout's line endings"
+    },
+    {
+      "id": "NORMALIZE_IS_IDEMPOTENT_AND_CONVERGENT",
+      "pass": true,
+      "crlfConvergesToLf": true,
+      "lfIsUnchanged": true
+    },
+    {
+      "id": "NEWLINE_SHAPED_ANCHORS_NEED_THE_SEAM",
+      "pass": true,
+      "anchors": 6,
+      "missingFromLf": [],
+      "anchorsThatBreakOnCrlf": [
+        "  return (\n"
+      ],
+      "behavedUnexpectedlyOnCrlf": [],
+      "note": "a trailing-newline anchor breaks on CRLF; a leading-newline one does not, so CRLF fails silently rather than cleanly"
+    },
+    {
+      "id": "INSTRUMENTED_LOAD_SURVIVES_A_CRLF_TRANSFORM",
+      "pass": true,
+      "gatesParsed": 23,
+      "note": "loadInstrumented re-normalises after transform, so instrument() never sees CRLF"
+    },
+    {
+      "id": "SAME_GATES_FROM_LF_AND_CRLF",
+      "pass": true,
+      "lfGates": 23,
+      "crlfGates": 23,
+      "identical": true
+    },
+    {
+      "id": "SAME_STRUCTURAL_REASONS_FROM_LF_AND_CRLF",
+      "pass": true,
+      "reasons": 18,
+      "identical": true
+    },
+    {
+      "id": "SAME_GENERATED_MAP_FROM_LF_AND_CRLF",
+      "pass": true,
+      "seed": 12432045,
+      "lfAttempts": 2,
+      "crlfAttempts": 2,
+      "identicalMap": true
+    }
+  ],
+  "allPass": true
+}
