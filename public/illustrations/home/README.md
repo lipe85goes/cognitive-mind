@@ -16,8 +16,6 @@ Active HOME-PIVOT-01 runtime sprites:
 
 | Asset | Runtime role | Size target |
 | --- | --- | --- |
-| `world-route.webp` | Hero world sprite for Rota Estrategica. | <= 140 KB |
-| `world-circuit.webp` | Hero world sprite for Circuito de Memoria. | <= 120 KB |
 | `world-panel.webp` | Quiet world sprite for Central de Comandos. | <= 60 KB |
 | `world-trail.webp` | Quiet world sprite for Trilha Numerica. | <= 60 KB |
 | `world-garden.webp` | Quiet world sprite for Jardim de Sementes. | <= 60 KB |
@@ -32,10 +30,15 @@ the shared Home → transition → intro visual contract:
 | `world-route-hero.webp` | Optimized Route art shared by Home, entry threshold, and intro. | ~104 KB |
 | `world-circuit-hero.webp` | Optimized Memory art shared by Home, entry threshold, and intro. | ~77 KB |
 
-The lighter `world-route.webp` and `world-circuit.webp` remain available as
-fallback/source history for HOME-PIVOT-01, but are no longer the primary art.
+MINDFLOW-CLEANUP-03C removed the lighter `world-route.webp` and
+`world-circuit.webp`. They had been kept as HOME-PIVOT-01 fallback history, but
+nothing read them: `worldVisuals.ts` points both hero worlds at the `-hero`
+variants. `create_home_world_set.mjs` no longer emits them.
+
 Recreate the cohesive primary variants and review sheet with
-`node tools/assets/create_world_cohesion_assets.mjs`.
+`node tools/assets/create_world_cohesion_assets.mjs`. Its sources are
+`public/illustrations/worlds/route-diorama.webp` and `memory-diorama.webp`,
+which is why those two stay on disk despite having no runtime consumer.
 
 WORLD-DIORAMA-2_5D-01 adds the first modular hero-world layer kits for Route
 and Memory. These layers replace the single flat hero image in the production
@@ -48,20 +51,33 @@ scenes and real scene objects. The production Home still uses the same
 HTML/CSS/Next Image layer architecture; no Three, R3F, Babylon, canvas or
 continuous render loop is used in runtime Home.
 
+HOME-HERO-WORLDS-3D-01 replaced the V02 kits with environmental island
+maquettes in new folders, and MINDFLOW-CLEANUP-03C removed the V02 kits
+(`dioramas/route/`, `dioramas/circuit/`) together with their generators. The
+master scene never followed them across: `worldMasterSceneConfig.ts` derives
+`essentialAssets` from `WORLD_DIORAMA_CONFIGS`, which resolves to the folders
+below.
+
 Active runtime diorama layers:
 
 | Folder | Role |
 | --- | --- |
-| `dioramas/route/` | Route independent layers: contact shadow, base, back environment, board, walls, gameplay props, portal, guardian, explorer, lights, front environment and energy. |
-| `dioramas/circuit/` | Memory independent layers: contact shadow, base, back environment, board, pads, core, energy and front environment. |
+| `dioramas/route-world/` | Route hero island: shadow, base, terrain, structure, props, characters, energy and front. |
+| `dioramas/circuit-world/` | Memory hero island: the same passes minus `characters` — the artefact is the subject. |
+| `dioramas/panel/`, `dioramas/trail/`, `dioramas/garden/` | Secondary worlds: contact shadow, base, back, main, detail, energy and front. |
 
-Regenerate the V02 layered runtime assets and review sheets with:
+Regenerate the layered runtime assets and review sheets with:
 
 ```powershell
-& "C:\Program Files\Blender Foundation\Blender 5.1\blender.exe" --background --python tools\blender\create_route_home_diorama.py
-& "C:\Program Files\Blender Foundation\Blender 5.1\blender.exe" --background --python tools\blender\create_memory_circuit_home_diorama.py
-node tools/assets/create_world_diorama_final_layers.mjs
+& "C:\Program Files\Blender Foundation\Blender 5.1\blender.exe" --background --python tools\blender\create_hero_world_dioramas.py
+& "C:\Program Files\Blender Foundation\Blender 5.1\blender.exe" --background --python tools\blender\create_secondary_world_dioramas.py
+node tools/assets/create_hero_world_layers.mjs
+node tools/assets/create_secondary_world_layers.mjs
 ```
+
+`create_hero_world_dioramas.py` stages `public/models/route/*.glb` — including
+`shield.glb`, which is why that model stays on disk even though the game no
+longer loads it.
 
 Review-only V02 material lives in `docs/archive/world-diorama-2_5d-02/` and
 must not be referenced by runtime code. V01 review material remains archived in

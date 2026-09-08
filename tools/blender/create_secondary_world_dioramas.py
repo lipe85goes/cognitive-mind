@@ -5,7 +5,9 @@ Central de Comandos, Trilha Logica and Jardim de Sementes were flat sprites in
 the Home gallery; they read as clipart icons next to the layered Route and
 Circuit maquettes. This script builds them as real maquettes from primitives,
 using the SAME orthographic camera family, canvas and warm-key/teal-fill
-lighting as `create_route_home_diorama.py`, and writes transparent PNG passes.
+lighting as the hero worlds, and writes transparent PNG passes.
+(That camera family was first established by `create_route_home_diorama.py`,
+removed in MINDFLOW-CLEANUP-03C; `create_hero_world_dioramas.py` carries it now.)
 
 Run from the project root with Blender:
 blender --background --python tools/blender/create_secondary_world_dioramas.py

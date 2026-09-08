@@ -84,93 +84,6 @@ function baseDiorama(inner) {
   </g>`;
 }
 
-function routeWorld() {
-  const stones = [
-    [201, 353, 42, 27],
-    [260, 330, 45, 28],
-    [322, 315, 44, 29],
-    [385, 304, 46, 30],
-    [451, 289, 44, 28],
-    [506, 257, 47, 30],
-  ]
-    .map(([cx, cy, rx, ry], index) => `
-      <ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="${index % 2 ? "#d9ceb0" : "#bfb7a0"}" stroke="#7d6642" stroke-width="5"/>
-      <path d="M${cx - rx * 0.42} ${cy - 2} Q${cx} ${cy - 12} ${cx + rx * 0.42} ${cy - 4}" stroke="#f5ebca" stroke-width="3" opacity="0.34" fill="none"/>
-    `)
-    .join("");
-
-  const body = baseDiorama(`
-    <path d="M139 374 C198 287 314 246 440 257 C515 263 569 237 600 198" fill="none" stroke="#e7c378" stroke-width="11" stroke-linecap="round" opacity="0.42"/>
-    <path d="M151 378 C215 318 302 293 390 298 C467 302 531 273 580 220" fill="none" stroke="#48795f" stroke-width="42" stroke-linecap="round" opacity="0.42"/>
-    ${stones}
-    <g filter="url(#contactShadow)">
-      <path d="M500 226 L500 164 Q500 136 531 128 Q562 136 562 164 L562 226 Z" fill="#4fcf75"/>
-      <path d="M477 229 Q531 191 585 229 L585 263 Q531 296 477 263Z" fill="#556057" stroke="url(#brass)" stroke-width="8"/>
-      <ellipse cx="531" cy="223" rx="37" ry="44" fill="#29d66b" opacity="0.82"/>
-      <ellipse cx="531" cy="223" rx="23" ry="31" fill="#b9ffcd" opacity="0.32"/>
-    </g>
-    <g filter="url(#glowGold)">
-      <circle cx="276" cy="296" r="15" fill="#ffdb58"/>
-      <circle cx="420" cy="276" r="14" fill="#ffdc60"/>
-      <circle cx="486" cy="339" r="13" fill="#ffdc60"/>
-      <circle cx="276" cy="296" r="25" fill="#ffdf67" opacity="0.18"/>
-      <circle cx="420" cy="276" r="23" fill="#ffdf67" opacity="0.18"/>
-      <circle cx="486" cy="339" r="22" fill="#ffdf67" opacity="0.18"/>
-    </g>
-    <g filter="url(#contactShadow)">
-      <ellipse cx="223" cy="385" rx="34" ry="14" fill="#0b4f69" opacity="0.38"/>
-      <path d="M222 312 C205 328 201 366 210 387 C218 405 239 405 247 387 C256 366 251 329 235 312 Z" fill="#29b7d4"/>
-      <circle cx="228" cy="293" r="23" fill="#68e5ef"/>
-      <path d="M210 289 C216 272 237 267 248 279" stroke="#dfffff" stroke-width="6" fill="none" opacity="0.5"/>
-    </g>
-    <g filter="url(#contactShadow)">
-      <ellipse cx="369" cy="286" rx="33" ry="13" fill="#4a2318" opacity="0.38"/>
-      <path d="M341 251 Q369 202 397 251 L388 308 Q369 323 350 308Z" fill="#2b231b"/>
-      <path d="M354 254 Q369 238 384 254 L383 299 Q369 310 355 299Z" fill="#17120e"/>
-      <circle cx="361" cy="262" r="6" fill="#ffb72e"/>
-      <circle cx="377" cy="262" r="6" fill="#ffb72e"/>
-      <path d="M349 309 Q369 322 389 309" stroke="#f2a432" stroke-width="6" opacity="0.88"/>
-    </g>
-    <g>
-      <path d="M308 389 L332 337 L355 389 Z" fill="#b94b4b" stroke="#ffc7a2" stroke-width="5"/>
-      <path d="M458 372 L478 331 L501 374 Z" fill="#b94b4b" stroke="#ffc7a2" stroke-width="5"/>
-    </g>
-    <path d="M175 319 Q265 241 371 251 Q491 261 554 203" stroke="#f8e6a8" stroke-width="4" stroke-dasharray="12 12" opacity="0.35" fill="none"/>
-  `);
-
-  return svgFrame(WORLD_SIZE.width, WORLD_SIZE.height, body);
-}
-
-function circuitWorld() {
-  const pad = (cx, cy, colorA, colorB, symbol) => `
-    <g filter="url(#contactShadow)">
-      <ellipse cx="${cx}" cy="${cy + 34}" rx="62" ry="21" fill="#1b1715" opacity="0.34"/>
-      <ellipse cx="${cx}" cy="${cy}" rx="72" ry="45" fill="url(#brass)" opacity="0.95"/>
-      <ellipse cx="${cx}" cy="${cy - 2}" rx="61" ry="36" fill="${colorB}"/>
-      <ellipse cx="${cx}" cy="${cy - 6}" rx="46" ry="27" fill="${colorA}" opacity="0.88"/>
-      ${symbol}
-    </g>`;
-
-  const body = baseDiorama(`
-    <ellipse cx="358" cy="310" rx="184" ry="107" fill="#34363c" stroke="url(#brass)" stroke-width="8"/>
-    <ellipse cx="358" cy="310" rx="151" ry="83" fill="none" stroke="#f3d37b" stroke-width="5" opacity="0.42"/>
-    <ellipse cx="358" cy="310" rx="102" ry="54" fill="none" stroke="#52c4c6" stroke-width="4" opacity="0.28"/>
-    <path d="M244 291 C294 257 424 257 476 291" stroke="#54c8d1" stroke-width="6" opacity="0.55" fill="none"/>
-    <path d="M253 344 C306 381 413 381 470 342" stroke="#f4c848" stroke-width="6" opacity="0.55" fill="none"/>
-    ${pad(257, 294, "#ff6858", "#a9342c", '<path d="M252 282 C279 300 274 326 249 332 C263 315 235 306 252 282Z" fill="#ffd8a9" opacity="0.9"/>')}
-    ${pad(461, 294, "#38b9ff", "#1263a3", '<path d="M434 288 C458 273 480 278 494 296 C475 289 456 304 438 302Z" fill="#d9f5ff" opacity="0.9"/>')}
-    ${pad(296, 375, "#55cc75", "#28713d", '<path d="M279 376 C307 344 331 355 327 387 C304 380 296 384 279 376Z" fill="#dcffd7" opacity="0.9"/>')}
-    ${pad(426, 374, "#f5ce43", "#bd8025", '<circle cx="426" cy="370" r="16" fill="#fff6bd"/><g stroke="#fff6bd" stroke-width="5"><path d="M426 342v13"/><path d="M426 386v13"/><path d="M399 370h13"/><path d="M440 370h13"/></g>')}
-    <g filter="url(#glowGold)">
-      <path d="M343 299 L374 299 L390 331 L374 363 L343 363 L327 331Z" fill="#fef1c4" opacity="0.93"/>
-      <path d="M356 286 L383 330 L356 374 L329 330Z" fill="#f5d46c" opacity="0.48"/>
-      <circle cx="360" cy="331" r="54" fill="#fff0b6" opacity="0.11"/>
-    </g>
-  `);
-
-  return svgFrame(WORLD_SIZE.width, WORLD_SIZE.height, body);
-}
-
 function commandsWorld() {
   const body = baseDiorama(`
     <g filter="url(#contactShadow)">
@@ -290,9 +203,13 @@ function worldGlow() {
   );
 }
 
+// MINDFLOW-CLEANUP-03C: the two hero worlds no longer take their sprite from
+// here. Rota and Circuito are rendered from the layered dioramas, and their
+// transition/intro art comes from create_world_cohesion_assets.mjs as
+// world-route-hero.webp / world-circuit-hero.webp. The flat world-route.webp and
+// world-circuit.webp had no consumer left, so this stops emitting them; the
+// three secondary worlds below are still live in worldVisuals.ts.
 const assets = [
-  { name: "world-route.webp", title: "Rota", svg: routeWorld(), width: WORLD_SIZE.width, height: WORLD_SIZE.height },
-  { name: "world-circuit.webp", title: "Circuito", svg: circuitWorld(), width: WORLD_SIZE.width, height: WORLD_SIZE.height },
   { name: "world-panel.webp", title: "Painel", svg: commandsWorld(), width: WORLD_SIZE.width, height: WORLD_SIZE.height },
   { name: "world-trail.webp", title: "Trilha", svg: logicWorld(), width: WORLD_SIZE.width, height: WORLD_SIZE.height },
   { name: "world-garden.webp", title: "Jardim", svg: gardenWorld(), width: WORLD_SIZE.width, height: WORLD_SIZE.height },

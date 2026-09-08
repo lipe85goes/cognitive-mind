@@ -61,9 +61,14 @@ Identidade oficial:
 - profundidade: base, ambiente traseiro, tabuleiro, props, personagens,
   ambiente frontal, energia e sombra de contato.
 
-A cena mestre reutiliza o kit em camadas V02 em:
+A cena mestre reutiliza o kit em camadas em:
 
-`public/illustrations/home/dioramas/route/`
+`public/illustrations/home/dioramas/route-world/`
+
+`essentialAssets` em `worldMasterSceneConfig.ts` deriva de
+`WORLD_DIORAMA_CONFIGS`, que resolve para esse diretório. O kit V02 anterior
+(`dioramas/route/`) foi substituído por HOME-HERO-WORLDS-3D-01 e removido em
+MINDFLOW-CLEANUP-03C.
 
 O runtime Babylon continua sendo a implementacao jogavel. A cena mestre nao
 substitui o board 3D e nao interfere em picking, camera, D-pad ou teclado.

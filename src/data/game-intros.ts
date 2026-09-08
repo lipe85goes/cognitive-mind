@@ -7,12 +7,11 @@ export interface GameIntroContent {
   description: string;
   skill: string;
   reassurance: string;
-  image: string;
   world: WorldKey;
   steps: [string, string, string];
 }
 
-/** Intro-only copy; title/skill/image/world come from the worlds registry. */
+/** Intro-only copy; title/skill/world come from the worlds registry. */
 const INTRO_COPY: Record<
   GameId,
   Pick<GameIntroContent, "originalName" | "description" | "reassurance" | "steps">
@@ -85,7 +84,6 @@ export const GAME_INTROS: Record<GameId, GameIntroContent> = Object.fromEntries(
         ...INTRO_COPY[gameId],
         title: world.name,
         skill: world.skill,
-        image: world.image,
         world: world.world,
       },
     ];

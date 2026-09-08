@@ -5,8 +5,15 @@
  * Output: public/illustrations/home/dioramas/<world>-world/*.webp
  *
  * New folders (`route-world`, `circuit-world`) instead of overwriting the old
- * kits: the previous route layers still feed the game-facing master scene, and
- * fresh URLs also guarantee the image optimizer cannot serve a stale variant.
+ * kits, so fresh URLs guarantee the image optimizer cannot serve a stale
+ * variant.
+ *
+ * MINDFLOW-CLEANUP-03C: this note used to add that "the previous route layers
+ * still feed the game-facing master scene". That stopped being true when
+ * HOME-HERO-WORLDS-3D-01 pointed the master scene at these layers —
+ * `worldMasterSceneConfig.ts` derives `essentialAssets` from
+ * `WORLD_DIORAMA_CONFIGS`, which for both heroes resolves to `<world>-world`.
+ * The old `dioramas/route` and `dioramas/circuit` kits have been removed.
  *
  * Also asserts the silhouette guard that this mission exists to fix: every
  * pass must keep a real transparent margin on all four sides, so no world ends

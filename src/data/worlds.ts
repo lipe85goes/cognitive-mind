@@ -52,20 +52,8 @@ export interface WorldMeta {
   skill: string;
   /** Short invitation line on the station card. */
   purpose: string;
-  /** Illustration under /public/illustrations. */
-  image: string;
-  /** Final rendered Home diorama under /public/illustrations/worlds. */
-  dioramaImage: string;
   icon: typeof Palette;
 }
-
-export const WORLD_DIORAMA_IMAGES: Record<WorldKey, string> = {
-  memory: "/illustrations/worlds/memory-diorama.webp",
-  route: "/illustrations/worlds/route-diorama.webp",
-  commands: "/illustrations/worlds/command-diorama.webp",
-  logic: "/illustrations/worlds/logic-diorama.webp",
-  garden: "/illustrations/worlds/garden-diorama.webp",
-};
 
 /**
  * Single source of truth for per-game world presentation.
@@ -78,8 +66,6 @@ export const GAME_WORLDS: Record<GameId, WorldMeta> = {
     name: "Circuito de Memória",
     skill: "Memória e atenção",
     purpose: "Exercite sua lembrança com leveza.",
-    image: "/illustrations/station-memory.webp",
-    dioramaImage: WORLD_DIORAMA_IMAGES.memory,
     icon: WORLDS.memory.icon,
   },
   "escape-maze": {
@@ -87,8 +73,6 @@ export const GAME_WORLDS: Record<GameId, WorldMeta> = {
     name: "Rota Estratégica",
     skill: "Planejamento e estratégia",
     purpose: "Planeje caminhos e tome boas decisões.",
-    image: "/illustrations/station-route.webp",
-    dioramaImage: WORLD_DIORAMA_IMAGES.route,
     icon: WORLDS.route.icon,
   },
   "security-panel": {
@@ -96,8 +80,6 @@ export const GAME_WORLDS: Record<GameId, WorldMeta> = {
     name: "Central de Comandos",
     skill: "Foco e sequência",
     purpose: "Atenção e controle em cada movimento.",
-    image: "/illustrations/station-command.webp",
-    dioramaImage: WORLD_DIORAMA_IMAGES.commands,
     icon: WORLDS.commands.icon,
   },
   "number-trail": {
@@ -105,8 +87,6 @@ export const GAME_WORLDS: Record<GameId, WorldMeta> = {
     name: "Trilha Lógica",
     skill: "Atenção e ordem lógica",
     purpose: "Conecte ideias e resolva passo a passo.",
-    image: "/illustrations/station-logic.webp",
-    dioramaImage: WORLD_DIORAMA_IMAGES.logic,
     icon: WORLDS.logic.icon,
   },
   "seed-garden": {
@@ -114,8 +94,6 @@ export const GAME_WORLDS: Record<GameId, WorldMeta> = {
     name: "Jardim de Sementes",
     skill: "Contagem, planejamento e atenção",
     purpose: "Cultive foco, paciência e constância.",
-    image: "/illustrations/station-garden.webp",
-    dioramaImage: WORLD_DIORAMA_IMAGES.garden,
     icon: WORLDS.garden.icon,
   },
 };

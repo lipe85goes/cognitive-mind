@@ -1,11 +1,3 @@
-/** Cognitive skill areas used for labeling activities (no medical claims). */
-export type CognitiveSkill =
-  | "attention"
-  | "memory"
-  | "planning"
-  | "reaction"
-  | "spatial";
-
 export type ActivityStatus = "available" | "locked";
 
 export type GameId =
@@ -23,7 +15,6 @@ export interface Activity {
   gameId?: GameId;
   title: string;
   description: string;
-  skill: CognitiveSkill;
   status: ActivityStatus;
   icon: string;
 }

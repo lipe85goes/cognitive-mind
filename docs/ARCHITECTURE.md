@@ -83,9 +83,17 @@ Contrato da Home:
 Assets ativos/permitidos da Home:
 
 - `public/illustrations/home/*`
-- `public/illustrations/worlds/*-diorama.webp`
-- `public/illustrations/station-*.webp`
 - `public/illustrations/ui/*.svg`
+
+`public/illustrations/station-*.webp` foi removido em MINDFLOW-CLEANUP-03C: a
+Home passou a mostrar maquetes em camadas e nenhum código lia mais esses
+arquivos. Os masters ficam em `docs/archive/home-station-masters/`.
+
+`public/illustrations/worlds/*-diorama.webp` continua no disco, mas não é asset
+de runtime: `route-diorama.webp` e `memory-diorama.webp` são a FONTE de
+`world-route-hero.webp` / `world-circuit-hero.webp` (via
+`tools/assets/create_world_cohesion_assets.mjs`), e os outros três são masters
+visuais sem consumidor em código.
 
 A Home 3D antiga permanece no disco para referência e laboratório:
 
