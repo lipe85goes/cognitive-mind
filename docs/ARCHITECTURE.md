@@ -122,7 +122,6 @@ Runtime visual ativo:
 - `public/models/route/portal.glb`
 - `public/models/route/light.glb`
 - `public/models/route/trap.glb`
-- `public/models/route/shield.glb`
 - `public/models/route/textures/*.png`
 
 Contrato dos assets e regeneração ficam em `public/models/route/README.md`. Previews PNG da Rota não ficam mais em `public/`; foram arquivados em `docs/archive/route-previews/`.
@@ -201,7 +200,6 @@ Scripts ativos de geração visual:
 - `tools/blender/create_route_portal_glb.py`
 - `tools/blender/create_route_light_glb.py`
 - `tools/blender/create_route_trap_glb.py`
-- `tools/blender/create_route_shield_glb.py`
 - `tools/blender/route_prop_asset_utils.py`
 - `tools/assets/generate_route_board_textures.py`
 

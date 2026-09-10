@@ -42,7 +42,7 @@
     },
     {
       "layer": "route-props",
-      "size": 11466,
+      "size": 11074,
       "margins": {
         "top": 261,
         "bottom": 256,
@@ -62,7 +62,7 @@
     },
     {
       "layer": "route-energy",
-      "size": 6364,
+      "size": 6684,
       "margins": {
         "top": 278,
         "bottom": 354,

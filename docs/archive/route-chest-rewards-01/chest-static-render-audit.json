@@ -116,10 +116,10 @@
       "detailLabels": false,
       "cssShieldClasses": false,
       "shieldComponentFile": false,
-      "remainingOnDisk": {
-        "public/models/route/shield.glb": true,
-        "note": "no longer loaded by the Route board; the file and its Blender script stay only because two unrelated diorama scripts import them"
-      }
+      "modelOnDisk": false,
+      "modelGeneratorOnDisk": false,
+      "heroDioramaStagesIt": false,
+      "note": "the lucide `Shield` / `ShieldPlus` icons naming the Hunter and the Sentinel are a different thing and are deliberately not covered here"
     },
     {
       "id": "CHEST_STAYS_VISIBLY_SPENT",

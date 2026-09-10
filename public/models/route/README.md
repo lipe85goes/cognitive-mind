@@ -335,14 +335,17 @@ V05 adds a small self-contained prop pack for the Rota board:
 - `portal.glb` - green magical exit doorway/shrine.
 - `light.glb` - collectible warm light orb on a small base.
 - `trap.glb` - red crystal/spike danger marker.
-- `shield.glb` - blue protection pickup with a glowing shield emblem.
+
+`shield.glb` was the fourth prop, a blue protection pickup. ROTA-CHEST-REWARDS-01
+replaced that pickup with the Chest, and MINDFLOW-HOME-VISUAL-04 removed the
+model and its generator once the Home maquette stopped staging it too. Its
+previews stay in `docs/archive/route-previews/` as history.
 
 Each prop generator can also write a 3/4 preview and a top/near-top preview. Committed copies live in `docs/archive/route-previews/`, not in `public/`:
 
 - `portal-preview.png` / `portal-preview-top.png`
 - `light-preview.png` / `light-preview-top.png`
 - `trap-preview.png` / `trap-preview-top.png`
-- `shield-preview.png` / `shield-preview-top.png`
 
 The generators are:
 
@@ -350,10 +353,9 @@ The generators are:
 & "C:\Program Files\Blender Foundation\Blender 5.1\blender.exe" --background --python tools\blender\create_route_portal_glb.py -- --preview
 & "C:\Program Files\Blender Foundation\Blender 5.1\blender.exe" --background --python tools\blender\create_route_light_glb.py -- --preview
 & "C:\Program Files\Blender Foundation\Blender 5.1\blender.exe" --background --python tools\blender\create_route_trap_glb.py -- --preview
-& "C:\Program Files\Blender Foundation\Blender 5.1\blender.exe" --background --python tools\blender\create_route_shield_glb.py -- --preview
 ```
 
-All four scripts share `tools/blender/route_prop_asset_utils.py` for
+All three scripts share `tools/blender/route_prop_asset_utils.py` for
 locale-safe material creation, Y-up export, preview cameras and render/export
 helpers.
 
@@ -376,7 +378,9 @@ disabled prototype and clones it onto the relevant board cells:
 - `portal.glb` for the exit cell
 - `light.glb` for uncollected collectible lights
 - `trap.glb` for untriggered traps
-- `shield.glb` for the available shield pickup
+
+The Chest has no model here: the renderer builds it from boxes, so its
+appearance lives in `routeBabylonScene.ts` rather than in this folder.
 
 All cloned prop meshes are non-pickable, so invisible tile hitboxes remain the
 only movement/input target. If any prop import fails, the renderer keeps the

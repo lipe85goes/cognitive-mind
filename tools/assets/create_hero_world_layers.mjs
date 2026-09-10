@@ -19,7 +19,7 @@
  * pass must keep a real transparent margin on all four sides, so no world ends
  * on the last pixel row again.
  */
-import { mkdir, readdir, stat, writeFile } from "node:fs/promises";
+import { mkdir, readdir, readFile, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import sharp from "sharp";
@@ -184,10 +184,33 @@ async function layerSheet(world, config, layers) {
 
 async function main() {
   await mkdir(REVIEW, { recursive: true });
-  const report = {};
+
+  // MINDFLOW-HOME-VISUAL-04: encode one world instead of both, with
+  //   node tools/assets/create_hero_world_layers.mjs --world route
+  // Re-encoding a world whose passes did not change would rewrite its runtime
+  // WebPs and its review sheet for nothing, and turn "the other world is
+  // untouched" into a claim instead of a fact.
+  const flagIndex = process.argv.indexOf("--world");
+  const requested = flagIndex >= 0 ? process.argv[flagIndex + 1] : null;
+  if (requested !== null && !(requested in WORLDS)) {
+    console.error(`unknown world ${requested}; expected one of ${Object.keys(WORLDS).join(", ")}`);
+    process.exit(2);
+  }
+  const selected = Object.entries(WORLDS).filter(([world]) => requested === null || world === requested);
+
+  // The weights report covers both worlds, so a partial run must merge into the
+  // existing file rather than drop the world it did not touch.
+  let report = {};
+  if (requested !== null) {
+    try {
+      report = JSON.parse(await readFile(path.join(REVIEW, "hero-asset-weights.json"), "utf8"));
+    } catch {
+      report = {};
+    }
+  }
   const allWarnings = [];
 
-  for (const [world, config] of Object.entries(WORLDS)) {
+  for (const [world, config] of selected) {
     const { layers, warnings } = await encodeWorld(world, config);
     report[world] = layers;
     allWarnings.push(...warnings);

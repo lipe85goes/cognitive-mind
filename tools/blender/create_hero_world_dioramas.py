@@ -414,7 +414,43 @@ def build_route(mats: dict) -> None:
     for index, (x, z) in enumerate([(-1.35, 1.75), (0.95, 0.95), (1.85, -0.3)]):
         import_glb("props", "light", f"Route_Light{index}", (x, 0.24, z), 0.62)
     import_glb("props", "trap", "Route_Trap", (-1.85, 0.2, -0.3), 0.6)
-    import_glb("props", "shield", "Route_Shield", (1.25, 0.22, 1.45), 0.58, rotation_y=-16)
+
+    # MINDFLOW-HOME-VISUAL-04: the reward the Explorer detours for is the Chest.
+    # This slot used to hold `shield.glb`, a pickup the game removed in
+    # ROTA-CHEST-REWARDS-01 — the maquette was still advertising it. The Chest
+    # has no GLB of its own: the board builds it from boxes, so it is rebuilt
+    # here the same way and in the same palette the renderer uses — a small
+    # stone relic banded in bronze, turned slightly so a face and a side both
+    # catch the key light, with a single teal ember on the lid.
+    chest_x, chest_z, chest_turn = 1.25, 1.45, -16
+    turn_cos = math.cos(math.radians(chest_turn))
+    turn_sin = math.sin(math.radians(chest_turn))
+
+    add_box(
+        "props", "Route_ChestPlinth", (chest_x, 0.215, chest_z), (0.40, 0.05, 0.32),
+        mats["bronze_dark"], rotation_y=chest_turn, edge=0.012,
+    )
+    add_box(
+        "props", "Route_ChestBody", (chest_x, 0.335, chest_z), (0.34, 0.19, 0.26),
+        mats["rock"], rotation_y=chest_turn, edge=0.02,
+    )
+    # The lid overhangs the body. The ruin blocks nearby are flush stacks, so the
+    # overhang is what stops this reading as one more piece of rubble.
+    add_box(
+        "props", "Route_ChestLid", (chest_x, 0.465, chest_z), (0.40, 0.08, 0.30),
+        mats["rock"], rotation_y=chest_turn, edge=0.022,
+    )
+    # No strapping over the lid. Bronze bands are what a chest has close up, but
+    # this maquette is shown at roughly a third of the render size, where straps
+    # thin enough to be in scale render as dark grooves and read as damage. The
+    # silhouette and the ember carry the object at the size the player sees.
+    #
+    # A bronze lock plate on the face that is turned towards the camera.
+    add_box(
+        "props", "Route_ChestLock",
+        (chest_x + 0.135 * turn_sin, 0.40, chest_z + 0.135 * turn_cos),
+        (0.10, 0.09, 0.03), mats["bronze"], rotation_y=chest_turn, edge=0.006,
+    )
     for index, (x, z, sx) in enumerate([(-3.4, 1.7, 0.7), (3.5, -1.9, 0.6), (-2.6, 2.15, 0.55)]):
         add_sphere(
             "props", f"Route_Moss{index}", (x, 0.26, z), 0.34, mats["moss"],
@@ -442,6 +478,17 @@ def build_route(mats: dict) -> None:
             "energy", f"Route_LightPool{index}", (x, 0.4, z), 0.19, mats["amber_glow"],
             scale=(1.0, 0.8, 1.0), segments=18,
         )
+    # The Chest's one teal ember — the same single point of reward light the
+    # board renders, so the maquette and the game read as the same object. It
+    # floats clear of the lid: sunk into it, it rendered as a flat pasted disc
+    # rather than a light.
+    # Sized against the lantern pools above (0.19): smaller, because the Chest is
+    # one reward rather than a light source, but large enough to survive the
+    # downscale — at 0.055 it disappeared on the Home card entirely.
+    add_sphere(
+        "energy", "Route_ChestEmber", (1.25, 0.60, 1.45), 0.10, mats["teal_glow"],
+        scale=(1.0, 0.8, 1.0), segments=18,
+    )
 
     # Foreground: rocks and leaves that close the composition.
     for index, (x, z, r) in enumerate([(-3.15, 2.5, 0.5), (2.9, 2.45, 0.44), (0.15, 2.85, 0.36)]):
@@ -642,7 +689,22 @@ def render_world(prefix: str) -> None:
 
 
 def main() -> None:
+    # MINDFLOW-HOME-VISUAL-04: render one world instead of all of them, with
+    #   blender --background --python <this> -- --world route
+    # Re-rendering a world it did not need to touch would leave a diff on that
+    # world's passes for no reason, and make "the other worlds are unchanged"
+    # something to argue rather than something that is true by construction.
+    requested = None
+    if "--" in sys.argv:
+        rest = sys.argv[sys.argv.index("--") + 1:]
+        if "--world" in rest:
+            requested = rest[rest.index("--world") + 1]
+    if requested is not None and requested not in WORLDS:
+        raise SystemExit(f"unknown world {requested!r}; expected one of {sorted(WORLDS)}")
+
     for prefix, builder in WORLDS.items():
+        if requested is not None and prefix != requested:
+            continue
         clear_scene()
         LAYERS.clear()
         CURRENT["prefix"] = prefix

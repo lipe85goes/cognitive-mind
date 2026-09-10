@@ -75,9 +75,10 @@ node tools/assets/create_hero_world_layers.mjs
 node tools/assets/create_secondary_world_layers.mjs
 ```
 
-`create_hero_world_dioramas.py` stages `public/models/route/*.glb` — including
-`shield.glb`, which is why that model stays on disk even though the game no
-longer loads it.
+`create_hero_world_dioramas.py` stages `public/models/route/*.glb`. It used to
+stage `shield.glb` as well, which is why that model outlived the pickup it
+represented; MINDFLOW-HOME-VISUAL-04 replaced it in the maquette with the Chest
+the game actually has, and removed the model.
 
 Review-only V02 material lives in `docs/archive/world-diorama-2_5d-02/` and
 must not be referenced by runtime code. V01 review material remains archived in

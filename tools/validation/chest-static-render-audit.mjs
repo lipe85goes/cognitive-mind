@@ -175,16 +175,25 @@ const shieldTraces = {
   shieldComponentFile: fs.existsSync(
     path.join(ROOT, "src/components/three/route/RouteShield3D.tsx"),
   ),
+  /**
+   * MINDFLOW-HOME-VISUAL-04: the model's presence used to be recorded here as a
+   * detail rather than asserted, because the Home maquette generator still
+   * staged it — the board had dropped the pickup while the Home went on
+   * advertising it. The maquette now stages the Chest, so nothing owns the model
+   * and its absence is a contract instead of an observation.
+   */
+  modelOnDisk: fs.existsSync(path.join(ROOT, "public/models/route/shield.glb")),
+  modelGeneratorOnDisk: fs.existsSync(
+    path.join(ROOT, "tools/blender/create_route_shield_glb.py"),
+  ),
+  heroDioramaStagesIt: /import_glb\([^)]*"shield"/.test(
+    read("tools/blender/create_hero_world_dioramas.py"),
+  ),
 };
 check("SHIELD_FULLY_REMOVED", !Object.values(shieldTraces).some(Boolean), {
   ...shieldTraces,
-  remainingOnDisk: {
-    "public/models/route/shield.glb": fs.existsSync(
-      path.join(ROOT, "public/models/route/shield.glb"),
-    ),
-    note:
-      "no longer loaded by the Route board; the file and its Blender script stay only because two unrelated diorama scripts import them",
-  },
+  note:
+    "the lucide `Shield` / `ShieldPlus` icons naming the Hunter and the Sentinel are a different thing and are deliberately not covered here",
 });
 
 check(
