@@ -47,14 +47,15 @@ Do not run `npm install` to set up a clone — it can move the lockfile.
 ## Requirements
 
 **Core development** — everything above needs only Node and npm. The repository
-does not declare an `engines` range; it is developed on Node 24 / npm 11, and
-that is recorded here rather than enforced, because pinning it is a change to
-the project's contract and not a migration task.
+declares Node `>=20.9.0`, matching the minimum supported by the current Next.js
+runtime, and records `npm@11.12.1` as the package manager. The GitHub migration
+was independently validated on Node 24.15.0 / npm 11.12.1.
 
 **Asset pipeline** — the Blender and Python generators under `tools/blender/`
-and `tools/assets/` need Blender and Python installed. They regenerate art and
-are not part of install, lint, typecheck, build or validation. A machine without
-Blender can develop the whole application; it just cannot re-render a diorama.
+and `tools/assets/` need Blender and Python installed. The Node-based asset
+scripts use `sharp`, which is now an explicit devDependency instead of relying
+on Next.js to provide it transitively. These tools regenerate art and are not
+part of the normal application build.
 
 ## Branches
 
