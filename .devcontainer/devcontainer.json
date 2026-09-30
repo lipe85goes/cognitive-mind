@@ -1,0 +1,13 @@
+{
+  "name": "MindFlow",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:1-24-bookworm",
+  "postCreateCommand": "corepack enable && corepack prepare npm@11.12.1 --activate && npm ci",
+  "forwardPorts": [3000],
+  "portsAttributes": {
+    "3000": {
+      "label": "MindFlow",
+      "onAutoForward": "openBrowser"
+    }
+  },
+  "remoteUser": "node"
+}
