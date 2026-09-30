@@ -28,6 +28,45 @@ started on.
 - **Prove recovery before destroying anything.** Before a local copy is deleted,
   a fresh clone from GitHub must install, validate and build.
 
+
+## Cloud / Codespaces workflow
+
+`v06-portal-requires-lights` is the **canonical integration branch** for the
+current MindFlow line. The GitHub default branch is still historical, so never
+use the repository default as an implicit base.
+
+From this checkpoint forward:
+
+1. **Cloud-first development.** Normal implementation work happens in GitHub
+   Codespaces / remote Codex environments. The old local checkout is frozen for
+   reference only and must not become a second source of truth.
+2. **One isolated branch per task.** Start every non-trivial change from the
+   latest `v06-portal-requires-lights` and create a short-lived remote task
+   branch. Do not develop directly on the canonical integration branch.
+3. **Validate before integration.** Run the checks appropriate to the change on
+   the task branch. For repository-wide or behavior-sensitive work this means
+   lint, typecheck, production build and the relevant CORE/DEEP validators.
+4. **Review before merge.** Push the task branch, inspect the diff, then merge it
+   back into `v06-portal-requires-lights` only after the change is accepted.
+   Do not use force-push to rewrite accepted history.
+5. **Local is disposable.** Local clones may be used for emergency inspection,
+   but they are not an implementation lane. If a local clone diverges from
+   GitHub, GitHub wins.
+6. **No hidden machine state.** A task is not complete if its correctness
+   depends on local-only files, local caches, untracked assets, or machine-local
+   configuration that a fresh Codespace cannot reproduce.
+
+For a new task, the safe baseline is:
+
+```bash
+git fetch origin
+git checkout v06-portal-requires-lights
+git pull --ff-only
+git switch -c <task-branch>
+```
+
+Then develop, validate, commit, push the task branch, review, and integrate.
+
 ## Reproducing the project
 
 ```bash
