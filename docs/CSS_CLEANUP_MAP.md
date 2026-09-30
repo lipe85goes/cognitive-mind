@@ -127,6 +127,58 @@ Still dead but left for a later batch (0 consumers, outside this audit's scope):
 They still hold 15 `var(--world-card-*)` reads and the `.world-entry*` `var(--entry-*)` reads; neither set
 has a definition now, and neither was ever reachable before.
 
+## CLEANUP-HOME-CSS-LEGACY-03 World/Game Leftovers
+
+- `globals.css` line count before: 11,017 lines. After: 10,251 lines (766 deleted, 0 added).
+- Audited the 12 families left over by LEGACY-02: `.world-object-aura`, `.world-number-medal`, `.world-title-plaque`,
+  `.world-enter-button`, `.world-stage-tab`, `.world-new-ribbon`, `.world-game-piece`, `.world-entry*`
+  (`-card`, `-media`, `-image`, `-emblem`, `-eyebrow`, `-name`), `.game-play-cta`, `.game-note-card`,
+  `.game-brand-lockup`, `.game-hero-copy`.
+- All of them have 0 consumers in `src/`, `tools/` and `public/`, labs and games included: static `className`,
+  template literals (`world-${…}`, `game-${…}`, `${…}-suffix`), string concatenation, `classList`,
+  `querySelector`/`closest`/`className =` and other CSS files were checked. At runtime, no element carries any
+  of these classes on Home, the 5 selected worlds, the 5 intros, the 5 games (desktop and mobile, production
+  build) or on `/lab/3d-home` and `/lab/route-launcher` (dev server).
+- Last consumers were removed in `4e889e8` (`world-object-aura`, `-number-medal`, `-title-plaque`,
+  `-enter-button`, `-stage-tab`, `-new-ribbon`), `9e4c5e4` (`world-game-piece`, `game-play-cta`,
+  `game-note-card`, `game-brand-lockup`, `game-hero-copy`) and `bdbd26c` (`world-entry*`).
+- Not the same thing, still live: `.wentry-*` in `src/styles/world-entry.css` (imported by
+  `WorldEntryTransition.tsx`) and the `data-world-entry-focus` / `data-world-entry-return` attributes.
+- Removed 84 rules whose every selector requires one of those classes (pseudo-elements, `:focus-visible`,
+  `:hover`, `:nth-child()`, `.is-selected` and descendant selectors included), 1 `@media (max-width: 767px)`
+  left empty, and 2 comments that only described removed rules. No selector used `:not()`, `:is()` or
+  `:where()` with these classes.
+- Pruned `.game-brand-lockup strong` and `.game-hero-copy h1` from the one shared selector list; its
+  declarations and the remaining `.game-world-plaque h2` selector are unchanged.
+- The removed rules used no `@keyframes` and defined no custom properties. The 23 orphaned
+  `var(--world-card-*)` / `var(--entry-*)` reads are gone with them; neither prefix is read anywhere now.
+- Every surviving rule, at-rule and comment is byte-identical and in the same order. The compiled CSS chunk
+  went from 201,976 to 187,350 bytes; the other 4 chunks are byte-identical. Computed styles (every element
+  plus `::before` / `::after`) and full-page screenshots of Home, each selected world, the 5 intros and the
+  5 games, at desktop and mobile widths, are identical before and after on production builds. Computed
+  styles on the 2 lab routes are identical in dev.
+
+Exact searches used before removal:
+
+```bash
+# 0 matches
+git grep -nE "world-object-aura|world-number-medal|world-title-plaque|world-enter-button|world-stage-tab|world-new-ribbon|world-game-piece|game-play-cta|game-note-card|game-brand-lockup|game-hero-copy" -- . ':!src/app/globals.css' ':!docs'
+# 10 matches, none a class: import paths (components/world-entry/, styles/world-entry.css)
+# and data-world-entry-focus / data-world-entry-return attributes
+git grep -n "world-entry" -- src ':!src/app/globals.css'
+```
+
+Preserved on purpose:
+
+- `.game-world-plaque h2` in the pruned list: outside this audit's scope.
+- `public/illustrations/ui/button-gloss.svg`: its only reference was the removed `.game-play-cta::after`
+  rule, but CSS-only missions keep assets.
+
+Still 0 static consumers but not audited here (candidates for a later batch): `.game-world-plaque`,
+`.game-world-shelf`, `.shelf-track`, `.shelf-arrow`, `.game-world-stage`, `.game-bottom-hud`, `.game-hud-chip`,
+`.game-profile-chip`, `.game-settings-button`, `.game-topbar`, `.game-brandmark`, `.game-mission-notes`,
+`.game-opening-stage`, `.game-progress-plaque`, `.memory-orb`, `.memory-console`.
+
 ## Active Blocks To Preserve
 
 ### Global Base / Tokens
