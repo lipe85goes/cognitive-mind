@@ -71,6 +71,26 @@ Paired changes:
 
 Do not revert the base to a light wash while the active screens are dark.
 
+## CLEANUP-HOME-CSS-LEGACY Card Removal
+
+- `globals.css` line count before: 12,745 lines. After: 12,075 lines (670 deleted, 0 added).
+- Removed every rule whose selectors require `.world-diorama-card` or a `.world-card-*` class
+  (`-body`, `-copy`, `-glow`, `-image`, `-inner-frame`, `-media`, `-meta-row`, `-skill`, `-title`):
+  87 rules across four duplicated generations of the old card shelf, plus one `@media (min-width: 1280px)` left empty.
+- No rule mixed a dead selector with a live one, so no surviving rule was edited.
+
+Exact search used before removal (0 matches):
+
+```bash
+git grep -nwE "world-diorama-card|world-card-(body|copy|glow|image|inner-frame|media|meta-row|skill|title)" -- src ':!src/app/globals.css'
+```
+
+Preserved on purpose:
+
+- `.world-tone-*` and all `--world-card-*` definitions, still read by the `.world-piece-*` / `.world-rendered-*` blocks.
+- `.world-piece-*`, `.world-rendered-*`, `.world-art-shell` and the other `world-*` shelf selectors; only
+  descendants gated by `.world-diorama-card` were removed.
+
 ## Active Blocks To Preserve
 
 ### Global Base / Tokens
