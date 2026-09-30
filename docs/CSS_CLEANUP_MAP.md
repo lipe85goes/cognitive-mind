@@ -91,6 +91,42 @@ Preserved on purpose:
 - `.world-piece-*`, `.world-rendered-*`, `.world-art-shell` and the other `world-*` shelf selectors; only
   descendants gated by `.world-diorama-card` were removed.
 
+## CLEANUP-HOME-CSS-LEGACY-02 World Shelf Families
+
+- `globals.css` line count before: 12,075 lines. After: 11,017 lines (1,061 deleted, 3 added).
+- Audited: `world-piece-*` (16 classes), `world-rendered-*` (3), `world-tone-*` (5), `world-art-shell`,
+  `world-pedestal-deck`, `world-mini-*` (4) and the `--world-card-*` custom properties.
+- All 30 classes have 0 consumers in `src/`: static `className`, template literals, dynamic prefixes and
+  string concatenation were checked. The last consumer, `` `world-entry world-tone-${meta.world}` `` in
+  `WorldEntryTransition.tsx`, was removed in `bdbd26c`.
+- `--world-card-*` was defined only on `.world-tone-*`, so it never reached a rendered element, and every
+  rule reading it was already dead.
+- Removed 106 rules whose every selector requires one of those classes (including descendant rules such as
+  `.world-mini-scene .garden-pot` and `.world-game-piece.is-selected .world-piece-plaque`), both `.world-tone-*`
+  generations (the `--entry-*` set and the `--world-card-*` set), and 2 `@media` blocks left empty.
+- Pruned dead selectors from 5 shared selector lists without touching their declarations:
+  `.world-piece-shadow` / `-backplate` / `-foot` (twice, beside `.world-object-aura`), `.world-piece-enter` and
+  `.world-piece-enter::after` (beside `.game-play-cta` / `.game-note-card button`), `.world-piece-title`
+  (beside `.game-world-plaque h2`).
+- Removed or shortened 4 comments that only described removed rules.
+- Every surviving rule body is byte-identical to its previous version. Computed styles (every element plus
+  `::before` / `::after`) and full-page screenshots of Home, each selected world, the 5 world intros and the
+  5 game screens, at desktop and mobile widths, are identical before and after on production builds. The
+  `/lab/*` routes return 404 in production, so they were covered by the consumer search only.
+
+Exact search used before removal (0 matches):
+
+```bash
+git grep -nE "(^|[^A-Za-z0-9_-])(world-piece-|world-rendered-|world-tone-|world-art-shell|world-pedestal|world-mini)" -- src ':!src/app/globals.css'
+git grep -n -- "--world-card-" -- src ':!src/app/globals.css'
+```
+
+Still dead but left for a later batch (0 consumers, outside this audit's scope): `.world-object-aura`,
+`.world-number-medal`, `.world-title-plaque`, `.world-enter-button`, `.world-stage-tab`, `.world-new-ribbon`,
+`.world-game-piece`, `.world-entry*`, `.game-play-cta`, `.game-note-card`, `.game-brand-lockup`, `.game-hero-copy`.
+They still hold 15 `var(--world-card-*)` reads and the `.world-entry*` `var(--entry-*)` reads; neither set
+has a definition now, and neither was ever reachable before.
+
 ## Active Blocks To Preserve
 
 ### Global Base / Tokens

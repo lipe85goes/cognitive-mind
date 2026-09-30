@@ -1101,43 +1101,6 @@ button:disabled:focus-visible {
    the cascade until a selector-level cleanup proves they are unused.
    ============================================================ */
 
-/* Per-world tones for shelf tiles and the featured panel. Calibrated to the
-   station illustrations (so the memory tone is green like its tree art). */
-.world-tone-memory {
-  --entry-accent: #19876d;
-  --entry-deep: #10634f;
-  --entry-border: #8fc8b3;
-  --entry-soft: #e6f4ed;
-}
-
-.world-tone-route {
-  --entry-accent: #397fa0;
-  --entry-deep: #18556d;
-  --entry-border: #9dc8da;
-  --entry-soft: #e8f3f8;
-}
-
-.world-tone-commands {
-  --entry-accent: #167c7a;
-  --entry-deep: #0d625d;
-  --entry-border: #92cdc0;
-  --entry-soft: #e3f4ef;
-}
-
-.world-tone-logic {
-  --entry-accent: #596fb0;
-  --entry-deep: #334d8c;
-  --entry-border: #b0bde7;
-  --entry-soft: #eaeefb;
-}
-
-.world-tone-garden {
-  --entry-accent: #58895d;
-  --entry-deep: #23653e;
-  --entry-border: #a7ca94;
-  --entry-soft: #e9f3e2;
-}
-
 /* World-entry threshold: the brief "stepping into this world" beat shown
    over the dashboard → game cut, tinted with the world's accent. */
 .world-entry {
@@ -2970,23 +2933,9 @@ button:disabled:focus-visible {
   overflow: visible;
 }
 
-.world-piece-shadow,
-.world-object-aura,
-.world-piece-backplate,
-.world-piece-foot {
+.world-object-aura {
   position: absolute;
   pointer-events: none;
-}
-
-.world-piece-shadow {
-  left: 5%;
-  right: 5%;
-  bottom: 0.15rem;
-  z-index: -4;
-  height: 3.1rem;
-  border-radius: 999px;
-  background: radial-gradient(closest-side, rgb(0 0 0 / 0.52), transparent 78%);
-  filter: blur(10px);
 }
 
 .world-object-aura {
@@ -3000,36 +2949,6 @@ button:disabled:focus-visible {
     radial-gradient(closest-side, color-mix(in srgb, var(--world-card-accent) 48%, #ffe3a3), transparent 76%);
   opacity: 0.58;
   filter: blur(5px);
-}
-
-.world-piece-backplate {
-  left: 4%;
-  right: 4%;
-  top: 7.6rem;
-  bottom: 1.25rem;
-  z-index: -2;
-  border-radius: 2.8rem 2.8rem 1.65rem 1.65rem / 2.1rem 2.1rem 1.3rem 1.3rem;
-  background:
-    radial-gradient(80% 55% at 50% 0%, color-mix(in srgb, var(--world-card-accent) 34%, #fff1c9), transparent 65%),
-    linear-gradient(180deg, color-mix(in srgb, var(--world-card-mid) 42%, #ffdba0), color-mix(in srgb, var(--world-card-deep) 86%, #5b3929) 66%, color-mix(in srgb, var(--world-card-deep) 92%, #000000));
-  box-shadow:
-    inset 0 0.25rem 0 rgb(255 255 255 / 0.28),
-    inset 0 -0.8rem 1rem rgb(0 0 0 / 0.28),
-    0 0.7rem 0 color-mix(in srgb, var(--world-card-deep) 82%, #000000);
-}
-
-.world-piece-foot {
-  left: 12%;
-  right: 12%;
-  bottom: 0.1rem;
-  z-index: -1;
-  height: 1.55rem;
-  border-radius: 0 0 999px 999px;
-  background:
-    linear-gradient(180deg, color-mix(in srgb, var(--world-card-button) 62%, #ffffff), color-mix(in srgb, var(--world-card-deep) 86%, #000000));
-  box-shadow:
-    inset 0 0.25rem 0 rgb(255 255 255 / 0.11),
-    0 0.48rem 0 rgb(0 0 0 / 0.22);
 }
 
 .world-stage-tab {
@@ -3061,16 +2980,6 @@ button:disabled:focus-visible {
   outline-offset: 0.3rem;
 }
 
-.world-art-shell {
-  position: relative;
-  z-index: 3;
-  display: block;
-  height: clamp(14rem, 17.5vw, 17.9rem);
-  margin-inline: 0.25rem;
-  transform: translateY(-0.45rem);
-  filter: drop-shadow(0 1rem 0.7rem rgb(0 0 0 / 0.28));
-}
-
 .world-number-medal {
   left: 0.85rem;
   top: 0.8rem;
@@ -3086,23 +2995,6 @@ button:disabled:focus-visible {
   left: auto;
   right: 1rem;
   font-size: 0.68rem;
-}
-
-.world-pedestal-deck {
-  position: relative;
-  z-index: 4;
-  min-height: 8rem;
-  margin: -1.35rem 0.58rem 3.85rem;
-  border: 2px solid color-mix(in srgb, var(--world-card-accent) 22%, #f5d8a9);
-  border-radius: 1.65rem 1.65rem 1.15rem 1.15rem / 1.2rem 1.2rem 1rem 1rem;
-  background:
-    radial-gradient(120% 80% at 50% -18%, color-mix(in srgb, var(--world-card-accent) 34%, transparent), transparent 62%),
-    linear-gradient(180deg, color-mix(in srgb, var(--world-card-mid) 52%, #f3ddaa) 0%, var(--world-card-deep) 48%, color-mix(in srgb, var(--world-card-deep) 88%, #000000) 100%);
-  box-shadow:
-    inset 0 0.18rem 0 rgb(255 255 255 / 0.22),
-    inset 0 -0.4rem 0 rgb(0 0 0 / 0.22),
-    0 0.42rem 0 color-mix(in srgb, var(--world-card-deep) 86%, #000000),
-    0 0.85rem 1rem rgb(0 0 0 / 0.2);
 }
 
 .world-title-plaque {
@@ -3206,10 +3098,6 @@ button:disabled:focus-visible {
     scroll-snap-type: x mandatory;
     padding-inline: max(2rem, calc((100vw - min(21rem, 82vw)) / 2));
     padding-bottom: 1.5rem;
-  }
-
-  .world-art-shell {
-    height: 15rem;
   }
 
   .game-bottom-hud {
@@ -3409,63 +3297,9 @@ button:disabled:focus-visible {
     0 0.95rem 1.6rem rgb(0 0 0 / 0.28);
 }
 
-.world-tone-memory {
-  --world-card-accent: #8b6ef2;
-  --world-card-deep: #251b4a;
-  --world-card-mid: #4d3b8c;
-  --world-card-soft: #eee7ff;
-  --world-card-button: #7554c7;
-}
-
-.world-tone-route {
-  --world-card-accent: #5f9bd4;
-  --world-card-deep: #173653;
-  --world-card-mid: #2e638b;
-  --world-card-soft: #dff2ff;
-  --world-card-button: #3e7bb0;
-}
-
-.world-tone-commands {
-  --world-card-accent: #7faf66;
-  --world-card-deep: #263b24;
-  --world-card-mid: #557a48;
-  --world-card-soft: #e6f3d9;
-  --world-card-button: #6f9659;
-}
-
-.world-tone-logic {
-  --world-card-accent: #a76bd1;
-  --world-card-deep: #3f2250;
-  --world-card-mid: #74458c;
-  --world-card-soft: #f0e0ff;
-  --world-card-button: #8e51b4;
-}
-
-.world-tone-garden {
-  --world-card-accent: #93b65a;
-  --world-card-deep: #33451e;
-  --world-card-mid: #66833b;
-  --world-card-soft: #e9f3d3;
-  --world-card-button: #7e9d46;
-}
-
-.world-piece-shadow,
-.world-object-aura,
-.world-piece-backplate,
-.world-piece-foot {
+.world-object-aura {
   position: absolute;
   pointer-events: none;
-}
-
-.world-piece-shadow {
-  left: 5%;
-  right: 5%;
-  bottom: 0.15rem;
-  z-index: -4;
-  height: 3.1rem;
-  border-radius: 999px;
-  background: radial-gradient(closest-side, rgb(0 0 0 / 0.52), transparent 78%);
-  filter: blur(10px);
 }
 
 .world-object-aura {
@@ -3479,36 +3313,6 @@ button:disabled:focus-visible {
     radial-gradient(closest-side, color-mix(in srgb, var(--world-card-accent) 48%, #ffe3a3), transparent 76%);
   opacity: 0.58;
   filter: blur(5px);
-}
-
-.world-piece-backplate {
-  left: 4%;
-  right: 4%;
-  top: 7.6rem;
-  bottom: 1.25rem;
-  z-index: -2;
-  border-radius: 2.8rem 2.8rem 1.65rem 1.65rem / 2.1rem 2.1rem 1.3rem 1.3rem;
-  background:
-    radial-gradient(80% 55% at 50% 0%, color-mix(in srgb, var(--world-card-accent) 34%, #fff1c9), transparent 65%),
-    linear-gradient(180deg, color-mix(in srgb, var(--world-card-mid) 42%, #ffdba0), color-mix(in srgb, var(--world-card-deep) 86%, #5b3929) 66%, color-mix(in srgb, var(--world-card-deep) 92%, #000000));
-  box-shadow:
-    inset 0 0.25rem 0 rgb(255 255 255 / 0.28),
-    inset 0 -0.8rem 1rem rgb(0 0 0 / 0.28),
-    0 0.7rem 0 color-mix(in srgb, var(--world-card-deep) 82%, #000000);
-}
-
-.world-piece-foot {
-  left: 12%;
-  right: 12%;
-  bottom: 0.1rem;
-  z-index: -1;
-  height: 1.55rem;
-  border-radius: 0 0 999px 999px;
-  background:
-    linear-gradient(180deg, color-mix(in srgb, var(--world-card-button) 62%, #ffffff), color-mix(in srgb, var(--world-card-deep) 86%, #000000));
-  box-shadow:
-    inset 0 0.25rem 0 rgb(255 255 255 / 0.11),
-    0 0.48rem 0 rgb(0 0 0 / 0.22);
 }
 
 .world-stage-tab {
@@ -3538,16 +3342,6 @@ button:disabled:focus-visible {
 .world-stage-tab:focus-visible {
   outline: 4px solid #93f5dd;
   outline-offset: 0.3rem;
-}
-
-.world-art-shell {
-  position: relative;
-  z-index: 3;
-  display: block;
-  height: clamp(14rem, 17.5vw, 17.9rem);
-  margin-inline: 0.25rem;
-  transform: translateY(-0.45rem);
-  filter: drop-shadow(0 1rem 0.7rem rgb(0 0 0 / 0.28));
 }
 
 .world-number-medal {
@@ -3583,56 +3377,6 @@ button:disabled:focus-visible {
   box-shadow:
     inset 0 0.12rem 0 rgb(255 255 255 / 0.35),
     0 0.22rem 0 rgb(0 0 0 / 0.22);
-}
-
-.world-pedestal-deck {
-  position: relative;
-  z-index: 4;
-  display: flex;
-  min-height: 8rem;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 0.42rem;
-  margin: -1.35rem 0.58rem 3.85rem;
-  border: 2px solid color-mix(in srgb, var(--world-card-accent) 22%, #f5d8a9);
-  border-radius: 1.65rem 1.65rem 1.15rem 1.15rem / 1.2rem 1.2rem 1rem 1rem;
-  background:
-    radial-gradient(120% 80% at 50% -18%, color-mix(in srgb, var(--world-card-accent) 34%, transparent), transparent 62%),
-    linear-gradient(180deg, color-mix(in srgb, var(--world-card-mid) 52%, #f3ddaa) 0%, var(--world-card-deep) 48%, color-mix(in srgb, var(--world-card-deep) 88%, #000000) 100%);
-  color: #fffaf0;
-  padding: 1rem 0.8rem 0.78rem;
-  box-shadow:
-    inset 0 0.18rem 0 rgb(255 255 255 / 0.22),
-    inset 0 -0.4rem 0 rgb(0 0 0 / 0.22),
-    0 0.42rem 0 color-mix(in srgb, var(--world-card-deep) 86%, #000000),
-    0 0.85rem 1rem rgb(0 0 0 / 0.2);
-}
-
-.world-pedestal-deck::before,
-.world-pedestal-deck::after {
-  content: "";
-  position: absolute;
-  pointer-events: none;
-}
-
-.world-pedestal-deck::before {
-  left: 18%;
-  right: 18%;
-  top: -0.25rem;
-  height: 0.48rem;
-  border-radius: 999px;
-  background: rgb(255 255 255 / 0.2);
-}
-
-.world-pedestal-deck::after {
-  left: 7%;
-  right: 7%;
-  bottom: -0.55rem;
-  height: 1.1rem;
-  border-radius: 0 0 999px 999px;
-  background: color-mix(in srgb, var(--world-card-deep) 76%, #000000);
-  filter: blur(0.4px);
 }
 
 .world-title-plaque {
@@ -3721,10 +3465,6 @@ button:disabled:focus-visible {
 
   .game-world-shelf .shelf-track::-webkit-scrollbar {
     display: none;
-  }
-
-  .world-art-shell {
-    height: 16.2rem;
   }
 }
 
@@ -3836,14 +3576,6 @@ button:disabled:focus-visible {
     gap: 1rem;
     padding-inline: max(2rem, calc((100vw - min(21rem, 82vw)) / 2));
     padding-bottom: 1.5rem;
-  }
-
-  .world-art-shell {
-    height: 15rem;
-  }
-
-  .world-pedestal-deck {
-    margin-bottom: 3.72rem;
   }
 
   .game-bottom-hud {
@@ -4180,39 +3912,6 @@ button:disabled:focus-visible {
     0 12px 22px rgb(58 37 23 / 0.08);
 }
 
-.world-piece-backplate,
-.world-piece-foot {
-  position: absolute;
-  pointer-events: none;
-}
-
-.world-piece-backplate {
-  left: 0.52rem;
-  right: 0.52rem;
-  top: 0.35rem;
-  bottom: 3.75rem;
-  z-index: -1;
-  border-radius: 2.15rem 2.15rem 1.45rem 1.45rem / 1.7rem 1.7rem 1.2rem 1.2rem;
-  background:
-    linear-gradient(180deg, color-mix(in srgb, var(--world-card-accent) 24%, #fff1cf), color-mix(in srgb, var(--world-card-deep) 80%, #6b4a35));
-  filter: saturate(1.08);
-  box-shadow:
-    inset 0 2px 0 rgb(255 255 255 / 0.3),
-    0 8px 0 color-mix(in srgb, var(--world-card-deep) 75%, black);
-}
-
-.world-piece-foot {
-  left: 11%;
-  right: 11%;
-  bottom: 0.15rem;
-  z-index: -1;
-  height: 1.2rem;
-  border-radius: 0 0 999px 999px;
-  background:
-    linear-gradient(180deg, color-mix(in srgb, var(--world-card-button) 58%, #ffffff), color-mix(in srgb, var(--world-card-deep) 82%, #000000));
-  box-shadow: 0 6px 10px rgb(0 0 0 / 0.22);
-}
-
 .world-title-plaque {
   display: flex;
   min-height: 2.75rem;
@@ -4301,12 +4000,6 @@ button:disabled:focus-visible {
 
   .world-stage-tab {
     min-height: 18.4rem;
-  }
-
-  .world-piece-backplate {
-    left: 0.42rem;
-    right: 0.42rem;
-    bottom: 3.45rem;
   }
 
   .world-title-plaque {
@@ -4621,17 +4314,6 @@ button:disabled:focus-visible {
   padding: 0.35rem 0.15rem 1.1rem;
 }
 
-.world-piece-shadow {
-  left: 5%;
-  right: 5%;
-  bottom: 0.15rem;
-  z-index: -4;
-  height: 3.1rem;
-  border-radius: 999px;
-  background: radial-gradient(closest-side, rgb(0 0 0 / 0.52), transparent 78%);
-  filter: blur(10px);
-}
-
 .world-object-aura {
   left: 7%;
   right: 7%;
@@ -4643,18 +4325,6 @@ button:disabled:focus-visible {
     radial-gradient(closest-side, color-mix(in srgb, var(--world-card-accent) 48%, #ffe3a3), transparent 76%);
   opacity: 0.58;
   filter: blur(5px);
-}
-
-.world-piece-backplate {
-  left: 4%;
-  right: 4%;
-  top: 7.6rem;
-  bottom: 1.25rem;
-  z-index: -2;
-  border-radius: 2.8rem 2.8rem 1.65rem 1.65rem / 2.1rem 2.1rem 1.3rem 1.3rem;
-  background:
-    radial-gradient(80% 55% at 50% 0%, color-mix(in srgb, var(--world-card-accent) 34%, #fff1c9), transparent 65%),
-    linear-gradient(180deg, color-mix(in srgb, var(--world-card-mid) 42%, #ffdba0), color-mix(in srgb, var(--world-card-deep) 86%, #5b3929) 66%, color-mix(in srgb, var(--world-card-deep) 92%, #000000));
 }
 
 .world-stage-tab {
@@ -4680,16 +4350,6 @@ button:disabled:focus-visible {
   outline-offset: 0.3rem;
 }
 
-.world-art-shell {
-  position: relative;
-  z-index: 3;
-  display: block;
-  height: clamp(14rem, 17.5vw, 17.9rem);
-  margin-inline: 0.25rem;
-  transform: translateY(-0.45rem);
-  filter: drop-shadow(0 1rem 0.7rem rgb(0 0 0 / 0.28));
-}
-
 .world-number-medal {
   left: 0.85rem;
   top: 0.8rem;
@@ -4705,18 +4365,6 @@ button:disabled:focus-visible {
   left: auto;
   right: 1rem;
   font-size: 0.68rem;
-}
-
-.world-pedestal-deck {
-  position: relative;
-  z-index: 4;
-  min-height: 8rem;
-  margin: -1.35rem 0.58rem 3.85rem;
-  border: 2px solid color-mix(in srgb, var(--world-card-accent) 22%, #f5d8a9);
-  border-radius: 1.65rem 1.65rem 1.15rem 1.15rem / 1.2rem 1.2rem 1rem 1rem;
-  background:
-    radial-gradient(120% 80% at 50% -18%, color-mix(in srgb, var(--world-card-accent) 34%, transparent), transparent 62%),
-    linear-gradient(180deg, color-mix(in srgb, var(--world-card-mid) 52%, #f3ddaa) 0%, var(--world-card-deep) 48%, color-mix(in srgb, var(--world-card-deep) 88%, #000000) 100%);
 }
 
 .world-enter-button {
@@ -4803,10 +4451,6 @@ button:disabled:focus-visible {
     padding-bottom: 1.5rem;
   }
 
-  .world-art-shell {
-    height: 15rem;
-  }
-
   .game-bottom-hud {
     width: calc(100% - 0.75rem);
     grid-template-columns: 1fr;
@@ -4843,325 +4487,12 @@ button:disabled:focus-visible {
   transform: rotate(1.5deg) translateY(0.55rem);
 }
 
-.world-piece-floor-shadow,
-.world-piece-aura,
-.world-piece-front-lip {
-  position: absolute;
-  pointer-events: none;
-}
-
-.world-piece-floor-shadow {
-  left: 5%;
-  right: 5%;
-  bottom: 0.1rem;
-  z-index: -5;
-  height: 3.2rem;
-  border-radius: 999px;
-  background: radial-gradient(closest-side, rgb(0 0 0 / 0.58), transparent 78%);
-  filter: blur(10px);
-}
-
-.world-piece-aura {
-  left: 6%;
-  right: 6%;
-  top: 1.2rem;
-  z-index: -4;
-  height: 16rem;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, color-mix(in srgb, var(--world-card-accent) 48%, #ffdfa0), transparent 76%);
-  opacity: 0.54;
-  filter: blur(4px);
-}
-
-.world-piece-selector {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  width: 100%;
-  min-height: clamp(25rem, 31vw, 31rem);
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  overflow: visible;
-  border: 0;
-  background: transparent;
-  color: inherit;
-  padding: 0;
-  text-align: center;
-}
-
-.world-piece-selector:focus-visible {
-  outline: 4px solid #92f4df;
-  outline-offset: 0.35rem;
-  border-radius: 2rem;
-}
-
-.world-piece-stage {
-  position: relative;
-  z-index: 3;
-  display: block;
-  height: clamp(17.6rem, 20vw, 20.8rem);
-  width: min(100%, 18.2rem);
-  margin: 0 auto;
-  transform: translateY(-0.3rem);
-  filter: drop-shadow(0 1.2rem 1rem rgb(0 0 0 / 0.32));
-}
-
-.world-mini-scene {
-  position: absolute;
-  inset: 0;
-  display: block;
-  transform-style: preserve-3d;
-}
-
-.world-mini-light {
-  position: absolute;
-  left: 10%;
-  right: 10%;
-  top: 4%;
-  height: 46%;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, color-mix(in srgb, var(--world-card-accent) 32%, #fff7d6), transparent 74%);
-  opacity: 0.92;
-}
-
-.world-mini-stage-base {
-  position: absolute;
-  left: 6%;
-  right: 6%;
-  bottom: 1.3rem;
-  height: 6rem;
-  border: 3px solid color-mix(in srgb, var(--world-card-accent) 34%, #f8d99f);
-  border-radius: 50%;
-  background:
-    radial-gradient(76% 80% at 50% 24%, color-mix(in srgb, var(--world-card-soft) 64%, #fff7df), color-mix(in srgb, var(--world-card-accent) 24%, #e3c084) 60%, color-mix(in srgb, var(--world-card-deep) 70%, #94633e) 100%);
-  box-shadow:
-    inset 0 0.3rem 0 rgb(255 255 255 / 0.42),
-    inset 0 -1rem 1.2rem rgb(0 0 0 / 0.2),
-    0 0.7rem 0 color-mix(in srgb, var(--world-card-deep) 72%, #000000),
-    0 1.5rem 1.5rem rgb(0 0 0 / 0.24);
-}
-
-.world-mini-backdrop {
-  position: absolute;
-  left: 14%;
-  right: 14%;
-  top: 1.4rem;
-  height: 8.2rem;
-  border-radius: 2.4rem 2.4rem 48% 48%;
-  background:
-    radial-gradient(circle at 50% 0%, rgb(255 255 255 / 0.48), transparent 28%),
-    linear-gradient(180deg, color-mix(in srgb, var(--world-card-soft) 72%, #ffffff), color-mix(in srgb, var(--world-card-accent) 16%, transparent));
-  opacity: 0.78;
-  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.28);
-}
-
-.world-piece-medal,
-.world-piece-new {
-  position: absolute;
-  z-index: 8;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.world-piece-medal {
-  left: 0.85rem;
-  top: 0.8rem;
-  height: 3.35rem;
-  width: 3.35rem;
-  border: 3px solid rgb(255 247 217 / 0.8);
-  border-radius: 999px;
-  background:
-    radial-gradient(circle at 34% 24%, rgb(255 255 255 / 0.48), transparent 26%),
-    linear-gradient(180deg, color-mix(in srgb, var(--world-card-accent) 72%, #fff6c8), var(--world-card-deep));
-  color: #fff9e5;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 1.38rem;
-  font-weight: 900;
-  text-shadow: 0 0.14rem 0 rgb(0 0 0 / 0.28);
-  box-shadow:
-    inset 0 0.18rem 0 rgb(255 255 255 / 0.34),
-    0 0.32rem 0 rgb(0 0 0 / 0.3),
-    0 0 0 0.42rem rgb(255 255 255 / 0.12);
-}
-
-.world-piece-new {
-  top: 1.15rem;
-  right: 1rem;
-  min-height: 1.6rem;
-  border: 2px solid rgb(255 255 255 / 0.44);
-  border-radius: 999px;
-  background: linear-gradient(180deg, #fff0a7, #d89d27);
-  color: #422b0c;
-  padding: 0.15rem 0.56rem;
-  font-size: 0.7rem;
-  font-weight: 950;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  box-shadow: 0 0.25rem 0 rgb(0 0 0 / 0.22);
-}
-
-.world-piece-plaque {
-  position: relative;
-  z-index: 6;
-  display: flex;
-  width: calc(100% - 1rem);
-  min-height: 8.45rem;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 0.42rem;
-  margin: -2.15rem 0.5rem 3.85rem;
-  border: 2px solid color-mix(in srgb, var(--world-card-accent) 24%, #f4d9aa);
-  border-radius: 1.65rem 1.65rem 1.1rem 1.1rem;
-  background:
-    radial-gradient(90% 80% at 50% -18%, color-mix(in srgb, var(--world-card-accent) 32%, transparent), transparent 62%),
-    linear-gradient(180deg, color-mix(in srgb, var(--world-card-mid) 56%, #f3dfb0) 0%, var(--world-card-deep) 45%, color-mix(in srgb, var(--world-card-deep) 88%, #000000) 100%);
-  color: #fffaf0;
-  padding: 1rem 0.72rem 0.72rem;
-  box-shadow:
-    inset 0 0.18rem 0 rgb(255 255 255 / 0.24),
-    inset 0 -0.45rem 0 rgb(0 0 0 / 0.24),
-    0 0.46rem 0 color-mix(in srgb, var(--world-card-deep) 88%, #000000),
-    0 1rem 1.1rem rgb(0 0 0 / 0.23);
-}
-
-.world-piece-title {
-  display: flex;
-  min-height: 2.7rem;
-  width: min(100%, 13.4rem);
-  align-items: center;
-  justify-content: center;
-  border: 1px solid rgb(255 255 255 / 0.18);
-  border-radius: 1rem;
-  background:
-    linear-gradient(180deg, rgb(255 255 255 / 0.14), rgb(255 255 255 / 0.035)),
-    color-mix(in srgb, var(--world-card-deep) 72%, #ffffff);
-  padding: 0.32rem 0.5rem;
-  color: #fff9e7;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(1.02rem, 1.08vw, 1.18rem);
-  font-weight: 850;
-  line-height: 1.03;
-  text-shadow: 0 0.13rem 0 rgb(0 0 0 / 0.24);
-}
-
-.world-piece-copy {
-  display: -webkit-box;
-  max-width: 13rem;
-  min-height: 2.1rem;
-  overflow: hidden;
-  color: rgb(255 248 231 / 0.86);
-  font-size: 0.83rem;
-  font-weight: 650;
-  line-height: 1.28;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-}
-
-.world-piece-meta {
-  display: flex;
-  min-height: 1.24rem;
-  align-items: center;
-  justify-content: center;
-  margin-top: auto;
-}
-
-.world-piece-skill {
-  border: 1px solid rgb(255 255 255 / 0.12);
-  border-radius: 999px;
-  background: rgb(255 255 255 / 0.075);
-  color: rgb(255 248 231 / 0.72);
-  padding: 0.16rem 0.54rem;
-  font-size: 0.59rem;
-  font-weight: 950;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
-.world-piece-enter {
-  position: absolute;
-  left: 1.62rem;
-  right: 1.62rem;
-  bottom: 1.12rem;
-  z-index: 8;
-  display: inline-flex;
-  min-height: 3.18rem;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  border: 2px solid rgb(255 255 255 / 0.34);
-  border-radius: 1.1rem;
-  background:
-    radial-gradient(circle at 24% 18%, rgb(255 255 255 / 0.24), transparent 26%),
-    linear-gradient(180deg, color-mix(in srgb, var(--world-card-button) 76%, #ffffff), var(--world-card-button) 52%, color-mix(in srgb, var(--world-card-button) 84%, #000000));
-  color: #fffdf2;
-  font-size: 1.03rem;
-  font-weight: 920;
-  text-shadow: 0 0.12rem 0 rgb(0 0 0 / 0.2);
-  box-shadow:
-    inset 0 0.18rem 0 rgb(255 255 255 / 0.3),
-    inset 0 -0.25rem 0 rgb(0 0 0 / 0.24),
-    0 0.36rem 0 color-mix(in srgb, var(--world-card-deep) 88%, #000000),
-    0 0.9rem 1.3rem rgb(0 0 0 / 0.26);
-}
-
-.world-piece-front-lip {
-  left: 12%;
-  right: 12%;
-  bottom: 0.15rem;
-  z-index: 1;
-  height: 1.45rem;
-  border-radius: 0 0 999px 999px;
-  background: linear-gradient(180deg, color-mix(in srgb, var(--world-card-button) 62%, #ffffff), color-mix(in srgb, var(--world-card-deep) 86%, #000000));
-  box-shadow: 0 0.45rem 0 rgb(0 0 0 / 0.22);
-}
-
 .world-game-piece:hover,
 .world-game-piece.is-selected {
   z-index: 9;
 }
 
-.world-game-piece:hover .world-piece-stage,
-.world-game-piece.is-selected .world-piece-stage {
-  transform: translateY(-0.9rem);
-}
-
-.world-game-piece.is-selected .world-piece-aura {
-  opacity: 0.84;
-}
-
-.world-game-piece.is-selected .world-piece-plaque,
-.world-game-piece.is-selected .world-piece-enter {
-  border-color: rgb(255 230 152 / 0.5);
-  box-shadow:
-    inset 0 0.18rem 0 rgb(255 255 255 / 0.28),
-    inset 0 -0.35rem 0 rgb(0 0 0 / 0.22),
-    0 0.44rem 0 color-mix(in srgb, var(--world-card-deep) 88%, #000000),
-    0 0 1.65rem color-mix(in srgb, var(--world-card-accent) 34%, transparent);
-}
-
-/* Memory mini-world (scoped to the home diorama so it never overrides the
-   real in-game Memory board, which also uses .memory-console / .memory-pad). */
-.world-mini-scene .memory-console {
-  position: absolute;
-  left: 16%;
-  right: 16%;
-  bottom: 4.1rem;
-  height: 6.7rem;
-  border: 3px solid #7e6bd2;
-  border-radius: 1.6rem;
-  background:
-    linear-gradient(160deg, #312a63, #151733 72%),
-    #241d4d;
-  box-shadow:
-    inset 0 0.22rem 0 rgb(255 255 255 / 0.18),
-    0 0.62rem 0 #0e0c26,
-    0 0 2rem rgb(140 113 255 / 0.32);
-  transform: perspective(14rem) rotateX(18deg);
-}
-
+/* Memory mini-world */
 .memory-orb {
   position: absolute;
   left: 50%;
@@ -5175,17 +4506,6 @@ button:disabled:focus-visible {
     radial-gradient(circle, #b7ebff, #8d72f2 58%, #3e2a74);
   box-shadow: 0 0 2rem rgb(141 114 242 / 0.75);
   transform: translateX(-50%);
-}
-
-.world-mini-scene .memory-pad {
-  position: absolute;
-  height: 2rem;
-  width: 2rem;
-  border-radius: 50%;
-  box-shadow:
-    inset 0 0.18rem 0 rgb(255 255 255 / 0.34),
-    0 0.3rem 0 rgb(0 0 0 / 0.26),
-    0 0 1rem currentColor;
 }
 
 .memory-pad-one {
@@ -5546,62 +4866,6 @@ button:disabled:focus-visible {
   transform: perspective(16rem) rotateX(16deg);
 }
 
-/* Garden mini-world (scoped so it never overrides the real in-game Garden
-   board, which also uses .garden-pot). */
-.world-mini-scene .garden-pot {
-  position: absolute;
-  z-index: 4;
-  height: 4.25rem;
-  width: 4rem;
-  border-radius: 0.9rem 0.9rem 1.2rem 1.2rem;
-  background: linear-gradient(180deg, #d99758, #8f4f2b);
-  box-shadow: inset 0 0.18rem 0 rgb(255 255 255 / 0.3), 0 0.35rem 0 #5d301a;
-}
-
-.world-mini-scene .garden-pot::before {
-  content: "";
-  position: absolute;
-  left: -0.25rem;
-  right: -0.25rem;
-  top: -0.35rem;
-  height: 1rem;
-  border-radius: 999px;
-  background: linear-gradient(180deg, #f0bd7a, #b46d3b);
-}
-
-.world-mini-scene .garden-pot span {
-  position: absolute;
-  left: 50%;
-  bottom: 2.65rem;
-  height: 3rem;
-  width: 0.28rem;
-  border-radius: 999px;
-  background: #4d823e;
-  transform: translateX(-50%);
-}
-
-.world-mini-scene .garden-pot span::before,
-.world-mini-scene .garden-pot span::after {
-  content: "";
-  position: absolute;
-  height: 1.25rem;
-  width: 0.72rem;
-  border-radius: 100% 0 100% 0;
-  background: #8cc875;
-}
-
-.world-mini-scene .garden-pot span::before {
-  left: -0.62rem;
-  top: 0.68rem;
-  transform: rotate(-25deg);
-}
-
-.world-mini-scene .garden-pot span::after {
-  right: -0.62rem;
-  top: 0.2rem;
-  transform: rotate(50deg);
-}
-
 .garden-pot-one {
   left: 22%;
   bottom: 6.7rem;
@@ -5768,14 +5032,6 @@ button:disabled:focus-visible {
     min-height: 30rem;
     transform: none;
   }
-
-  .world-piece-stage {
-    height: 17.5rem;
-  }
-
-  .world-piece-plaque {
-    min-height: 8rem;
-  }
 }
 
 @media (min-width: 768px) {
@@ -5866,14 +5122,12 @@ button:disabled:focus-visible {
 }
 
 .game-play-cta,
-.world-piece-enter,
 .game-note-card button {
   position: relative;
   overflow: hidden;
 }
 
 .game-play-cta::after,
-.world-piece-enter::after,
 .game-note-card button::after {
   content: "";
   position: absolute;
@@ -5908,103 +5162,6 @@ button:disabled:focus-visible {
   filter:
     drop-shadow(0 0.18rem 0 rgb(0 0 0 / 0.18))
     drop-shadow(0 0 0.8rem rgb(255 255 255 / 0.28));
-}
-
-.world-piece-enter {
-  border-width: 3px;
-  box-shadow:
-    inset 0 0.22rem 0 rgb(255 255 255 / 0.32),
-    inset 0 -0.35rem 0 rgb(0 0 0 / 0.28),
-    0 0.46rem 0 color-mix(in srgb, var(--world-card-deep) 90%, #000000),
-    0 0.95rem 1.35rem rgb(0 0 0 / 0.32),
-    0 0 1.5rem color-mix(in srgb, var(--world-card-accent) 28%, transparent);
-}
-
-.world-piece-enter svg {
-  position: relative;
-  z-index: 1;
-  height: 2rem;
-  width: 2rem;
-  border-radius: 999px;
-  padding: 0.38rem;
-  background: rgb(255 255 255 / 0.18);
-  box-shadow:
-    inset 0 0.12rem 0 rgb(255 255 255 / 0.25),
-    0 0.2rem 0 rgb(0 0 0 / 0.18);
-}
-
-.world-piece-enter:hover {
-  transform: translateY(-0.12rem);
-}
-
-.world-piece-enter:active {
-  transform: translateY(0.18rem);
-  box-shadow:
-    inset 0 0.22rem 0 rgb(255 255 255 / 0.26),
-    inset 0 -0.2rem 0 rgb(0 0 0 / 0.24),
-    0 0.2rem 0 color-mix(in srgb, var(--world-card-deep) 90%, #000000),
-    0 0.55rem 1rem rgb(0 0 0 / 0.22);
-}
-
-.world-piece-plaque {
-  background:
-    url("/illustrations/ui/wood-grain.svg") center / 12rem 6rem repeat,
-    radial-gradient(80% 80% at 50% -12%, color-mix(in srgb, var(--world-card-accent) 30%, transparent), transparent 62%),
-    linear-gradient(180deg, color-mix(in srgb, var(--world-card-mid) 62%, #f0d7a5) 0%, var(--world-card-deep) 42%, color-mix(in srgb, var(--world-card-deep) 88%, #000000) 100%);
-  box-shadow:
-    inset 0 0.22rem 0 rgb(255 255 255 / 0.25),
-    inset 0 0 0 0.22rem rgb(255 255 255 / 0.035),
-    inset 0 -0.48rem 0 rgb(0 0 0 / 0.28),
-    0 0.5rem 0 color-mix(in srgb, var(--world-card-deep) 90%, #000000),
-    0 1.05rem 1.2rem rgb(0 0 0 / 0.28);
-}
-
-.world-piece-title {
-  border-color: rgb(255 255 255 / 0.24);
-  background:
-    linear-gradient(180deg, rgb(255 255 255 / 0.18), rgb(255 255 255 / 0.04)),
-    color-mix(in srgb, var(--world-card-deep) 64%, #ffffff);
-  box-shadow:
-    inset 0 0.15rem 0 rgb(255 255 255 / 0.16),
-    inset 0 -0.2rem 0 rgb(0 0 0 / 0.16),
-    0 0.22rem 0 rgb(0 0 0 / 0.16);
-}
-
-.world-piece-medal {
-  box-shadow:
-    inset 0 0.2rem 0 rgb(255 255 255 / 0.38),
-    inset 0 -0.22rem 0 rgb(0 0 0 / 0.2),
-    0 0.36rem 0 rgb(0 0 0 / 0.3),
-    0 0 0 0.42rem rgb(255 255 255 / 0.14),
-    0 0.6rem 1rem rgb(0 0 0 / 0.24);
-}
-
-.world-piece-stage::after {
-  content: "";
-  position: absolute;
-  left: 18%;
-  right: 18%;
-  bottom: 1.1rem;
-  z-index: -1;
-  height: 1.7rem;
-  border-radius: 999px;
-  background: radial-gradient(closest-side, rgb(0 0 0 / 0.38), transparent 76%);
-  filter: blur(8px);
-}
-
-.world-mini-backdrop {
-  border: 1px solid rgb(255 255 255 / 0.36);
-  box-shadow:
-    inset 0 0.2rem 0 rgb(255 255 255 / 0.28),
-    0 0.5rem 1.2rem rgb(0 0 0 / 0.12);
-}
-
-.world-mini-stage-base {
-  box-shadow:
-    inset 0 0.34rem 0 rgb(255 255 255 / 0.46),
-    inset 0 -1.1rem 1.35rem rgb(0 0 0 / 0.22),
-    0 0.78rem 0 color-mix(in srgb, var(--world-card-deep) 75%, #000000),
-    0 1.65rem 1.65rem rgb(0 0 0 / 0.3);
 }
 
 .game-hud-chip,
@@ -6063,7 +5220,6 @@ button:disabled:focus-visible {
 
 .game-brand-lockup strong,
 .game-hero-copy h1,
-.world-piece-title,
 .game-world-plaque h2 {
   text-rendering: geometricPrecision;
 }
@@ -6081,213 +5237,11 @@ button:disabled:focus-visible {
       0 0.5rem 0 #0f3c2d,
       0 1.15rem 2rem rgb(0 0 0 / 0.35);
   }
-
-  .world-piece-enter {
-    min-height: 3.25rem;
-  }
-}
-
-/* Rendered diorama asset pipeline for the production Home shelf. */
-.world-rendered-frame {
-  position: absolute;
-  inset: -0.35rem -0.1rem 0;
-  z-index: 1;
-  display: block;
-  pointer-events: none;
-}
-
-.world-rendered-inner {
-  position: absolute;
-  inset: 0;
-  display: block;
-  border-radius: 2.2rem 2.2rem 1.35rem 1.35rem;
-  overflow: visible;
-  background:
-    radial-gradient(circle at 50% 12%, rgb(255 255 255 / 0.34), transparent 28%),
-    linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--world-card-soft) 70%, #fff7de),
-      color-mix(in srgb, var(--world-card-mid) 46%, #fff1c4) 56%,
-      color-mix(in srgb, var(--world-card-deep) 68%, #4a2d22)
-    );
-  box-shadow:
-    inset 0 0.24rem 0 rgb(255 255 255 / 0.36),
-    inset 0 -0.45rem 0 rgb(0 0 0 / 0.2),
-    0 1.1rem 1.65rem rgb(0 0 0 / 0.28);
-}
-
-.world-rendered-frame.has-rendered-art .world-rendered-inner {
-  inset: -0.2rem -0.25rem 0.4rem;
-  overflow: hidden;
-  border: 3px solid color-mix(in srgb, var(--world-card-accent) 34%, #fff5cf);
-  box-shadow:
-    inset 0 0.28rem 0 rgb(255 255 255 / 0.42),
-    inset 0 -0.48rem 0 rgb(0 0 0 / 0.22),
-    0 0.45rem 0 color-mix(in srgb, var(--world-card-deep) 70%, #1b100d),
-    0 1.25rem 1.7rem rgb(0 0 0 / 0.32),
-    0 0 2.4rem color-mix(in srgb, var(--world-card-accent) 22%, transparent);
-}
-
-.world-rendered-frame.has-rendered-art .world-rendered-inner::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-  background:
-    linear-gradient(180deg, rgb(255 255 255 / 0.24), transparent 24%),
-    radial-gradient(circle at 50% 102%, rgb(0 0 0 / 0.28), transparent 42%);
-  mix-blend-mode: soft-light;
-}
-
-.world-rendered-frame.has-rendered-art .world-rendered-inner::after {
-  content: "";
-  position: absolute;
-  left: 10%;
-  right: 10%;
-  bottom: 0.28rem;
-  z-index: 3;
-  height: 0.85rem;
-  border-radius: 999px;
-  background: rgb(255 255 255 / 0.16);
-  filter: blur(0.4rem);
-}
-
-.world-rendered-image {
-  object-fit: contain;
-  object-position: center bottom;
-  padding: 0.45rem 0.45rem 0.25rem;
-  filter:
-    saturate(1.08)
-    contrast(1.04)
-    drop-shadow(0 1.05rem 0.95rem rgb(0 0 0 / 0.28));
-}
-
-.world-rendered-frame.is-fallback .world-rendered-inner {
-  background: transparent;
-  box-shadow: none;
-}
-
-.world-rendered-frame.is-fallback .world-mini-scene {
-  inset: 0;
-}
-
-.world-piece-stage:has(.world-rendered-frame.has-rendered-art)::after {
-  left: 8%;
-  right: 8%;
-  bottom: 0.55rem;
-  height: 2rem;
-  opacity: 0.82;
-}
-
-@media (max-width: 767px) {
-  .world-rendered-frame {
-    inset: -0.2rem 0 0;
-  }
-
-  .world-rendered-frame.has-rendered-art .world-rendered-inner {
-    inset: 0 0 0.45rem;
-  }
-
-  .world-rendered-image {
-    padding: 0.35rem 0.35rem 0.18rem;
-  }
 }
 
 /* Final production-art pass: real rendered diorama images are the primary world art. */
 .world-game-piece {
   min-height: clamp(28.5rem, 32vw, 32.5rem);
-}
-
-.world-piece-selector {
-  min-height: clamp(26.6rem, 30vw, 30.6rem);
-}
-
-.world-piece-stage {
-  height: clamp(15.8rem, 17vw, 18.1rem);
-  width: min(100%, 22rem);
-  filter:
-    drop-shadow(0 1.45rem 1.05rem rgb(0 0 0 / 0.34))
-    drop-shadow(0 0 1.1rem color-mix(in srgb, var(--world-card-accent) 28%, transparent));
-}
-
-.world-rendered-frame.has-rendered-art {
-  inset: -0.9rem -0.85rem 0.15rem;
-}
-
-.world-rendered-frame.has-rendered-art .world-rendered-inner {
-  inset: 0;
-  border: 4px solid color-mix(in srgb, var(--world-card-mid) 56%, #ffe7a8);
-  border-radius: 2.35rem 2.35rem 1.45rem 1.45rem;
-  background:
-    radial-gradient(circle at 50% 0%, rgb(255 245 194 / 0.26), transparent 42%),
-    linear-gradient(180deg, #7a4c2e, #321b12 82%);
-  box-shadow:
-    inset 0 0.3rem 0 rgb(255 255 255 / 0.36),
-    inset 0 -0.55rem 0 rgb(0 0 0 / 0.28),
-    0 0.55rem 0 color-mix(in srgb, var(--world-card-deep) 84%, #120906),
-    0 1.55rem 1.95rem rgb(0 0 0 / 0.38),
-    0 0 2.8rem color-mix(in srgb, var(--world-card-accent) 28%, transparent);
-}
-
-.world-rendered-frame.has-rendered-art .world-rendered-inner::before {
-  background:
-    linear-gradient(180deg, rgb(255 255 255 / 0.28), transparent 18%),
-    radial-gradient(circle at 50% 106%, rgb(0 0 0 / 0.34), transparent 46%),
-    linear-gradient(90deg, rgb(0 0 0 / 0.18), transparent 15%, transparent 85%, rgb(0 0 0 / 0.18));
-  mix-blend-mode: soft-light;
-}
-
-.world-rendered-frame.has-rendered-art .world-rendered-inner::after {
-  left: 7%;
-  right: 7%;
-  bottom: 0.4rem;
-  height: 1.1rem;
-  background: rgb(255 244 198 / 0.18);
-  filter: blur(0.5rem);
-}
-
-.world-rendered-image {
-  object-fit: cover;
-  object-position: center center;
-  padding: 0;
-  filter:
-    saturate(1.14)
-    contrast(1.08)
-    brightness(1.02)
-    drop-shadow(0 1.2rem 1.05rem rgb(0 0 0 / 0.3));
-}
-
-.world-piece-stage:has(.world-rendered-frame.has-rendered-art)::before {
-  content: "";
-  position: absolute;
-  left: 4%;
-  right: 4%;
-  bottom: 0.05rem;
-  z-index: -2;
-  height: 2.45rem;
-  border-radius: 50%;
-  background: rgb(0 0 0 / 0.38);
-  filter: blur(0.58rem);
-}
-
-.world-piece-stage:has(.world-rendered-frame.has-rendered-art)::after {
-  left: 5%;
-  right: 5%;
-  bottom: 0.38rem;
-  height: 2.25rem;
-  opacity: 0.95;
-}
-
-.world-piece-plaque {
-  margin-top: -0.25rem;
-}
-
-@media (max-width: 1279px) {
-  .world-piece-stage {
-    height: 17.1rem;
-    width: min(100%, 22rem);
-  }
 }
 
 @media (max-width: 767px) {
@@ -6298,18 +5252,6 @@ button:disabled:focus-visible {
   .world-game-piece:nth-child(4),
   .world-game-piece:nth-child(5) {
     min-height: 30.5rem;
-  }
-
-  .world-piece-selector {
-    min-height: 28.2rem;
-  }
-
-  .world-piece-stage {
-    height: 16.9rem;
-  }
-
-  .world-rendered-frame.has-rendered-art {
-    inset: -0.35rem -0.45rem 0.2rem;
   }
 }
 
