@@ -179,6 +179,62 @@ Still 0 static consumers but not audited here (candidates for a later batch): `.
 `.game-profile-chip`, `.game-settings-button`, `.game-topbar`, `.game-brandmark`, `.game-mission-notes`,
 `.game-opening-stage`, `.game-progress-plaque`, `.memory-orb`, `.memory-console`.
 
+## CLEANUP-HOME-CSS-LEGACY-04 Game Menu Stage/HUD Batch
+
+- `globals.css` line count before: 10,251 lines. After: 9,402 lines (849 deleted, 0 added).
+- Audited 9 families from the LEGACY-03 candidate list: `.game-world-plaque`, `.game-world-shelf`, `.shelf-track`,
+  `.game-world-stage`, `.game-bottom-hud`, `.game-hud-chip`, `.game-topbar`, `.memory-orb`, `.memory-console`,
+  plus their element classes `.game-hud-chip-icon` and `.game-topbar-status`.
+- All of them have 0 consumers in `src/`, `tools/` and `public/` (the other stylesheets included), and have had none
+  since at least `9bf72fe`, the oldest commit in the current history. Static `className`, template literals,
+  string concatenation, `join()`, `classList`, `querySelector`/`closest`/`className =` and suffix constructors were
+  checked. The only dynamic constructor with a matching prefix, `` `game-world-${world}` `` in `GameLayout.tsx`,
+  takes a `WorldKey` (`memory | route | commands | logic | garden`), so it can only produce `.game-world-memory`
+  and its siblings. At runtime, no element carries any of these classes on Home, the 5 selected worlds, the
+  5 intros or the 5 games (desktop and mobile, production build), nor on `/lab/3d-home` and `/lab/route-launcher`
+  (dev server).
+- Removed 108 rules whose every selector requires one of those classes (52 top level, 56 inside `@media`;
+  pseudo-elements, `h2`/`p`/`strong`/`em`/`svg` descendants and `.game-world-shelf .shelf-arrow` included), and
+  8 `@media` blocks left empty. No selector used `:not()`, `:is()`, `:where()` or `:has()` with these classes.
+- Pruned `.game-hud-chip` from 6 shared selector lists (beside `.game-profile-chip` / `.game-settings-button`, one
+  also with `.game-brandmark`) and `.game-hud-chip-icon` from 2 (beside `.game-profile-chip > span:first-child`
+  and `.game-progress-icon` / `.game-growth-orb`). Their declarations and remaining selectors are unchanged.
+- The removed rules used no `@keyframes` and defined no custom properties. No comment was touched: the 3 comments
+  that sat above removed rules still head surviving rules.
+- Every surviving rule, at-rule and comment is byte-identical and in the same order. The compiled CSS chunk went
+  from 187,350 to 173,207 bytes; the other 4 chunks are byte-identical. Computed styles (every element plus
+  `::before` / `::after`) and full-page screenshots of Home, each selected world, the 5 intros and the 5 games,
+  at desktop and mobile widths, are identical before and after on production builds, except where two runs of the
+  same build already differ: Rota's Babylon canvas pixels (its computed styles are identical), Jardim de Sementes'
+  randomized board, and an occasional one-element `.pgi-frame` difference on the desktop intros. Computed styles
+  on the 2 lab routes are identical in dev.
+
+Assets:
+
+- Removed `public/illustrations/ui/button-gloss.svg` (0 references in `src/`, `tools/`, `public/` and the build
+  output, no dynamic `/illustrations/ui/` path, never requested at runtime). Its only reference was the
+  `.game-play-cta::after` rule removed in LEGACY-03. This mission explicitly included the asset.
+- The removed rules held 5 `url()` reads. `wood-grain.svg` (4 of them) stays live: `.lab3d-world-sign`
+  (`GameHome3D.tsx`, `/lab/3d-home`) still requests it, and `--mf-wood-grain` still points at it.
+- `gold-flourish.svg` lost its only reference (`.game-world-plaque h2::before/::after`) and now has 0 references.
+  It was never requested at runtime. Kept: outside this mission's asset scope, candidate for a later batch.
+
+Exact searches used before removal:
+
+```bash
+# 0 matches
+git grep -nE "game-world-plaque|game-world-shelf|shelf-track|game-world-stage|game-bottom-hud|game-hud-chip|game-topbar|memory-orb|memory-console" -- src tools public ':!src/app/globals.css'
+git grep -nE -- '\}-?(plaque|shelf|track|stage|hud|chip|topbar|orb|console)\b' -- src tools public
+git grep -n "button-gloss" -- src tools public
+# 1 match, typed WorldKey only: GameLayout.tsx `game-world-${world}`
+git grep -nE '(game-|memory-|shelf-|game-world-|game-hud-)\$\{' -- src tools public
+```
+
+Still 0 static consumers but not audited here: `.shelf-arrow`, `.game-profile-chip`, `.game-settings-button`,
+`.game-brandmark`, `.game-mission-notes`, `.game-menu-home`, `.game-opening-stage`, `.game-opening-bg`,
+`.game-progress-plaque`, `.game-progress-icon`, `.game-growth-orb`, `.game-hud-progress`, `.memory-pad*`, and the
+`gold-flourish.svg` asset.
+
 ## Active Blocks To Preserve
 
 ### Global Base / Tokens
