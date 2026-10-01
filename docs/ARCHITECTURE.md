@@ -22,7 +22,7 @@ O app roda em uma única rota (`src/app/page.tsx`) e alterna entre três estados
 home (HomeStage)
   -> game (GameScreen)
        -> GameHowToPlay
-       -> GAME_REGISTRY[gameId].component
+       -> GAME_REGISTRY[gameId].load() -> componente do jogo
             -> onComplete(result)
   -> result (RewardResultModal)
        -> praticar outra vez
@@ -32,6 +32,7 @@ home (HomeStage)
 - `src/app/page.tsx` controla a visão atual, a estação selecionada, o `gameSession`, o retorno para Home e a persistência via `saveGameResult`.
 - Jogos não salvam direto em `localStorage`; eles chamam `onComplete` com `Omit<GameResult, "id" | "playedAt">`.
 - `GameScreen` aplica a intro do jogo e remonta a sessão quando necessário.
+- O código de cada jogo é carregado sob demanda: o registry não importa nenhum jogo estaticamente, e cada `load()` faz o `import()` do chunk daquele jogo quando o `GameScreen` monta. A Home não carrega código de jogo. A prontidão do jogo só conta a partir do mount do componente (o fallback de 2 frames começa depois dele), e falha no carregamento do chunk vai para `onEntryError` → painel de tentar novamente.
 - `RewardResultModal` usa os dados do resultado salvo e a cópia de recompensa em `src/engine/rewards.ts`.
 
 ## Fontes de verdade
@@ -40,7 +41,7 @@ home (HomeStage)
 | --- | --- |
 | Tipos de jogo e resultado | `src/types/game.ts` |
 | Contrato de entrada dos jogos (readiness + watchdog; só metadados) | `src/games/entry-contract.ts` |
-| Registro de jogos (contrato de entrada + componente) | `src/games/index.ts` |
+| Registro de jogos (contrato de entrada + loader do componente) | `src/games/index.ts` |
 | Metadados visuais dos mundos | `src/data/worlds.ts` |
 | Lista de atividades e estações | `src/data/activities.ts` |
 | Intros dos jogos | `src/data/game-intros.ts` |

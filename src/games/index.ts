@@ -4,32 +4,53 @@ import {
   GAME_ENTRY_CONTRACTS,
   type GameEntryContract,
 } from "@/games/entry-contract";
-import { MemoryCircuit3DGame } from "@/games/color-sequence/MemoryCircuit3DGame";
-import { RouteStrategyGame } from "@/games/escape-maze/RouteStrategyGame";
-import { NumberTrailGame } from "@/games/number-trail/NumberTrailGame";
-import { SeedGardenGame } from "@/games/seed-garden/SeedGardenGame";
-import { SecurityPanelGame } from "@/games/security-panel/SecurityPanelGame";
+
+/**
+ * Resolves a game's component. The first call fetches the game's code; later
+ * calls resolve from the bundler's module cache.
+ */
+type GameComponentLoader = () => Promise<ComponentType<GameComponentProps>>;
 
 export interface GameRegistryEntry extends GameEntryContract {
-  component: ComponentType<GameComponentProps>;
+  load: GameComponentLoader;
 }
 
-const GAME_COMPONENTS: Record<GameId, ComponentType<GameComponentProps>> = {
-  "color-sequence": MemoryCircuit3DGame,
-  "escape-maze": RouteStrategyGame,
-  "security-panel": SecurityPanelGame,
-  "number-trail": NumberTrailGame,
-  "seed-garden": SeedGardenGame,
+/**
+ * Nothing here imports a game statically. Each `import()` names its module
+ * literally, so the bundler gives every game its own chunk and fetches it only
+ * when that game is opened: being registered costs the Home no game code.
+ */
+const GAME_LOADERS: Record<GameId, GameComponentLoader> = {
+  "color-sequence": () =>
+    import("@/games/color-sequence/MemoryCircuit3DGame").then(
+      (mod) => mod.MemoryCircuit3DGame,
+    ),
+  "escape-maze": () =>
+    import("@/games/escape-maze/RouteStrategyGame").then(
+      (mod) => mod.RouteStrategyGame,
+    ),
+  "security-panel": () =>
+    import("@/games/security-panel/SecurityPanelGame").then(
+      (mod) => mod.SecurityPanelGame,
+    ),
+  "number-trail": () =>
+    import("@/games/number-trail/NumberTrailGame").then(
+      (mod) => mod.NumberTrailGame,
+    ),
+  "seed-garden": () =>
+    import("@/games/seed-garden/SeedGardenGame").then(
+      (mod) => mod.SeedGardenGame,
+    ),
 };
 
 /**
  * Registry of playable games: each game's entry contract (see
- * `src/games/entry-contract.ts`) paired with its component. Add new entries to
- * both maps when implementing activities.
+ * `src/games/entry-contract.ts`), readable right away, paired with the loader
+ * of its component. Add new entries to both maps when implementing activities.
  */
 export const GAME_REGISTRY: Record<GameId, GameRegistryEntry> = Object.fromEntries(
-  (Object.keys(GAME_COMPONENTS) as GameId[]).map((gameId) => [
+  (Object.keys(GAME_LOADERS) as GameId[]).map((gameId) => [
     gameId,
-    { ...GAME_ENTRY_CONTRACTS[gameId], component: GAME_COMPONENTS[gameId] },
+    { ...GAME_ENTRY_CONTRACTS[gameId], load: GAME_LOADERS[gameId] },
   ]),
 ) as Record<GameId, GameRegistryEntry>;
