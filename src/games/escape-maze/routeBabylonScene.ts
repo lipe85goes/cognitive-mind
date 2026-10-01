@@ -2119,7 +2119,22 @@ export function createRouteBabylonController(
     );
   }
 
+  /**
+   * ROTA-PROJECTED-CENTERS-01: `scene.getTransformMatrix()` is a cache. The
+   * scene refreshes it only when it renders, so every caller here — `resize`
+   * after `engine.resize()` + `fitCamera()`, `resetView` after a gesture, the
+   * entry-readiness path, `updateBoard` in the same frame as a layout change —
+   * used to project with the PREVIOUS frame's camera. Nothing rewrites the
+   * centres afterwards, so they stayed off (by a few px after a layout resize,
+   * by a whole zoom step after Centralizar) until some unrelated `updateBoard`.
+   *
+   * `updateTransformMatrix(true)` rebuilds view x projection from the camera
+   * and the engine size as they are NOW. It is exactly the call the next
+   * `scene.render()` would make, so that frame finds the matrix already in sync
+   * and draws the same pixels; it is just no longer late for the projection.
+   */
   function writeProjectedCellCenters() {
+    scene.updateTransformMatrix(true);
     const viewport = camera.viewport.toGlobal(
       engine.getRenderWidth(),
       engine.getRenderHeight(),

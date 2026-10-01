@@ -29,8 +29,8 @@ import ts from "typescript";
 const ROOT = process.cwd();
 const SCENE = path.join(ROOT, "src/games/escape-maze/routeBabylonScene.ts");
 
-function compile(file) {
-  return ts.transpileModule(fs.readFileSync(file, "utf8"), {
+function compile(file, transformSource = (source) => source) {
+  return ts.transpileModule(transformSource(fs.readFileSync(file, "utf8")), {
     compilerOptions: {
       esModuleInterop: true,
       module: ts.ModuleKind.CommonJS,
@@ -40,13 +40,20 @@ function compile(file) {
   }).outputText;
 }
 
-/** Load the real controller factory once. */
-export function loadSceneModule() {
+/**
+ * Load the real controller factory once.
+ *
+ * `transformSource` lets a counterfactual test compile a deliberately broken
+ * variant of the real source; `quiet` swaps the module's console for a no-op
+ * (the procedural-fallback warnings are expected when no GLB can load).
+ */
+export function loadSceneModule({ transformSource, quiet = false } = {}) {
   const mod = { exports: {} };
+  const silent = { log() {}, info() {}, warn() {}, error() {} };
   const sandbox = {
     module: mod,
     exports: mod.exports,
-    console,
+    console: quiet ? silent : console,
     Math,
     Set,
     Map,
@@ -56,13 +63,15 @@ export function loadSceneModule() {
     JSON,
     Promise,
     Error,
+    // Read by the tap gesture's duration check; a pointer-driven test needs it.
+    performance,
     require() {
       throw new Error("routeBabylonScene must have no runtime imports");
     },
   };
   sandbox.globalThis = sandbox;
   vm.createContext(sandbox);
-  new vm.Script(compile(SCENE)).runInContext(sandbox);
+  new vm.Script(compile(SCENE, transformSource)).runInContext(sandbox);
   if (typeof mod.exports.createRouteBabylonController !== "function") {
     throw new Error("createRouteBabylonController missing: module shape changed");
   }
@@ -251,6 +260,9 @@ export function createBabylonDouble() {
           },
         };
         registerScene(this);
+      }
+      updateTransformMatrix() {
+        guard("scene.updateTransformMatrix");
       }
       getTransformMatrix() {
         guard("scene.getTransformMatrix");
