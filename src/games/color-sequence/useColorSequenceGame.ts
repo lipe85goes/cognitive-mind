@@ -1,6 +1,7 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import type { RefObject } from "react";
 import {
   playColorTone,
   playGentleErrorTone,
@@ -25,8 +26,60 @@ function randomColorId(): number {
   return Math.floor(Math.random() * 4);
 }
 
-function delay(ms: number): Promise<void> {
-  return new Promise((resolve) => window.setTimeout(resolve, ms));
+/**
+ * One play session: from Ativar or Recomeçar until the result is emitted, the
+ * player restarts, or the game unmounts. It owns every timeout scheduled on its
+ * behalf — playback steps, tap flashes, the mistake and round-complete windows —
+ * so ending it ends all of them at once.
+ */
+interface Session {
+  readonly timers: Set<number>;
+}
+
+/** The live session, or null before Ativar and after the session ended. */
+type SessionRef = RefObject<Session | null>;
+
+/** End the live session and clear every timeout it still owns. */
+function revokeSession(sessionRef: SessionRef): void {
+  const session = sessionRef.current;
+  if (!session) return;
+  sessionRef.current = null;
+  for (const id of session.timers) window.clearTimeout(id);
+  session.timers.clear();
+}
+
+/** Replace the live session with a new one; nothing the old one scheduled runs. */
+function openSession(sessionRef: SessionRef): void {
+  revokeSession(sessionRef);
+  sessionRef.current = { timers: new Set() };
+}
+
+/**
+ * `window.setTimeout` on behalf of the live session. The callback runs only if
+ * that same session is still live when it fires; with no live session nothing
+ * is scheduled.
+ */
+function scheduleForSession(
+  sessionRef: SessionRef,
+  callback: () => void,
+  ms: number,
+): void {
+  const session = sessionRef.current;
+  if (!session) return;
+  const id = window.setTimeout(() => {
+    session.timers.delete(id);
+    if (sessionRef.current === session) callback();
+  }, ms);
+  session.timers.add(id);
+}
+
+/**
+ * Resolves after `ms` on behalf of the live session. If the session ends first
+ * the timeout is cleared and the promise never settles, so a playback awaiting
+ * it never resumes.
+ */
+function sessionDelay(sessionRef: SessionRef, ms: number): Promise<void> {
+  return new Promise((resolve) => scheduleForSession(sessionRef, resolve, ms));
 }
 
 type CompleteFn = (result: Omit<GameResult, "id" | "playedAt">) => void;
@@ -51,7 +104,11 @@ export function useColorSequenceGame(onComplete: CompleteFn) {
   const [inputLocked, setInputLocked] = useState(true);
   const [shakeToken, setShakeToken] = useState(0);
 
-  const playTokenRef = useRef(0);
+  const sessionRef = useRef<Session | null>(null);
+
+  // Unmounting — Voltar à jornada, or the result screen replacing the game —
+  // ends the session and everything it still had pending.
+  useEffect(() => () => revokeSession(sessionRef), []);
 
   const score = calculateColorSequenceScore({
     level,
@@ -61,6 +118,11 @@ export function useColorSequenceGame(onComplete: CompleteFn) {
 
   const finishGame = useCallback(
     (stats: { level: number; sequenceLength: number; errors: number }) => {
+      // A session reports exactly one result. Encerrar and the last mistake's
+      // window can both get here; the first one ends the session, and with it
+      // whatever the other still had pending.
+      if (!sessionRef.current) return;
+      revokeSession(sessionRef);
       onComplete({
         activityId: "color-sequence",
         activityTitle: "Circuito de Memória",
@@ -83,7 +145,8 @@ export function useColorSequenceGame(onComplete: CompleteFn) {
 
   /** Play the current sequence with highlight animation. */
   const playSequence = useCallback(async (seq: number[]) => {
-    const token = ++playTokenRef.current;
+    const session = sessionRef.current;
+    if (!session) return;
     setInputLocked(true);
     setPhase("showing");
     setRoundMessage(null);
@@ -92,17 +155,17 @@ export function useColorSequenceGame(onComplete: CompleteFn) {
     setShowStep(0);
 
     for (let i = 0; i < seq.length; i++) {
-      if (playTokenRef.current !== token) return;
+      if (sessionRef.current !== session) return;
 
       setShowStep(i + 1);
       setActiveColor(seq[i]);
       playColorTone(seq[i]);
-      await delay(SHOW_MS);
-      if (playTokenRef.current !== token) return;
+      await sessionDelay(sessionRef, SHOW_MS);
+      if (sessionRef.current !== session) return;
 
       setActiveColor(null);
-      await delay(GAP_MS);
-      if (playTokenRef.current !== token) return;
+      await sessionDelay(sessionRef, GAP_MS);
+      if (sessionRef.current !== session) return;
     }
 
     setShowStep(0);
@@ -120,7 +183,7 @@ export function useColorSequenceGame(onComplete: CompleteFn) {
   );
 
   const restartSession = useCallback(() => {
-    playTokenRef.current += 1;
+    openSession(sessionRef);
     setLevel(1);
     setErrors(0);
     setInputIndex(0);
@@ -134,6 +197,7 @@ export function useColorSequenceGame(onComplete: CompleteFn) {
   }, [startRound]);
 
   const beginGame = useCallback(() => {
+    openSession(sessionRef);
     const first = [randomColorId()];
     setLevel(1);
     setErrors(0);
@@ -153,7 +217,7 @@ export function useColorSequenceGame(onComplete: CompleteFn) {
       const nextErrors = currentErrors + 1;
       setErrors(nextErrors);
 
-      window.setTimeout(() => {
+      scheduleForSession(sessionRef, () => {
         setRoundMessage(null);
         setTapFeedback(null);
         setLastTapped(null);
@@ -184,14 +248,14 @@ export function useColorSequenceGame(onComplete: CompleteFn) {
 
     const expected = sequence[inputIndex];
     if (colorId !== expected) {
-      window.setTimeout(() => setActiveColor(null), TAP_FLASH_MS);
+      scheduleForSession(sessionRef, () => setActiveColor(null), TAP_FLASH_MS);
       handleMistake(errors, sequence);
       return;
     }
 
     setTapFeedback("correct");
     playColorTone(colorId);
-    window.setTimeout(() => {
+    scheduleForSession(sessionRef, () => {
       setActiveColor(null);
       setTapFeedback(null);
       setLastTapped(null);
@@ -210,7 +274,7 @@ export function useColorSequenceGame(onComplete: CompleteFn) {
     const nextLevel = level + 1;
     const extended = [...sequence, randomColorId()];
 
-    window.setTimeout(() => {
+    scheduleForSession(sessionRef, () => {
       setRoundMessage(null);
       setLevel(nextLevel);
       setInputIndex(0);
