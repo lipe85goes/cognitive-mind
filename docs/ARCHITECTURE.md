@@ -39,7 +39,8 @@ home (HomeStage)
 | Área | Arquivo |
 | --- | --- |
 | Tipos de jogo e resultado | `src/types/game.ts` |
-| Registro de jogos (componente + readiness de entrada) | `src/games/index.ts` |
+| Contrato de entrada dos jogos (readiness + watchdog; só metadados) | `src/games/entry-contract.ts` |
+| Registro de jogos (contrato de entrada + componente) | `src/games/index.ts` |
 | Metadados visuais dos mundos | `src/data/worlds.ts` |
 | Lista de atividades e estações | `src/data/activities.ts` |
 | Intros dos jogos | `src/data/game-intros.ts` |

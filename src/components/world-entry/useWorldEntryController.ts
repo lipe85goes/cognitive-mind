@@ -6,6 +6,7 @@ import {
   INITIAL_WORLD_ENTRY_STATE,
   worldEntryReducer,
 } from "@/components/world-entry/worldEntryTypes";
+import { GAME_ENTRY_CONTRACTS } from "@/games/entry-contract";
 
 /**
  * Watchdog for the "preparing" phase. Readiness normally arrives from asset
@@ -13,23 +14,17 @@ import {
  * Explorador must not stay on "Preparando..." forever — after this window we
  * fail over to the existing retry/back error panel. While the tab is hidden
  * the browser suspends rAF/paint, so the timer re-arms instead of firing.
+ *
+ * This is the default; a game whose first paint legitimately takes longer
+ * declares its own `entryWatchdogMs` in its entry contract.
  */
 const PREPARING_WATCHDOG_MS = 12_000;
 
-/**
- * A Rota inicializa uma engine 3D e carrega GLBs antes do primeiro frame; em
- * produção, medido com cache desligado, ela leva de 9,5 s (tablet) a 14,8 s
- * (mobile 390 com DPR 2) do CTA até a cena revelada. Com 12 s globais, o
- * watchdog disparava DURANTE um carregamento legítimo e mandava o Explorador
- * para o painel de erro. A janela é ampliada só para este mundo — os demais
- * seguem em 12 s, porque só pintam imagens.
- */
-const WORLD_WATCHDOG_MS: Partial<Record<GameId, number>> = {
-  "escape-maze": 28_000,
-};
-
 function watchdogWindowFor(gameId: GameId | null) {
-  return (gameId && WORLD_WATCHDOG_MS[gameId]) || PREPARING_WATCHDOG_MS;
+  return (
+    (gameId && GAME_ENTRY_CONTRACTS[gameId].entryWatchdogMs) ||
+    PREPARING_WATCHDOG_MS
+  );
 }
 
 export function useWorldEntryController() {

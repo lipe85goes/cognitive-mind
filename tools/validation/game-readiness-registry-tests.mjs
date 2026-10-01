@@ -6,10 +6,11 @@
  * game. The Rota and the Circuito report it themselves through `onEntryReady`;
  * the legacy games never do, so the shell falls back to two animation frames
  * after mounting them. That decision used to be two hardcoded ids inside
- * GameScreen. It now lives in `src/games/index.ts`.
+ * GameScreen. It now lives in `src/games/index.ts`, which takes each game's
+ * readiness from the metadata-only `src/games/entry-contract.ts`.
  *
- * This runs the REAL GameScreen and the REAL registry — compiled from source,
- * unmodified — under:
+ * This runs the REAL GameScreen, the REAL registry and the REAL entry contract —
+ * compiled from source, unmodified — under:
  *
  *   - stub game components (one per registry import, named by module and export)
  *     and a stub intro, so nothing past the shell renders;
@@ -38,6 +39,8 @@ import ts from "typescript";
 import { EXIT_OK, EXIT_USAGE, EXIT_VALIDATION_FAILED } from "./evidence.mjs";
 
 const REGISTRY = "src/games/index.ts";
+const ENTRY_CONTRACT = "src/games/entry-contract.ts";
+const ENTRY_CONTRACT_SPECIFIER = "@/games/entry-contract";
 const SCREEN = "src/components/GameScreen.tsx";
 
 const args = process.argv.slice(2);
@@ -178,9 +181,17 @@ const JSX_RUNTIME = {
 };
 JSX_RUNTIME.jsxs = JSX_RUNTIME.jsx;
 
-const REGISTRY_MODULE = evaluate(compile(REGISTRY), {}, (specifier) =>
-  specifier.startsWith("@/games/") ? stubModule(specifier) : null,
-);
+/**
+ * The entry contract is metadata, not a game: the registry composes the real one.
+ * Revisions before it existed never import it.
+ */
+let entryContractModule = null;
+const REGISTRY_MODULE = evaluate(compile(REGISTRY), {}, (specifier) => {
+  if (specifier === ENTRY_CONTRACT_SPECIFIER) {
+    return (entryContractModule ??= evaluate(compile(ENTRY_CONTRACT), {}, () => null));
+  }
+  return specifier.startsWith("@/games/") ? stubModule(specifier) : null;
+});
 const SCREEN_SOURCE = readSource(SCREEN);
 const SCREEN_JS = compile(SCREEN);
 const DECLARED = REGISTRY_MODULE.GAME_REGISTRY ?? null;
