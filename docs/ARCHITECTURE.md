@@ -22,7 +22,7 @@ O app roda em uma única rota (`src/app/page.tsx`) e alterna entre três estados
 home (HomeStage)
   -> game (GameScreen)
        -> GameHowToPlay
-       -> GAME_COMPONENTS[gameId]
+       -> GAME_REGISTRY[gameId].component
             -> onComplete(result)
   -> result (RewardResultModal)
        -> praticar outra vez
@@ -39,7 +39,7 @@ home (HomeStage)
 | Área | Arquivo |
 | --- | --- |
 | Tipos de jogo e resultado | `src/types/game.ts` |
-| Registro de componentes jogáveis | `src/games/index.ts` |
+| Registro de jogos (componente + readiness de entrada) | `src/games/index.ts` |
 | Metadados visuais dos mundos | `src/data/worlds.ts` |
 | Lista de atividades e estações | `src/data/activities.ts` |
 | Intros dos jogos | `src/data/game-intros.ts` |

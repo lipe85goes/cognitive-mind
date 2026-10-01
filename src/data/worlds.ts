@@ -58,7 +58,7 @@ export interface WorldMeta {
 /**
  * Single source of truth for per-game world presentation.
  * Dashboard, intro, in-game shell and reward screens all read from here —
- * add new games to this map (plus GAME_INTROS and GAME_COMPONENTS).
+ * add new games to this map (plus GAME_INTROS and GAME_REGISTRY).
  */
 export const GAME_WORLDS: Record<GameId, WorldMeta> = {
   "color-sequence": {

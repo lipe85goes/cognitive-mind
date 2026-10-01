@@ -3,7 +3,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { GameHowToPlay } from "@/components/GameHowToPlay";
 import { GAME_INTROS } from "@/data/game-intros";
-import { GAME_COMPONENTS } from "@/games";
+import { GAME_REGISTRY } from "@/games";
 import type { GameComponentProps, GameId } from "@/types/game";
 
 interface GameScreenProps extends GameComponentProps {
@@ -30,9 +30,8 @@ export function GameScreen({
   const readyReportedRef = useRef(false);
   const gameLayerRef = useRef<HTMLDivElement>(null);
   const intro = GAME_INTROS[gameId];
-  const ActiveGame = GAME_COMPONENTS[gameId];
-  const hasExplicitGameReadiness =
-    gameId === "escape-maze" || gameId === "color-sequence";
+  const { component: ActiveGame, readiness } = GAME_REGISTRY[gameId];
+  const hasExplicitGameReadiness = readiness === "explicit";
 
   useEffect(() => {
     if (hasExplicitGameReadiness) return;
