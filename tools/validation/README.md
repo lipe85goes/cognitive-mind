@@ -60,6 +60,20 @@ streams, plus the deterministic-recovery proof (about 4 minutes):
 node tools/validation/final-acceptance.mjs
 ```
 
+**ROUTE PROJECTION** — `data-cell-centers` must describe the camera the board
+is drawn with now. Neither writes evidence nor takes `--check`/`--update`:
+
+```bash
+node tools/validation/route-projection-tests.mjs           # real Babylon, no browser, ~3 s
+node tools/validation/route-projection-browser-probe.mjs   # Playwright, needs a running app
+```
+
+The first runs the real controller on `@babylonjs/core` with a `NullEngine` and
+also proves it would catch the regression (a counterfactual build without the
+fix must fail). The second drives the app through start-after-resize, a blocked
+step, Detalhes, Centralizar and a viewport resize; with `--entry launcher`
+against `next dev` it also compares the board's pixels with a `--baseline` run.
+
 **EVIDENCE UPDATE** — after a deliberate change, once you have read the diffs:
 
 ```bash
