@@ -256,6 +256,15 @@ export function RouteStrategyGame({
     );
   }, [status, guardian, walls]);
 
+  // The board memoises its scene state on prop identity, so the wall keys must
+  // keep theirs for as long as `breakTargets` does. Mapped inline, every render
+  // (opening Detalhes, a blocked step) handed it a new array and rebuilt the
+  // dynamic board for nothing.
+  const breakTargetKeys = useMemo(
+    () => breakTargets.map(({ cell }) => posKey(cell)),
+    [breakTargets],
+  );
+
   const positiveMessages = new Set([
     "Luz-chave coletada.",
     "Portal ativado! Vá até a saída.",
@@ -594,7 +603,7 @@ export function RouteStrategyGame({
                   moveTargets={moveTargets}
                   triggeredTrapSet={triggeredTrapSet}
                   chestOpened={chestOpened}
-                  breakTargets={breakTargets.map(({ cell }) => posKey(cell))}
+                  breakTargets={breakTargetKeys}
                   aimedWall={aimedWall}
                   brokenWall={brokenWall}
                   dangerTiles={dangerTiles}
