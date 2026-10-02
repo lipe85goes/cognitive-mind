@@ -55,6 +55,8 @@ import { EXIT_OK, EXIT_USAGE, EXIT_VALIDATION_FAILED } from "./evidence.mjs";
 const GAME = "src/games/escape-maze/RouteStrategyGame.tsx";
 const BOARD = "src/games/escape-maze/RouteBabylonBoard.tsx";
 const BOARD_SPECIFIER = "@/games/escape-maze/RouteBabylonBoard";
+const CONTINUATION = "src/games/escape-maze/continuation.ts";
+const CONTINUATION_SPECIFIER = "@/games/escape-maze/continuation";
 const LOADING_TEXT = "Preparando o tabuleiro Babylon…";
 
 const args = process.argv.slice(2);
@@ -99,6 +101,38 @@ const GAME_JS = ts.transpileModule(GAME_SOURCE, {
   fileName: GAME,
   transformers: { before: [gateDynamicImports] },
 }).outputText;
+const codeOnly = (source) =>
+  source.replace(/\/\*[\s\S]*?\*\//g, " ").replace(/(^|[^:])\/\/.*$/gm, "$1");
+/**
+ * The session the Rota is mounted on, in the form the Rota at this revision
+ * takes it: one typed continuation since GAME-CONTINUATION-CONTRACT-01, two
+ * Route fields before it. The gameplay hook is a stub, so it only has to match
+ * the fixture below (Route 3, medium).
+ */
+const SESSION_CONTINUATION = /\bcontinuation\b/.test(codeOnly(GAME_SOURCE))
+  ? { continuation: { kind: "escape-maze-route", routeNumber: 3, difficulty: "medium" } }
+  : { initialRouteNumber: 3, initialDifficulty: "medium" };
+
+let continuationModule = null;
+/** The Rota's real continuation reader, compiled from source the first time a revision imports it. */
+function loadContinuationModule() {
+  if (!continuationModule) {
+    const js = ts.transpileModule(readSource(CONTINUATION), {
+      compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 },
+      fileName: CONTINUATION,
+    }).outputText;
+    const mod = { exports: {} };
+    vm.runInNewContext(js, {
+      module: mod,
+      exports: mod.exports,
+      require: (specifier) => {
+        throw new Error(`unexpected import ${specifier} in ${CONTINUATION}`);
+      },
+    });
+    continuationModule = mod.exports;
+  }
+  return continuationModule;
+}
 
 /** Key-order-insensitive structural equality. */
 const canonical = (value) =>
@@ -352,6 +386,7 @@ function loadPage() {
     require: (specifier) => {
       if (specifier.endsWith(".css")) return {};
       if (specifier in modules) return modules[specifier];
+      if (specifier === CONTINUATION_SPECIFIER) return loadContinuationModule();
       throw new Error(`unexpected import ${specifier}`);
     },
   };
@@ -406,8 +441,7 @@ function mount(page, { strict = false, label = "rota" } = {}) {
   let props = {
     onComplete: noop,
     onExit: noop,
-    initialRouteNumber: 3,
-    initialDifficulty: "medium",
+    ...SESSION_CONTINUATION,
     onEntryReady: (...received) => log.readyAt.push({ step, received }),
     onEntryError: (...received) => log.errors.push({ via: "initial", step, received }),
   };

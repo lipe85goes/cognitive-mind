@@ -234,6 +234,15 @@ const GAME_IMPORTS_AT_EVALUATION = gameImports.log.splice(0);
 const SCREEN_SOURCE = readSource(SCREEN);
 const SCREEN_JS = compile(SCREEN);
 const DECLARED = REGISTRY_MODULE.GAME_REGISTRY ?? null;
+/**
+ * The session's continuation, in the form the shell at this revision carries it
+ * to the game: one typed value since GAME-CONTINUATION-CONTRACT-01, two Route
+ * fields before it. Either way GameScreen must hand it over as it came.
+ */
+const SESSION_CONTINUATION = /\bcontinuation\b/.test(codeOnly(SCREEN_SOURCE))
+  ? { continuation: { kind: "escape-maze-route", routeNumber: 4, difficulty: "hard" } }
+  : { initialRouteNumber: 4, initialDifficulty: "hard" };
+const CONTINUATION_PROP_KEYS = Object.keys(SESSION_CONTINUATION);
 
 const hasLoader = (entry) => typeof entry?.load === "function";
 /**
@@ -453,8 +462,7 @@ function mount({ gameId, skipIntro = false, strict = false, registryModule = REG
     sessionKey,
     onComplete: () => {},
     onExit: () => {},
-    initialRouteNumber: 4,
-    initialDifficulty: "hard",
+    ...SESSION_CONTINUATION,
     onEntryReady: () => log.readyAt.push(step),
     onEntryError: (...received) => log.errors.push({ via: "initial", step, received }),
     skipIntro,
@@ -661,8 +669,10 @@ function describeTree(screen) {
       onComplete: game.props.onComplete === props.onComplete,
       onExit: game.props.onExit === props.onExit,
       onEntryError: game.props.onEntryError === props.onEntryError,
-      initialRouteNumber: game.props.initialRouteNumber,
-      initialDifficulty: game.props.initialDifficulty,
+      // Forwarded by identity: the shell neither copies nor rebuilds it.
+      continuationForwarded: Object.fromEntries(
+        CONTINUATION_PROP_KEYS.map((key) => [key, game.props[key] === props[key]]),
+      ),
       onEntryReadyIsShellOwned:
         typeof game.props.onEntryReady === "function" &&
         game.props.onEntryReady !== props.onEntryReady,
@@ -694,12 +704,11 @@ function expectedTree({ component, gameId, skipIntro, started }) {
     game: {
       component,
       key: "7",
-      propKeys: ["initialDifficulty", "initialRouteNumber", "onComplete", "onEntryError", "onEntryReady", "onExit"],
+      propKeys: [...CONTINUATION_PROP_KEYS, "onComplete", "onEntryError", "onEntryReady", "onExit"].sort(),
       onComplete: true,
       onExit: true,
       onEntryError: true,
-      initialRouteNumber: 4,
-      initialDifficulty: "hard",
+      continuationForwarded: Object.fromEntries(CONTINUATION_PROP_KEYS.map((key) => [key, true])),
       onEntryReadyIsShellOwned: true,
     },
     intro: skipIntro ? null : { gameId, introFor: gameId, onBackToMap: true, onError: true },

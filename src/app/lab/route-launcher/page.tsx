@@ -166,8 +166,11 @@ export default function RouteLauncherPage() {
           key={session.key}
           gameId="escape-maze"
           sessionKey={session.key}
-          initialRouteNumber={session.routeNumber}
-          initialDifficulty={session.difficulty}
+          continuation={{
+            kind: "escape-maze-route",
+            routeNumber: session.routeNumber,
+            difficulty: session.difficulty,
+          }}
           skipIntro
           onComplete={(partial) =>
             setLastResult(createTransientGameResult(partial))

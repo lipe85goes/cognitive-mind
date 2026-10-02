@@ -27,14 +27,16 @@ interface GameScreenProps extends GameComponentProps {
  * entry "preparing" (under its watchdog) instead of revealing an empty world,
  * and a chunk that fails to load takes the same onEntryError -> retry path as
  * any other entry failure.
+ *
+ * A session's `continuation` reaches the game exactly as it came: this screen
+ * carries it and never opens it.
  */
 export function GameScreen({
   gameId,
   sessionKey,
   onComplete,
   onExit,
-  initialRouteNumber,
-  initialDifficulty,
+  continuation,
   onEntryReady,
   onEntryError,
   skipIntro = false,
@@ -123,8 +125,7 @@ export function GameScreen({
             key={sessionKey}
             onComplete={onComplete}
             onExit={onExit}
-            initialRouteNumber={initialRouteNumber}
-            initialDifficulty={initialDifficulty}
+            continuation={continuation}
             onEntryReady={() => setGameReady(true)}
             onEntryError={onEntryError}
           />

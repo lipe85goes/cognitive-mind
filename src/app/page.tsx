@@ -20,24 +20,10 @@ import { getRecentResults, saveGameResult } from "@/engine/storage";
 import type {
   Activity,
   DashboardView,
-  DifficultyLevel,
+  GameContinuation,
   GameId,
   GameResult,
 } from "@/types/game";
-
-const DIFFICULTY_LEVELS: readonly DifficultyLevel[] = ["easy", "medium", "hard"];
-
-/**
- * `GameResult.details` is a loose record, so the mode a finished route reports
- * has to be narrowed before it can be handed back to a new session. Anything
- * unrecognised yields undefined, which is exactly the fresh-entry default.
- */
-function readDifficulty(value: unknown): DifficultyLevel | undefined {
-  return typeof value === "string" &&
-    (DIFFICULTY_LEVELS as readonly string[]).includes(value)
-    ? (value as DifficultyLevel)
-    : undefined;
-}
 
 /**
  * Production home: 2.5D world atelier, game routing, and recent results.
@@ -53,15 +39,14 @@ export default function HomePage() {
   const [dashboardNotice, setDashboardNotice] = useState<string | null>(null);
   /** Bumped to remount game components on each new session. */
   const [gameSession, setGameSession] = useState(0);
-  const [initialRouteNumber, setInitialRouteNumber] = useState<number | undefined>();
   /**
-   * Set only while a journey continues, and cleared on a fresh entry. It is the
-   * mode's carrier BETWEEN instances; during play the game component owns it.
+   * What the current session resumes: set only by `playAgain`, from the result
+   * the game just produced, and cleared by every entry from Home. Opaque here —
+   * the shell keeps it and hands it back to the game, never reading inside it.
    */
-  const [initialDifficulty, setInitialDifficulty] = useState<
-    DifficultyLevel | undefined
+  const [continuation, setContinuation] = useState<
+    GameContinuation | undefined
   >();
-  const [skipGameIntro, setSkipGameIntro] = useState(false);
   const {
     state: entryState,
     isActive: isEntryActive,
@@ -125,11 +110,9 @@ export default function HomePage() {
     setDashboardNotice(null);
     setSelectedDashboardGameId(activity.gameId);
     setActiveGameId(activity.gameId);
-    setInitialRouteNumber(undefined);
-    // A new entry from Home is a new journey: it must not inherit the mode of
-    // whatever was played before it.
-    setInitialDifficulty(undefined);
-    setSkipGameIntro(false);
+    // A new entry from Home is a new journey: it must not inherit anything
+    // from whatever was played before it.
+    setContinuation(undefined);
     setGameSession((n) => n + 1);
   };
 
@@ -162,29 +145,11 @@ export default function HomePage() {
       if (!startWorldEntry(lastResult.gameId)) return;
 
       setDashboardNotice(null);
-      const isRouteJourney = lastResult.gameId === "escape-maze";
-      const nextRouteNumber =
-        isRouteJourney && typeof lastResult.details.nextRouteNumber === "number"
-          ? lastResult.details.nextRouteNumber
-          : undefined;
-      /**
-       * ROTA-DIFFICULTY-04B: the finished route already reports the mode it was
-       * played on — `endGame` has always written `details.difficulty`. Carrying
-       * it here is the missing half of the continuation that already carries the
-       * Route, and it is read from the same place, under the same guard.
-       *
-       * Tied to `nextRouteNumber` on purpose: the mode travels only when a
-       * journey travels, so it can never leak into an unrelated session.
-       */
-      const nextDifficulty = nextRouteNumber
-        ? readDifficulty(lastResult.details.difficulty)
-        : undefined;
-
       setSelectedDashboardGameId(lastResult.gameId);
       setActiveGameId(lastResult.gameId);
-      setInitialRouteNumber(nextRouteNumber);
-      setInitialDifficulty(nextDifficulty);
-      setSkipGameIntro(Boolean(nextRouteNumber));
+      // Whatever the game asked to resume, handed back to that same game
+      // untouched. A result without one is a replay from the game's own start.
+      setContinuation(lastResult.continuation);
       setGameSession((n) => n + 1);
     }
   };
@@ -204,6 +169,7 @@ export default function HomePage() {
   }, [completeWorldEntry]);
 
   const retryWorldEntry = useCallback(() => {
+    // The same session again: same game, same continuation, a fresh mount.
     setGameSession((session) => session + 1);
     retryEntry();
   }, [retryEntry]);
@@ -229,9 +195,9 @@ export default function HomePage() {
           key={`${activeGameId}-${gameSession}`}
           gameId={activeGameId}
           sessionKey={gameSession}
-          initialRouteNumber={initialRouteNumber}
-          initialDifficulty={initialDifficulty}
-          skipIntro={skipGameIntro}
+          continuation={continuation}
+          // Resuming is not entering: the Explorador is already mid-journey.
+          skipIntro={continuation !== undefined}
           onComplete={handleGameComplete}
           onExit={returnHome}
           onEntryReady={markWorldReady}

@@ -37,6 +37,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { gentleShakeAnimate } from "@/lib/feedback-motion";
+import { readRouteContinuation } from "@/games/escape-maze/continuation";
 import {
   COLS,
   posKey,
@@ -159,8 +160,7 @@ function RouteWorldMark() {
 export function RouteStrategyGame({
   onComplete,
   onExit,
-  initialRouteNumber,
-  initialDifficulty,
+  continuation,
   onEntryReady,
   onEntryError,
 }: GameComponentProps) {
@@ -178,7 +178,10 @@ export function RouteStrategyGame({
   } | null>(null);
   const onEntryErrorRef = useRef(onEntryError);
   const RouteBabylonBoard = loadedBoard?.component ?? null;
-  const game = useEscapeMaze(onComplete, initialRouteNumber, initialDifficulty);
+  // Only a Route continuation resumes the Rota; without one (or with anything
+  // else) the hook's own defaults apply, exactly as on a fresh entry.
+  const resumed = readRouteContinuation(continuation);
+  const game = useEscapeMaze(onComplete, resumed?.routeNumber, resumed?.difficulty);
   const {
     difficulty,
     routeNumber,
