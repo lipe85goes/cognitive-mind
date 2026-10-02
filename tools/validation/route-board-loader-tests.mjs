@@ -238,7 +238,6 @@ const GAME_STATE = {
   breakTargets: [],
   startGame: noop,
   restartGame: noop,
-  continueJourney: noop,
   changeDifficulty: noop,
   tryMovePlayer: () => {},
   chooseReward: noop,

@@ -7,7 +7,7 @@
  *
  * Usage: node tools/validation/chest-controlled-tests.mjs [--check|--update]
  */
-import { loadRouteRuntime, cellKey, sameCell } from "./route-runtime-harness.mjs";
+import { loadRouteRuntime, cellKey, playToEnd, sameCell } from "./route-runtime-harness.mjs";
 import { openEvidence } from "./evidence.mjs";
 
 const EVIDENCE = openEvidence(
@@ -341,6 +341,8 @@ if (fixtures.length !== COMBOS.length) {
 // ---------------------------------------------------------------------------
 {
   const resets = [];
+  /** Each next Route was Route N + 1, reached from a finished Route — checked, not recorded. */
+  const progressed = [];
   for (const [index, combo] of COMBOS.entries()) {
     const fixture = findChestRun(combo, 6_500_000 + index * 1_000);
     if (!fixture) continue;
@@ -352,8 +354,12 @@ if (fixtures.length !== COMBOS.length) {
     };
     run.restart();
     const afterRestart = run.state;
-    run.continueJourney();
-    const afterNextRoute = run.state;
+    // The next Route the only way the product reaches it (ROUTE-JOURNEY-
+    // OWNERSHIP-01): this one ends — lost, the end a script can always reach —
+    // and its result's continuation opens a new session.
+    const ended = playToEnd(run, "lose");
+    const afterNextRoute = run.nextSession().state;
+    progressed.push(ended === "lost" && afterNextRoute.routeNumber === combo.routeNumber + 1);
     resets.push({
       seed: fixture.seed,
       combo: `${combo.difficulty}/r${combo.routeNumber}`,
@@ -382,6 +388,7 @@ if (fixtures.length !== COMBOS.length) {
     "H",
     "RESET",
     resets.length > 0 &&
+      progressed.every(Boolean) &&
       resets.every((r) => clean(r.afterRestart) && clean(r.afterNextRoute)),
     { runs: resets },
   );
