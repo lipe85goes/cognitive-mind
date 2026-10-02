@@ -103,6 +103,25 @@ contract, malformed continuations, and the import graph. `--rev=415cead` (the
 `details`-based protocol) must fail every `[contract]` check and hold every
 `[preserved]` one.
 
+**JOURNEY OWNERSHIP** — the result's continuation is the only way to the next
+Route; nothing inside a session moves it. Neither writes evidence:
+
+```bash
+node tools/validation/route-journey-ownership-tests.mjs           # real hook, Rota and launcher, no browser, ~30 s
+node tools/validation/route-journey-ownership-browser-probe.mjs   # Playwright: product on `next start -p 3100`, lab on `next dev -p 3000`
+```
+
+The first calls every function the hook hands the game, in every state, and
+checks the Route never moves; renders the real Rota won and lost; reads the
+product's sources for a second producer of the next Route; drives the real
+launcher through "Próxima rota"; and holds Route N → N + 1 (won and lost),
+fresh entry on Route 1 and retries on the same Route. `--rev=d258077`
+(`continueJourney` still there) must fail every `[ownership]` check and hold
+every `[preserved]` one. The probe watches every DOM mutation batch from Home →
+Route 1 → result → Route 2 → result → Route 3, and through the lab. Where a
+journey ends is not decided here: `ROUTE_JOURNEY_TERMINATION_DECISION_REQUIRED`
+is still open.
+
 **EVIDENCE UPDATE** — after a deliberate change, once you have read the diffs:
 
 ```bash

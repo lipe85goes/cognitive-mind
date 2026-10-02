@@ -205,7 +205,7 @@ export function loadRouteRuntime({ directDifficulty = false, hookSource } = {}) 
     }
     if (autoStart) act((g) => g.startGame());
 
-    return {
+    const run = {
       get state() {
         return game;
       },
@@ -225,9 +225,29 @@ export function loadRouteRuntime({ directDifficulty = false, hookSource } = {}) 
       choose: (reward) => act((g) => g.chooseReward(reward)),
       break: (wall) => act((g) => g.breakWall(wall)),
       restart: () => act((g) => g.restartGame()),
-      continueJourney: () => act((g) => g.continueJourney()),
       changeDifficulty: (level) => act((g) => g.changeDifficulty(level)),
+      /**
+       * ROUTE-JOURNEY-OWNERSHIP-01 — the next Route, the only way the product
+       * opens it: a NEW session, mounted on the continuation this Route's
+       * result carries (the arguments the Rota hands the hook for it). There
+       * is no way forward inside a session, so a Route that has not ended has
+       * nothing to open and this throws. `autoStart` as in `mount`.
+       */
+      nextSession({ seed: nextSeed = seed, autoStart: nextAutoStart = true } = {}) {
+        const continuation = completions.at(-1)?.continuation;
+        if (!continuation) {
+          throw new Error("nextSession: this Route has not ended, so it wrote no continuation to open");
+        }
+        return mount({
+          seed: nextSeed,
+          routeNumber: continuation.routeNumber,
+          difficulty: continuation.difficulty,
+          initialDifficulty: continuation.difficulty,
+          autoStart: nextAutoStart,
+        });
+      },
     };
+    return run;
   }
 
   return { LAB, API: LAB.API, routeRandom: LAB.routeRandom, mount };
@@ -277,6 +297,41 @@ export function pathBetween(from, to, walls) {
     }
   }
   return null;
+}
+
+/**
+ * Play a Route to its end. To win: lights, then the portal, around the Hunter's
+ * reach when there is a way around (and the Second Chance in hand). To lose:
+ * straight at the Hunter, with the Pickaxe. Losing is a completion too, and
+ * writes the same continuation. Returns the final status, or "stuck"/"budget".
+ */
+export function playToEnd(run, policy, budget = 400) {
+  for (let guard = 0; guard < budget; guard += 1) {
+    const g = run.state;
+    if (g.status !== "playing") return g.status;
+    if (g.rewardChoicePending) {
+      run.choose(policy === "lose" ? "pickaxe" : "second-chance");
+      continue;
+    }
+    let best = null;
+    if (policy === "lose") {
+      best = pathBetween(g.player, g.guardian, g.walls);
+    } else {
+      const remaining = g.mazeMap.collectibleStars.filter((star) => !g.collectedSet.has(cellKey(star)));
+      const goals = remaining.length ? remaining : [g.mazeMap.exitPosition];
+      const reach = [g.guardian, g.sentinel, ...walkableNeighbours(g.guardian, g.walls)].map(cellKey);
+      const around = new Set([...g.walls, ...reach]);
+      around.delete(cellKey(g.player));
+      for (const goal of goals) {
+        around.delete(cellKey(goal));
+        const route = pathBetween(g.player, goal, around) ?? pathBetween(g.player, goal, g.walls);
+        if (route && (!best || route.length < best.length)) best = route;
+      }
+    }
+    if (!best || best.length < 2) return "stuck";
+    run.stepTo(best[1]);
+  }
+  return "budget";
 }
 
 /**

@@ -8,7 +8,11 @@ import {
   getArmedRouteSeed,
 } from "@/engine/route-random";
 import { createTransientGameResult } from "@/engine/storage";
-import type { DifficultyLevel, GameResult } from "@/types/game";
+import type {
+  DifficultyLevel,
+  GameResult,
+  RouteContinuation,
+} from "@/types/game";
 
 /**
  * ROTA-DIFFICULTY-04C — developer / playtest tooling. Not a product feature.
@@ -22,6 +26,11 @@ import type { DifficultyLevel, GameResult } from "@/types/game";
  * The parent lab layout exposes it only in local development. Nothing links to
  * it, diagnostic results stay transient, and the seeded stream is disarmed
  * when this page unmounts so normal journeys remain stochastic.
+ *
+ * ROUTE-JOURNEY-OWNERSHIP-01: the journey moves on here the way it does in the
+ * product. A finished Route writes `GameResult.continuation`; "Próxima rota"
+ * opens a new session on exactly that value, as `playAgain` does in
+ * `app/page.tsx`. The game has no way forward of its own.
  */
 
 const DIFFICULTIES: readonly DifficultyLevel[] = ["easy", "medium", "hard"];
@@ -50,10 +59,19 @@ const SCENARIOS: ReadonlyArray<{
 
 interface ActiveSession {
   seed: number;
-  routeNumber: number;
-  difficulty: DifficultyLevel;
+  /**
+   * What GameScreen hands the Rota — the prop the product's shell passes. A
+   * launch builds it from the form; "Próxima rota" takes the one the finished
+   * Route wrote into its result, unchanged.
+   */
+  continuation: RouteContinuation;
   key: number;
 }
+
+const routeEntry = (
+  routeNumber: number,
+  difficulty: DifficultyLevel,
+): RouteContinuation => ({ kind: "escape-maze-route", routeNumber, difficulty });
 
 function parseSeed(raw: string): number | null {
   const trimmed = raw.trim();
@@ -88,7 +106,7 @@ export default function RouteLauncherPage() {
   useEffect(() => clearRouteRandomSeed, []);
 
   const launch = useCallback(
-    (seed: number, routeNumber: number, mode: DifficultyLevel) => {
+    (seed: number, continuation: RouteContinuation) => {
       setError(null);
       setLastResult(null);
       // Armed BEFORE the game mounts, so the hook's first generation is the
@@ -96,8 +114,7 @@ export default function RouteLauncherPage() {
       armRouteRandomSeed(seed);
       setSession((previous) => ({
         seed,
-        routeNumber,
-        difficulty: mode,
+        continuation,
         key: (previous?.key ?? 0) + 1,
       }));
     },
@@ -115,7 +132,7 @@ export default function RouteLauncherPage() {
       setError("Route inválida: use um inteiro de 1 a 999.");
       return;
     }
-    launch(seed, routeNumber, difficulty);
+    launch(seed, routeEntry(routeNumber, difficulty));
   };
 
   const exitDiagnostic = () => {
@@ -125,15 +142,21 @@ export default function RouteLauncherPage() {
   };
 
   if (session) {
+    // Where the finished Route says the journey goes next, read only to offer
+    // it; the new session gets the value itself.
+    const next =
+      lastResult?.continuation?.kind === "escape-maze-route"
+        ? lastResult.continuation
+        : undefined;
     return (
       <main style={S.sessionShell}>
         <header style={S.banner}>
           <strong style={S.bannerTitle}>DIAGNÓSTICO</strong>
           <span style={S.bannerItem}>
-            Route <b>{session.routeNumber}</b>
+            Route <b>{session.continuation.routeNumber}</b>
           </span>
           <span style={S.bannerItem}>
-            Difficulty <b>{session.difficulty}</b>
+            Difficulty <b>{session.continuation.difficulty}</b>
           </span>
           <span style={S.bannerItem}>
             Seed <b>{session.seed}</b>
@@ -146,7 +169,7 @@ export default function RouteLauncherPage() {
           </button>
           <button
             type="button"
-            onClick={() => launch(session.seed, session.routeNumber, session.difficulty)}
+            onClick={() => launch(session.seed, session.continuation)}
             style={S.bannerButton}
           >
             Relançar
@@ -159,6 +182,16 @@ export default function RouteLauncherPage() {
             turnos <b>{String(lastResult.details.turns ?? "?")}</b> · recompensa{" "}
             <b>{String(lastResult.details.rewardChosen ?? "—")}</b> · parede quebrada{" "}
             <b>{lastResult.details.wallBroken === true ? "sim" : "não"}</b>
+            {next && (
+              <button
+                type="button"
+                // Same seed: the next Route's board is the one it draws there.
+                onClick={() => launch(session.seed, next)}
+                style={S.nextButton}
+              >
+                Próxima rota → Route {next.routeNumber}
+              </button>
+            )}
           </p>
         )}
 
@@ -166,11 +199,7 @@ export default function RouteLauncherPage() {
           key={session.key}
           gameId="escape-maze"
           sessionKey={session.key}
-          continuation={{
-            kind: "escape-maze-route",
-            routeNumber: session.routeNumber,
-            difficulty: session.difficulty,
-          }}
+          continuation={session.continuation}
           skipIntro
           onComplete={(partial) =>
             setLastResult(createTransientGameResult(partial))
@@ -241,7 +270,10 @@ export default function RouteLauncherPage() {
             <button
               type="button"
               onClick={() =>
-                launch(scenario.seed, scenario.routeNumber, scenario.difficulty)
+                launch(
+                  scenario.seed,
+                  routeEntry(scenario.routeNumber, scenario.difficulty),
+                )
               }
               style={S.scenarioButton}
             >
@@ -339,5 +371,17 @@ const S: Record<string, React.CSSProperties> = {
     color: "#f4ead6",
     fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
     fontSize: "0.76rem",
+  },
+  nextButton: {
+    marginLeft: "0.75rem",
+    background: "#c9903f",
+    color: "#12100c",
+    border: 0,
+    borderRadius: "0.3rem",
+    padding: "0.22rem 0.6rem",
+    fontWeight: 800,
+    cursor: "pointer",
+    fontFamily: "inherit",
+    fontSize: "0.74rem",
   },
 };

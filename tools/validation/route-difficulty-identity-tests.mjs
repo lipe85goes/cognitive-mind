@@ -14,7 +14,7 @@
  * Usage: node tools/validation/route-difficulty-identity-tests.mjs [--check|--update]
  */
 import crypto from "node:crypto";
-import { loadRouteRuntime } from "./route-runtime-harness.mjs";
+import { loadRouteRuntime, playToEnd } from "./route-runtime-harness.mjs";
 import { openEvidence } from "./evidence.mjs";
 
 const EVIDENCE = openEvidence(
@@ -242,11 +242,13 @@ const transitions = [];
   const transition = (label, route, steps) => {
     const seed = seedFor(route, "easy", 7);
     // Mount plainly at easy so the transition itself is what is measured.
-    const run = RUNTIME.mount({ seed, difficulty: "easy", routeNumber: route });
+    let run = RUNTIME.mount({ seed, difficulty: "easy", routeNumber: route });
     const before = snapshot(run.state);
     const trace = [];
     for (const step of steps) {
-      step.apply(run);
+      const result = step.apply(run);
+      // A step that opens the next Route hands back the new session it opened.
+      if (step.opensSession) run = result;
       trace.push({ action: step.label, ...snapshot(run.state) });
     }
     const after = snapshot(run.state);
@@ -279,6 +281,19 @@ const transitions = [];
     label: "restartGame()",
     apply: (run) => run.act((g) => g.restartGame()),
   };
+  // ROUTE-JOURNEY-OWNERSHIP-01: the next Route the only way there is to it.
+  // The Route ends (lost: the end a script can always reach), and the
+  // continuation its result carries opens a new session, which starts.
+  const nextRoute = (expectedRoute, expectedMode) => ({
+    label: "route ends -> nextSession(result.continuation) -> startGame()",
+    opensSession: true,
+    apply: (run) => {
+      playToEnd(run, "lose");
+      return run.nextSession();
+    },
+    expectedRoute,
+    expectedMode,
+  });
 
   // The six mode changes the mission names, on every route.
   for (const route of ROUTES) {
@@ -305,26 +320,16 @@ const transitions = [];
     { ...restart, expectedMode: "hard" },
   ]);
   // next route advances route, preserves mode.
-  transition("R2 hard, continueJourney", 2, [
+  transition("R2 hard, next route", 2, [
     pick("hard"),
     { ...start, expectedMode: "hard" },
-    {
-      label: "continueJourney()",
-      apply: (run) => run.act((g) => g.continueJourney()),
-      expectedRoute: 3,
-      expectedMode: "hard",
-    },
+    nextRoute(3, "hard"),
   ]);
   // changing mode AFTER advancing must keep the advanced route.
   transition("R2 -> R3 then change mode", 2, [
     pick("medium"),
     { ...start, expectedMode: "medium" },
-    {
-      label: "continueJourney()",
-      apply: (run) => run.act((g) => g.continueJourney()),
-      expectedRoute: 3,
-      expectedMode: "medium",
-    },
+    nextRoute(3, "medium"),
     { ...pick("hard"), expectedRoute: 3 },
   ]);
 

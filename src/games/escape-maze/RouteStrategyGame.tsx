@@ -216,7 +216,6 @@ export function RouteStrategyGame({
     breakTargets,
     startGame,
     restartGame,
-    continueJourney,
     changeDifficulty,
     tryMovePlayer,
     chooseReward,
@@ -877,18 +876,6 @@ export function RouteStrategyGame({
                 </button>
               )}
             </section>
-
-            {(status === "won" || status === "lost") && (
-              <button
-                type="button"
-                onClick={continueJourney}
-                aria-label="Explorar próxima rota"
-                className="rsg-btn rsg-next-route-btn wms-button-secondary"
-              >
-                <Sparkles className="h-5 w-5" aria-hidden />
-                {status === "won" ? "Explorar próxima rota" : "Começar uma nova rota"}
-              </button>
-            )}
           </div>
         </div>
       </div>

@@ -2534,7 +2534,12 @@ export function useEscapeMaze(
     Math.floor(initialRouteNumber),
   );
   const [difficulty, setDifficulty] = useState<DifficultyLevel>(initialDifficulty);
-  const [routeNumber, setRouteNumber] = useState(normalizedInitialRouteNumber);
+  /**
+   * The Route this session plays, fixed for the session's whole life. Nothing in
+   * the hook advances it: the next Route is a new session, opened from the
+   * continuation `endGame` writes (ROUTE-JOURNEY-OWNERSHIP-01).
+   */
+  const [routeNumber] = useState(normalizedInitialRouteNumber);
   const [mazeMap, setMazeMap] = useState<MazeMap>(() =>
     generateMaze(initialDifficulty, normalizedInitialRouteNumber),
   );
@@ -2779,8 +2784,10 @@ export function useEscapeMaze(
           wallBroken: finalStats.wallBroken,
         },
         // What "play again" opens: won or lost, the next Route on the mode this
-        // one was played on. `details` keeps `nextRouteNumber` and `difficulty`
-        // for the result screen and history; nothing reads them to decide that.
+        // one was played on. This is the only place a next Route is decided;
+        // the shell opens it as a new session. `details` keeps
+        // `nextRouteNumber` and `difficulty` for the result screen and history;
+        // nothing reads them to decide that.
         continuation: {
           kind: "escape-maze-route",
           routeNumber: nextRouteNumber,
@@ -2797,12 +2804,6 @@ export function useEscapeMaze(
 
   const restartGame = () => {
     startNewMaze(difficulty, "playing");
-  };
-
-  const continueJourney = () => {
-    const nextRouteNumber = routeNumber + 1;
-    setRouteNumber(nextRouteNumber);
-    startNewMaze(difficulty, "playing", nextRouteNumber);
   };
 
   /**
@@ -3286,7 +3287,6 @@ export function useEscapeMaze(
     breakTargets,
     startGame,
     restartGame,
-    continueJourney,
     changeDifficulty,
     tryMovePlayer,
     chooseReward,

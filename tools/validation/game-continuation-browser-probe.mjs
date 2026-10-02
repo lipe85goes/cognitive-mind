@@ -16,8 +16,9 @@
  *
  * Throughout, the Rota's own "next route" button must never be attached to the
  * page, nor the board ever report a finished status: in the product the shell
- * takes the game off the screen in the same update that saves the result, so
- * `continueJourney` is unreachable here (it is reachable in /lab/route-launcher).
+ * takes the game off the screen in the same update that saves the result. That
+ * button and `continueJourney` were removed (ROUTE-JOURNEY-OWNERSHIP-01); the
+ * check stays as a guard against a way forward inside the game coming back.
  *
  * The Route is played from what the board publishes on its canvas
  * (`data-player-cell`, `data-wall-cells`, `data-danger-cells`, …) with the arrow

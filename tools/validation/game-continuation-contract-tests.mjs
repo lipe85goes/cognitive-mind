@@ -59,7 +59,7 @@ import vm from "node:vm";
 import { execFileSync } from "node:child_process";
 import ts from "typescript";
 import { EXIT_OK, EXIT_USAGE, EXIT_VALIDATION_FAILED } from "./evidence.mjs";
-import { cellKey, loadRouteRuntime, pathBetween, walkableNeighbours } from "./route-runtime-harness.mjs";
+import { loadRouteRuntime, playToEnd } from "./route-runtime-harness.mjs";
 
 const FILES = {
   types: "src/types/game.ts",
@@ -618,7 +618,6 @@ const ROTA_FIXTURE = {
   breakTargets: [],
   startGame: noop,
   restartGame: noop,
-  continueJourney: () => {},
   changeDifficulty: noop,
   tryMovePlayer: () => {},
   chooseReward: noop,
@@ -686,40 +685,6 @@ function landedOn(args) {
     landings.set(key, { route: run.state.routeNumber, mode: run.state.difficulty, status: run.state.status });
   }
   return landings.get(key);
-}
-
-/**
- * To win: lights, then the portal, around the Hunter's reach when there is a
- * way around (and the Second Chance in hand). To lose: straight at the Hunter,
- * with the Pickaxe. Losing is a completion too.
- */
-function playToEnd(run, policy, budget = 400) {
-  for (let guard = 0; guard < budget; guard += 1) {
-    const g = run.state;
-    if (g.status !== "playing") return g.status;
-    if (g.rewardChoicePending) {
-      run.choose(policy === "lose" ? "pickaxe" : "second-chance");
-      continue;
-    }
-    let best = null;
-    if (policy === "lose") {
-      best = pathBetween(g.player, g.guardian, g.walls);
-    } else {
-      const remaining = g.mazeMap.collectibleStars.filter((star) => !g.collectedSet.has(cellKey(star)));
-      const goals = remaining.length ? remaining : [g.mazeMap.exitPosition];
-      const reach = [g.guardian, g.sentinel, ...walkableNeighbours(g.guardian, g.walls)].map(cellKey);
-      const around = new Set([...g.walls, ...reach]);
-      around.delete(cellKey(g.player));
-      for (const goal of goals) {
-        around.delete(cellKey(goal));
-        const route = pathBetween(g.player, goal, around) ?? pathBetween(g.player, goal, g.walls);
-        if (route && (!best || route.length < best.length)) best = route;
-      }
-    }
-    if (!best || best.length < 2) return "stuck";
-    run.stepTo(best[1]);
-  }
-  return "budget";
 }
 
 /**
@@ -1687,8 +1652,10 @@ const GARBAGE = [null, 7, "result", { id: "half", gameId: ROUTE }, { ...LEGACY[0
   );
 }
 
-// J1 — continueJourney: kept, and where it can be reached. Product: the shell takes the game off the screen in the
-// same handler that saves the result. Lab launcher (dev-only): the game stays, so the Rota's own button is reachable.
+// J1 — where a finished Route stands. Product: the shell takes the game off the screen in the same handler that saves
+// the result, so the result screen is the only way on. Lab launcher (dev-only): the game stays, same session, until the
+// lab opens the next one. That nothing inside the game moves the journey on — the Rota's own "next route" button and
+// `continueJourney` were removed — is route-journey-ownership-tests.mjs, with its counterfactual against d258077.
 {
   // (a) the product shell
   const tab = openTab();
@@ -1697,18 +1664,7 @@ const GARBAGE = [null, 7, "result", { id: "half", gameId: ROUTE }, { ...LEGACY[0
   const screenBefore = tab.find("GameScreen");
   tab.complete(producedResults[0] ?? { gameId: ROUTE, activityId: ROUTE, activityTitle: "Rota", score: 1, summary: "s", details: { won: true } });
   const product = { gameOnScreenBefore: Boolean(screenBefore), gameOnScreenAfterOnComplete: Boolean(tab.find("GameScreen")), resultShown: Boolean(tab.find("RewardResultModal")) };
-  // (b) what the Rota renders once it knows the Route ended
-  const button = (status) =>
-    findElement(mountRota({ onComplete: noop, onExit: noop }, { ...ROTA_FIXTURE, status }).tree, (el) =>
-      String(el.props?.className ?? "").includes("rsg-next-route-btn"),
-    );
-  const won = button("won");
-  const rota = {
-    buttonWhenWon: Boolean(won) && won.props.onClick === ROTA_FIXTURE.continueJourney,
-    buttonWhenLost: Boolean(button("lost")),
-    buttonWhilePlaying: Boolean(button("playing")),
-  };
-  // (c) the dev-only route launcher, the real page
+  // (b) the dev-only route launcher, the real page
   const launcherWindow = { localStorage: createLocalStorage().api };
   const { react, mount } = createReact();
   const launcherModule = evaluate(FILES.launcher, { window: launcherWindow }, {
@@ -1728,15 +1684,13 @@ const GARBAGE = [null, 7, "result", { id: "half", gameId: ROUTE }, { ...LEGACY[0
   record(
     "J1",
     "preserved",
-    "CONTINUE_JOURNEY_UNREACHABLE_IN_PRODUCT_REACHABLE_IN_LAB",
+    "RESULT_REPLACES_THE_GAME_IN_PRODUCT_LAB_KEEPS_IT",
     same(product, { gameOnScreenBefore: true, gameOnScreenAfterOnComplete: false, resultShown: true }) &&
-      same(rota, { buttonWhenWon: true, buttonWhenLost: true, buttonWhilePlaying: false }) &&
       same(lab, { gameOnScreenAfterOnComplete: true, sameSession: true }),
     {
       product,
-      rota,
       lab,
-      note: "the browser smoke proves the product half in a real DOM: the button is never attached; P4 decides its UX",
+      note: "the browser smoke proves the product half in a real DOM; route-journey-ownership-tests.mjs proves the result's continuation is the only way on, in the product and in the lab",
     },
   );
 }
