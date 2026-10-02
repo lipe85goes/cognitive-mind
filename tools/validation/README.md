@@ -74,6 +74,19 @@ fix must fail). The second drives the app through start-after-resize, a blocked
 step, Detalhes, Centralizar and a viewport resize; with `--entry launcher`
 against `next dev` it also compares the board's pixels with a `--baseline` run.
 
+**ROUTE BOARD CHUNK** — the Rota's board chunk failing must take the entry's
+onEntryError → retry path, not the page's error screen. Neither writes evidence:
+
+```bash
+node tools/validation/route-board-loader-tests.mjs           # real RouteStrategyGame, no browser, <1 s
+node tools/validation/route-board-chunk-browser-probe.mjs    # Playwright, needs `next build && next start -p 3100`
+```
+
+The first runs the real component under a virtual chunk gate; `--rev=c34b274`
+(the `next/dynamic` board) must fail it. The second blocks, holds and releases
+the board's chunk in the production build: normal entry, failure + retry,
+leaving while it loads, retry while it is still in flight.
+
 **EVIDENCE UPDATE** — after a deliberate change, once you have read the diffs:
 
 ```bash
