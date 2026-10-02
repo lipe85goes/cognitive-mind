@@ -45,6 +45,12 @@ const record = (id, name, pass, detail) => {
 /**
  * `app/page.tsx#playAgain`, reproduced exactly — including the guard that ties
  * the mode to the Route, so it can only travel when a journey travels.
+ *
+ * GAME-CONTINUATION-CONTRACT-01 replaced this read with the typed
+ * `GameResult.continuation` the hook now writes next to these same `details`
+ * (game-continuation-contract-tests.mjs drives that path through the real
+ * shell). It stays here as the 04B record: the hook's carry is unchanged, and
+ * the values narrowed here are the ones the continuation carries.
  */
 const DIFFICULTY_LEVELS = ["easy", "medium", "hard"];
 function readDifficulty(value) {

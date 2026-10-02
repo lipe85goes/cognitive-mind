@@ -24,7 +24,7 @@
  * to absorb a duplicated gesture from a human hand; a test that fires two moves
  * in the same millisecond is not that.
  */
-import { loadInstrumented } from "./instrumented-generator.mjs";
+import { loadInstrumented, normalizeSource } from "./instrumented-generator.mjs";
 
 /**
  * The module captures ONE `react` object when it loads, so the shim cannot be
@@ -103,9 +103,15 @@ function createReactShim() {
  * for them instead of patching them in. What remains is the one thing
  * production legitimately does and a one-call comparison cannot afford:
  * `startGame` generating a SECOND board.
+ *
+ * `hookSource` replaces the text of `useEscapeMaze.ts` — the hook as it was at
+ * another commit, for a counterfactual run. Omitted, the working tree's hook is
+ * loaded exactly as before.
  */
-export function loadRouteRuntime({ directDifficulty = false } = {}) {
+export function loadRouteRuntime({ directDifficulty = false, hookSource } = {}) {
   const react = createReactShim();
+  const sourceTransform =
+    hookSource === undefined ? undefined : () => hookSource;
   const directDifficultyTransform = directDifficulty
     ? (source) => {
         const startGame =
@@ -121,8 +127,12 @@ export function loadRouteRuntime({ directDifficulty = false } = {}) {
         );
       }
     : undefined;
+  const transform =
+    sourceTransform && directDifficultyTransform
+      ? (source) => directDifficultyTransform(normalizeSource(sourceTransform(source)))
+      : sourceTransform ?? directDifficultyTransform;
   const LAB = loadInstrumented({
-    bare: true, react: react.shim, transform: directDifficultyTransform,
+    bare: true, react: react.shim, transform,
   });
   const useEscapeMaze = LAB.exports.useEscapeMaze;
   if (typeof useEscapeMaze !== "function") {

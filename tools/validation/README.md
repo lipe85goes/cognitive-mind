@@ -87,6 +87,22 @@ The first runs the real component under a virtual chunk gate; `--rev=c34b274`
 the board's chunk in the production build: normal entry, failure + retry,
 leaving while it loads, retry while it is still in flight.
 
+**GAME CONTINUATION** — "play again" resumes through `GameResult.continuation`,
+a typed value only the owning game opens; page.tsx and GameScreen carry it
+unread. Writes nothing:
+
+```bash
+node tools/validation/game-continuation-contract-tests.mjs   # real page.tsx → GameScreen → Rota → useEscapeMaze, ~12 s
+```
+
+It plays real Routes with the real hook and feeds each result through the real
+shell, stage by stage: Route N → N + 1 on every mode, won and lost, intro
+skipped only when continuing, fresh entries from Home, every other world
+untouched, entry retries, storage round trip, results saved before the
+contract, malformed continuations, and the import graph. `--rev=415cead` (the
+`details`-based protocol) must fail every `[contract]` check and hold every
+`[preserved]` one.
+
 **EVIDENCE UPDATE** — after a deliberate change, once you have read the diffs:
 
 ```bash

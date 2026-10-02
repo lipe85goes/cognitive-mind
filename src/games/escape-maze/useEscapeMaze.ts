@@ -2522,7 +2522,7 @@ export function useEscapeMaze(
    *
    * Progression remounts this hook, so the player's choice used to die with the
    * previous instance and every Route after the first began on the default. The
-   * caller now hands it back, from the same result the Route comes from.
+   * caller now hands it back, from the same continuation the Route comes from.
    *
    * Omitted for a fresh entry, which is what keeps a new journey from
    * inheriting the mode of an old one — see `openActivity` in `app/page.tsx`.
@@ -2778,6 +2778,14 @@ export function useEscapeMaze(
           rewardSpent: finalStats.rewardSpent,
           wallBroken: finalStats.wallBroken,
         },
+        // What "play again" opens: won or lost, the next Route on the mode this
+        // one was played on. `details` keeps `nextRouteNumber` and `difficulty`
+        // for the result screen and history; nothing reads them to decide that.
+        continuation: {
+          kind: "escape-maze-route",
+          routeNumber: nextRouteNumber,
+          difficulty: finalStats.difficulty,
+        },
       });
     },
     [onComplete],
@@ -2810,7 +2818,7 @@ export function useEscapeMaze(
    *
    * The route the player was given is preserved. Returning to Route 1 is still
    * possible and still explicit — it is what entering the world from Home does,
-   * by mounting a fresh session (`openActivity` → `initialRouteNumber` cleared).
+   * by mounting a fresh session (`openActivity` → continuation cleared).
    */
   const changeDifficulty = (nextDifficulty: DifficultyLevel) => {
     setDifficulty(nextDifficulty);
