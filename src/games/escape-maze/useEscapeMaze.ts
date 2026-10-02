@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getPredatorNextPosition, manhattanDistance } from "@/engine/difficulty";
 import { beginSeededGeneration, routeRandom } from "@/engine/route-random";
 import { calculateEscapeMazeScore } from "@/engine/scoring";
+import { nextJourneyRoute } from "@/games/escape-maze/continuation";
 import {
   playGentleErrorTone,
   playStoneBreak,
@@ -2732,12 +2733,20 @@ export function useEscapeMaze(
       },
     ) => {
       setStatus(won ? "won" : "lost");
-      const nextRouteNumber = finalStats.routeNumber + 1;
-      const nextRouteProgression = getRouteProgression(nextRouteNumber);
+      // ROUTE-JOURNEY-TERMINAL-01: the journey has an end. Before the last
+      // Route the next one opens, won or lost; the last one lost opens again;
+      // the last one won completes the journey and opens nothing.
+      const nextRouteNumber = nextJourneyRoute(finalStats.routeNumber, won);
+      const journeyCompleted = nextRouteNumber === undefined;
+      const retriesRoute = nextRouteNumber === finalStats.routeNumber;
 
       if (won) {
         playSuccessChime();
-        setMessage("O caminho foi aberto. A pr\u00f3xima rota fica dispon\u00edvel quando quiser.");
+        setMessage(
+          journeyCompleted
+            ? "O caminho foi aberto. A jornada da Rota Estrat\u00e9gica est\u00e1 completa."
+            : "O caminho foi aberto. A pr\u00f3xima rota fica dispon\u00edvel quando quiser.",
+        );
       } else {
         playGentleErrorTone();
         setMessage("Rota registrada. Voc\u00ea pode observar outro caminho com calma.");
@@ -2757,8 +2766,14 @@ export function useEscapeMaze(
         summary: won
           ? `Voc\u00ea abriu o caminho da Rota ${finalStats.routeNumber} em ${finalStats.turns} turnos e coletou ${finalStats.starsCollected} ${
               finalStats.starsCollected === 1 ? "luz" : "luzes"
-            }. A Rota ${nextRouteNumber} espera por voc\u00ea no seu ritmo.`
-          : `A Rota ${finalStats.routeNumber} foi registrada. A Rota ${nextRouteNumber} pode ser explorada com calma quando voc\u00ea quiser.`,
+            }. ${
+              journeyCompleted
+                ? "A jornada da Rota Estrat\u00e9gica est\u00e1 completa."
+                : `A Rota ${nextRouteNumber} espera por voc\u00ea no seu ritmo.`
+            }`
+          : retriesRoute
+            ? `A Rota ${finalStats.routeNumber} foi registrada. Voc\u00ea pode tentar a Rota ${finalStats.routeNumber} de novo, com calma, quando quiser.`
+            : `A Rota ${finalStats.routeNumber} foi registrada. A Rota ${nextRouteNumber} pode ser explorada com calma quando voc\u00ea quiser.`,
         details: {
           turns: finalStats.turns,
           won,
@@ -2769,8 +2784,15 @@ export function useEscapeMaze(
           difficulty: finalStats.difficulty,
           routeNumber: finalStats.routeNumber,
           routeStage: finalStats.routeStageLabel,
-          nextRouteNumber,
-          nextRouteStage: nextRouteProgression.label,
+          // The Route "play again" opens — the next one, or this one again
+          // when the last Route was lost. A completed journey has none, so it
+          // records that instead of a Route that does not exist.
+          ...(journeyCompleted
+            ? { journeyCompleted: true }
+            : {
+                nextRouteNumber,
+                nextRouteStage: getRouteProgression(nextRouteNumber).label,
+              }),
           // Additive optional fields (Gameplay 2.0); old results simply omit them.
           trapsTriggered: finalStats.trapsTriggered,
           chestOpened: finalStats.chestOpened,
@@ -2783,16 +2805,19 @@ export function useEscapeMaze(
           rewardSpent: finalStats.rewardSpent,
           wallBroken: finalStats.wallBroken,
         },
-        // What "play again" opens: won or lost, the next Route on the mode this
-        // one was played on. This is the only place a next Route is decided;
-        // the shell opens it as a new session. `details` keeps
-        // `nextRouteNumber` and `difficulty` for the result screen and history;
-        // nothing reads them to decide that.
-        continuation: {
-          kind: "escape-maze-route",
-          routeNumber: nextRouteNumber,
-          difficulty: finalStats.difficulty,
-        },
+        // What "play again" opens: the Route `nextJourneyRoute` decided, on the
+        // mode this one was played on. This is the only place a continuation
+        // is written; the shell opens it as a new session. A completed journey
+        // writes none — there is nothing left to resume. `details` keeps
+        // `nextRouteNumber` / `journeyCompleted` and `difficulty` for the
+        // result screen and history; nothing reads them to decide that.
+        ...(nextRouteNumber !== undefined && {
+          continuation: {
+            kind: "escape-maze-route",
+            routeNumber: nextRouteNumber,
+            difficulty: finalStats.difficulty,
+          },
+        }),
       });
     },
     [onComplete],

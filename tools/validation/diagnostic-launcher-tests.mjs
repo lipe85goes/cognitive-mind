@@ -377,7 +377,15 @@ const sessionDeterminism = [];
     const t = String(raw).trim();
     if (!/^\d+$/.test(t)) return null;
     const v = Number(t);
-    return Number.isSafeInteger(v) && v >= 1 && v <= 999 ? v : null;
+    // ROUTE-JOURNEY-TERMINAL-01: the journey's Routes, 1 to 3, and nothing past them.
+    return Number.isSafeInteger(v) && v >= 1 && v <= 3 ? v : null;
+  };
+  // The launcher's own bound is the journey's constant, not a number of its own.
+  const launcherPage = fs.readFileSync(path.join(process.cwd(), "src/app/lab/route-launcher/page.tsx"), "utf8");
+  const journeyModule = fs.readFileSync(path.join(process.cwd(), "src/games/escape-maze/continuation.ts"), "utf8");
+  const routeBound = {
+    launcherBoundsRouteToTheJourney: /value > ROUTE_JOURNEY_FINAL_ROUTE/.test(launcherPage),
+    journeyFinalRoute: Number(/export const ROUTE_JOURNEY_FINAL_ROUTE = (\d+);/.exec(journeyModule)?.[1] ?? NaN),
   };
   const validMode = (m) => MODES.includes(m);
 
@@ -392,7 +400,9 @@ const sessionDeterminism = [];
     { input: "", parser: "seed", expect: null },
     { input: "1e3", parser: "seed", expect: null },
     { input: "1", parser: "route", expect: 1 },
-    { input: "4", parser: "route", expect: 4 },
+    { input: "3", parser: "route", expect: 3 },
+    { input: "4", parser: "route", expect: null },
+    { input: "999", parser: "route", expect: null },
     { input: "0", parser: "route", expect: null },
     { input: "-2", parser: "route", expect: null },
     { input: "abc", parser: "route", expect: null },
@@ -411,13 +421,16 @@ const sessionDeterminism = [];
     "F",
     "INPUT_VALIDATION",
     cases.every((c) => c.actual === c.expect) &&
-      modeCases.every((m) => m.accepted === m.expected),
+      modeCases.every((m) => m.accepted === m.expected) &&
+      routeBound.launcherBoundsRouteToTheJourney &&
+      routeBound.journeyFinalRoute === 3,
     {
       seedAndRouteCases: cases.length,
       modeCases: modeCases.length,
       rejected: cases.filter((c) => c.actual === null).map((c) => `${c.parser}:"${c.input}"`),
+      routeBound,
       note:
-        "Route 4 is accepted because routes are unbounded by design; this mission does not decide where a journey ends",
+        "Routes are the journey's, 1 to 3 (ROUTE-JOURNEY-TERMINAL-01): Route 4 and up are rejected, since the Rota would refuse that continuation and start a fresh Route 1",
     },
   );
 }

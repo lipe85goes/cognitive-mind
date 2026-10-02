@@ -363,7 +363,7 @@
       "id": "F",
       "name": "INPUT_VALIDATION",
       "pass": true,
-      "seedAndRouteCases": 14,
+      "seedAndRouteCases": 16,
       "modeCases": 6,
       "rejected": [
         "seed:\"4294967296\"",
@@ -372,11 +372,17 @@
         "seed:\"abc\"",
         "seed:\"\"",
         "seed:\"1e3\"",
+        "route:\"4\"",
+        "route:\"999\"",
         "route:\"0\"",
         "route:\"-2\"",
         "route:\"abc\""
       ],
-      "note": "Route 4 is accepted because routes are unbounded by design; this mission does not decide where a journey ends"
+      "routeBound": {
+        "launcherBoundsRouteToTheJourney": true,
+        "journeyFinalRoute": 3
+      },
+      "note": "Routes are the journey's, 1 to 3 (ROUTE-JOURNEY-TERMINAL-01): Route 4 and up are rejected, since the Rota would refuse that continuation and start a fresh Route 1"
     },
     {
       "id": "G",

@@ -356,37 +356,88 @@ const freshEntries = [];
 const journeyEnd = [];
 {
   /**
-   * There is no terminal Route. `getRouteStage` is `((n - 1) % 3) + 1`, so the
-   * journey is unbounded and the STAGE cycles: Route 4 is stage 1 again. That
-   * is the pre-existing model and this mission does not change it — it is
-   * measured here so the carry is known not to break at the wrap.
+   * ROUTE-JOURNEY-TERMINAL-01 decided it: Rota Estratégica v1 has three Routes.
+   * Route 3 lost resumes Route 3 on the same mode; Route 3 won completes the
+   * journey, so the result carries no next Route at all — no
+   * `nextRouteNumber`, no continuation — and records `journeyCompleted`. This
+   * used to measure the carry across the stage wrap into Route 4; the journey
+   * no longer reaches Route 4, so what is measured is the end itself.
+   *
+   * `getRouteStage` is still `((n - 1) % 3) + 1` for a Route the hook is
+   * mounted on directly (tooling does that), so the wrap is still checked —
+   * on a direct mount, not as a step of the journey.
    */
   for (const mode of MODES) {
     const h = handOff(3, mode, 17);
+    const won = h.result?.details.won === true;
     const arrived = h.next
       ? { route: h.next.state.routeNumber, mode: h.next.state.difficulty, stage: h.next.state.routeProgression.stage }
       : null;
     journeyEnd.push({
       from: `R3/${mode}`,
+      outcome: h.outcome,
       carriedRoute: h.payload?.nextRouteNumber ?? null,
       carriedMode: h.payload?.nextDifficulty ?? null,
+      journeyCompleted: h.result?.details.journeyCompleted ?? null,
+      continuationRoute: h.result?.continuation?.routeNumber ?? null,
       arrived,
-      stageWrapsToOne: arrived?.stage === 1,
-      pass:
-        h.payload?.nextRouteNumber === 4 &&
-        h.payload?.nextDifficulty === mode &&
-        arrived?.route === 4 &&
-        arrived?.mode === mode &&
-        arrived?.stage === 1,
+      pass: won
+        ? h.payload?.nextRouteNumber === undefined &&
+          h.result.details.journeyCompleted === true &&
+          !("continuation" in h.result) &&
+          arrived === null
+        : h.payload?.nextRouteNumber === 3 &&
+          h.payload?.nextDifficulty === mode &&
+          h.result?.continuation?.routeNumber === 3 &&
+          arrived?.route === 3 &&
+          arrived?.mode === mode &&
+          arrived?.stage === 3,
     });
   }
-  record("F", "ROUTE_THREE_BOUNDARY", journeyEnd.every((j) => j.pass), {
-    cases: journeyEnd.length,
-    model: "routes are unbounded; stage = ((route - 1) % 3) + 1, so Route 4 is stage 1",
-    changedByThisMission: false,
-    note:
-      "no terminal Route exists today; the carry is verified across the stage wrap rather than a stop being invented",
-  });
+  // Both ends of Route 3 measured, whatever the seeds happened to produce above.
+  const outcomes = new Set(journeyEnd.map((j) => j.outcome));
+  for (const wanted of ["won", "lost"]) {
+    if (outcomes.has(wanted)) continue;
+    for (let sample = 18; sample < 60; sample += 1) {
+      const h = handOff(3, "easy", sample);
+      if (h.outcome !== wanted) continue;
+      const arrived = h.next
+        ? { route: h.next.state.routeNumber, mode: h.next.state.difficulty, stage: h.next.state.routeProgression.stage }
+        : null;
+      journeyEnd.push({
+        from: `R3/easy#${sample}`,
+        outcome: h.outcome,
+        carriedRoute: h.payload?.nextRouteNumber ?? null,
+        carriedMode: h.payload?.nextDifficulty ?? null,
+        journeyCompleted: h.result?.details.journeyCompleted ?? null,
+        continuationRoute: h.result?.continuation?.routeNumber ?? null,
+        arrived,
+        pass:
+          wanted === "won"
+            ? h.payload?.nextRouteNumber === undefined && h.result.details.journeyCompleted === true && !("continuation" in h.result) && arrived === null
+            : h.payload?.nextRouteNumber === 3 && h.result?.continuation?.routeNumber === 3 && arrived?.route === 3 && arrived?.mode === "easy",
+      });
+      break;
+    }
+  }
+  const directMount = RUNTIME.mount({ seed: seedFor(4, "easy", 17), routeNumber: 4, autoStart: false });
+  const stageWrap = { route: directMount.state.routeNumber, stage: directMount.state.routeProgression.stage };
+  record(
+    "F",
+    "ROUTE_THREE_BOUNDARY",
+    journeyEnd.every((j) => j.pass) &&
+      ["won", "lost"].every((o) => journeyEnd.some((j) => j.outcome === o)) &&
+      stageWrap.stage === 1,
+    {
+      cases: journeyEnd.length,
+      model:
+        "the journey has three Routes: Route 3 lost resumes Route 3, Route 3 won completes the journey; stage = ((route - 1) % 3) + 1 still holds for a Route mounted directly",
+      stageWrapOnDirectMount: stageWrap,
+      changedByThisMission: "ROUTE-JOURNEY-TERMINAL-01",
+      note:
+        "Route 3 no longer carries a Route 4: a won Route 3 carries nothing and records journeyCompleted, a lost one carries Route 3 on the same mode",
+    },
+  );
 }
 
 // ===========================================================================

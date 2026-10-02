@@ -26,6 +26,7 @@ const ROOT = process.cwd();
 const HOOK = path.join(ROOT, "src/games/escape-maze/useEscapeMaze.ts");
 const DIFF = path.join(ROOT, "src/engine/difficulty.ts");
 const RANDOM = path.join(ROOT, "src/engine/route-random.ts");
+const CONTINUATION = path.join(ROOT, "src/games/escape-maze/continuation.ts");
 
 const EXPORT_SURFACE = `
 export const __diag = {
@@ -231,6 +232,24 @@ export function loadInstrumented({ transform, bare = false, react } = {}) {
   vm.createContext(dS);
   new vm.Script(compile(fs.readFileSync(DIFF, "utf8"))).runInContext(dS);
 
+  // ROUTE-JOURNEY-TERMINAL-01: where a Route's end leads (`nextJourneyRoute`).
+  // Types-only module, so it needs nothing. Loaded only if the hook asks: a
+  // hook read from an older commit never imports it.
+  let cMod = null;
+  const continuationModule = () => {
+    if (!cMod) {
+      cMod = { exports: {} };
+      const cS = {
+        module: cMod, exports: cMod.exports, Number,
+        require() { throw new Error("unexpected import"); },
+      };
+      cS.globalThis = cS;
+      vm.createContext(cS);
+      new vm.Script(compile(fs.readFileSync(CONTINUATION, "utf8"))).runInContext(cS);
+    }
+    return cMod.exports;
+  };
+
   const hMod = { exports: {} };
   const sb = {
     module: hMod, exports: hMod.exports, console, Math: seededMath, Date, Set, Map,
@@ -251,6 +270,7 @@ export function loadInstrumented({ transform, bare = false, react } = {}) {
       if (r === "@/engine/difficulty") return dMod.exports;
       if (r === "@/engine/route-random") return rMod.exports;
       if (r === "@/engine/scoring") return { calculateEscapeMazeScore: () => 0 };
+      if (r === "@/games/escape-maze/continuation") return continuationModule();
       if (r === "@/lib/game-sounds") {
         return {
           playGentleErrorTone: () => {},

@@ -32,7 +32,7 @@ home (HomeStage)
 - `src/app/page.tsx` controla a visão atual, a estação selecionada, o `gameSession`, o retorno para Home e a persistência via `saveGameResult`.
 - Jogos não salvam direto em `localStorage`; eles chamam `onComplete` com `Omit<GameResult, "id" | "playedAt">`.
 - `GameScreen` aplica a intro do jogo e remonta a sessão quando necessário.
-- Continuação de jornada: um jogo que retoma em vez de recomeçar grava `GameResult.continuation` (`GameContinuation`, union discriminada por `kind`; hoje só a Rota, `kind: "escape-maze-route"` com `routeNumber` e `difficulty`). `page.tsx` guarda o valor do resultado recém-produzido em "praticar outra vez" e o devolve sem abrir; `GameScreen` só o transporta; uma sessão com continuação pula a intro, e toda entrada pela Home limpa a continuação. Só o jogo dono do `kind` lê o conteúdo (`readRouteContinuation`); qualquer valor malformado vira entrada nova. `details` continua sendo histórico/resultado/UI, não canal de controle. Resultados antigos no `localStorage` não têm `continuation` e nunca alimentaram a continuação (o shell só retoma o resultado da sessão atual).
+- Continuação de jornada: um jogo que retoma em vez de recomeçar grava `GameResult.continuation` (`GameContinuation`, union discriminada por `kind`; hoje só a Rota, `kind: "escape-maze-route"` com `routeNumber` e `difficulty`). `page.tsx` guarda o valor do resultado recém-produzido em "praticar outra vez" e o devolve sem abrir; `GameScreen` só o transporta; uma sessão com continuação pula a intro, e toda entrada pela Home limpa a continuação. Só o jogo dono do `kind` lê o conteúdo (`readRouteContinuation`); qualquer valor malformado vira entrada nova. Um resultado sem `continuation` não tem o que retomar — é o jogo quem decide isso (a Rota, ao concluir a jornada), e o shell não interpreta o motivo. `details` continua sendo histórico/resultado/UI, não canal de controle. Resultados antigos no `localStorage` não têm `continuation` e nunca alimentaram a continuação (o shell só retoma o resultado da sessão atual).
 - O código de cada jogo é carregado sob demanda: o registry não importa nenhum jogo estaticamente, e cada `load()` faz o `import()` do chunk daquele jogo quando o `GameScreen` monta. A Home não carrega código de jogo. A prontidão do jogo só conta a partir do mount do componente (o fallback de 2 frames começa depois dele), e falha no carregamento do chunk vai para `onEntryError` → painel de tentar novamente.
 - `RewardResultModal` usa os dados do resultado salvo e a cópia de recompensa em `src/engine/rewards.ts`.
 
@@ -41,7 +41,7 @@ home (HomeStage)
 | Área | Arquivo |
 | --- | --- |
 | Tipos de jogo e resultado (inclui o contrato de continuação) | `src/types/game.ts` |
-| Leitura da continuação da Rota (só tipos; vai no chunk da Rota) | `src/games/escape-maze/continuation.ts` |
+| Jornada da Rota: tamanho (`ROUTE_JOURNEY_FINAL_ROUTE`), regra de término (`nextJourneyRoute`) e leitura da continuação (só tipos; vai no chunk da Rota) | `src/games/escape-maze/continuation.ts` |
 | Contrato de entrada dos jogos (readiness + watchdog; só metadados) | `src/games/entry-contract.ts` |
 | Registro de jogos (contrato de entrada + loader do componente) | `src/games/index.ts` |
 | Metadados visuais dos mundos | `src/data/worlds.ts` |
@@ -119,9 +119,27 @@ Arquivos principais:
 
 `RouteStrategyGame` carrega `RouteBabylonBoard` como chunk próprio depois de montar, com um `import()` explícito (não `next/dynamic`), e o Babylon só é buscado quando o board monta. Até o chunk chegar, o canvas mostra "Preparando o tabuleiro Babylon…"; se ele falhar, o erro vai para `onEntryError` → painel de tentar novamente, e o retry (nova sessão) busca o chunk de novo.
 
-Ao terminar uma rota (vitória ou derrota), `useEscapeMaze` grava a continuação `{ kind: "escape-maze-route", routeNumber: N + 1, difficulty }`; `RouteStrategyGame` a valida com `readRouteContinuation` e entrega `routeNumber`/`difficulty` ao hook. Essa continuação é o único caminho para a próxima rota: resultado → `GameResult.continuation` → `playAgain` em `page.tsx` → nova sessão da Rota. Dentro de uma sessão a rota não muda — o hook não tem setter de `routeNumber`, e o `continueJourney` (com o botão "Explorar próxima rota" que a Rota mostrava ao vencer ou perder) foi removido, porque no produto ele nunca chegava à tela: `page.tsx` tira o jogo no mesmo update que salva o resultado. O `/lab/route-launcher` (só em dev) segue o mesmo contrato: o jogo fica montado depois do fim, e "Próxima rota" abre uma sessão nova sobre a continuação que o resultado trouxe. `tools/validation/route-journey-ownership-tests.mjs` prova isso, com contrafactual contra `d258077`.
+Ao terminar uma rota, `useEscapeMaze` grava a continuação `{ kind: "escape-maze-route", routeNumber, difficulty }` com a rota que `nextJourneyRoute` decide (abaixo) — ou nenhuma, quando a jornada termina; `RouteStrategyGame` a valida com `readRouteContinuation` e entrega `routeNumber`/`difficulty` ao hook. Essa continuação é o único caminho para a próxima rota: resultado → `GameResult.continuation` → `playAgain` em `page.tsx` → nova sessão da Rota. Dentro de uma sessão a rota não muda — o hook não tem setter de `routeNumber`, e o `continueJourney` (com o botão "Explorar próxima rota" que a Rota mostrava ao vencer ou perder) foi removido, porque no produto ele nunca chegava à tela: `page.tsx` tira o jogo no mesmo update que salva o resultado. O `/lab/route-launcher` (só em dev) segue o mesmo contrato: o jogo fica montado depois do fim, e "Próxima rota" abre uma sessão nova sobre a continuação que o resultado trouxe. `tools/validation/route-journey-ownership-tests.mjs` prova isso, com contrafactual contra `d258077`.
 
-Quando a jornada termina (Rota 3, rotas infinitas, capítulos) ainda não está decidido: `ROUTE_JOURNEY_TERMINATION_DECISION_REQUIRED` continua em aberto, e hoje toda Rota N leva à Rota N + 1, vencida ou perdida.
+### Jornada v1: três Rotas (ROUTE-JOURNEY-TERMINAL-01)
+
+A Rota Estratégica v1 tem exatamente 3 Rotas:
+
+| Rota | Vitória | Derrota |
+| --- | --- | --- |
+| 1 | Rota 2 | Rota 2 |
+| 2 | Rota 3 | Rota 3 |
+| 3 | jornada concluída (sem continuação) | Rota 3 de novo |
+
+- R1/R2 avançam para N + 1, vencidas ou perdidas, no mesmo modo e com a intro pulada.
+- Derrota na R3 repete a R3 no mesmo modo: a continuação aponta para a Rota 3, `details.nextRouteNumber` é 3 (a ação real de "Tentar Rota 3 novamente").
+- Vitória na R3 conclui a jornada: o resultado não tem `continuation`, grava `details.journeyCompleted: true` e não grava `nextRouteNumber`/`nextRouteStage`. A tela de resultado mostra "Jornada concluída" com uma única ação, "Voltar aos mundos" (`onDashboard`); ela não chama "praticar outra vez", que seria uma entrada nova parecendo continuação.
+- Não existe Rota 4 no fluxo do produto. A regra vive só em `continuation.ts` (`ROUTE_JOURNEY_FINAL_ROUTE = 3`, `nextJourneyRoute`), usada pelo produtor (`endGame`) e pelo leitor: `readRouteContinuation` só aceita Rotas de 1 a 3, então uma continuação de Rota 4+ (ou malformada) — inclusive de resultados antigos — vira entrada nova na Rota 1, nunca uma Rota 4. `page.tsx` e `GameScreen` não conhecem o limite nem `journeyCompleted`; só sabem se há continuação.
+- Resultados antigos que citam Rota 4+ continuam carregando no histórico sem migração; só não abrem nada.
+- `getRouteStage` continua cíclico (`((n - 1) % 3) + 1`) para quem monta o hook direto numa Rota (ferramentas de validação); isso não é um caminho do produto. O `/lab/route-launcher` aceita Rotas 1 a 3, as da jornada.
+- Ao entrar pela Home depois de qualquer resultado, a jornada recomeça na Rota 1 com o modo padrão.
+
+`tools/validation/route-journey-terminal-tests.mjs` prova a regra (matriz R1–R3 × vitória/derrota × modos, leitor, tela de resultado, storage, lab, shell agnóstico), com contrafactual contra `7b740e4`; `route-journey-terminal-browser-probe.mjs` percorre Home → R1 → R2 → R3 (derrota, repetir) → vitória → Home no build de produção.
 
 Runtime visual ativo:
 
