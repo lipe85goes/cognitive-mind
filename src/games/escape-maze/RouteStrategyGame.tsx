@@ -1,7 +1,12 @@
 "use client";
 
-import dynamic from "next/dynamic";
-import { useMemo, useRef, useState, type KeyboardEvent } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type KeyboardEvent,
+} from "react";
 import { motion, useReducedMotion } from "motion/react";
 import {
   ArrowLeft,
@@ -39,6 +44,7 @@ import {
   useEscapeMaze,
   type ChestReward,
 } from "@/games/escape-maze/useEscapeMaze";
+import type { RouteBabylonBoard as RouteBabylonBoardComponent } from "@/games/escape-maze/RouteBabylonBoard";
 import { getWorldMasterSceneStyle } from "@/components/worlds/master-scene/worldMasterSceneConfig";
 import type {
   DifficultyLevel,
@@ -48,19 +54,18 @@ import type {
 import "@/components/worlds/master-scene/world-master-scene.css";
 import "@/games/escape-maze/route-visual.css";
 
-/** WebGL is client-only: load the Babylon board after mount. */
-const RouteBabylonBoard = dynamic(
-  () =>
-    import("@/games/escape-maze/RouteBabylonBoard").then(
-      (mod) => mod.RouteBabylonBoard,
-    ),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="rsg-canvas-loading">Preparando o tabuleiro Babylon…</div>
-    ),
-  },
-);
+/**
+ * WebGL is client-only: the Babylon board's code is fetched after mount, as a
+ * chunk of its own. The Rota loads it itself rather than through
+ * `next/dynamic`, whose module-level `React.lazy` threw a failed chunk to the
+ * page's error boundary and kept the failure for every later session. Here a
+ * failure is an entry failure like any other, and the retry (a new session,
+ * so a new mount) fetches it again.
+ */
+const loadRouteBabylonBoard = () =>
+  import("@/games/escape-maze/RouteBabylonBoard").then(
+    (mod) => mod.RouteBabylonBoard,
+  );
 
 const DIFFICULTY_LABELS: Record<DifficultyLevel, string> = {
   easy: "Mais aberto",
@@ -168,6 +173,11 @@ export function RouteStrategyGame({
    */
   const [aimedWall, setAimedWall] = useState<string | null>(null);
   const detailsTriggerRef = useRef<HTMLButtonElement>(null);
+  const [loadedBoard, setLoadedBoard] = useState<{
+    component: typeof RouteBabylonBoardComponent;
+  } | null>(null);
+  const onEntryErrorRef = useRef(onEntryError);
+  const RouteBabylonBoard = loadedBoard?.component ?? null;
   const game = useEscapeMaze(onComplete, initialRouteNumber, initialDifficulty);
   const {
     difficulty,
@@ -209,6 +219,34 @@ export function RouteStrategyGame({
     chooseReward,
     breakWall,
   } = game;
+
+  useEffect(() => {
+    onEntryErrorRef.current = onEntryError;
+  }, [onEntryError]);
+
+  // One load per mount: a new callback identity must not fetch again, so a
+  // failure goes to whichever onEntryError the parent holds when it lands.
+  // Readiness stays the board's own (`onReady`), counted from its mount.
+  useEffect(() => {
+    let cancelled = false;
+    loadRouteBabylonBoard().then(
+      (component) => {
+        if (!cancelled) setLoadedBoard({ component });
+      },
+      (error: unknown) => {
+        if (cancelled) return;
+        onEntryErrorRef.current?.(
+          error instanceof Error
+            ? error
+            : new Error("Unknown error while loading the Route board's code."),
+        );
+      },
+    );
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // Walkable neighbours of the player — a calm "available moves" hint. Pure
   // derivation from the map; it never changes the grid logic or input.
@@ -592,27 +630,32 @@ export function RouteStrategyGame({
                 role="img"
                 aria-label="Tabuleiro 3D da rota: o explorador é você, o Caçador encapuzado persegue pelo tabuleiro, o Sentinela em teal guarda a região do portal, o portal é a saída e as luzes douradas o ativam."
               >
-                <RouteBabylonBoard
-                  mazeMap={mazeMap}
-                  walls={walls}
-                  collectedSet={collectedSet}
-                  player={player}
-                  guardian={guardian}
-                  sentinel={sentinel}
-                  sentinelCommitted={sentinelTarget !== null}
-                  moveTargets={moveTargets}
-                  triggeredTrapSet={triggeredTrapSet}
-                  chestOpened={chestOpened}
-                  breakTargets={breakTargetKeys}
-                  aimedWall={aimedWall}
-                  brokenWall={brokenWall}
-                  dangerTiles={dangerTiles}
-                  reducedMotion={Boolean(reducedMotion)}
-                  status={status}
-                  onMove={tryMovePlayer}
-                  onReady={onEntryReady}
-                  onError={onEntryError}
-                />
+                {!RouteBabylonBoard && (
+                  <div className="rsg-canvas-loading">Preparando o tabuleiro Babylon…</div>
+                )}
+                {RouteBabylonBoard && (
+                  <RouteBabylonBoard
+                    mazeMap={mazeMap}
+                    walls={walls}
+                    collectedSet={collectedSet}
+                    player={player}
+                    guardian={guardian}
+                    sentinel={sentinel}
+                    sentinelCommitted={sentinelTarget !== null}
+                    moveTargets={moveTargets}
+                    triggeredTrapSet={triggeredTrapSet}
+                    chestOpened={chestOpened}
+                    breakTargets={breakTargetKeys}
+                    aimedWall={aimedWall}
+                    brokenWall={brokenWall}
+                    dangerTiles={dangerTiles}
+                    reducedMotion={Boolean(reducedMotion)}
+                    status={status}
+                    onMove={tryMovePlayer}
+                    onReady={onEntryReady}
+                    onError={onEntryError}
+                  />
+                )}
               </div>
             </motion.div>
 

@@ -115,6 +115,8 @@ Arquivos principais:
 - `src/games/escape-maze/RouteBabylonBoard.tsx`
 - `src/games/escape-maze/routeBabylonScene.ts`
 
+`RouteStrategyGame` carrega `RouteBabylonBoard` como chunk próprio depois de montar, com um `import()` explícito (não `next/dynamic`), e o Babylon só é buscado quando o board monta. Até o chunk chegar, o canvas mostra "Preparando o tabuleiro Babylon…"; se ele falhar, o erro vai para `onEntryError` → painel de tentar novamente, e o retry (nova sessão) busca o chunk de novo.
+
 Runtime visual ativo:
 
 - `public/models/route/board.glb`
