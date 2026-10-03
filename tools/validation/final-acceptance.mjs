@@ -220,16 +220,22 @@ EVIDENCE.write("continuous-270-final.json", {
 console.log("\nFASE 5 — recovery determinística");
 // Shorten ONLY the random phase, in memory. The recovery sweep, every gate and
 // the throw are untouched, so whatever comes back came through the real gates.
-const SHORT_RANDOM = "const MAX_GENERATION_ATTEMPTS = 1;";
 // The anchor must come from the harness's own view of production, not from a
 // second read of the file: the two can differ in line endings, and a `replace`
 // that matches nothing would leave the production cap in place while this phase
 // reported on it as though it had been shortened. ROUTE-C0: the edit goes to
 // whichever Rota module declares the cap, so moving it does not move this proof.
+// ROUTE-C1: the cap moved to route-config.ts and is exported from there; only
+// its value is rewritten, so the declaration keeps whatever modifiers it has.
+const CAP_DECLARATION = /^(export )?const MAX_GENERATION_ATTEMPTS = \d+;$/;
 const capFile = routeModuleDeclaring("MAX_GENERATION_ATTEMPTS");
 const capLine = routeSource(capFile)
-  .split("\n").find((l) => l.startsWith("const MAX_GENERATION_ATTEMPTS"));
+  .split("\n").find((l) => CAP_DECLARATION.test(l));
 if (!capLine) throw new Error("MAX_GENERATION_ATTEMPTS declaration not found");
+const SHORT_RANDOM = capLine.replace(/= \d+;$/, "= 1;");
+// The evidence records the cap's declaration, not the module layout: `export`
+// is where the binding is visible from, not what the cap is.
+const capEvidence = (line) => line.trim().replace(/^export /, "");
 const RECOVERY = loadInstrumented({
   transforms: {
     [capFile]: (src) => {
@@ -262,8 +268,8 @@ for (const stage of ROUTES) {
     recoveryCases.push({
       seed: usedSeed,
       route: stage, mode: difficulty,
-      productionRandomCap: capLine.trim(),
-      harnessRandomCap: SHORT_RANDOM,
+      productionRandomCap: capEvidence(capLine),
+      harnessRandomCap: capEvidence(SHORT_RANDOM),
       randomAttempts: run.randomAttempts,
       recoveryAttempts: run.recoveryAttempts,
       recoveryEntered: run.recoveryAttempts > 0,
@@ -283,7 +289,7 @@ for (const c of recoveryCases) {
 EVIDENCE.write("deterministic-recovery-final.json", {
   ...report,
   method: "random phase capped at 1 attempt in an in-memory copy; recovery sweep, gates and throw untouched; production cap unchanged",
-  productionCap: capLine.trim(),
+  productionCap: capEvidence(capLine),
   recoveryEntered: `${recoveryEntered}/9`,
   certifiedByRecovery: `${recoveryCertified}/9`,
   allPassContractAudit: recoveryClean,

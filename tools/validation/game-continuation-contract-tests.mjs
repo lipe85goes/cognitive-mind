@@ -81,6 +81,7 @@ const FILES = {
   rota: "src/games/escape-maze/RouteStrategyGame.tsx",
   hook: "src/games/escape-maze/useEscapeMaze.ts",
   routeContinuation: "src/games/escape-maze/continuation.ts",
+  routeConfig: "src/games/escape-maze/route-config.ts",
   storage: "src/engine/storage.ts",
   stageProgress: "src/engine/stage-progress.ts",
   routeRandom: "src/engine/route-random.ts",
@@ -1690,6 +1691,9 @@ const GARBAGE = [null, 7, "result", { id: "half", gameId: ROUTE }, { ...LEGACY[0
 // I1 — the contract costs nothing: the Route's reader is types-only and ships only with the Rota. Its one runtime
 // importer besides the Rota is the hook, for the journey's end (`nextJourneyRoute`, ROUTE-JOURNEY-TERMINAL-01) — the
 // same chunk; the dev-only launcher reads the journey's length from it too.
+// ROUTE-C1 added the hook's one new runtime edge, `route-config`: static data the hook alone imports, which itself
+// imports nothing at run time (types only) — so it cannot pull the shell, Babylon or UI into the Rota, nor the Rota
+// into anything else.
 {
   const reader = importsOf(FILES.routeContinuation);
   const importers = SRC_FILES.filter((file) =>
@@ -1697,19 +1701,35 @@ const GARBAGE = [null, 7, "result", { id: "half", gameId: ROUTE }, { ...LEGACY[0
   );
   const hookRuntime = (importsOf(FILES.hook) ?? []).filter((edge) => edge.kind === "runtime").map((edge) => edge.specifier).sort();
   const typesRuntime = (importsOf(FILES.types) ?? []).filter((edge) => edge.kind === "runtime").map((edge) => edge.specifier);
+  const config = importsOf(FILES.routeConfig);
+  const configImporters = SRC_FILES.filter((file) =>
+    (importsOf(file) ?? []).some((edge) => edge.file === FILES.routeConfig && edge.kind !== "type"),
+  );
   const actual = {
     readerExists: reader !== null,
     readerRuntimeImports: reader ? reader.filter((edge) => edge.kind !== "type").map((edge) => edge.specifier) : null,
     readerImportedAtRuntimeBy: importers,
     hookRuntimeImports: hookRuntime,
     typesRuntimeImports: typesRuntime,
+    routeConfigRuntimeImports: config ? config.filter((edge) => edge.kind !== "type").map((edge) => edge.specifier) : null,
+    routeConfigImportedAtRuntimeBy: configImporters,
   };
   const expected = {
     readerExists: true,
     readerRuntimeImports: [],
     readerImportedAtRuntimeBy: [FILES.launcher, FILES.rota, FILES.hook],
-    hookRuntimeImports: ["@/engine/difficulty", "@/engine/route-random", "@/engine/scoring", "@/games/escape-maze/continuation", "@/lib/game-sounds", "react"],
+    hookRuntimeImports: [
+      "@/engine/difficulty",
+      "@/engine/route-random",
+      "@/engine/scoring",
+      "@/games/escape-maze/continuation",
+      "@/games/escape-maze/route-config",
+      "@/lib/game-sounds",
+      "react",
+    ],
     typesRuntimeImports: [],
+    routeConfigRuntimeImports: [],
+    routeConfigImportedAtRuntimeBy: [FILES.hook],
   };
   record("I1", "contract", "CONTRACT_COSTS_NOTHING", same(actual, expected), { actual });
 }

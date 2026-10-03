@@ -225,14 +225,17 @@ then splits `useEscapeMaze.ts` in memory (grid/config into `route-config.ts`, a
 generation helper into `route-pick.ts`) and requires the instrumented
 generator, the runtime harness and a declaration-aimed counterfactual to give
 the same maps and the same games; the loader the validators had at 5d541b2 must
-fail on that split. The gate scans every validator for couplings to the Rota's
+fail on that split. Since ROUTE-C1 production is split for real, so the
+synthetic split is cut from the last one-file hook (`rev: 4027baa` plus the
+split as `sourceOverrides`) and X6 requires the real split to generate, explain
+and play exactly what the one-file Rota and its synthetic split do. The gate scans every validator for couplings to the Rota's
 file layout (hook path, other Rota module paths, hand-written resolvers,
 private TypeScript compilation, the old `hookSource` seam). Each remaining one
 is declared in its `ALLOWED` table with a reason:
 
 | reason | validators | why they still name Rota files |
 | --- | --- | --- |
-| STRUCTURAL_ASSERTION | game-continuation-contract, route-journey-ownership, route-journey-terminal, diagnostic-launcher, production-diagnostic-boundary, cross-eol | the check is about where code lives (I1/O3/T11, the seed seam's own code, CRLF of the hook's text); their Rota runs through the graph |
+| STRUCTURAL_ASSERTION | game-continuation-contract, route-journey-ownership, route-journey-terminal, route-config-extraction, diagnostic-launcher, production-diagnostic-boundary, cross-eol | the check is about where code lives (I1/O3/T11, C1's static gate, the seed seam's own code, CRLF of the hook's text); their Rota runs through the graph |
 | UI_STAGE | route-board-loader | compiles the Rota component under a chunk gate with stage stubs |
 | PROVENANCE | dynamic-solvability-campaign-lib | campaign identity hash over named files; changing it would invalidate recorded identities |
 | REPORT_LABEL | breakable-wall-feasibility, dynamic-solvability-finalize | a path inside report text |
@@ -241,4 +244,29 @@ is declared in its `ALLOWED` table with a reason:
 
 A new validator that names the hook or resolves a Rota import by hand fails the
 gate until it uses the loader or is declared with a reason; a declaration whose
-coupling is gone must leave the table.
+coupling is gone must leave the table. `route-config.ts` counts as a Rota module
+file for the gate (ROUTE-C1).
+
+**ROUTE CONFIG (ROUTE-C1)** — the grid and static configuration live in
+`src/games/escape-maze/route-config.ts`; the hook imports them. Writes nothing:
+
+```bash
+node tools/validation/route-config-extraction-tests.mjs              # ~45 s
+node tools/validation/route-config-extraction-tests.mjs --rev=4027baa  # must fail every [structure] check, hold the rest
+```
+
+`[structure]` is the static gate: the moved set is declared in route-config.ts
+and nowhere else, the hook declares none of it and imports exactly what
+route-config exports, route-config imports types only, and no template row or
+stage copy is left in the hook. `[config]` pins every value literally (grid,
+budget, start, exits, guardian seats, template hashes, stage mapping and copy,
+wall limits, light/trap/separation counts, minimum path, quality, play brief).
+`[equivalence]` loads the working tree and the one-file Rota (4027baa) through
+the loader and compares every moved binding, the helpers over their domain, 360
+generated maps field by field (Sentinel setup and RNG draws included) and 18
+Routes played by the real hook. `[identity]` checks the tables are still
+shared, unfrozen and unmutated, as before. Validators never needed the new
+file's name: surfaces, `declaring()` and `anchoredEdits` already found each
+binding where it is declared. The one textual anchor on a moved declaration —
+`final-acceptance`'s random-phase cap — now matches `export const` too, and
+records the declaration without the modifier, so its evidence is unchanged.

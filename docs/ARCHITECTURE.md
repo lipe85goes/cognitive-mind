@@ -42,6 +42,7 @@ home (HomeStage)
 | --- | --- |
 | Tipos de jogo e resultado (inclui o contrato de continuação) | `src/types/game.ts` |
 | Jornada da Rota: tamanho (`ROUTE_JOURNEY_FINAL_ROUTE`), regra de término (`nextJourneyRoute`) e leitura da continuação (só tipos; vai no chunk da Rota) | `src/games/escape-maze/continuation.ts` |
+| Configuração estática da Rota: grid 9x9, orçamento de geração, início/saídas/guardiões, templates, cópia de etapa e tabelas de dificuldade (só dados + helpers puros; importado só pelo hook) | `src/games/escape-maze/route-config.ts` |
 | Contrato de entrada dos jogos (readiness + watchdog; só metadados) | `src/games/entry-contract.ts` |
 | Registro de jogos (contrato de entrada + loader do componente) | `src/games/index.ts` |
 | Metadados visuais dos mundos | `src/data/worlds.ts` |
@@ -114,8 +115,16 @@ Arquivos principais:
 
 - `src/games/escape-maze/RouteStrategyGame.tsx`
 - `src/games/escape-maze/useEscapeMaze.ts`
+- `src/games/escape-maze/route-config.ts`
 - `src/games/escape-maze/RouteBabylonBoard.tsx`
 - `src/games/escape-maze/routeBabylonScene.ts`
+
+Divisão da lógica (ROUTE-C1):
+
+- Antes: `useEscapeMaze.ts` concentrava configuração + geração + runtime num arquivo só.
+- Agora: `route-config.ts` tem a configuração estática e os helpers puros que só leem essa configuração — `ROWS`/`COLS`, `MAX_GENERATION_ATTEMPTS`/`RECOVERY_*`, `PLAYER_START` e células seguras, candidatos de saída e de guardião por etapa, os 9 templates, `RouteStage`/`RouteProgression` e a cópia de cada etapa, `WALL_LIMITS`, contagens base de luzes e armadilhas, `DIFFICULTY_PLAY_BRIEF`, `ROUTE_STAGE_QUALITY` e `getRouteStage`, `getRouteProgression`, `getWallLimits`, `getStarCount`, `getStarMinSeparation`, `getTrapCount`, `getMinimumPathLength`, `getRouteStageTemplates`. Só importa tipos (`@/types/game`): nada de React, sons, RNG, Babylon ou do hook. Exporta só o que o hook consome; as tabelas por trás dos helpers ficam privadas.
+- `useEscapeMaze.ts` ainda contém a geração (templates → paredes, luzes, armadilhas/baú, certificação, BFS), as regras do Caçador/Sentinela e todo o runtime (estado React, turno, input). Ele importa a configuração e reexporta `ROWS`/`COLS` (lidos pela Rota e pelo board) e o tipo `RouteProgression`, então a superfície pública do hook não mudou. Input (`ARROW_DELTAS`, `BREAK_DIRECTION_DELTAS`, `MOVE_INPUT_GUARD_MS`, `BreakDirection`, `BreakTarget`), `MazeMap`/`GameStatus` e as constantes de Sentinela/portal (`PORTAL_*`, `SENTINEL_*`) continuam no hook: são de runtime/algoritmo, não de configuração de grid.
+- A extração não mudou valor nenhum: `tools/validation/route-config-extraction-tests.mjs` fixa os valores, compara mapas e partidas com o hook de um arquivo (`4027baa`) e impede a configuração de voltar a ser declarada no hook.
 
 `RouteStrategyGame` carrega `RouteBabylonBoard` como chunk próprio depois de montar, com um `import()` explícito (não `next/dynamic`), e o Babylon só é buscado quando o board monta. Até o chunk chegar, o canvas mostra "Preparando o tabuleiro Babylon…"; se ele falhar, o erro vai para `onEntryError` → painel de tentar novamente, e o retry (nova sessão) busca o chunk de novo.
 
@@ -154,9 +163,9 @@ Runtime visual ativo:
 
 Contrato dos assets e regeneração ficam em `public/models/route/README.md`. Previews PNG da Rota não ficam mais em `public/`; foram arquivados em `docs/archive/route-previews/`.
 
-`useEscapeMaze.ts` é regra de jogo. Não altere geração, dificuldade, portal, guardião, scoring ou fluxo sem missão explícita.
+`useEscapeMaze.ts` e `route-config.ts` são regra de jogo. Não altere geração, dificuldade, portal, guardião, scoring ou fluxo sem missão explícita.
 
-Validação da Rota (ROUTE-C0): os validadores carregam o **grafo de módulos** da Rota por `tools/validation/route-module-loader.mjs` — o hook e tudo o que ele importa, de uma mesma árvore (worktree ou `--rev`), uma instância por módulo — e acham cada binding privado no módulo que o declara. Eles não dependem de `useEscapeMaze.ts` continuar monolítico; a extração do hook em módulos ainda não foi feita. Inventário, exceções declaradas e o gate de acoplamento: `tools/validation/README.md`.
+Validação da Rota (ROUTE-C0): os validadores carregam o **grafo de módulos** da Rota por `tools/validation/route-module-loader.mjs` — o hook e tudo o que ele importa, de uma mesma árvore (worktree ou `--rev`), uma instância por módulo — e acham cada binding privado no módulo que o declara. Eles não dependem de `useEscapeMaze.ts` continuar monolítico: desde ROUTE-C1 a configuração vem de `route-config.ts` e os validadores a acham pelo grafo, sem mudança de superfície. O resto da extração (geração, regras, runtime) ainda não foi feito. Inventário, exceções declaradas e o gate de acoplamento: `tools/validation/README.md`.
 
 ## Circuito de Memória
 
@@ -241,6 +250,7 @@ Preserve obrigatoriamente:
 
 - `docs/MINDFLOW_EXPERIENCE_BOOK.md`
 - `src/games/escape-maze/useEscapeMaze.ts`
+- `src/games/escape-maze/route-config.ts`
 - `src/games/color-sequence/useColorSequenceGame.ts`
 - `src/games/index.ts`
 - `src/data/worlds.ts`

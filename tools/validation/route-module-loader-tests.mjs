@@ -9,13 +9,17 @@
  *                 per-module overrides and transforms, clear errors, cycles,
  *                 line endings — on small in-memory fixtures and on the Rota.
  *   [extraction]  the point of C0: useEscapeMaze.ts is split IN MEMORY the way
- *                 C1 will split it (grid/config constants into one module, a
+ *                 C1 would split it (grid/config constants into one module, a
  *                 generation helper that draws from route-random into
  *                 another), and the instrumented generator, the runtime
  *                 harness and a declaration-aimed counterfactual all keep
  *                 working, map for map. Production is not touched.
+ *                 ROUTE-C1 made production multi-file for real, so the
+ *                 synthetic split is now taken from the last one-file hook
+ *                 (C0's head, read with `rev`) — the exercise is unchanged —
+ *                 and X6 holds the real split to the synthetic one.
  *   [counterfactual]  the loader the validators used at 5d541b2 (read from git)
- *                 cannot load that same split Rota.
+ *                 cannot load that same split Rota, nor the real one.
  *
  * Fixtures are virtual (`sourceOverrides`) under a directory that does not
  * exist; the last check proves nothing on disk moved.
@@ -45,6 +49,8 @@ import {
 
 const ROOT = process.cwd();
 const BASELINE = "5d541b228247621a6521852db8d4d913ebb55be2";
+/** The last revision whose Rota was one file (ROUTE-C0's head): the synthetic split starts from its hook. */
+const ONE_FILE_ROTA = "4027baab6c94e12fc53cb656344d54cf6539d052";
 const FIX = "src/__route_loader_fixtures__";
 
 const tests = [];
@@ -377,8 +383,12 @@ const fixtureGraph = (options = {}) =>
 }
 
 // =================================================================================================
-// [extraction] — useEscapeMaze.ts split in memory, the way C1 will split it
+// [extraction] — useEscapeMaze.ts split in memory, the way C1 would split it
 // =================================================================================================
+//
+// Since ROUTE-C1 the working tree's hook no longer declares ROWS & co., so the split is cut from the one-file hook at
+// ONE_FILE_ROTA and every load below is `rev: ONE_FILE_ROTA` + the split as overrides. Same exercise, same Rota: the
+// virtual route-config.ts shadows nothing on that tree (it did not exist there), and X6 compares the real C1 tree.
 
 /**
  * Move top-level declarations out of the hook into a new module, by the parser:
@@ -420,7 +430,9 @@ function splitRoute(hook) {
   };
 }
 
-const SPLIT = splitRoute(openSourceTree().read(ROUTE_HOOK));
+const ONE_FILE_TREE = openSourceTree({ rev: ONE_FILE_ROTA });
+const SPLIT = splitRoute(ONE_FILE_TREE.read(ROUTE_HOOK));
+const VIRTUAL = ["src/games/escape-maze/route-config.ts", "src/games/escape-maze/route-pick.ts"];
 const canonicalMap = (api, map) =>
   JSON.stringify({
     walls: [...map.walls].sort(),
@@ -434,10 +446,15 @@ const canonicalMap = (api, map) =>
 // X1 — the split graph loads: the new modules are real modules of the graph, and the surface finds each binding
 // in the module that now declares it.
 {
-  const LAB = loadInstrumented({ sourceOverrides: SPLIT });
+  const LAB = loadInstrumented({ rev: ONE_FILE_ROTA, sourceOverrides: SPLIT });
   const files = LAB.graph.modules().map((m) => m.file);
   const declares = (file, name) => Object.hasOwn(LAB.graph.require(file)[INTERNALS_EXPORT] ?? {}, name);
-  const noFileOnDisk = ["route-config.ts", "route-pick.ts"].every((f) => !fs.existsSync(path.join(ROOT, "src/games/escape-maze", f)));
+  // The split modules are virtual: neither existed on the one-file tree, both were loaded from the overrides (the
+  // real route-config.ts on disk is not what this graph read), and route-pick.ts exists nowhere.
+  const origins = Object.fromEntries(LAB.graph.modules().map((m) => [m.file, m.origin]));
+  const noFileOnDisk =
+    VIRTUAL.every((file) => !ONE_FILE_TREE.exists(file) && origins[file] === "override") &&
+    !fs.existsSync(path.join(ROOT, "src/games/escape-maze/route-pick.ts"));
   record(
     "X1",
     "extraction",
@@ -457,15 +474,15 @@ const canonicalMap = (api, map) =>
       loaded: files,
       hookImports: LAB.graph.tree.runtimeImports(ROUTE_HOOK),
       instrumented: { structuralReasons: LAB.structuralReasons.length, finalGates: LAB.finalGateNames.length },
-      virtualModulesOnDisk: !noFileOnDisk,
+      virtualModuleOrigins: Object.fromEntries(VIRTUAL.map((file) => [file, origins[file]])),
     },
   );
 }
 
 // X2 — the split Rota generates the SAME maps, and replayGeneration explains them the same way.
 {
-  const whole = loadInstrumented();
-  const split = loadInstrumented({ sourceOverrides: SPLIT });
+  const whole = loadInstrumented({ rev: ONE_FILE_ROTA });
+  const split = loadInstrumented({ rev: ONE_FILE_ROTA, sourceOverrides: SPLIT });
   const diffs = [];
   let compared = 0;
   for (const stage of [1, 2, 3]) {
@@ -491,7 +508,7 @@ const canonicalMap = (api, map) =>
 // seed the extracted helper draws from.
 {
   const armed = (overrides) => {
-    const rota = loadRouteModules({ sourceOverrides: overrides, surface: ["generateMaze", "posKey"] });
+    const rota = loadRouteModules({ rev: ONE_FILE_ROTA, sourceOverrides: overrides, surface: ["generateMaze", "posKey"] });
     rota.routeRandom.armRouteRandomSeed(777);
     rota.setSeed(1);
     const a = canonicalMap(rota.api, rota.api.generateMaze("medium", 2));
@@ -513,10 +530,11 @@ const canonicalMap = (api, map) =>
 
 // X4 — a counterfactual aimed at a DECLARATION follows it into the new module (final-acceptance's recovery proof).
 {
-  const tree = openSourceTree({ sourceOverrides: SPLIT });
+  const tree = openSourceTree({ rev: ONE_FILE_ROTA, sourceOverrides: SPLIT });
   const capFile = tree.declaring("MAX_GENERATION_ATTEMPTS");
   const capLine = tree.read(capFile).split("\n").find((l) => l.includes("const MAX_GENERATION_ATTEMPTS"));
   const LAB = loadInstrumented({
+    rev: ONE_FILE_ROTA,
     sourceOverrides: SPLIT,
     transforms: { [capFile]: (src) => src.replace(capLine, "export const MAX_GENERATION_ATTEMPTS = 1;") },
   });
@@ -533,8 +551,8 @@ const canonicalMap = (api, map) =>
 
 // X5 — the runtime harness mounts the split hook and plays the same Routes to the same ends.
 {
-  const play = (sourceOverrides) => {
-    const runtime = loadRouteRuntime({ sourceOverrides });
+  const play = (sourceOverrides, rev = ONE_FILE_ROTA) => {
+    const runtime = loadRouteRuntime({ rev, sourceOverrides });
     return [1, 2, 3].flatMap((routeNumber) =>
       ["win", "lose"].map((policy) => {
         const run = runtime.mount({ seed: 300 + routeNumber, routeNumber, difficulty: "medium" });
@@ -560,6 +578,57 @@ const canonicalMap = (api, map) =>
     runsThatEnded: ended,
     split: same(whole, split) ? "identical, completion by completion" : split,
   });
+
+  // X6 — ROUTE-C1 did the extraction for real. The working tree declares what the synthetic split moved in the module
+  // the split predicted, the hook declares none of it, and the real multi-file Rota generates, explains and plays
+  // exactly what the one-file Rota and its synthetic split do.
+  const tree = openSourceTree();
+  const moved = ["ROWS", "COLS", "MAX_GENERATION_ATTEMPTS", "RECOVERY_ROUNDS", "RECOVERY_RETRIES_PER_SLOT"];
+  const declaredIn = Object.fromEntries(moved.map((name) => [name, errorOf(() => tree.declaring(name)) ?? tree.declaring(name)]));
+  const hookDeclares = moved.filter((name) => declaredIn[name] === ROUTE_HOOK);
+  const one = loadInstrumented({ rev: ONE_FILE_ROTA });
+  const synthetic = loadInstrumented({ rev: ONE_FILE_ROTA, sourceOverrides: SPLIT });
+  const real = loadInstrumented();
+  const mapDiffs = [];
+  let compared = 0;
+  for (const stage of [1, 2, 3]) {
+    for (const difficulty of ["easy", "medium", "hard"]) {
+      for (const seed of [11, 4242, 90210]) {
+        const maps = [one, synthetic, real].map((lab) => {
+          lab.setSeed(seed);
+          return canonicalMap(lab.API, lab.API.generateMaze(difficulty, stage));
+        });
+        const replays = [one, real].map((lab) => {
+          lab.setSeed(seed);
+          const replay = lab.replayGeneration({ difficulty, stage, capture: false });
+          return JSON.stringify([replay.histogram, replay.totalAttempts]);
+        });
+        compared += 1;
+        if (new Set(maps).size !== 1 || replays[0] !== replays[1]) mapDiffs.push({ stage, difficulty, seed });
+      }
+    }
+  }
+  const realPlay = play(undefined, null);
+  const realFiles = real.graph.modules().map((m) => m.file);
+  record(
+    "X6",
+    "extraction",
+    "REAL_SPLIT_IS_THE_SYNTHETIC_SPLIT",
+    moved.every((name) => declaredIn[name] === "src/games/escape-maze/route-config.ts") &&
+      hookDeclares.length === 0 &&
+      realFiles.includes("src/games/escape-maze/route-config.ts") &&
+      real.graph.modules().every((m) => m.origin === "worktree") &&
+      mapDiffs.length === 0 &&
+      compared === 27 &&
+      same(realPlay, whole),
+    {
+      declaredIn,
+      realGraph: realFiles,
+      mapsCompared: `${compared} (one-file = synthetic split = real split)`,
+      mapDiffs,
+      realPlays: same(realPlay, whole) ? "identical to the one-file Rota, completion by completion" : realPlay,
+    },
+  );
 }
 
 // =================================================================================================
@@ -572,12 +641,21 @@ const canonicalMap = (api, map) =>
     .replace('from "typescript"', `from ${JSON.stringify(pathToFileURL(nodeRequire.resolve("typescript")).href)}`)
     .replace('from "./route-lab.mjs"', `from ${JSON.stringify(pathToFileURL(path.join(ROOT, "tools/validation/route-lab.mjs")).href)}`);
   const baseline = await import(`data:text/javascript;base64,${Buffer.from(rewired).toString("base64")}`);
-  const loadsWhole = errorOf(() => baseline.loadInstrumented({ bare: true })) === null;
+  // The baseline loader reads the working tree's hook; a transform hands it the text under test instead.
+  const loadsWhole = errorOf(() => baseline.loadInstrumented({ bare: true, transform: () => ONE_FILE_TREE.read(ROUTE_HOOK) })) === null;
   const splitError = errorOf(() => baseline.loadInstrumented({ bare: true, transform: () => SPLIT[ROUTE_HOOK] }));
-  record("C1", "counterfactual", "BASELINE_LOADER_NEEDS_THE_MEGA_FILE", loadsWhole && /unexpected import \.\/route-config/.test(splitError ?? ""), {
-    baselineLoadsTodaysHook: loadsWhole,
-    baselineOnSplitHook: splitError,
-  });
+  const realError = errorOf(() => baseline.loadInstrumented({ bare: true }));
+  record(
+    "C1",
+    "counterfactual",
+    "BASELINE_LOADER_NEEDS_THE_MEGA_FILE",
+    loadsWhole && /unexpected import \.\/route-config/.test(splitError ?? "") && /route-config/.test(realError ?? ""),
+    {
+      baselineLoadsOneFileHook: loadsWhole,
+      baselineOnSplitHook: splitError,
+      baselineOnRealC1Hook: realError,
+    },
+  );
 }
 
 // =================================================================================================
