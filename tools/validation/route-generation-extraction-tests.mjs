@@ -28,9 +28,11 @@
  *                      (comments included) is the baseline's text, the hook's
  *                      remaining code is the baseline's text, the hook's
  *                      public surface (run-time and type) is the baseline's and
- *                      its real consumers still find every name; the defender
- *                      policy (C3) and the dynamic invariants (C4) stay in the
- *                      hook; the instrumented loader still sees 18 structural
+ *                      its real consumers still find every name; the dynamic
+ *                      invariants (C4) stay in the hook (the defender policy
+ *                      did too, until ROUTE-C3 moved it to route-defenders.ts —
+ *                      route-defenders-extraction-tests.mjs holds that move);
+ *                      the instrumented loader still sees 18 structural
  *                      reasons and 23 final gates, the escape context, bare
  *                      mode and replayGeneration's fidelity.
  *   [equivalence]      the working tree against 65932cf (C1, generation still
@@ -125,17 +127,18 @@ const HOME = Object.fromEntries([
 const GENERATION_EXPORTS = ["MazeMap", "generateMaze"];
 
 /**
- * Left in the hook on purpose. The defenders' policy is ROUTE-C3's, the dynamic invariants ROUTE-C4's, and input,
- * chest and turn orchestration are the hook's own. None of it may have moved.
+ * Left in the hook on purpose. The dynamic invariants are ROUTE-C4's, and input, chest and turn orchestration are the
+ * hook's own. None of it may have moved. The defenders' policy was here at C2 (PORTAL_ZONE_RADIUS, SENTINEL_*,
+ * computePortalDefenceZone, createSentinelState, decideSentinelMove, EMPTY_BLOCKED, chooseGuardianMove,
+ * PortalDefenceZone, SentinelState); ROUTE-C3 moved it to route-defenders.ts, which route-defenders-extraction-tests.mjs
+ * checks — verbatim, against this tree's head.
  */
 const KEPT_IN_HOOK_VALUES = [
-  "ARROW_DELTAS", "BREAK_DIRECTION_DELTAS", "MOVE_INPUT_GUARD_MS", "PORTAL_ZONE_RADIUS", "SENTINEL_LEASH",
-  "SENTINEL_THREAT_HORIZON", "SENTINEL_COMMIT_TURNS", "computePortalDefenceZone", "createSentinelState",
-  "decideSentinelMove", "EMPTY_BLOCKED", "chooseGuardianMove", "inspectDynamicMazeState",
+  "ARROW_DELTAS", "BREAK_DIRECTION_DELTAS", "MOVE_INPUT_GUARD_MS", "inspectDynamicMazeState",
   "SECOND_CHANCE_EXPLORER_MESSAGE", "SECOND_CHANCE_DEFENDER_MESSAGE", "useEscapeMaze",
 ];
 const KEPT_IN_HOOK_TYPES = [
-  "BreakDirection", "BreakTarget", "GameStatus", "PortalDefenceZone", "SentinelState", "CompleteFn", "ChestReward",
+  "BreakDirection", "BreakTarget", "GameStatus", "CompleteFn", "ChestReward",
   "DynamicMazeStateSnapshot", "DynamicSolvabilityInspection", "DefenderPhaseInput",
 ];
 
@@ -332,9 +335,11 @@ const resolvesTo = (from, specifier) => errorOf(() => TREE.resolve(specifier, fr
   );
 }
 
-// S5 — `randomItem` is the seam's: declared once, in route-random.ts, beside the stream; generation and the hook (the
-// Hunter) both import that one function; no Rota module keeps a copy. difficulty.ts (its own `pickRandom`) untouched.
+// S5 — `randomItem` is the seam's: declared once, in route-random.ts, beside the stream; generation and the Hunter both
+// import that one function; no Rota module keeps a copy. difficulty.ts (its own `pickRandom`) untouched.
+// ROUTE-C3: "the Hunter" is whichever module declares `chooseGuardianMove` — the hook at C2, route-defenders.ts since.
 {
+  const hunterModule = errorOf(() => TREE.declaring("chooseGuardianMove")) ?? TREE.declaring("chooseGuardianMove");
   const importersOfRandomItem = closure
     .filter((file) => file.startsWith(ROUTE_MODULE_DIR))
     .filter((file) =>
@@ -346,8 +351,8 @@ const resolvesTo = (from, specifier) => errorOf(() => TREE.resolve(specifier, fr
     "structure",
     "RANDOM_ITEM_LIVES_BESIDE_THE_STREAM",
     owners.randomItem === ROUTE_RANDOM_SEAM && seam.exported.includes("randomItem") &&
-      same(sorted(importersOfRandomItem), sorted([ROUTE_HOOK, ROUTE_GENERATION])) && difficultyUntouched,
-    { declaredIn: owners.randomItem, importedBy: importersOfRandomItem, difficultyTsUnchanged: difficultyUntouched },
+      same(sorted(importersOfRandomItem), sorted([hunterModule, ROUTE_GENERATION])) && difficultyUntouched,
+    { declaredIn: owners.randomItem, importedBy: importersOfRandomItem, hunterDeclaredIn: hunterModule, difficultyTsUnchanged: difficultyUntouched },
   );
 }
 
@@ -445,11 +450,11 @@ const resolvesTo = (from, specifier) => errorOf(() => TREE.resolve(specifier, fr
   });
 }
 
-// P3 — what C3 and C4 will move is still in the hook, unchanged.
+// P3 — what C4 will move, and the turn itself, are still in the hook, unchanged.
 {
   const missing = [...KEPT_IN_HOOK_VALUES.filter((n) => !hook.values.includes(n)), ...KEPT_IN_HOOK_TYPES.filter((n) => !hook.types.includes(n))];
   const changed = [...KEPT_IN_HOOK_VALUES, ...KEPT_IN_HOOK_TYPES].filter((n) => hook.text.get(n) !== baseHook.text.get(n));
-  record("P3", "preserved", "DEFENDERS_AND_INVARIANTS_STAY_IN_THE_HOOK", missing.length === 0 && changed.length === 0, {
+  record("P3", "preserved", "INVARIANTS_AND_TURN_STAY_IN_THE_HOOK", missing.length === 0 && changed.length === 0, {
     kept: KEPT_IN_HOOK_VALUES.length + KEPT_IN_HOOK_TYPES.length,
     missingFromHook: missing,
     textChanged: changed,

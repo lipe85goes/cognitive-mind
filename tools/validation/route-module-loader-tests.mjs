@@ -258,8 +258,10 @@ const fixtureGraph = (options = {}) =>
 // [loader] — the Rota
 // =================================================================================================
 
-// L10 — route-random exists once: the hook and difficulty.ts both import it, it is evaluated once, and a seed armed
-// through the handle the harness exposes is the one generation draws from.
+// L10 — route-random exists once: several modules of the Rota's graph import it (difficulty.ts among them), it is
+// evaluated once, and a seed armed through the handle the harness exposes is the one generation draws from.
+// ROUTE-C3: the hook itself no longer imports the seam — the Hunter's draws left with `chooseGuardianMove` for
+// route-defenders.ts — so the importers are read off the hook's run-time closure instead of naming the hook.
 {
   const counted = loadRouteModules({
     transforms: {
@@ -268,9 +270,9 @@ const fixtureGraph = (options = {}) =>
     },
     surface: ["generateMaze", "posKey"],
   });
-  const importers = ["src/games/escape-maze/useEscapeMaze.ts", "src/engine/difficulty.ts"].filter((file) =>
-    counted.graph.tree.runtimeImports(file).includes("@/engine/route-random"),
-  );
+  const importers = counted.graph.tree
+    .closure()
+    .filter((file) => counted.graph.tree.runtimeImports(file).includes("@/engine/route-random"));
   const instances = counted.sandbox.__routeRandomInstances;
   const handle = counted.routeRandom;
   const sameObject = handle === counted.graph.require("@/engine/route-random") && handle === counted.graph.require("src/engine/route-random.ts");
@@ -285,7 +287,7 @@ const fixtureGraph = (options = {}) =>
     "L10",
     "identity",
     "ROUTE_RANDOM_IS_ONE_INSTANCE",
-    importers.length === 2 && instances === 1 && sameObject && first === second && armedSeen === 424242,
+    importers.length >= 2 && importers.includes("src/engine/difficulty.ts") && instances === 1 && sameObject && first === second && armedSeen === 424242,
     { importers, evaluations: instances, sameObjectByAliasAndPath: sameObject, armedSeedReproducesGeneration: first === second },
   );
 }
