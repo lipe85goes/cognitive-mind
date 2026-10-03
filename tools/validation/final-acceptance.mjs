@@ -16,7 +16,7 @@
  *
  * Usage: node tools/validation/final-acceptance.mjs [--check|--update]
  */
-import { loadInstrumented, productionSource } from "./instrumented-generator.mjs";
+import { loadInstrumented, routeModuleDeclaring, routeSource } from "./instrumented-generator.mjs";
 import { openEvidence } from "./evidence.mjs";
 
 /**
@@ -224,17 +224,21 @@ const SHORT_RANDOM = "const MAX_GENERATION_ATTEMPTS = 1;";
 // The anchor must come from the harness's own view of production, not from a
 // second read of the file: the two can differ in line endings, and a `replace`
 // that matches nothing would leave the production cap in place while this phase
-// reported on it as though it had been shortened.
-const capLine = productionSource()
+// reported on it as though it had been shortened. ROUTE-C0: the edit goes to
+// whichever Rota module declares the cap, so moving it does not move this proof.
+const capFile = routeModuleDeclaring("MAX_GENERATION_ATTEMPTS");
+const capLine = routeSource(capFile)
   .split("\n").find((l) => l.startsWith("const MAX_GENERATION_ATTEMPTS"));
 if (!capLine) throw new Error("MAX_GENERATION_ATTEMPTS declaration not found");
 const RECOVERY = loadInstrumented({
-  transform: (src) => {
-    const shortened = src.replace(capLine, SHORT_RANDOM);
-    if (shortened === src) {
-      throw new Error("recovery transform: MAX_GENERATION_ATTEMPTS cap was not replaced");
-    }
-    return shortened;
+  transforms: {
+    [capFile]: (src) => {
+      const shortened = src.replace(capLine, SHORT_RANDOM);
+      if (shortened === src) {
+        throw new Error("recovery transform: MAX_GENERATION_ATTEMPTS cap was not replaced");
+      }
+      return shortened;
+    },
   },
 });
 const recoveryCases = [];

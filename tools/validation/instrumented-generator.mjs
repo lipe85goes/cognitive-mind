@@ -1,8 +1,8 @@
 /**
  * Shared diagnostic loader for the Rota Estratégica generator.
  *
- * Compiles `useEscapeMaze.ts` in a vm sandbox with observability added and
- * nothing else changed:
+ * Loads the Rota's module graph (route-module-loader.mjs) with observability
+ * added and nothing else changed:
  *
  *   - every `return null` inside `isStructurallyValid` carries a reason code,
  *     named after the check that produced it, in source order;
@@ -12,40 +12,43 @@
  *     reports EVERY gate it fails instead of only the first. The conjuncts are
  *     pure, so dropping short-circuiting changes no verdict.
  *
+ * ROUTE-C0: each of those is found by the parser in WHICHEVER Rota module
+ * declares the function, not by its file or by the name of the function that
+ * happens to follow it. The probes write to `globalThis`, which is one object
+ * for the whole graph, so they keep reporting when the generator is split.
+ *
  * Production source is never written to. Callers drive `buildCandidate` and
  * `isValidMap` through `replayGeneration`, which mirrors production's two
  * phases exactly.
  */
-import fs from "node:fs";
-import path from "node:path";
-import vm from "node:vm";
-import ts from "typescript";
-import { createSeededRandom } from "./route-lab.mjs";
+import {
+  ROUTE_HOOK,
+  ROUTE_MODULE_DIR,
+  functionRange,
+  loadRouteModules,
+  normalizeSource,
+  openSourceTree,
+} from "./route-module-loader.mjs";
 
-const ROOT = process.cwd();
-const HOOK = path.join(ROOT, "src/games/escape-maze/useEscapeMaze.ts");
-const DIFF = path.join(ROOT, "src/engine/difficulty.ts");
-const RANDOM = path.join(ROOT, "src/engine/route-random.ts");
-const CONTINUATION = path.join(ROOT, "src/games/escape-maze/continuation.ts");
+export { normalizeSource };
 
-const EXPORT_SURFACE = `
-export const __diag = {
-  buildCandidate, isValidMap, generateMaze, routeCellsHaveEscape, computeObjectiveRoute,
-  resolveObjectiveRoute, admissibleRouteCells, escapeGeometryIsPossible,
-  computePortalDefenceZone, createSentinelState, decideSentinelMove, chooseGuardianMove,
-  inspectDynamicMazeState,
-  decomposeBoardBlocks, sharesBlock, getNeighbors, getReachableDistances, findPathLength,
-  findPathCells, chooseStars, getRouteStageTemplates, ROUTE_STAGE_EXIT_CANDIDATES,
-  ROUTE_STAGE_GUARDIAN_CANDIDATES, ROUTE_STAGE_QUALITY, ROUTE_STAGE_TEMPLATES,
-  WALL_LIMITS, BASE_STAR_COUNT, BASE_TRAP_COUNT, DIFFICULTY_PLAY_BRIEF,
-  getWallLimits, getStarCount, getStarMinSeparation, getTrapCount,
-  getMinimumPathLength,
-  MAX_GENERATION_ATTEMPTS, RECOVERY_ROUNDS, RECOVERY_RETRIES_PER_SLOT,
-  PORTAL_ZONE_RADIUS, SENTINEL_LEASH, SENTINEL_THREAT_HORIZON,
-  SENTINEL_COMMIT_TURNS, MOVE_INPUT_GUARD_MS,
-  randomItem, posKey, PLAYER_START, START_SAFE_CELLS, ROWS, COLS,
-};
-`;
+/** The private bindings the diagnostics reach, wherever in the Rota each is declared. */
+const EXPORT_SURFACE = [
+  "buildCandidate", "isValidMap", "generateMaze", "routeCellsHaveEscape", "computeObjectiveRoute",
+  "resolveObjectiveRoute", "admissibleRouteCells", "escapeGeometryIsPossible",
+  "computePortalDefenceZone", "createSentinelState", "decideSentinelMove", "chooseGuardianMove",
+  "inspectDynamicMazeState",
+  "decomposeBoardBlocks", "sharesBlock", "getNeighbors", "getReachableDistances", "findPathLength",
+  "findPathCells", "chooseStars", "getRouteStageTemplates", "ROUTE_STAGE_EXIT_CANDIDATES",
+  "ROUTE_STAGE_GUARDIAN_CANDIDATES", "ROUTE_STAGE_QUALITY", "ROUTE_STAGE_TEMPLATES",
+  "WALL_LIMITS", "BASE_STAR_COUNT", "BASE_TRAP_COUNT", "DIFFICULTY_PLAY_BRIEF",
+  "getWallLimits", "getStarCount", "getStarMinSeparation", "getTrapCount",
+  "getMinimumPathLength",
+  "MAX_GENERATION_ATTEMPTS", "RECOVERY_ROUNDS", "RECOVERY_RETRIES_PER_SLOT",
+  "PORTAL_ZONE_RADIUS", "SENTINEL_LEASH", "SENTINEL_THREAT_HORIZON",
+  "SENTINEL_COMMIT_TURNS", "MOVE_INPUT_GUARD_MS",
+  "randomItem", "posKey", "PLAYER_START", "START_SAFE_CELLS", "ROWS", "COLS",
+];
 
 /**
  * MINDFLOW-VALIDATION-HYGIENE-04 — the seam that makes source instrumentation
@@ -60,36 +63,46 @@ export const __diag = {
  * broke `final-acceptance` (the LF anchor "  return (\n" simply stopped
  * matching, with no change to `isValidMap` itself).
  *
- * Normalising once, here, is deliberately preferred over widening each anchor to
- * `\r?\n`: there is one read of production source, so there is one place to make
- * every present and future anchor stable. Nothing is written to disk, and the
- * text TypeScript compiles is semantically identical — line terminators are not
- * part of the program.
+ * Since ROUTE-C0 the normalisation itself lives in route-module-loader.mjs —
+ * the single place any Rota source is read — and is re-exported here. Every
+ * module of the graph, every override and every transform's output passes
+ * through it, so there is still exactly one place that makes every present and
+ * future anchor stable.
  */
-export const normalizeSource = (text) => text.replace(/\r\n/g, "\n");
 
-function readProductionSource(file) {
-  return normalizeSource(fs.readFileSync(file, "utf8"));
+/**
+ * The exact text of `useEscapeMaze.ts` a hook transform receives.
+ *
+ * A caller that builds an anchor by reading the file itself gets whatever line
+ * endings the checkout happens to have, and its `replace` then silently
+ * matches nothing — the transform becomes a no-op and the harness measures
+ * unmodified production while believing it measured a counterfactual. Anchors
+ * must come from here (or `routeSource`) so both sides are the same text.
+ */
+export function productionSource() {
+  return routeSource(ROUTE_HOOK);
+}
+
+/** Any Rota module's text, exactly as a transform of that module receives it. */
+export function routeSource(file, { rev } = {}) {
+  return openSourceTree({ rev }).read(file);
 }
 
 /**
- * The exact production text `transform` will receive.
- *
- * A caller that builds an anchor by reading `useEscapeMaze.ts` itself gets
- * whatever line endings the checkout happens to have, and its `replace` then
- * silently matches nothing — the transform becomes a no-op and the harness
- * measures unmodified production while believing it measured a counterfactual.
- * Anchors must come from here so both sides are the same text.
+ * The Rota module that declares `name` — where a transform aimed at that
+ * declaration has to go. Asking for the declaration instead of naming the file
+ * keeps a counterfactual working when the declaration is moved.
  */
-export function productionSource() {
-  return readProductionSource(HOOK);
+export function routeModuleDeclaring(name, { rev } = {}) {
+  return openSourceTree({ rev }).declaring(name);
 }
 
-function instrument(source) {
-  const svStart = source.indexOf("function isStructurallyValid(");
-  const svEnd = source.indexOf("function isValidMap(");
-  if (svStart < 0 || svEnd < 0) throw new Error("generator shape changed: isStructurallyValid");
-  const svBody = source.slice(svStart, svEnd);
+const shapeChanged = (what, detail) => new Error(`generator shape changed: ${what} (${detail})`);
+
+/** isStructurallyValid: a reason code per `return null`, and the escape-width context. */
+function instrumentStructural(file, source) {
+  const range = functionRange(file, source, "isStructurallyValid");
+  const svBody = source.slice(range.start, range.end);
 
   const structuralReasons = [];
   const lines = svBody.split("\n");
@@ -106,22 +119,23 @@ function instrument(source) {
     );
   }
   let tag = 0;
-  const tagged = svBody.replace(
+  let body = svBody.replace(
     /return null;/g,
     () => `return ((globalThis as { __structuralReason?: number }).__structuralReason = ${tag++}, null);`,
   );
-  let out = source.slice(0, svStart) + tagged + source.slice(svEnd);
-  out = out.replace(
-    "  return { blocks, objective };",
+  const success = "  return { blocks, objective };";
+  if (!body.includes(success)) throw shapeChanged("isStructurallyValid", `${file}: no "${success.trim()}"`);
+  body = body.replace(
+    success,
     "  (globalThis as { __structuralReason?: number }).__structuralReason = -1;\n  return { blocks, objective };",
   );
 
   // Context at the escape-width rejection: the only place the failing route exists.
-  const escapeCall = out
+  const escapeCall = body
     .split("\n")
     .find((line) => line.includes("routeCellsHaveEscape(") && line.includes("if (!"));
-  if (!escapeCall) throw new Error("generator shape changed: routeCellsHaveEscape guard");
-  out = out.replace(
+  if (!escapeCall) throw shapeChanged("routeCellsHaveEscape guard", `${file}#isStructurallyValid`);
+  body = body.replace(
     escapeCall,
     `  (globalThis as { __escapeContext?: unknown }).__escapeContext = {
     walls: [...walls],
@@ -134,13 +148,16 @@ function instrument(source) {
 ${escapeCall}`,
   );
 
-  // isValidMap: named checks instead of one conjunction.
-  const ivStart = out.indexOf("function isValidMap(");
-  const ivEnd = out.indexOf("function chooseGuardianMove(");
-  const ivBody = out.slice(ivStart, ivEnd);
+  return { source: source.slice(0, range.start) + body + source.slice(range.end), structuralReasons };
+}
+
+/** isValidMap: named checks instead of one conjunction. */
+function instrumentFinalGates(file, source) {
+  const range = functionRange(file, source, "isValidMap");
+  const ivBody = source.slice(range.start, range.end);
   const retStart = ivBody.lastIndexOf("  return (\n");
   const retEnd = ivBody.indexOf("\n  );", retStart);
-  if (retStart < 0 || retEnd < 0) throw new Error("generator shape changed: isValidMap return");
+  if (retStart < 0 || retEnd < 0) throw shapeChanged("isValidMap return", file);
   const conjuncts = ivBody
     .slice(retStart + "  return (\n".length, retEnd)
     .split("&&\n")
@@ -153,140 +170,102 @@ ${conjuncts.map((c, i) => `    [${JSON.stringify(finalGateNames[i])}, Boolean(${
   const __failed = __checks.filter((entry) => !entry[1]).map((entry) => entry[0]);
   (globalThis as { __finalGates?: unknown }).__finalGates = __failed;
   return __failed.length === 0;`;
-  out =
-    out.slice(0, ivStart) +
-    (ivBody.slice(0, retStart) + named + ivBody.slice(retEnd + "\n  );".length)) +
-    out.slice(ivEnd);
-  out = out.replace(
-    "  if (!objective) return false;",
+  let body = ivBody.slice(0, retStart) + named + ivBody.slice(retEnd + "\n  );".length);
+  const noObjective = "  if (!objective) return false;";
+  if (!body.includes(noObjective)) throw shapeChanged("isValidMap return", `${file}: no "${noObjective.trim()}"`);
+  body = body.replace(
+    noObjective,
     `  if (!objective) {
     (globalThis as { __finalGates?: unknown }).__finalGates = ["objectiveRouteExists"];
     return false;
   }`,
   );
 
-  return { source: out + EXPORT_SURFACE, structuralReasons, finalGateNames };
+  return { source: source.slice(0, range.start) + body + source.slice(range.end), finalGateNames };
 }
 
-const compile = (src) =>
-  ts.transpileModule(src, {
-    compilerOptions: {
-      esModuleInterop: true,
-      module: ts.ModuleKind.CommonJS,
-      target: ts.ScriptTarget.ES2020,
-    },
-    fileName: HOOK,
-  }).outputText;
+/**
+ * The diagnostics as one graph-wide transform. It instruments a function in
+ * the module that declares it, and `verify()` then insists each was found
+ * exactly once in the whole graph — a generator that moved out from under the
+ * instrumentation fails loudly instead of reporting nothing.
+ */
+function createInstrumentation() {
+  const found = { isStructurallyValid: [], isValidMap: [] };
+  const result = { structuralReasons: [], finalGateNames: [] };
+  const transform = (source, file) => {
+    if (!file.startsWith(ROUTE_MODULE_DIR)) return source;
+    let out = source;
+    if (functionRange(file, out, "isStructurallyValid")) {
+      const instrumented = instrumentStructural(file, out);
+      found.isStructurallyValid.push(file);
+      result.structuralReasons = instrumented.structuralReasons;
+      out = instrumented.source;
+    }
+    if (functionRange(file, out, "isValidMap")) {
+      const instrumented = instrumentFinalGates(file, out);
+      found.isValidMap.push(file);
+      result.finalGateNames = instrumented.finalGateNames;
+      out = instrumented.source;
+    }
+    return out;
+  };
+  const verify = () => {
+    if (found.isStructurallyValid.length !== 1) {
+      throw shapeChanged("isStructurallyValid", `declared by ${found.isStructurallyValid.length} Rota modules`);
+    }
+    if (found.isValidMap.length !== 1) {
+      throw shapeChanged("isValidMap return", `declared by ${found.isValidMap.length} Rota modules`);
+    }
+  };
+  return { transform, verify, result };
+}
 
 /**
  * `transform` lets a caller build a counterfactual variant of the generator in
  * memory — reverting a fix to reproduce pre-fix behaviour, or neutering a guard
  * so both its verdict and the full pipeline's can be observed on the same
  * candidate. The file on disk is never written to.
+ *
+ *   transform        the hook's text only (the original, single-file seam);
+ *   transforms       per module, `{ "src/…": fn }`, or graph-wide `fn(source, file)`
+ *                    — see route-module-loader.mjs; aim one at a declaration
+ *                    with `routeModuleDeclaring(name)`;
+ *   sourceOverrides  `{ "src/…": text }` — one module replaced in memory;
+ *   rev              every module of the graph as it was at that commit.
  */
-export function loadInstrumented({ transform, bare = false, react } = {}) {
-  const raw = readProductionSource(HOOK);
-  // Normalised again after `transform`, not only before it: a caller can splice
-  // in text that carries its own line endings (a literal read from another file,
-  // a string built on Windows), and `instrument()` must never be handed CRLF
-  // whatever route the text took to reach it.
-  const base = transform ? normalizeSource(transform(raw)) : raw;
-  // `bare` skips the diagnostics entirely and only appends the export surface.
-  // Timing must be measured on the real control flow: the named-checks rewrite
-  // drops short-circuiting in isValidMap, which is overhead production never pays.
-  const { source, structuralReasons, finalGateNames } = bare
-    ? { source: base + EXPORT_SURFACE, structuralReasons: [], finalGateNames: [] }
-    : instrument(base);
+export function loadInstrumented({
+  transform,
+  transforms,
+  sourceOverrides,
+  rev = null,
+  bare = false,
+  react,
+} = {}) {
+  // `bare` skips the diagnostics entirely and only exposes the surface. Timing
+  // must be measured on the real control flow: the named-checks rewrite drops
+  // short-circuiting in isValidMap, which is overhead production never pays.
+  const instrumentation = bare ? null : createInstrumentation();
+  // Transforms are normalised again after they run, not only before: a caller
+  // can splice in text that carries its own line endings (a literal read from
+  // another file, a string built on Windows), and the instrumentation must
+  // never be handed CRLF whatever route the text took to reach it.
+  const ROTA = loadRouteModules({
+    rev,
+    sourceOverrides,
+    // `react` lets a caller supply a STATEFUL shim and drive the hook
+    // headlessly (see route-runtime-harness.mjs). Without it the inert shim is
+    // enough for the pure generator functions.
+    react,
+    surface: EXPORT_SURFACE,
+    transforms: [transform && { [ROUTE_HOOK]: transform }, transforms, instrumentation?.transform],
+  });
+  instrumentation?.verify();
+  const { structuralReasons, finalGateNames } = instrumentation?.result ?? { structuralReasons: [], finalGateNames: [] };
 
-  let random = createSeededRandom(1);
-  const seededMath = Object.create(Math);
-  seededMath.random = () => random();
-
-  /**
-   * ROTA-DIFFICULTY-04C: the Rota's RNG seam. Instantiated ONCE and handed to
-   * both modules that import it, because a seed armed through one has to be the
-   * seed the other draws from — two copies would silently desynchronise the
-   * Hunter from generation.
-   *
-   * `Math` inside it is the sandbox's seeded `Math`, so the tooling's existing
-   * `setSeed` path keeps working untouched when no diagnostic seed is armed.
-   */
-  const rMod = { exports: {} };
-  const rS = {
-    module: rMod, exports: rMod.exports, console, Math: seededMath, Set, Map,
-    require() { throw new Error("unexpected import"); },
-  };
-  rS.globalThis = rS;
-  vm.createContext(rS);
-  new vm.Script(compile(fs.readFileSync(RANDOM, "utf8"))).runInContext(rS);
-
-  const dMod = { exports: {} };
-  const dS = {
-    module: dMod, exports: dMod.exports, console, Math: seededMath, Set, Map,
-    require(r) {
-      if (r === "@/engine/route-random") return rMod.exports;
-      throw new Error("unexpected import " + r);
-    },
-  };
-  dS.globalThis = dS;
-  vm.createContext(dS);
-  new vm.Script(compile(fs.readFileSync(DIFF, "utf8"))).runInContext(dS);
-
-  // ROUTE-JOURNEY-TERMINAL-01: where a Route's end leads (`nextJourneyRoute`).
-  // Types-only module, so it needs nothing. Loaded only if the hook asks: a
-  // hook read from an older commit never imports it.
-  let cMod = null;
-  const continuationModule = () => {
-    if (!cMod) {
-      cMod = { exports: {} };
-      const cS = {
-        module: cMod, exports: cMod.exports, Number,
-        require() { throw new Error("unexpected import"); },
-      };
-      cS.globalThis = cS;
-      vm.createContext(cS);
-      new vm.Script(compile(fs.readFileSync(CONTINUATION, "utf8"))).runInContext(cS);
-    }
-    return cMod.exports;
-  };
-
-  const hMod = { exports: {} };
-  const sb = {
-    module: hMod, exports: hMod.exports, console, Math: seededMath, Date, Set, Map,
-    setTimeout, clearTimeout, performance,
-    require(r) {
-      if (r === "react") {
-        // `react` lets a caller supply a STATEFUL shim and drive the hook
-        // headlessly (see route-runtime-harness.mjs). Without it the default
-        // inert shim is enough for the pure generator functions.
-        return (
-          react ?? {
-            useCallback: (c) => c, useEffect: () => {}, useMemo: (f) => f(),
-            useRef: (v) => ({ current: v }),
-            useState: (v) => [typeof v === "function" ? v() : v, () => {}],
-          }
-        );
-      }
-      if (r === "@/engine/difficulty") return dMod.exports;
-      if (r === "@/engine/route-random") return rMod.exports;
-      if (r === "@/engine/scoring") return { calculateEscapeMazeScore: () => 0 };
-      if (r === "@/games/escape-maze/continuation") return continuationModule();
-      if (r === "@/lib/game-sounds") {
-        return {
-          playGentleErrorTone: () => {},
-          playSuccessChime: () => {},
-          playStoneBreak: () => {},
-        };
-      }
-      throw new Error("unexpected import " + r);
-    },
-  };
-  sb.globalThis = sb;
-  vm.createContext(sb);
-  new vm.Script(compile(source)).runInContext(sb);
-
-  const API = hMod.exports.__diag;
-  const setSeed = (seed) => { random = createSeededRandom(seed); };
+  const sb = ROTA.sandbox;
+  const { setSeed } = ROTA;
+  const API = ROTA.api;
 
   /**
    * Production's generateMaze, attempt by attempt, with every rejection
@@ -387,11 +366,16 @@ export function loadInstrumented({ transform, bare = false, react } = {}) {
 
   return {
     API,
-    /** The module's real export surface — `useEscapeMaze` included. */
-    exports: hMod.exports,
-    /** The shared RNG seam, as both production modules see it. */
-    routeRandom: rMod.exports,
+    /** The hook module's real export surface — `useEscapeMaze` included. */
+    exports: ROTA.hook,
+    /** The shared RNG seam, as every module of the graph sees it (one instance). */
+    get routeRandom() {
+      return ROTA.routeRandom;
+    },
+    /** The graph's one global object: the probes above write to it. */
     sb,
+    /** The loaded graph, for callers that need a module or its provenance. */
+    graph: ROTA.graph,
     setSeed,
     replayGeneration,
     structuralReasons,

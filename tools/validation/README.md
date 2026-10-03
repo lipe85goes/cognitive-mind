@@ -165,8 +165,80 @@ Two consequences the tooling handles explicitly:
 
 - Writes reproduce the existing file's line endings, so an unchanged verdict can
   never show up as a diff.
-- `instrumented-generator.mjs` normalises production source before instrumenting
-  it, and exposes `productionSource()`. **Any caller that builds a textual anchor
-  must take the source from there**, never from its own `readFileSync` — an
-  anchor with the wrong line endings matches nothing, and a `replace` that
-  matches nothing turns a counterfactual harness into a silent no-op.
+- `route-module-loader.mjs` normalises every source it reads, overrides and
+  transform output included — one place (`normalizeSource`).
+  `instrumented-generator.mjs` re-exports it with `productionSource()` (the
+  hook's text) and `routeSource(file)` (any module). **Any caller that builds a
+  textual anchor must take the source from there**, never from its own
+  `readFileSync` — an anchor with the wrong line endings matches nothing, and a
+  `replace` that matches nothing turns a counterfactual harness into a silent
+  no-op.
+
+## The Rota's module graph (ROUTE-C0)
+
+Rota validators do not read or compile `useEscapeMaze.ts` themselves. They load
+the Rota through `route-module-loader.mjs`, which treats it as what it will
+become — a small graph of modules — and is read-only:
+
+- **source tree** (`openSourceTree`): the working tree, or every file at
+  `rev` (`git show <rev>:<path>`), plus `sourceOverrides` that replace or add
+  single modules in memory. `resolve` handles `./`, `../` and `@/` (tsconfig
+  `paths`); `closure(entry)` is the run-time import graph; `locate(anchor)` is
+  the one module holding a textual anchor; `declaring(name)` is the one Rota
+  module declaring a top-level binding.
+- **module graph** (`createModuleGraph`): transpiles TS/TSX, evaluates each
+  module once in one shared realm (one instance per file, whoever imports it,
+  by alias or relative path; cycles behave as in Node), and answers anything
+  that is not a repository module only from explicit `mocks` — otherwise it
+  fails naming the importer and the specifier. `transforms` are per module
+  (`{ file: fn }`) or graph-wide (`fn(source, file)`); `anchoredEdits(tree,
+  [[anchor, replacement]])` applies each edit where its anchor lives.
+- **Rota profile** (`loadRouteModules`): seeded `Math.random`, inert (or a
+  caller's) React, silenced `game-sounds`, `scoring` stubbed to 0 as every Rota
+  harness always had it; difficulty, route-random and continuation are real and
+  come from the same tree as the hook. `surface: [names]` finds each private
+  binding in whichever Rota module declares it.
+
+`instrumented-generator.mjs` builds on it (diagnostics placed by the parser in
+the module that declares `isStructurallyValid` / `isValidMap`), and
+`route-runtime-harness.mjs` takes `rev`, `sourceOverrides` and `transforms`.
+`--rev` therefore means one coherent revision: there is no "old hook over
+today's engine" unless an override says so explicitly. Aim a counterfactual at
+a declaration, not a file:
+
+```js
+const capFile = routeModuleDeclaring("MAX_GENERATION_ATTEMPTS");
+loadInstrumented({ transforms: { [capFile]: (src) => src.replace(capLine, SHORT) } });
+```
+
+**ROUTE MODULE LOADER** — neither writes anything:
+
+```bash
+node tools/validation/route-module-loader-tests.mjs        # ~12 s
+node tools/validation/route-validation-coupling-gate.mjs   # <1 s; --rev=5d541b2 must fail every [decoupling] check
+```
+
+The first tests resolution, transpilation, identity (`route-random` evaluated
+once although the hook and `difficulty.ts` both import it), mocks, worktree vs
+`--rev`, overrides, single-module transforms, errors, cycles and line endings,
+then splits `useEscapeMaze.ts` in memory (grid/config into `route-config.ts`, a
+generation helper into `route-pick.ts`) and requires the instrumented
+generator, the runtime harness and a declaration-aimed counterfactual to give
+the same maps and the same games; the loader the validators had at 5d541b2 must
+fail on that split. The gate scans every validator for couplings to the Rota's
+file layout (hook path, other Rota module paths, hand-written resolvers,
+private TypeScript compilation, the old `hookSource` seam). Each remaining one
+is declared in its `ALLOWED` table with a reason:
+
+| reason | validators | why they still name Rota files |
+| --- | --- | --- |
+| STRUCTURAL_ASSERTION | game-continuation-contract, route-journey-ownership, route-journey-terminal, diagnostic-launcher, production-diagnostic-boundary, cross-eol | the check is about where code lives (I1/O3/T11, the seed seam's own code, CRLF of the hook's text); their Rota runs through the graph |
+| UI_STAGE | route-board-loader | compiles the Rota component under a chunk gate with stage stubs |
+| PROVENANCE | dynamic-solvability-campaign-lib | campaign identity hash over named files; changing it would invalidate recorded identities |
+| REPORT_LABEL | breakable-wall-feasibility, dynamic-solvability-finalize | a path inside report text |
+| LEGACY_LEDGER | chest-acceptance | ROTA-CHEST-REWARDS-01 ledger; rewrites its archive when run |
+| LEGACY_BROKEN | route-lab (`loadLab`), autopsy-generation, final-rejection-autopsy, star-capacity-proof, star-selection-proof, render-route-9x9-evidence | already failed to load at 5d541b2 and write archived evidence when run; kept as their missions' record |
+
+A new validator that names the hook or resolves a Rota import by hand fails the
+gate until it uses the loader or is declared with a reason; a declaration whose
+coupling is gone must leave the table.

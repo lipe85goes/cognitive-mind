@@ -12,7 +12,7 @@
  *   - the frame rails, so an undersized frame cannot hide behind a big base.
  *
  * With `--assert` it also enforces the contract that this mission existed to
- * repair: the board's physical grid must match ROWS/COLS in useEscapeMaze.ts,
+ * repair: the board's physical grid must match the Rota's ROWS/COLS,
  * every tile centre must sit exactly where `cellToPosition` puts that cell, and
  * the frame must enclose the whole field. The 7x7-board-under-a-9x9-game bug
  * cannot come back silently.
@@ -23,6 +23,7 @@
  */
 import fs from "node:fs";
 import path from "node:path";
+import { loadRouteModules } from "./route-module-loader.mjs";
 
 const argv = process.argv.slice(2);
 const assertMode = argv.includes("--assert");
@@ -183,17 +184,12 @@ if (!assertMode) {
 }
 
 // --- contract: the physical board must match the grid the game plays on ------
-const hookSource = fs.readFileSync(
-  path.resolve("src/games/escape-maze/useEscapeMaze.ts"),
-  "utf8",
-);
-const readConst = (name) => {
-  const m = hookSource.match(new RegExp(`export const ${name}\\s*=\\s*(\\d+)`));
-  if (!m) throw new Error(`could not read ${name} from useEscapeMaze.ts`);
-  return Number(m[1]);
-};
-const ROWS = readConst("ROWS");
-const COLS = readConst("COLS");
+// ROUTE-C0: the grid is read from the Rota as it runs — whichever of its
+// modules declares ROWS/COLS — not matched out of one file's text.
+const { ROWS, COLS } = loadRouteModules({ surface: ["ROWS", "COLS"] }).api;
+if (!Number.isInteger(ROWS) || !Number.isInteger(COLS)) {
+  throw new Error(`the Rota's grid is not integral: ROWS=${ROWS} COLS=${COLS}`);
+}
 const CELL = 1; // routeBabylonScene.ts
 
 const failures = [];

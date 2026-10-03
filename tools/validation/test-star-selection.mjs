@@ -2,38 +2,39 @@
  * ROTA-01A-STAR-SELECTION-PROOF-FINALIZE — controlled tests A–F.
  *
  * Six fixtures that pin the behaviour of the current `chooseStars`. Production
- * source is never written to: three in-memory variants of the hook are compiled
- * in a vm sandbox —
+ * source is never written to: three in-memory variants of the Rota's module
+ * graph are loaded (route-module-loader.mjs) —
  *
- *   PROD   the file exactly as it ships (all assertions about WHAT is selected)
+ *   PROD   the Rota exactly as it ships (all assertions about WHAT is selected)
  *   TRACE  PROD plus counters inside the search (assertions about HOW)
  *   OLD    PROD with the sharesBlock eligibility filter removed (supplies the
  *          pre-fix candidate stream and the pre-fix score ranking)
  *
  * Every fixture asserts PROD and TRACE agree, which is also the check that the
- * instrumentation does not change behaviour.
+ * instrumentation does not change behaviour. ROUTE-C0: each anchor is applied in
+ * whichever Rota module holds it, and must be unique across the whole graph.
  *
  * Usage: node tools/validation/test-star-selection.mjs
  */
 import fs from "node:fs";
 import path from "node:path";
-import vm from "node:vm";
-import ts from "typescript";
-import { createSeededRandom, key } from "./route-lab.mjs";
+import { key } from "./route-lab.mjs";
+import { anchoredEdits, loadRouteModules, openSourceTree } from "./route-module-loader.mjs";
 
-const ROOT = process.cwd();
-const HOOK = path.join(ROOT, "src/games/escape-maze/useEscapeMaze.ts");
-const DIFF = path.join(ROOT, "src/engine/difficulty.ts");
 const OUT = path.resolve(
   process.env.ROUTE_VALIDATION_OUT ??
     "docs/archive/route-dual-guardians-maps-01a",
 );
 fs.mkdirSync(OUT, { recursive: true });
 
-const source = fs.readFileSync(HOOK, "utf8").replaceAll("\r\n", "\n");
+/** The Rota's sources, read once (normalised) and shared by every variant below. */
+const TREE = openSourceTree();
 const must = (needle, label) => {
-  const n = source.split(needle).length - 1;
-  if (n !== 1) throw new Error(`anchor ${label} appears ${n}x; expected 1`);
+  try {
+    TREE.locate(needle);
+  } catch (error) {
+    throw new Error(`anchor ${label}: ${error.message}`);
+  }
   return needle;
 };
 
@@ -91,79 +92,27 @@ const TRACE_POP = `      const complete = search(index + 1, chosen);
       chosen.pop();
       if (__t) __t.backtracks = (__t.backtracks as number) + 1;`;
 
-const EXPORTS = `
-export const __t = {
-  generateMaze, chooseStars, decomposeBoardBlocks, sharesBlock, isStructurallyValid,
-  ROUTE_STAGE_QUALITY, getStarCount, getStarMinSeparation, PLAYER_START,
-  START_SAFE_CELLS, posKey,
-  getNeighbors, getReachableDistances,
-};
-`;
+const SURFACE = [
+  "generateMaze", "chooseStars", "decomposeBoardBlocks", "sharesBlock", "isStructurallyValid",
+  "ROUTE_STAGE_QUALITY", "getStarCount", "getStarMinSeparation", "PLAYER_START",
+  "START_SAFE_CELLS", "posKey",
+  "getNeighbors", "getReachableDistances",
+];
 
-const compile = (src) =>
-  ts.transpileModule(src, {
-    compilerOptions: { esModuleInterop: true, module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 },
-    fileName: HOOK,
-  }).outputText;
-
-function build(src) {
-  let random = createSeededRandom(1);
-  const seededMath = Object.create(Math);
-  seededMath.random = () => random();
-  const routeRandomModule = {
-    beginSeededGeneration: () => undefined,
-    routeRandom: () => seededMath.random(),
-  };
-  const dMod = { exports: {} };
-  const dS = {
-    module: dMod,
-    exports: dMod.exports,
-    console,
-    Math: seededMath,
-    Set,
-    Map,
-    require(r) {
-      if (r === "@/engine/route-random") return routeRandomModule;
-      throw new Error("import " + r);
-    },
-  };
-  dS.globalThis = dS;
-  vm.createContext(dS);
-  new vm.Script(compile(fs.readFileSync(DIFF, "utf8"))).runInContext(dS);
-  const hMod = { exports: {} };
-  const sb = {
-    module: hMod, exports: hMod.exports, console, Math: seededMath, Date, Set, Map,
-    setTimeout, clearTimeout, performance,
-    require(r) {
-      if (r === "react") return { useCallback: (c) => c, useEffect: () => {}, useMemo: (f) => f(), useRef: (v) => ({ current: v }), useState: (v) => [typeof v === "function" ? v() : v, () => {}] };
-      if (r === "@/engine/difficulty") return dMod.exports;
-      if (r === "@/engine/route-random") return routeRandomModule;
-      if (r === "@/engine/scoring") return { calculateEscapeMazeScore: () => 0 };
-      if (r === "@/lib/game-sounds") return { playGentleErrorTone: () => {}, playSuccessChime: () => {} };
-      if (r === "@/games/escape-maze/continuation") {
-        // Types-only module: where a Route's end leads. Not reached by generation.
-        const cMod = { exports: {} };
-        vm.runInNewContext(compile(fs.readFileSync(path.join(ROOT, "src/games/escape-maze/continuation.ts"), "utf8")), { module: cMod, exports: cMod.exports });
-        return cMod.exports;
-      }
-      throw new Error("import " + r);
-    },
-  };
-  sb.globalThis = sb;
-  vm.createContext(sb);
-  new vm.Script(compile(src + EXPORTS)).runInContext(sb);
-  return { api: hMod.exports.__t, sb, seed: (s) => { random = createSeededRandom(s); } };
+/** One variant: the whole graph, seeded, with `edits` applied where their anchors live. */
+function build(edits = []) {
+  const rota = loadRouteModules({ tree: TREE, surface: SURFACE, transforms: anchoredEdits(TREE, edits) });
+  return { api: rota.api, sb: rota.sandbox, seed: rota.setSeed };
 }
 
-const PROD = build(source);
-const TRACE = build(
-  source
-    .replace(A_ORDERED, TRACE_ORDERED)
-    .replace(A_SEARCH_HEAD, TRACE_SEARCH)
-    .replace(A_POP, TRACE_POP)
-    .replace(A_ANALYSIS, CAPTURE_CANDIDATE),
-);
-const OLD = build(source.replace(A_ELIGIBILITY, "        distanceFromExit < profile.starMinExitDistance"));
+const PROD = build();
+const TRACE = build([
+  [A_ORDERED, TRACE_ORDERED],
+  [A_SEARCH_HEAD, TRACE_SEARCH],
+  [A_POP, TRACE_POP],
+  [A_ANALYSIS, CAPTURE_CANDIDATE],
+]);
+const OLD = build([[A_ELIGIBILITY, "        distanceFromExit < profile.starMinExitDistance"]]);
 
 const P = PROD.api.ROUTE_STAGE_QUALITY[3];
 const NEED = PROD.api.getStarCount("hard", 3);
@@ -705,7 +654,7 @@ fs.writeFileSync(path.join(OUT, "star-selection-proof-final.json"), JSON.stringi
   contractPreserved: {
     requiredStars: NEED, starMinStartDistance: P.starMinStartDistance,
     starMinExitDistance: P.starMinExitDistance, starMinSeparation: SEP,
-    gate13StillInValidator: source.includes(A_GATE13),
+    gate13StillInValidator: TREE.closure().some((file) => TREE.read(file).includes(A_GATE13)),
   },
   productionChangeRegressionSweep: sweep,
   allControlledTestsPass: allPass,

@@ -24,7 +24,8 @@
  * to absorb a duplicated gesture from a human hand; a test that fires two moves
  * in the same millisecond is not that.
  */
-import { loadInstrumented, normalizeSource } from "./instrumented-generator.mjs";
+import { loadInstrumented } from "./instrumented-generator.mjs";
+import { ROUTE_HOOK } from "./route-module-loader.mjs";
 
 /**
  * The module captures ONE `react` object when it loads, so the shim cannot be
@@ -104,35 +105,46 @@ function createReactShim() {
  * production legitimately does and a one-call comparison cannot afford:
  * `startGame` generating a SECOND board.
  *
- * `hookSource` replaces the text of `useEscapeMaze.ts` — the hook as it was at
- * another commit, for a counterfactual run. Omitted, the working tree's hook is
- * loaded exactly as before.
+ * ROUTE-C0: the Rota under test is a module GRAPH, not one file.
+ *
+ *   rev              every module the hook reaches — the hook, whatever it is
+ *                    split into, `difficulty`, `route-random`, `continuation` —
+ *                    as it was at that commit, read with `git show`. A
+ *                    counterfactual is one coherent revision, never an old hook
+ *                    on top of today's engine.
+ *   sourceOverrides  `{ "src/…": text }` — replace single modules in memory.
+ *                    The one way to mix revisions, and it has to be spelled out.
+ *   transforms       per-module (or graph-wide) in-memory edits, as in
+ *                    route-module-loader.mjs.
+ *
+ * Omitted, the working tree is loaded exactly as before. Nothing is written.
  */
-export function loadRouteRuntime({ directDifficulty = false, hookSource } = {}) {
+export function loadRouteRuntime({ directDifficulty = false, rev = null, sourceOverrides, transforms } = {}) {
   const react = createReactShim();
-  const sourceTransform =
-    hookSource === undefined ? undefined : () => hookSource;
   const directDifficultyTransform = directDifficulty
-    ? (source) => {
-        const startGame =
-          /  const startGame = \(\) => \{\r?\n    startNewMaze\(difficulty, "playing"\);\r?\n  \};/;
-        if (!startGame.test(source)) {
-          throw new Error("directDifficulty transform: startGame shape changed");
-        }
-        return source.replace(
-          startGame,
-          `  const startGame = () => {
+    ? {
+        // `startGame` lives inside the hook itself, so this one edit is aimed at it.
+        [ROUTE_HOOK]: (source) => {
+          const startGame =
+            /  const startGame = \(\) => \{\r?\n    startNewMaze\(difficulty, "playing"\);\r?\n  \};/;
+          if (!startGame.test(source)) {
+            throw new Error("directDifficulty transform: startGame shape changed");
+          }
+          return source.replace(
+            startGame,
+            `  const startGame = () => {
     setStatus("playing");
   };`,
-        );
+          );
+        },
       }
     : undefined;
-  const transform =
-    sourceTransform && directDifficultyTransform
-      ? (source) => directDifficultyTransform(normalizeSource(sourceTransform(source)))
-      : sourceTransform ?? directDifficultyTransform;
   const LAB = loadInstrumented({
-    bare: true, react: react.shim, transform,
+    bare: true,
+    react: react.shim,
+    rev,
+    sourceOverrides,
+    transforms: [transforms, directDifficultyTransform],
   });
   const useEscapeMaze = LAB.exports.useEscapeMaze;
   if (typeof useEscapeMaze !== "function") {
@@ -250,7 +262,14 @@ export function loadRouteRuntime({ directDifficulty = false, hookSource } = {}) 
     return run;
   }
 
-  return { LAB, API: LAB.API, routeRandom: LAB.routeRandom, mount };
+  return {
+    LAB,
+    API: LAB.API,
+    get routeRandom() {
+      return LAB.routeRandom;
+    },
+    mount,
+  };
 }
 
 /** Board helpers that read the runtime's own walls, broken cell included. */

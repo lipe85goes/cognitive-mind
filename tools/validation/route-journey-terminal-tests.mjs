@@ -119,7 +119,7 @@ const record = (id, kind, name, pass, detail) => {
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 const entry = (routeNumber, difficulty) => ({ kind: ROUTE_KIND, routeNumber, difficulty });
 
-const RUNTIME = loadRouteRuntime({ hookSource: REV ? readSource(FILES.hook) : undefined });
+const RUNTIME = loadRouteRuntime({ rev: REV });
 const open = (continuation, seed, start = false) =>
   RUNTIME.mount({
     seed,
