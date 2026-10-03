@@ -9,7 +9,7 @@
  *   hook-text         asks for the hook's text (`productionSource()`) to
  *                     anchor on, instead of the module that holds the code;
  *   rota-module-path  names another Rota module file (difficulty, route-random,
- *                     continuation) in code;
+ *                     continuation, route-config since ROUTE-C1) in code;
  *   rota-resolver     answers a Rota import by hand (`=== "@/engine/…"`) — a
  *                     private module resolver;
  *   rota-ts-compile   compiles TypeScript in a file that also names Rota
@@ -63,11 +63,11 @@ if (REV) {
 // --- the patterns ------------------------------------------------------------------------------
 
 const codeOnly = (source) => source.replace(/\/\*[\s\S]*?\*\//g, " ").replace(/(^|[^:\\])\/\/.*$/gm, "$1");
-const ROTA_SPECIFIER = String.raw`@\/(?:engine\/(?:difficulty|route-random)|games\/escape-maze\/(?:continuation|useEscapeMaze))`;
+const ROTA_SPECIFIER = String.raw`@\/(?:engine\/(?:difficulty|route-random)|games\/escape-maze\/(?:continuation|route-config|useEscapeMaze))`;
 const SIGNALS = {
   "hook-path": /useEscapeMaze\.ts/,
   "hook-text": /(?<!function\s)\bproductionSource\s*\(/,
-  "rota-module-path": /["'](?:src\/engine\/)?(?:difficulty|route-random)\.ts["']|["'](?:src\/games\/escape-maze\/)?continuation\.ts["']/,
+  "rota-module-path": /["'](?:src\/engine\/)?(?:difficulty|route-random)\.ts["']|["'](?:src\/games\/escape-maze\/)?(?:continuation|route-config)\.ts["']/,
   "rota-resolver": new RegExp(String.raw`===\s*["']${ROTA_SPECIFIER}["']`),
   "single-file-seam": /\bhookSource\b/,
 };
@@ -134,6 +134,11 @@ const ALLOWED = {
     kinds: ["hook-path", "rota-module-path", "rota-ts-compile"],
     reason: "STRUCTURAL_ASSERTION",
     note: "T11 names where the journey's end is declared and read; stages are compiled as UI_STAGE",
+  },
+  "route-config-extraction-tests.mjs": {
+    kinds: ["rota-module-path"],
+    reason: "STRUCTURAL_ASSERTION",
+    note: "ROUTE-C1's static gate: the grid/config is declared in route-config.ts and nowhere else; its Rota runs through the graph",
   },
   "route-board-loader-tests.mjs": { kinds: ["rota-module-path", "rota-ts-compile"], reason: "UI_STAGE" },
   "diagnostic-launcher-tests.mjs": {
