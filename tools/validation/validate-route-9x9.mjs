@@ -1,19 +1,11 @@
 import fs from "node:fs";
 import path from "node:path";
-import vm from "node:vm";
 import { performance } from "node:perf_hooks";
 import { fileURLToPath } from "node:url";
-import ts from "typescript";
+import { ROUTE_HOOK, loadRouteModules } from "./route-module-loader.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..", "..");
-const SOURCE_PATH = path.join(
-  ROOT,
-  "src",
-  "games",
-  "escape-maze",
-  "useEscapeMaze.ts",
-);
 const DIFFICULTIES = ["easy", "medium", "hard"];
 const STAGES = [1, 2, 3];
 
@@ -33,17 +25,19 @@ function readStringArgument(name) {
 }
 
 /**
- * Expose the generator's internals WITHOUT patching any function body.
+ * Reach the generator's internals WITHOUT patching any function body.
  *
  * The previous version rewrote two exact statements inside `generateMaze` — one
  * to force a template, one to publish metadata. Both anchor strings died in the
  * buildCandidate/recovery-sweep refactor and this validator threw on every run,
  * silently, for as long as nobody ran it.
  *
- * Append-only export surface instead. Template and exit are chosen by the
- * caller anyway, so the harness drives `buildCandidate` + `isValidMap` itself
- * and observes what it needs by construction. A missing binding now fails with
- * the offending name; and `harnessGenerate` is held to production behaviour by
+ * A named surface instead. Template and exit are chosen by the caller anyway,
+ * so the harness drives `buildCandidate` + `isValidMap` itself and observes
+ * what it needs by construction. ROUTE-C0: each name is taken from whichever
+ * Rota module declares it (route-module-loader.mjs), so the surface survives
+ * the generator being split across files; a missing binding still fails with
+ * the offending name. `harnessGenerate` is held to production behaviour by
  * `checkGenerationFidelity`, which compares whole maps, not source text.
  */
 const VALIDATION_BINDINGS = [
@@ -78,25 +72,6 @@ const VALIDATION_BINDINGS = [
   "randomItem",
   "posKey",
 ];
-
-function buildExportSurface(source) {
-  const missing = VALIDATION_BINDINGS.filter(
-    (name) => !new RegExp(`(?:function|const|let)\\s+${name}\\b`).test(source),
-  );
-  if (missing.length > 0) {
-    throw new Error(
-      `Route generator no longer declares: ${missing.join(", ")}. Update ` +
-        "VALIDATION_BINDINGS — never change production to satisfy the validator.",
-    );
-  }
-  const surface = VALIDATION_BINDINGS.map((name) => `  ${name},`).join("\n");
-  return `${source}
-
-export const __routeValidation = {
-${surface}
-};
-`;
-}
 
 /**
  * `generateMaze`, driven from the harness so template and exit are observable
@@ -184,100 +159,18 @@ function checkGenerationFidelity(api, setSeed, samples = 12) {
   return { compared, mismatches };
 }
 
-function createSeededRandom(seed) {
-  let state = seed >>> 0;
-  return () => {
-    state += 0x6d2b79f5;
-    let value = state;
-    value = Math.imul(value ^ (value >>> 15), value | 1);
-    value ^= value + Math.imul(value ^ (value >>> 7), value | 61);
-    return ((value ^ (value >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
+/**
+ * The Rota as it ships: the hook and every module it imports, real, from one
+ * tree, with `Math.random` seeded (route-module-loader.mjs). No module of the
+ * graph is stubbed or resolved here — react, sounds and scoring are the shared
+ * profile's environment mocks.
+ */
 function loadRouteGenerator() {
-  const source = buildExportSurface(fs.readFileSync(SOURCE_PATH, "utf8"));
-  const output = ts.transpileModule(source, {
-    compilerOptions: {
-      esModuleInterop: true,
-      module: ts.ModuleKind.CommonJS,
-      target: ts.ScriptTarget.ES2020,
-    },
-    fileName: SOURCE_PATH,
-  }).outputText;
-
-  let currentRandom = createSeededRandom(1);
-  const seededMath = Object.create(Math);
-  seededMath.random = () => currentRandom();
-
-  const moduleRecord = { exports: {} };
-  const sandbox = {
-    module: moduleRecord,
-    exports: moduleRecord.exports,
-    console,
-    Math: seededMath,
-    Date,
-    Set,
-    Map,
-    setTimeout,
-    clearTimeout,
-    require(request) {
-      if (request === "react") {
-        return {
-          useCallback: (callback) => callback,
-          useEffect: () => undefined,
-          useMemo: (factory) => factory(),
-          useRef: (value) => ({ current: value }),
-          useState: (value) => [typeof value === "function" ? value() : value, () => undefined],
-        };
-      }
-      if (request === "@/engine/difficulty") {
-        return {
-          manhattanDistance: (a, b) =>
-            Math.abs(a.row - b.row) + Math.abs(a.col - b.col),
-          getPredatorNextPosition: (guardian) => guardian,
-        };
-      }
-      if (request === "@/engine/scoring") {
-        return { calculateEscapeMazeScore: () => 0 };
-      }
-      if (request === "@/engine/route-random") {
-        return {
-          beginSeededGeneration: () => undefined,
-          routeRandom: () => seededMath.random(),
-        };
-      }
-      if (request === "@/lib/game-sounds") {
-        return {
-          playGentleErrorTone: () => undefined,
-          playSuccessChime: () => undefined,
-        };
-      }
-      if (request === "@/games/escape-maze/continuation") {
-        // Types-only module: where a Route's end leads. Not reached by generation.
-        const continuationModule = { exports: {} };
-        vm.runInNewContext(
-          ts.transpileModule(
-            fs.readFileSync(path.join(path.dirname(SOURCE_PATH), "continuation.ts"), "utf8"),
-            { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 } },
-          ).outputText,
-          { module: continuationModule, exports: continuationModule.exports },
-        );
-        return continuationModule.exports;
-      }
-      throw new Error(`Unexpected validation import: ${request}`);
-    },
-  };
-  sandbox.globalThis = sandbox;
-  vm.createContext(sandbox);
-  new vm.Script(output, { filename: SOURCE_PATH }).runInContext(sandbox);
-
+  const loaded = loadRouteModules({ root: ROOT, surface: VALIDATION_BINDINGS });
   return {
-    api: moduleRecord.exports.__routeValidation,
-    sandbox,
-    setSeed(seed) {
-      currentRandom = createSeededRandom(seed);
-    },
+    api: loaded.api,
+    sandbox: loaded.sandbox,
+    setSeed: loaded.setSeed,
   };
 }
 
@@ -796,7 +689,7 @@ function run() {
   const report = {
     mission: "ROTA-9X9-VALIDATION-01",
     generatedAt: new Date().toISOString(),
-    source: path.relative(ROOT, SOURCE_PATH).replaceAll("\\", "/"),
+    source: ROUTE_HOOK,
     configuration: {
       rows: api.ROWS,
       cols: api.COLS,

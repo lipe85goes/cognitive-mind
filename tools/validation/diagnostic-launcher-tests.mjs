@@ -18,6 +18,7 @@ import path from "node:path";
 import crypto from "node:crypto";
 import { loadRouteRuntime, walkableNeighbours } from "./route-runtime-harness.mjs";
 import { openEvidence } from "./evidence.mjs";
+import { readRouteLogicSources } from "./route-module-loader.mjs";
 
 const EVIDENCE = openEvidence(
   process.env.ROUTE_VALIDATION_OUT ??
@@ -454,11 +455,10 @@ const sessionDeterminism = [];
     launcherReachableOnlyByUrl: !/route-launcher/.test(
       codeOnly(home) + codeOnly(fs.readFileSync(path.join(ROOT, "src/components/GameScreen.tsx"), "utf8")),
     ),
+    // ROUTE-C0: the Rota's logic is the hook and every Rota module it reaches.
     productArmsASeed:
       /armRouteRandomSeed/.test(codeOnly(home)) ||
-      /armRouteRandomSeed/.test(
-        codeOnly(fs.readFileSync(path.join(ROOT, "src/games/escape-maze/useEscapeMaze.ts"), "utf8")),
-      ),
+      readRouteLogicSources().some(({ source }) => /armRouteRandomSeed/.test(codeOnly(source))),
     launcherDisarmsOnUnmount: /useEffect\(\s*\(\)\s*=>\s*clearRouteRandomSeed/.test(page),
     usesStorage: /localStorage|sessionStorage|document\.cookie/.test(codeOnly(page) + codeOnly(seam)),
     replacesGlobalMathRandom: /Math\.random\s*=/.test(codeOnly(seam)),

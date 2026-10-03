@@ -123,7 +123,7 @@ const record = (id, kind, name, pass, detail) => {
 };
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
-const RUNTIME = loadRouteRuntime({ hookSource: REV ? readSource(FILES.hook) : undefined });
+const RUNTIME = loadRouteRuntime({ rev: REV });
 
 /**
  * A session the way the product opens one: on a continuation (or none, a fresh

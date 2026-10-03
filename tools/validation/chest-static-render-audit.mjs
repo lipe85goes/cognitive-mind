@@ -11,6 +11,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { openEvidence } from "./evidence.mjs";
+import { readRouteLogicSources } from "./route-module-loader.mjs";
 
 const ROOT = process.cwd();
 const EVIDENCE = openEvidence("docs/archive/route-chest-rewards-01");
@@ -27,7 +28,9 @@ const codeOnly = (source) =>
 const babylon = read("src/games/escape-maze/routeBabylonScene.ts");
 const babylonBoard = read("src/games/escape-maze/RouteBabylonBoard.tsx");
 const game = read("src/games/escape-maze/RouteStrategyGame.tsx");
-const hook = read("src/games/escape-maze/useEscapeMaze.ts");
+// ROUTE-C0: "the hook" is the Rota's logic — useEscapeMaze.ts and every Rota
+// module it reaches — so a trace cannot survive by moving to a split-out file.
+const hook = readRouteLogicSources().map(({ source }) => source).join("\n");
 const css = read("src/app/globals.css");
 
 const checks = [];

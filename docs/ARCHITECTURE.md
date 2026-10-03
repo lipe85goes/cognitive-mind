@@ -156,6 +156,8 @@ Contrato dos assets e regeneração ficam em `public/models/route/README.md`. Pr
 
 `useEscapeMaze.ts` é regra de jogo. Não altere geração, dificuldade, portal, guardião, scoring ou fluxo sem missão explícita.
 
+Validação da Rota (ROUTE-C0): os validadores carregam o **grafo de módulos** da Rota por `tools/validation/route-module-loader.mjs` — o hook e tudo o que ele importa, de uma mesma árvore (worktree ou `--rev`), uma instância por módulo — e acham cada binding privado no módulo que o declara. Eles não dependem de `useEscapeMaze.ts` continuar monolítico; a extração do hook em módulos ainda não foi feita. Inventário, exceções declaradas e o gate de acoplamento: `tools/validation/README.md`.
+
 ## Circuito de Memória
 
 Arquivos principais:

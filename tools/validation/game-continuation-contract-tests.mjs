@@ -669,7 +669,7 @@ function mountRota(props, fixture = ROTA_FIXTURE) {
 
 // --- stage 4: the real useEscapeMaze ------------------------------------------------------------
 
-const RUNTIME = loadRouteRuntime({ hookSource: REV ? readSource(FILES.hook) : undefined });
+const RUNTIME = loadRouteRuntime({ rev: REV });
 
 /** The hook mounted on exactly what the Rota handed it, at the setup screen. */
 function arrive(args, seed) {
