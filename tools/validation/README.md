@@ -197,7 +197,8 @@ become — a small graph of modules — and is read-only:
   caller's) React, silenced `game-sounds`, `scoring` stubbed to 0 as every Rota
   harness always had it; difficulty, route-random and continuation are real and
   come from the same tree as the hook. `surface: [names]` finds each private
-  binding in whichever Rota module declares it.
+  binding in whichever Rota module declares it — or in the RNG seam
+  (`src/engine/route-random.ts`), which declares `randomItem` since ROUTE-C2.
 
 `instrumented-generator.mjs` builds on it (diagnostics placed by the parser in
 the module that declares `isStructurallyValid` / `isValidMap`), and
@@ -235,9 +236,8 @@ is declared in its `ALLOWED` table with a reason:
 
 | reason | validators | why they still name Rota files |
 | --- | --- | --- |
-| STRUCTURAL_ASSERTION | game-continuation-contract, route-journey-ownership, route-journey-terminal, route-config-extraction, diagnostic-launcher, production-diagnostic-boundary, cross-eol | the check is about where code lives (I1/O3/T11, C1's static gate, the seed seam's own code, CRLF of the hook's text); their Rota runs through the graph |
+| STRUCTURAL_ASSERTION | game-continuation-contract, route-journey-ownership, route-journey-terminal, route-config-extraction, route-generation-extraction, diagnostic-launcher, production-diagnostic-boundary, cross-eol | the check is about where code lives (I1/O3/T11, C1's and C2's static gates, the seed seam's own code, CRLF of the hook's text); their Rota runs through the graph |
 | UI_STAGE | route-board-loader | compiles the Rota component under a chunk gate with stage stubs |
-| PROVENANCE | dynamic-solvability-campaign-lib | campaign identity hash over named files; changing it would invalidate recorded identities |
 | REPORT_LABEL | breakable-wall-feasibility, dynamic-solvability-finalize | a path inside report text |
 | LEGACY_LEDGER | chest-acceptance | ROTA-CHEST-REWARDS-01 ledger; rewrites its archive when run |
 | LEGACY_BROKEN | route-lab (`loadLab`), autopsy-generation, final-rejection-autopsy, star-capacity-proof, star-selection-proof, render-route-9x9-evidence | already failed to load at 5d541b2 and write archived evidence when run; kept as their missions' record |
@@ -245,7 +245,17 @@ is declared in its `ALLOWED` table with a reason:
 A new validator that names the hook or resolves a Rota import by hand fails the
 gate until it uses the loader or is declared with a reason; a declaration whose
 coupling is gone must leave the table. `route-config.ts` counts as a Rota module
-file for the gate (ROUTE-C1).
+file for the gate (ROUTE-C1), and so do `route-generation.ts` and
+`route-geometry.ts` (ROUTE-C2).
+
+`dynamic-solvability-campaign-lib`'s campaign identity used to hash the hook
+and `difficulty.ts` by name (a PROVENANCE declaration). Once generation left
+the hook that hash stopped covering the code that makes every case's map, so a
+`--resume` cache could have outlived a change to it. Since ROUTE-C2 it hashes
+the solver's files plus the hook's run-time closure from the graph
+(`openSourceTree().closure()`), names no Rota file, and has left the table. The
+identities recorded in `docs/archive/route-dynamic-solvability-01` were already
+stale before C2 (any edit to the hook changed them); only cache keys move.
 
 **ROUTE CONFIG (ROUTE-C1)** — the grid and static configuration live in
 `src/games/escape-maze/route-config.ts`; the hook imports them. Writes nothing:
@@ -270,3 +280,50 @@ file's name: surfaces, `declaring()` and `anchoredEdits` already found each
 binding where it is declared. The one textual anchor on a moved declaration —
 `final-acceptance`'s random-phase cap — now matches `export const` too, and
 records the declaration without the modifier, so its evidence is unchanged.
+
+**ROUTE GENERATION (ROUTE-C2)** — generation and certification live in
+`src/games/escape-maze/route-generation.ts`, the board's graph primitives
+(keys, neighbours, BFS distances and paths, grid ↔ walls) in
+`src/games/escape-maze/route-geometry.ts`, and `randomItem` beside the stream
+in `src/engine/route-random.ts`. The hook asks `generateMaze(difficulty,
+routeNumber)` for a certified map and re-exports `generateMaze`, `posKey`,
+`positionsEqual` and `MazeMap`. Writes nothing:
+
+```bash
+node tools/validation/route-generation-extraction-tests.mjs              # ~4 min
+node tools/validation/route-generation-extraction-tests.mjs --rev=65932cf  # must fail every [structure] check, hold the rest
+```
+
+`[structure]` is the static gate: each moved binding is declared in its new
+module and nowhere else in `src/`; the hook declares none of it (not even as
+text) and imports exactly `generateMaze` + `MazeMap` from route-generation,
+which exports exactly those; route-geometry exports exactly what the Rota walks
+with; `randomItem` is the seam's, imported by generation and the hook (the
+Hunter); the new modules import only config, geometry, `difficulty`,
+`route-random` and types — no React, hook, UI, Babylon, sounds or scoring —
+and reach no cycle back into the hook; the instrumented generator and every
+validator anchor on the generator land in route-generation.ts. `[preserved]`:
+every moved declaration (comments included) and every remaining hook statement
+is 65932cf's text, the seam is 65932cf's plus `randomItem`, the defenders
+(C3) and the dynamic invariants (C4) are still in the hook, the hook's public
+surface (types and values) and its product consumers are unchanged, and the
+instrumented loader still reports 18 structural reasons and 23 final gates.
+`[equivalence]` against 65932cf through the loader: graph primitives over 300
+random boards; 1080 maps seeded as final-acceptance's FASE 1, field by field,
+with the objective route, escape width, dynamic invariants and the next three
+draws of the shared stream; 270 maps on continuous streams and armed
+diagnostic seeds; every attempt of 108 replayed generations; recovery and the
+throw forced by an in-memory budget edit; 54 real Routes played by the real
+hook, step by step, through chest, pickaxe, restart, mode change and the next
+Route.
+
+Validators that had to follow the code: `escape-generation-close` patched the
+hook's text only (`transform:`), and its two counterfactual edits now go
+through `anchoredEdits`, which applies each where its anchor lives and requires
+it once in the graph; `cross-eol-tests` looks for each instrumentation anchor
+in the module that declares its function, and hands CRLF to every module
+(`transforms:`) instead of the hook alone, which would no longer reach the
+instrumented one. `route-config-extraction-tests` S3 now requires the Rota's
+modules together (not the hook alone) to import exactly what route-config
+exports, and `MazeMap` left its kept-in-hook list; `game-continuation-contract`
+I1 pins the two new runtime edges.

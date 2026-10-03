@@ -21,6 +21,7 @@ import {
 } from "./dynamic-solver-packed-solve.mjs";
 import { analyzePackedScc } from "./dynamic-solver-packed-scc.mjs";
 import { key, eq, neighbors, bfs } from "./route-lab.mjs";
+import { openSourceTree } from "./route-module-loader.mjs";
 
 export const OUT = path.resolve("docs/archive/route-dynamic-solvability-01");
 export const REPORT = {
@@ -30,22 +31,30 @@ export const REPORT = {
 export const MODES = ["easy", "medium", "hard"];
 export const ROUTES = [1, 2, 3];
 
-const CONTRACT_FILES = [
+const SOLVER_FILES = [
   "tools/validation/dynamic-solver.mjs",
   "tools/validation/dynamic-solver-packed.mjs",
   "tools/validation/dynamic-solver-packed-successors.mjs",
   "tools/validation/dynamic-solver-packed-graph.mjs",
   "tools/validation/dynamic-solver-packed-solve.mjs",
   "tools/validation/dynamic-solver-packed-scc.mjs",
-  "src/games/escape-maze/useEscapeMaze.ts",
-  "src/engine/difficulty.ts",
 ];
+
+/**
+ * The solver's runtime contract: its own files, and every repository module the Rota's hook reaches at run time —
+ * the hook, whatever it is split into (configuration since ROUTE-C1; generation, the board's graph primitives and the
+ * RNG seam's `randomItem` since ROUTE-C2) and the engine it draws on — found through the module graph
+ * (route-module-loader.mjs), not by name. This used to be the hook and `difficulty.ts` by name, which stopped covering
+ * the generator that makes every case's map once it left the hook: a `--resume` cache would have outlived a change
+ * to it.
+ */
+const contractFiles = () => [...SOLVER_FILES, ...openSourceTree().closure()];
 
 export function hashValue(value) {
   return crypto.createHash("sha256").update(value).digest("hex");
 }
 
-export function hashFiles(files = CONTRACT_FILES) {
+export function hashFiles(files = contractFiles()) {
   const hash = crypto.createHash("sha256");
   for (const file of files) {
     hash.update(file);

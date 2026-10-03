@@ -42,7 +42,10 @@ home (HomeStage)
 | --- | --- |
 | Tipos de jogo e resultado (inclui o contrato de continuação) | `src/types/game.ts` |
 | Jornada da Rota: tamanho (`ROUTE_JOURNEY_FINAL_ROUTE`), regra de término (`nextJourneyRoute`) e leitura da continuação (só tipos; vai no chunk da Rota) | `src/games/escape-maze/continuation.ts` |
-| Configuração estática da Rota: grid 9x9, orçamento de geração, início/saídas/guardiões, templates, cópia de etapa e tabelas de dificuldade (só dados + helpers puros; importado só pelo hook) | `src/games/escape-maze/route-config.ts` |
+| Configuração estática da Rota: grid 9x9, orçamento de geração, início/saídas/guardiões, templates, cópia de etapa e tabelas de dificuldade (só dados + helpers puros; importado só por módulos da Rota) | `src/games/escape-maze/route-config.ts` |
+| Primitivas puras do tabuleiro da Rota como grafo: chave de célula, vizinhos, distâncias e caminhos BFS, grid ↔ paredes (sem RNG, sem estado) | `src/games/escape-maze/route-geometry.ts` |
+| Geração + certificação dos mapas da Rota: `generateMaze(difficulty, routeNumber)` devolve um `MazeMap` certificado ou lança | `src/games/escape-maze/route-generation.ts` |
+| Fonte única de aleatoriedade da Rota (`routeRandom`, `randomItem`) e o seed de diagnóstico | `src/engine/route-random.ts` |
 | Contrato de entrada dos jogos (readiness + watchdog; só metadados) | `src/games/entry-contract.ts` |
 | Registro de jogos (contrato de entrada + loader do componente) | `src/games/index.ts` |
 | Metadados visuais dos mundos | `src/data/worlds.ts` |
@@ -116,15 +119,30 @@ Arquivos principais:
 - `src/games/escape-maze/RouteStrategyGame.tsx`
 - `src/games/escape-maze/useEscapeMaze.ts`
 - `src/games/escape-maze/route-config.ts`
+- `src/games/escape-maze/route-geometry.ts`
+- `src/games/escape-maze/route-generation.ts`
 - `src/games/escape-maze/RouteBabylonBoard.tsx`
 - `src/games/escape-maze/routeBabylonScene.ts`
 
-Divisão da lógica (ROUTE-C1):
+Divisão da lógica (ROUTE-C1 + ROUTE-C2):
+
+| Módulo | Papel |
+| --- | --- |
+| `route-config.ts` | configuração estática (dados + helpers puros que só leem tabelas) |
+| `route-geometry.ts` | primitivas puras de grid/grafo, compartilhadas por geração e runtime |
+| `route-generation.ts` | geração + certificação de mapas |
+| `useEscapeMaze.ts` | runtime dos defensores + invariantes dinâmicos + estado React e orquestração do turno |
+
 
 - Antes: `useEscapeMaze.ts` concentrava configuração + geração + runtime num arquivo só.
-- Agora: `route-config.ts` tem a configuração estática e os helpers puros que só leem essa configuração — `ROWS`/`COLS`, `MAX_GENERATION_ATTEMPTS`/`RECOVERY_*`, `PLAYER_START` e células seguras, candidatos de saída e de guardião por etapa, os 9 templates, `RouteStage`/`RouteProgression` e a cópia de cada etapa, `WALL_LIMITS`, contagens base de luzes e armadilhas, `DIFFICULTY_PLAY_BRIEF`, `ROUTE_STAGE_QUALITY` e `getRouteStage`, `getRouteProgression`, `getWallLimits`, `getStarCount`, `getStarMinSeparation`, `getTrapCount`, `getMinimumPathLength`, `getRouteStageTemplates`. Só importa tipos (`@/types/game`): nada de React, sons, RNG, Babylon ou do hook. Exporta só o que o hook consome; as tabelas por trás dos helpers ficam privadas.
-- `useEscapeMaze.ts` ainda contém a geração (templates → paredes, luzes, armadilhas/baú, certificação, BFS), as regras do Caçador/Sentinela e todo o runtime (estado React, turno, input). Ele importa a configuração e reexporta `ROWS`/`COLS` (lidos pela Rota e pelo board) e o tipo `RouteProgression`, então a superfície pública do hook não mudou. Input (`ARROW_DELTAS`, `BREAK_DIRECTION_DELTAS`, `MOVE_INPUT_GUARD_MS`, `BreakDirection`, `BreakTarget`), `MazeMap`/`GameStatus` e as constantes de Sentinela/portal (`PORTAL_*`, `SENTINEL_*`) continuam no hook: são de runtime/algoritmo, não de configuração de grid.
+- Agora: `route-config.ts` tem a configuração estática e os helpers puros que só leem essa configuração — `ROWS`/`COLS`, `MAX_GENERATION_ATTEMPTS`/`RECOVERY_*`, `PLAYER_START` e células seguras, candidatos de saída e de guardião por etapa, os 9 templates, `RouteStage`/`RouteProgression` e a cópia de cada etapa, `WALL_LIMITS`, contagens base de luzes e armadilhas, `DIFFICULTY_PLAY_BRIEF`, `ROUTE_STAGE_QUALITY` e `getRouteStage`, `getRouteProgression`, `getWallLimits`, `getStarCount`, `getStarMinSeparation`, `getTrapCount`, `getMinimumPathLength`, `getRouteStageTemplates`. Só importa tipos (`@/types/game`): nada de React, sons, RNG, Babylon ou do hook. Exporta só o que os módulos da Rota consomem (o hook no C1; desde o C2 também `route-generation.ts` e `route-geometry.ts`); as tabelas por trás dos helpers ficam privadas.
+- O hook importa a configuração e reexporta `ROWS`/`COLS` (lidos pela Rota e pelo board) e o tipo `RouteProgression`, então a superfície pública do hook não mudou. Input (`ARROW_DELTAS`, `BREAK_DIRECTION_DELTAS`, `MOVE_INPUT_GUARD_MS`, `BreakDirection`, `BreakTarget`), `GameStatus` e as constantes de Sentinela/portal (`PORTAL_*`, `SENTINEL_*`) continuam no hook: são de runtime/algoritmo, não de configuração de grid.
 - A extração não mudou valor nenhum: `tools/validation/route-config-extraction-tests.mjs` fixa os valores, compara mapas e partidas com o hook de um arquivo (`4027baa`) e impede a configuração de voltar a ser declarada no hook.
+- ROUTE-C2: `route-geometry.ts` tem as primitivas do tabuleiro como grafo — `keyToPosition`, `posKey`, `positionsEqual`, `cloneGrid`, `gridToWalls`, `countWalls`, `getNeighbors`, `findPathLength`, `findPathCells`, `getReachableDistances`. Puras: importam só `ROWS`/`COLS` de `route-config.ts` e tipos; nada de RNG, React ou estado. Geração e runtime as usam, por isso não pertencem a nenhum dos dois: os defensores e os invariantes do hook não dependem de um módulo de "geração" para andar no tabuleiro.
+- ROUTE-C2: `route-generation.ts` fabrica e certifica mapas — Guardião, randomização de paredes, luzes, armadilhas/baú, rota objetiva, decomposição em blocos, análise estrutural, `isStructurallyValid`, `isValidMap`, `buildCandidate` e `generateMaze` (fase aleatória → varredura de recuperação pelos MESMOS gates → throw; nenhum mapa não certificado). Exporta só `generateMaze` e o tipo `MazeMap`; importa configuração, geometria, `manhattanDistance` e o seam de RNG — nunca React, o hook, UI, Babylon ou sons. Movido verbatim: mesmos templates, tentativas, ordem de laços e de sorteios, scores, desempates e gates.
+- ROUTE-C2: `randomItem` (um sorteio, um item) saiu do hook para `src/engine/route-random.ts`, ao lado de `routeRandom`, porque geração e Caçador o usam e sorteiam do mesmo fluxo, nessa ordem: assim nenhum dos dois depende do outro para compartilhá-lo. `difficulty.ts` mantém seu `pickRandom` (política do Caçador, fora do escopo).
+- `useEscapeMaze.ts` só pede `generateMaze(difficulty, routeNumber)` e recebe um `MazeMap` certificado. Ficam nele as regras do Caçador/Sentinela (`computePortalDefenceZone`, `createSentinelState`, `decideSentinelMove`, `chooseGuardianMove` — ROUTE-C3), os invariantes dinâmicos (`inspectDynamicMazeState` — ROUTE-C4) e todo o runtime (estado React, turno, baú, input). Ele reexporta `generateMaze`, `posKey`, `positionsEqual` e o tipo `MazeMap`, então quem importava do hook continua importando dele.
+- A extração não mudou mapa nem partida: `tools/validation/route-generation-extraction-tests.mjs` compara com `65932cf` (geração ainda no hook) 1080 mapas campo a campo e o fluxo de RNG depois de cada um, fluxos contínuos e seeds armados, cada tentativa de geração explicada, recuperação e throw forçados, e partidas reais passo a passo — e impede que o hook volte a declarar o que saiu.
 
 `RouteStrategyGame` carrega `RouteBabylonBoard` como chunk próprio depois de montar, com um `import()` explícito (não `next/dynamic`), e o Babylon só é buscado quando o board monta. Até o chunk chegar, o canvas mostra "Preparando o tabuleiro Babylon…"; se ele falhar, o erro vai para `onEntryError` → painel de tentar novamente, e o retry (nova sessão) busca o chunk de novo.
 
@@ -163,9 +181,9 @@ Runtime visual ativo:
 
 Contrato dos assets e regeneração ficam em `public/models/route/README.md`. Previews PNG da Rota não ficam mais em `public/`; foram arquivados em `docs/archive/route-previews/`.
 
-`useEscapeMaze.ts` e `route-config.ts` são regra de jogo. Não altere geração, dificuldade, portal, guardião, scoring ou fluxo sem missão explícita.
+`useEscapeMaze.ts`, `route-config.ts`, `route-geometry.ts` e `route-generation.ts` são regra de jogo. Não altere geração, dificuldade, portal, guardião, scoring ou fluxo sem missão explícita.
 
-Validação da Rota (ROUTE-C0): os validadores carregam o **grafo de módulos** da Rota por `tools/validation/route-module-loader.mjs` — o hook e tudo o que ele importa, de uma mesma árvore (worktree ou `--rev`), uma instância por módulo — e acham cada binding privado no módulo que o declara. Eles não dependem de `useEscapeMaze.ts` continuar monolítico: desde ROUTE-C1 a configuração vem de `route-config.ts` e os validadores a acham pelo grafo, sem mudança de superfície. O resto da extração (geração, regras, runtime) ainda não foi feito. Inventário, exceções declaradas e o gate de acoplamento: `tools/validation/README.md`.
+Validação da Rota (ROUTE-C0): os validadores carregam o **grafo de módulos** da Rota por `tools/validation/route-module-loader.mjs` — o hook e tudo o que ele importa, de uma mesma árvore (worktree ou `--rev`), uma instância por módulo — e acham cada binding privado no módulo que o declara. Eles não dependem de `useEscapeMaze.ts` continuar monolítico: desde ROUTE-C1 a configuração vem de `route-config.ts`, desde ROUTE-C2 a geração/certificação de `route-generation.ts` e as primitivas de `route-geometry.ts`, e os validadores (gerador instrumentado, `validate-route-9x9`, `test-star-selection`, `final-acceptance`) as acham pelo grafo, sem mudança de superfície. Ainda não foram extraídas a política/runtime dos defensores (ROUTE-C3) nem os invariantes dinâmicos (ROUTE-C4). Inventário, exceções declaradas e o gate de acoplamento: `tools/validation/README.md`.
 
 ## Circuito de Memória
 
@@ -251,6 +269,8 @@ Preserve obrigatoriamente:
 - `docs/MINDFLOW_EXPERIENCE_BOOK.md`
 - `src/games/escape-maze/useEscapeMaze.ts`
 - `src/games/escape-maze/route-config.ts`
+- `src/games/escape-maze/route-geometry.ts`
+- `src/games/escape-maze/route-generation.ts`
 - `src/games/color-sequence/useColorSequenceGame.ts`
 - `src/games/index.ts`
 - `src/data/worlds.ts`

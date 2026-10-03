@@ -9,7 +9,8 @@
  *   hook-text         asks for the hook's text (`productionSource()`) to
  *                     anchor on, instead of the module that holds the code;
  *   rota-module-path  names another Rota module file (difficulty, route-random,
- *                     continuation, route-config since ROUTE-C1) in code;
+ *                     continuation, route-config since ROUTE-C1, route-generation
+ *                     and route-geometry since ROUTE-C2) in code;
  *   rota-resolver     answers a Rota import by hand (`=== "@/engine/…"`) — a
  *                     private module resolver;
  *   rota-ts-compile   compiles TypeScript in a file that also names Rota
@@ -63,11 +64,11 @@ if (REV) {
 // --- the patterns ------------------------------------------------------------------------------
 
 const codeOnly = (source) => source.replace(/\/\*[\s\S]*?\*\//g, " ").replace(/(^|[^:\\])\/\/.*$/gm, "$1");
-const ROTA_SPECIFIER = String.raw`@\/(?:engine\/(?:difficulty|route-random)|games\/escape-maze\/(?:continuation|route-config|useEscapeMaze))`;
+const ROTA_SPECIFIER = String.raw`@\/(?:engine\/(?:difficulty|route-random)|games\/escape-maze\/(?:continuation|route-config|route-generation|route-geometry|useEscapeMaze))`;
 const SIGNALS = {
   "hook-path": /useEscapeMaze\.ts/,
   "hook-text": /(?<!function\s)\bproductionSource\s*\(/,
-  "rota-module-path": /["'](?:src\/engine\/)?(?:difficulty|route-random)\.ts["']|["'](?:src\/games\/escape-maze\/)?(?:continuation|route-config)\.ts["']/,
+  "rota-module-path": /["'](?:src\/engine\/)?(?:difficulty|route-random)\.ts["']|["'](?:src\/games\/escape-maze\/)?(?:continuation|route-config|route-generation|route-geometry)\.ts["']/,
   "rota-resolver": new RegExp(String.raw`===\s*["']${ROTA_SPECIFIER}["']`),
   "single-file-seam": /\bhookSource\b/,
 };
@@ -140,6 +141,11 @@ const ALLOWED = {
     reason: "STRUCTURAL_ASSERTION",
     note: "ROUTE-C1's static gate: the grid/config is declared in route-config.ts and nowhere else; its Rota runs through the graph",
   },
+  "route-generation-extraction-tests.mjs": {
+    kinds: ["rota-module-path"],
+    reason: "STRUCTURAL_ASSERTION",
+    note: "ROUTE-C2's static gate: generation in route-generation.ts, primitives in route-geometry.ts, randomItem in the seam, none of it in the hook; its Rota runs through the graph",
+  },
   "route-board-loader-tests.mjs": { kinds: ["rota-module-path", "rota-ts-compile"], reason: "UI_STAGE" },
   "diagnostic-launcher-tests.mjs": {
     kinds: ["rota-module-path"],
@@ -151,7 +157,6 @@ const ALLOWED = {
     reason: "STRUCTURAL_ASSERTION",
     note: "scans every src file for seed-arming callers; the TypeScript it compiles is src/engine/storage.ts, not the Rota",
   },
-  "dynamic-solvability-campaign-lib.mjs": { kinds: ["hook-path", "rota-module-path"], reason: "PROVENANCE" },
   "breakable-wall-feasibility.mjs": { kinds: ["hook-path"], reason: "REPORT_LABEL" },
   "dynamic-solvability-finalize.mjs": { kinds: ["hook-path"], reason: "REPORT_LABEL" },
   "chest-acceptance.mjs": { kinds: ["hook-path"], reason: "LEGACY_LEDGER", note: "ROTA-CHEST-REWARDS-01" },

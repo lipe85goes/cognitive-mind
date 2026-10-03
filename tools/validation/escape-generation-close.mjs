@@ -21,6 +21,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { loadInstrumented } from "./instrumented-generator.mjs";
+import { anchoredEdits, openSourceTree } from "./route-module-loader.mjs";
 import { key } from "./route-lab.mjs";
 
 const OUT = path.resolve("docs/archive/route-dual-guardians-maps-01a");
@@ -34,27 +35,27 @@ const ADMISSIBLE_RETRY = `  const admissible = admissibleRouteCells(playerStart,
     computeObjectiveRoute(playerStart, stars, exitPosition, walls, admissible) ?? cheapest
   );`;
 
-const requireOnce = (src, needle, label) => {
-  if (src.split(needle).length - 1 !== 1) throw new Error(`anchor ${label} is not unique`);
-  return src;
-};
-
-const revert = (src) => {
-  requireOnce(src, EARLY_GUARD, "early guard");
-  requireOnce(src, ADMISSIBLE_RETRY, "admissible retry");
-  return src.replace(EARLY_GUARD, "").replace(ADMISSIBLE_RETRY, "  return cheapest;");
-};
-const probe = (src) =>
-  src.replace(
+// ROUTE-C2: both anchors moved with the generator into route-generation.ts. Each
+// edit is applied in whichever Rota module holds its anchor, and `anchoredEdits`
+// requires every anchor to appear exactly once in the whole graph before
+// anything loads — the uniqueness `requireOnce` used to check on the hook alone.
+const TREE = openSourceTree();
+const revert = anchoredEdits(TREE, [
+  [EARLY_GUARD, ""],
+  [ADMISSIBLE_RETRY, "  return cheapest;"],
+]);
+const probe = anchoredEdits(TREE, [
+  [
     EARLY_GUARD,
     `  (globalThis as { __early?: boolean }).__early = escapeGeometryIsPossible(
     PLAYER_START, exitPosition, walls, blocks,
   );`,
-  );
+  ],
+]);
 
 const NEW = loadInstrumented();
-const OLD = loadInstrumented({ transform: revert });
-const PROBE = loadInstrumented({ transform: probe });
+const OLD = loadInstrumented({ transforms: revert });
+const PROBE = loadInstrumented({ transforms: probe });
 
 const API = NEW.API;
 const START = API.PLAYER_START;
@@ -359,7 +360,7 @@ console.log("\nFASE 12 — tempo observacional (route3-hard, 120 gerações, sem
 // in this environment — so it is not comparable to these node figures. The
 // honest comparison is the before/after pair below.
 const BARE_NEW = loadInstrumented({ bare: true });
-const BARE_OLD = loadInstrumented({ transform: revert, bare: true });
+const BARE_OLD = loadInstrumented({ transforms: revert, bare: true });
 function measureGeneration(lab, label) {
   lab.setSeed(777001);
   const samples = [];

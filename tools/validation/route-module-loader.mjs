@@ -40,6 +40,15 @@ export const ROUTE_HOOK = "src/games/escape-maze/useEscapeMaze.ts";
 export const ROUTE_MODULE_DIR = "src/games/escape-maze/";
 /** The export a module gets when its private bindings are exposed to a validator. */
 export const INTERNALS_EXPORT = "__validationInternals";
+/**
+ * The RNG seam every Rota module draws from. Not a Rota module, but part of the
+ * Rota's surface: since ROUTE-C2 it declares the one-draw pick (`randomItem`)
+ * that generation and the Hunter share, and a validator that replays the
+ * generator has to draw with that same function.
+ */
+export const ROUTE_RANDOM_SEAM = "src/engine/route-random.ts";
+/** The modules whose private bindings a Rota surface can name: the Rota's own, and its RNG seam. */
+export const exposesRouteSurface = (file) => file.startsWith(ROUTE_MODULE_DIR) || file === ROUTE_RANDOM_SEAM;
 
 /**
  * The one normalisation of line endings. Every source the graph hands out or
@@ -498,7 +507,9 @@ export const routeMocks = ({ react } = {}) => ({
  * the tooling's seeded PRNG.
  *
  *   surface   private bindings the validator needs, by name. They are looked
- *             up in whichever Rota module declares them.
+ *             up in whichever Rota module declares them — or in the RNG seam,
+ *             which declares `randomItem` since ROUTE-C2. A name declared in
+ *             more than one of them is an error, as before.
  *   transforms, sourceOverrides, rev, react, mocks — as above.
  *
  * `routeRandom` is the SAME instance the hook and `difficulty.ts` draw from: a
@@ -524,7 +535,7 @@ export function loadRouteModules({
     transforms,
     mocks: { ...routeMocks({ react }), ...mocks },
     globals: { console, Math: seededMath, Date, Set, Map, setTimeout, clearTimeout, performance },
-    exposeInternals: (file) => file.startsWith(ROUTE_MODULE_DIR),
+    exposeInternals: exposesRouteSurface,
   });
   const hook = graph.require(entry);
   const api = graph.internals(surface);
@@ -540,7 +551,7 @@ export function loadRouteModules({
     },
     /** The RNG seam, as the hook's graph sees it (loaded on demand for trees that predate it). */
     get routeRandom() {
-      return graph.require("src/engine/route-random.ts");
+      return graph.require(ROUTE_RANDOM_SEAM);
     },
   };
 }
