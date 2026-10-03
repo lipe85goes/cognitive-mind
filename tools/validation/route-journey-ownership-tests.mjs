@@ -28,8 +28,11 @@
  *
  * Writes nothing. Exit 0 = every check holds, 1 = a check failed, 3 = usage error.
  *
- * Not decided here, on purpose: where a journey ends. Routes stay unbounded —
- * ROUTE_JOURNEY_TERMINATION_DECISION_REQUIRED is still open.
+ * Where a journey ends is ROUTE-JOURNEY-TERMINAL-01 (route-journey-terminal-tests.mjs):
+ * three Routes, Route 3 lost resumes Route 3, Route 3 won completes the journey.
+ * The rule itself lives in `continuation.ts#nextJourneyRoute`, which is now the
+ * one place a Route is followed by `routeNumber + 1` (O3); the Route-to-Route
+ * hops held here (P1) are Routes 1 and 2, the ones that existed before the end.
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -277,8 +280,8 @@ const ROTA_STATE = {
 }
 
 // O3 — one producer of the next Route, read from the product's sources (labs aside): the only place a Route
-// continuation is built is endGame; the hook's Route has no setter; no `continueJourney`; `routeNumber + 1` only
-// where the next Route is written (endGame) or shown (RouteStrategyGame's "A Rota N + 1 fica disponível" copy).
+// continuation is built is endGame; the hook's Route has no setter; no `continueJourney`; `routeNumber + 1` only in
+// the journey's rule, `continuation.ts#nextJourneyRoute`, which endGame writes from and RouteStrategyGame shows from.
 const SRC_FILES = (
   REV
     ? execFileSync("git", ["ls-tree", "-r", "--name-only", REV, "src"], { encoding: "utf8" })
@@ -344,7 +347,7 @@ function ownerOf(node) {
   };
   const expected = {
     continuationProducers: [`${FILES.hook}#endGame`],
-    routeNumberPlusOne: [`${FILES.rota}#RouteStrategyGame`, `${FILES.hook}#endGame`].sort(),
+    routeNumberPlusOne: [`${FILES.routeContinuation}#nextJourneyRoute`],
     routeSetters: [],
     continueJourney: [],
   };
@@ -352,7 +355,9 @@ function ownerOf(node) {
 }
 
 // O4 — the lab moves on through the contract too: once a Route ends (the game still on screen), the launcher's
-// "Próxima rota" opens a NEW session on exactly the continuation the result carries, re-armed with the same seed.
+// "Próxima rota" opens a NEW session on exactly the continuation the result carries, re-armed with the same seed. The
+// launcher's default is Route 3, lost here, so that continuation is Route 3 again ("Repetir rota", since
+// ROUTE-JOURNEY-TERMINAL-01).
 {
   const finishedRun = finish(entry(3, "hard"), "lost", 44_000);
   const result = finishedRun?.completions.at(-1) ?? null;
@@ -375,6 +380,9 @@ function ownerOf(node) {
     "@/components/GameScreen": { GameScreen },
     "@/engine/route-random": { armRouteRandomSeed: (seed) => armed.push(seed), clearRouteRandomSeed: () => {}, getArmedRouteSeed: () => armed.at(-1) ?? null },
     "@/engine/storage": evaluate(FILES.storage, {}),
+    ...(exists(FILES.routeContinuation) && {
+      "@/games/escape-maze/continuation": evaluate(FILES.routeContinuation, {}),
+    }),
   });
   const render = () => ((index = 0), launcherModule.default({}));
   const elements = (node, found = []) => {
@@ -396,7 +404,7 @@ function ownerOf(node) {
   launched.props.onComplete(result);
   tree = render();
   const afterEnd = screen(tree);
-  const next = find(tree, (el) => el.type === "button" && /^Próxima rota/.test(textOf(el)));
+  const next = find(tree, (el) => el.type === "button" && /^(Próxima|Repetir) rota/.test(textOf(el)));
   next?.props.onClick();
   tree = render();
   const reopened = screen(tree);
@@ -411,10 +419,10 @@ function ownerOf(node) {
   };
   const expected = {
     launched: entry(3, "hard"),
-    resultContinuation: entry(4, "hard"),
+    resultContinuation: entry(3, "hard"),
     gameStaysAfterTheEnd: true,
     labOffersTheNextRoute: true,
-    nextSession: entry(4, "hard"),
+    nextSession: entry(3, "hard"),
     nextSessionIsTheResultsValue: true,
     seedsArmed: [12432045, 12432045],
   };
@@ -422,10 +430,10 @@ function ownerOf(node) {
 }
 
 // P1 — Route N → its result → Route N + 1, won or lost, on every mode: the continuation the result carries, and the
-// session opened on it.
+// session opened on it. Routes 1 and 2; where Route 3 leads is route-journey-terminal-tests.mjs.
 {
   const rows = [];
-  for (const routeNumber of [1, 2, 3]) {
+  for (const routeNumber of [1, 2]) {
     for (const mode of MODES) {
       for (const outcome of ["won", "lost"]) {
         const run = finish(entry(routeNumber, mode), outcome, 50_000 + routeNumber * 1_000 + MODES.indexOf(mode) * 300 + (outcome === "won" ? 0 : 150));
@@ -448,7 +456,7 @@ function ownerOf(node) {
       }
     }
   }
-  record("P1", "preserved", "RESULT_OPENS_ROUTE_N_PLUS_1_WON_AND_LOST", rows.length === 18 && rows.every((row) => row.ok), {
+  record("P1", "preserved", "RESULT_OPENS_ROUTE_N_PLUS_1_WON_AND_LOST", rows.length === 12 && rows.every((row) => row.ok), {
     cases: rows.length,
     failing: rows.filter((row) => !row.ok).map((row) => row.from),
   });
@@ -514,6 +522,5 @@ const tally = (kind) => {
 console.log(
   `\n${REV ? `rev ${REV} · ` : ""}${tests.filter((t) => t.pass).length}/${tests.length} passed · ownership ${tally("ownership")} · preserved ${tally("preserved")} · failing: ${tests.filter((t) => !t.pass).map((t) => t.id).join(", ") || "none"}`,
 );
-console.log("ROUTE_JOURNEY_TERMINATION_DECISION_REQUIRED: still open — Routes stay unbounded here");
 console.log(allPass ? "ROUTE_JOURNEY_OWNERSHIP_OK" : "ROUTE_JOURNEY_OWNERSHIP_FAILED");
 process.exitCode = allPass ? EXIT_OK : EXIT_VALIDATION_FAILED;

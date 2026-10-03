@@ -101,7 +101,8 @@ skipped only when continuing, fresh entries from Home, every other world
 untouched, entry retries, storage round trip, results saved before the
 contract, malformed continuations, and the import graph. `--rev=415cead` (the
 `details`-based protocol) must fail every `[contract]` check and hold every
-`[preserved]` one.
+`[preserved]` one. Route-to-Route hops are held for Routes 1 and 2; where Route
+3 leads is its `[terminal]` check (C5).
 
 **JOURNEY OWNERSHIP** — the result's continuation is the only way to the next
 Route; nothing inside a session moves it. Neither writes evidence:
@@ -118,9 +119,29 @@ launcher through "Próxima rota"; and holds Route N → N + 1 (won and lost),
 fresh entry on Route 1 and retries on the same Route. `--rev=d258077`
 (`continueJourney` still there) must fail every `[ownership]` check and hold
 every `[preserved]` one. The probe watches every DOM mutation batch from Home →
-Route 1 → result → Route 2 → result → Route 3, and through the lab. Where a
-journey ends is not decided here: `ROUTE_JOURNEY_TERMINATION_DECISION_REQUIRED`
-is still open.
+Route 1 → result → Route 2 → result → Route 3, and through the lab.
+
+**JOURNEY END** — Rota Estratégica v1 has three Routes: Route 1 and 2 lead to
+N + 1 won or lost, Route 3 lost leads to Route 3 again, Route 3 won completes
+the journey (no continuation, `journeyCompleted`). No Route 4 in the product.
+Neither writes evidence:
+
+```bash
+node tools/validation/route-journey-terminal-tests.mjs           # real hook, reader, result screen, storage, launcher, ~40 s
+node tools/validation/route-journey-terminal-browser-probe.mjs   # Playwright, needs `next build && next start -p 3100`
+```
+
+The first plays every Route on every mode to both ends, reads every
+continuation the Rota could be handed (Route 4, 999, 0, NaN, …), presses every
+button of the real result screen, round-trips storage with legacy Route 4
+results, drives the launcher's form and "Próxima/Repetir rota", and reads the
+shell for any knowledge of the end. `--rev=7b740e4` (Route 3 → Route 4) must
+fail every `[terminal]` check and hold every `[preserved]` one. The probe goes
+Home → Route 1 → Route 2 → Route 3 lost → "Tentar Rota 3 novamente" → Route 3 …
+won → "Jornada concluída" → "Voltar aos mundos" → Home → the Rota again (Route
+1). `--mode easy|medium|hard`. Under software WebGL the board can outlast the
+entry's 12 s watchdog; the probe then presses the product's "Tentar novamente"
+(same session) and reports how often.
 
 **EVIDENCE UPDATE** — after a deliberate change, once you have read the diffs:
 

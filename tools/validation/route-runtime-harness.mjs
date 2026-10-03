@@ -236,7 +236,7 @@ export function loadRouteRuntime({ directDifficulty = false, hookSource } = {}) 
       nextSession({ seed: nextSeed = seed, autoStart: nextAutoStart = true } = {}) {
         const continuation = completions.at(-1)?.continuation;
         if (!continuation) {
-          throw new Error("nextSession: this Route has not ended, so it wrote no continuation to open");
+          throw new Error("nextSession: this Route wrote no continuation to open (it has not ended, or it completed the journey)");
         }
         return mount({
           seed: nextSeed,

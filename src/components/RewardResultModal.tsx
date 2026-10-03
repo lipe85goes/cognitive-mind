@@ -49,24 +49,56 @@ export function RewardResultModal({
     isRouteResult && typeof result.details.nextRouteStage === "string"
       ? result.details.nextRouteStage
       : undefined;
-  const displayCopy = isRouteResult
+  /**
+   * The Rota recorded that this result finished its journey: there is no
+   * continuation to resume, so the only way on is back to the worlds — "play
+   * again" would be a fresh entry dressed up as a next step.
+   */
+  const journeyCompleted =
+    isRouteResult && result.details.journeyCompleted === true;
+  /** The journey's last Route was lost: "play again" resumes that same Route. */
+  const retriesRoute =
+    isRouteResult &&
+    !routeWon &&
+    routeNumber !== undefined &&
+    nextRouteNumber === routeNumber;
+  const displayCopy = journeyCompleted
+    ? {
+        title: "Jornada conclu\u00edda",
+        subtitle: "Voc\u00ea concluiu todas as Rotas da Rota Estrat\u00e9gica.",
+        progressLine: routeNumber
+          ? `Rota ${routeNumber} conclu\u00edda. Jornada completa.`
+          : "Jornada completa.",
+        encouragement:
+          "Pensar em paz: os mundos seguem abertos quando quiser voltar.",
+      }
+    : isRouteResult
     ? {
         title: routeWon ? "Caminho aberto" : "Rota registrada",
         subtitle: routeWon
           ? "Voc\u00ea orientou o Explorador e abriu espa\u00e7o para a pr\u00f3xima rota."
-          : "A pr\u00e1tica ficou salva. Outra rota pode ser observada com calma.",
-        progressLine:
-          routeNumber && nextRouteNumber
+          : retriesRoute
+            ? `A pr\u00e1tica ficou salva. A Rota ${routeNumber} pode ser tentada de novo com calma.`
+            : "A pr\u00e1tica ficou salva. Outra rota pode ser observada com calma.",
+        progressLine: retriesRoute
+          ? `Rota ${routeNumber} registrada. Voc\u00ea pode tentar de novo quando quiser.`
+          : routeNumber && nextRouteNumber
             ? `Rota ${routeNumber} salva. Rota ${nextRouteNumber}: ${nextRouteStage ?? "novo caminho"}.`
             : copy.progressLine,
         encouragement: "Continue apenas quando fizer sentido para voc\u00ea.",
       }
     : copy;
-  const primaryActionLabel = isRouteResult
+  const primaryActionLabel = journeyCompleted
+    ? "Voltar aos mundos"
+    : isRouteResult
     ? routeWon
       ? "Explorar pr\u00f3xima rota"
-      : "Explorar outra rota"
+      : retriesRoute
+        ? `Tentar Rota ${routeNumber} novamente`
+        : "Explorar outra rota"
     : "Praticar outra vez";
+  const onPrimaryAction = journeyCompleted ? onDashboard : onPlayAgain;
+  const PrimaryActionIcon = journeyCompleted ? ArrowLeft : RotateCcw;
   const primaryActionAria = isRouteResult
     ? primaryActionLabel
     : "Praticar este desafio outra vez";
@@ -143,26 +175,29 @@ export function RewardResultModal({
         <div className="prm-actions">
           <motion.button
             type="button"
-            onClick={onPlayAgain}
+            onClick={onPrimaryAction}
             aria-label={primaryActionAria}
             whileHover={reducedMotion ? undefined : { y: -2 }}
             whileTap={reducedMotion ? undefined : { y: 1, scale: 0.98 }}
             className="prm-cta"
           >
-            <RotateCcw className="h-6 w-6" aria-hidden />
+            <PrimaryActionIcon className="h-6 w-6" aria-hidden />
             {primaryActionLabel}
           </motion.button>
-          <motion.button
-            type="button"
-            onClick={onDashboard}
-            aria-label="Continuar na jornada cognitiva"
-            whileHover={reducedMotion ? undefined : { y: -1 }}
-            whileTap={reducedMotion ? undefined : { scale: 0.99 }}
-            className="prm-btn"
-          >
-            <ArrowLeft className="h-6 w-6" aria-hidden />
-            Continuar jornada
-          </motion.button>
+          {/* A completed journey's one action already leads to the worlds. */}
+          {!journeyCompleted && (
+            <motion.button
+              type="button"
+              onClick={onDashboard}
+              aria-label="Continuar na jornada cognitiva"
+              whileHover={reducedMotion ? undefined : { y: -1 }}
+              whileTap={reducedMotion ? undefined : { scale: 0.99 }}
+              className="prm-btn"
+            >
+              <ArrowLeft className="h-6 w-6" aria-hidden />
+              Continuar jornada
+            </motion.button>
+          )}
         </div>
       </motion.div>
     </div>

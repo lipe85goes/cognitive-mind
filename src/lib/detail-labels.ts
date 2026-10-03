@@ -16,6 +16,7 @@ export const DETAIL_LABELS: Record<string, string> = {
   routeStage: "Etapa da rota",
   nextRouteNumber: "Pr\u00f3xima rota",
   nextRouteStage: "Pr\u00f3xima etapa",
+  journeyCompleted: "Jornada conclu\u00edda",
   trapsTriggered: "Armadilhas ativadas",
   chestOpened: "Baú aberto",
   rewardChosen: "Ferramenta escolhida",

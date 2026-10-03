@@ -140,6 +140,12 @@ function build(src) {
       if (r === "@/engine/route-random") return routeRandomModule;
       if (r === "@/engine/scoring") return { calculateEscapeMazeScore: () => 0 };
       if (r === "@/lib/game-sounds") return { playGentleErrorTone: () => {}, playSuccessChime: () => {} };
+      if (r === "@/games/escape-maze/continuation") {
+        // Types-only module: where a Route's end leads. Not reached by generation.
+        const cMod = { exports: {} };
+        vm.runInNewContext(compile(fs.readFileSync(path.join(ROOT, "src/games/escape-maze/continuation.ts"), "utf8")), { module: cMod, exports: cMod.exports });
+        return cMod.exports;
+      }
       throw new Error("import " + r);
     },
   };

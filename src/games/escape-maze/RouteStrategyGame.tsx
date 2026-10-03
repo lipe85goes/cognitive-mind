@@ -37,7 +37,10 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { gentleShakeAnimate } from "@/lib/feedback-motion";
-import { readRouteContinuation } from "@/games/escape-maze/continuation";
+import {
+  nextJourneyRoute,
+  readRouteContinuation,
+} from "@/games/escape-maze/continuation";
 import {
   COLS,
   posKey,
@@ -334,13 +337,21 @@ export function RouteStrategyGame({
             ? "info"
             : "neutral";
   const remainingLights = Math.max(totalLights - collectedCount, 0);
-  const nextRouteNumber = routeNumber + 1;
   const currentObjective = (() => {
     if (status === "won") {
+      // The same rule the result is written with: after the last Route there
+      // is no next one to announce.
+      const nextRouteNumber = nextJourneyRoute(routeNumber, true);
       return {
         Icon: CircleCheck,
-        title: `Rota ${routeNumber} concluída`,
-        detail: `A Rota ${nextRouteNumber} fica dispon\u00edvel quando quiser continuar.`,
+        title:
+          nextRouteNumber === undefined
+            ? "Jornada concluída"
+            : `Rota ${routeNumber} concluída`,
+        detail:
+          nextRouteNumber === undefined
+            ? `Rota ${routeNumber} concluída. Jornada completa.`
+            : `A Rota ${nextRouteNumber} fica dispon\u00edvel quando quiser continuar.`,
         className: "is-complete",
       };
     }
@@ -348,7 +359,10 @@ export function RouteStrategyGame({
       return {
         Icon: Sparkles,
         title: `Rota ${routeNumber} registrada`,
-        detail: "Você pode observar uma nova rota no seu ritmo.",
+        detail:
+          nextJourneyRoute(routeNumber, false) === routeNumber
+            ? `Você pode tentar a Rota ${routeNumber} de novo no seu ritmo.`
+            : "Você pode observar uma nova rota no seu ritmo.",
         className: "is-resting",
       };
     }

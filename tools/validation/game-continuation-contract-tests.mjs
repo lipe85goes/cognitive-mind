@@ -44,6 +44,15 @@
  * Checks marked [contract] are what this mission introduces; [preserved] ones
  * pin behaviour that must not move (and hold on the old protocol too).
  *
+ * ROUTE-JOURNEY-TERMINAL-01 gave the journey an end: three Routes; Route 1 and
+ * 2 lead to N + 1 won or lost, Route 3 lost leads to Route 3 again, Route 3 won
+ * completes the journey and writes no continuation. The checks below expect
+ * exactly that (`expectedNextRoute`); the journeys through the shell leave a
+ * completed journey the way its result screen does — back to the worlds — and
+ * the [preserved] Route-to-Route checks hold for Routes 1 and 2, the hops that
+ * existed before the end did. Everything specific to the end is in
+ * route-journey-terminal-tests.mjs.
+ *
  * Usage: node tools/validation/game-continuation-contract-tests.mjs [--rev=<commit>]
  *
  *   --rev=<commit>  run against every source as it was at <commit> — the
@@ -854,6 +863,12 @@ const record = (id, kind, name, pass, detail) => {
   }
 };
 const expectedRouteContinuation = (routeNumber, difficulty) => ({ kind: ROUTE_KIND, routeNumber, difficulty });
+/**
+ * Where a Route's end leads (ROUTE-JOURNEY-TERMINAL-01), restated so it is asserted rather than trusted: Rota
+ * Estratégica v1 has three Routes. Before the last, won or lost → N + 1; the last lost → itself; the last won → none.
+ */
+const FINAL_ROUTE = 3;
+const expectedNextRoute = (route, outcome) => (route < FINAL_ROUTE ? route + 1 : outcome === "lost" ? FINAL_ROUTE : null);
 
 // A1 — the contract is a type: a union keyed by `kind`, carried by GameResult and handed to games.
 {
@@ -915,7 +930,8 @@ const expectedRouteContinuation = (routeNumber, difficulty) => ({ kind: ROUTE_KI
   });
 }
 
-// A2 — a finished Route writes the typed continuation: N + 1, the mode it was played on, won or lost.
+// A2 — a finished Route writes the typed continuation: the Route the journey goes to (N + 1 before the last; the last
+// again when it was lost), the mode it was played on — and none at all once the last Route is won.
 const producedResults = [];
 {
   const rows = [];
@@ -929,20 +945,24 @@ const producedResults = [];
         const continuation = completion?.continuation;
         const details = completion?.details ?? {};
         if (completion) producedResults.push(completion);
+        const next = expectedNextRoute(route, outcome);
         const row = {
           played: `R${route}/${mode}/${outcome}`,
           seed: session?.seed ?? null,
           continuation: continuation ?? null,
           detailsAgree:
             details.routeNumber === route &&
-            details.nextRouteNumber === route + 1 &&
+            (next === null
+              ? details.journeyCompleted === true && !("nextRouteNumber" in details) && !("nextRouteStage" in details)
+              : details.nextRouteNumber === next && !("journeyCompleted" in details)) &&
             details.difficulty === mode &&
             details.won === (outcome === "won"),
         };
         row.ok =
           Boolean(completion) &&
-          same(continuation, expectedRouteContinuation(route + 1, mode)) &&
-          Object.keys(continuation).length === 3 &&
+          (next === null
+            ? !("continuation" in completion)
+            : same(continuation, expectedRouteContinuation(next, mode)) && Object.keys(continuation).length === 3) &&
           row.detailsAgree;
         rows.push(row);
       }
@@ -967,7 +987,7 @@ const producedResults = [];
       failing: rows.filter((row) => !row.ok),
       sample: rows[0],
       modeChangedBeforeStart: changed,
-      note: "details keeps routeNumber / nextRouteNumber / difficulty / won for history and the result screen, and agrees with the continuation",
+      note: "details keeps routeNumber / nextRouteNumber (or journeyCompleted) / difficulty / won for history and the result screen, and agrees with the continuation",
     },
   );
 }
@@ -1091,6 +1111,8 @@ const JOURNEYS = [
   { label: "easy, hard picked on Route 2", mode: "easy", outcomes: ["won", "lost", "lost"], switchTo: { atHop: 1, mode: "hard" } },
 ];
 const hops = [];
+/** Route 3 won: the journey is complete. Its result screen's one way on is the worlds; nothing is resumed. */
+const completedJourneys = [];
 const retries = [];
 const freshEntries = [];
 const crossGame = [];
@@ -1109,9 +1131,29 @@ for (const journey of JOURNEYS) {
     if (!session) throw new Error(`${journey.label}: no seed reached "${outcome}" on hop ${index}`);
     const savedBefore = tab.localStorage.read()?.length ?? 0;
     const modal = tab.complete(session.completion);
+    if (expectedNextRoute(session.setup.route, outcome) === null) {
+      // The journey is complete: the result screen leads back to the worlds, and the Rota from there is a new journey.
+      tab.dashboard();
+      const home = Boolean(tab.find("HomeStage")) && !tab.find("GameScreen");
+      const again = await follow(tab.enter(ROUTE));
+      tab.finishEntry();
+      const arrival = describeArrival(again);
+      completedJourneys.push({
+        journey: journey.label,
+        played: { route: session.setup.route, mode: session.setup.mode, outcome },
+        journeyCompleted: session.completion.details.journeyCompleted ?? null,
+        backHome: home,
+        resultsSaved: (tab.localStorage.read()?.length ?? 0) - savedBefore,
+      });
+      freshEntries.push({ journey: journey.label, from: "Route 3 won → Home", ...arrival });
+      stage = again;
+      continue;
+    }
     const nextScreen = tab.playAgain();
     let next = await follow(nextScreen);
     if (journey.retryAt === index) {
+      // What the session landed on first; every retry must land there again.
+      const firstArgs = next.hookArgs;
       // The entry fails (the board's chunk, say) and the Explorador retries, three times.
       const attempts = [];
       for (let attempt = 0; attempt < 3; attempt += 1) {
@@ -1131,7 +1173,7 @@ for (const journey of JOURNEYS) {
         journey: journey.label,
         afterRoute: session.setup.route,
         firstKey: nextScreen.key,
-        expectedArgs: { initialRouteNumber: session.setup.route + 1, initialDifficulty: session.setup.mode },
+        expectedArgs: firstArgs,
         attempts,
         resultsSaved: (tab.localStorage.read()?.length ?? 0) - savedBefore,
       });
@@ -1230,9 +1272,10 @@ function describeArrival(stage) {
   };
 }
 
-// C1 — Route N, its result, "Explorar próxima rota" / "Explorar outra rota": Route N + 1.
+// C1 — Route N, its result, "Explorar próxima rota" / "Explorar outra rota": Route N + 1 (Routes 1 and 2; where the
+// last Route leads is C5).
 {
-  const rows = hops.map((hop) => ({
+  const rows = hops.filter((hop) => hop.played.route < FINAL_ROUTE).map((hop) => ({
     journey: hop.journey,
     played: hop.played,
     landed: hop.landed,
@@ -1282,9 +1325,10 @@ function describeArrival(stage) {
   });
 }
 
-// C4 — a lost Route: "Explorar outra rota" opens Route N + 1 on the same mode, intro skipped — exactly the won path.
+// C4 — a lost Route: "Explorar outra rota" opens Route N + 1 on the same mode, intro skipped — exactly the won path
+// (Routes 1 and 2; the last Route lost is C5).
 {
-  const lost = hops.filter((hop) => hop.played.outcome === "lost");
+  const lost = hops.filter((hop) => hop.played.outcome === "lost" && hop.played.route < FINAL_ROUTE);
   const rows = lost.map((hop) => ({
     journey: hop.journey,
     played: hop.played,
@@ -1301,6 +1345,38 @@ function describeArrival(stage) {
     lostRoutes: rows.length,
     failing: rows.filter((row) => !row.ok),
   });
+}
+
+// C5 — the end of the journey, through the shell: Route 3 lost resumes Route 3 on the same mode, intro skipped; Route 3
+// won writes no continuation, is recorded as a completed journey, and its way on is Home — from there, a new journey.
+{
+  const lastLost = hops
+    .filter((hop) => hop.played.route === FINAL_ROUTE)
+    .map((hop) => ({
+      journey: hop.journey,
+      played: hop.played,
+      landed: hop.landed,
+      ok: hop.played.outcome === "lost" && hop.landed?.route === FINAL_ROUTE && hop.landed?.mode === hop.played.mode && hop.landed?.status === "setup" && hop.skipIntro,
+    }));
+  const won = completedJourneys.map((row) => ({
+    ...row,
+    ok: row.played.route === FINAL_ROUTE && row.played.outcome === "won" && row.journeyCompleted === true && row.backHome && row.resultsSaved === 1,
+  }));
+  const afterCompletion = freshEntries
+    .filter((entry) => entry.from === "Route 3 won → Home")
+    .map((entry) => ({ journey: entry.journey, landed: entry.landed, ok: same(entry.landed, { route: 1, mode: "easy", status: "setup" }) && !entry.skipIntro }));
+  record(
+    "C5",
+    "terminal",
+    "LAST_ROUTE_RETRIES_OR_COMPLETES_THE_JOURNEY",
+    lastLost.length > 0 && won.length > 0 && afterCompletion.length === won.length && [...lastLost, ...won, ...afterCompletion].every((row) => row.ok),
+    {
+      lastRouteLost: lastLost.length,
+      journeysCompleted: won.length,
+      routesReached: [...new Set(hops.map((hop) => hop.landed?.route))].sort(),
+      failing: [...lastLost, ...won, ...afterCompletion].filter((row) => !row.ok),
+    },
+  );
 }
 
 // D1 — entering from Home is a fresh journey, whatever was played or pending before it.
@@ -1401,7 +1477,13 @@ function gameFolder(gameId) {
   for (const result of producedResults) {
     tab.complete(result);
     saved.push(result);
-    tab.playAgain();
+    if (result.continuation) {
+      tab.playAgain();
+    } else {
+      // A completed journey: back to the worlds, then the Rota again.
+      tab.dashboard();
+      tab.enter(ROUTE);
+    }
     tab.finishEntry();
   }
   const read = tab.storage.getRecentResults();
@@ -1410,11 +1492,15 @@ function gameFolder(gameId) {
     played: `R${result.details.routeNumber}/${result.details.difficulty}`,
     written: result.continuation ?? null,
     read: read[i]?.continuation ?? null,
-    ok: Boolean(result.continuation) && same(read[i]?.continuation, result.continuation),
+    journeyCompleted: read[i]?.details?.journeyCompleted ?? null,
+    ok:
+      same(read[i]?.continuation ?? null, result.continuation ?? null) &&
+      (result.continuation ? true : read[i]?.details?.journeyCompleted === true && !("continuation" in read[i])),
   }));
   record("G1", "contract", "STORAGE_ROUNDTRIP_KEEPS_THE_CONTINUATION", rows.length > 0 && rows.every((row) => row.ok), {
     savedThroughThePage: saved.length,
     readBack: read.length,
+    completedJourneysReadBack: rows.filter((row) => row.journeyCompleted === true).length,
     failing: rows.filter((row) => !row.ok).slice(0, 4),
   });
 }
@@ -1538,7 +1624,7 @@ const GARBAGE = [null, 7, "result", { id: "half", gameId: ROUTE }, { ...LEGACY[0
   const valid = [
     ...MODES.map((mode) => expectedRouteContinuation(2, mode)),
     expectedRouteContinuation(1, "hard"),
-    expectedRouteContinuation(7, "medium"),
+    expectedRouteContinuation(3, "medium"),
   ];
   const malformed = [
     ["another kind", { kind: "probe-kind", routeNumber: 5, difficulty: "hard" }],
@@ -1549,6 +1635,9 @@ const GARBAGE = [null, 7, "result", { id: "half", gameId: ROUTE }, { ...LEGACY[0
     ["no Route", { kind: ROUTE_KIND, difficulty: "hard" }],
     ["Route as text", { kind: ROUTE_KIND, routeNumber: "3", difficulty: "hard" }],
     ["Route 0", { kind: ROUTE_KIND, routeNumber: 0, difficulty: "hard" }],
+    ["Route 4, past the journey", { kind: ROUTE_KIND, routeNumber: 4, difficulty: "hard" }],
+    ["Route 7, past the journey", { kind: ROUTE_KIND, routeNumber: 7, difficulty: "medium" }],
+    ["Route 999, past the journey", { kind: ROUTE_KIND, routeNumber: 999, difficulty: "easy" }],
     ["Route negative", { kind: ROUTE_KIND, routeNumber: -1, difficulty: "hard" }],
     ["Route fractional", { kind: ROUTE_KIND, routeNumber: 2.5, difficulty: "hard" }],
     ["Route NaN", { kind: ROUTE_KIND, routeNumber: Number.NaN, difficulty: "hard" }],
@@ -1598,7 +1687,9 @@ const GARBAGE = [null, 7, "result", { id: "half", gameId: ROUTE }, { ...LEGACY[0
   );
 }
 
-// I1 — the contract costs nothing: the Route's reader is types-only and ships only with the Rota; the producer gained no import.
+// I1 — the contract costs nothing: the Route's reader is types-only and ships only with the Rota. Its one runtime
+// importer besides the Rota is the hook, for the journey's end (`nextJourneyRoute`, ROUTE-JOURNEY-TERMINAL-01) — the
+// same chunk; the dev-only launcher reads the journey's length from it too.
 {
   const reader = importsOf(FILES.routeContinuation);
   const importers = SRC_FILES.filter((file) =>
@@ -1616,8 +1707,8 @@ const GARBAGE = [null, 7, "result", { id: "half", gameId: ROUTE }, { ...LEGACY[0
   const expected = {
     readerExists: true,
     readerRuntimeImports: [],
-    readerImportedAtRuntimeBy: [FILES.rota],
-    hookRuntimeImports: ["@/engine/difficulty", "@/engine/route-random", "@/engine/scoring", "@/lib/game-sounds", "react"],
+    readerImportedAtRuntimeBy: [FILES.launcher, FILES.rota, FILES.hook],
+    hookRuntimeImports: ["@/engine/difficulty", "@/engine/route-random", "@/engine/scoring", "@/games/escape-maze/continuation", "@/lib/game-sounds", "react"],
     typesRuntimeImports: [],
   };
   record("I1", "contract", "CONTRACT_COSTS_NOTHING", same(actual, expected), { actual });
@@ -1673,6 +1764,7 @@ const GARBAGE = [null, 7, "result", { id: "half", gameId: ROUTE }, { ...LEGACY[0
     "@/components/GameScreen": { GameScreen: PAGE_STUBS.GameScreen },
     "@/engine/route-random": evaluate(FILES.routeRandom, {}, {}),
     "@/engine/storage": evaluate(FILES.storage, { window: launcherWindow, Date }, {}),
+    ...(ROUTE_CONTINUATION && { "@/games/escape-maze/continuation": ROUTE_CONTINUATION }),
   });
   const launcher = mount(launcherModule.default, {});
   const launch = findElement(launcher.tree, (el) => el.type === "button" && el.props.children === "Launch");
@@ -1701,7 +1793,7 @@ const tally = (kind) => {
   return `${subset.filter((t) => t.pass).length}/${subset.length}`;
 };
 console.log(
-  `\n${REV ? `rev ${REV} · ` : ""}${tests.filter((t) => t.pass).length}/${tests.length} passed · contract ${tally("contract")} · preserved ${tally("preserved")} · failing: ${tests.filter((t) => !t.pass).map((t) => t.id).join(", ") || "none"}`,
+  `\n${REV ? `rev ${REV} · ` : ""}${tests.filter((t) => t.pass).length}/${tests.length} passed · contract ${tally("contract")} · preserved ${tally("preserved")} · terminal ${tally("terminal")} · failing: ${tests.filter((t) => !t.pass).map((t) => t.id).join(", ") || "none"}`,
 );
 console.log(allPass ? "GAME_CONTINUATION_CONTRACT_OK" : "GAME_CONTINUATION_CONTRACT_FAILED");
 process.exitCode = allPass ? EXIT_OK : EXIT_VALIDATION_FAILED;

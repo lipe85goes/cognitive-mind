@@ -341,7 +341,11 @@ if (fixtures.length !== COMBOS.length) {
 // ---------------------------------------------------------------------------
 {
   const resets = [];
-  /** Each next Route was Route N + 1, reached from a finished Route — checked, not recorded. */
+  /**
+   * Each next Route was the one the journey leads to from a lost Route — N + 1
+   * before the last Route, the last Route again after it (ROUTE-JOURNEY-
+   * TERMINAL-01) — reached from a finished Route. Checked, not recorded.
+   */
   const progressed = [];
   for (const [index, combo] of COMBOS.entries()) {
     const fixture = findChestRun(combo, 6_500_000 + index * 1_000);
@@ -359,7 +363,7 @@ if (fixtures.length !== COMBOS.length) {
     // and its result's continuation opens a new session.
     const ended = playToEnd(run, "lose");
     const afterNextRoute = run.nextSession().state;
-    progressed.push(ended === "lost" && afterNextRoute.routeNumber === combo.routeNumber + 1);
+    progressed.push(ended === "lost" && afterNextRoute.routeNumber === Math.min(combo.routeNumber + 1, 3));
     resets.push({
       seed: fixture.seed,
       combo: `${combo.difficulty}/r${combo.routeNumber}`,

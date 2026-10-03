@@ -253,6 +253,18 @@ function loadRouteGenerator() {
           playSuccessChime: () => undefined,
         };
       }
+      if (request === "@/games/escape-maze/continuation") {
+        // Types-only module: where a Route's end leads. Not reached by generation.
+        const continuationModule = { exports: {} };
+        vm.runInNewContext(
+          ts.transpileModule(
+            fs.readFileSync(path.join(path.dirname(SOURCE_PATH), "continuation.ts"), "utf8"),
+            { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 } },
+          ).outputText,
+          { module: continuationModule, exports: continuationModule.exports },
+        );
+        return continuationModule.exports;
+      }
       throw new Error(`Unexpected validation import: ${request}`);
     },
   };
