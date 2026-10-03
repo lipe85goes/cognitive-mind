@@ -10,9 +10,12 @@ import type { DifficultyLevel, GridPosition } from "@/types/game";
  * Moved out of `useEscapeMaze.ts` verbatim: no value, order or comment
  * changed. This module is data. It imports types only — no React, no sounds,
  * no RNG, no Babylon — and it never walks a grid, draws a random number or
- * touches state; generation, certification and the turn loop stay in the hook.
- * It exports only what the hook consumes; the tables behind those helpers stay
- * private here (validators reach them through route-module-loader's surface).
+ * touches state. Generation and certification read it from
+ * `route-generation.ts`, the board's primitives (its size) from
+ * `route-geometry.ts`, and the turn loop from the hook (ROUTE-C2).
+ * It exports only what those modules consume; the tables behind those helpers
+ * stay private here (validators reach them through route-module-loader's
+ * surface).
  */
 
 // ROTA-9X9-FOUNDATION-01: the board is 9x9. Every anchor below is derived

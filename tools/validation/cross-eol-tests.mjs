@@ -21,6 +21,8 @@ import {
   loadInstrumented,
   normalizeSource,
   productionSource,
+  routeModuleDeclaring,
+  routeSource,
 } from "./instrumented-generator.mjs";
 import { openEvidence } from "./evidence.mjs";
 
@@ -68,19 +70,25 @@ check(
  * after "(" is \r, not \n. So a CRLF checkout does not fail cleanly: half the
  * anchors keep resolving and produce plausible-looking indices. That is exactly
  * how the previous mission saw retStart = -1 alongside a confident retEnd = 950.
+ *
+ * ROUTE-C2: each literal is looked for in the text of the module that declares
+ * the function it belongs to (`owner`) — the text `instrument()` actually
+ * receives — since isStructurallyValid and isValidMap moved to
+ * route-generation.ts while chooseGuardianMove stayed in the hook.
  */
 const ANCHORS = [
-  { literal: "function isStructurallyValid(", breaksOnCrlf: false },
-  { literal: "function isValidMap(", breaksOnCrlf: false },
-  { literal: "function chooseGuardianMove(", breaksOnCrlf: false },
-  { literal: "  return { blocks, objective };", breaksOnCrlf: false },
-  { literal: "  return (\n", breaksOnCrlf: true },
-  { literal: "\n  );", breaksOnCrlf: false },
+  { literal: "function isStructurallyValid(", owner: "isStructurallyValid", breaksOnCrlf: false },
+  { literal: "function isValidMap(", owner: "isValidMap", breaksOnCrlf: false },
+  { literal: "function chooseGuardianMove(", owner: "chooseGuardianMove", breaksOnCrlf: false },
+  { literal: "  return { blocks, objective };", owner: "isStructurallyValid", breaksOnCrlf: false },
+  { literal: "  return (\n", owner: "isValidMap", breaksOnCrlf: true },
+  { literal: "\n  );", owner: "isValidMap", breaksOnCrlf: false },
 ];
-const missingFromLf = ANCHORS.filter((a) => !lf.includes(a.literal)).map((a) => a.literal);
-const wrongOnCrlf = ANCHORS.filter((a) => crlf.includes(a.literal) === a.breaksOnCrlf).map(
-  (a) => a.literal,
-);
+const ownerText = (owner) => routeSource(routeModuleDeclaring(owner));
+const missingFromLf = ANCHORS.filter((a) => !ownerText(a.owner).includes(a.literal)).map((a) => a.literal);
+const wrongOnCrlf = ANCHORS.filter(
+  (a) => ownerText(a.owner).replace(/\n/g, "\r\n").includes(a.literal) === a.breaksOnCrlf,
+).map((a) => a.literal);
 check(
   "NEWLINE_SHAPED_ANCHORS_NEED_THE_SEAM",
   missingFromLf.length === 0 && wrongOnCrlf.length === 0,
@@ -100,10 +108,15 @@ check(
  * transform that hands `instrument()` a fully CRLF source — and require the
  * instrumented result to be identical. This is what guards the class, because
  * `transform` is the one route by which foreign line endings can still arrive.
+ *
+ * ROUTE-C2: graph-wide (`transforms`), so EVERY module arrives CRLF — the
+ * instrumented one included, wherever the generator lives. A hook-only CRLF
+ * transform would no longer reach isStructurallyValid / isValidMap at all and
+ * would pass without testing anything.
  */
 const plain = loadInstrumented();
 const viaCrlfTransform = loadInstrumented({
-  transform: (source) => source.replace(/\n/g, "\r\n"),
+  transforms: (source) => source.replace(/\n/g, "\r\n"),
 });
 
 check(

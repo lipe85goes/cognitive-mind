@@ -82,6 +82,8 @@ const FILES = {
   hook: "src/games/escape-maze/useEscapeMaze.ts",
   routeContinuation: "src/games/escape-maze/continuation.ts",
   routeConfig: "src/games/escape-maze/route-config.ts",
+  routeGeneration: "src/games/escape-maze/route-generation.ts",
+  routeGeometry: "src/games/escape-maze/route-geometry.ts",
   storage: "src/engine/storage.ts",
   stageProgress: "src/engine/stage-progress.ts",
   routeRandom: "src/engine/route-random.ts",
@@ -1694,6 +1696,10 @@ const GARBAGE = [null, 7, "result", { id: "half", gameId: ROUTE }, { ...LEGACY[0
 // ROUTE-C1 added the hook's one new runtime edge, `route-config`: static data the hook alone imports, which itself
 // imports nothing at run time (types only) — so it cannot pull the shell, Babylon or UI into the Rota, nor the Rota
 // into anything else.
+// ROUTE-C2 moved generation out of the hook: `route-generation` (maps and their certification) and `route-geometry`
+// (the board's graph primitives) are two more Rota modules only the Rota reaches. Generation imports configuration,
+// geometry, the difficulty helpers and the RNG seam; geometry imports configuration alone — neither the shell, UI,
+// Babylon nor the hook — so the Rota chunk carries the same code, split across files.
 {
   const reader = importsOf(FILES.routeContinuation);
   const importers = SRC_FILES.filter((file) =>
@@ -1702,9 +1708,13 @@ const GARBAGE = [null, 7, "result", { id: "half", gameId: ROUTE }, { ...LEGACY[0
   const hookRuntime = (importsOf(FILES.hook) ?? []).filter((edge) => edge.kind === "runtime").map((edge) => edge.specifier).sort();
   const typesRuntime = (importsOf(FILES.types) ?? []).filter((edge) => edge.kind === "runtime").map((edge) => edge.specifier);
   const config = importsOf(FILES.routeConfig);
-  const configImporters = SRC_FILES.filter((file) =>
-    (importsOf(file) ?? []).some((edge) => edge.file === FILES.routeConfig && edge.kind !== "type"),
-  );
+  const runtimeImportersOf = (target) =>
+    SRC_FILES.filter((file) => (importsOf(file) ?? []).some((edge) => edge.file === target && edge.kind !== "type")).sort();
+  const runtimeSpecifiersOf = (file) => {
+    const edges = importsOf(file);
+    return edges ? edges.filter((edge) => edge.kind !== "type").map((edge) => edge.specifier).sort() : null;
+  };
+  const configImporters = runtimeImportersOf(FILES.routeConfig);
   const actual = {
     readerExists: reader !== null,
     readerRuntimeImports: reader ? reader.filter((edge) => edge.kind !== "type").map((edge) => edge.specifier) : null,
@@ -1713,6 +1723,10 @@ const GARBAGE = [null, 7, "result", { id: "half", gameId: ROUTE }, { ...LEGACY[0
     typesRuntimeImports: typesRuntime,
     routeConfigRuntimeImports: config ? config.filter((edge) => edge.kind !== "type").map((edge) => edge.specifier) : null,
     routeConfigImportedAtRuntimeBy: configImporters,
+    routeGenerationRuntimeImports: runtimeSpecifiersOf(FILES.routeGeneration),
+    routeGenerationImportedAtRuntimeBy: runtimeImportersOf(FILES.routeGeneration),
+    routeGeometryRuntimeImports: runtimeSpecifiersOf(FILES.routeGeometry),
+    routeGeometryImportedAtRuntimeBy: runtimeImportersOf(FILES.routeGeometry),
   };
   const expected = {
     readerExists: true,
@@ -1724,12 +1738,23 @@ const GARBAGE = [null, 7, "result", { id: "half", gameId: ROUTE }, { ...LEGACY[0
       "@/engine/scoring",
       "@/games/escape-maze/continuation",
       "@/games/escape-maze/route-config",
+      "@/games/escape-maze/route-generation",
+      "@/games/escape-maze/route-geometry",
       "@/lib/game-sounds",
       "react",
     ],
     typesRuntimeImports: [],
     routeConfigRuntimeImports: [],
-    routeConfigImportedAtRuntimeBy: [FILES.hook],
+    routeConfigImportedAtRuntimeBy: [FILES.routeGeneration, FILES.routeGeometry, FILES.hook],
+    routeGenerationRuntimeImports: [
+      "@/engine/difficulty",
+      "@/engine/route-random",
+      "@/games/escape-maze/route-config",
+      "@/games/escape-maze/route-geometry",
+    ],
+    routeGenerationImportedAtRuntimeBy: [FILES.hook],
+    routeGeometryRuntimeImports: ["@/games/escape-maze/route-config"],
+    routeGeometryImportedAtRuntimeBy: [FILES.routeGeneration, FILES.hook],
   };
   record("I1", "contract", "CONTRACT_COSTS_NOTHING", same(actual, expected), { actual });
 }

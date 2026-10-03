@@ -48,6 +48,19 @@ export function routeRandom(): number {
 }
 
 /**
+ * One uniform pick from `items`: exactly one `routeRandom()` draw.
+ *
+ * ROUTE-C2: moved here verbatim from `useEscapeMaze.ts`, because both halves
+ * of the Rota pick with it — map generation (`route-generation.ts`: template,
+ * exit, Guardian seat) and the Hunter's tie-breaks in the hook — and they draw
+ * from this one stream in that order. Living beside the stream keeps neither
+ * half depending on the other just to share it.
+ */
+export function randomItem<T>(items: readonly T[]): T {
+  return items[Math.floor(routeRandom() * items.length)];
+}
+
+/**
  * Arm a diagnostic session. Developer tooling only — nothing in the product
  * calls this, and `/lab/route-launcher` is its single caller.
  */

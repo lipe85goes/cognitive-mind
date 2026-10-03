@@ -9,7 +9,9 @@
  *                  moved set (and is the only Rota module that does); the hook
  *                  declares none of it and consumes it by import; route-config
  *                  imports types only (no React, sounds, Babylon, RNG, hook);
- *                  it exports exactly what the hook consumes; no template row,
+ *                  it exports exactly what the Rota's modules consume (the
+ *                  hook alone at C1; since ROUTE-C2 the hook, route-generation
+ *                  and route-geometry between them); no template row,
  *                  stage copy or other copy of the configuration is left in
  *                  the hook. This is also the static gate against the
  *                  configuration drifting back into the hook.
@@ -80,7 +82,11 @@ const MOVED_VALUES = [
 ];
 /** Types moved with them. */
 const MOVED_TYPES = ["RouteStage", "RouteProgression", "DifficultyPlayBrief", "RouteStageQuality"];
-/** What route-config.ts exports: exactly what the hook consumes, nothing for convenience. */
+/**
+ * What route-config.ts exports: exactly what the Rota's modules consume, nothing for convenience. At C1 the hook was the
+ * only consumer; since ROUTE-C2 generation (route-generation.ts) and the board's primitives (route-geometry.ts) import
+ * their share directly, and S3 requires the union of all their imports to be this list.
+ */
 const CONFIG_EXPORTS = [
   "COLS", "DIFFICULTY_PLAY_BRIEF", "GUARDIAN_CANDIDATES", "MAX_GENERATION_ATTEMPTS", "PLAYER_START",
   "RECOVERY_RETRIES_PER_SLOT", "RECOVERY_ROUNDS", "ROUTE_STAGE_EXIT_CANDIDATES", "ROUTE_STAGE_GUARDIAN_CANDIDATES",
@@ -88,8 +94,11 @@ const CONFIG_EXPORTS = [
   "getRouteStageTemplates", "getStarCount", "getStarMinSeparation", "getTrapCount", "getWallLimits",
   "RouteProgression", "RouteStage",
 ].sort();
-/** Left in the hook on purpose (input/runtime, C5/C6) — must NOT have moved. */
-const KEPT_IN_HOOK = ["ARROW_DELTAS", "BREAK_DIRECTION_DELTAS", "MOVE_INPUT_GUARD_MS", "BreakDirection", "BreakTarget", "MazeMap", "GameStatus"];
+/**
+ * Left in the hook on purpose (input/runtime, C5/C6) — must NOT have moved. `MazeMap` was here at C1; ROUTE-C2 moved it
+ * with the generator that produces it (route-generation.ts), which route-generation-extraction-tests.mjs checks.
+ */
+const KEPT_IN_HOOK = ["ARROW_DELTAS", "BREAK_DIRECTION_DELTAS", "MOVE_INPUT_GUARD_MS", "BreakDirection", "BreakTarget", "GameStatus"];
 
 const DIFFICULTIES = ["easy", "medium", "hard"];
 const STAGES = [1, 2, 3];
@@ -195,25 +204,43 @@ const closure = TREE.closure(ROUTE_HOOK);
   });
 }
 
-// S3 — the hook consumes the configuration by import, every export of route-config is consumed, nothing else exported.
+// S3 — the Rota consumes the configuration by import, every export of route-config is consumed, nothing else exported.
+// ROUTE-C2: the consumers are every Rota module of the hook's graph (the hook, route-generation, route-geometry), each
+// with one import declaration from route-config; the hook is still one of them.
 {
-  const fromConfig = hookDecl.imports.filter((imp) => {
-    try {
-      return TREE.resolve(imp.specifier, ROUTE_HOOK) === ROUTE_CONFIG;
-    } catch {
-      return false;
-    }
-  });
-  const imported = sorted(fromConfig.flatMap((imp) => imp.names));
+  const importers = closure
+    .filter((file) => file.startsWith(ROUTE_MODULE_DIR) && file !== ROUTE_CONFIG)
+    .map((file) => {
+      const decls = declarations(file, TREE.read(file)).imports.filter((imp) => {
+        try {
+          return TREE.resolve(imp.specifier, file) === ROUTE_CONFIG;
+        } catch {
+          return false;
+        }
+      });
+      return { file, decls, names: decls.flatMap((imp) => imp.names) };
+    })
+    .filter((importer) => importer.decls.length > 0);
+  const imported = sorted([...new Set(importers.flatMap((importer) => importer.names))]);
   const exported = sorted(configDecl.exported);
-  record("S3", "structure", "HOOK_IMPORTS_EXACTLY_WHAT_ROUTE_CONFIG_EXPORTS", fromConfig.length === 1 && same(imported, CONFIG_EXPORTS) && same(exported, CONFIG_EXPORTS), {
-    importDeclarations: fromConfig.map((imp) => imp.specifier),
-    hookImports: imported.length,
-    routeConfigExports: exported.length,
-    exportedButNotExpected: exported.filter((n) => !CONFIG_EXPORTS.includes(n)),
-    expectedButNotExported: CONFIG_EXPORTS.filter((n) => !exported.includes(n)),
-    importedButNotExpected: imported.filter((n) => !CONFIG_EXPORTS.includes(n)),
-  });
+  record(
+    "S3",
+    "structure",
+    "ROTA_IMPORTS_EXACTLY_WHAT_ROUTE_CONFIG_EXPORTS",
+    importers.some((importer) => importer.file === ROUTE_HOOK) &&
+      importers.every((importer) => importer.decls.length === 1) &&
+      same(imported, CONFIG_EXPORTS) &&
+      same(exported, CONFIG_EXPORTS),
+    {
+      importDeclarations: Object.fromEntries(importers.map((importer) => [importer.file, importer.decls.length])),
+      importsByModule: Object.fromEntries(importers.map((importer) => [importer.file, importer.names.length])),
+      rotaImports: imported.length,
+      routeConfigExports: exported.length,
+      exportedButNotExpected: exported.filter((n) => !CONFIG_EXPORTS.includes(n)),
+      expectedButNotExported: CONFIG_EXPORTS.filter((n) => !exported.includes(n)),
+      importedButNotExpected: imported.filter((n) => !CONFIG_EXPORTS.includes(n)),
+    },
+  );
 }
 
 // S4 — route-config is data: types-only imports, no run-time dependency, no side-effecting statement, no RNG.
