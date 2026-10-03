@@ -10,7 +10,8 @@
  *                     anchor on, instead of the module that holds the code;
  *   rota-module-path  names another Rota module file (difficulty, route-random,
  *                     continuation, route-config since ROUTE-C1, route-generation
- *                     and route-geometry since ROUTE-C2) in code;
+ *                     and route-geometry since ROUTE-C2, route-defenders since
+ *                     ROUTE-C3) in code;
  *   rota-resolver     answers a Rota import by hand (`=== "@/engine/…"`) — a
  *                     private module resolver;
  *   rota-ts-compile   compiles TypeScript in a file that also names Rota
@@ -64,11 +65,11 @@ if (REV) {
 // --- the patterns ------------------------------------------------------------------------------
 
 const codeOnly = (source) => source.replace(/\/\*[\s\S]*?\*\//g, " ").replace(/(^|[^:\\])\/\/.*$/gm, "$1");
-const ROTA_SPECIFIER = String.raw`@\/(?:engine\/(?:difficulty|route-random)|games\/escape-maze\/(?:continuation|route-config|route-generation|route-geometry|useEscapeMaze))`;
+const ROTA_SPECIFIER = String.raw`@\/(?:engine\/(?:difficulty|route-random)|games\/escape-maze\/(?:continuation|route-config|route-defenders|route-generation|route-geometry|useEscapeMaze))`;
 const SIGNALS = {
   "hook-path": /useEscapeMaze\.ts/,
   "hook-text": /(?<!function\s)\bproductionSource\s*\(/,
-  "rota-module-path": /["'](?:src\/engine\/)?(?:difficulty|route-random)\.ts["']|["'](?:src\/games\/escape-maze\/)?(?:continuation|route-config|route-generation|route-geometry)\.ts["']/,
+  "rota-module-path": /["'](?:src\/engine\/)?(?:difficulty|route-random)\.ts["']|["'](?:src\/games\/escape-maze\/)?(?:continuation|route-config|route-defenders|route-generation|route-geometry)\.ts["']/,
   "rota-resolver": new RegExp(String.raw`===\s*["']${ROTA_SPECIFIER}["']`),
   "single-file-seam": /\bhookSource\b/,
 };
@@ -115,7 +116,8 @@ const REASON = {
 /** file → { kinds allowed, reason }. Anything found and not listed here fails the gate. */
 const ALLOWED = {
   "route-module-loader.mjs": { kinds: ["hook-path", "rota-module-path", "rota-ts-compile"], reason: "SHARED_LOADER" },
-  "route-module-loader-tests.mjs": { kinds: ["hook-path", "rota-module-path"], reason: "LOADER_TESTS" },
+  // ROUTE-C3: L10 no longer names the hook — it reads route-random's importers off the graph — so "hook-path" left.
+  "route-module-loader-tests.mjs": { kinds: ["rota-module-path"], reason: "LOADER_TESTS" },
   "cross-eol-tests.mjs": {
     kinds: ["hook-text"],
     reason: "STRUCTURAL_ASSERTION",
@@ -145,6 +147,11 @@ const ALLOWED = {
     kinds: ["rota-module-path"],
     reason: "STRUCTURAL_ASSERTION",
     note: "ROUTE-C2's static gate: generation in route-generation.ts, primitives in route-geometry.ts, randomItem in the seam, none of it in the hook; its Rota runs through the graph",
+  },
+  "route-defenders-extraction-tests.mjs": {
+    kinds: ["rota-module-path"],
+    reason: "STRUCTURAL_ASSERTION",
+    note: "ROUTE-C3's static gate: the Hunter's and the Sentinel's policy in route-defenders.ts and nowhere else, none of it in the hook, every other Rota module untouched; its Rota runs through the graph",
   },
   "route-board-loader-tests.mjs": { kinds: ["rota-module-path", "rota-ts-compile"], reason: "UI_STAGE" },
   "diagnostic-launcher-tests.mjs": {

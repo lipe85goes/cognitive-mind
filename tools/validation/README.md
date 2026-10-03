@@ -220,7 +220,9 @@ node tools/validation/route-validation-coupling-gate.mjs   # <1 s; --rev=5d541b2
 ```
 
 The first tests resolution, transpilation, identity (`route-random` evaluated
-once although the hook and `difficulty.ts` both import it), mocks, worktree vs
+once although several modules of the graph import it — `difficulty.ts`,
+`route-generation.ts` and, since ROUTE-C3, `route-defenders.ts`; the hook no
+longer does), mocks, worktree vs
 `--rev`, overrides, single-module transforms, errors, cycles and line endings,
 then splits `useEscapeMaze.ts` in memory (grid/config into `route-config.ts`, a
 generation helper into `route-pick.ts`) and requires the instrumented
@@ -236,7 +238,7 @@ is declared in its `ALLOWED` table with a reason:
 
 | reason | validators | why they still name Rota files |
 | --- | --- | --- |
-| STRUCTURAL_ASSERTION | game-continuation-contract, route-journey-ownership, route-journey-terminal, route-config-extraction, route-generation-extraction, diagnostic-launcher, production-diagnostic-boundary, cross-eol | the check is about where code lives (I1/O3/T11, C1's and C2's static gates, the seed seam's own code, CRLF of the hook's text); their Rota runs through the graph |
+| STRUCTURAL_ASSERTION | game-continuation-contract, route-journey-ownership, route-journey-terminal, route-config-extraction, route-generation-extraction, route-defenders-extraction, diagnostic-launcher, production-diagnostic-boundary, cross-eol | the check is about where code lives (I1/O3/T11, C1's, C2's and C3's static gates, the seed seam's own code, CRLF of the hook's text); their Rota runs through the graph |
 | UI_STAGE | route-board-loader | compiles the Rota component under a chunk gate with stage stubs |
 | REPORT_LABEL | breakable-wall-feasibility, dynamic-solvability-finalize | a path inside report text |
 | LEGACY_LEDGER | chest-acceptance | ROTA-CHEST-REWARDS-01 ledger; rewrites its archive when run |
@@ -246,7 +248,10 @@ A new validator that names the hook or resolves a Rota import by hand fails the
 gate until it uses the loader or is declared with a reason; a declaration whose
 coupling is gone must leave the table. `route-config.ts` counts as a Rota module
 file for the gate (ROUTE-C1), and so do `route-generation.ts` and
-`route-geometry.ts` (ROUTE-C2).
+`route-geometry.ts` (ROUTE-C2) and `route-defenders.ts` (ROUTE-C3).
+`route-module-loader-tests` no longer names the hook since ROUTE-C3 (L10 reads
+`route-random`'s importers off the graph), so its `hook-path` declaration left
+the table.
 
 `dynamic-solvability-campaign-lib`'s campaign identity used to hash the hook
 and `difficulty.ts` by name (a PROVENANCE declaration). Once generation left
@@ -298,14 +303,16 @@ node tools/validation/route-generation-extraction-tests.mjs --rev=65932cf  # mus
 module and nowhere else in `src/`; the hook declares none of it (not even as
 text) and imports exactly `generateMaze` + `MazeMap` from route-generation,
 which exports exactly those; route-geometry exports exactly what the Rota walks
-with; `randomItem` is the seam's, imported by generation and the hook (the
-Hunter); the new modules import only config, geometry, `difficulty`,
+with; `randomItem` is the seam's, imported by generation and the Hunter (the
+hook at C2, `route-defenders.ts` since C3 — whichever declares
+`chooseGuardianMove`); the new modules import only config, geometry, `difficulty`,
 `route-random` and types — no React, hook, UI, Babylon, sounds or scoring —
 and reach no cycle back into the hook; the instrumented generator and every
 validator anchor on the generator land in route-generation.ts. `[preserved]`:
 every moved declaration (comments included) and every remaining hook statement
-is 65932cf's text, the seam is 65932cf's plus `randomItem`, the defenders
-(C3) and the dynamic invariants (C4) are still in the hook, the hook's public
+is 65932cf's text, the seam is 65932cf's plus `randomItem`, the dynamic
+invariants (C4) and the turn are still in the hook (the defenders were too
+until C3 moved them; route-defenders-extraction-tests holds that), the hook's public
 surface (types and values) and its product consumers are unchanged, and the
 instrumented loader still reports 18 structural reasons and 23 final gates.
 `[equivalence]` against 65932cf through the loader: graph primitives over 300
@@ -327,3 +334,64 @@ instrumented one. `route-config-extraction-tests` S3 now requires the Rota's
 modules together (not the hook alone) to import exactly what route-config
 exports, and `MazeMap` left its kept-in-hook list; `game-continuation-contract`
 I1 pins the two new runtime edges.
+
+**ROUTE DEFENDERS (ROUTE-C3)** — how the Hunter and the Sentinel decide lives in
+`src/games/escape-maze/route-defenders.ts`: `PORTAL_ZONE_RADIUS`,
+`SENTINEL_LEASH`, `SENTINEL_THREAT_HORIZON`, `SENTINEL_COMMIT_TURNS`,
+`EMPTY_BLOCKED`, `PortalDefenceZone`, `SentinelState`,
+`computePortalDefenceZone`, `createSentinelState`, `decideSentinelMove` and
+`chooseGuardianMove`, moved verbatim and in order (only `export` added to
+`SENTINEL_COMMIT_TURNS` and `chooseGuardianMove`, which the hook imports). The
+turn — `runDefenderPhase`, capture, Second Chance, messages, stats — stays in
+the hook, text unchanged; so do the dynamic invariants (C4). The hook
+re-exports `computePortalDefenceZone`, `createSentinelState`,
+`decideSentinelMove`, `PortalDefenceZone` and `SentinelState` as before, and
+still not `chooseGuardianMove`. Writes nothing:
+
+```bash
+node tools/validation/route-defenders-extraction-tests.mjs              # ~4 min
+node tools/validation/route-defenders-extraction-tests.mjs --rev=de8c94e  # must fail every [structure] check, hold the rest
+```
+
+`[structure]` is the static gate: every moved binding is declared in
+route-defenders.ts and nowhere else in `src/`; the hook declares none of it
+(not even as text), imports exactly what route-defenders exports and no longer
+touches the RNG itself (`routeRandom`, `randomItem`, `getPredatorNextPosition`
+are gone from it); route-defenders imports only config, geometry,
+`difficulty`, `route-random` and types — `MazeMap` from route-generation as a
+type only — never React, the hook, UI, Babylon or sounds; nothing below it
+(config, geometry, generation, the seam, difficulty) reaches it and the hook's
+run-time graph is acyclic; the C0 surface, the instrumented generator, the
+runtime harness, `routeModuleDeclaring` and textual anchors (cross-eol's
+`function chooseGuardianMove(`) all resolve to route-defenders.ts.
+`[preserved]`: the moved block is de8c94e's text byte for byte; the hook's
+remaining statements are exactly de8c94e's minus the moved ones; the whole
+`useEscapeMaze` body (runDefenderPhase, Hunter before Sentinel) is unchanged;
+the public surface (parser and run time, re-exports identical functions) and
+every other Rota module are untouched. `[equivalence]` against de8c94e
+through the loader: 10 800 Sentinel decisions over generated maps (zones with
+one wall opened, posts, leash, horizon, commitment, re-aim, traps that cut the
+held door, other commit lengths) and the starving-zone throw; the lab contract
+c3 walk, FEINT and ROLE; 3 780 Hunter cases covering every branch (easy's 0.45
+random branch and greedy fallback, medium/hard fallbacks, ties, portal / trap /
+Sentinel blocking the preferred move, no alternative, default argument) with
+draws consumed and the next three draws after each; 27 chains of turns with
+generation before and after (seeded and armed); the trap contract; Second
+Chance through the real hook on an armed per-step stream, so each capture is
+attributed (Hunter, Sentinel, the Explorer's own step), with rollback, charge
+and overlap checked; 144 real Routes (Routes 1/2/3 × every mode × eight
+policies), step by step, plus restart, mode change, the next Route and the
+stream after.
+
+Validators that had to follow the code: none of the surfaces did — every
+validator that reaches the defenders (`sentinel-runtime-equivalence`,
+`trap-strategy-tests`, `dynamic-solvability-02`, `adversarial-runtime-replay`,
+`chest-*`, `second-chance-*`, the dynamic solver…) goes through
+`loadInstrumented` / `loadRouteRuntime`, whose surface finds the bindings
+wherever they are declared. What pinned the old layout:
+`route-generation-extraction-tests` S5 (the Hunter's module is now whichever declares
+`chooseGuardianMove`) and P3 (the defenders left its kept-in-hook list);
+`route-module-loader-tests` L10 (route-random's importers come from the graph);
+`game-continuation-contract` I1 (the hook's runtime imports lose
+`route-random` and gain `route-defenders`, whose own edges are pinned);
+`cross-eol-tests` only had a comment to update.

@@ -74,7 +74,8 @@ check(
  * ROUTE-C2: each literal is looked for in the text of the module that declares
  * the function it belongs to (`owner`) — the text `instrument()` actually
  * receives — since isStructurallyValid and isValidMap moved to
- * route-generation.ts while chooseGuardianMove stayed in the hook.
+ * route-generation.ts while chooseGuardianMove stayed in the hook (until
+ * ROUTE-C3 moved it to route-defenders.ts; `owner` follows it there).
  */
 const ANCHORS = [
   { literal: "function isStructurallyValid(", owner: "isStructurallyValid", breaksOnCrlf: false },
