@@ -328,6 +328,22 @@ function transformPipeline(transforms, toRepoPath) {
     });
 }
 
+/** A module's text as the graph compiles it: source, then transforms, then the internals export. */
+function preparedSource(sources, pipeline, exposeInternals, file) {
+  let text = sources.read(file);
+  for (const step of pipeline) {
+    const next = step(text, file);
+    if (typeof next !== "string") throw new Error(`route-module-loader: a transform returned ${typeof next} for ${file}`);
+    text = normalizeSource(next);
+  }
+  if (exposeInternals(file)) {
+    const names = declaredValueNames(file, text);
+    if (names.includes(INTERNALS_EXPORT)) throw new Error(`route-module-loader: ${file} already declares ${INTERNALS_EXPORT}`);
+    text += `\nexport const ${INTERNALS_EXPORT} = { ${names.join(", ")} };\n`;
+  }
+  return text;
+}
+
 /**
  * Evaluate a small graph of repository modules.
  *
@@ -361,17 +377,7 @@ export function createModuleGraph({
   const compiled = new Map();
 
   const compiledSource = (file) => {
-    let text = sources.read(file);
-    for (const step of pipeline) {
-      const next = step(text, file);
-      if (typeof next !== "string") throw new Error(`route-module-loader: a transform returned ${typeof next} for ${file}`);
-      text = normalizeSource(next);
-    }
-    if (exposeInternals(file)) {
-      const names = declaredValueNames(file, text);
-      if (names.includes(INTERNALS_EXPORT)) throw new Error(`route-module-loader: ${file} already declares ${INTERNALS_EXPORT}`);
-      text += `\nexport const ${INTERNALS_EXPORT} = { ${names.join(", ")} };\n`;
-    }
+    const text = preparedSource(sources, pipeline, exposeInternals, file);
     compiled.set(file, text);
     return text;
   };
@@ -463,6 +469,66 @@ export function createModuleGraph({
     /** Loaded modules in load order, with where each came from. */
     modules: () => [...records.values()].map(({ file, origin, loaded }) => ({ file, origin, loaded })),
   };
+}
+
+/**
+ * ROUTE-PERF-WORKER-DECISION-01 — the same closure as one self-contained
+ * script, for running it where the graph's `vm` realm cannot go: natively in
+ * Node's main realm (timing without a sandbox's global proxy) and inside a
+ * browser page or a Worker (timing under CPU throttling, transport probes).
+ *
+ * Returns the text of a function expression `(function (...params) { … })`
+ * whose call evaluates `entry`'s run-time closure — the same files, transforms
+ * and transpilation as `createModuleGraph` — and returns `{ exports, require }`:
+ * the entry's exports and a `require(repoPath)` that hands out the SAME module
+ * instances (one per file). `params` are free names the modules may read —
+ * pass `Math` to shadow the realm's `Math`, or a probe a transform refers to.
+ *
+ * Nothing outside the repository is bundled: a closure that imports a package
+ * (React, Babylon…) has no place in a standalone script, so it throws instead
+ * of guessing. Generation's closure imports none. Read-only, like the rest.
+ */
+export function emitModuleBundle({
+  tree,
+  root,
+  rev,
+  sourceOverrides,
+  entry = ROUTE_HOOK,
+  transforms,
+  exposeInternals = () => false,
+  params = [],
+} = {}) {
+  const sources = tree ?? openSourceTree({ root, rev, sourceOverrides });
+  const pipeline = transformPipeline(transforms, sources.toRepoPath);
+  const start = sources.toRepoPath(entry);
+  const definitions = sources.closure(start).map((file) => {
+    const js = transpile(file, preparedSource(sources, pipeline, exposeInternals, file));
+    const links = {};
+    for (const [, specifier] of js.matchAll(/\brequire\("([^"]+)"\)/g)) {
+      const target = sources.resolve(specifier, file);
+      if (target === null) {
+        throw new Error(`route-module-loader: ${file} imports "${specifier}", which a standalone bundle cannot provide`);
+      }
+      links[specifier] = target;
+    }
+    return `${JSON.stringify(file)}: [${JSON.stringify(links)}, function (exports, require, module) {\n${js}\n}]`;
+  });
+  return [
+    `(function (${params.join(", ")}) {`,
+    `const __definitions = {\n${definitions.join(",\n")}\n};`,
+    "const __records = {};",
+    "function __require(file) {",
+    "  if (__records[file]) return __records[file].exports;",
+    "  const definition = __definitions[file];",
+    '  if (!definition) throw new Error("bundle: no module " + file);',
+    "  const module = { exports: {} };",
+    "  __records[file] = module;",
+    "  definition[1].call(module.exports, module.exports, (specifier) => __require(definition[0][specifier]), module);",
+    "  return module.exports;",
+    "}",
+    `return { exports: __require(${JSON.stringify(start)}), require: __require };`,
+    "})",
+  ].join("\n");
 }
 
 // ---------------------------------------------------------------------------
