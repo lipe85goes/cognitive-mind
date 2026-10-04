@@ -8,9 +8,11 @@
  *                                               and their constants.
  *
  * The turn that asks them (`runDefenderPhase`: commit, Second Chance rollback,
- * capture, messages, stats) stays in the hook, and so do the dynamic
- * invariants (C4). C3 is a pure refactor: the declarations moved, nothing they
- * decide did. Four groups of checks hold it to that:
+ * capture, messages, stats) stays in the hook; so did the dynamic invariants,
+ * until ROUTE-C4 moved them to route-invariants.ts
+ * (route-invariants-extraction-tests.mjs holds that move). C3 is a pure
+ * refactor: the declarations moved, nothing they decide did. Four groups of
+ * checks hold it to that:
  *
  *   [structure]    WHERE the code lives, and the static gate against it
  *                  drifting back: every moved binding is declared in
@@ -28,10 +30,11 @@
  *   [preserved]    what must not have changed: every moved declaration
  *                  (comments included) and their order is the baseline's text,
  *                  only `export` added; every remaining hook statement is the
- *                  baseline's text and none other went missing; the whole
+ *                  baseline's text and none other went missing (what C4 moved
+ *                  on to route-invariants.ts aside); the whole
  *                  `useEscapeMaze` body — runDefenderPhase, the step, the
  *                  reward, the wall, Second Chance — is byte for byte the
- *                  baseline's; the C4 invariants are still in the hook; the
+ *                  baseline's; the turn is still in the hook; the
  *                  hook's public surface (types and values, parser and run
  *                  time) is the baseline's, `chooseGuardianMove` still is not
  *                  part of it, and every other Rota module is untouched.
@@ -129,15 +132,22 @@ const DEFENDERS_EXPORTS = [
 /** What the hook re-exports of them, exactly as it exported them at the baseline. */
 const HOOK_REEXPORTS = ["PortalDefenceZone", "SentinelState", "computePortalDefenceZone", "createSentinelState", "decideSentinelMove"];
 
-/** Left in the hook on purpose: input, chest copy, the C4 invariants and the turn itself (runDefenderPhase lives in useEscapeMaze). */
+/**
+ * Left in the hook on purpose: input, chest copy and the turn itself (runDefenderPhase lives in useEscapeMaze). The
+ * dynamic invariants were here at C3 too; ROUTE-C4 moved them on, with the state's vocabulary their snapshot is
+ * written in, to route-invariants.ts — see C4_MOVED below.
+ */
 const KEPT_IN_HOOK_VALUES = [
-  "ARROW_DELTAS", "BREAK_DIRECTION_DELTAS", "MOVE_INPUT_GUARD_MS", "inspectDynamicMazeState",
+  "ARROW_DELTAS", "BREAK_DIRECTION_DELTAS", "MOVE_INPUT_GUARD_MS",
   "SECOND_CHANCE_EXPLORER_MESSAGE", "SECOND_CHANCE_DEFENDER_MESSAGE", "useEscapeMaze",
 ];
-const KEPT_IN_HOOK_TYPES = [
-  "BreakDirection", "BreakTarget", "GameStatus", "CompleteFn", "ChestReward", "DynamicMazeStateSnapshot",
-  "DynamicSolvabilityInspection", "DefenderPhaseInput",
-];
+const KEPT_IN_HOOK_TYPES = ["BreakDirection", "BreakTarget", "CompleteFn", "DefenderPhaseInput"];
+/**
+ * What ROUTE-C4 moved out of the hook after C3: they may be missing from the hook only where route-invariants.ts
+ * declares them (route-invariants-extraction-tests.mjs holds the move itself — verbatim, against C3's head).
+ */
+const ROUTE_INVARIANTS = "src/games/escape-maze/route-invariants.ts";
+const C4_MOVED = ["GameStatus", "ChestReward", "DynamicMazeStateSnapshot", "DynamicSolvabilityInspection", "inspectDynamicMazeState"];
 
 /** What route-defenders may import. `route-generation` for the `MazeMap` type, and only as a type. */
 const ALLOWED_IMPORTS = [
@@ -479,10 +489,15 @@ function findCycle(edges) {
 }
 
 // P2 — the hook's remaining code is the baseline's text: its statements (everything but the import/export header) are
-// exactly the baseline's statements minus the moved ones, in the same order, each byte for byte.
+// exactly the baseline's statements minus the moved ones, in the same order, each byte for byte. ROUTE-C4's names are
+// "moved on" only where route-invariants.ts declares them and the hook no longer does.
 {
   const movedHere = (name) => MOVED.includes(name) && (MOVED_TYPES.includes(name) ? typeOwner(name) : owners[name]) !== ROUTE_HOOK;
-  const expected = baseHook.named.filter((entry) => !movedHere(entry.name)).map((entry) => entry.text);
+  const invariantsDecl = declarations(ROUTE_INVARIANTS, read(TREE, ROUTE_INVARIANTS));
+  const movedOnByC4 = (name) =>
+    C4_MOVED.includes(name) && !hook.values.includes(name) && !hook.types.includes(name) &&
+    (invariantsDecl.values.includes(name) || invariantsDecl.types.includes(name));
+  const expected = baseHook.named.filter((entry) => !movedHere(entry.name) && !movedOnByC4(entry.name)).map((entry) => entry.text);
   const now = hook.named.map((entry) => entry.text);
   const extra = now.filter((text) => !expected.includes(text));
   const missing = expected.filter((text) => !now.includes(text));
@@ -491,6 +506,7 @@ function findCycle(edges) {
     hookStatements: now.length,
     baselineStatements: baseHook.named.length,
     removed: baseHook.named.filter((entry) => movedHere(entry.name)).map((entry) => entry.name),
+    movedOnByC4: baseHook.named.filter((entry) => movedOnByC4(entry.name)).map((entry) => entry.name),
     notInBaseline: extra.map(firstLine),
     missingFromHook: missing.map(firstLine),
   });
@@ -498,7 +514,8 @@ function findCycle(edges) {
 
 // P3 — the turn stays in the hook, untouched: the whole `useEscapeMaze` body (runDefenderPhase with its Hunter-then-
 // Sentinel order, the step, the reward, the wall, Second Chance and its rollback) is the baseline's text; runDefenderPhase
-// is declared there once; what C4 will move is still in the hook and not in route-defenders.
+// is declared there once; the invariants (in the hook at C3, in route-invariants.ts since C4) never reached
+// route-defenders.
 {
   const missing = [...KEPT_IN_HOOK_VALUES.filter((n) => !hook.values.includes(n)), ...KEPT_IN_HOOK_TYPES.filter((n) => !hook.types.includes(n))];
   const changed = [...KEPT_IN_HOOK_VALUES, ...KEPT_IN_HOOK_TYPES].filter((n) => hook.text.get(n) !== baseHook.text.get(n));
@@ -512,7 +529,7 @@ function findCycle(edges) {
   record(
     "P3",
     "preserved",
-    "TURN_ORCHESTRATION_AND_INVARIANTS_STAY_IN_THE_HOOK",
+    "TURN_ORCHESTRATION_STAYS_IN_THE_HOOK",
     missing.length === 0 && changed.length === 0 && phase === 1 && order && leakedToDefenders.length === 0,
     {
       kept: KEPT_IN_HOOK_VALUES.length + KEPT_IN_HOOK_TYPES.length,

@@ -97,8 +97,12 @@ const CONFIG_EXPORTS = [
 /**
  * Left in the hook on purpose (input/runtime, C5/C6) — must NOT have moved. `MazeMap` was here at C1; ROUTE-C2 moved it
  * with the generator that produces it (route-generation.ts), which route-generation-extraction-tests.mjs checks.
+ * `GameStatus` was here too; ROUTE-C4 moved it with the runtime contract whose snapshot is written in it
+ * (route-invariants.ts), which route-invariants-extraction-tests.mjs checks.
  */
-const KEPT_IN_HOOK = ["ARROW_DELTAS", "BREAK_DIRECTION_DELTAS", "MOVE_INPUT_GUARD_MS", "BreakDirection", "BreakTarget", "GameStatus"];
+const KEPT_IN_HOOK = ["ARROW_DELTAS", "BREAK_DIRECTION_DELTAS", "MOVE_INPUT_GUARD_MS", "BreakDirection", "BreakTarget"];
+/** Runtime names C1 kept out of route-config. Whichever module holds them now, none of them is configuration. */
+const NEVER_CONFIG = [...KEPT_IN_HOOK, "GameStatus"];
 
 const DIFFICULTIES = ["easy", "medium", "hard"];
 const STAGES = [1, 2, 3];
@@ -192,11 +196,12 @@ const closure = TREE.closure(ROUTE_HOOK);
   });
 }
 
-// S2 — the hook declares none of it (values or types) and keeps what C1 left to C5/C6.
+// S2 — the hook declares none of it (values or types) and keeps what C1 left to C5/C6; no runtime name C1 kept out of
+// route-config (GameStatus included, wherever it lives since ROUTE-C4) is in route-config.
 {
   const redeclared = [...MOVED_VALUES, ...MOVED_TYPES].filter((n) => hookDecl.values.includes(n) || hookDecl.types.includes(n));
   const keptMissing = KEPT_IN_HOOK.filter((n) => !hookDecl.values.includes(n) && !hookDecl.types.includes(n));
-  const keptMoved = KEPT_IN_HOOK.filter((n) => configDecl.values.includes(n) || configDecl.types.includes(n));
+  const keptMoved = NEVER_CONFIG.filter((n) => configDecl.values.includes(n) || configDecl.types.includes(n));
   record("S2", "structure", "HOOK_DECLARES_NONE_OF_IT", redeclared.length === 0 && keptMissing.length === 0 && keptMoved.length === 0, {
     redeclaredInHook: redeclared.length > 8 ? `${redeclared.length} of ${MOVED_VALUES.length + MOVED_TYPES.length}` : redeclared,
     keptInHookMissing: keptMissing,
