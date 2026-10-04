@@ -456,7 +456,8 @@ function findCycle(edges) {
 // types only), nothing forbidden, mentions no browser/React/RNG/render global; at run time it reaches exactly
 // configuration and geometry — never the hook, generation, the defenders, the RNG seam or difficulty; nothing below it
 // reaches it or names it; in `src/` only the hook imports it at run time (the product's consumers keep importing from
-// the hook; since ROUTE-C5 route-state.ts names its two state types, as types only);
+// the hook; since ROUTE-C5 route-state.ts names its two state types, and since ROUTE-C6 route-events.ts names
+// `ChestReward` for the reward an event chooses — both as types only);
 // and the whole run-time graph of the hook is acyclic.
 {
   const decl = invariants;
@@ -477,7 +478,8 @@ function findCycle(edges) {
     file !== ROUTE_INVARIANTS && declarations(file, TREE.read(file)).imports.some((imp) => resolvesTo(file, imp.specifier) === ROUTE_INVARIANTS),
   );
   // ROUTE-C5: route-state.ts names `GameStatus` and `ChestReward` for its state's fields — as types only, so the hook
-  // is still the one module that imports route-invariants at run time.
+  // is still the one module that imports route-invariants at run time. ROUTE-C6: so does route-events.ts, for the
+  // reward REWARD_SELECTED carries — a type only, too.
   const typeOnlyImporters = importers.filter((file) =>
     declarations(file, TREE.read(file)).imports.filter((imp) => resolvesTo(file, imp.specifier) === ROUTE_INVARIANTS).every((imp) => imp.typeOnly),
   );
@@ -491,7 +493,7 @@ function findCycle(edges) {
     invariantsExists && notAllowed.length === 0 && forbidden.length === 0 && notTypeOnly.length === 0 && mentions.length === 0 &&
       same(sorted(reach), sorted([ROUTE_INVARIANTS, ROUTE_GEOMETRY, ROUTE_CONFIG])) && reachInvariants.length === 0 &&
       namesInvariants.length === 0 && same(runtimeImporters, [ROUTE_HOOK]) &&
-      typeOnlyImporters.every((file) => file === "src/games/escape-maze/route-state.ts") && cycle === null &&
+      typeOnlyImporters.every((file) => file === "src/games/escape-maze/route-state.ts" || file === "src/games/escape-maze/route-events.ts") && cycle === null &&
       (edges[ROUTE_HOOK] ?? []).includes(ROUTE_INVARIANTS),
     {
       imports: decl.imports.map((imp) => `${imp.specifier}${imp.typeOnly ? " (type)" : ""}`),

@@ -15,8 +15,10 @@
  *                  migrated fields come out of that state once each and have no setter or cell of their own; the
  *                  state holds no derived view and nothing kept out on purpose; route-state imports types only,
  *                  reaches nothing at run time and mentions no RNG, clock, browser, React, sound or storage; only the
- *                  hook knows it; the actions are the transitions the hook dispatches — no generic patch, no C6
- *                  event; the turn, the side effects and map generation stay in the hook.
+ *                  hook knows it (since ROUTE-C6, route-events too, for types only); the actions are the transitions
+ *                  the hook writes — no generic patch, no event in route-state — dispatched by the hook itself at C5,
+ *                  and since C6 the transitions its events become through route-events' real mapping, with the seam's
+ *                  `dispatch` as the hook's only one; the turn, the side effects and map generation stay in the hook.
  *   [reducer]      the reducer itself, on thousands of states built from generated maps: pure (deep-frozen inputs,
  *                  equal results twice, no global touched — Math.random, Date, window… are poisoned), never returns
  *                  its input, writes exactly the fields of its action (every other field keeps its identity), and a
@@ -24,7 +26,8 @@
  *   [preserved]    the hook's public surface and its consumers, every other Rota module, every user-facing string
  *                  byte for byte, the hook's other top-level statements, and the turn itself: the hook's body with
  *                  its state writes and cell declarations taken out prints exactly as the baseline's — C5 replaced
- *                  writes and moved no decision.
+ *                  writes and moved no decision (since ROUTE-C6 an event applied through the seam is a write, and the
+ *                  seam is erased with them: the turn still prints as 74ff2dc's).
  *   [equivalence]  the working tree against 74ff2dc (C4: eighteen useState cells), both loaded through the
  *                  route-module-loader, render by render — every field the hook returns, at every render — on the
  *                  runtime harness (Routes 1/2/3 × every mode × eleven scripted Explorers × two seeds, with
@@ -59,6 +62,13 @@ import { POLICIES, runInRealReact, runInShim } from "./route-react-runtime.mjs";
 /** C4: the last revision whose session state was independent useState cells — what C5 must be equivalent to. */
 const BASELINE = "74ff2dc3a0a926fe3b40b325771bd423a348e041";
 const ROUTE_STATE = "src/games/escape-maze/route-state.ts";
+/**
+ * ROUTE-C6: the hook no longer dispatches the eleven actions itself. It applies domain events through one seam, and
+ * route-events.ts translates each into the C5 transitions that record it. Where that module exists, the checks below
+ * that were about "what the hook dispatches" follow the transitions to where they are named now, and hold them to the
+ * same eleven (route-domain-events-tests.mjs is C6's own validator).
+ */
+const ROUTE_EVENTS = "src/games/escape-maze/route-events.ts";
 const CONSUMERS = ["src/games/escape-maze/RouteStrategyGame.tsx", "src/games/escape-maze/RouteBabylonBoard.tsx"];
 /** Every file C5 must not have touched: the Rota's other modules, its consumers, the engine and the shared types. */
 const UNTOUCHED = [
@@ -218,7 +228,7 @@ function moduleShape(file, source) {
 function hookAnatomy(source) {
   const sf = parse(ROUTE_HOOK, source);
   const fn = sf.statements.find((s) => ts.isFunctionDeclaration(s) && s.name?.text === "useEscapeMaze");
-  const out = { found: Boolean(fn), useState: [], useReducer: [], setters: new Set(), declared: {}, dispatches: [], effects: {}, generateMaze: [], destructuredFromState: [] };
+  const out = { found: Boolean(fn), useState: [], useReducer: [], setters: new Set(), declared: {}, dispatches: [], applications: [], effects: {}, generateMaze: [], destructuredFromState: [] };
   if (!fn) return out;
   const enclosing = (node) => {
     for (let p = node.parent; p && p !== fn; p = p.parent) {
@@ -249,6 +259,14 @@ function hookAnatomy(source) {
           ? arg.properties.find((p) => ts.isPropertyAssignment(p) && p.name.getText(sf) === "type")?.initializer.getText(sf).replace(/"/g, "")
           : null;
         out.dispatches.push({ type, in: enclosing(node) });
+      }
+      // ROUTE-C6: an event applied through the seam, as data — a literal is its value, any other expression its text.
+      if (callee === "applyDomainEvent" && node.arguments[0] && ts.isObjectLiteralExpression(node.arguments[0])) {
+        const value = (e) => (ts.isStringLiteral(e) || ts.isNoSubstitutionTemplateLiteral(e) ? e.text : `⟨${e.getText(sf)}⟩`);
+        out.applications.push({
+          in: enclosing(node),
+          event: Object.fromEntries(node.arguments[0].properties.map((p) => (ts.isPropertyAssignment(p) ? [p.name.getText(sf), value(p.initializer)] : [p.getText(sf), `⟨${p.getText(sf)}⟩`]))),
+        });
       }
       if (callee === "generateMaze") out.generateMaze.push(enclosing(node));
       for (const effect of SIDE_EFFECTS) if (callee === effect) tally(out.effects, `${effect}@${enclosing(node)}`);
@@ -406,6 +424,9 @@ function structureChecks(tree) {
 
   // S5 — nobody outside the hook knows route-state: in src only the hook imports it, the hook re-exports none of it,
   // and nothing below the hook (config, geometry, generation, defenders, invariants, the seam) reaches it.
+  // ROUTE-C6: route-events names the transitions it translates events into, so it is route-state's one other
+  // importer — of types only (`RouteStateAction`, `RouteSessionStart`), nothing at run time, and only the hook imports
+  // route-events.
   {
     const src = (tree.rev
       ? execFileSync("git", ["ls-tree", "-r", "--name-only", tree.rev, "src"], { encoding: "utf8" })
@@ -416,37 +437,70 @@ function structureChecks(tree) {
     const hookShape = moduleShape(ROUTE_HOOK, hookText);
     const reexported = hookShape.exported.filter((name) => ROUTE_STATE_EXPORTS.includes(name));
     const below = UNTOUCHED.filter((file) => file.endsWith(".ts") && tree.exists(file) && tree.closure(file).includes(ROUTE_STATE));
-    record("S5", "ONLY_THE_HOOK_KNOWS_ROUTE_STATE", exists && same(importers, [ROUTE_HOOK]) && reexported.length === 0 && below.length === 0, {
+    const eventsTypeOnly = !importers.includes(ROUTE_EVENTS) || (
+      moduleShape(ROUTE_EVENTS, tree.read(ROUTE_EVENTS)).imports.filter((imp) => /route-state$/.test(imp.specifier)).every((imp) => imp.typeOnly) &&
+      !tree.closure(ROUTE_EVENTS).includes(ROUTE_STATE) &&
+      src.filter((file) => file !== ROUTE_EVENTS && /route-events["']/.test(tree.read(file))).every((file) => file === ROUTE_HOOK)
+    );
+    const expectedImporters = tree.exists(ROUTE_EVENTS) ? sorted([ROUTE_EVENTS, ROUTE_HOOK]) : [ROUTE_HOOK];
+    record("S5", "ONLY_THE_HOOK_KNOWS_ROUTE_STATE", exists && same(sorted(importers), expectedImporters) && eventsTypeOnly && reexported.length === 0 && below.length === 0, {
       sourceModulesScanned: src.length,
       importedBy: importers,
+      routeEventsImportsTypesOnly: tree.exists(ROUTE_EVENTS) ? eventsTypeOnly : "no route-events (C5)",
       reexportedByHook: reexported,
       modulesBelowThatReachIt: below,
     });
   }
 
-  // S6 — the actions are the hook's transitions: the union, the reducer's cases and what the hook dispatches are the
-  // same eleven, each dispatched; START_ROUTE is the only one that rebuilds the state (createRouteState) — no generic
-  // patch spreads an action into the state; no C6 vocabulary anywhere in src/games.
+  // S6 — the actions are the hook's transitions: the union, the reducer's cases and what the hook writes are the same
+  // eleven, each written; START_ROUTE is the only one that rebuilds the state (createRouteState) — no generic patch
+  // spreads an action into the state; route-state itself knows no event.
+  //
+  // How the hook writes them is the one thing ROUTE-C6 changed. At C5 it dispatches each of the eleven itself, and no
+  // C6 vocabulary exists in the hook. Since C6 (route-events.ts present) the hook dispatches nothing itself — its one
+  // `dispatch` is the seam's, over the transitions the mapping gives — and the eleven are what the events it applies
+  // become through route-events' REAL mapping (each event literal evaluated symbolically): route-events → the same C5
+  // actions, the hook → events.
   {
-    const dispatched = sorted(new Set(hook.dispatches.map((d) => d.type)));
     const spreadsAction = /\.\.\.action\b/.test(codeOnly(stateText));
     const patchPayload = Object.entries(types.payloads).filter(([, keys]) => keys.some((k) => /patch|changes|partial|value|fields/i.test(k)));
-    const c6 = [ROUTE_HOOK, ROUTE_STATE].filter((file) => tree.exists(file) && C6_WORDS.test(codeOnly(tree.read(file))));
+    const c6Engine = tree.exists(ROUTE_EVENTS);
+    const c6InState = exists && C6_WORDS.test(codeOnly(stateText));
+    const c6InHook = C6_WORDS.test(codeOnly(hookText));
     const sites = {};
-    for (const d of hook.dispatches) (sites[d.in] ??= []).push(d.type);
+    let written;
+    let shape;
+    if (!c6Engine) {
+      for (const d of hook.dispatches) (sites[d.in] ??= []).push(d.type);
+      written = sorted(new Set(hook.dispatches.map((d) => d.type)));
+      shape = !c6InHook;
+    } else {
+      const { routeStateActionsForEvent } = createModuleGraph({ tree }).require(ROUTE_EVENTS);
+      const resolved = [];
+      for (const a of hook.applications) {
+        const mapped = errorOf(() => routeStateActionsForEvent(a.event)) ?? routeStateActionsForEvent(a.event).map((t) => t.type);
+        (sites[a.in] ??= []).push(`${a.event.type} → ${Array.isArray(mapped) ? mapped.join(" + ") || "—" : mapped}`);
+        if (Array.isArray(mapped)) resolved.push(...mapped);
+      }
+      written = sorted(new Set(resolved));
+      // The hook's only dispatch is the seam's: one call, with the transition it iterates — no literal action left.
+      shape = same(hook.dispatches.map((d) => [d.in, d.type]), [["applyDomainEvent", null]]) && hook.applications.length > 0;
+    }
     record(
       "S6",
       "ACTIONS_ARE_THE_HOOKS_TRANSITIONS_NOT_PATCHES_NOT_EVENTS",
-      exists && same(sorted(types.actions), sorted(ACTIONS)) && same(sorted(types.cases), sorted(ACTIONS)) && same(dispatched, sorted(ACTIONS)) &&
-        !spreadsAction && patchPayload.length === 0 && c6.length === 0 && /case "START_ROUTE":\s*return createRouteState\(action\);/.test(stateText),
+      exists && same(sorted(types.actions), sorted(ACTIONS)) && same(sorted(types.cases), sorted(ACTIONS)) && same(written, sorted(ACTIONS)) && shape &&
+        !spreadsAction && patchPayload.length === 0 && !c6InState && /case "START_ROUTE":\s*return createRouteState\(action\);/.test(stateText),
       {
         unionMembers: types.actions,
         reducerCases: types.cases,
-        dispatchedByHook: dispatched,
+        writtenByHook: written,
+        engine: c6Engine ? "C6: events through the seam, translated by route-events" : "C5: dispatched by the hook",
         payloads: types.payloads,
-        dispatchSites: sites,
+        writeSites: sites,
         genericPatch: spreadsAction || patchPayload.map(([name]) => name),
-        c6Vocabulary: c6,
+        c6VocabularyInRouteState: c6InState,
+        ...(c6Engine ? {} : { c6VocabularyInHook: c6InHook }),
       },
     );
   }
@@ -707,9 +761,12 @@ function turnSkeleton(source) {
   const sf = parse(ROUTE_HOOK, source);
   const fn = sf.statements.find((s) => ts.isFunctionDeclaration(s) && s.name?.text === "useEscapeMaze");
   if (!fn) return null;
+  // ROUTE-C6: an event applied through the seam is a write too, and the seam itself (`applyDomainEvent`: its
+  // declaration and its mention in dependency lists) is part of how state is written, not of the turn.
   const isWrite = (n) =>
     ts.isExpressionStatement(n) && ts.isCallExpression(n.expression) && ts.isIdentifier(n.expression.expression) &&
-    (/^set[A-Z]/.test(n.expression.expression.text) || n.expression.expression.text === "dispatch");
+    (/^set[A-Z]/.test(n.expression.expression.text) || n.expression.expression.text === "dispatch" || n.expression.expression.text === "applyDomainEvent");
+  const isSeam = (n) => ts.isVariableStatement(n) && n.declarationList.declarations.some((d) => d.name.getText(sf) === "applyDomainEvent");
   const isCell = (n) =>
     ts.isVariableStatement(n) &&
     n.declarationList.declarations.every((d) => {
@@ -720,12 +777,16 @@ function turnSkeleton(source) {
       const routeNumber = ts.isArrayBindingPattern(d.name) && d.name.elements.length === 1 && d.name.elements[0].name?.text === "routeNumber";
       return init.expression.text === "useState" && !routeNumber;
     });
-  const removed = { writes: 0, cells: 0, guards: 0 };
+  const removed = { writes: 0, cells: 0, guards: 0, seam: 0 };
   const result = ts.transform(fn, [
     (ctx) => (root) => {
       const visit = (node) => {
         if (isWrite(node)) return (removed.writes += 1), undefined;
         if (isCell(node)) return (removed.cells += 1), undefined;
+        if (isSeam(node)) return (removed.seam += 1), undefined;
+        if (ts.isArrayLiteralExpression(node) && node.elements.some((e) => ts.isIdentifier(e) && e.text === "applyDomainEvent")) {
+          return ts.factory.updateArrayLiteralExpression(node, node.elements.filter((e) => !(ts.isIdentifier(e) && e.text === "applyDomainEvent")));
+        }
         const out = ts.visitEachChild(node, visit, ctx);
         if (ts.isIfStatement(out) && !out.elseStatement && ts.isBlock(out.thenStatement) && out.thenStatement.statements.length === 0) {
           removed.guards += 1;
@@ -1126,7 +1187,8 @@ const MUTANT_LIST = [
   ["a blocked step also ticks moveTick", ROUTE_STATE, ["        blockedShake: state.blockedShake + 1,\n", "        blockedShake: state.blockedShake + 1,\n        moveTick: state.moveTick + 1,\n"]],
   ["the Hunter's capture falls through: a later write overwrites the loss", ROUTE_HOOK, ["      endGame(false, statsAt(caughtErrors));\n      return;\n    }\n\n    const nextSentinel", "      endGame(false, statsAt(caughtErrors));\n    }\n\n    const nextSentinel"]],
   ["capture order swapped: the Sentinel resolved before the Hunter", ROUTE_HOOK, ["    if (positionsEqual(nextGuardian, input.playerPosition)) {", "    if (positionsEqual(nextGuardian, input.playerPosition) && !positionsEqual(decideSentinelMove(input.sentinelFrom, input.playerPosition, mazeMap.exitPosition, input.graphWalls, input.zone, SENTINEL_COMMIT_TURNS, input.armedTraps).position, input.playerPosition)) {"]],
-  ["the Hunter's move kept after a Second Chance", ROUTE_HOOK, ["      if (input.secondChanceReady) {\n        dispatch({ type: \"SPEND_SECOND_CHANCE\", message: SECOND_CHANCE_DEFENDER_MESSAGE });\n        return;\n      }\n      const caughtErrors = input.errorsSoFar + 1;\n      // The Hunter steps in;", "      if (input.secondChanceReady) {\n        dispatch({ type: \"COMMIT_CAPTURE\", guardian: nextGuardian, sentinel: input.sentinelFrom, errors: input.errorsSoFar });\n        dispatch({ type: \"SPEND_SECOND_CHANCE\", message: SECOND_CHANCE_DEFENDER_MESSAGE });\n        return;\n      }\n      const caughtErrors = input.errorsSoFar + 1;\n      // The Hunter steps in;"]],
+  // ROUTE-C6: written as the hook writes now — an event through the seam — so the mutation is in the turn, not in the seam.
+  ["the Hunter's move kept after a Second Chance", ROUTE_HOOK, ["      if (input.secondChanceReady) {\n        applyDomainEvent({\n          type: \"SECOND_CHANCE_USED\",\n          cause: \"hunter\",", "      if (input.secondChanceReady) {\n        applyDomainEvent({ type: \"DEFENDERS_SETTLED\", turn: input.turnNumber, guardian: nextGuardian, sentinel: input.sentinelFrom, message: SECOND_CHANCE_DEFENDER_MESSAGE });\n        applyDomainEvent({\n          type: \"SECOND_CHANCE_USED\",\n          cause: \"hunter\","]],
   ["win and loss statuses swapped", ROUTE_STATE, ["return { ...state, status: action.status, message: action.message };", "return { ...state, status: action.status === \"won\" ? \"lost\" : \"won\", message: action.message };"]],
   ["a second board drawn at mount", ROUTE_HOOK, ["    const firstMap = generateMaze(initialDifficulty, normalizedInitialRouteNumber);", "    generateMaze(initialDifficulty, normalizedInitialRouteNumber);\n    const firstMap = generateMaze(initialDifficulty, normalizedInitialRouteNumber);"]],
   ["the reducer mutates its input (traps pushed in place)", ROUTE_STATE, [": [...state.triggeredTraps, action.armedTrap],", ": (state.triggeredTraps.push(action.armedTrap), state.triggeredTraps),"]],

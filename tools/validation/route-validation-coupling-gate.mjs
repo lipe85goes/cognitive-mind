@@ -12,7 +12,7 @@
  *                     continuation, route-config since ROUTE-C1, route-generation
  *                     and route-geometry since ROUTE-C2, route-defenders since
  *                     ROUTE-C3, route-invariants since ROUTE-C4, route-state
- *                     since ROUTE-C5) in code;
+ *                     since ROUTE-C5, route-events since ROUTE-C6) in code;
  *   rota-resolver     answers a Rota import by hand (`=== "@/engine/…"`) — a
  *                     private module resolver;
  *   rota-ts-compile   compiles TypeScript in a file that also names Rota
@@ -66,11 +66,11 @@ if (REV) {
 // --- the patterns ------------------------------------------------------------------------------
 
 const codeOnly = (source) => source.replace(/\/\*[\s\S]*?\*\//g, " ").replace(/(^|[^:\\])\/\/.*$/gm, "$1");
-const ROTA_SPECIFIER = String.raw`@\/(?:engine\/(?:difficulty|route-random)|games\/escape-maze\/(?:continuation|route-config|route-defenders|route-generation|route-geometry|route-invariants|route-state|useEscapeMaze))`;
+const ROTA_SPECIFIER = String.raw`@\/(?:engine\/(?:difficulty|route-random)|games\/escape-maze\/(?:continuation|route-config|route-defenders|route-events|route-generation|route-geometry|route-invariants|route-state|useEscapeMaze))`;
 const SIGNALS = {
   "hook-path": /useEscapeMaze\.ts/,
   "hook-text": /(?<!function\s)\bproductionSource\s*\(/,
-  "rota-module-path": /["'](?:src\/engine\/)?(?:difficulty|route-random)\.ts["']|["'](?:src\/games\/escape-maze\/)?(?:continuation|route-config|route-defenders|route-generation|route-geometry|route-invariants|route-state)\.ts["']/,
+  "rota-module-path": /["'](?:src\/engine\/)?(?:difficulty|route-random)\.ts["']|["'](?:src\/games\/escape-maze\/)?(?:continuation|route-config|route-defenders|route-events|route-generation|route-geometry|route-invariants|route-state)\.ts["']/,
   "rota-resolver": new RegExp(String.raw`===\s*["']${ROTA_SPECIFIER}["']`),
   "single-file-seam": /\bhookSource\b/,
 };
@@ -162,7 +162,12 @@ const ALLOWED = {
   "route-state-reducer-tests.mjs": {
     kinds: ["rota-module-path"],
     reason: "STRUCTURAL_ASSERTION",
-    note: "ROUTE-C5's static gate: the session state in route-state.ts (types-only, no run-time import), one useReducer in the hook and no cell of its own for any migrated field, every other Rota module untouched; its Rota runs through the graph",
+    note: "ROUTE-C5's static gate: the session state in route-state.ts (types-only, no run-time import), one useReducer in the hook and no cell of its own for any migrated field, every other Rota module untouched — since ROUTE-C6 the hook's writes followed into route-events.ts; its Rota runs through the graph",
+  },
+  "route-domain-events-tests.mjs": {
+    kinds: ["rota-module-path"],
+    reason: "STRUCTURAL_ASSERTION",
+    note: "ROUTE-C6's static gate: the event contract and its mapping in route-events.ts (types-only, no run-time import), one seam in the hook and no direct dispatch, route-state.ts untouched; its Rota runs through the graph",
   },
   "route-board-loader-tests.mjs": { kinds: ["rota-module-path", "rota-ts-compile"], reason: "UI_STAGE" },
   "diagnostic-launcher-tests.mjs": {

@@ -87,6 +87,7 @@ const FILES = {
   routeDefenders: "src/games/escape-maze/route-defenders.ts",
   routeInvariants: "src/games/escape-maze/route-invariants.ts",
   routeState: "src/games/escape-maze/route-state.ts",
+  routeEvents: "src/games/escape-maze/route-events.ts",
   storage: "src/engine/storage.ts",
   stageProgress: "src/engine/stage-progress.ts",
   routeRandom: "src/engine/route-random.ts",
@@ -1712,6 +1713,9 @@ const GARBAGE = [null, 7, "result", { id: "half", gameId: ROUTE }, { ...LEGACY[0
 // run time, and `MazeMap` from generation and `GridPosition` as types only — no RNG, no defenders, no difficulty.
 // ROUTE-C5 consolidated the session's mutable state in `route-state` (the state, its actions, the reducer): one more
 // Rota module only the hook reaches, and it reaches nothing at run time — its imports are all types.
+// ROUTE-C6 added the domain events in `route-events` (what happened in the turn, and the C5 transitions that record
+// it): one more Rota module only the hook reaches, and it too reaches nothing at run time — route-state's actions and
+// the domain's types are imported as types.
 {
   const reader = importsOf(FILES.routeContinuation);
   const importers = SRC_FILES.filter((file) =>
@@ -1745,6 +1749,8 @@ const GARBAGE = [null, 7, "result", { id: "half", gameId: ROUTE }, { ...LEGACY[0
     routeInvariantsImportedAtRuntimeBy: runtimeImportersOf(FILES.routeInvariants),
     routeStateRuntimeImports: runtimeSpecifiersOf(FILES.routeState),
     routeStateImportedAtRuntimeBy: runtimeImportersOf(FILES.routeState),
+    routeEventsRuntimeImports: runtimeSpecifiersOf(FILES.routeEvents),
+    routeEventsImportedAtRuntimeBy: runtimeImportersOf(FILES.routeEvents),
   };
   const expected = {
     readerExists: true,
@@ -1756,6 +1762,7 @@ const GARBAGE = [null, 7, "result", { id: "half", gameId: ROUTE }, { ...LEGACY[0
       "@/games/escape-maze/continuation",
       "@/games/escape-maze/route-config",
       "@/games/escape-maze/route-defenders",
+      "@/games/escape-maze/route-events",
       "@/games/escape-maze/route-generation",
       "@/games/escape-maze/route-geometry",
       "@/games/escape-maze/route-invariants",
@@ -1786,6 +1793,8 @@ const GARBAGE = [null, 7, "result", { id: "half", gameId: ROUTE }, { ...LEGACY[0
     routeInvariantsImportedAtRuntimeBy: [FILES.hook],
     routeStateRuntimeImports: [],
     routeStateImportedAtRuntimeBy: [FILES.hook],
+    routeEventsRuntimeImports: [],
+    routeEventsImportedAtRuntimeBy: [FILES.hook],
   };
   record("I1", "contract", "CONTRACT_COSTS_NOTHING", same(actual, expected), { actual });
 }
