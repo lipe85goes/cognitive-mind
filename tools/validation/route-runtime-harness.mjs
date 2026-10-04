@@ -12,6 +12,16 @@
  * hook cells, a render function, and an `act` that applies an action and
  * re-renders. `useEscapeMaze` is imported unmodified from production.
  *
+ * ROUTE-C5: the hook holds its session state with `useReducer`, so the shim has
+ * one, with React's semantics rather than a convenient approximation — the
+ * initialiser runs once, at mount, as `init(initialArg)`; `dispatch` is created
+ * once and keeps its identity; a dispatch only QUEUES the action and marks the
+ * route dirty; the queue is drained during the next render, in dispatch order,
+ * through the reducer that render passes. `useState` keeps its eager setter: a
+ * value is applied when set, and a functional update sees every update queued
+ * before it, which is what React's queue gives too. Both are compared with real
+ * React (react-dom, Strict Mode on and off) in route-runtime-harness-tests.mjs.
+ *
  * Two deliberate simplifications, neither of which can hide a bug:
  *
  *  - `useMemo` recomputes every render. Memoisation is an optimisation; running
@@ -33,7 +43,7 @@ import { ROUTE_HOOK } from "./route-module-loader.mjs";
  * against whichever component is currently rendering — which is what lets a
  * suite hold several independent routes alive at the same time.
  */
-function createReactShim() {
+export function createReactShim() {
   let active = null;
 
   const shim = {
@@ -53,6 +63,28 @@ function createReactShim() {
           store.dirty = true;
         },
       ];
+    },
+    useReducer(reducer, initialArg, init) {
+      const store = active;
+      const i = store.index++;
+      if (!(i in store.cells)) {
+        const cell = {
+          value: init !== undefined ? init(initialArg) : initialArg,
+          queue: [],
+        };
+        cell.dispatch = (action) => {
+          cell.queue.push(action);
+          store.dirty = true;
+        };
+        store.cells[i] = cell;
+      }
+      const cell = store.cells[i];
+      if (cell.queue.length > 0) {
+        const queue = cell.queue;
+        cell.queue = [];
+        for (const action of queue) cell.value = reducer(cell.value, action);
+      }
+      return [cell.value, cell.dispatch];
     },
     useRef(initial) {
       const store = active;
@@ -87,6 +119,16 @@ function createReactShim() {
   };
 }
 
+/** What the `directDifficulty` edit turns `startGame` into, per state engine (see below). */
+export const DIRECT_DIFFICULTY_START_GAME = {
+  setter: `  const startGame = () => {
+    setStatus("playing");
+  };`,
+  reducer: `  const startGame = () => {
+    dispatch({ type: "END_ROUTE", status: "playing", message });
+  };`,
+};
+
 /**
  * One loaded copy of the hook module, plus a factory for independent runs.
  * Loading is not cheap (TypeScript in a vm), so a suite loads once and mounts
@@ -105,6 +147,20 @@ function createReactShim() {
  * production legitimately does and a one-call comparison cannot afford:
  * `startGame` generating a SECOND board.
  *
+ * ROUTE-C5: the edit is "status becomes playing, nothing else moves", written
+ * in the state engine of the tree being loaded. Up to C4 that is the `status`
+ * setter. From C5 the state is one reducer, and `END_ROUTE` is the one
+ * transition whose writes are exactly `status` and `message`; the edit hands it
+ * "playing" and the message the state already holds, so every other field —
+ * the board, the pieces, the counters, the arrays by identity — is untouched,
+ * on whatever state `startGame` is called. Production never dispatches it so.
+ *
+ * `onRender(game, index, { scheduled })` (on `mount`) sees every render, mount
+ * included, in order — what route-state-reducer-tests compares render by
+ * render. `scheduled` says whether a state update was pending when the render
+ * began: `act` always renders once, and React renders only when something was
+ * scheduled. `mocks` answers environment modules (route-module-loader).
+ *
  * ROUTE-C0: the Rota under test is a module GRAPH, not one file.
  *
  *   rev              every module the hook reaches — the hook, whatever it is
@@ -119,7 +175,7 @@ function createReactShim() {
  *
  * Omitted, the working tree is loaded exactly as before. Nothing is written.
  */
-export function loadRouteRuntime({ directDifficulty = false, rev = null, sourceOverrides, transforms } = {}) {
+export function loadRouteRuntime({ directDifficulty = false, rev = null, sourceOverrides, transforms, mocks } = {}) {
   const react = createReactShim();
   const directDifficultyTransform = directDifficulty
     ? {
@@ -130,11 +186,14 @@ export function loadRouteRuntime({ directDifficulty = false, rev = null, sourceO
           if (!startGame.test(source)) {
             throw new Error("directDifficulty transform: startGame shape changed");
           }
+          const reducerState = /\buseReducer\(routeStateReducer\b/.test(source);
+          const setterState = /const \[status, setStatus\] = useState/.test(source);
+          if (reducerState === setterState) {
+            throw new Error("directDifficulty transform: cannot tell how this tree holds `status`");
+          }
           return source.replace(
             startGame,
-            `  const startGame = () => {
-    setStatus("playing");
-  };`,
+            reducerState ? DIRECT_DIFFICULTY_START_GAME.reducer : DIRECT_DIFFICULTY_START_GAME.setter,
           );
         },
       }
@@ -145,6 +204,7 @@ export function loadRouteRuntime({ directDifficulty = false, rev = null, sourceO
     rev,
     sourceOverrides,
     transforms: [transforms, directDifficultyTransform],
+    mocks,
   });
   const useEscapeMaze = LAB.exports.useEscapeMaze;
   if (typeof useEscapeMaze !== "function") {
@@ -172,6 +232,7 @@ export function loadRouteRuntime({ directDifficulty = false, rev = null, sourceO
     routeNumber = 1,
     initialDifficulty,
     autoStart = true,
+    onRender,
   }) {
     LAB.setSeed(seed);
     // In diagnostic mode the requested mode is handed to the hook the same way
@@ -181,6 +242,7 @@ export function loadRouteRuntime({ directDifficulty = false, rev = null, sourceO
     const store = react.createStore();
     const completions = [];
     let game = null;
+    let renders = 0;
 
     // The hook has to be called from something the hooks lint rule recognises as
     // a component, because that is exactly what this is: the one place the route
@@ -193,12 +255,15 @@ export function loadRouteRuntime({ directDifficulty = false, rev = null, sourceO
       );
 
     const render = () => {
+      const scheduled = store.dirty;
       react.beginRender(store);
       try {
         game = RouteHarness();
       } finally {
         react.endRender();
       }
+      onRender?.(game, renders, { scheduled });
+      renders += 1;
       return game;
     };
     render();
@@ -220,6 +285,10 @@ export function loadRouteRuntime({ directDifficulty = false, rev = null, sourceO
     const run = {
       get state() {
         return game;
+      },
+      /** How many times the route has rendered, mount included. */
+      get renders() {
+        return renders;
       },
       completions,
       act,

@@ -474,6 +474,8 @@ export const inertReact = () => ({
   useCallback: (callback) => callback,
   useEffect: () => {},
   useMemo: (factory) => factory(),
+  // ROUTE-C5: the hook imports it; inert like the rest — never dispatched through.
+  useReducer: (_reducer, initialArg, init) => [init !== undefined ? init(initialArg) : initialArg, () => {}],
   useRef: (value) => ({ current: value }),
   useState: (value) => [typeof value === "function" ? value() : value, () => {}],
 });

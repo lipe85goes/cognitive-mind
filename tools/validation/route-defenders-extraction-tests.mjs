@@ -262,6 +262,13 @@ const unexported = (text) => text.replace(/^export (?=(?:async )?(?:function|int
 const read = (tree, file) => (tree.exists(file) ? tree.read(file) : "");
 const hookText = TREE.read(ROUTE_HOOK);
 const hook = declarations(ROUTE_HOOK, hookText);
+/**
+ * ROUTE-C5 rewrote `useEscapeMaze`'s body (the session state became one reducer, in route-state.ts) and added one pure
+ * helper beside it (`sentinelPostOn`). On a tree that has route-state.ts those two are C5's text — held render by render
+ * against 74ff2dc by route-state-reducer-tests.mjs — and every other statement must still be this baseline's.
+ */
+const C5_REWRITTEN = TREE.exists("src/games/escape-maze/route-state.ts") ? ["useEscapeMaze"] : [];
+const C5_ADDED = C5_REWRITTEN.length ? ["sentinelPostOn"] : [];
 const defendersExists = TREE.exists(ROUTE_DEFENDERS);
 const defendersText = read(TREE, ROUTE_DEFENDERS);
 const defenders = declarations(ROUTE_DEFENDERS, defendersText);
@@ -497,8 +504,10 @@ function findCycle(edges) {
   const movedOnByC4 = (name) =>
     C4_MOVED.includes(name) && !hook.values.includes(name) && !hook.types.includes(name) &&
     (invariantsDecl.values.includes(name) || invariantsDecl.types.includes(name));
-  const expected = baseHook.named.filter((entry) => !movedHere(entry.name) && !movedOnByC4(entry.name)).map((entry) => entry.text);
-  const now = hook.named.map((entry) => entry.text);
+  const expected = baseHook.named
+    .filter((entry) => !movedHere(entry.name) && !movedOnByC4(entry.name) && !C5_REWRITTEN.includes(entry.name))
+    .map((entry) => entry.text);
+  const now = hook.named.filter((entry) => !C5_REWRITTEN.includes(entry.name) && !C5_ADDED.includes(entry.name)).map((entry) => entry.text);
   const extra = now.filter((text) => !expected.includes(text));
   const missing = expected.filter((text) => !now.includes(text));
   const firstLine = (text) => text.split("\n").find((line) => !/^\s*(\/\/|\/\*|\*)/.test(line))?.slice(0, 80);
@@ -507,18 +516,20 @@ function findCycle(edges) {
     baselineStatements: baseHook.named.length,
     removed: baseHook.named.filter((entry) => movedHere(entry.name)).map((entry) => entry.name),
     movedOnByC4: baseHook.named.filter((entry) => movedOnByC4(entry.name)).map((entry) => entry.name),
+    rewrittenOrAddedByC5: [...C5_REWRITTEN, ...C5_ADDED],
     notInBaseline: extra.map(firstLine),
     missingFromHook: missing.map(firstLine),
   });
 }
 
 // P3 — the turn stays in the hook, untouched: the whole `useEscapeMaze` body (runDefenderPhase with its Hunter-then-
-// Sentinel order, the step, the reward, the wall, Second Chance and its rollback) is the baseline's text; runDefenderPhase
-// is declared there once; the invariants (in the hook at C3, in route-invariants.ts since C4) never reached
-// route-defenders.
+// Sentinel order, the step, the reward, the wall, Second Chance and its rollback) is the baseline's text — or C5's,
+// where route-state.ts exists (C5_REWRITTEN), whose turn route-state-reducer-tests holds against 74ff2dc; either way
+// runDefenderPhase is declared there once and asks the Hunter before the Sentinel; the invariants (in the hook at C3,
+// in route-invariants.ts since C4) never reached route-defenders.
 {
   const missing = [...KEPT_IN_HOOK_VALUES.filter((n) => !hook.values.includes(n)), ...KEPT_IN_HOOK_TYPES.filter((n) => !hook.types.includes(n))];
-  const changed = [...KEPT_IN_HOOK_VALUES, ...KEPT_IN_HOOK_TYPES].filter((n) => hook.text.get(n) !== baseHook.text.get(n));
+  const changed = [...KEPT_IN_HOOK_VALUES, ...KEPT_IN_HOOK_TYPES].filter((n) => !C5_REWRITTEN.includes(n) && hook.text.get(n) !== baseHook.text.get(n));
   const body = hook.text.get("useEscapeMaze") ?? "";
   const phase = (body.match(/const runDefenderPhase = \(input: DefenderPhaseInput\) => \{/g) ?? []).length;
   const order = body.indexOf("const nextGuardian = chooseGuardianMove(") < body.indexOf("const nextSentinel = decideSentinelMove(");
@@ -538,6 +549,7 @@ function findCycle(edges) {
       useEscapeMazeBody: sha(body),
       runDefenderPhaseDeclarations: phase,
       hunterBeforeSentinel: order,
+      rewrittenByC5: C5_REWRITTEN,
       leakedToRouteDefenders: leakedToDefenders,
     },
   );

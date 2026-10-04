@@ -241,6 +241,7 @@ export function loadInstrumented({
   rev = null,
   bare = false,
   react,
+  mocks,
 } = {}) {
   // `bare` skips the diagnostics entirely and only exposes the surface. Timing
   // must be measured on the real control flow: the named-checks rewrite drops
@@ -257,6 +258,8 @@ export function loadInstrumented({
     // headlessly (see route-runtime-harness.mjs). Without it the inert shim is
     // enough for the pure generator functions.
     react,
+    // ROUTE-C5: environment modules the caller answers itself (real scoring, recording sounds).
+    mocks,
     surface: EXPORT_SURFACE,
     transforms: [transform && { [ROUTE_HOOK]: transform }, transforms, instrumentation?.transform],
   });

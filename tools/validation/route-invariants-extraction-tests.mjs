@@ -319,6 +319,13 @@ const unexported = (text) => text.replace(/^export (?=(?:async )?(?:function|int
 const read = (tree, file) => (tree.exists(file) ? tree.read(file) : "");
 const hookText = TREE.read(ROUTE_HOOK);
 const hook = declarations(ROUTE_HOOK, hookText);
+/**
+ * ROUTE-C5 rewrote `useEscapeMaze`'s body (the session state became one reducer, in route-state.ts) and added one pure
+ * helper beside it (`sentinelPostOn`). On a tree that has route-state.ts those two are C5's text — held render by render
+ * against 74ff2dc by route-state-reducer-tests.mjs — and every other statement must still be this baseline's.
+ */
+const C5_REWRITTEN = TREE.exists("src/games/escape-maze/route-state.ts") ? ["useEscapeMaze"] : [];
+const C5_ADDED = C5_REWRITTEN.length ? ["sentinelPostOn"] : [];
 const invariantsExists = TREE.exists(ROUTE_INVARIANTS);
 const invariantsText = read(TREE, ROUTE_INVARIANTS);
 const invariants = declarations(ROUTE_INVARIANTS, invariantsText);
@@ -448,7 +455,8 @@ function findCycle(edges) {
 // S4 — dependency rule: route-invariants imports only configuration, geometry and types (route-generation and types as
 // types only), nothing forbidden, mentions no browser/React/RNG/render global; at run time it reaches exactly
 // configuration and geometry — never the hook, generation, the defenders, the RNG seam or difficulty; nothing below it
-// reaches it or names it; in `src/` only the hook imports it (the product's consumers keep importing from the hook);
+// reaches it or names it; in `src/` only the hook imports it at run time (the product's consumers keep importing from
+// the hook; since ROUTE-C5 route-state.ts names its two state types, as types only);
 // and the whole run-time graph of the hook is acyclic.
 {
   const decl = invariants;
@@ -468,6 +476,12 @@ function findCycle(edges) {
   const importers = srcFiles.filter((file) =>
     file !== ROUTE_INVARIANTS && declarations(file, TREE.read(file)).imports.some((imp) => resolvesTo(file, imp.specifier) === ROUTE_INVARIANTS),
   );
+  // ROUTE-C5: route-state.ts names `GameStatus` and `ChestReward` for its state's fields — as types only, so the hook
+  // is still the one module that imports route-invariants at run time.
+  const typeOnlyImporters = importers.filter((file) =>
+    declarations(file, TREE.read(file)).imports.filter((imp) => resolvesTo(file, imp.specifier) === ROUTE_INVARIANTS).every((imp) => imp.typeOnly),
+  );
+  const runtimeImporters = importers.filter((file) => !typeOnlyImporters.includes(file));
   const edges = runtimeEdges(TREE, closure);
   const cycle = findCycle(edges);
   record(
@@ -476,7 +490,8 @@ function findCycle(edges) {
     "ROUTE_INVARIANTS_IS_PURE_AND_ACYCLIC",
     invariantsExists && notAllowed.length === 0 && forbidden.length === 0 && notTypeOnly.length === 0 && mentions.length === 0 &&
       same(sorted(reach), sorted([ROUTE_INVARIANTS, ROUTE_GEOMETRY, ROUTE_CONFIG])) && reachInvariants.length === 0 &&
-      namesInvariants.length === 0 && same(importers, [ROUTE_HOOK]) && cycle === null &&
+      namesInvariants.length === 0 && same(runtimeImporters, [ROUTE_HOOK]) &&
+      typeOnlyImporters.every((file) => file === "src/games/escape-maze/route-state.ts") && cycle === null &&
       (edges[ROUTE_HOOK] ?? []).includes(ROUTE_INVARIANTS),
     {
       imports: decl.imports.map((imp) => `${imp.specifier}${imp.typeOnly ? " (type)" : ""}`),
@@ -488,6 +503,7 @@ function findCycle(edges) {
       modulesBelowThatReachIt: reachInvariants,
       modulesBelowThatNameIt: namesInvariants,
       importedBy: importers,
+      typeOnlyImporters,
       cycle,
       rotaRuntimeGraph: Object.fromEntries(Object.entries(edges).map(([file, to]) => [file.replace(ROUTE_MODULE_DIR, ""), to.map((t) => t.replace(ROUTE_MODULE_DIR, ""))])),
     },
@@ -572,8 +588,8 @@ function findCycle(edges) {
 // exactly the baseline's statements minus the moved ones, in the same order, each byte for byte.
 {
   const movedHere = (name) => MOVED.includes(name) && ownerOf(name) !== ROUTE_HOOK;
-  const expected = baseHook.named.filter((entry) => !movedHere(entry.name)).map((entry) => entry.text);
-  const now = hook.named.map((entry) => entry.text);
+  const expected = baseHook.named.filter((entry) => !movedHere(entry.name) && !C5_REWRITTEN.includes(entry.name)).map((entry) => entry.text);
+  const now = hook.named.filter((entry) => !C5_REWRITTEN.includes(entry.name) && !C5_ADDED.includes(entry.name)).map((entry) => entry.text);
   const extra = now.filter((text) => !expected.includes(text));
   const missing = expected.filter((text) => !now.includes(text));
   const firstLine = (text) => text.split("\n").find((line) => !/^\s*(\/\/|\/\*|\*)/.test(line))?.slice(0, 80);
@@ -581,19 +597,24 @@ function findCycle(edges) {
     hookStatements: now.length,
     baselineStatements: baseHook.named.length,
     removed: baseHook.named.filter((entry) => movedHere(entry.name)).map((entry) => entry.name),
+    rewrittenOrAddedByC5: [...C5_REWRITTEN, ...C5_ADDED],
     notInBaseline: extra.map(firstLine),
     missingFromHook: missing.map(firstLine),
   });
 }
 
 // P3 — the turn and the moment of asking stay in the hook, untouched: the whole `useEscapeMaze` body is the baseline's
-// text — runDefenderPhase, the step, the Chest, the Pickaxe, Second Chance, input, the end of the Route, and the one
-// `dynamicSolvability: inspectDynamicMazeState({...})` with the same eleven fields in the same order; what C5/C6 will
-// move is still declared in the hook; none of the turn leaked into route-invariants' code.
+// text (or C5's, where route-state.ts exists — C5_REWRITTEN) — runDefenderPhase, the step, the Chest, the Pickaxe,
+// Second Chance, input, the end of the Route, and the one `dynamicSolvability: inspectDynamicMazeState({...})` with the
+// same eleven fields in the same order; what C6 will move is still declared in the hook; none of the turn leaked into
+// route-invariants' code.
 {
   const missing = [...KEPT_IN_HOOK_VALUES.filter((n) => !hook.values.includes(n)), ...KEPT_IN_HOOK_TYPES.filter((n) => !hook.types.includes(n))];
-  const changed = [...KEPT_IN_HOOK_VALUES, ...KEPT_IN_HOOK_TYPES].filter((n) => hook.text.get(n) !== baseHook.text.get(n));
+  const changed = [...KEPT_IN_HOOK_VALUES, ...KEPT_IN_HOOK_TYPES].filter((n) => !C5_REWRITTEN.includes(n) && hook.text.get(n) !== baseHook.text.get(n));
   const body = hook.text.get("useEscapeMaze") ?? "";
+  // The body is the baseline's — or C5's, where route-state.ts exists (C5_REWRITTEN). The moment of asking is checked
+  // either way: the same one call, with the same eleven fields.
+  const sameBody = C5_REWRITTEN.includes("useEscapeMaze") || body === baseHook.text.get("useEscapeMaze");
   const call = body.match(/ {4}dynamicSolvability: inspectDynamicMazeState\(\{\n([\s\S]*?)\n {4}\}\),/);
   const fields = call ? call[1].split("\n").map((line) => line.trim().replace(/,$/, "")) : null;
   const phase = (body.match(/const runDefenderPhase = \(input: DefenderPhaseInput\) => \{/g) ?? []).length;
@@ -605,7 +626,7 @@ function findCycle(edges) {
     "P3",
     "preserved",
     "TURN_AND_MOMENT_OF_ASKING_STAY_IN_THE_HOOK",
-    missing.length === 0 && changed.length === 0 && body === baseHook.text.get("useEscapeMaze") &&
+    missing.length === 0 && changed.length === 0 && sameBody &&
       same(fields, DYNAMIC_SOLVABILITY_CALL_FIELDS) && phase === 1 && leaked.length === 0,
     {
       kept: KEPT_IN_HOOK_VALUES.length + KEPT_IN_HOOK_TYPES.length,
@@ -613,6 +634,7 @@ function findCycle(edges) {
       textChanged: changed,
       useEscapeMazeBody: sha(body),
       sameBodyAsBaseline: body === baseHook.text.get("useEscapeMaze"),
+      rewrittenByC5: C5_REWRITTEN,
       dynamicSolvabilityFields: fields,
       runDefenderPhaseDeclarations: phase,
       leakedToRouteInvariants: leaked,

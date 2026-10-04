@@ -1,6 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useRef,
+  useState,
+} from "react";
 import { manhattanDistance } from "@/engine/difficulty";
 import { calculateEscapeMazeScore } from "@/engine/scoring";
 import { nextJourneyRoute } from "@/games/escape-maze/continuation";
@@ -31,6 +38,17 @@ import {
   type DynamicSolvabilityInspection,
   type GameStatus,
 } from "@/games/escape-maze/route-invariants";
+// ROUTE-C5: the session's mutable state is one value, `RouteRuntimeState`,
+// changed only by `routeStateReducer`. The hook holds it with `useReducer` and
+// still runs the turn: it decides which transition applies and with what
+// values, dispatches it where it used to call a setter, computes every derived
+// view from the state, and runs the sounds and `onComplete`. Nothing outside
+// the hook sees route-state.ts: the returned object is the same, field for
+// field.
+import {
+  createRouteState,
+  routeStateReducer,
+} from "@/games/escape-maze/route-state";
 import {
   playGentleErrorTone,
   playStoneBreak,
@@ -178,6 +196,19 @@ const SECOND_CHANCE_EXPLORER_MESSAGE =
 const SECOND_CHANCE_DEFENDER_MESSAGE =
   "Segunda Chance: você resistiu e os defensores recuaram.";
 
+/**
+ * The Sentinel's post on a board nobody has played yet. Computed from the map's
+ * own walls — nothing is broken on a new board — rather than read from the
+ * hook's portal-zone memo, which still holds the previous map on the render a
+ * restart happens in. Pure: no RNG.
+ */
+function sentinelPostOn(map: MazeMap): SentinelState {
+  return createSentinelState(
+    map,
+    computePortalDefenceZone(map.playerStart, map.exitPosition, map.walls),
+  );
+}
+
 /** Turn-based maze escape: reach the exit before the guardian catches you. */
 export function useEscapeMaze(
   onComplete: CompleteFn,
@@ -198,29 +229,59 @@ export function useEscapeMaze(
     1,
     Math.floor(initialRouteNumber),
   );
-  const [difficulty, setDifficulty] = useState<DifficultyLevel>(initialDifficulty);
   /**
    * The Route this session plays, fixed for the session's whole life. Nothing in
    * the hook advances it: the next Route is a new session, opened from the
-   * continuation `endGame` writes (ROUTE-JOURNEY-OWNERSHIP-01).
+   * continuation `endGame` writes (ROUTE-JOURNEY-OWNERSHIP-01). It is the
+   * session's identity, not part of its mutable state, so it stays out of the
+   * reducer (ROUTE-C5).
    */
   const [routeNumber] = useState(normalizedInitialRouteNumber);
-  const [mazeMap, setMazeMap] = useState<MazeMap>(() =>
-    generateMaze(initialDifficulty, normalizedInitialRouteNumber),
-  );
-  const [player, setPlayer] = useState<GridPosition>(mazeMap.playerStart);
-  const [guardian, setGuardian] = useState<GridPosition>(mazeMap.guardianStart);
 
-  // --- Chest state (ROTA-CHEST-REWARDS-01) ----------------------------------
-  // Four fields, and everything the product and the future solver need is
-  // derived from them. There is no fifth field for "a choice is pending" and no
-  // separate spent-flag per reward, because both would be a second copy of
-  // something these already say.
-  const [chestOpened, setChestOpened] = useState(false);
-  const [rewardSelected, setRewardSelected] = useState<ChestReward | null>(null);
-  const [rewardSpent, setRewardSpent] = useState(false);
-  /** The one wall the Pickaxe opened this route, or null. */
-  const [brokenWall, setBrokenWall] = useState<string | null>(null);
+  /**
+   * ROUTE-C5 — the session's whole mutable state, one value (route-state.ts).
+   *
+   * The initialiser draws the mount's board exactly where the `mazeMap` state's
+   * lazy initialiser drew it before: once per mount, from the same stream,
+   * before anything else reads it (development Strict Mode calls an initialiser
+   * twice, and it called that one twice too). The map is generated HERE, not in
+   * route-state, which never touches the RNG.
+   */
+  const [state, dispatch] = useReducer(routeStateReducer, null, () => {
+    const firstMap = generateMaze(initialDifficulty, normalizedInitialRouteNumber);
+    return createRouteState({
+      difficulty: initialDifficulty,
+      mazeMap: firstMap,
+      sentinel: sentinelPostOn(firstMap),
+      status: "setup",
+      message: "Escolha a dificuldade e inicie.",
+    });
+  });
+  const {
+    difficulty,
+    mazeMap,
+    player,
+    guardian,
+    sentinel,
+    collectedStars,
+    turns,
+    blockedMoves,
+    errors,
+    status,
+    message,
+    blockedShake,
+    moveTick,
+    // Gameplay 2.0 state — lives here in the brain, not in the Canvas.
+    triggeredTraps,
+    // ROTA-CHEST-REWARDS-01: four fields, and everything the product and the
+    // future solver need is derived from them. There is no fifth field for "a
+    // choice is pending" and no separate spent-flag per reward, because both
+    // would be a second copy of something these already say.
+    chestOpened,
+    rewardSelected,
+    rewardSpent,
+    brokenWall,
+  } = state;
 
   /**
    * The board as it stands right now.
@@ -249,19 +310,6 @@ export function useEscapeMaze(
       ),
     [mazeMap, walls],
   );
-  const [sentinel, setSentinel] = useState<SentinelState>(() =>
-    createSentinelState(mazeMap, portalDefenceZone),
-  );
-  const [collectedStars, setCollectedStars] = useState<string[]>([]);
-  const [turns, setTurns] = useState(0);
-  const [blockedMoves, setBlockedMoves] = useState(0);
-  const [errors, setErrors] = useState(0);
-  const [status, setStatus] = useState<GameStatus>("setup");
-  const [message, setMessage] = useState("Escolha a dificuldade e inicie.");
-  const [blockedShake, setBlockedShake] = useState(0);
-  const [moveTick, setMoveTick] = useState(0);
-  // Gameplay 2.0 state — lives here in the brain, not in the Canvas.
-  const [triggeredTraps, setTriggeredTraps] = useState<string[]>([]);
 
   // Carimbo do último input de movimento processado (teclado, D-pad ou toque).
   // Ref (não estado): nunca re-renderiza e se solta sozinho com o tempo.
@@ -338,42 +386,24 @@ export function useEscapeMaze(
       nextRouteNumber = routeNumber,
     ) => {
       const nextMap = generateMaze(nextDifficulty, nextRouteNumber);
-      setMazeMap(nextMap);
-      setPlayer(nextMap.playerStart);
-      setGuardian(nextMap.guardianStart);
-      // Rebuilt from the new map, so no commitment survives a restart or a
-      // route change. Recomputed here rather than read from the memo, which
-      // still holds the previous map on this render.
-      setSentinel(
-        createSentinelState(
-          nextMap,
-          computePortalDefenceZone(
-            nextMap.playerStart,
-            nextMap.exitPosition,
-            nextMap.walls,
-          ),
-        ),
-      );
-      setCollectedStars([]);
-      setTurns(0);
-      setBlockedMoves(0);
-      setErrors(0);
-      setBlockedShake(0);
-      setMoveTick(0);
-      setTriggeredTraps([]);
+      // One transition, one coherent state: the new board on the mode it was
+      // generated for, the pieces on their starts, every counter at zero,
+      // nothing collected or armed. The Sentinel is rebuilt from the new map,
+      // so no commitment survives a restart or a route change.
       // ROTA-CHEST-REWARDS-01 §19/§21: a new route restores the board and the
       // decision. Broken walls close again because they were never written to
       // the map definition — `brokenWall` is the only thing that opened them.
-      setChestOpened(false);
-      setRewardSelected(null);
-      setRewardSpent(false);
-      setBrokenWall(null);
-      setStatus(nextStatus);
-      setMessage(
-        nextStatus === "playing"
-          ? `${getRouteProgression(nextRouteNumber).label}: observe a rota e colete as luzes.`
-          : "Escolha o modo e inicie no seu ritmo.",
-      );
+      dispatch({
+        type: "START_ROUTE",
+        difficulty: nextDifficulty,
+        mazeMap: nextMap,
+        sentinel: sentinelPostOn(nextMap),
+        status: nextStatus,
+        message:
+          nextStatus === "playing"
+            ? `${getRouteProgression(nextRouteNumber).label}: observe a rota e colete as luzes.`
+            : "Escolha o modo e inicie no seu ritmo.",
+      });
     },
     [routeNumber],
   );
@@ -396,7 +426,6 @@ export function useEscapeMaze(
         wallBroken: boolean;
       },
     ) => {
-      setStatus(won ? "won" : "lost");
       // ROUTE-JOURNEY-TERMINAL-01: the journey has an end. Before the last
       // Route the next one opens, won or lost; the last one lost opens again;
       // the last one won completes the journey and opens nothing.
@@ -406,14 +435,20 @@ export function useEscapeMaze(
 
       if (won) {
         playSuccessChime();
-        setMessage(
-          journeyCompleted
+        dispatch({
+          type: "END_ROUTE",
+          status: "won",
+          message: journeyCompleted
             ? "O caminho foi aberto. A jornada da Rota Estrat\u00e9gica est\u00e1 completa."
             : "O caminho foi aberto. A pr\u00f3xima rota fica dispon\u00edvel quando quiser.",
-        );
+        });
       } else {
         playGentleErrorTone();
-        setMessage("Rota registrada. Voc\u00ea pode observar outro caminho com calma.");
+        dispatch({
+          type: "END_ROUTE",
+          status: "lost",
+          message: "Rota registrada. Voc\u00ea pode observar outro caminho com calma.",
+        });
       }
       onComplete({
         activityId: "escape-maze",
@@ -511,7 +546,9 @@ export function useEscapeMaze(
    * by mounting a fresh session (`openActivity` → continuation cleared).
    */
   const changeDifficulty = (nextDifficulty: DifficultyLevel) => {
-    setDifficulty(nextDifficulty);
+    // ROUTE-C5: the mode arrives with the board generated for it, in the same
+    // transition (`START_ROUTE` carries `difficulty`), instead of a separate
+    // write React had to batch with the rest.
     startNewMaze(nextDifficulty, "setup", routeNumber);
   };
   /**
@@ -553,13 +590,17 @@ export function useEscapeMaze(
 
     if (positionsEqual(nextGuardian, input.playerPosition)) {
       if (input.secondChanceReady) {
-        setRewardSpent(true);
-        setMessage(SECOND_CHANCE_DEFENDER_MESSAGE);
+        dispatch({ type: "SPEND_SECOND_CHANCE", message: SECOND_CHANCE_DEFENDER_MESSAGE });
         return;
       }
-      setGuardian(nextGuardian);
       const caughtErrors = input.errorsSoFar + 1;
-      setErrors(caughtErrors);
+      // The Hunter steps in; the Sentinel had not moved yet and stays.
+      dispatch({
+        type: "COMMIT_CAPTURE",
+        guardian: nextGuardian,
+        sentinel: input.sentinelFrom,
+        errors: caughtErrors,
+      });
       endGame(false, statsAt(caughtErrors));
       return;
     }
@@ -585,21 +626,26 @@ export function useEscapeMaze(
         // The Hunter's move is dropped along with the Sentinel's. Keeping it
         // would be the one case where a piece could land on the cell another is
         // being returned to, and dropping both costs nothing the design wants.
-        setRewardSpent(true);
-        setMessage(SECOND_CHANCE_DEFENDER_MESSAGE);
+        dispatch({ type: "SPEND_SECOND_CHANCE", message: SECOND_CHANCE_DEFENDER_MESSAGE });
         return;
       }
-      setGuardian(nextGuardian);
-      setSentinel(settledSentinel);
       const caughtErrors = input.errorsSoFar + 1;
-      setErrors(caughtErrors);
+      dispatch({
+        type: "COMMIT_CAPTURE",
+        guardian: nextGuardian,
+        sentinel: settledSentinel,
+        errors: caughtErrors,
+      });
       endGame(false, statsAt(caughtErrors));
       return;
     }
 
-    setGuardian(nextGuardian);
-    setSentinel(settledSentinel);
-    setMessage(input.calmMessage(nextGuardian));
+    dispatch({
+      type: "SETTLE_DEFENDERS",
+      guardian: nextGuardian,
+      sentinel: settledSentinel,
+      message: input.calmMessage(nextGuardian),
+    });
   };
 
   const tryMovePlayer = (delta: GridPosition) => {
@@ -624,17 +670,17 @@ export function useEscapeMaze(
       next.row < 0 || next.row >= ROWS || next.col < 0 || next.col >= COLS;
 
     if (outOfBoard || walls.has(nextKey)) {
-      setBlockedMoves((n) => n + 1);
-      setBlockedShake((n) => n + 1);
       playGentleErrorTone();
       // §10/§18: walking into a wall never spends the Pickaxe — not even into a
       // wall the Pickaxe could open. It only points at the action that would.
       // The hint says "you could open this one", never "you should".
-      setMessage(
-        !outOfBoard && pickaxeAvailable
-          ? "Parede no caminho. A Picareta pode abri-la."
-          : "Caminho bloqueado. Escolha outra direção.",
-      );
+      dispatch({
+        type: "BLOCK_STEP",
+        message:
+          !outOfBoard && pickaxeAvailable
+            ? "Parede no caminho. A Picareta pode abri-la."
+            : "Caminho bloqueado. Escolha outra direção.",
+      });
       return;
     }
 
@@ -647,17 +693,17 @@ export function useEscapeMaze(
     // trace on the board: the step simply did not happen.
     if (stepOnGuardian || stepOnSentinel) {
       if (secondChanceAvailable) {
-        setRewardSpent(true);
-        setTurns(nextTurn);
-        setMoveTick((t) => t + 1);
-        setMessage(SECOND_CHANCE_EXPLORER_MESSAGE);
+        // The turn is counted and the charge spent; the Explorer stays.
+        dispatch({ type: "SPEND_SECOND_CHANCE", message: SECOND_CHANCE_EXPLORER_MESSAGE });
+        dispatch({ type: "COUNT_TURN", turns: nextTurn });
         return;
       }
       const caughtErrors = errors + 1;
-      setTurns(nextTurn);
-      setPlayer(next);
-      setMoveTick((t) => t + 1);
-      setErrors(caughtErrors);
+      // The step lands on the defender and nothing else: no light is collected
+      // and no trap armed on a capture. The defenders have not moved.
+      dispatch({ type: "COUNT_TURN", turns: nextTurn });
+      dispatch({ type: "MOVE_EXPLORER", player: next, collectedStars, armedTrap: null });
+      dispatch({ type: "COMMIT_CAPTURE", guardian, sentinel, errors: caughtErrors });
       endGame(false, {
         turns: nextTurn,
         blockedMoves,
@@ -698,13 +744,13 @@ export function useEscapeMaze(
       nextTotalLights === 0 || nextCollectedStars.length >= nextTotalLights;
     const nextTrapsTriggered = triggeredTraps.length + (isUntriggeredTrap ? 1 : 0);
 
-    setTurns(nextTurn);
-    setPlayer(next);
-    setCollectedStars(nextCollectedStars);
-    setMoveTick((t) => t + 1);
-    if (isUntriggeredTrap) {
-      setTriggeredTraps((prev) => [...prev, nextKey]);
-    }
+    dispatch({ type: "COUNT_TURN", turns: nextTurn });
+    dispatch({
+      type: "MOVE_EXPLORER",
+      player: next,
+      collectedStars: nextCollectedStars,
+      armedTrap: isUntriggeredTrap ? nextKey : null,
+    });
 
     if (positionsEqual(next, mazeMap.exitPosition) && nextPortalActive) {
       endGame(true, {
@@ -738,8 +784,7 @@ export function useEscapeMaze(
     // defenders have not answered yet and will not until a reward is chosen, so
     // there is no race between the UI and the runtime and no hidden turn.
     if (arrivesAtChest) {
-      setChestOpened(true);
-      setMessage("Baú encontrado. Escolha a sua ferramenta.");
+      dispatch({ type: "OPEN_CHEST", message: "Baú encontrado. Escolha a sua ferramenta." });
       return;
     }
 
@@ -791,7 +836,7 @@ export function useEscapeMaze(
    */
   const chooseReward = (reward: ChestReward) => {
     if (status !== "playing" || !rewardChoicePending) return;
-    setRewardSelected(reward);
+    dispatch({ type: "SELECT_REWARD", reward });
     runDefenderPhase({
       playerPosition: player,
       guardianFrom: guardian,
@@ -859,10 +904,8 @@ export function useEscapeMaze(
     );
     const nextTurn = turns + 1;
 
-    setBrokenWall(wallKey);
-    setRewardSpent(true);
-    setTurns(nextTurn);
-    setMoveTick((t) => t + 1);
+    dispatch({ type: "OPEN_WALL", wall: wallKey });
+    dispatch({ type: "COUNT_TURN", turns: nextTurn });
     playStoneBreak();
 
     runDefenderPhase({

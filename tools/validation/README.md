@@ -238,7 +238,7 @@ is declared in its `ALLOWED` table with a reason:
 
 | reason | validators | why they still name Rota files |
 | --- | --- | --- |
-| STRUCTURAL_ASSERTION | game-continuation-contract, route-journey-ownership, route-journey-terminal, route-config-extraction, route-generation-extraction, route-defenders-extraction, route-invariants-extraction, diagnostic-launcher, production-diagnostic-boundary, cross-eol | the check is about where code lives (I1/O3/T11, C1's, C2's, C3's and C4's static gates, the seed seam's own code, CRLF of the hook's text); their Rota runs through the graph |
+| STRUCTURAL_ASSERTION | game-continuation-contract, route-journey-ownership, route-journey-terminal, route-config-extraction, route-generation-extraction, route-defenders-extraction, route-invariants-extraction, route-state-reducer, diagnostic-launcher, production-diagnostic-boundary, cross-eol | the check is about where code lives (I1/O3/T11, C1's, C2's, C3's, C4's and C5's static gates, the seed seam's own code, CRLF of the hook's text); their Rota runs through the graph |
 | UI_STAGE | route-board-loader | compiles the Rota component under a chunk gate with stage stubs |
 | REPORT_LABEL | breakable-wall-feasibility, dynamic-solvability-finalize | a path inside report text |
 | LEGACY_LEDGER | chest-acceptance | ROTA-CHEST-REWARDS-01 ledger; rewrites its archive when run |
@@ -248,8 +248,8 @@ A new validator that names the hook or resolves a Rota import by hand fails the
 gate until it uses the loader or is declared with a reason; a declaration whose
 coupling is gone must leave the table. `route-config.ts` counts as a Rota module
 file for the gate (ROUTE-C1), and so do `route-generation.ts` and
-`route-geometry.ts` (ROUTE-C2), `route-defenders.ts` (ROUTE-C3) and
-`route-invariants.ts` (ROUTE-C4).
+`route-geometry.ts` (ROUTE-C2), `route-defenders.ts` (ROUTE-C3),
+`route-invariants.ts` (ROUTE-C4) and `route-state.ts` (ROUTE-C5).
 `route-module-loader-tests` no longer names the hook since ROUTE-C3 (L10 reads
 `route-random`'s importers off the graph), so its `hook-path` declaration left
 the table.
@@ -479,3 +479,114 @@ as C4's STRUCTURAL_ASSERTION); and `chest-acceptance` item 10, which read
 it (exactly once, through `readRouteLogicSources`) and requires the hook to
 still export it. The dynamic-solvability campaign's identity hashes the hook's
 run-time closure, which now includes route-invariants.ts: only cache keys move.
+
+**ROUTE STATE (ROUTE-C5)** — the Rota's mutable session state is one value,
+`RouteRuntimeState`, in `src/games/escape-maze/route-state.ts`, changed only by
+the pure `routeStateReducer(state, action)`; `createRouteState` builds a new
+session as one coherent state. The eighteen `useState` cells of 74ff2dc
+(`difficulty`, `mazeMap`, `player`, `guardian`, `sentinel`, `collectedStars`,
+`triggeredTraps`, `turns`, `blockedMoves`, `errors`, `status`, `message`,
+`blockedShake`, `moveTick`, `chestOpened`, `rewardSelected`, `rewardSpent`,
+`brokenWall`) are its fields; `routeNumber` (the session's identity) and
+`lastMoveInputAtRef` (the input guard) stay out on purpose, and every derived
+view (walls, zone, sets, Chest flags, break targets, counts, portal, progression,
+score, `dynamicSolvability`) is still computed by the hook. Eleven actions, each
+writing an exact set of fields: `START_ROUTE`, `BLOCK_STEP`, `COUNT_TURN`,
+`MOVE_EXPLORER`, `OPEN_CHEST`, `SELECT_REWARD`, `SPEND_SECOND_CHANCE`,
+`OPEN_WALL`, `SETTLE_DEFENDERS`, `COMMIT_CAPTURE`, `END_ROUTE` — transitions,
+not domain events (ROUTE-C6). The hook holds the state with one `useReducer`
+and still decides which transition applies, in what order, with what values;
+it generates maps (the reducer's initialiser, once per mount, where the
+`mazeMap` initialiser drew; `startNewMaze`), plays sounds, guards input and
+calls `onComplete`. route-state imports types only and reaches nothing at run
+time. Writes nothing:
+
+```bash
+node tools/validation/route-state-reducer-tests.mjs              # ~4 min
+node tools/validation/route-state-reducer-tests.mjs --rev=74ff2dc  # must fail every [structure] and [reducer] check, hold the rest
+node tools/validation/route-state-reducer-tests.mjs --mutants      # ~30 min; every in-memory mutant must be caught
+node tools/validation/route-runtime-harness-tests.mjs             # ~30 s; the shim's useReducer against react-dom
+```
+
+`[structure]` is the static gate: route-state declares and exports the four
+names and its session-start shape; the hook's only `useState` is `routeNumber`,
+its one `useReducer` runs `routeStateReducer` with an initialiser, the eighteen
+fields come out of that state once each, and no setter is left; the state's
+fields are exactly the migrated cells — no derived view, nothing kept out; every
+derived view is computed in the hook; route-state imports types only from the
+defenders, generation, invariants and the shared types, its run-time closure is
+itself, and it mentions no RNG, clock, browser, React, sound, storage, map
+generation, defender policy or board geometry; in `src/` only the hook imports
+it and nothing re-exports it; the union, the reducer's cases and what the hook
+dispatches are the same eleven actions, with no generic patch and no C6 word;
+the turn, the side effects (same call sites as 74ff2dc) and both `generateMaze`
+calls stay in the hook; and the cells are counted (19 `useState` → 1 + 1
+`useReducer`). `[reducer]` runs the reducer over thousands of states built from
+generated maps, inputs deep-frozen, in a realm where `Math`, `Date`,
+`performance`, `crypto` and every browser global are poisoned: deterministic,
+never returns its input, writes exactly its action's fields (every other field
+keeps its identity), and `START_ROUTE` from a dirty state keeps nothing of it.
+`[preserved]`: the hook's exports and its consumers, every other Rota module,
+every string of the hook (the 30 user-facing ones byte for byte; none in
+route-state), every top-level statement but the hook itself and the new
+`sentinelPostOn`, and the turn itself: the hook's body with every state write
+(56 setter calls at 74ff2dc, 20 dispatches now), every cell declaration and
+every write-only guard taken out prints identically on both trees — the same
+conditions in the same order, computations, sounds, `onComplete`,
+`generateMaze` calls and returns. C5 replaced writes; it moved no decision. `[equivalence]` against 74ff2dc through the loader, render by
+render — all 43 fields the hook returns, at every render: 255 sessions on the
+runtime harness (Routes 1/2/3 × every mode × eleven scripted Explorers × two
+seeds, eight for the bait; a fresh entry and a continuation; inputs after the
+end, restart, mode change, setup inputs, the next Route; three journeys
+R1 → R3) with real scoring and recording sounds, each item its own check over
+the inputs that exercise it (initial state, start, restart, mode change, both
+blocked messages, valid moves, traps, lights, Chest pause and the frozen input,
+both rewards, Pickaxe, Hunter / Sentinel / own-step captures, Second Chance
+attributed to the Explorer, the Hunter and the Sentinel, win, loss, onComplete
+with finalStats, continuation, the RNG — draws per input, `generateMaze` calls
+per input, the stream after — and `dynamicSolvability`); and on the REAL React
+(react-dom from node_modules, in workers): development + Strict Mode with `act`
+and with native discrete events through the hook's own keyboard listener,
+production with default updates and with discrete events — every commit,
+commits and component calls per input (at most one commit per input; Strict
+Mode's double initialiser draws two boards on both trees), completions,
+sounds, draws, keyboard listeners and console output identical.
+
+`tools/validation/route-react-runtime.mjs` is the driver: one scenario runner
+over two renderers — the harness's shim and react-dom with a fake container
+(the component renders `null`) — so both are compared on the same terms.
+`route-runtime-harness.mjs` gained a `useReducer` with React's semantics
+(`init(initialArg)` once, stable `dispatch`, actions queued and drained at the
+next render through that render's reducer, dirty flag), `onRender` with a
+`scheduled` flag, a `mocks` passthrough, and a `directDifficulty` edit written
+in either state engine (the `status` setter up to C4, `END_ROUTE` with
+"playing" and the held message since). `route-runtime-harness-tests.mjs` holds
+the shim to react-dom: synthetic components for each property (and one React
+has that the shim does not model — a reducer returning its input, which C5's
+reducer never does), the real hook on both trees through both, and the
+harness's own surface.
+
+`--mutants` applies 13 mutations in memory — a reset forgotten
+(`rewardSpent`, `triggeredTraps`); `moveTick` ticked twice, or on a blocked
+step; the Hunter's capture falling through so a later write overwrites the
+loss; the Sentinel resolved before the Hunter; the Hunter's move kept after a
+Second Chance; win/loss swapped; a second board at mount; the reducer mutating
+its input; a cell put back; a derived view stored; the RNG imported — and
+requires every one to be caught. The capture-order swap is caught by P5 alone:
+no scripted session reaches a turn where both defenders land on the Explorer,
+so only the turn's text can see it.
+
+Validators that had to follow the code: `route-generation-extraction-tests`
+P2/P3, `route-defenders-extraction-tests` P2/P3 and
+`route-invariants-extraction-tests` P2/P3 compared `useEscapeMaze`'s whole text
+with their baselines; where route-state.ts exists the body (and the new
+`sentinelPostOn`) is C5's, held by route-state-reducer-tests, and every other
+statement is still compared byte for byte (on their own `--rev` counterfactuals
+nothing changes). `route-invariants-extraction-tests` S4 now requires the hook
+to be route-invariants' only RUN-TIME importer (route-state names
+`GameStatus`/`ChestReward` as types). `game-continuation-contract` I1 pins the
+hook's new runtime edge `route-state`, which imports nothing at run time and is
+imported by the hook alone. `route-module-loader-tests` L15 accepts the
+`directDifficulty` edit in either engine; `route-module-loader`'s inert React
+has a `useReducer`. The coupling gate counts route-state.ts as a Rota module
+file and declares the new test as C5's STRUCTURAL_ASSERTION. No evidence moved.
