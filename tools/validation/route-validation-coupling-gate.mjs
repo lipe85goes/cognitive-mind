@@ -11,7 +11,7 @@
  *   rota-module-path  names another Rota module file (difficulty, route-random,
  *                     continuation, route-config since ROUTE-C1, route-generation
  *                     and route-geometry since ROUTE-C2, route-defenders since
- *                     ROUTE-C3) in code;
+ *                     ROUTE-C3, route-invariants since ROUTE-C4) in code;
  *   rota-resolver     answers a Rota import by hand (`=== "@/engine/…"`) — a
  *                     private module resolver;
  *   rota-ts-compile   compiles TypeScript in a file that also names Rota
@@ -65,11 +65,11 @@ if (REV) {
 // --- the patterns ------------------------------------------------------------------------------
 
 const codeOnly = (source) => source.replace(/\/\*[\s\S]*?\*\//g, " ").replace(/(^|[^:\\])\/\/.*$/gm, "$1");
-const ROTA_SPECIFIER = String.raw`@\/(?:engine\/(?:difficulty|route-random)|games\/escape-maze\/(?:continuation|route-config|route-defenders|route-generation|route-geometry|useEscapeMaze))`;
+const ROTA_SPECIFIER = String.raw`@\/(?:engine\/(?:difficulty|route-random)|games\/escape-maze\/(?:continuation|route-config|route-defenders|route-generation|route-geometry|route-invariants|useEscapeMaze))`;
 const SIGNALS = {
   "hook-path": /useEscapeMaze\.ts/,
   "hook-text": /(?<!function\s)\bproductionSource\s*\(/,
-  "rota-module-path": /["'](?:src\/engine\/)?(?:difficulty|route-random)\.ts["']|["'](?:src\/games\/escape-maze\/)?(?:continuation|route-config|route-defenders|route-generation|route-geometry)\.ts["']/,
+  "rota-module-path": /["'](?:src\/engine\/)?(?:difficulty|route-random)\.ts["']|["'](?:src\/games\/escape-maze\/)?(?:continuation|route-config|route-defenders|route-generation|route-geometry|route-invariants)\.ts["']/,
   "rota-resolver": new RegExp(String.raw`===\s*["']${ROTA_SPECIFIER}["']`),
   "single-file-seam": /\bhookSource\b/,
 };
@@ -152,6 +152,11 @@ const ALLOWED = {
     kinds: ["rota-module-path"],
     reason: "STRUCTURAL_ASSERTION",
     note: "ROUTE-C3's static gate: the Hunter's and the Sentinel's policy in route-defenders.ts and nowhere else, none of it in the hook, every other Rota module untouched; its Rota runs through the graph",
+  },
+  "route-invariants-extraction-tests.mjs": {
+    kinds: ["rota-module-path"],
+    reason: "STRUCTURAL_ASSERTION",
+    note: "ROUTE-C4's static gate: the dynamic invariants (and GameStatus/ChestReward) in route-invariants.ts and nowhere else, none of it in the hook, every other Rota module untouched; its Rota runs through the graph",
   },
   "route-board-loader-tests.mjs": { kinds: ["rota-module-path", "rota-ts-compile"], reason: "UI_STAGE" },
   "diagnostic-launcher-tests.mjs": {

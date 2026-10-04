@@ -28,10 +28,12 @@
  *                      (comments included) is the baseline's text, the hook's
  *                      remaining code is the baseline's text, the hook's
  *                      public surface (run-time and type) is the baseline's and
- *                      its real consumers still find every name; the dynamic
- *                      invariants (C4) stay in the hook (the defender policy
- *                      did too, until ROUTE-C3 moved it to route-defenders.ts —
- *                      route-defenders-extraction-tests.mjs holds that move);
+ *                      its real consumers still find every name; the turn
+ *                      stays in the hook (the defender policy and the dynamic
+ *                      invariants did too, until ROUTE-C3 moved the first to
+ *                      route-defenders.ts and ROUTE-C4 the second to
+ *                      route-invariants.ts — route-defenders-extraction-tests
+ *                      and route-invariants-extraction-tests hold those moves);
  *                      the instrumented loader still sees 18 structural
  *                      reasons and 23 final gates, the escape context, bare
  *                      mode and replayGeneration's fidelity.
@@ -127,19 +129,20 @@ const HOME = Object.fromEntries([
 const GENERATION_EXPORTS = ["MazeMap", "generateMaze"];
 
 /**
- * Left in the hook on purpose. The dynamic invariants are ROUTE-C4's, and input, chest and turn orchestration are the
- * hook's own. None of it may have moved. The defenders' policy was here at C2 (PORTAL_ZONE_RADIUS, SENTINEL_*,
- * computePortalDefenceZone, createSentinelState, decideSentinelMove, EMPTY_BLOCKED, chooseGuardianMove,
- * PortalDefenceZone, SentinelState); ROUTE-C3 moved it to route-defenders.ts, which route-defenders-extraction-tests.mjs
- * checks — verbatim, against this tree's head.
+ * Left in the hook on purpose: input, chest and turn orchestration are the hook's own. None of it may have moved. The
+ * defenders' policy was here at C2 (PORTAL_ZONE_RADIUS, SENTINEL_*, computePortalDefenceZone, createSentinelState,
+ * decideSentinelMove, EMPTY_BLOCKED, chooseGuardianMove, PortalDefenceZone, SentinelState); ROUTE-C3 moved it to
+ * route-defenders.ts, which route-defenders-extraction-tests.mjs checks — verbatim, against this tree's head. So were
+ * the dynamic invariants (inspectDynamicMazeState, DynamicMazeStateSnapshot, DynamicSolvabilityInspection) and the
+ * state's vocabulary their snapshot is written in (GameStatus, ChestReward); ROUTE-C4 moved them to
+ * route-invariants.ts, which route-invariants-extraction-tests.mjs checks the same way.
  */
 const KEPT_IN_HOOK_VALUES = [
-  "ARROW_DELTAS", "BREAK_DIRECTION_DELTAS", "MOVE_INPUT_GUARD_MS", "inspectDynamicMazeState",
+  "ARROW_DELTAS", "BREAK_DIRECTION_DELTAS", "MOVE_INPUT_GUARD_MS",
   "SECOND_CHANCE_EXPLORER_MESSAGE", "SECOND_CHANCE_DEFENDER_MESSAGE", "useEscapeMaze",
 ];
 const KEPT_IN_HOOK_TYPES = [
-  "BreakDirection", "BreakTarget", "GameStatus", "CompleteFn", "ChestReward",
-  "DynamicMazeStateSnapshot", "DynamicSolvabilityInspection", "DefenderPhaseInput",
+  "BreakDirection", "BreakTarget", "CompleteFn", "DefenderPhaseInput",
 ];
 
 /** What route-generation and route-geometry may import, and what they must never reach. */
@@ -450,11 +453,11 @@ const resolvesTo = (from, specifier) => errorOf(() => TREE.resolve(specifier, fr
   });
 }
 
-// P3 — what C4 will move, and the turn itself, are still in the hook, unchanged.
+// P3 — the turn itself is still in the hook, unchanged. (What C4 moved left this list for route-invariants.ts.)
 {
   const missing = [...KEPT_IN_HOOK_VALUES.filter((n) => !hook.values.includes(n)), ...KEPT_IN_HOOK_TYPES.filter((n) => !hook.types.includes(n))];
   const changed = [...KEPT_IN_HOOK_VALUES, ...KEPT_IN_HOOK_TYPES].filter((n) => hook.text.get(n) !== baseHook.text.get(n));
-  record("P3", "preserved", "INVARIANTS_AND_TURN_STAY_IN_THE_HOOK", missing.length === 0 && changed.length === 0, {
+  record("P3", "preserved", "TURN_STAYS_IN_THE_HOOK", missing.length === 0 && changed.length === 0, {
     kept: KEPT_IN_HOOK_VALUES.length + KEPT_IN_HOOK_TYPES.length,
     missingFromHook: missing,
     textChanged: changed,

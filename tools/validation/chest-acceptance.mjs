@@ -13,6 +13,7 @@
  */
 import fs from "node:fs";
 import path from "node:path";
+import { readRouteLogicSources } from "./route-module-loader.mjs";
 
 const OUT = path.resolve("docs/archive/route-chest-rewards-01");
 const ROOT = process.cwd();
@@ -34,6 +35,12 @@ const render = load("chest-static-render-audit.json");
 const golden = load("golden-seeds-post-chest-input.json");
 
 const hook = source("src/games/escape-maze/useEscapeMaze.ts");
+// ROUTE-C4: `ChestReward` left the hook with the runtime contract whose snapshot is written in it, and the hook
+// re-exports it. Item 10 is about the type, so it is read where the Rota declares it — exactly once — and the hook
+// must still hand it out.
+const CHEST_REWARD = /export type ChestReward = "pickaxe" \| "second-chance";/;
+const chestRewardDeclarations = readRouteLogicSources().filter(({ source: text }) => CHEST_REWARD.test(text)).length;
+const hookExportsChestReward = CHEST_REWARD.test(hook) || /export type \{[^}]*\bChestReward\b[^}]*\}/.test(hook);
 const game = source("src/games/escape-maze/RouteStrategyGame.tsx");
 const babylon = source("src/games/escape-maze/routeBabylonScene.ts");
 
@@ -134,7 +141,8 @@ const items = [
     n: 10,
     claim: "Chest continua oferecendo exatamente duas rewards",
     pass:
-      /export type ChestReward = "pickaxe" \| "second-chance";/.test(hook) &&
+      chestRewardDeclarations === 1 &&
+      hookExportsChestReward &&
       test(chest, "D").pass &&
       test(chest, "E").pass &&
       test(chest, "F").pass,
