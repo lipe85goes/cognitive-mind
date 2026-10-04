@@ -39,16 +39,24 @@ import {
   type GameStatus,
 } from "@/games/escape-maze/route-invariants";
 // ROUTE-C5: the session's mutable state is one value, `RouteRuntimeState`,
-// changed only by `routeStateReducer`. The hook holds it with `useReducer` and
-// still runs the turn: it decides which transition applies and with what
-// values, dispatches it where it used to call a setter, computes every derived
-// view from the state, and runs the sounds and `onComplete`. Nothing outside
-// the hook sees route-state.ts: the returned object is the same, field for
-// field.
+// changed only by `routeStateReducer`. The hook holds it with `useReducer`,
+// computes every derived view from the state, and runs the sounds and
+// `onComplete`. Nothing outside the hook sees route-state.ts: the returned
+// object is the same, field for field.
 import {
   createRouteState,
   routeStateReducer,
 } from "@/games/escape-maze/route-state";
+// ROUTE-C6: the hook says what happened — a `RouteDomainEvent` — and
+// route-events.ts translates it into the C5 transitions that record it. The
+// hook still runs the turn: it decides which events happen, in what order and
+// with what values, and applies each through `applyDomainEvent`, the one place
+// the state is written. Events are not stored, queued or published, and no
+// component knows them.
+import {
+  routeStateActionsForEvent,
+  type RouteDomainEvent,
+} from "@/games/escape-maze/route-events";
 import {
   playGentleErrorTone,
   playStoneBreak,
@@ -284,6 +292,17 @@ export function useEscapeMaze(
   } = state;
 
   /**
+   * ROUTE-C6 — the one place the session's state is written: an event that has
+   * already happened, recorded by the transitions route-events.ts gives for it,
+   * dispatched in that order. An event that records nothing of its own (a light,
+   * the portal, a trap — the step already wrote them) dispatches nothing, so it
+   * can never cause a render.
+   */
+  const applyDomainEvent = useCallback((event: RouteDomainEvent) => {
+    for (const action of routeStateActionsForEvent(event)) dispatch(action);
+  }, []);
+
+  /**
    * The board as it stands right now.
    *
    * A broken wall is simply not a wall any more — for the Explorer, the Hunter
@@ -393,8 +412,9 @@ export function useEscapeMaze(
       // ROTA-CHEST-REWARDS-01 §19/§21: a new route restores the board and the
       // decision. Broken walls close again because they were never written to
       // the map definition — `brokenWall` is the only thing that opened them.
-      dispatch({
-        type: "START_ROUTE",
+      applyDomainEvent({
+        type: "ROUTE_STARTED",
+        routeNumber: nextRouteNumber,
         difficulty: nextDifficulty,
         mazeMap: nextMap,
         sentinel: sentinelPostOn(nextMap),
@@ -405,7 +425,7 @@ export function useEscapeMaze(
             : "Escolha o modo e inicie no seu ritmo.",
       });
     },
-    [routeNumber],
+    [routeNumber, applyDomainEvent],
   );
   const endGame = useCallback(
     (
@@ -435,18 +455,22 @@ export function useEscapeMaze(
 
       if (won) {
         playSuccessChime();
-        dispatch({
-          type: "END_ROUTE",
-          status: "won",
+        applyDomainEvent({
+          type: "ROUTE_ENDED",
+          outcome: "won",
+          turn: finalStats.turns,
+          journeyCompleted,
           message: journeyCompleted
             ? "O caminho foi aberto. A jornada da Rota Estrat\u00e9gica est\u00e1 completa."
             : "O caminho foi aberto. A pr\u00f3xima rota fica dispon\u00edvel quando quiser.",
         });
       } else {
         playGentleErrorTone();
-        dispatch({
-          type: "END_ROUTE",
-          status: "lost",
+        applyDomainEvent({
+          type: "ROUTE_ENDED",
+          outcome: "lost",
+          turn: finalStats.turns,
+          journeyCompleted,
           message: "Rota registrada. Voc\u00ea pode observar outro caminho com calma.",
         });
       }
@@ -519,7 +543,7 @@ export function useEscapeMaze(
         }),
       });
     },
-    [onComplete],
+    [onComplete, applyDomainEvent],
   );
 
   const startGame = () => {
@@ -590,13 +614,22 @@ export function useEscapeMaze(
 
     if (positionsEqual(nextGuardian, input.playerPosition)) {
       if (input.secondChanceReady) {
-        dispatch({ type: "SPEND_SECOND_CHANCE", message: SECOND_CHANCE_DEFENDER_MESSAGE });
+        applyDomainEvent({
+          type: "SECOND_CHANCE_USED",
+          cause: "hunter",
+          turn: input.turnNumber,
+          at: input.playerPosition,
+          message: SECOND_CHANCE_DEFENDER_MESSAGE,
+        });
         return;
       }
       const caughtErrors = input.errorsSoFar + 1;
       // The Hunter steps in; the Sentinel had not moved yet and stays.
-      dispatch({
-        type: "COMMIT_CAPTURE",
+      applyDomainEvent({
+        type: "EXPLORER_CAPTURED",
+        by: "hunter",
+        turn: input.turnNumber,
+        at: input.playerPosition,
         guardian: nextGuardian,
         sentinel: input.sentinelFrom,
         errors: caughtErrors,
@@ -626,12 +659,21 @@ export function useEscapeMaze(
         // The Hunter's move is dropped along with the Sentinel's. Keeping it
         // would be the one case where a piece could land on the cell another is
         // being returned to, and dropping both costs nothing the design wants.
-        dispatch({ type: "SPEND_SECOND_CHANCE", message: SECOND_CHANCE_DEFENDER_MESSAGE });
+        applyDomainEvent({
+          type: "SECOND_CHANCE_USED",
+          cause: "sentinel",
+          turn: input.turnNumber,
+          at: input.playerPosition,
+          message: SECOND_CHANCE_DEFENDER_MESSAGE,
+        });
         return;
       }
       const caughtErrors = input.errorsSoFar + 1;
-      dispatch({
-        type: "COMMIT_CAPTURE",
+      applyDomainEvent({
+        type: "EXPLORER_CAPTURED",
+        by: "sentinel",
+        turn: input.turnNumber,
+        at: input.playerPosition,
         guardian: nextGuardian,
         sentinel: settledSentinel,
         errors: caughtErrors,
@@ -640,8 +682,9 @@ export function useEscapeMaze(
       return;
     }
 
-    dispatch({
-      type: "SETTLE_DEFENDERS",
+    applyDomainEvent({
+      type: "DEFENDERS_SETTLED",
+      turn: input.turnNumber,
       guardian: nextGuardian,
       sentinel: settledSentinel,
       message: input.calmMessage(nextGuardian),
@@ -674,8 +717,10 @@ export function useEscapeMaze(
       // §10/§18: walking into a wall never spends the Pickaxe — not even into a
       // wall the Pickaxe could open. It only points at the action that would.
       // The hint says "you could open this one", never "you should".
-      dispatch({
-        type: "BLOCK_STEP",
+      applyDomainEvent({
+        type: "EXPLORER_STEP_BLOCKED",
+        reason: outOfBoard ? "boundary" : "wall",
+        cell: next,
         message:
           !outOfBoard && pickaxeAvailable
             ? "Parede no caminho. A Picareta pode abri-la."
@@ -694,16 +739,34 @@ export function useEscapeMaze(
     if (stepOnGuardian || stepOnSentinel) {
       if (secondChanceAvailable) {
         // The turn is counted and the charge spent; the Explorer stays.
-        dispatch({ type: "SPEND_SECOND_CHANCE", message: SECOND_CHANCE_EXPLORER_MESSAGE });
-        dispatch({ type: "COUNT_TURN", turns: nextTurn });
+        applyDomainEvent({
+          type: "SECOND_CHANCE_USED",
+          cause: "explorer",
+          turn: nextTurn,
+          at: next,
+          message: SECOND_CHANCE_EXPLORER_MESSAGE,
+        });
         return;
       }
       const caughtErrors = errors + 1;
       // The step lands on the defender and nothing else: no light is collected
       // and no trap armed on a capture. The defenders have not moved.
-      dispatch({ type: "COUNT_TURN", turns: nextTurn });
-      dispatch({ type: "MOVE_EXPLORER", player: next, collectedStars, armedTrap: null });
-      dispatch({ type: "COMMIT_CAPTURE", guardian, sentinel, errors: caughtErrors });
+      applyDomainEvent({
+        type: "EXPLORER_STEP_COMMITTED",
+        turn: nextTurn,
+        to: next,
+        collectedStars,
+        armedTrap: null,
+      });
+      applyDomainEvent({
+        type: "EXPLORER_CAPTURED",
+        by: "explorer-step",
+        turn: nextTurn,
+        at: next,
+        guardian,
+        sentinel,
+        errors: caughtErrors,
+      });
       endGame(false, {
         turns: nextTurn,
         blockedMoves,
@@ -744,13 +807,25 @@ export function useEscapeMaze(
       nextTotalLights === 0 || nextCollectedStars.length >= nextTotalLights;
     const nextTrapsTriggered = triggeredTraps.length + (isUntriggeredTrap ? 1 : 0);
 
-    dispatch({ type: "COUNT_TURN", turns: nextTurn });
-    dispatch({
-      type: "MOVE_EXPLORER",
-      player: next,
+    applyDomainEvent({
+      type: "EXPLORER_STEP_COMMITTED",
+      turn: nextTurn,
+      to: next,
       collectedStars: nextCollectedStars,
       armedTrap: isUntriggeredTrap ? nextKey : null,
     });
+    // What the step did, said once each. The step above already wrote all of
+    // it, so these record nothing more: the light, then the portal it opened,
+    // then the trap.
+    if (collectedStar) {
+      applyDomainEvent({ type: "LIGHT_COLLECTED", turn: nextTurn, light: nextKey });
+      if (nextPortalActive) {
+        applyDomainEvent({ type: "PORTAL_ACTIVATED", turn: nextTurn });
+      }
+    }
+    if (isUntriggeredTrap) {
+      applyDomainEvent({ type: "TRAP_ARMED", turn: nextTurn, trap: nextKey });
+    }
 
     if (positionsEqual(next, mazeMap.exitPosition) && nextPortalActive) {
       endGame(true, {
@@ -784,7 +859,11 @@ export function useEscapeMaze(
     // defenders have not answered yet and will not until a reward is chosen, so
     // there is no race between the UI and the runtime and no hidden turn.
     if (arrivesAtChest) {
-      dispatch({ type: "OPEN_CHEST", message: "Baú encontrado. Escolha a sua ferramenta." });
+      applyDomainEvent({
+        type: "CHEST_OPENED",
+        turn: nextTurn,
+        message: "Baú encontrado. Escolha a sua ferramenta.",
+      });
       return;
     }
 
@@ -836,7 +915,7 @@ export function useEscapeMaze(
    */
   const chooseReward = (reward: ChestReward) => {
     if (status !== "playing" || !rewardChoicePending) return;
-    dispatch({ type: "SELECT_REWARD", reward });
+    applyDomainEvent({ type: "REWARD_SELECTED", turn: turns, reward });
     runDefenderPhase({
       playerPosition: player,
       guardianFrom: guardian,
@@ -904,8 +983,7 @@ export function useEscapeMaze(
     );
     const nextTurn = turns + 1;
 
-    dispatch({ type: "OPEN_WALL", wall: wallKey });
-    dispatch({ type: "COUNT_TURN", turns: nextTurn });
+    applyDomainEvent({ type: "WALL_OPENED", turn: nextTurn, wall: wallKey });
     playStoneBreak();
 
     runDefenderPhase({

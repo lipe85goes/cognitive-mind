@@ -34,6 +34,13 @@
  * Each step also records what it did outside the state: sounds and onComplete,
  * in order, and the random draws and `generateMaze` calls it caused.
  *
+ * ROUTE-C6: with `traceEvents`, each step also records the semantic trace of a
+ * tree that has one (`record.traces`, aligned with `steps`): every
+ * `RouteDomainEvent` the hook applied, in order, read by wrapping the
+ * event→transition mapping its seam calls once per event; how many transitions
+ * each gave; and how many times the reducer ran. Off by default, so every
+ * existing comparison sees exactly what it saw before.
+ *
  * Writes nothing.
  */
 import crypto from "node:crypto";
@@ -233,6 +240,58 @@ function instrumentStream(graph, math) {
 }
 
 /**
+ * ROUTE-C6 — the semantic trace of a loaded graph, when its tree has one. The mapping (`routeStateActionsForEvent`)
+ * and the reducer are wrapped where they are declared: the hook reads both off their modules when it calls them, so
+ * the wrappers see every event the seam applies and every transition the reducer runs, and change nothing. A tree
+ * without route-events (C5 and before) has no trace to give: `take` then reports `events: null`.
+ */
+export function instrumentEvents(graph) {
+  const declared = (name) => {
+    try {
+      return graph.require(graph.tree.declaring(name));
+    } catch {
+      return null;
+    }
+  };
+  const events = declared("routeStateActionsForEvent");
+  const state = declared("routeStateReducer");
+  let log = events ? [] : null;
+  let actions = 0;
+  let reducerCalls = 0;
+  if (events) {
+    const mapping = events.routeStateActionsForEvent;
+    events.routeStateActionsForEvent = (event) => {
+      const out = mapping(event);
+      log.push(event);
+      actions += out.length;
+      return out;
+    };
+  }
+  if (state) {
+    const reducer = state.routeStateReducer;
+    state.routeStateReducer = (current, action) => {
+      reducerCalls += 1;
+      return reducer(current, action);
+    };
+  }
+  return {
+    available: events !== null,
+    /** What happened since the last take: the events (as given to the seam), their transitions, the reducer runs. */
+    take() {
+      const out = { events: log, actions, reducerCalls };
+      log = events ? [] : null;
+      actions = 0;
+      reducerCalls = 0;
+      return out;
+    },
+  };
+}
+
+/** An event as data that can cross into a worker and be compared: the board as its digest, Sets as tagged arrays. */
+export const plainEvent = (event) =>
+  Object.fromEntries(Object.entries(event).map(([key, value]) => [key, key === "mazeMap" ? { digest: mapDigest(value) } : plain(value)]));
+
+/**
  * Plays scenarios on a renderer. A renderer gives:
  *   mount({ seed, routeNumber, initialDifficulty, onComplete }) → Promise   (unmounts what was there)
  *   perform(fn, eventType) → Promise          one input, settled
@@ -242,10 +301,10 @@ function instrumentStream(graph, math) {
  *   keyListeners()                            keydown listeners on the window
  *   unmount() → Promise
  */
-async function runScenarios(renderer, scenarios, { counters, peek, effects, setSeed }) {
+async function runScenarios(renderer, scenarios, { counters, peek, effects, setSeed, tracer = null }) {
   const results = [];
   for (const scenario of scenarios) {
-    const record = { scenario: scenario.name, steps: [], completions: [], sessions: 0 };
+    const record = { scenario: scenario.name, steps: [], completions: [], sessions: 0, ...(tracer && { traces: [] }) };
     const commitsAtStart = renderer.commits.length;
     const bodiesAtStart = renderer.bodies();
     counters.draws = 0;
@@ -253,7 +312,12 @@ async function runScenarios(renderer, scenarios, { counters, peek, effects, setS
 
     const measure = async (label, fn) => {
       const before = { commits: renderer.commits.length, bodies: renderer.bodies(), draws: counters.draws, generations: counters.generations, effects: effects.length };
+      tracer?.take();
       await fn();
+      if (tracer) {
+        const { events, actions, reducerCalls } = tracer.take();
+        record.traces.push({ label, events: events && events.map(plainEvent), actions, reducerCalls });
+      }
       record.steps.push({
         label,
         commits: renderer.commits.length - before.commits,
@@ -336,11 +400,12 @@ async function runScenarios(renderer, scenarios, { counters, peek, effects, setS
  * React renders only when something was, so a render counts as a commit here when it was scheduled (or is the
  * mount). The shim runs no effects: no keyboard listener, so scenarios with keys are for the real React only.
  */
-export async function runInShim({ rev = null, scenarios, sourceOverrides }) {
+export async function runInShim({ rev = null, scenarios, sourceOverrides, traceEvents = false }) {
   const effects = [];
   const tree = openSourceTree({ rev, sourceOverrides });
   const runtime = loadRouteRuntime({ rev, sourceOverrides, mocks: rotaEnvironment(tree, effects) });
   const { counters, peek } = instrumentStream(runtime.LAB.graph, runtime.LAB.sb.Math);
+  const tracer = traceEvents ? instrumentEvents(runtime.LAB.graph) : null;
   const commits = [];
   let bodies = 0;
   let run = null;
@@ -378,7 +443,7 @@ export async function runInShim({ rev = null, scenarios, sourceOverrides }) {
     },
   };
   // `mount` reseeds through the harness; the scenario runner seeds first, which is the same seed.
-  return runScenarios(renderer, scenarios, { counters, peek, effects, setSeed: runtime.LAB.setSeed });
+  return runScenarios(renderer, scenarios, { counters, peek, effects, setSeed: runtime.LAB.setSeed, tracer });
 }
 
 // =================================================================================================
@@ -390,11 +455,11 @@ export async function runInShim({ rev = null, scenarios, sourceOverrides }) {
  * <StrictMode>, `regime` "act" | "default" | "discrete" (act needs development). Resolves with
  * `{ results, consoleErrors, reactVersion }`, one record per scenario.
  */
-export function runInRealReact({ rev = null, nodeEnv = "development", strict = false, regime = "discrete", scenarios, sourceOverrides }) {
+export function runInRealReact({ rev = null, nodeEnv = "development", strict = false, regime = "discrete", scenarios, sourceOverrides, traceEvents = false }) {
   if (regime === "act" && nodeEnv !== "development") throw new Error("React.act exists in development builds only");
   return new Promise((resolve, reject) => {
     const worker = new Worker(SELF, {
-      workerData: { routeReactRuntime: true, rev, strict, regime, scenarios, sourceOverrides },
+      workerData: { routeReactRuntime: true, rev, strict, regime, scenarios, sourceOverrides, traceEvents },
       env: { ...process.env, NODE_ENV: nodeEnv },
     });
     let settled = false;
@@ -565,7 +630,7 @@ export async function createReactRenderer({ strict, regime }) {
 }
 
 async function workerMain() {
-  const { rev, strict, regime, scenarios, sourceOverrides } = workerData;
+  const { rev, strict, regime, scenarios, sourceOverrides, traceEvents } = workerData;
   const consoleErrors = [];
   console.error = (...args) => consoleErrors.push(args.map(String).join(" ").slice(0, 300));
   console.warn = (...args) => consoleErrors.push(`warn: ${args.map(String).join(" ").slice(0, 300)}`);
@@ -575,6 +640,7 @@ async function workerMain() {
   const tree = openSourceTree({ rev, sourceOverrides });
   const rota = loadRouteModules({ tree, react: react.React, mocks: rotaEnvironment(tree, effects), surface: ["decideSentinelMove"] });
   const { counters, peek } = instrumentStream(rota.graph, rota.seededMath);
+  const tracer = traceEvents ? instrumentEvents(rota.graph) : null;
   let clock = 0;
   rota.sandbox.Date = { now: () => (clock += 1000) };
   // The hook's keyboard effect subscribes on `window`: the same object react-dom reads `window.event` from.
@@ -589,7 +655,7 @@ async function workerMain() {
       return react.render(RouteProbe, observeRoute);
     },
   };
-  const results = await runScenarios(renderer, scenarios, { counters, peek, effects, setSeed: rota.setSeed });
+  const results = await runScenarios(renderer, scenarios, { counters, peek, effects, setSeed: rota.setSeed, tracer });
   return { results, consoleErrors, reactVersion: react.React.version };
 }
 

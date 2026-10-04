@@ -238,7 +238,7 @@ is declared in its `ALLOWED` table with a reason:
 
 | reason | validators | why they still name Rota files |
 | --- | --- | --- |
-| STRUCTURAL_ASSERTION | game-continuation-contract, route-journey-ownership, route-journey-terminal, route-config-extraction, route-generation-extraction, route-defenders-extraction, route-invariants-extraction, route-state-reducer, diagnostic-launcher, production-diagnostic-boundary, cross-eol | the check is about where code lives (I1/O3/T11, C1's, C2's, C3's, C4's and C5's static gates, the seed seam's own code, CRLF of the hook's text); their Rota runs through the graph |
+| STRUCTURAL_ASSERTION | game-continuation-contract, route-journey-ownership, route-journey-terminal, route-config-extraction, route-generation-extraction, route-defenders-extraction, route-invariants-extraction, route-state-reducer, route-domain-events, diagnostic-launcher, production-diagnostic-boundary, cross-eol | the check is about where code lives (I1/O3/T11, C1's, C2's, C3's, C4's, C5's and C6's static gates, the seed seam's own code, CRLF of the hook's text); their Rota runs through the graph |
 | UI_STAGE | route-board-loader | compiles the Rota component under a chunk gate with stage stubs |
 | REPORT_LABEL | breakable-wall-feasibility, dynamic-solvability-finalize | a path inside report text |
 | LEGACY_LEDGER | chest-acceptance | ROTA-CHEST-REWARDS-01 ledger; rewrites its archive when run |
@@ -249,7 +249,7 @@ gate until it uses the loader or is declared with a reason; a declaration whose
 coupling is gone must leave the table. `route-config.ts` counts as a Rota module
 file for the gate (ROUTE-C1), and so do `route-generation.ts` and
 `route-geometry.ts` (ROUTE-C2), `route-defenders.ts` (ROUTE-C3),
-`route-invariants.ts` (ROUTE-C4) and `route-state.ts` (ROUTE-C5).
+`route-invariants.ts` (ROUTE-C4), `route-state.ts` (ROUTE-C5) and `route-events.ts` (ROUTE-C6).
 `route-module-loader-tests` no longer names the hook since ROUTE-C3 (L10 reads
 `route-random`'s importers off the graph), so its `hook-path` declaration left
 the table.
@@ -590,3 +590,105 @@ imported by the hook alone. `route-module-loader-tests` L15 accepts the
 `directDifficulty` edit in either engine; `route-module-loader`'s inert React
 has a `useReducer`. The coupling gate counts route-state.ts as a Rota module
 file and declares the new test as C5's STRUCTURAL_ASSERTION. No evidence moved.
+
+**ROUTE DOMAIN EVENTS (ROUTE-C6)** — the turn says what happened. A
+`RouteDomainEvent` (`src/games/escape-maze/route-events.ts`) is one of thirteen
+occurrences, each naming its meaning: `ROUTE_STARTED` (status `playing` for
+start/restart, `setup` for a mode change), `EXPLORER_STEP_BLOCKED`
+(`reason: boundary | wall`), `EXPLORER_STEP_COMMITTED`, `LIGHT_COLLECTED`,
+`PORTAL_ACTIVATED`, `TRAP_ARMED`, `CHEST_OPENED`, `REWARD_SELECTED`,
+`WALL_OPENED`, `SECOND_CHANCE_USED` (`cause: explorer | hunter | sentinel`),
+`DEFENDERS_SETTLED`, `EXPLORER_CAPTURED` (`by: explorer-step | hunter |
+sentinel`) and `ROUTE_ENDED` (`outcome: won | lost`, `journeyCompleted`). The
+pure `routeStateActionsForEvent(event)` translates an event that already
+happened into the C5 transitions that record it, in order; light, portal and
+trap are observational (the step already wrote them) and translate to none.
+`useEscapeMaze` still decides which events happen and in which order, and
+applies each through one seam, `applyDomainEvent` — the hook's only
+`dispatch`. Events are not stored, queued, published or exposed. Writes
+nothing:
+
+```bash
+node tools/validation/route-domain-events-tests.mjs               # ~4 min
+node tools/validation/route-domain-events-tests.mjs --rev=878057a  # must fail every [structure], [contract] and [trace] check, hold the rest
+node tools/validation/route-domain-events-tests.mjs --mutants      # ~10 min; every in-memory mutant must be caught
+```
+
+`[structure]`: route-events is in the hook's run-time graph and exports the
+union, its four meaning sets and the mapping; the TypeScript checker (on the
+tree under test, `--rev` and overrides included) resolves the union to exactly
+thirteen members with unique literal `type`s, exact payloads, nothing
+any/unknown/optional/callable, no index signature — no generic event — and
+closed sets of reasons, causes, captors and outcomes; route-events imports
+types only (route-state's actions and session start, the domain's types —
+never React, RNG, generation, difficulty, sounds, scoring, storage, UI,
+Babylon or the shell), reaches nothing at run time, holds no copy and no
+mutable state; the mapping calls nothing, reads nothing but its event and
+branches only on `event.type` and the Second Chance's cause; the hook has one
+seam (one `dispatch`, inside `applyDomainEvent`, over the mapping's output),
+no `dispatch({ type })` left (878057a had 20), every event literal and emitted
+where the inventory says; the same cells as 878057a plus the seam's
+`useCallback`, route-state.ts byte for byte; no event surface (exports,
+returned keys, consumers, importers, no history/bus/queue); the turn's
+timeline, function by function — events, sounds, the clock, generateMaze,
+onComplete and the hand-offs in order (the end's sound, then `ROUTE_ENDED`,
+then `onComplete`; the wall, then the stone, then the defenders) — with every
+effect called from the same functions as at 878057a. `[contract]`: every meaning, built from
+generated maps, gives exactly its transitions (values by identity); folded
+through the reducer it gives the same state as the C5 transition through
+878057a's reducer; pure in a realm with `Math`, `Date`, `performance` and
+`crypto` poisoned; observational events write nothing; the transitions depend
+on the kind (and the Second Chance's cause) only — a capture by the Explorer's
+own step, the Hunter or the Sentinel is the same `COMMIT_CAPTURE`, and only the
+event tells them apart. `[trace]` observes the trace through the C0 graph:
+`route-react-runtime.mjs` gained an opt-in `traceEvents` (and
+`instrumentEvents`) that wraps the mapping and the reducer where they are
+declared — no production API. Ten situations on hand-built boards (driven
+through the real hook, the board standing in for `generateMaze`) have their
+traces pinned input by input — including a light on a trap (light, portal,
+trap, in that order), the Chest's pause and the reward that resumes the same
+turn, the Pickaxe, each Second Chance cause and each captor, the journey's end
+and both continuations; on 138 real generated Routes an oracle checks every
+event against the render it produced and against the defenders' actual
+decisions (their policies wrapped, pass-through), the turn grammar and its turn
+numbers hold, every meaning occurs, traces are deterministic and their digest
+and first occurrences are pinned. `[preserved]` (against 878057a): surface,
+consumers, every other module (the reducer included), strings (the eleven
+transition names moved to route-events; the 30 user-facing ones byte for byte),
+the hook's other top-level statements, and the order of the turn — P5 erases
+every write (and the seam) and requires the body to print as 878057a's and as
+74ff2dc's; P6 resolves every event through the REAL mapping into the
+transitions it applies (symbolically: a literal is its value, any other
+expression its text) and requires the body to print exactly as 878057a's with
+its dispatches. `[equivalence]` (against 878057a): every render of the real
+Routes on the harness, each meaning over its inputs, completions and finalStats
+with the real score, continuation, the RNG stream and generation, verdicts,
+reducer runs per input (identical, all from the seam), the ten situations
+render by render, and the real React (development + Strict Mode with `act` and
+discrete events, production with default and discrete updates): identical
+commits and component calls per input, effects and console; the trace the same
+within each build, production's the same as the shim's.
+
+`--mutants` (13): TRAP_ARMED dropped; LIGHT_COLLECTED/TRAP_ARMED swapped; the
+Hunter's capture labelled the Sentinel's; the Hunter's Second Chance labelled
+the Explorer's; ROUTE_ENDED before EXPLORER_CAPTURED; WALL_OPENED forgetting
+COUNT_TURN; an extra transition; an observational event that writes; the
+mapping deciding; a write that skips the seam; a generic event; an RNG import;
+the last event exposed. Each must be caught; the reference is the unmutated
+tree on the mutants' smaller set of Routes, which must pass everything first.
+
+Validators that had to follow the code: `route-state-reducer-tests` — S5
+accepts route-events as route-state's second importer, types only; S6 holds
+the eleven transitions to what the hook writes in either engine (dispatched at
+C5; at C6 the transitions its event literals become through route-events' real
+mapping, with the seam's `dispatch` as the hook's only one); P5 counts an event
+applied as a write and erases the seam, so the turn still prints as 74ff2dc's;
+its "Hunter's move kept after a Second Chance" mutant is written as an event.
+`route-invariants-extraction-tests` S4 accepts route-events as a second
+type-only importer of route-invariants (the `ChestReward` a reward event
+carries; the hook is still its only run-time importer).
+`game-continuation-contract` I1 pins the hook's new runtime edge
+`route-events`, which imports nothing at run time and is imported by the hook
+alone. The coupling gate counts route-events.ts as a Rota module file and
+declares the new test as C6's STRUCTURAL_ASSERTION. `route-react-runtime.mjs`
+records traces only when asked. No evidence moved.
