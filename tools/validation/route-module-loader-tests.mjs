@@ -36,7 +36,7 @@ import { pathToFileURL } from "node:url";
 import ts from "typescript";
 import { EXIT_OK, EXIT_VALIDATION_FAILED } from "./evidence.mjs";
 import { loadInstrumented } from "./instrumented-generator.mjs";
-import { loadRouteRuntime, playToEnd } from "./route-runtime-harness.mjs";
+import { DIRECT_DIFFICULTY_START_GAME, loadRouteRuntime, playToEnd } from "./route-runtime-harness.mjs";
 import {
   INTERNALS_EXPORT,
   ROUTE_HOOK,
@@ -374,7 +374,9 @@ const fixtureGraph = (options = {}) =>
     transforms: [[{ [difficultyFile]: (source) => `${source}\nexport const __composed = true;\n` }]],
   });
   const hookText = runtime.LAB.graph.compiledSource(ROUTE_HOOK);
-  const directApplied = hookText.includes('  const startGame = () => {\n    setStatus("playing");\n  };');
+  // ROUTE-C5: the edit is written in the loaded tree's state engine — the `status` setter up to C4, the reducer's
+  // END_ROUTE since — so either of the harness's two shapes counts as the edit landing.
+  const directApplied = Object.values(DIRECT_DIFFICULTY_START_GAME).some((edit) => hookText.includes(edit));
   const callerApplied = runtime.LAB.graph.require(difficultyFile).__composed === true;
   const badEntry = errorOf(() => fixtureGraph({ transforms: [["not a transform"]] }).require(`${FIX}/broken.ts`));
   record("L15", "loader", "NESTED_TRANSFORMS_COMPOSE", directApplied && callerApplied && /must be a function or a file map/.test(badEntry ?? ""), {

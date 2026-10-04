@@ -239,6 +239,13 @@ const unexported = (text) => text.replace(/^export (?=(?:async )?(?:function|int
 const read = (tree, file) => (tree.exists(file) ? tree.read(file) : "");
 const hookText = TREE.read(ROUTE_HOOK);
 const hook = declarations(ROUTE_HOOK, hookText);
+/**
+ * ROUTE-C5 rewrote `useEscapeMaze`'s body (the session state became one reducer, in route-state.ts) and added one pure
+ * helper beside it (`sentinelPostOn`). On a tree that has route-state.ts those two are C5's text — held render by render
+ * against 74ff2dc by route-state-reducer-tests.mjs — and every other statement must still be this baseline's.
+ */
+const C5_REWRITTEN = TREE.exists("src/games/escape-maze/route-state.ts") ? ["useEscapeMaze"] : [];
+const C5_ADDED = C5_REWRITTEN.length ? ["sentinelPostOn"] : [];
 const generationExists = TREE.exists(ROUTE_GENERATION);
 const geometryExists = TREE.exists(ROUTE_GEOMETRY);
 const generation = declarations(ROUTE_GENERATION, read(TREE, ROUTE_GENERATION));
@@ -441,7 +448,8 @@ const resolvesTo = (from, specifier) => errorOf(() => TREE.resolve(specifier, fr
 // verbatim, in the baseline hook; and the seam is the baseline's seam plus `randomItem`, nothing else.
 {
   const baseHookNormalized = unexported(baseHookText);
-  const changedStatements = hook.statements.filter((statement) => !baseHookNormalized.includes(unexported(statement)));
+  const c5Statements = [...C5_REWRITTEN, ...C5_ADDED].map((name) => hook.text.get(name));
+  const changedStatements = hook.statements.filter((statement) => !c5Statements.includes(statement) && !baseHookNormalized.includes(unexported(statement)));
   const randomItemText = seam.text.get("randomItem");
   const seamNow = read(TREE, ROUTE_RANDOM_SEAM);
   const seamWithout = randomItemText ? seamNow.replace(`\n\n${randomItemText}`, "") : seamNow;
@@ -450,17 +458,20 @@ const resolvesTo = (from, specifier) => errorOf(() => TREE.resolve(specifier, fr
     hookStatements: hook.statements.length,
     changedStatements: changedStatements.map((s) => s.split("\n").find((line) => !/^\s*(\/\/|\/\*|\*)/.test(line))?.slice(0, 80)),
     seamIsBaselinePlusRandomItem: seamOk,
+    rewrittenOrAddedByC5: [...C5_REWRITTEN, ...C5_ADDED],
   });
 }
 
-// P3 — the turn itself is still in the hook, unchanged. (What C4 moved left this list for route-invariants.ts.)
+// P3 — the turn itself is still in the hook, unchanged. (What C4 moved left this list for route-invariants.ts; the
+// hook's body is C5's where route-state.ts exists — see C5_REWRITTEN.)
 {
   const missing = [...KEPT_IN_HOOK_VALUES.filter((n) => !hook.values.includes(n)), ...KEPT_IN_HOOK_TYPES.filter((n) => !hook.types.includes(n))];
-  const changed = [...KEPT_IN_HOOK_VALUES, ...KEPT_IN_HOOK_TYPES].filter((n) => hook.text.get(n) !== baseHook.text.get(n));
+  const changed = [...KEPT_IN_HOOK_VALUES, ...KEPT_IN_HOOK_TYPES].filter((n) => !C5_REWRITTEN.includes(n) && hook.text.get(n) !== baseHook.text.get(n));
   record("P3", "preserved", "TURN_STAYS_IN_THE_HOOK", missing.length === 0 && changed.length === 0, {
     kept: KEPT_IN_HOOK_VALUES.length + KEPT_IN_HOOK_TYPES.length,
     missingFromHook: missing,
     textChanged: changed,
+    rewrittenByC5: C5_REWRITTEN,
   });
 }
 
