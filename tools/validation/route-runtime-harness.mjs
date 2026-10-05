@@ -22,12 +22,23 @@
  * before it, which is what React's queue gives too. Both are compared with real
  * React (react-dom, Strict Mode on and off) in route-runtime-harness-tests.mjs.
  *
- * Two deliberate simplifications, neither of which can hide a bug:
+ * `useMemo` and `useCallback` memoise as React does (they used to recompute
+ * every render — the same values, more often — until ROUTE-C7B keyed an effect
+ * on a callback's identity).
  *
- *  - `useMemo` recomputes every render. Memoisation is an optimisation; running
- *    it always can only produce the same values more often.
- *  - `useEffect` does nothing. The only effect in the hook is the keyboard
- *    listener, which is an input path, not a rule.
+ * ROUTE-C7B: `useEffect` used to do nothing — the only effect was the keyboard
+ * listener, an input path. Boards are now asked for from an effect and arrive
+ * on a timer (route-generation-client.ts), so the shim runs effects the way
+ * React does after a commit (deps compared with Object.is, the previous
+ * cleanup first, every cleanup on unmount), and the sandbox's `setTimeout` is
+ * a virtual queue `act` drains in order. An input therefore still settles
+ * synchronously: input → render → effects → due timers → render… until
+ * nothing is scheduled. A render taken while a board is pending or failed
+ * (`isLifecycleRender`) is the lifecycle's, not the game's: it is counted in
+ * `lifecycleRenders` and handed to `onRender` only when `observeLifecycle` is
+ * set, so a comparison with a tree that generated synchronously compares the
+ * states the game reaches — the same ones — and not the pending in between.
+ * The keyboard listener subscribes to an inert `window` here.
  *
  * `Date.now` is replaced by a monotonic counter so the 150 ms
  * `MOVE_INPUT_GUARD_MS` window never swallows a scripted move. That guard exists
@@ -92,29 +103,118 @@ export function createReactShim() {
       if (!(i in store.cells)) store.cells[i] = { current: initial };
       return store.cells[i];
     },
-    useMemo(factory) {
-      active.index += 1;
-      return factory();
+    // ROUTE-C7B: memoised with React's rule (deps compared with Object.is). Values are the same either way; identity
+    // is not, and an effect keyed on a callback (the generation lifecycle's) re-runs only when React's would.
+    useMemo(factory, deps) {
+      const store = active;
+      const i = store.index++;
+      const cell = store.cells[i];
+      if (cell && deps !== undefined && cell.deps !== undefined && deps.length === cell.deps.length && deps.every((d, k) => Object.is(d, cell.deps[k]))) {
+        return cell.value;
+      }
+      store.cells[i] = { value: factory(), deps };
+      return store.cells[i].value;
     },
-    useCallback(fn) {
-      active.index += 1;
-      return fn;
+    useCallback(fn, deps) {
+      return shim.useMemo(() => fn, deps);
     },
-    useEffect() {
-      active.index += 1;
+    useEffect(effect, deps) {
+      const store = active;
+      const i = store.index++;
+      const cell = store.cells[i] ?? (store.cells[i] = { effect: true, deps: undefined, cleanup: undefined, mounted: false });
+      const changed =
+        !cell.mounted ||
+        deps === undefined ||
+        cell.deps === undefined ||
+        deps.length !== cell.deps.length ||
+        deps.some((dep, k) => !Object.is(dep, cell.deps[k]));
+      if (changed) store.pendingEffects.push({ cell, effect, deps });
     },
   };
 
   return {
     shim,
-    createStore: () => ({ cells: [], index: 0, dirty: false }),
+    createStore: () => ({ cells: [], index: 0, dirty: false, pendingEffects: [] }),
     beginRender(store) {
       active = store;
       store.index = 0;
       store.dirty = false;
+      store.pendingEffects = [];
     },
     endRender() {
       active = null;
+    },
+    /** After a commit: each changed effect's previous cleanup, then the effect, in order. */
+    flushEffects(store) {
+      const pending = store.pendingEffects;
+      store.pendingEffects = [];
+      for (const { cell } of pending) {
+        if (typeof cell.cleanup === "function") cell.cleanup();
+        cell.cleanup = undefined;
+      }
+      for (const { cell, effect, deps } of pending) {
+        const cleanup = effect();
+        cell.cleanup = cleanup;
+        cell.deps = deps;
+        cell.mounted = true;
+      }
+    },
+    /** Unmount: every effect's cleanup. */
+    unmount(store) {
+      for (const cell of store.cells) {
+        if (cell?.effect && typeof cell.cleanup === "function") cell.cleanup();
+        if (cell?.effect) cell.cleanup = undefined;
+      }
+    },
+  };
+}
+
+/**
+ * ROUTE-C7B — the hook's generation lifecycle keys: where the board's
+ * generation stands, the mode it is for, how to ask for it again. A tree
+ * before C7B has none of them.
+ */
+export const ROUTE_LIFECYCLE_KEYS = Object.freeze(["generationPhase", "requestedDifficulty", "retryGeneration"]);
+
+/** A render taken while the board is pending or failed: no board yet, or the match frozen. */
+export const isLifecycleRender = (game) =>
+  game?.mazeMap === null || (typeof game?.generationPhase === "string" && game.generationPhase !== "ready");
+
+/** A render as a tree before C7B would have shown it: the lifecycle keys dropped. */
+export const withoutLifecycle = (game) => {
+  if (!game || !("generationPhase" in game)) return game;
+  const out = {};
+  for (const key of Object.keys(game)) if (!ROUTE_LIFECYCLE_KEYS.includes(key)) out[key] = game[key];
+  return out;
+};
+
+/**
+ * A virtual `setTimeout` for the sandbox: callbacks queue in order and run
+ * only when drained. Delays are ignored — order is what the lifecycle depends
+ * on, and nothing in the Rota schedules more than "next".
+ */
+export function createVirtualTimers() {
+  let nextId = 1;
+  const queue = [];
+  return {
+    setTimeout(fn, _ms, ...args) {
+      const id = nextId++;
+      queue.push({ id, fn, args });
+      return id;
+    },
+    clearTimeout(id) {
+      const index = queue.findIndex((timer) => timer.id === id);
+      if (index >= 0) queue.splice(index, 1);
+    },
+    get pending() {
+      return queue.length;
+    },
+    /** Run the oldest due timer. False when none is queued. */
+    runNext() {
+      const timer = queue.shift();
+      if (!timer) return false;
+      timer.fn(...timer.args);
+      return true;
     },
   };
 }
@@ -127,6 +227,10 @@ export const DIRECT_DIFFICULTY_START_GAME = {
   reducer: `  const startGame = () => {
     dispatch({ type: "END_ROUTE", status: "playing", message });
   };`,
+  /** ROUTE-C7B: the same edit inside the turn's builder; the match is ready when Start is pressed. */
+  lifecycle: `    const startGame = () => {
+      dispatch({ type: "END_ROUTE", status: "playing", message });
+    };`,
 };
 
 /**
@@ -181,6 +285,13 @@ export function loadRouteRuntime({ directDifficulty = false, rev = null, sourceO
     ? {
         // `startGame` lives inside the hook itself, so this one edit is aimed at it.
         [ROUTE_HOOK]: (source) => {
+          // ROUTE-C7B: `startGame` asks for its board (and is nested one level
+          // deeper, in the turn's builder); the edit is the same either way.
+          const lifecycleStart =
+            /    const startGame = \(\) => \{\r?\n      if \(awaitingRoute\) return;\r?\n      requestNewMaze\("start", difficulty, "playing"\);\r?\n    \};/;
+          if (lifecycleStart.test(source)) {
+            return source.replace(lifecycleStart, DIRECT_DIFFICULTY_START_GAME.lifecycle);
+          }
           const startGame =
             /  const startGame = \(\) => \{\r?\n    startNewMaze\(difficulty, "playing"\);\r?\n  \};/;
           if (!startGame.test(source)) {
@@ -213,6 +324,12 @@ export function loadRouteRuntime({ directDifficulty = false, rev = null, sourceO
 
   let clock = 0;
   LAB.sb.Date = { now: () => (clock += 1000) };
+  // ROUTE-C7B: the generation client schedules on the sandbox's timer, and the
+  // keyboard effect subscribes on its window; both are the shim's.
+  const timers = createVirtualTimers();
+  LAB.sb.setTimeout = timers.setTimeout;
+  LAB.sb.clearTimeout = timers.clearTimeout;
+  LAB.sb.window ??= { addEventListener() {}, removeEventListener() {} };
 
   /**
    * Mount a route and play it. `difficulty` is applied through the product's own
@@ -233,6 +350,7 @@ export function loadRouteRuntime({ directDifficulty = false, rev = null, sourceO
     initialDifficulty,
     autoStart = true,
     onRender,
+    observeLifecycle = false,
   }) {
     LAB.setSeed(seed);
     // In diagnostic mode the requested mode is handed to the hook the same way
@@ -243,6 +361,8 @@ export function loadRouteRuntime({ directDifficulty = false, rev = null, sourceO
     const completions = [];
     let game = null;
     let renders = 0;
+    let lifecycleRenders = 0;
+    let mounted = true;
 
     // The hook has to be called from something the hooks lint rule recognises as
     // a component, because that is exactly what this is: the one place the route
@@ -262,18 +382,39 @@ export function loadRouteRuntime({ directDifficulty = false, rev = null, sourceO
       } finally {
         react.endRender();
       }
-      onRender?.(game, renders, { scheduled });
-      renders += 1;
+      if (isLifecycleRender(game)) {
+        if (observeLifecycle) onRender?.(game, renders + lifecycleRenders, { scheduled, lifecycle: true });
+        lifecycleRenders += 1;
+      } else {
+        onRender?.(game, renders, { scheduled });
+        renders += 1;
+      }
+      react.flushEffects(store);
       return game;
     };
+    /** Render while something is scheduled, then let the due timers (a generation's answer) run, until quiet. */
+    const settle = () => {
+      let guard = 0;
+      for (;;) {
+        while (store.dirty && (guard += 1) < 64) render();
+        if (!mounted || !timers.runNext()) break;
+        if ((guard += 1) > 256) throw new Error("route-runtime-harness: the route never settled");
+      }
+    };
     render();
+    settle();
 
-    const act = (fn) => {
+    /**
+     * One input, settled. `drainTimers: false` renders it (and runs its effects) but leaves the timers queued: the
+     * next input then arrives before a generation it asked for has run, as a second tap can.
+     */
+    const act = (fn, { drainTimers = true } = {}) => {
       fn(game);
       let guard = 0;
       do {
         render();
       } while (store.dirty && (guard += 1) < 8);
+      if (drainTimers) settle();
       return game;
     };
 
@@ -286,12 +427,21 @@ export function loadRouteRuntime({ directDifficulty = false, rev = null, sourceO
       get state() {
         return game;
       },
-      /** How many times the route has rendered, mount included. */
+      /** How many times the route has rendered, mount included (lifecycle renders aside). */
       get renders() {
         return renders;
       },
+      /** ROUTE-C7B: renders taken while a board was pending or failed. */
+      get lifecycleRenders() {
+        return lifecycleRenders;
+      },
       completions,
       act,
+      /** ROUTE-C7B: run every effect's cleanup, as React does when the route leaves the screen. */
+      unmount() {
+        mounted = false;
+        react.unmount(store);
+      },
       /** Move by a delta, as the D-pad and the arrow keys both do. */
       move: (delta) => act((g) => g.tryMovePlayer(delta)),
       /** Step onto a specific ORTHOGONALLY ADJACENT cell. */

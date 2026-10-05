@@ -66,9 +66,17 @@ import { execFileSync } from "node:child_process";
 import ts from "typescript";
 
 import { EXIT_OK, EXIT_USAGE, EXIT_VALIDATION_FAILED } from "./evidence.mjs";
-import { ROUTE_HOOK, ROUTE_RANDOM_SEAM, createModuleGraph, loadRouteModules, openSourceTree, routeRandomBeforeC7A } from "./route-module-loader.mjs";
+import {
+  ROUTE_HOOK,
+  ROUTE_RANDOM_SEAM,
+  createModuleGraph,
+  loadRouteModules,
+  openSourceTree,
+  routeRandomBeforeC7A,
+  treeBeforeC7B,
+} from "./route-module-loader.mjs";
 import { POLICIES, applyAction, instrumentEvents, nextAction, runInRealReact, runInShim } from "./route-react-runtime.mjs";
-import { loadRouteRuntime } from "./route-runtime-harness.mjs";
+import { loadRouteRuntime, withoutLifecycle } from "./route-runtime-harness.mjs";
 
 /** C5: the session state is one reducer and the hook dispatches its eleven actions itself — what C6 must be equivalent to. */
 const BASELINE = "878057a972a2b8182cafd8b3001a72cf0f894685";
@@ -1314,7 +1322,8 @@ function audit(input) {
   if (events.length === 0) expect(snapshotOf(withoutFunctions(a)) === snapshotOf(withoutFunctions(b)), `${label}: the render changed with no event`);
   return problems;
 }
-const withoutFunctions = (g) => Object.fromEntries(Object.entries(g).filter(([, v]) => typeof v !== "function"));
+// ROUTE-C7B: and without the generation lifecycle's keys, which a tree before C7B does not have (route-runtime-harness).
+const withoutFunctions = (g) => Object.fromEntries(Object.entries(withoutLifecycle(g)).filter(([, v]) => typeof v !== "function"));
 
 // --- the situations, on hand-built boards: every event, every meaning, a few inputs each ----------
 
@@ -2201,7 +2210,7 @@ async function runMutants() {
   const reference = traceChecks({ scale: "mutant", tree: worktree });
   PINNED_REAL.mutant.digest = reference.find((r) => r.id === "T6").detail.digest;
   const clean = [
-    ...structureChecks(worktree), ...contractChecks(worktree), ...traceChecks({ scale: "mutant", tree: worktree }), ...preservedChecks(worktree),
+    ...structureChecks(treeBeforeC7B(worktree)), ...contractChecks(worktree), ...traceChecks({ scale: "mutant", tree: worktree }), ...preservedChecks(treeBeforeC7B(worktree)),
     ...(await equivalenceChecks({ scale: "mutant", react: false })),
   ];
   const dirty = clean.filter((r) => !r.pass).map((r) => r.id);
@@ -2230,10 +2239,10 @@ async function runMutants() {
         errors.push(`${group}: ${String(e?.message ?? e).split("\n")[0].slice(0, 120)}`);
       }
     };
-    await attempt("structure", () => structureChecks(tree));
+    await attempt("structure", () => structureChecks(treeBeforeC7B(tree)));
     await attempt("contract", () => contractChecks(tree));
     await attempt("trace", () => traceChecks({ sourceOverrides, scale: "mutant", tree }));
-    await attempt("preserved", () => preservedChecks(tree));
+    await attempt("preserved", () => preservedChecks(treeBeforeC7B(tree)));
     await attempt("equivalence", () => equivalenceChecks({ sourceOverrides, scale: "mutant", react: false }));
     const by = results.filter((r) => !r.pass).map((r) => r.id);
     rows.push({ name, caught: by.length > 0, by, errors });
@@ -2267,10 +2276,13 @@ if (MUTANTS) {
       print(result);
     }
   };
-  show(structureChecks(TREE));
+  // ROUTE-C7B: the text checks read the hook, the Rota's view and its stylesheet through C7B's sanctioned edit
+  // (route-module-loader.mjs `treeBeforeC7B`; route-generation-lifecycle-tests holds that edit to its exact extent).
+  // The contract, the trace and the equivalence run the tree's own code.
+  show(structureChecks(treeBeforeC7B(TREE)));
   show(contractChecks(TREE));
   show(traceChecks({ rev: REV, tree: TREE }));
-  show(preservedChecks(TREE));
+  show(preservedChecks(treeBeforeC7B(TREE)));
   show(await equivalenceChecks({ rev: REV }));
   const failing = tests.filter((t) => !t.pass).map((t) => t.id);
   const tallyKind = (kind) => {

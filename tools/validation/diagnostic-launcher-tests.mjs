@@ -459,7 +459,10 @@ const sessionDeterminism = [];
     productArmsASeed:
       /armRouteRandomSeed/.test(codeOnly(home)) ||
       readRouteLogicSources().some(({ source }) => /armRouteRandomSeed/.test(codeOnly(source))),
-    launcherDisarmsOnUnmount: /useEffect\(\s*\(\)\s*=>\s*clearRouteRandomSeed/.test(page),
+    // ROUTE-C7B: the session's layout effect arms the seed and its cleanup disarms it (replaced, left, page gone).
+    launcherDisarmsOnUnmount:
+      /useEffect\(\s*\(\)\s*=>\s*clearRouteRandomSeed/.test(page) ||
+      /useLayoutEffect\(\(\)\s*=>\s*\{\s*if\s*\(session === null\)\s*return;\s*armRouteRandomSeed\(session\.seed\);\s*return clearRouteRandomSeed;\s*\},\s*\[session\]\)/.test(codeOnly(page)),
     usesStorage: /localStorage|sessionStorage|document\.cookie/.test(codeOnly(page) + codeOnly(seam)),
     replacesGlobalMathRandom: /Math\.random\s*=/.test(codeOnly(seam)),
     seamBoundsSeedRange: /0xffffffff|4294967295/.test(page),

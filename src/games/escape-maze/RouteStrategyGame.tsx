@@ -47,6 +47,7 @@ import {
   ROWS,
   useEscapeMaze,
   type ChestReward,
+  type MazeMap,
 } from "@/games/escape-maze/useEscapeMaze";
 import type { RouteBabylonBoard as RouteBabylonBoardComponent } from "@/games/escape-maze/RouteBabylonBoard";
 import { getWorldMasterSceneStyle } from "@/components/worlds/master-scene/worldMasterSceneConfig";
@@ -155,10 +156,26 @@ function RouteWorldMark() {
   );
 }
 
+/** What the Rota shows while a board is pending, and when its generation failed. */
+const GENERATION_PENDING_MESSAGE = "Preparando a rota…";
+const GENERATION_ERROR_MESSAGE = "Não foi possível preparar esta rota.";
+
+type RouteGame = ReturnType<typeof useEscapeMaze>;
+/** The hook once a board has been accepted: a match to show and play. */
+type PlayableRouteGame = Extract<RouteGame, { mazeMap: MazeMap }>;
+
 /**
  * Rota Estratégica as a premium tabletop board game. All gameplay (maze,
  * guardian, movement, win/loss, scoring, completion) lives in `useEscapeMaze`,
  * extracted verbatim from the original; this component is a pure premium view.
+ *
+ * ROUTE-C7B: boards are generated asynchronously, so the Rota has a moment
+ * with no board at all — the mount's first generation. This outer component
+ * owns what exists from the mount on: the board's code (fetched in parallel
+ * with the first board), the hook, and the entry's view of that first
+ * generation. The board view (`RouteSessionView`) mounts only once a board has
+ * been accepted, so the Babylon board — and with it the entry's readiness —
+ * never starts on a board that does not exist yet.
  */
 export function RouteStrategyGame({
   onComplete,
@@ -167,15 +184,6 @@ export function RouteStrategyGame({
   onEntryReady,
   onEntryError,
 }: GameComponentProps) {
-  const reducedMotion = useReducedMotion();
-  const [detailsOpen, setDetailsOpen] = useState(false);
-  /**
-   * The wall the player is pointing at, so the board can show WHICH one would
-   * open. Pure UX: it exists only while a break affordance is hovered or
-   * focused, and it says "this is the target", never "this is the good target".
-   */
-  const [aimedWall, setAimedWall] = useState<string | null>(null);
-  const detailsTriggerRef = useRef<HTMLButtonElement>(null);
   const [loadedBoard, setLoadedBoard] = useState<{
     component: typeof RouteBabylonBoardComponent;
   } | null>(null);
@@ -185,6 +193,184 @@ export function RouteStrategyGame({
   // else) the hook's own defaults apply, exactly as on a fresh entry.
   const resumed = readRouteContinuation(continuation);
   const game = useEscapeMaze(onComplete, resumed?.routeNumber, resumed?.difficulty);
+  const firstBoardFailed =
+    game.mazeMap === null && game.generationPhase === "error";
+
+  useEffect(() => {
+    onEntryErrorRef.current = onEntryError;
+  }, [onEntryError]);
+
+  // One load per mount: a new callback identity must not fetch again, so a
+  // failure goes to whichever onEntryError the parent holds when it lands.
+  // Readiness stays the board's own (`onReady`), counted from its mount.
+  useEffect(() => {
+    let cancelled = false;
+    loadRouteBabylonBoard().then(
+      (component) => {
+        if (!cancelled) setLoadedBoard({ component });
+      },
+      (error: unknown) => {
+        if (cancelled) return;
+        onEntryErrorRef.current?.(
+          error instanceof Error
+            ? error
+            : new Error("Unknown error while loading the Route board's code."),
+        );
+      },
+    );
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // ROUTE-C7B: the entry waits for the board, and the board for the first
+  // generation. If that generation fails there is no board to wait for, so the
+  // entry hears it now — its watchdog does not run out on a failure nobody
+  // reported — and its retry (a new session) generates again. A failure after
+  // the entry is revealed stays inside the Rota, with its own retry.
+  useEffect(() => {
+    if (!firstBoardFailed) return;
+    onEntryErrorRef.current?.(
+      new Error("The Route board could not be generated."),
+    );
+  }, [firstBoardFailed]);
+
+  if (game.mazeMap === null) {
+    return (
+      <div
+        className="rsg-shell wms-world-shell"
+        data-world-scene="route"
+        data-route-generation={game.generationPhase}
+        style={getWorldMasterSceneStyle("escape-maze", "game-shell")}
+      >
+        <div className="rsg-atmosphere" aria-hidden />
+        <span className="rsg-vignette" aria-hidden />
+
+        <div className="rsg-frame">
+          <header className="rsg-topbar">
+            <button
+              type="button"
+              onClick={onExit}
+              aria-label="Voltar à jornada cognitiva"
+              className="rsg-back"
+            >
+              <ArrowLeft className="h-5 w-5" aria-hidden />
+              Voltar à jornada
+            </button>
+          </header>
+
+          <div className="rsg-plaque rsg-signature wms-plate">
+            <RouteWorldMark />
+            <span className="rsg-signature-copy">
+              <h1 className="rsg-plaque-text">Rota Estratégica</h1>
+              <small>Observe o caminho. Escolha o próximo passo.</small>
+            </span>
+          </div>
+
+          <section
+            className="rsg-current-objective is-setup"
+            aria-label="Objetivo atual da rota"
+          >
+            <Gauge className="rsg-current-objective-icon" aria-hidden />
+            <span>
+              <em>Objetivo atual</em>
+              <strong>{`Rota ${game.routeNumber}: ${game.routeProgression.label}`}</strong>
+              <small
+                className="rsg-objective-message rsg-objective-message-neutral"
+                role="status"
+                aria-live="polite"
+              >
+                {firstBoardFailed
+                  ? GENERATION_ERROR_MESSAGE
+                  : GENERATION_PENDING_MESSAGE}
+              </small>
+            </span>
+          </section>
+
+          <div className="rsg-layout">
+            <div className="rsg-board-col">
+              <div className="rsg-board-panel">
+                <div className="rsg-canvas">
+                  <div className="rsg-canvas-loading">
+                    {firstBoardFailed
+                      ? GENERATION_ERROR_MESSAGE
+                      : GENERATION_PENDING_MESSAGE}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="rsg-control-col">
+              {firstBoardFailed && (
+                <RouteGenerationRetry onRetry={game.retryGeneration} />
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <RouteSessionView
+      game={game}
+      RouteBabylonBoard={RouteBabylonBoard}
+      onExit={onExit}
+      onEntryReady={onEntryReady}
+      onEntryError={onEntryError}
+    />
+  );
+}
+
+/** ROUTE-C7B: a failed generation, said calmly, and the way to ask for it again. */
+function RouteGenerationRetry({ onRetry }: { onRetry: () => void }) {
+  return (
+    <section className="rsg-panel rsg-generation-error" role="group">
+      <p className="rsg-panel-title">
+        <Info className="h-5 w-5" aria-hidden />
+        {GENERATION_ERROR_MESSAGE}
+      </p>
+      <button
+        type="button"
+        onClick={onRetry}
+        aria-label="Tentar preparar a rota novamente"
+        className="rsg-btn wms-button-secondary"
+      >
+        <RotateCcw className="h-5 w-5" aria-hidden />
+        Tentar novamente
+      </button>
+    </section>
+  );
+}
+
+/**
+ * The Rota on an accepted board — the view it has always been. While the next
+ * board is pending or failed (ROUTE-C7B) the board on screen stays, frozen:
+ * moves, rewards, walls and Start are disabled; a mode or a Restart may still
+ * replace the pending board, and only the last one asked for appears.
+ */
+function RouteSessionView({
+  game,
+  RouteBabylonBoard,
+  onExit,
+  onEntryReady,
+  onEntryError,
+}: {
+  game: PlayableRouteGame;
+  RouteBabylonBoard: typeof RouteBabylonBoardComponent | null;
+  onExit: GameComponentProps["onExit"];
+  onEntryReady: GameComponentProps["onEntryReady"];
+  onEntryError: GameComponentProps["onEntryError"];
+}) {
+  const reducedMotion = useReducedMotion();
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  /**
+   * The wall the player is pointing at, so the board can show WHICH one would
+   * open. Pure UX: it exists only while a break affordance is hovered or
+   * focused, and it says "this is the target", never "this is the good target".
+   */
+  const [aimedWall, setAimedWall] = useState<string | null>(null);
+  const detailsTriggerRef = useRef<HTMLButtonElement>(null);
   const {
     difficulty,
     routeNumber,
@@ -223,40 +409,17 @@ export function RouteStrategyGame({
     tryMovePlayer,
     chooseReward,
     breakWall,
+    generationPhase,
+    requestedDifficulty,
+    retryGeneration,
   } = game;
-
-  useEffect(() => {
-    onEntryErrorRef.current = onEntryError;
-  }, [onEntryError]);
-
-  // One load per mount: a new callback identity must not fetch again, so a
-  // failure goes to whichever onEntryError the parent holds when it lands.
-  // Readiness stays the board's own (`onReady`), counted from its mount.
-  useEffect(() => {
-    let cancelled = false;
-    loadRouteBabylonBoard().then(
-      (component) => {
-        if (!cancelled) setLoadedBoard({ component });
-      },
-      (error: unknown) => {
-        if (cancelled) return;
-        onEntryErrorRef.current?.(
-          error instanceof Error
-            ? error
-            : new Error("Unknown error while loading the Route board's code."),
-        );
-      },
-    );
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+  // ROUTE-C7B: the next board is pending or failed — the match is frozen.
+  const awaitingRoute = generationPhase !== "ready";
 
   // Walkable neighbours of the player — a calm "available moves" hint. Pure
   // derivation from the map; it never changes the grid logic or input.
   const moveTargets = useMemo(() => {
-    if (status !== "playing") return new Set<string>();
+    if (status !== "playing" || awaitingRoute) return new Set<string>();
     return new Set(
       [
         { row: player.row - 1, col: player.col },
@@ -274,12 +437,12 @@ export function RouteStrategyGame({
         )
         .map(posKey),
     );
-  }, [status, player, walls]);
+  }, [status, awaitingRoute, player, walls]);
 
   // Tiles the guardian can step to next — a simple, calm danger radius derived
   // purely from its position and the walls (never from the guardian AI).
   const dangerTiles = useMemo(() => {
-    if (status !== "playing") return new Set<string>();
+    if (status !== "playing" || awaitingRoute) return new Set<string>();
     return new Set(
       [
         { row: guardian.row - 1, col: guardian.col },
@@ -297,7 +460,7 @@ export function RouteStrategyGame({
         )
         .map(posKey),
     );
-  }, [status, guardian, walls]);
+  }, [status, awaitingRoute, guardian, walls]);
 
   // The board memoises its scene state on prop identity, so the wall keys must
   // keep theirs for as long as `breakTargets` does. Mapped inline, every render
@@ -408,8 +571,9 @@ export function RouteStrategyGame({
       <motion.button
         type="button"
         onClick={() => tryMovePlayer(MOVE_DELTAS[dir])}
-        whileTap={reducedMotion ? undefined : { scale: 0.94, y: 2 }}
-        whileHover={reducedMotion ? undefined : { y: -2 }}
+        disabled={awaitingRoute}
+        whileTap={reducedMotion || awaitingRoute ? undefined : { scale: 0.94, y: 2 }}
+        whileHover={reducedMotion || awaitingRoute ? undefined : { y: -2 }}
         aria-label={`Mover ${moveLabels[dir]}`}
         className="rsg-move-btn"
       >
@@ -604,10 +768,14 @@ export function RouteStrategyGame({
               role="status"
               aria-live="polite"
             >
-              {message}
+              {generationPhase === "pending"
+                ? GENERATION_PENDING_MESSAGE
+                : generationPhase === "error"
+                  ? GENERATION_ERROR_MESSAGE
+                  : message}
             </small>
           </span>
-          {status === "playing" && totalLights > 0 && !portalActive && (
+          {status === "playing" && !awaitingRoute && totalLights > 0 && !portalActive && (
             <div
               className="rsg-current-objective-progress"
               aria-hidden="true"
@@ -678,6 +846,12 @@ export function RouteStrategyGame({
           </div>
 
           <div className="rsg-control-col">
+            {/* Shown with Detalhes open too: Restart lives there, so a failed
+                Restart must offer its retry where the Explorer already is. */}
+            {generationPhase === "error" && (
+              <RouteGenerationRetry onRetry={retryGeneration} />
+            )}
+
             {!detailsOpen && status === "setup" && (
               <section className="rsg-panel rsg-setup">
                 <p className="rsg-panel-title">
@@ -692,9 +866,9 @@ export function RouteStrategyGame({
                         type="button"
                         onClick={() => changeDifficulty(level)}
                         aria-label={`Modo ${DIFFICULTY_TITLE[level]}: ${DIFFICULTY_LABELS[level]}`}
-                        aria-pressed={difficulty === level}
+                        aria-pressed={(requestedDifficulty ?? difficulty) === level}
                         className={`rsg-difficulty-btn ${
-                          difficulty === level ? "is-active" : ""
+                          (requestedDifficulty ?? difficulty) === level ? "is-active" : ""
                         }`}
                       >
                         <strong>{DIFFICULTY_TITLE[level]}</strong>
@@ -706,6 +880,7 @@ export function RouteStrategyGame({
                 <button
                   type="button"
                   onClick={startGame}
+                  disabled={awaitingRoute}
                   aria-label="Iniciar rota com a dificuldade selecionada"
                   className="rsg-cta wms-button-primary"
                 >
@@ -734,6 +909,7 @@ export function RouteStrategyGame({
                         type="button"
                         autoFocus={reward === "pickaxe"}
                         onClick={() => chooseReward(reward)}
+                        disabled={awaitingRoute}
                         aria-label={`Escolher ${title}: ${detail}`}
                         className="rsg-reward-btn"
                       >

@@ -56,7 +56,15 @@ import { execFileSync } from "node:child_process";
 import ts from "typescript";
 
 import { EXIT_OK, EXIT_USAGE, EXIT_VALIDATION_FAILED } from "./evidence.mjs";
-import { ROUTE_HOOK, ROUTE_RANDOM_SEAM, createModuleGraph, loadRouteModules, openSourceTree, routeRandomBeforeC7A } from "./route-module-loader.mjs";
+import {
+  ROUTE_HOOK,
+  ROUTE_RANDOM_SEAM,
+  createModuleGraph,
+  loadRouteModules,
+  openSourceTree,
+  routeRandomBeforeC7A,
+  treeBeforeC7B,
+} from "./route-module-loader.mjs";
 import { POLICIES, runInRealReact, runInShim } from "./route-react-runtime.mjs";
 
 /** C4: the last revision whose session state was independent useState cells — what C5 must be equivalent to. */
@@ -1212,7 +1220,7 @@ async function runMutants() {
     }
     const sourceOverrides = { [file]: text.replace(from, () => to) };
     const tree = openSourceTree({ sourceOverrides });
-    const results = [...structureChecks(tree), ...reducerChecks(tree), ...preservedChecks(tree)];
+    const results = [...structureChecks(treeBeforeC7B(tree)), ...reducerChecks(tree), ...preservedChecks(treeBeforeC7B(tree))];
     let error = null;
     try {
       results.push(...(await equivalenceChecks({ sourceOverrides, react: false })));
@@ -1245,7 +1253,10 @@ if (MUTANTS) {
   const TREE = openSourceTree({ rev: REV });
   console.log(`route-state reducer · ${REV ? `rev ${TREE.rev.slice(0, 12)}` : "working tree"} vs baseline ${BASELINE.slice(0, 7)} (eighteen useState cells)\n`);
   const tests = [];
-  for (const group of [() => structureChecks(TREE), () => reducerChecks(TREE), () => preservedChecks(TREE)]) {
+  // ROUTE-C7B: the text checks read the hook, the Rota's view and its stylesheet through C7B's sanctioned edit
+  // (route-module-loader.mjs `treeBeforeC7B`; route-generation-lifecycle-tests holds that edit to its exact extent).
+  // The reducer and the equivalence run the tree's own code.
+  for (const group of [() => structureChecks(treeBeforeC7B(TREE)), () => reducerChecks(TREE), () => preservedChecks(treeBeforeC7B(TREE))]) {
     for (const result of group()) {
       tests.push(result);
       print(result);

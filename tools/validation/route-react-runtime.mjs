@@ -41,6 +41,25 @@
  * each gave; and how many times the reducer ran. Off by default, so every
  * existing comparison sees exactly what it saw before.
  *
+ * ROUTE-C7B: a board is now asked for and arrives on a later task. Both drivers
+ * let it arrive within the input (or mount) that asked for it, and separate
+ * what the lifecycle renders from what the game renders: a commit taken while
+ * the board is pending or failed (`isLifecycleRender`) is counted apart
+ * (`record.lifecycle`, only with `observeLifecycle`), and every observation
+ * leaves out the lifecycle's own keys (`withoutLifecycle`) unless
+ * `observeLifecycle` asks for them. A tree that generated synchronously is
+ * therefore compared on the states the game reaches — which are the same —
+ * and never on the pending in between, which it did not have. In development
+ * Strict Mode a tree before C7B drew a second, discarded board in the
+ * reducer's initialiser; C7B draws none (Strict Mode's first request is
+ * withdrawn before it runs). Unless `alignStrictMount` is false, the real React
+ * driver replays that one discarded generation after a C7B tree's mount
+ * settles, so the stream continues where the old tree's did, and records Strict
+ * Mode's one re-run of the mount's effects on the board's commit (a C7B mount's
+ * commit is the pending one, so React re-ran them there); the run says so
+ * (`strictMountReplays`, `strictMountEffectReplays` beside `results`) and route-generation-lifecycle-tests
+ * proves the one-generation mount itself.
+ *
  * Writes nothing.
  */
 import crypto from "node:crypto";
@@ -48,8 +67,16 @@ import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import { Worker, isMainThread, workerData, parentPort } from "node:worker_threads";
 
-import { createModuleGraph, loadRouteModules, openSourceTree } from "./route-module-loader.mjs";
-import { cellKey, loadRouteRuntime, pathBetween, sameCell, walkableNeighbours } from "./route-runtime-harness.mjs";
+import { ROUTE_SESSION, createModuleGraph, loadRouteModules, openSourceTree } from "./route-module-loader.mjs";
+import {
+  cellKey,
+  isLifecycleRender,
+  loadRouteRuntime,
+  pathBetween,
+  sameCell,
+  walkableNeighbours,
+  withoutLifecycle,
+} from "./route-runtime-harness.mjs";
 
 const SELF = fileURLToPath(import.meta.url);
 const SCORING = "src/engine/scoring.ts";
@@ -70,8 +97,14 @@ export const mapDigest = (map) => sha(plain(map));
  * named (their identity is React's business, compared separately where it matters); the map is a digest of all of
  * it (plus the portal, which a reader needs to re-ask the Sentinel); every other value is its full content.
  */
-export function observeRoute(g) {
+export function observeRoute(g, { lifecycle = false } = {}) {
   const out = {};
+  if (g?.mazeMap === null) {
+    // ROUTE-C7B: no board yet — only the lifecycle's view exists.
+    for (const key of Object.keys(g)) out[key] = typeof g[key] === "function" ? "function" : plain(g[key]);
+    return out;
+  }
+  if (!lifecycle) g = withoutLifecycle(g);
   for (const key of Object.keys(g)) {
     const value = g[key];
     if (typeof value === "function") out[key] = "function";
@@ -301,10 +334,18 @@ export const plainEvent = (event) =>
  *   keyListeners()                            keydown listeners on the window
  *   unmount() → Promise
  */
-async function runScenarios(renderer, scenarios, { counters, peek, effects, setSeed, tracer = null }) {
+async function runScenarios(renderer, scenarios, { counters, peek, effects, setSeed, tracer = null, observeLifecycle = false }) {
   const results = [];
   for (const scenario of scenarios) {
-    const record = { scenario: scenario.name, steps: [], completions: [], sessions: 0, ...(tracer && { traces: [] }) };
+    const record = {
+      scenario: scenario.name,
+      steps: [],
+      completions: [],
+      sessions: 0,
+      ...(tracer && { traces: [] }),
+      ...(observeLifecycle && { lifecycle: [] }),
+    };
+    const lifecycleAtStart = renderer.lifecycleCommits?.length ?? 0;
     const commitsAtStart = renderer.commits.length;
     const bodiesAtStart = renderer.bodies();
     counters.draws = 0;
@@ -312,6 +353,7 @@ async function runScenarios(renderer, scenarios, { counters, peek, effects, setS
 
     const measure = async (label, fn) => {
       const before = { commits: renderer.commits.length, bodies: renderer.bodies(), draws: counters.draws, generations: counters.generations, effects: effects.length };
+      const lifecycleBefore = { commits: renderer.lifecycleCommits?.length ?? 0, bodies: renderer.lifecycleBodies?.() ?? 0 };
       tracer?.take();
       await fn();
       if (tracer) {
@@ -327,6 +369,14 @@ async function runScenarios(renderer, scenarios, { counters, peek, effects, setS
         effects: effects.slice(before.effects),
         keyListeners: renderer.keyListeners(),
       });
+      if (observeLifecycle) {
+        record.lifecycle.push({
+          label,
+          commits: (renderer.lifecycleCommits?.length ?? 0) - lifecycleBefore.commits,
+          bodies: (renderer.lifecycleBodies?.() ?? 0) - lifecycleBefore.bodies,
+          observed: (renderer.lifecycleCommits ?? []).slice(lifecycleBefore.commits),
+        });
+      }
     };
     const mount = (label, { seed, routeNumber, initialDifficulty }) =>
       measure(label, async () => {
@@ -379,6 +429,7 @@ async function runScenarios(renderer, scenarios, { counters, peek, effects, setS
       }
     }
     record.commits = renderer.commits.slice(commitsAtStart);
+    if (observeLifecycle) record.lifecycleCommits = (renderer.lifecycleCommits ?? []).slice(lifecycleAtStart);
     record.bodies = renderer.bodies() - bodiesAtStart;
     record.draws = counters.draws;
     record.generations = counters.generations;
@@ -439,6 +490,7 @@ export async function runInShim({ rev = null, scenarios, sourceOverrides, traceE
       run.act(() => fn());
     },
     async unmount() {
+      run?.unmount();
       run = null;
     },
   };
@@ -455,11 +507,22 @@ export async function runInShim({ rev = null, scenarios, sourceOverrides, traceE
  * <StrictMode>, `regime` "act" | "default" | "discrete" (act needs development). Resolves with
  * `{ results, consoleErrors, reactVersion }`, one record per scenario.
  */
-export function runInRealReact({ rev = null, nodeEnv = "development", strict = false, regime = "discrete", scenarios, sourceOverrides, traceEvents = false }) {
+export function runInRealReact({
+  rev = null,
+  nodeEnv = "development",
+  strict = false,
+  regime = "discrete",
+  scenarios,
+  sourceOverrides,
+  traceEvents = false,
+  observeLifecycle = false,
+  alignStrictMount = true,
+  transforms,
+}) {
   if (regime === "act" && nodeEnv !== "development") throw new Error("React.act exists in development builds only");
   return new Promise((resolve, reject) => {
     const worker = new Worker(SELF, {
-      workerData: { routeReactRuntime: true, rev, strict, regime, scenarios, sourceOverrides, traceEvents },
+      workerData: { routeReactRuntime: true, rev, strict, regime, scenarios, sourceOverrides, traceEvents, observeLifecycle, alignStrictMount, transforms },
       env: { ...process.env, NODE_ENV: nodeEnv },
     });
     let settled = false;
@@ -548,17 +611,29 @@ export async function createReactRenderer({ strict, regime }) {
   attachDocument();
 
   const commits = [];
+  const lifecycleCommits = [];
   let bodies = 0;
+  let lifecycleBodies = 0;
   let committed = null;
   let root = null;
 
   const tick = () => new Promise((resolve) => setTimeout(resolve, 0));
   const microtasks = () => new Promise((resolve) => queueMicrotask(resolve));
+  const activity = () => commits.length + lifecycleCommits.length + bodies + lifecycleBodies;
   async function perform(fn, eventType) {
     if (regime === "act") {
       React.act(() => {
         fn();
       });
+      // ROUTE-C7B: a board arrives on a later task. Let it, inside act — each
+      // act flushes what was queued in it — until nothing more happens.
+      for (let quiet = 0, guard = 0; quiet < 3 && guard < 200; guard += 1) {
+        const before = activity();
+        await React.act(async () => {
+          await tick();
+        });
+        quiet = activity() === before ? quiet + 1 : 0;
+      }
       return;
     }
     if (regime === "discrete" && eventType) {
@@ -573,9 +648,9 @@ export async function createReactRenderer({ strict, regime }) {
     await microtasks();
     // Let React's scheduler run whatever it scheduled, then make sure nothing else is coming.
     for (let quiet = 0, guard = 0; quiet < 3 && guard < 200; guard += 1) {
-      const before = commits.length + bodies;
+      const before = activity();
       await tick();
-      quiet = commits.length + bodies === before ? quiet + 1 : 0;
+      quiet = activity() === before ? quiet + 1 : 0;
     }
   }
 
@@ -583,21 +658,24 @@ export async function createReactRenderer({ strict, regime }) {
    * Render `Body` (a component of no props whose return value is what we observe) as the root, inside StrictMode when
    * asked; every call of it is counted, every commit recorded through `observe`.
    */
-  async function render(Body, observe) {
+  async function render(Body, observe, { lifecycle = () => false, observeLifecycle = null } = {}) {
     if (root) {
       const old = root;
       root = null;
       await perform(() => old.unmount());
     }
     const counted = () => {
-      bodies += 1;
-      return Body();
+      const value = Body();
+      if (lifecycle(value)) lifecycleBodies += 1;
+      else bodies += 1;
+      return value;
     };
     function Probe() {
       const value = counted();
       React.useLayoutEffect(() => {
         committed = value;
-        commits.push(observe(value));
+        if (lifecycle(value)) lifecycleCommits.push((observeLifecycle ?? observe)(value));
+        else commits.push(observe(value));
       });
       return null;
     }
@@ -610,7 +688,9 @@ export async function createReactRenderer({ strict, regime }) {
     React,
     fakeWindow,
     commits,
+    lifecycleCommits,
     bodies: () => bodies,
+    lifecycleBodies: () => lifecycleBodies,
     committed: () => committed,
     perform,
     render,
@@ -630,7 +710,7 @@ export async function createReactRenderer({ strict, regime }) {
 }
 
 async function workerMain() {
-  const { rev, strict, regime, scenarios, sourceOverrides, traceEvents } = workerData;
+  const { rev, strict, regime, scenarios, sourceOverrides, traceEvents, observeLifecycle, alignStrictMount, transforms } = workerData;
   const consoleErrors = [];
   console.error = (...args) => consoleErrors.push(args.map(String).join(" ").slice(0, 300));
   console.warn = (...args) => consoleErrors.push(`warn: ${args.map(String).join(" ").slice(0, 300)}`);
@@ -638,7 +718,13 @@ async function workerMain() {
   const react = await createReactRenderer({ strict, regime });
   const effects = [];
   const tree = openSourceTree({ rev, sourceOverrides });
-  const rota = loadRouteModules({ tree, react: react.React, mocks: rotaEnvironment(tree, effects), surface: ["decideSentinelMove"] });
+  const rota = loadRouteModules({
+    tree,
+    react: react.React,
+    mocks: rotaEnvironment(tree, effects),
+    surface: ["decideSentinelMove"],
+    ...(transforms && { transforms: Object.fromEntries(Object.entries(transforms).map(([file, edits]) => [file, (source) => edits.reduce((text, [a, b]) => text.replace(a, b), source)])) }),
+  });
   const { counters, peek } = instrumentStream(rota.graph, rota.seededMath);
   const tracer = traceEvents ? instrumentEvents(rota.graph) : null;
   let clock = 0;
@@ -647,16 +733,45 @@ async function workerMain() {
   rota.sandbox.window = react.fakeWindow;
   const { useEscapeMaze } = rota.hook;
 
+  // ROUTE-C7B: whether this tree asks for its boards (and so draws one board at a Strict Mode mount, not two).
+  const lifecycleTree = tree.exists(ROUTE_SESSION);
+  const replayStrictMount = strict && alignStrictMount !== false && lifecycleTree;
+  let strictMountReplays = 0;
+  let strictMountEffectReplays = 0;
   const renderer = {
     ...react,
     api: rota.api,
-    mount: ({ routeNumber, initialDifficulty, onComplete }) => {
+    ...(replayStrictMount && { strictMountReplays: () => strictMountReplays }),
+    mount: async ({ routeNumber, initialDifficulty, onComplete }) => {
       const RouteProbe = () => useEscapeMaze(onComplete, routeNumber, initialDifficulty);
-      return react.render(RouteProbe, observeRoute);
+      const before = { commits: react.commits.length, lifecycle: react.lifecycleCommits.length };
+      await react.render(RouteProbe, (g) => observeRoute(g, { lifecycle: observeLifecycle }), {
+        lifecycle: isLifecycleRender,
+        observeLifecycle: (g) => observeRoute(g, { lifecycle: true }),
+      });
+      if (replayStrictMount) {
+        // Strict Mode re-runs a mount's effects once, on the mount's commit. A pre-C7B tree's mount commit was its board,
+        // so the probe's layout effect recorded the board twice; a C7B tree's mount commit is the pending one, so the
+        // re-run is recorded there and the board once. Re-attribute that one re-run to the board, as the old tree saw it.
+        const lifecycleAtMount = react.lifecycleCommits.length - before.lifecycle;
+        if (lifecycleAtMount === 2 && react.commits.length - before.commits === 1) {
+          react.commits.push(react.commits.at(-1));
+          strictMountEffectReplays += 1;
+        }
+        // The board a pre-C7B tree's Strict Mode initialiser drew and threw away, drawn and thrown away here, after the
+        // mount's own board — where the old tree drew it — so the stream continues as the old tree's did.
+        rota.graph.require(rota.graph.tree.declaring("generateMaze")).generateMaze(initialDifficulty ?? "easy", Math.max(1, Math.floor(routeNumber ?? 1)));
+        strictMountReplays += 1;
+      }
     },
   };
-  const results = await runScenarios(renderer, scenarios, { counters, peek, effects, setSeed: rota.setSeed, tracer });
-  return { results, consoleErrors, reactVersion: react.React.version };
+  const results = await runScenarios(renderer, scenarios, { counters, peek, effects, setSeed: rota.setSeed, tracer, observeLifecycle });
+  return {
+    results,
+    consoleErrors,
+    reactVersion: react.React.version,
+    ...(replayStrictMount && { strictMountReplays, strictMountEffectReplays }),
+  };
 }
 
 if (!isMainThread && workerData?.routeReactRuntime) {

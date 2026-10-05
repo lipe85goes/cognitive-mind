@@ -776,6 +776,114 @@ missing any C7A name falls back to the raw text. The coupling gate counts
 route-generation-job.ts as a Rota module file and declares the new test as
 C7A's STRUCTURAL_ASSERTION. No evidence moved.
 
+**ROUTE GENERATION LIFECYCLE (ROUTE-C7B)** — the Rota asks for its boards
+asynchronously and applies a board only when it arrives, still on the main
+thread. `src/games/escape-maze/route-generation-client.ts` is the seam:
+`RouteGenerationCommand` (C7A's request in a lifecycle envelope: request id +
+intent), `RouteGenerationResponse`, `RouteGenerationExecutor` (callback-shaped,
+`(command, deliver) => cancel` — the one thing C7C swaps for a Worker),
+`runRouteGenerationLocally` (this realm, `setTimeout(…, 0)`: cancelled for real
+before it runs, ignored after) and `startRouteGeneration` (checks the token and
+the request id, THEN `acceptRouteGenerationResult`, THEN reports the map).
+`src/games/escape-maze/route-session.ts` is the hook's one state: the C5 match
+(`RouteRuntimeState | null` — null only before the mount's first board) and the
+generation (`pending`/`ready`/`error` with its target), pure. One effect,
+keyed on the pending generation, runs it; its cleanup is the token (latest
+wins, unmount, Strict Mode). The hook calls no `generateMaze`; the launcher's
+session owns its seed through a layout effect. C7B blocks the main thread
+during the computation exactly as before — no performance claim. Writes
+nothing:
+
+```bash
+node tools/validation/route-generation-lifecycle-tests.mjs               # ~3.5 min
+node tools/validation/route-generation-lifecycle-tests.mjs --rev=e8971eb # must fail every [structure]/[lifecycle]/C7B [view] check, hold [preserved]/[equivalence]
+node tools/validation/route-generation-lifecycle-tests.mjs --mutants     # every in-memory mutant must be caught
+node tools/validation/route-generation-lifecycle-browser-probe.mjs       # Playwright, needs `next build && next start -p 3100`
+```
+
+`[structure]`: the client's exact contract (job its one run-time import, no
+React/UI/Worker/sound/storage/domain event, the local executor schedules and
+clears a timer, `routeGenerationExecutor` is the local one); check → accept →
+report, in that order; the session pure, nullable match, three phases, four
+intents, delegation to `routeStateReducer` and refusal while awaiting; the hook
+with no `generateMaze`/job call, one generation effect keyed on the pending
+generation; C6's seam still the turn's (every other `dispatch` is a lifecycle
+action); `route-events.ts` untouched; no Worker wiring in `src/`; the
+launcher's session-owned seed. `[preserved]` (holds at e8971eb): C7B's edit of
+the hook, the view and the stylesheet is exactly the declared one
+(`routeHookBeforeC7B`, `routeGameBeforeC7B`, `routeVisualBeforeC7B` give
+e8971eb back byte for byte); the turn's three inputs gained one guard line each
+and nothing else; every other product file but the launcher is untouched; one
+state source. `[lifecycle]`: on the shim (a controllable executor injected
+through the client module's export, answering from a second module realm) —
+async boundary, latest wins out of order, a stale result never restores its
+RNG, unmount, instance token vs request id, no stand-in map, Start/Restart/mode
+freeze then open, double Restart and the mode race (one generation, every
+answer order ends on the last mode), error → retry under a new id, continuation,
+seeded/unseeded, no sound of its own; on the real React (dev Strict Mode,
+production): one generation at mount (Strict Mode's first request withdrawn
+before it runs — same request id, different token), Start/double Restart/leave,
+stale and unmounted answers silent, no console output. `[equivalence]`: every
+accepted board reaches the baseline's ready state — shim and four real-React
+configurations, field for field, armed seeds included — and every pending
+commit is the previous match frozen (or no board at all). `[view]`: the REAL
+`RouteStrategyGame` and launcher page through React's reconciler (the 19.2
+build @react-three/fiber ships, a plain-object host): no board before the first
+board, the calm pending screen, a first-board failure reaches onEntryError once
+and retry generates again, the board chunk's failure stays the board's, leaving
+while pending mounts nothing, the launcher's every request carries its
+session's seed in Strict Mode, and the view on every accepted board is the
+baseline's node for node. `[performance]` (informational): scheduling overhead
+vs the computation still on the main thread.
+
+The browser probe drives the production build from the Home: the first board
+pending (no board, the calm message) before the Rota appears; Start (disabled
+while pending), Restart, two Restarts in one task (one pending, one board), a
+failing Restart from Detalhes (Math.random made to throw inside the local
+executor's one task only — recognised by its code; the product has no test
+hook) with its retry, leaving while pending, three modes in one task (only the
+last appears), no console error. It also stamps each state with the animation
+frames the page ran: under software WebGL (headless SwiftShader) the pending
+state lasts ~60–200 ms of page time and no frame was observed inside it, so
+"a paint opportunity before the computation" is a macrotask boundary, not a
+measured paint.
+
+`--mutants` (14): stale answer accepted, stale RNG restored, the effect never
+withdraws, request ids reused, mode A over B, error pending forever, retry
+reusing the failed request, accept forgotten, gameplay during pending, board
+mounted before the first board, a second Restart not withdrawing the first,
+Strict Mode's cleanup not cancelling the local run, the launcher's passive
+clear back, a failure silently reopening gameplay.
+
+Validators that had to follow the code. The runtime drivers learned the
+lifecycle: `route-runtime-harness.mjs` runs effects (deps, cleanups, unmount),
+drains a virtual `setTimeout` queue inside each input (`act(fn, {
+drainTimers })`), memoises `useMemo`/`useCallback` like React (the generation
+effect is keyed on a callback), reports renders taken while a board is pending
+or failed apart (`lifecycleRenders`, `observeLifecycle`) and gives the hook an
+inert window for its keyboard effect; `route-react-runtime.mjs` lets the board
+arrive inside the input (also under `act`), counts lifecycle commits and bodies
+apart, leaves the lifecycle keys out of every observation
+(`withoutLifecycle`), and — Strict Mode only, on a C7B tree — replays the
+discarded board a pre-C7B initialiser drew and re-attributes Strict Mode's one
+re-run of the mount's effects to the board's commit (`strictMountReplays`,
+`strictMountEffectReplays`). So C5's and C6's render-by-render comparisons
+compare the states the game reaches, which are identical. The text checks of
+C2–C7A read the hook, the view and the stylesheet through `treeBeforeC7B`
+(route-module-loader.mjs; it also hides C7B's two new modules), exactly as they
+read route-random.ts through `routeRandomBeforeC7A`; their runs load the tree's
+own code. C7A's H9 now drives its second realm through C7B's executor seam
+instead of editing `generateMaze` calls that no longer exist; its S4/G1 (the
+unwired job, the synchronous hook) are C7A's state and read the view before
+C7B. C6's E8 drops the lifecycle keys; game-continuation-contract I1 pins the
+two new edges; route-board-loader renders the Rota's own components inline;
+the journeys' launcher stubs gained `useLayoutEffect`;
+production-diagnostic-boundary and diagnostic-launcher accept the
+session-owned seed; route-journey-ownership-browser-probe waits for the chosen
+mode's board to arrive before reading the setup. The coupling gate counts the two new modules as Rota
+module files and declares the new test as STRUCTURAL_ASSERTION. No evidence
+moved.
+
 **ROUTE PERFORMANCE / WORKER DECISION (ROUTE-PERF-WORKER-DECISION-01)** — how
 long generation takes, and what moving it to a Web Worker could buy. Read-only,
 wall-clock output is RUN METADATA (never evidence); `--out FILE` writes a JSON

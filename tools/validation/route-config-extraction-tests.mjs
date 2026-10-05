@@ -45,7 +45,7 @@ import crypto from "node:crypto";
 import { execFileSync } from "node:child_process";
 import ts from "typescript";
 import { EXIT_OK, EXIT_USAGE, EXIT_VALIDATION_FAILED } from "./evidence.mjs";
-import { ROUTE_HOOK, ROUTE_MODULE_DIR, INTERNALS_EXPORT, loadRouteModules, openSourceTree } from "./route-module-loader.mjs";
+import { ROUTE_HOOK, ROUTE_MODULE_DIR, INTERNALS_EXPORT, loadRouteModules, openSourceTree, treeBeforeC7B } from "./route-module-loader.mjs";
 import { loadRouteRuntime, playToEnd } from "./route-runtime-harness.mjs";
 
 /** The last revision whose Rota was one file: what C1 must be equivalent to. */
@@ -119,7 +119,10 @@ const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 const sha = (value) => crypto.createHash("sha256").update(JSON.stringify(value)).digest("hex").slice(0, 16);
 const sorted = (list) => [...list].sort();
 
-const TREE = openSourceTree({ rev: REV });
+// ROUTE-C7B: the text this extraction pins is read through C7B's sanctioned edit of the hook, the Rota's view and its
+// stylesheet (route-module-loader.mjs `treeBeforeC7B`), and C7B's two new modules are not in it; every other byte is
+// still compared. Its graph questions (closure, declaring, locate) are the tree's own, and its runs load `rev`.
+const TREE = treeBeforeC7B(openSourceTree({ rev: REV }));
 const label = REV ? `rev ${TREE.rev.slice(0, 12)}` : "working tree";
 console.log(`route-config extraction · ${label} vs one-file Rota ${ONE_FILE_ROTA.slice(0, 7)}\n`);
 

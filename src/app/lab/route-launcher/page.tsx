@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useLayoutEffect, useState } from "react";
 import { GameScreen } from "@/components/GameScreen";
 import {
   armRouteRandomSeed,
@@ -114,17 +114,34 @@ export default function RouteLauncherPage() {
   const [session, setSession] = useState<ActiveSession | null>(null);
   const [lastResult, setLastResult] = useState<GameResult | null>(null);
 
-  // Disarm when the page goes away, so nothing seeded survives into a normal
-  // journey. This is the whole containment story — there is no storage, no
-  // global flag and no query string to leave behind.
-  useEffect(() => clearRouteRandomSeed, []);
+  // The active session owns the seed: armed for exactly as long as it is on
+  // screen, disarmed when it is replaced, left, or the page goes away, so
+  // nothing seeded survives into a normal journey. This is the whole
+  // containment story — there is no storage, no global flag and no query
+  // string to leave behind.
+  //
+  // ROUTE-C7B: the Rota now asks for its board from a passive effect, so the
+  // seed has to be in place before ANY passive effect of the session runs.
+  // A layout effect is: every layout effect of a commit — this one included,
+  // and its Strict Mode re-run — finishes before the first passive effect.
+  // The old page-level `useEffect(() => clearRouteRandomSeed, [])` could
+  // instead run its cleanup after the session was armed (a Strict Mode or
+  // Fast Refresh re-run of the page's effects) and send the session's first
+  // generation out unseeded. Arming here is the same arm `launch` already
+  // made, at the same stream position: nothing draws in between.
+  useLayoutEffect(() => {
+    if (session === null) return;
+    armRouteRandomSeed(session.seed);
+    return clearRouteRandomSeed;
+  }, [session]);
 
   const launch = useCallback(
     (seed: number, continuation: RouteContinuation) => {
       setError(null);
       setLastResult(null);
       // Armed BEFORE the game mounts, so the hook's first generation is the
-      // first draw of the seeded stream.
+      // first draw of the seeded stream (and the banner shows it at once); the
+      // session's layout effect above keeps it armed for the session's life.
       armRouteRandomSeed(seed);
       setSession((previous) => ({
         seed,
