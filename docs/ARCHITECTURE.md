@@ -4,6 +4,26 @@ Este documento descreve o estado real do projeto após as limpezas CLEAN-02, CLE
 
 Regra de produto: leia `docs/MINDFLOW_EXPERIENCE_BOOK.md` antes de qualquer missão. A direção central é **Pensar em paz**. Para decisões visuais, use também `docs/MINDFLOW_VISUAL_SYSTEM.md`.
 
+## Gameplay / Platform Lock v1
+
+`GAMEPLAY_PLATFORM_LOCK_V1 = PASS` (2026-10-05, commit canônico `da551b1`):
+Rota Estratégica v1, Circuito de Memória v1 e o contrato compartilhado da
+plataforma v1 estão travados. Contratos, snapshot do grafo, matriz de
+validação, baseline de bundle/performance, registro de dívidas classificadas e
+política de mudança: `docs/GAMEPLAY_PLATFORM_LOCK_V1.md`. Gate:
+`node tools/validation/gameplay-platform-lock-v1.mjs`.
+
+- `v06-portal-requires-lights` continua a integração canônica; ROUTE-C0 a
+  ROUTE-C7 (C7A/C7B/C7C) estão fechadas.
+- Próximo consumidor planejado da plataforma: Game 03 (Discovery liberado; não
+  implementado). Regra: segundo consumidor primeiro, abstração depois.
+- Rota 2.0 é uma fase posterior, separada da v1 (microsequência de captura,
+  armadilha que altera o mapa, objetivos dependentes, mapa que muda em jogo,
+  Caçador adaptativo — nada disso existe na v1).
+- Depois do lock, mudança em Rota/Circuito/plataforma só por: correção de
+  regressão, segurança/dependência, performance medida, missão Rota 2.0
+  aprovada, ou requisito de plataforma achado pelo Game 03.
+
 ## Continuidade visual dos mundos
 
 A Rota Estrategica e o Circuito de Memoria compartilham um contrato de cena
@@ -359,6 +379,7 @@ Preserve obrigatoriamente:
 
 ## Dívidas restantes
 
+- Registro classificado (BLOCKER / POST-LOCK / ROTA-2.0 / DEV/TOOLING) do Gameplay/Platform Lock v1: `docs/GAMEPLAY_PLATFORM_LOCK_V1.md` §9.
 - `globals.css` ainda tem CSS legado misturado com CSS ativo. Use `docs/CSS_CLEANUP_MAP.md` antes de qualquer limpeza e remova apenas com busca de referência e validação visual.
 - `security-panel`, `number-trail` e `seed-garden` continuam ativos, mas ainda devem ser recriados no padrão visual atual em missões futuras.
 - Home/Jornada ainda pode receber refinamento visual, mas sem quebrar o fluxo de entrada dos mundos.

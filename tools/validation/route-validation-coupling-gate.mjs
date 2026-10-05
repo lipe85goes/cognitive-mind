@@ -189,6 +189,11 @@ const ALLOWED = {
     reason: "STRUCTURAL_ASSERTION",
     note: "ROUTE-C7C's static gate: the Worker entry, its executor and protocol, the runner split out of the job, the product binding, the main thread's import graph without generation; its Rota runs through the graph",
   },
+  "gameplay-platform-lock-v1.mjs": {
+    kinds: ["hook-path", "rota-module-path", "rota-ts-compile"],
+    reason: "STRUCTURAL_ASSERTION",
+    note: "GAMEPLAY-PLATFORM-LOCK-V1's manifest: names the canonical modules and reads the product's import graph (static, dynamic, Worker URL) to pin where code lives and what each realm reaches; evaluates only continuation.ts; its Rota's behaviour is the other suites'",
+  },
   "route-board-loader-tests.mjs": { kinds: ["rota-module-path", "rota-ts-compile"], reason: "UI_STAGE" },
   "diagnostic-launcher-tests.mjs": {
     kinds: ["rota-module-path"],

@@ -67,6 +67,25 @@ git switch -c <task-branch>
 
 Then develop, validate, commit, push the task branch, review, and integrate.
 
+## Gameplay / Platform Lock v1
+
+`GAMEPLAY_PLATFORM_LOCK_V1 = PASS` — recorded in
+[`docs/GAMEPLAY_PLATFORM_LOCK_V1.md`](GAMEPLAY_PLATFORM_LOCK_V1.md), canonical
+commit `da551b17eddbf0a156228c7e2a5fc9ca178180c9` (2026-10-05).
+
+- `v06-portal-requires-lights` remains the canonical integration branch.
+- The Rota's architecture missions ROUTE-C0 through ROUTE-C7 (C7A, C7B, C7C)
+  are closed.
+- Rota Estratégica v1, Circuito de Memória v1 and the shared platform contract
+  v1 are locked. After the lock, a change to them needs one of the classes in
+  the lock document's change policy (regression, security/dependency, measured
+  performance, an approved Rota 2.0 mission, or a platform requirement found by
+  a real second consumer). `node tools/validation/gameplay-platform-lock-v1.mjs`
+  checks the frozen contracts.
+- Game 03 is the next planned consumer of the platform (Game 03 Discovery). It
+  is not implemented.
+- Rota 2.0 is a later phase, explicitly separate from v1.
+
 ## Reproducing the project
 
 ```bash
