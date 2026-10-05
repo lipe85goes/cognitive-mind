@@ -278,3 +278,89 @@ board (no-map state), the entry readiness, the RNG seam (state hand-off), a
 Worker module + Turbopack worker wiring, and the validator suites — realistically
 3–4 missions of the C-series size, with the highest regression risk of the
 series because it changes the turn's timing model, not just where code lives.
+
+## 8. Measurements 3–5, 7 — production product actions: INVALID for the gate in this environment
+
+The product probe ran against `next start` (production build) at 390×844 with
+Long Tasks, Event Timing, first/second rAF, DOM readiness and a CDP CPU profile
+per action. `generateMaze` was located in the shipped chunk
+(`/_next/static/chunks/2vhdk0gsouaa8.js`, the function holding its unique
+error literal, offsets 16255–16747), so generation's share is measured, not
+guessed.
+
+### Why this measurement is invalid (and the rubric is not changed)
+
+The rubric (§1) defined T4 on product actions assuming that the main thread's
+cost of an action would be the action's own work. In this container that
+assumption does not hold:
+
+1. **The negative control fails.** An ordinary Explorer step — which never
+   calls `generateMaze` — takes 2.0 s (1×), 1.6 s (4×) and 2.1 s (6×) to its
+   next frame at the median, and every single step produces a Long Task
+   (10/10 and 60/60). It is the same order as Start / Restart / mode change.
+   The rubric itself says (§1.3, NO-GO list) that the control exists so the
+   generation-carrying actions are compared against the same React/Babylon
+   work; when the control blocks for seconds, nothing can be attributed to
+   generation by difference.
+2. **The blocking is WebGL on a software rasterizer.** There is no GPU: every
+   GL call goes to SwiftShader. The profile attributes the bulk of each
+   action to native WebGL entry points that wait on it synchronously —
+   `getProgramParameter` (shader link status), `getUniformBlockIndex`,
+   `getExtension`, `uniformMatrix4fv` — e.g. 1×: move 845 ms of 1 095 ms busy,
+   restart 3 995 of 4 621, warm entry 12 103 of 16 187. On a device with a GPU
+   these calls cost a small fraction of that, so the share generation would have
+   there is unknowable from here.
+3. **CPU throttling does not even scale it.** CDP throttling slows the main
+   thread; SwiftShader runs in the GPU process, unthrottled. The throttled
+   numbers are therefore a mix of throttled JS and unthrottled software
+   rasterization — not an approximation of any device.
+4. **The windows are polluted.** Because the next frame is seconds away, the
+   profiled window contains several frames of Babylon's render loop; Babylon JS
+   time (e.g. 4× move 707 ms) is not the action's own work either.
+
+Per the user's instruction the full 30-loop runs at 4×/6× were stopped (they
+added no information); the 1× run had completed (30 loops, 20 continuations,
+3 cold entries, 5 profiled loops), and a short run (5 loops, 2
+continuations, 1 cold, 2 profiled loops) was taken at 1×, 4× and 6× to show the
+contamination holds at every rate. **T4 is reported as NOT EVALUABLE in this
+environment** — neither held nor failed — and the decision rests on T1–T3
+(intrinsic browser generation + Long Tasks), transport/memory and the
+feasibility audits. The rubric text in §1 is unchanged.
+
+### What was measured anyway (for the record, not for the gate)
+
+Input → next frame (ms, p50 / p95) and generation's share of the profiled busy time:
+
+| action | 1× full run (n) | 1× short | 4× short | 6× short | generation share 1× / 4× / 6× |
+| --- | --- | --- | --- | --- | --- |
+| mode change | 1354 / 3264 (60) | 1292 / 3650 | 2439 / 4252 | 2502 / 4357 | 1.1–1.4 % / 2.5 % / 3.2 % |
+| Start | 1110 / 1166 (30) | 615 / 1151 | 2689 / 2743 | 2669 / 2792 | 0.9–1.5 % / 8.2 % / 2.4 % |
+| Restart | 2871 / 4832 (60) | 2525 / 4863 | 2537 / 3913 | 2886 / 4230 | 0.7–1.8 % / 2.0 % / 1.8 % |
+| **move (control, no generation)** | **2084 / 2315 (60)** | **2005 / 2220** | **1567 / 3038** | **2089 / 2843** | 0 % |
+| warm entry (click → board ready p95) | 12 707 (30) | 12 561 | 20 650 | 24 736 | 0.2–0.4 % / 0.3 % / 0.4 % |
+| continuation (click → board ready p95) | 13 357 (20) | 11 891 | 21 593 | 25 009 | 0.2 % / 0.8 % / 0.5 % |
+| cold entry (click → board ready) | 11 345 / 11 524 / 10 989 | 12 384 | 19 509–20 299 | 25 681 | — |
+
+Every action at every rate had at least one Long Task (100 %). Mean profiled
+milliseconds per action (1× full run): generation 13 (mode), 18 (Start),
+35 (Restart), 53 (warm entry), 32 (continuation); Babylon JS 168–2 361; native
+WebGL 669–14 133; React 0.6–23. Absolute generation time inside the product
+matches the intrinsic distribution (a few tens of ms at 1×, 50–270 ms at 4×),
+which is the one product number that is consistent with §4.
+
+Cold vs warm: cold entry (fresh context: chunk download, Babylon import, GLB,
+shader compilation) 11–12 s at 1×, ~20 s at 4×, ~26 s at 6×, with one 4.4–8.7 s
+long task; warm entry ~12.6 s at 1× — i.e. in this environment warm and cold
+entry are both dominated by scene creation and shader compilation on
+SwiftShader, not by downloads and not by generation (≤ 0.4 %). No watchdog
+retry occurred (the Rota's window is 28 s).
+
+Event Timing `duration` was recorded where Chrome emitted a matching entry
+(restart, entry, continuation, some moves); for clicks whose processing was
+short and whose paint was delayed by the render loop it often did not, so the
+rAF-based next frame is the primary interaction metric.
+
+Product memory: 120 Restarts in one session grew the heap by 2.9 MB (full run)
+and 3.7 MB (short run) after forced GC (~24–31 KB per Restart). Generation alone
+does not explain it (600 generations: +7 KB, §5); it is the board/scene side and
+is noted as a separate observation, not part of this decision.
