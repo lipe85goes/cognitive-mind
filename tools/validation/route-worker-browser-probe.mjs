@@ -530,6 +530,7 @@ async function productPhase() {
     };
     const totals = { generateMaze: 0, babylon: 0, "route-scene": 0, "react-framework": 0, "route-logic-chunk": 0, "other-app": 0, gc: 0, program: 0, idle: 0, other: 0 };
     let generationFound = false;
+    const otherFrames = new Map();
     profile.samples.forEach((id, i) => {
       const dt = (profile.timeDeltas[i + 1] ?? 0) / 1000;
       const node = byId.get(id);
@@ -543,11 +544,16 @@ async function productPhase() {
       } else {
         const category = categories.get(node.callFrame.url);
         if (category) totals[category] += dt;
-        else totals.other += dt;
+        else {
+          totals.other += dt;
+          const label = `${name || "(anonymous)"} ${node.callFrame.url ? node.callFrame.url.replace(/^.*\//, "") : "[native]"}`;
+          otherFrames.set(label, (otherFrames.get(label) ?? 0) + dt);
+        }
       }
     });
     const busy = Object.entries(totals).filter(([k]) => k !== "idle").reduce((s, [, v]) => s + v, 0);
-    return { ...Object.fromEntries(Object.entries(totals).map(([k, v]) => [k, round(v)])), busy: round(busy), generationShare: busy ? round((100 * totals.generateMaze) / busy) : null, generationFound };
+    return { ...Object.fromEntries(Object.entries(totals).map(([k, v]) => [k, round(v)])), busy: round(busy), generationShare: busy ? round((100 * totals.generateMaze) / busy) : null, generationFound,
+      topOther: [...otherFrames].sort((a, b) => b[1] - a[1]).slice(0, 6).map(([label, ms]) => [label, round(ms)]) };
   }
 
   const newPage = async (rate) => {
@@ -892,6 +898,11 @@ async function productPhase() {
             meanMs: Object.fromEntries(["busy", "generateMaze", "babylon", "route-scene", "react-framework", "route-logic-chunk", "other-app", "gc", "program", "other"].map((k) => [k, mean(k)])),
             generationShareMean: mean("generationShare"),
             generationShareP50: describe(rows.map((r) => r.generationShare)).p50,
+            topUncategorizedMeanMs: (() => {
+              const merged = new Map();
+              for (const r of rows) for (const [label, ms] of r.topOther) merged.set(label, (merged.get(label) ?? 0) + ms);
+              return [...merged].sort((a, b) => b[1] - a[1]).slice(0, 5).map(([label, ms]) => [label, round(ms / (rows.length || 1))]);
+            })(),
           },
         ];
       }),
