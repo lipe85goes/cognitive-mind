@@ -692,3 +692,32 @@ carries; the hook is still its only run-time importer).
 alone. The coupling gate counts route-events.ts as a Rota module file and
 declares the new test as C6's STRUCTURAL_ASSERTION. `route-react-runtime.mjs`
 records traces only when asked. No evidence moved.
+
+**ROUTE PERFORMANCE / WORKER DECISION (ROUTE-PERF-WORKER-DECISION-01)** — how
+long generation takes, and what moving it to a Web Worker could buy. Read-only,
+wall-clock output is RUN METADATA (never evidence); `--out FILE` writes a JSON
+report, nothing is written otherwise. Decision and numbers:
+`docs/route-worker-decision.md`.
+
+```bash
+node tools/validation/route-generation-performance-gate.mjs                 # ~17 min; Node, 9 combinations × 3 reps × 500
+node tools/validation/route-worker-browser-probe.mjs --phase intrinsic      # ~16 min; Chromium, 1×/4×/6× CPU throttle
+node tools/validation/route-worker-browser-probe.mjs --phase product        # needs `next build && next start -p 3100`
+```
+
+Both time the real generation closure through
+`route-module-loader.mjs#emitModuleBundle`, which emits `entry`'s run-time
+closure (same files, transforms and transpilation as the graph) as one
+self-contained function expression — so it runs natively in Node's main realm,
+in a page and in a throwaway Worker, with no `vm` sandbox in the timed path; it
+refuses closures that import packages. The gate times an unmodified copy with
+the product's seed seam armed, then replays every seed through a copy with
+attempt/recovery counters (anchored edits) and a draw-counting `Math`, and fails
+if a map differs (probes must be behaviour-neutral) or a generation throws. The
+browser probe's intrinsic phase adds Long Tasks, structuredClone/postMessage
+transport with `Set` fidelity, generation inside the Worker and heap; its
+product phase records input → first/second rAF, DOM readiness, Event Timing,
+Long Tasks and a CPU profile per action, locating `generateMaze` in the shipped
+chunk by its unique error literal. Under SwiftShader (no GPU) product timings
+are dominated by native WebGL — the no-generation move control blocks for
+seconds — so they are not usable for the Worker gate in such an environment.
