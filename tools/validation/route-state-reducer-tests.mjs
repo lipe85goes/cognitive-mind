@@ -56,7 +56,7 @@ import { execFileSync } from "node:child_process";
 import ts from "typescript";
 
 import { EXIT_OK, EXIT_USAGE, EXIT_VALIDATION_FAILED } from "./evidence.mjs";
-import { ROUTE_HOOK, ROUTE_RANDOM_SEAM, createModuleGraph, loadRouteModules, openSourceTree } from "./route-module-loader.mjs";
+import { ROUTE_HOOK, ROUTE_RANDOM_SEAM, createModuleGraph, loadRouteModules, openSourceTree, routeRandomBeforeC7A } from "./route-module-loader.mjs";
 import { POLICIES, runInRealReact, runInShim } from "./route-react-runtime.mjs";
 
 /** C4: the last revision whose session state was independent useState cells — what C5 must be equivalent to. */
@@ -817,7 +817,10 @@ function preservedChecks(tree) {
   }
   // P2 — nothing else moved.
   {
-    const touched = UNTOUCHED.filter((file) => (tree.exists(file) ? tree.read(file) : null) !== (base.exists(file) ? base.read(file) : null));
+    // ROUTE-C7A: the RNG seam's checkpoint is C7A's one sanctioned edit there (two declarations rewritten, four added —
+    // route-worker-rng-handoff-tests.mjs holds them); every other byte of the seam is still compared.
+    const seamAware = (file) => (file === ROUTE_RANDOM_SEAM && tree.exists(file) ? routeRandomBeforeC7A(tree) : tree.read(file));
+    const touched = UNTOUCHED.filter((file) => (tree.exists(file) ? seamAware(file) : null) !== (base.exists(file) ? base.read(file) : null));
     record("P2", "EVERY_OTHER_ROTA_MODULE_UNTOUCHED", touched.length === 0, { compared: UNTOUCHED.length, touched });
   }
   // P3 — every string of the baseline hook is still in the hook, and the user-facing ones are exactly the baseline's:

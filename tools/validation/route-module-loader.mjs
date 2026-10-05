@@ -636,3 +636,66 @@ export function readRouteLogicSources({ root, rev = null, sourceOverrides, tree 
     .filter((file) => file.startsWith(ROUTE_MODULE_DIR))
     .map((file) => ({ file, source: sources.read(file) }));
 }
+
+// ---------------------------------------------------------------------------
+// ROUTE-C7A — the RNG seam's one sanctioned edit
+// ---------------------------------------------------------------------------
+
+/** The last revision whose RNG seam had no checkpoint: what ROUTE-C7A is measured against. */
+export const ROUTE_C7A_BASE = "f19f319947735ea8b834b756e30022ec30e53f3c";
+/** C7A's generation contract. A tree that has it has C7A's seam. */
+export const ROUTE_GENERATION_JOB = "src/games/escape-maze/route-generation-job.ts";
+/**
+ * What ROUTE-C7A changed in route-random.ts, by top-level name. `rewritten`:
+ * the PRNG's state left `createSeededDraw`'s closure for the module-level
+ * `seededState`, which disarming now resets. `added`: that state and the
+ * checkpoint contract. Every other statement — the header, `routeRandom`,
+ * `randomItem`, arming, `getArmedRouteSeed`, `beginSeededGeneration` — is
+ * untouched. route-worker-rng-handoff-tests.mjs holds the rewritten two to
+ * their exact edit and every stream to the baseline's, draw for draw.
+ */
+export const ROUTE_RANDOM_C7A_EDIT = Object.freeze({
+  rewritten: Object.freeze(["createSeededDraw", "clearRouteRandomSeed"]),
+  added: Object.freeze(["seededState", "RouteRandomCheckpoint", "getRouteRandomCheckpoint", "restoreRouteRandomCheckpoint"]),
+});
+
+/** Top-level statements of a module as [name | null, full text], in order; the texts concatenate back to the source. */
+export function topLevelStatements(file, source) {
+  const sf = parse(file, source);
+  const nameOf = (statement) => {
+    if (ts.isVariableStatement(statement)) {
+      const names = statement.declarationList.declarations.map((d) => (ts.isIdentifier(d.name) ? d.name.text : null));
+      return names.length === 1 ? names[0] : null;
+    }
+    return statement.name && ts.isIdentifier(statement.name) ? statement.name.text : null;
+  };
+  return [
+    ...sf.statements.map((statement) => [nameOf(statement), statement.getFullText(sf)]),
+    [null, sf.endOfFileToken.getFullText(sf)],
+  ];
+}
+
+/**
+ * route-random.ts as the earlier extractions (C2–C6) knew it: on a tree with
+ * C7A's contract, the tree's seam with C7A's additions dropped and its two
+ * rewritten declarations put back as they were at `ROUTE_C7A_BASE`; on any
+ * other tree, the seam as it is. An earlier validator comparing this with its
+ * own baseline still sees every other byte of the seam — so an edit anywhere
+ * else in it, or a C7A name that went missing, still fails that comparison.
+ */
+export function routeRandomBeforeC7A(tree) {
+  const text = tree.read(ROUTE_RANDOM_SEAM);
+  if (!tree.exists(ROUTE_GENERATION_JOB)) return text;
+  const before = new Map(
+    topLevelStatements(ROUTE_RANDOM_SEAM, openSourceTree({ root: tree.root, rev: ROUTE_C7A_BASE }).read(ROUTE_RANDOM_SEAM)).filter(
+      ([name]) => name,
+    ),
+  );
+  const statements = topLevelStatements(ROUTE_RANDOM_SEAM, text);
+  const names = statements.map(([name]) => name);
+  if (![...ROUTE_RANDOM_C7A_EDIT.rewritten, ...ROUTE_RANDOM_C7A_EDIT.added].every((name) => names.includes(name))) return text;
+  return statements
+    .filter(([name]) => !ROUTE_RANDOM_C7A_EDIT.added.includes(name))
+    .map(([name, statement]) => (ROUTE_RANDOM_C7A_EDIT.rewritten.includes(name) ? before.get(name) : statement))
+    .join("");
+}

@@ -693,6 +693,89 @@ alone. The coupling gate counts route-events.ts as a Rota module file and
 declares the new test as C6's STRUCTURAL_ASSERTION. `route-react-runtime.mjs`
 records traces only when asked. No evidence moved.
 
+**ROUTE WORKER RNG HANDOFF (ROUTE-C7A)** — the seeded stream as data, and
+the synchronous contract a generation will cross a Worker with. Generation and
+the Hunter draw from ONE `routeRandom()` stream; in a seeded diagnostic session
+`generateMaze` restarts it at the armed seed (`beginSeededGeneration`) and the
+Hunter continues exactly where generation left it. A Worker is another realm,
+so that position has to travel. `src/engine/route-random.ts` now has
+`RouteRandomCheckpoint` (`{ armedSeed, state }`: two numbers, the PRNG's state
+verbatim — never wrapped, since past ~4.9M draws its counter passes 2^53 and the
+double's rounding is part of the sequence), `getRouteRandomCheckpoint()` (null
+in normal play) and `restoreRouteRandomCheckpoint(cp)` (seed and position; the
+next `beginSeededGeneration` still restarts at the seed; malformed input is
+rejected unchanged). The PRNG's state left `createSeededDraw`'s closure for the
+module's `seededState`; the arithmetic is statement for statement the same.
+`src/games/escape-maze/route-generation-job.ts` is request → run → accept,
+synchronous and unwired: `useEscapeMaze` still calls `generateMaze` itself.
+No Worker, no async, no loading state — that is C7B (lifecycle) and C7C (the
+Worker). Normal play is still `Math.random()`. Writes nothing:
+
+```bash
+node tools/validation/route-worker-rng-handoff-tests.mjs               # ~3.5 min
+node tools/validation/route-worker-rng-handoff-tests.mjs --chromium    # + the handoff through a Chromium Blob Worker
+node tools/validation/route-worker-rng-handoff-tests.mjs --rev=f19f319 # must fail every [structure]/[handoff] check, hold [gate]/[equivalence]
+node tools/validation/route-worker-rng-handoff-tests.mjs --mutants     # every in-memory mutant must be caught
+```
+
+`[structure]`: the seam exports its six pre-C7A names plus exactly the
+checkpoint contract and imports nothing; with C7A's statements taken out (and
+the two rewritten put back) route-random.ts is f19f319's byte for byte, the
+rewritten PRNG is the old closure with `state` → `seededState`, disarming resets
+it; the job exports exactly its five names, imports only the seam, generation
+and types, reaches nothing that renders, plays, stores or schedules, has no
+cycle and no async/Worker/host code; in `src/` only the seam and the job touch
+a checkpoint, nothing imports the job, arming is still the launcher's alone,
+no UI file knows the checkpoint. `[gate]` (holds at f19f319 too): the hook
+calls `generateMaze` directly, twice (reducer initialiser, `startNewMaze`),
+imports no job and has no Worker/await/Promise/token/pending/loading; no
+product file has Worker wiring. `[equivalence]` (against f19f319): 4000 stream
+scripts (arm, 0…60k draws, `randomItem`, `beginSeededGeneration`, clear,
+unseeded draws, re-arm — 5.3M values) on persistent realms; every seeded draw
+against the tooling's PRNG (2000 seeds); two ~5M-draw streams across the 2^53
+edge; 216 seeded generations (R1–R3 × modes × 24 seeds) with 24 Hunter
+decisions, a tie-break, the next draws and the Restart board; 34 launcher-shaped
+real-hook sessions (Launch, Start, steps, Restart, mode change, Start, steps),
+armed and not, render by render; the real React in development Strict Mode
+(still two generations at mount), development and production. `[unseeded]`:
+`routeRandom()` = one `Math.random()` returning it, `randomItem` one draw,
+unseeded generation the same calls; no checkpoint of normal play; the job in
+normal play carries no stream, clears a stale seed in the generating realm and
+never touches the requesting realm's `Math.random`. `[handoff]`: 1600
+checkpoints (N = 0…60 000) restored in fresh module graphs or a long-lived one
+continue exactly (= the realm continuing = f19f319 drawing N + M); repeated and
+chained restores; restore keeps `beginSeededGeneration` at the armed seed;
+clear after restore is normal play; malformed checkpoints change nothing; the
+216 generations again as request → structuredClone → generating realm →
+structuredClone → accept → Hunter, equal to f19f319 decision for decision (and
+the job in one realm = `generateMaze`); same board on Restart after a restore;
+mismatched results refused; the REAL hook with its two `generateMaze` calls
+pointed (in memory) at a second realm plays all 34 sessions render for render
+like f19f319, generating nothing locally. `[clone]`: checkpoint, request and
+result survive structuredClone (and JSON for checkpoint/request), walls stay a
+`Set` in order; a real `node:worker_threads` Worker runs the job from
+`emitModuleBundle` and its postMessage'd results continue the main stream
+exactly; `--chromium` does the same in a Chromium Blob Worker. `[performance]`
+(informational): seeded ms per million draws and seeded generation p50/p95,
+f19f319 vs tree, native.
+
+`--mutants` (16): checkpoint one draw behind/ahead, with the seed but the wrong
+state, a wrapped uint32 state; restore losing the seed or ignoring the state;
+`beginSeededGeneration` continuing the current state; clear keeping the seed or
+the stream; arm not restarting; two `Math.random` per draw; `randomItem`
+drawing twice; the job's result forgetting the checkpoint or reporting the
+request's; accept not restoring; the generating realm keeping a stale seed.
+The unmutated tree must pass the mutants' smaller suite first.
+
+Validators that had to follow the code: route-random.ts was byte-for-byte
+"untouched" in C2's P2 and in C3/C4/C5/C6's EVERY_OTHER_ROTA_MODULE_UNTOUCHED.
+They now compare `routeRandomBeforeC7A(tree)` (route-module-loader.mjs): the
+seam with C7A's four additions dropped and its two rewritten declarations put
+back as at f19f319 — every other byte of the seam is still compared, and a tree
+missing any C7A name falls back to the raw text. The coupling gate counts
+route-generation-job.ts as a Rota module file and declares the new test as
+C7A's STRUCTURAL_ASSERTION. No evidence moved.
+
 **ROUTE PERFORMANCE / WORKER DECISION (ROUTE-PERF-WORKER-DECISION-01)** — how
 long generation takes, and what moving it to a Web Worker could buy. Read-only,
 wall-clock output is RUN METADATA (never evidence); `--out FILE` writes a JSON
