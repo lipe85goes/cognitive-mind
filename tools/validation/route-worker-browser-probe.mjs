@@ -528,7 +528,7 @@ async function productPhase() {
       genMemo.set(id, value);
       return value;
     };
-    const totals = { generateMaze: 0, babylon: 0, "route-scene": 0, "react-framework": 0, "route-logic-chunk": 0, "other-app": 0, gc: 0, program: 0, idle: 0, other: 0 };
+    const totals = { generateMaze: 0, babylon: 0, "route-scene": 0, "react-framework": 0, "route-logic-chunk": 0, "other-app": 0, native: 0, gc: 0, program: 0, idle: 0, other: 0 };
     let generationFound = false;
     const otherFrames = new Map();
     profile.samples.forEach((id, i) => {
@@ -545,7 +545,9 @@ async function productPhase() {
         const category = categories.get(node.callFrame.url);
         if (category) totals[category] += dt;
         else {
-          totals.other += dt;
+          // No script URL: a native function — here almost entirely WebGL calls (see topOther).
+          if (node.callFrame.url) totals.other += dt;
+          else totals.native += dt;
           const label = `${name || "(anonymous)"} ${node.callFrame.url ? node.callFrame.url.replace(/^.*\//, "") : "[native]"}`;
           otherFrames.set(label, (otherFrames.get(label) ?? 0) + dt);
         }
@@ -924,7 +926,7 @@ async function productPhase() {
           {
             n: rows.length,
             generationLocated: rows.every((r) => r.generationFound) || label === "move" ? true : rows.filter((r) => r.generationFound).length,
-            meanMs: Object.fromEntries(["busy", "generateMaze", "babylon", "route-scene", "react-framework", "route-logic-chunk", "other-app", "gc", "program", "other"].map((k) => [k, mean(k)])),
+            meanMs: Object.fromEntries(["busy", "generateMaze", "babylon", "route-scene", "react-framework", "route-logic-chunk", "other-app", "native", "gc", "program", "other"].map((k) => [k, mean(k)])),
             generationShareMean: mean("generationShare"),
             generationShareP50: describe(rows.map((r) => r.generationShare)).p50,
             topUncategorizedMeanMs: (() => {
@@ -941,7 +943,7 @@ async function productPhase() {
     for (const label of labels) {
       const s = summary[label];
       const a = attributionSummary[label];
-      log(`  ${label.padEnd(12)} n ${s.n} · next frame p50 ${s.nextFrameMs.p50} p95 ${s.nextFrameMs.p95} max ${s.nextFrameMs.max} · ready p95 ${s.readyMs.p95} · LT max p95 ${s.longTaskMaxMs.p95} · with LT ${s.withLongTask} · busy ${a.meanMs.busy} gen ${a.meanMs.generateMaze} (${a.generationShareMean}%) babylon ${round((a.meanMs.babylon ?? 0) + (a.meanMs["route-scene"] ?? 0))} react ${a.meanMs["react-framework"]}`);
+      log(`  ${label.padEnd(12)} n ${s.n} · next frame p50 ${s.nextFrameMs.p50} p95 ${s.nextFrameMs.p95} max ${s.nextFrameMs.max} · ready p95 ${s.readyMs.p95} · LT max p95 ${s.longTaskMaxMs.p95} · with LT ${s.withLongTask} · busy ${a.meanMs.busy} gen ${a.meanMs.generateMaze} (${a.generationShareMean}%) babylon ${round((a.meanMs.babylon ?? 0) + (a.meanMs["route-scene"] ?? 0))} webgl/native ${a.meanMs.native} react ${a.meanMs["react-framework"]}`);
     }
     await session.context.close();
   }
