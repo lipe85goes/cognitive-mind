@@ -76,6 +76,7 @@ import {
   ROUTE_RANDOM_SEAM,
   loadRouteModules,
   openSourceTree,
+  routeRandomBeforeC7A,
 } from "./route-module-loader.mjs";
 import { cellKey, loadRouteRuntime, pathBetween, walkableNeighbours } from "./route-runtime-harness.mjs";
 
@@ -579,7 +580,10 @@ function findCycle(edges) {
 // P5 — nothing else in the Rota moved: config, geometry, generation, the RNG seam, difficulty, continuation, the
 // product's Rota component, board and scene are byte for byte the baseline's.
 {
-  const touched = UNTOUCHED.filter((file) => read(TREE, file) !== read(BASE_TREE, file));
+  // ROUTE-C7A: the RNG seam's checkpoint is C7A's one sanctioned edit there (two declarations rewritten, four added —
+  // route-worker-rng-handoff-tests.mjs holds them); every other byte of the seam is still compared.
+  const seamAware = (tree, file) => (file === ROUTE_RANDOM_SEAM && tree.exists(file) ? routeRandomBeforeC7A(tree) : read(tree, file));
+  const touched = UNTOUCHED.filter((file) => seamAware(TREE, file) !== read(BASE_TREE, file));
   record("P5", "preserved", "EVERY_OTHER_ROTA_MODULE_UNTOUCHED", touched.length === 0, { compared: UNTOUCHED.length, touched });
 }
 

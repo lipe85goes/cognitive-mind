@@ -88,6 +88,7 @@ const FILES = {
   routeInvariants: "src/games/escape-maze/route-invariants.ts",
   routeState: "src/games/escape-maze/route-state.ts",
   routeEvents: "src/games/escape-maze/route-events.ts",
+  routeGenerationJob: "src/games/escape-maze/route-generation-job.ts",
   storage: "src/engine/storage.ts",
   stageProgress: "src/engine/stage-progress.ts",
   routeRandom: "src/engine/route-random.ts",
@@ -1716,6 +1717,9 @@ const GARBAGE = [null, 7, "result", { id: "half", gameId: ROUTE }, { ...LEGACY[0
 // ROUTE-C6 added the domain events in `route-events` (what happened in the turn, and the C5 transitions that record
 // it): one more Rota module only the hook reaches, and it too reaches nothing at run time — route-state's actions and
 // the domain's types are imported as types.
+// ROUTE-C7A added `route-generation-job` (one generation as a transportable request/result, for the future Worker):
+// a second run-time importer of route-generation, importing only it and the RNG seam — and imported by nothing yet,
+// so the hook's edges, the Rota chunk and the shell are what they were.
 {
   const reader = importsOf(FILES.routeContinuation);
   const importers = SRC_FILES.filter((file) =>
@@ -1751,6 +1755,8 @@ const GARBAGE = [null, 7, "result", { id: "half", gameId: ROUTE }, { ...LEGACY[0
     routeStateImportedAtRuntimeBy: runtimeImportersOf(FILES.routeState),
     routeEventsRuntimeImports: runtimeSpecifiersOf(FILES.routeEvents),
     routeEventsImportedAtRuntimeBy: runtimeImportersOf(FILES.routeEvents),
+    routeGenerationJobRuntimeImports: runtimeSpecifiersOf(FILES.routeGenerationJob),
+    routeGenerationJobImportedAtRuntimeBy: runtimeImportersOf(FILES.routeGenerationJob),
   };
   const expected = {
     readerExists: true,
@@ -1779,7 +1785,7 @@ const GARBAGE = [null, 7, "result", { id: "half", gameId: ROUTE }, { ...LEGACY[0
       "@/games/escape-maze/route-config",
       "@/games/escape-maze/route-geometry",
     ],
-    routeGenerationImportedAtRuntimeBy: [FILES.hook],
+    routeGenerationImportedAtRuntimeBy: [FILES.routeGenerationJob, FILES.hook],
     routeGeometryRuntimeImports: ["@/games/escape-maze/route-config"],
     routeGeometryImportedAtRuntimeBy: [FILES.routeDefenders, FILES.routeGeneration, FILES.routeInvariants, FILES.hook],
     routeDefendersRuntimeImports: [
@@ -1795,6 +1801,8 @@ const GARBAGE = [null, 7, "result", { id: "half", gameId: ROUTE }, { ...LEGACY[0
     routeStateImportedAtRuntimeBy: [FILES.hook],
     routeEventsRuntimeImports: [],
     routeEventsImportedAtRuntimeBy: [FILES.hook],
+    routeGenerationJobRuntimeImports: ["@/engine/route-random", "@/games/escape-maze/route-generation"],
+    routeGenerationJobImportedAtRuntimeBy: [],
   };
   record("I1", "contract", "CONTRACT_COSTS_NOTHING", same(actual, expected), { actual });
 }

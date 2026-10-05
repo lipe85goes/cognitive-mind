@@ -71,6 +71,7 @@ import {
   anchoredEdits,
   loadRouteModules,
   openSourceTree,
+  routeRandomBeforeC7A,
 } from "./route-module-loader.mjs";
 import { cellKey, loadRouteRuntime, pathBetween, walkableNeighbours } from "./route-runtime-harness.mjs";
 
@@ -451,7 +452,9 @@ const resolvesTo = (from, specifier) => errorOf(() => TREE.resolve(specifier, fr
   const c5Statements = [...C5_REWRITTEN, ...C5_ADDED].map((name) => hook.text.get(name));
   const changedStatements = hook.statements.filter((statement) => !c5Statements.includes(statement) && !baseHookNormalized.includes(unexported(statement)));
   const randomItemText = seam.text.get("randomItem");
-  const seamNow = read(TREE, ROUTE_RANDOM_SEAM);
+  // ROUTE-C7A: the seam's checkpoint is C7A's one sanctioned edit there (two declarations rewritten, four added —
+  // route-worker-rng-handoff-tests.mjs holds them); every other byte is still compared.
+  const seamNow = TREE.exists(ROUTE_RANDOM_SEAM) ? routeRandomBeforeC7A(TREE) : "";
   const seamWithout = randomItemText ? seamNow.replace(`\n\n${randomItemText}`, "") : seamNow;
   const seamOk = seamWithout === read(BASE_TREE, ROUTE_RANDOM_SEAM);
   record("P2", "preserved", "HOOK_AND_SEAM_OTHERWISE_UNCHANGED", changedStatements.length === 0 && seamOk, {
