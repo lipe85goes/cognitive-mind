@@ -364,3 +364,147 @@ Product memory: 120 Restarts in one session grew the heap by 2.9 MB (full run)
 and 3.7 MB (short run) after forced GC (~24–31 KB per Restart). Generation alone
 does not explain it (600 generations: +7 KB, §5); it is the board/scene side and
 is noted as a separate observation, not part of this decision.
+
+## 9. Measurements 6 + 8 — `next dev` and Strict Mode (diagnostic only)
+
+`next dev -p 3000`, warm server (first two requests discarded), same probe at 1×,
+3 loops + 2 profiled loops. Not used by any gate.
+
+| action (dev, 1×) | next frame p50 / p95 | generation (profiled mean) | share |
+| --- | --- | --: | --: |
+| mode change | 1393 / 3688 | 37.6 ms | 1.5 % |
+| Start | 1472 / 1478 | 30.1 ms | 3.1 % |
+| Restart | 2780 / 4577 | 27.5 ms | 1.2 % |
+| move (control) | 1514 / 1831 | 0 | 0 % |
+| warm entry (ready p95) | 13 439 | 45.8 ms | 0.3 % |
+
+Same picture as production: SwiftShader dominates. In development the Rota's
+`useReducer` initialiser runs twice under Strict Mode, so every mount draws two
+boards (pinned by `route-state-reducer-tests` on the real react-dom: "Strict
+Mode's double initialiser draws two boards on both trees"); the profiler cannot
+count calls, so the dev entry's generation time (≈ 46 ms vs ≈ 30 ms in
+production) is consistent with, but not proof of, two generations. Production is
+what the decision uses.
+
+## 10. Decision matrix
+
+Gate thresholds are §1's, unchanged. Browser intrinsic = generation alone in
+the product's Chromium (§4); product rows are §8 and NOT EVALUABLE here.
+
+| metric | 1× | 4× | 6× | gate | result |
+| --- | --: | --: | --: | --- | --- |
+| generation p95, pooled (browser intrinsic) | 119.0 ms | **560.6 ms** | **844.7 ms** | T1 > 100 ms @4× · T2 > 200 ms @6× | **T1 HOLDS** (3/3 reps: 528/583/578) · **T2 HOLDS** (3/3: 800/870/863) |
+| generation p99 / max (browser intrinsic) | 204 / 554 ms | 960 / 2 574 ms | 1 443 / 3 815 ms | not gated (outliers) | heavy tail, single seeds |
+| generations > 50 ms (= Long Task entries) | 20.1 % | **73.4 %** | 95.9 % | T3 ≥ 10 % @4× | **T3 HOLDS** (3/3: 72.9/73.3/74.1 %) |
+| generation p95 / p99 / max (Node, native) | 137 / 252 / 1 144 ms | — | — | context | — |
+| Start next frame p95 | 1 166 ms | 2 743 ms | 2 792 ms | T4 (with share ≥ 50 %) | NOT EVALUABLE (share 0.9–8 %, control invalid) |
+| Restart next frame p95 | 4 832 ms | 3 913 ms | 4 230 ms | T4 | NOT EVALUABLE |
+| mode change next frame p95 | 3 264 ms | 4 252 ms | 4 357 ms | T4 | NOT EVALUABLE |
+| normal move control (no generation) next frame p50 / p95 | 2 084 / 2 315 ms | 1 567 / 3 038 ms | 2 089 / 2 843 ms | must be small for T4 to mean anything | **FAILS** → product timing invalid |
+| clone / transport of a MazeMap (echo p95; receive p95) | 0.2 ms; 0.1 ms | 0.9 ms; 0.5 ms | 1.7 ms; 1.1 ms | cost side | negligible; `Set` survives |
+| heap: 600 generations / per retained map | +7 KB / 1.7 KB | — | — | cost side | negligible |
+| cold entry (click → board ready) | 11.0–12.4 s | 19.5–20.3 s | 25.7 s | reported apart, never decides | SwiftShader/scene-bound; generation ≤ 0.4 % |
+
+Borderline band (§1.4): no gated metric is near its threshold — T1 is 5.6× its
+threshold, T2 4.2×, T3 7.3×.
+
+## 11. Attribution in one paragraph
+
+Generation alone, in this Chromium, costs p50 21 ms / p95 119 ms at 1× and
+p50 97 ms / p95 561 ms at 4×, every generation over 50 ms is a Long Task, and
+the cost is driven by how many candidates the random phase builds (≈ 4 ms each
+on this CPU; ρ = 0.93), worst on Aberto (easy) and on Routes 2–3. Inside the
+product the same generation is present at the same size, but in this container
+it sits in tasks that are 1–5 s long because of native WebGL on SwiftShader and
+Babylon's scene work; how large a share it would be on a device with a GPU is
+UNKNOWN from here. Download/compilation (cold) and the Babylon/GLB/shader
+readiness (warm and cold entry) dominate entry by two orders of magnitude.
+
+## 12. Decision
+
+**DECISION: C7_GO**
+
+Why, against the rubric registered before measuring (§1, commit `a974f97`):
+
+- T1, T2 and T3 each hold, consistently (3 of 3 repetitions), and far from the
+  borderline band. Any one of them suffices; T4 could not be evaluated in this
+  environment and is neither for nor against (§8).
+- The Long Task API confirms the mechanism directly: every generation over
+  50 ms is its own main-thread long task — 20 % of generations already at 1× on
+  a desktop-class core, 73 % at 4×, 96 % at 6×, with a tail of seconds.
+  Generation is the only part of Start / Restart / mode change / entry that is
+  pure CPU, GPU-independent and unbounded in advance (attempts p95 39, max 371),
+  so unlike the WebGL figures it does not shrink on better graphics hardware.
+
+Why it is worth the complexity:
+
+- The thing to move is already isolated: since C2 `generateMaze` lives in a
+  module whose run-time closure is five files with no React, Babylon or DOM (the
+  probe ran it unchanged in a Blob Worker).
+- Transport is free in practice: < 1 KB per map, ≤ 1.7 ms round trip even at 6×,
+  `Set<string>` survives `postMessage` in Chrome 141; heap cost is negligible.
+- The RNG is not a blocker: option B (seeded state in, final state out)
+  preserves seeded diagnostics byte for byte and keeps normal play
+  distribution-identical (§6).
+
+What GO does NOT claim, and how C7 must be scoped:
+
+- It removes generation's long tasks (tens of ms at 1×, hundreds at 4×); it does
+  not make Start / Restart / mode change instant, because the same task also
+  rebuilds the Babylon board synchronously. How much remains on a real GPU is
+  not measurable here; that is a separate question for the board, not for C7.
+- The cost is the asynchrony, not the Worker: §7 lists what changes (setup
+  state, readiness, Strict Mode, cancellation, retry, races, continuation,
+  loading UI, ≥ 10 validator suites). Recommended shape: option B for the RNG
+  (never A — it breaks seeded diagnostics; avoid E — the validated path would not
+  be the played path), one async generation state machine with request tokens
+  and latest-wins, staged as several C-sized missions (seam state hand-off with
+  generation still synchronous → async generation in the hook with a
+  synchronous adapter → the Worker adapter and its wiring → validators).
+- A real-device run (Android mid/low-end and an iPhone, production build,
+  hardware WebGL) is still recommended before implementation to size the
+  user-visible gain and to give the product timing (T4) a valid environment; it
+  is not required by the rubric for this decision, since T1–T3 hold by a wide
+  margin.
+
+What would reopen the decision (toward NO-GO): a change that makes generation
+cheap enough that browser-intrinsic p95 at 4× falls below 100 ms and the
+> 50 ms share below 10 % — e.g. a generator that wastes far fewer candidates on
+Aberto and Routes 2–3. Such a change alters maps and the RNG stream (a gameplay
+change), so it is outside this mission; if it is ever made, re-run
+`route-worker-browser-probe.mjs --phase intrinsic` before starting C7.
+
+## 13. Reproduce
+
+```bash
+node tools/validation/route-generation-performance-gate.mjs [--out FILE]                # ~17 min
+node tools/validation/route-worker-browser-probe.mjs --phase intrinsic [--out FILE]      # ~16 min
+next build && next start -p 3100
+node tools/validation/route-worker-browser-probe.mjs --phase product --loops 5 --continuations 2 --cold 1 --profile-loops 2 [--out FILE]
+```
+
+Run nothing else at the same time. On a machine with a real GPU the product
+phase becomes meaningful; that is the run §12 recommends.
+
+## 14. Validations (product untouched)
+
+`git diff e384d76 -- src` is empty: no product source changed. Run after all
+measurements, sequentially, nothing else running:
+
+| check | result |
+| --- | --- |
+| `npm run lint` | exit 0 |
+| `npx tsc --noEmit` | exit 0 |
+| `next build` | exit 0 |
+| `git diff --check` | clean |
+| `route-validation-coupling-gate` | exit 0 (the new tools name no Rota file) |
+| `route-module-loader-tests` | 23/23 (a first run failed only H1 "loader writes nothing" because the report was being edited during it; re-run on a still worktree: 23/23) |
+| `route-generation-performance-gate` (30 × 9 quick) | exit 0 — no throw, probes neutral, sandbox = native |
+| `route-domain-events-tests` | 35/35 |
+| `route-state-reducer-tests` | 42/42 |
+| `route-generation-extraction-tests` | 21/21 |
+| DEEP `final-acceptance` | exit 0, evidence MATCHES (its FASE 6 timing is run metadata) |
+| CORE `validation-hygiene-tests` | CORE_BATTERY_PASSED, immutability: 0 created / 0 deleted / 0 changed, git status identical |
+
+No gameplay evidence was updated; every performance figure here is run
+metadata. `AGENTS.md`, rewritten by `next dev`, was restored and not committed.
