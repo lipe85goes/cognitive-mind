@@ -749,16 +749,18 @@ async function productPhase() {
   }
   /** Lose the Route (walk into the Hunter), then take the result's primary action. */
   async function continuation(page, label) {
+    await closeDetails(page);
     if ((await status(page)) === "setup") await page.locator('button[aria-label="Iniciar rota com a dificuldade selecionada"]').click();
     await page.waitForTimeout(400);
-    for (let guard = 0; guard < 60 && !(await page.locator(".prm-card").count()); guard += 1) {
+    for (let guard = 0; guard < 200 && !(await page.locator(".prm-card").count()); guard += 1) {
       const reward = page.locator('.rsg-reward-btn[aria-label^="Escolher Picareta"]');
       if (await reward.count()) {
         await reward.click();
         await page.waitForTimeout(250);
         continue;
       }
-      const moved = await step(page, null, true);
+      // Toward the Hunter; when that way is shut (the Sentinel, a pause), any safe step keeps the turn going.
+      const moved = (await step(page, null, true)) ?? (await step(page, null, false));
       if (!moved) await page.waitForTimeout(250);
     }
     await page.locator(".prm-card").waitFor({ timeout: 60000 });
@@ -774,10 +776,32 @@ async function productPhase() {
     await cdp.send("Profiler.enable");
     await cdp.send("Profiler.setSamplingInterval", { interval: 200 });
     await cdp.send("Profiler.start");
-    const record = await fn();
+    let record;
+    try {
+      record = await fn();
+    } catch (error) {
+      await cdp.send("Profiler.stop").catch(() => {});
+      throw error;
+    }
     const { profile } = await cdp.send("Profiler.stop");
     return { record, attribution: attribute(profile) };
   }
+
+  /** One loop body; an error is recorded (never silently dropped) and the session is brought back Home. */
+  async function guarded(page, errors, where, fn) {
+    try {
+      await fn();
+    } catch (error) {
+      errors.push(`${where}: ${String(error?.message ?? error).split("\n")[0].slice(0, 200)}`);
+      log(`  ! ${where}: ${errors[errors.length - 1]}`);
+      await goHome(page).catch(() => {});
+    }
+  }
+  const ensureSetup = async (page, retries) => {
+    if (await page.locator('.rsg-setup button[aria-label="Iniciar rota com a dificuldade selecionada"]').count()) return;
+    if (!(await page.locator(".hj-stage").count())) await goHome(page);
+    await enter(page, "entry-recover", retries);
+  };
 
   const result = { plan: { loops: LOOPS, continuations: CONTINUATIONS, cold: COLD, profileLoops: PROFILE_LOOPS, viewport: `${VIEW_W}x${VIEW_H}`, deviceScaleFactor: 1, isMobile: true, base: BASE }, rates: [] };
   for (const rate of RATES) {
@@ -798,8 +822,10 @@ async function productPhase() {
     await learnScripts(page);
     if (!generation) failures.push("generateMaze could not be located in the shipped chunks");
 
+    const loopErrors = [];
     log(`rate ${rate}×: ${LOOPS} warm loops`);
-    for (let loop = 0; loop < LOOPS; loop += 1) {
+    for (let loop = 0; loop < LOOPS; loop += 1) await guarded(page, loopErrors, `loop ${loop + 1}`, async () => {
+      await ensureSetup(page, retries);
       actions.push(await changeMode(page, "mode"));
       actions.push(await changeMode(page, "mode"));
       actions.push(await startRoute(page, "start"));
@@ -819,14 +845,17 @@ async function productPhase() {
       }
       if (!(await page.locator(".hj-stage").count())) await goHome(page);
       actions.push(await enter(page, "entry-warm", retries));
-      if ((loop + 1) % 5 === 0) log(`  loop ${loop + 1}/${LOOPS}`);
-    }
+      if ((loop + 1) % 5 === 0) log(`  loop ${loop + 1}/${LOOPS} (${new Date().toISOString().slice(11, 19)})`);
+    });
     log(`rate ${rate}×: ${CONTINUATIONS} continuations`);
-    for (let i = 0; i < CONTINUATIONS; i += 1) actions.push(await continuation(page, "continuation"));
+    for (let i = 0; i < CONTINUATIONS; i += 1) await guarded(page, loopErrors, `continuation ${i + 1}`, async () => {
+      await ensureSetup(page, retries);
+      actions.push(await continuation(page, "continuation"));
+    });
 
     log(`rate ${rate}×: attribution (${PROFILE_LOOPS} profiled loops)`);
     const attributions = [];
-    for (let loop = 0; loop < PROFILE_LOOPS; loop += 1) {
+    for (let loop = 0; loop < PROFILE_LOOPS; loop += 1) await guarded(page, loopErrors, `profiled loop ${loop + 1}`, async () => {
       await exitHome(page).catch(() => {});
       if (!(await page.locator(".hj-stage").count())) await goHome(page);
       attributions.push(await profiled(cdp, () => enter(page, "entry-warm", retries)));
@@ -836,7 +865,7 @@ async function productPhase() {
       if (s.record && s.record !== true) attributions.push(s);
       if ((await status(page)) === "playing") attributions.push(await profiled(cdp, () => restart(page, "restart")));
       if (loop < 3) attributions.push(await profiled(cdp, () => continuation(page, "continuation")));
-    }
+    });
 
     let memory = null;
     if (rate === RATES[0] && RESTARTS_MEMORY > 0) {
@@ -907,7 +936,8 @@ async function productPhase() {
         ];
       }),
     );
-    result.rates.push({ rate, cold: { records: cold, readyMs: describe(cold.map((c) => c.readyMs)), longTaskSumMs: describe(cold.map((c) => c.longTaskSumMs)), longTaskMaxMs: describe(cold.map((c) => c.longTaskMaxMs)) }, summary, attribution: attributionSummary, watchdogRetries: retries, memory, pageErrors: session.errors.slice(0, 10) });
+    if (loopErrors.length > Math.max(2, LOOPS / 10)) failures.push(`${loopErrors.length} loop errors at ${rate}×`);
+    result.rates.push({ rate, loopErrors, cold: { records: cold, readyMs: describe(cold.map((c) => c.readyMs)), longTaskSumMs: describe(cold.map((c) => c.longTaskSumMs)), longTaskMaxMs: describe(cold.map((c) => c.longTaskMaxMs)) }, summary, attribution: attributionSummary, watchdogRetries: retries, memory, pageErrors: session.errors.slice(0, 10) });
     for (const label of labels) {
       const s = summary[label];
       const a = attributionSummary[label];
