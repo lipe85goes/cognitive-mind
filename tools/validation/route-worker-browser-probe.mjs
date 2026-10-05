@@ -234,8 +234,8 @@ window.__workerSource = ${JSON.stringify(
       const { out, longtasks } = await runBatch(order, SAMPLES, (rep + 1) * 1_000_000);
       for (const row of out) {
         row.rep = rep;
-        // A Long Task entry covering this generation's own task.
-        row.longTask = longtasks.some((lt) => lt.start <= row.start + 0.5 && lt.start + lt.duration >= row.start + row.ms - 0.5);
+        // A Long Task entry covering this generation's own task (entry times are coarsened to whole ms).
+        row.longTask = longtasks.some((lt) => lt.start <= row.start + 2 && lt.start + lt.duration >= row.start + row.ms - 2);
         if (row.longTask) longTaskHits += 1;
         rows.push(row);
       }
