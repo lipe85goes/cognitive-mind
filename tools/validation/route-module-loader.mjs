@@ -223,9 +223,18 @@ export function openSourceTree({ root = process.cwd(), rev = null, sourceOverrid
     return runtimeImportsCache.get(repoPath);
   };
 
-  /** Every repository module `entry` reaches through run-time imports, entry first. Nothing is executed. */
-  const closure = (entry = ROUTE_HOOK) => {
-    const seen = [toRepoPath(entry)];
+  /**
+   * The Rota's roots in this tree: the hook (main thread) and, since ROUTE-C7C, the generation Worker's entry — the
+   * Rota runs in two realms, and generation is reached only from the second. Asking for "the Rota's graph" means both.
+   */
+  const routeRoots = () => [ROUTE_HOOK, ...(exists(ROUTE_GENERATION_WORKER) ? [ROUTE_GENERATION_WORKER] : [])];
+
+  /**
+   * Every repository module `entry` (one path, or several) reaches through run-time imports, entries first. Nothing is
+   * executed. The default is the Rota's roots: on a tree before ROUTE-C7C that is the hook alone, as it always was.
+   */
+  const closure = (entry = routeRoots()) => {
+    const seen = [...new Set([entry].flat().map(toRepoPath))];
     for (let i = 0; i < seen.length; i += 1) {
       for (const specifier of runtimeImports(seen[i])) {
         const file = resolve(specifier, seen[i]);
@@ -240,7 +249,7 @@ export function openSourceTree({ root = process.cwd(), rev = null, sourceOverrid
    * once. A textual counterfactual anchors here instead of on a file name, so
    * it follows the code it patches wherever that code is moved.
    */
-  const locate = (needle, { entry = ROUTE_HOOK } = {}) => {
+  const locate = (needle, { entry = routeRoots() } = {}) => {
     const hits = closure(entry)
       .map((file) => ({ file, count: read(file).split(needle).length - 1 }))
       .filter((hit) => hit.count > 0);
@@ -256,7 +265,7 @@ export function openSourceTree({ root = process.cwd(), rev = null, sourceOverrid
   };
 
   /** The one Rota module (`within`) of `entry`'s graph that declares the top-level value `name`. */
-  const declaring = (name, { entry = ROUTE_HOOK, within = ROUTE_MODULE_DIR } = {}) => {
+  const declaring = (name, { entry = routeRoots(), within = ROUTE_MODULE_DIR } = {}) => {
     const files = closure(entry)
       .filter((file) => file.startsWith(within))
       .filter((file) => declaredValueNames(file, read(file)).includes(name));
@@ -269,7 +278,7 @@ export function openSourceTree({ root = process.cwd(), rev = null, sourceOverrid
     return files[0];
   };
 
-  return { root: absoluteRoot, rev: commit, toRepoPath, exists, read, origin, resolve, runtimeImports, closure, locate, declaring };
+  return { root: absoluteRoot, rev: commit, toRepoPath, exists, read, origin, resolve, runtimeImports, routeRoots, closure, locate, declaring };
 }
 
 /**
@@ -279,7 +288,7 @@ export function openSourceTree({ root = process.cwd(), rev = null, sourceOverrid
  * here, before anything is loaded — so an edit can neither miss silently nor
  * land in the wrong module, and it keeps working when its code is moved.
  */
-export function anchoredEdits(tree, edits, { entry = ROUTE_HOOK } = {}) {
+export function anchoredEdits(tree, edits, { entry = tree.routeRoots?.() ?? ROUTE_HOOK } = {}) {
   const targets = edits.map(([anchor, replacement]) => ({ file: tree.locate(anchor, { entry }), anchor, replacement }));
   return (source, file) =>
     targets.filter((target) => target.file === file).reduce((text, target) => text.replace(target.anchor, target.replacement), source);
@@ -300,7 +309,10 @@ function transpile(file, source) {
         ts.flattenDiagnosticMessageText(first.messageText, "\n"),
     );
   }
-  return outputText;
+  // ROUTE-C7C: `import.meta` is a module-only syntax, and every realm here runs a CommonJS function body. A module's
+  // URL is its repository path — enough for `new URL("./x.worker.ts", import.meta.url)` to be constructed (never fetched:
+  // no validator realm has a `Worker` unless it supplies one).
+  return outputText.replace(/\bimport\.meta\.url\b/g, JSON.stringify(`file:///${file}`));
 }
 
 // ---------------------------------------------------------------------------
@@ -584,6 +596,10 @@ export const routeMocks = ({ react } = {}) => ({
  *             up in whichever Rota module declares them — or in the RNG seam,
  *             which declares `randomItem` since ROUTE-C2. A name declared in
  *             more than one of them is an error, as before.
+ *   generationExecutor  "local" (default): on a ROUTE-C7C tree, the Rota's
+ *             executor is bound to the runner's local executor in this realm
+ *             (a validator realm has no Worker); "product" keeps the Worker
+ *             binding. Trees before C7C keep their own.
  *   transforms, sourceOverrides, rev, react, mocks — as above.
  *
  * `routeRandom` is the SAME instance the hook and `difficulty.ts` draw from: a
@@ -599,6 +615,7 @@ export function loadRouteModules({
   surface = [],
   entry = ROUTE_HOOK,
   tree,
+  generationExecutor = "local",
 } = {}) {
   let random = createSeededRandom(1);
   const seededMath = Object.create(Math);
@@ -612,12 +629,28 @@ export function loadRouteModules({
     exposeInternals: exposesRouteSurface,
   });
   const hook = graph.require(entry);
+  // ROUTE-C7C: the hook no longer reaches generation — the product generates in a Worker, and a validator's realm has
+  // none. The Rota profile runs generation where C7B ran it: this realm, through the runner's local executor, bound
+  // where the product binds its Worker. Same modules, same seeded stream, same draws; only WHERE differs, and where is
+  // route-generation-worker-tests' question. `generationExecutor: "product"` leaves the product's binding in place.
+  let generation = "own";
+  // Bound eagerly, whatever the entry (the view, the launcher — whose Rota arrives through `import()` later): the client
+  // and the runner are pure modules, one instance each, so loading them first changes nothing but the binding.
+  if (graph.tree.exists(ROUTE_GENERATION_RUNNER)) {
+    const runner = graph.require(ROUTE_GENERATION_RUNNER);
+    if (generationExecutor === "local") {
+      graph.require(ROUTE_GENERATION_CLIENT).routeGenerationExecutor = runner.runRouteGenerationLocally;
+      generation = "local";
+    } else generation = "product";
+  }
   const api = graph.internals(surface);
 
   return {
     graph,
     hook,
     api,
+    /** Where the hook's boards are generated: "own" (the tree's own binding, before C7C), "local" (the runner, this realm) or "product". */
+    generation,
     sandbox: graph.sandbox,
     seededMath,
     setSeed(seed) {
@@ -632,13 +665,14 @@ export function loadRouteModules({
 
 /**
  * The Rota's own logic sources — the hook and the modules under
- * `ROUTE_MODULE_DIR` it reaches at run time — for validators whose question is
+ * `ROUTE_MODULE_DIR` it reaches at run time (and, since ROUTE-C7C, those the
+ * generation Worker reaches) — for validators whose question is
  * about the code itself ("nothing in the Rota mentions X"). Read, never run.
  */
 export function readRouteLogicSources({ root, rev = null, sourceOverrides, tree } = {}) {
   const sources = tree ?? openSourceTree({ root, rev, sourceOverrides });
   return sources
-    .closure(ROUTE_HOOK)
+    .closure()
     .filter((file) => file.startsWith(ROUTE_MODULE_DIR))
     .map((file) => ({ file, source: sources.read(file) }));
 }
@@ -956,9 +990,11 @@ export const ROUTE_C7B_ADDED_FILES = Object.freeze([ROUTE_SESSION, ROUTE_GENERAT
  * `runtimeImports`) answer for that text too. For TEXT checks only (structure,
  * preserved): the code that runs is the tree's own, so a validator loads its
  * runs from the tree, never from this view. On a tree without C7B it is the
- * tree.
+ * tree (before ROUTE-C7C, if it has C7C).
  */
 export function treeBeforeC7B(tree) {
+  // ROUTE-C7C came after: what the checks before C7B read is the tree before C7C, then before C7B.
+  tree = treeBeforeC7C(tree);
   if (!tree.exists(ROUTE_SESSION)) return tree;
   const added = (file) => ROUTE_C7B_ADDED_FILES.includes(tree.toRepoPath(file));
   const view = openSourceTree({
@@ -973,4 +1009,120 @@ export function treeBeforeC7B(tree) {
     },
   });
   return { ...view, beforeC7B: true };
+}
+
+// ---------------------------------------------------------------------------
+// ROUTE-C7C — generation moves to a Web Worker: the sanctioned edit
+// ---------------------------------------------------------------------------
+
+/** The last revision whose boards were generated on the main thread (C7B's local executor): what ROUTE-C7C is measured against. */
+export const ROUTE_C7C_BASE = "bd75e69c75caaac560cebb86761bac29b2e3afd4";
+/** The generating realm's half of C7A's contract (`runRouteGenerationSync`) and C7B's local executor, moved out of the main thread's graph. */
+export const ROUTE_GENERATION_RUNNER = "src/games/escape-maze/route-generation-runner.ts";
+/** The generation Worker's entry: the one production caller of `runRouteGenerationSync`. A tree that has it has C7C. */
+export const ROUTE_GENERATION_WORKER = "src/games/escape-maze/route-generation.worker.ts";
+/** The product's executor: one dedicated Worker per command. */
+export const ROUTE_GENERATION_WORKER_EXECUTOR = "src/games/escape-maze/route-generation-worker-executor.ts";
+/** The two transport messages and the main thread's shape check of a reply. */
+export const ROUTE_GENERATION_WORKER_PROTOCOL = "src/games/escape-maze/route-generation-worker-protocol.ts";
+/** The files ROUTE-C7C added to the Rota. They did not exist before it. */
+export const ROUTE_C7C_ADDED_FILES = Object.freeze([
+  ROUTE_GENERATION_RUNNER,
+  ROUTE_GENERATION_WORKER,
+  ROUTE_GENERATION_WORKER_EXECUTOR,
+  ROUTE_GENERATION_WORKER_PROTOCOL,
+]);
+
+/**
+ * The hook's one public export ROUTE-C7C removed: `generateMaze`, whose re-export kept all of generation in the main
+ * thread's Route chunk (no product module imported it from the hook; the validators that ask for it find it in
+ * route-generation.ts). A check of the hook's surface "as before" adds exactly this back on a C7C tree.
+ */
+export const ROUTE_HOOK_C7C_REMOVED_EXPORTS = Object.freeze(["generateMaze"]);
+
+/** The hook's export names in `tree`, as a check written before ROUTE-C7C counts them: C7C's declared removal added back. */
+export const hookExportsBeforeC7C = (tree, names) =>
+  tree.exists(ROUTE_GENERATION_WORKER) ? [...new Set([...names, ...ROUTE_HOOK_C7C_REMOVED_EXPORTS])].sort() : [...names].sort();
+
+/** The module that declares `runRouteGenerationSync` in `tree`: the runner since ROUTE-C7C, C7A's job before it. */
+export const routeGenerationRunnerFile = (tree) => (tree.exists(ROUTE_GENERATION_RUNNER) ? ROUTE_GENERATION_RUNNER : ROUTE_GENERATION_JOB);
+
+/**
+ * What ROUTE-C7C changed in the three files it edited, by module-level statement (keys as `statementKey` gives them).
+ * `rewritten`: statements whose text changed (a doc comment counts: it is the leading text of the statement after it);
+ * `removed`: statements that left the file (moved to the runner); `added`: statements that are new. Every other
+ * statement is byte for byte what it was at `ROUTE_C7C_BASE`. route-generation-worker-tests holds the reversal of
+ * each file equal to the base byte for byte and every key of the tree accounted for.
+ */
+export const ROUTE_C7C_EDIT = Object.freeze({
+  [ROUTE_GENERATION_JOB]: Object.freeze({
+    rewritten: Object.freeze(["import:@/engine/route-random", "RouteGenerationRequest"]),
+    removed: Object.freeze(["import:@/games/escape-maze/route-generation", "runRouteGenerationSync"]),
+    added: Object.freeze(["import:@/games/escape-maze/route-generation:type"]),
+  }),
+  [ROUTE_GENERATION_CLIENT]: Object.freeze({
+    rewritten: Object.freeze(["import:@/games/escape-maze/route-generation-job", "routeGenerationExecutor"]),
+    // the local executor moved to the runner; the seam's three message types moved, unchanged, to the protocol
+    removed: Object.freeze(["runRouteGenerationLocally", "RouteGenerationCommand", "RouteGenerationResponse", "RouteGenerationExecutor"]),
+    added: Object.freeze([
+      "import:@/games/escape-maze/route-generation-worker-executor",
+      "import:@/games/escape-maze/route-generation-worker-protocol:type",
+      "export-type:RouteGenerationCommand,RouteGenerationExecutor,RouteGenerationResponse",
+    ]),
+  }),
+  [ROUTE_HOOK]: Object.freeze({
+    rewritten: Object.freeze([]),
+    removed: Object.freeze(["import:@/games/escape-maze/route-generation", "export:generateMaze,posKey,positionsEqual"]),
+    added: Object.freeze(["import:@/games/escape-maze/route-generation:type", "export:posKey,positionsEqual"]),
+  }),
+});
+
+/** The module-level statements of `file` in `text`, keyed. */
+export function moduleStatementKeys(file, text) {
+  const sf = parse(file, text);
+  return keyedStatements(sf, sf.statements).map(([key]) => key);
+}
+
+/**
+ * One of C7C's edited files as it was before ROUTE-C7C, rebuilt from the tree's own text: the base's statements, in
+ * the base's order, each the tree's own text unless C7C rewrote or removed it (then the base's). C7C's added
+ * statements are dropped. On a tree without C7C, or for any other file, the tree's text as it is.
+ */
+export function routeFileBeforeC7C(tree, file) {
+  const repoPath = tree.toRepoPath(file);
+  const text = tree.read(repoPath);
+  const edit = ROUTE_C7C_EDIT[repoPath];
+  if (!edit || !tree.exists(ROUTE_GENERATION_WORKER)) return text;
+  const base = openSourceTree({ root: tree.root, rev: ROUTE_C7C_BASE }).read(repoPath);
+  const sfNow = parse(repoPath, text);
+  const sfBase = parse(repoPath, base);
+  const now = new Map(keyedStatements(sfNow, sfNow.statements));
+  return (
+    keyedStatements(sfBase, sfBase.statements)
+      .map(([key, statement]) => (edit.rewritten.includes(key) || !now.has(key) ? statement : now.get(key)))
+      .join("") + sfBase.endOfFileToken.getFullText(sfBase)
+  );
+}
+
+/**
+ * A read-only view of `tree` as the checks written before ROUTE-C7C read it: the job, the client and the hook through
+ * `routeFileBeforeC7C`, C7C's four new modules absent — so the graph questions answer for that text (the hook reaches
+ * generation again, through the client's local executor and the job). For TEXT checks only, like `treeBeforeC7B`: a
+ * validator's runs load the tree's own code. On a tree without C7C it is the tree.
+ */
+export function treeBeforeC7C(tree) {
+  if (tree.beforeC7C || !tree.exists(ROUTE_GENERATION_WORKER)) return tree;
+  const added = (file) => ROUTE_C7C_ADDED_FILES.includes(tree.toRepoPath(file));
+  const view = openSourceTree({
+    root: tree.root,
+    underlying: {
+      rev: tree.rev,
+      exists: (file) => !added(file) && tree.exists(file),
+      read: (file) => {
+        if (added(file)) throw new Error(`route-module-loader: ${tree.toRepoPath(file)} does not exist before ROUTE-C7C`);
+        return routeFileBeforeC7C(tree, file);
+      },
+    },
+  });
+  return { ...view, beforeC7C: true };
 }

@@ -91,6 +91,11 @@ const FILES = {
   routeGenerationJob: "src/games/escape-maze/route-generation-job.ts",
   routeGenerationClient: "src/games/escape-maze/route-generation-client.ts",
   routeSession: "src/games/escape-maze/route-session.ts",
+  // ROUTE-C7C
+  routeGenerationRunner: "src/games/escape-maze/route-generation-runner.ts",
+  routeGenerationWorker: "src/games/escape-maze/route-generation.worker.ts",
+  routeGenerationWorkerExecutor: "src/games/escape-maze/route-generation-worker-executor.ts",
+  routeGenerationWorkerProtocol: "src/games/escape-maze/route-generation-worker-protocol.ts",
   storage: "src/engine/storage.ts",
   stageProgress: "src/engine/stage-progress.ts",
   routeRandom: "src/engine/route-random.ts",
@@ -1767,6 +1772,14 @@ const GARBAGE = [null, 7, "result", { id: "half", gameId: ROUTE }, { ...LEGACY[0
     routeGenerationClientImportedAtRuntimeBy: runtimeImportersOf(FILES.routeGenerationClient),
     routeSessionRuntimeImports: runtimeSpecifiersOf(FILES.routeSession),
     routeSessionImportedAtRuntimeBy: runtimeImportersOf(FILES.routeSession),
+    routeGenerationRunnerRuntimeImports: runtimeSpecifiersOf(FILES.routeGenerationRunner),
+    routeGenerationRunnerImportedAtRuntimeBy: runtimeImportersOf(FILES.routeGenerationRunner),
+    routeGenerationWorkerRuntimeImports: runtimeSpecifiersOf(FILES.routeGenerationWorker),
+    routeGenerationWorkerImportedAtRuntimeBy: runtimeImportersOf(FILES.routeGenerationWorker),
+    routeGenerationWorkerExecutorRuntimeImports: runtimeSpecifiersOf(FILES.routeGenerationWorkerExecutor),
+    routeGenerationWorkerExecutorImportedAtRuntimeBy: runtimeImportersOf(FILES.routeGenerationWorkerExecutor),
+    routeGenerationWorkerProtocolRuntimeImports: runtimeSpecifiersOf(FILES.routeGenerationWorkerProtocol),
+    routeGenerationWorkerProtocolImportedAtRuntimeBy: runtimeImportersOf(FILES.routeGenerationWorkerProtocol),
   };
   const expected = {
     readerExists: true,
@@ -1779,7 +1792,7 @@ const GARBAGE = [null, 7, "result", { id: "half", gameId: ROUTE }, { ...LEGACY[0
       "@/games/escape-maze/route-config",
       "@/games/escape-maze/route-defenders",
       "@/games/escape-maze/route-events",
-      "@/games/escape-maze/route-generation",
+      // ROUTE-C7C: no `route-generation` — the hook's `generateMaze` re-export left; generation is the Worker's
       "@/games/escape-maze/route-generation-client",
       "@/games/escape-maze/route-geometry",
       "@/games/escape-maze/route-invariants",
@@ -1796,7 +1809,8 @@ const GARBAGE = [null, 7, "result", { id: "half", gameId: ROUTE }, { ...LEGACY[0
       "@/games/escape-maze/route-config",
       "@/games/escape-maze/route-geometry",
     ],
-    routeGenerationImportedAtRuntimeBy: [FILES.routeGenerationJob, FILES.hook],
+    // ROUTE-C7C: only the runner, which only the Worker entry imports
+    routeGenerationImportedAtRuntimeBy: [FILES.routeGenerationRunner],
     routeGeometryRuntimeImports: ["@/games/escape-maze/route-config"],
     routeGeometryImportedAtRuntimeBy: [FILES.routeDefenders, FILES.routeGeneration, FILES.routeInvariants, FILES.hook],
     routeDefendersRuntimeImports: [
@@ -1812,12 +1826,20 @@ const GARBAGE = [null, 7, "result", { id: "half", gameId: ROUTE }, { ...LEGACY[0
     routeStateImportedAtRuntimeBy: [FILES.routeSession],
     routeEventsRuntimeImports: [],
     routeEventsImportedAtRuntimeBy: [FILES.hook],
-    routeGenerationJobRuntimeImports: ["@/engine/route-random", "@/games/escape-maze/route-generation"],
+    routeGenerationJobRuntimeImports: ["@/engine/route-random"],
     routeGenerationJobImportedAtRuntimeBy: [FILES.routeGenerationClient],
-    routeGenerationClientRuntimeImports: ["@/games/escape-maze/route-generation-job"],
+    routeGenerationClientRuntimeImports: ["@/games/escape-maze/route-generation-job", "@/games/escape-maze/route-generation-worker-executor"],
     routeGenerationClientImportedAtRuntimeBy: [FILES.hook],
     routeSessionRuntimeImports: ["@/games/escape-maze/route-state"],
     routeSessionImportedAtRuntimeBy: [FILES.hook],
+    routeGenerationRunnerRuntimeImports: ["@/engine/route-random", "@/games/escape-maze/route-generation"],
+    routeGenerationRunnerImportedAtRuntimeBy: [FILES.routeGenerationWorker],
+    routeGenerationWorkerRuntimeImports: ["@/games/escape-maze/route-generation-runner", "@/games/escape-maze/route-generation-worker-protocol"],
+    routeGenerationWorkerImportedAtRuntimeBy: [],
+    routeGenerationWorkerExecutorRuntimeImports: ["@/games/escape-maze/route-generation-worker-protocol"],
+    routeGenerationWorkerExecutorImportedAtRuntimeBy: [FILES.routeGenerationClient],
+    routeGenerationWorkerProtocolRuntimeImports: [],
+    routeGenerationWorkerProtocolImportedAtRuntimeBy: [FILES.routeGenerationWorkerExecutor, FILES.routeGenerationWorker],
   };
   record("I1", "contract", "CONTRACT_COSTS_NOTHING", same(actual, expected), { actual });
 }

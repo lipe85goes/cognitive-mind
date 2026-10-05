@@ -238,7 +238,7 @@ is declared in its `ALLOWED` table with a reason:
 
 | reason | validators | why they still name Rota files |
 | --- | --- | --- |
-| STRUCTURAL_ASSERTION | game-continuation-contract, route-journey-ownership, route-journey-terminal, route-config-extraction, route-generation-extraction, route-defenders-extraction, route-invariants-extraction, route-state-reducer, route-domain-events, diagnostic-launcher, production-diagnostic-boundary, cross-eol | the check is about where code lives (I1/O3/T11, C1's, C2's, C3's, C4's, C5's and C6's static gates, the seed seam's own code, CRLF of the hook's text); their Rota runs through the graph |
+| STRUCTURAL_ASSERTION | game-continuation-contract, route-journey-ownership, route-journey-terminal, route-config-extraction, route-generation-extraction, route-defenders-extraction, route-invariants-extraction, route-state-reducer, route-domain-events, route-worker-rng-handoff, route-generation-lifecycle, route-generation-worker, diagnostic-launcher, production-diagnostic-boundary, cross-eol | the check is about where code lives (I1/O3/T11, C1's, C2's, C3's, C4's, C5's, C6's, C7A's, C7B's and C7C's static gates, the seed seam's own code, CRLF of the hook's text); their Rota runs through the graph |
 | UI_STAGE | route-board-loader | compiles the Rota component under a chunk gate with stage stubs |
 | REPORT_LABEL | breakable-wall-feasibility, dynamic-solvability-finalize | a path inside report text |
 | LEGACY_LEDGER | chest-acceptance | ROTA-CHEST-REWARDS-01 ledger; rewrites its archive when run |
@@ -249,7 +249,10 @@ gate until it uses the loader or is declared with a reason; a declaration whose
 coupling is gone must leave the table. `route-config.ts` counts as a Rota module
 file for the gate (ROUTE-C1), and so do `route-generation.ts` and
 `route-geometry.ts` (ROUTE-C2), `route-defenders.ts` (ROUTE-C3),
-`route-invariants.ts` (ROUTE-C4), `route-state.ts` (ROUTE-C5) and `route-events.ts` (ROUTE-C6).
+`route-invariants.ts` (ROUTE-C4), `route-state.ts` (ROUTE-C5), `route-events.ts` (ROUTE-C6),
+`route-generation-job.ts` (ROUTE-C7A), `route-session.ts` and `route-generation-client.ts` (ROUTE-C7B), and
+`route-generation-runner.ts`, `route-generation.worker.ts`, `route-generation-worker-executor.ts` and
+`route-generation-worker-protocol.ts` (ROUTE-C7C).
 `route-module-loader-tests` no longer names the hook since ROUTE-C3 (L10 reads
 `route-random`'s importers off the graph), so its `hook-path` declaration left
 the table.
@@ -883,6 +886,126 @@ session-owned seed; route-journey-ownership-browser-probe waits for the chosen
 mode's board to arrive before reading the setup. The coupling gate counts the two new modules as Rota
 module files and declares the new test as STRUCTURAL_ASSERTION. No evidence
 moved.
+
+**ROUTE GENERATION WORKER (ROUTE-C7C)** — the Rota's boards are generated in a
+real Web Worker. `src/games/escape-maze/route-generation.worker.ts` receives
+one command, runs C7A's `runRouteGenerationSync` and posts one reply;
+`route-generation-worker-executor.ts` is the product's executor (one dedicated
+Worker per command, created when the hook's effect asks, terminated on reply,
+failure or cancel — `terminate()` interrupts a running `generateMaze`, so a
+superseded board never delays the next; every failure is C7B's failure
+response, never a silent main-thread fallback);
+`route-generation-worker-protocol.ts` holds the two messages and the main
+thread's shape check; `route-generation-runner.ts` holds the run and C7B's local
+executor, moved verbatim out of the job and the client, so the main thread's
+graph (hook, client, job, view) no longer reaches `generateMaze` — and the hook's
+`generateMaze` re-export (no product consumer) is gone. C7B's lifecycle is
+untouched: only `routeGenerationExecutor`'s binding changed. Writes nothing:
+
+```bash
+node tools/validation/route-generation-worker-tests.mjs                 # ~25 s
+node tools/validation/route-generation-worker-tests.mjs --rev=bd75e69   # must fail every [structure] check, hold [preserved] P4
+node tools/validation/route-generation-worker-tests.mjs --mutants       # every in-memory mutant must be caught (~2 min)
+node tools/validation/route-generation-bundle-audit.mjs --gate          # reads .next: generation only in the Worker's chunks
+node tools/validation/route-generation-worker-browser-probe.mjs         # Playwright, needs `next build && next start -p 3100` (+ `--launcher-base` = `next dev`)
+node tools/validation/route-generation-worker-performance-probe.mjs --gate   # Playwright, production build, 1×/4×/6× CPU throttle
+```
+
+`[structure]`: the client's binding IS `runRouteGenerationInWorker` (text and
+run time); the Worker entry imports the runner and the protocol, runs once per
+message, posts once on both paths, throws what it cannot read and never closes;
+the protocol is closed; the Worker's graph reaches the runner, generation and
+the seam and nothing that renders, plays, stores or holds session state; the
+main thread's graph (hook, view) reaches neither generation nor the runner nor
+the entry, only the entry imports the runner, only the runner imports
+generation, no main-thread product file calls them; `new Worker` appears only
+inside the executor function (none constructed while loading the graph, none
+needed to import it, as during SSR); the Worker URL is the static
+`new URL("./route-generation.worker.ts", import.meta.url)`; the executor has no
+path to local generation; the hook imports `MazeMap` as a type only; the job is
+the main thread's half, the runner the generating half. `[preserved]` (against
+bd75e69): `routeFileBeforeC7C` gives the job, the client and the hook back byte
+for byte and the statement diff is exactly `ROUTE_C7C_EDIT`; the run and the
+local executor moved byte for byte; every other product file is untouched (the
+session, the view, route-state, route-events, generation, the seam); the hook's
+`useEscapeMaze` is bd75e69's text. `[executor]`: the REAL executor in a realm
+whose `Worker` is a host running the REAL entry's bundle (one fresh realm per
+Worker, `structuredClone` both ways, a virtual clock) — ready (walls a `Set`,
+the reference map and checkpoint, terminated on reply, never synchronous), a
+throwing generation, constructor failure, script load error, unreadable job,
+unreadable reply, seven malformed replies, a silent Worker (failed at the
+watchdog), cancel before start, cancel mid-generation (interrupted, never
+completes), a reply queued before cancel (the host dispatches it anyway), a
+double post, two hook instances at request id 1, a stale answer never reaching
+the RNG. `[hook]`: the REAL hook with the product binding on that host — the
+first board (pending, one Worker, no board before the reply), Start/Restart/
+double Restart, rapid Restarts and the mode race (every superseded Worker
+terminated mid-generation, one generation completes, the last board arrives one
+generation after it was asked for), leaving while pending, 200 Restarts without
+a leaked Worker, failure → Retry on a new Worker under a new id, continuation,
+and no generation in the main realm. `[rng]`: 27 seeded sessions (R1–R3 ×
+modes × 3 seeds; mount, Start, the Explorer's moves, Restart, more moves, the
+next draws — 486 observations) through the Worker equal bd75e69's local
+generation, checkpoint for checkpoint; every seeded request carries its seed
+and every reply its stream; normal play carries none, the Worker draws its own
+`Math.random` and the main realm's is not drawn while generating; stale Worker
+answers are never accepted. `[clone]`: a `node:worker_threads` isolate runs the
+entry's bundle; real structured clone keeps walls a `Set` in order and the
+seeded checkpoint exact.
+
+`--mutants` (12): the binding back to the local executor, a reply to another
+request id accepted, no `terminate()` on cancel, a queued stale reply delivered,
+the seeded result without its checkpoint, a Worker that swallows a generation
+error, a Worker error left pending, the main thread running the runner too,
+walls flattened on the way back, a persistent Worker routed by request id (a
+remounted instance hears the old one), a persistent Worker that cannot
+interrupt (the latest waits for the superseded), a Worker created at module
+evaluation. The unmutated tree must pass the mutants' smaller suite first.
+
+The bundle audit follows what the browser loads from a `next build`: the
+Home's initial scripts, the Rota's lazy set, every Turbopack Worker entry the
+Rota set constructs, the board's Babylon set, where the generation literal
+lives, raw/gzip, and the module groups both realms carry (route-random,
+route-config/difficulty/geometry). The browser probe drives the production
+build: a Chromium trace attributes generation's chunk to the Worker's thread
+and to no main-thread sample (cold and warm entry, a Restart), the Worker's
+start-up and compute span; one `rota-generation` module Worker per board,
+terminated on reply; walls arrive as a `Set`; rapid Restarts terminate every
+superseded Worker before it replies; a blocked constructor and a script that
+fails to load both reach the calm error and Retry; 60 Restarts leave no Worker
+and no heap growth; leaving while pending terminates; with `--launcher-base`
+(the launcher is development-only) every seeded request and reply equals what
+the runner computes in Node. The performance probe measures the session's
+FIRST board — pending → accepted, before the Babylon board mounts — at 1×/4×/6×:
+Worker latency, long tasks (attributed by a CPU profile of the main thread),
+the main thread's heartbeat while the Worker computes, frames, main-thread
+samples in generation's chunk; cold (first page) and warm (back to the Home and
+in again) apart. Its wall-clock output is run metadata, never evidence.
+
+Validators that had to follow the code. The loader learned the Rota's second
+realm: `closure()`, `locate`, `declaring` and `anchoredEdits` default to the
+Rota's roots (the hook and, on a C7C tree, the Worker entry), `import.meta.url`
+compiles to the module's repository URL (a `vm` realm runs CommonJS), and
+`loadRouteModules` binds the Rota's executor to the runner's local executor in
+the validator's realm (`generationExecutor: "product"` keeps the Worker; the
+runtime harness and the instrumented generator pass it through), so every
+runtime validator generates where C7B generated. `treeBeforeC7C` (with
+`routeFileBeforeC7C`, `ROUTE_C7C_EDIT`) is C7C's sanctioned edit:
+`treeBeforeC7B` now reads through it, so C2–C7A's text checks see the tree as
+they knew it; C7B's [structure]/[preserved] read through it too (C7B's state),
+and C7A's S3 (the job's contract) and G2 (no Worker in the product).
+C1–C4's runtime surface checks count C7C's one declared removal back
+(`hookExportsBeforeC7C`); C2's identity check for `generateMaze` becomes "the
+hook no longer exports it, generation declares it". C7A and C7B find the run in
+`routeGenerationRunnerFile(tree)` (the runner, or the job before C7C), and
+their mutants that edit the run or the local executor follow it to the runner.
+The C7B browser probe's forced failure now blocks the next Worker's
+constructor. route-board-chunk-browser-probe's leave scenarios read the
+canvas's loading text once the first board has arrived: the board's own
+"Preparando o tabuleiro Babylon…" exists only then, and the Worker's start-up
+made the first board's pending screen outlast the instant the canvas attaches
+(C7B's local generation usually finished before it). The coupling gate counts the four new modules as Rota module files
+and declares the new test as STRUCTURAL_ASSERTION. No evidence moved.
 
 **ROUTE PERFORMANCE / WORKER DECISION (ROUTE-PERF-WORKER-DECISION-01)** — how
 long generation takes, and what moving it to a Web Worker could buy. Read-only,

@@ -242,6 +242,7 @@ export function loadInstrumented({
   bare = false,
   react,
   mocks,
+  generationExecutor,
 } = {}) {
   // `bare` skips the diagnostics entirely and only exposes the surface. Timing
   // must be measured on the real control flow: the named-checks rewrite drops
@@ -260,6 +261,8 @@ export function loadInstrumented({
     react,
     // ROUTE-C5: environment modules the caller answers itself (real scoring, recording sounds).
     mocks,
+    // ROUTE-C7C: "local" (the profile's default) or "product" (the Worker binding) — see loadRouteModules.
+    generationExecutor,
     surface: EXPORT_SURFACE,
     transforms: [transform && { [ROUTE_HOOK]: transform }, transforms, instrumentation?.transform],
   });

@@ -94,6 +94,8 @@ import {
   treeBeforeC7B,
   ROUTE_GENERATION_CLIENT,
   topLevelStatements,
+  routeGenerationRunnerFile,
+  treeBeforeC7C,
 } from "./route-module-loader.mjs";
 import { applyAction, mapDigest, nextAction, observeRoute, runInRealReact } from "./route-react-runtime.mjs";
 import { loadRouteRuntime, pathBetween } from "./route-runtime-harness.mjs";
@@ -239,7 +241,22 @@ function rotaRealm(side, mathSeed = 99) {
     seam: graph.require(ROUTE_RANDOM_SEAM),
     generation: graph.require(ROUTE_GENERATION),
     defenders: graph.require(ROUTE_DEFENDERS),
-    job: side.hasJob ? graph.require(ROUTE_GENERATION_JOB) : null,
+    job: side.hasJob ? generationContract(graph, side.tree) : null,
+  };
+}
+
+/**
+ * C7A's contract in one realm: the job's request and accept, and its run — which ROUTE-C7C moved, verbatim, to the
+ * runner (route-generation-runner.ts) so the main thread's graph no longer reaches generation. Read off the modules
+ * at each call, so an in-memory edit of either is the one that runs.
+ */
+function generationContract(graph, tree) {
+  const job = graph.require(ROUTE_GENERATION_JOB);
+  const runner = graph.require(routeGenerationRunnerFile(tree));
+  return {
+    createRouteGenerationRequest: (...a) => job.createRouteGenerationRequest(...a),
+    runRouteGenerationSync: (...a) => runner.runRouteGenerationSync(...a),
+    acceptRouteGenerationResult: (...a) => job.acceptRouteGenerationResult(...a),
   };
 }
 
@@ -314,7 +331,7 @@ function productFiles(tree) {
   if (tree.rev) {
     return execFileSync("git", ["ls-tree", "-r", "--name-only", tree.rev, "src/"], { encoding: "utf8" })
       .split("\n")
-      .filter((file) => /\.(ts|tsx)$/.test(file));
+      .filter((file) => /\.(ts|tsx)$/.test(file) && tree.exists(file));
   }
   return walk(path.join(tree.root, "src"))
     .map((file) => path.relative(tree.root, file).replace(/\\/g, "/"))
@@ -392,7 +409,11 @@ function structureChecks(R, side) {
 
   // S3 — the job module: its exact exports, its imports (the seam, generation, types — nothing that renders, plays,
   // stores or schedules), no cycle back into it, no async/Worker/host code.
+  // ROUTE-C7C split this contract: the run moved, verbatim, to route-generation-runner.ts so that the main thread's
+  // graph no longer reaches generation. This is C7A's contract, so it reads the job as it was before C7C's sanctioned
+  // edit (`treeBeforeC7C`); route-generation-worker-tests holds that reversal exact and the run moved byte for byte.
   {
+    const tree = treeBeforeC7C(side.tree);
     const exists = side.hasJob;
     const text = exists ? tree.read(ROUTE_GENERATION_JOB) : "";
     const shape = moduleShape(ROUTE_GENERATION_JOB, text);
@@ -471,7 +492,11 @@ function gateChecks(R, side) {
     });
   }
   // G2 — no Worker wiring anywhere in the product.
+  // ROUTE-C7C wired exactly that Worker (route-generation.worker.ts and its executor) — its own gate
+  // (route-generation-worker-tests) requires it. This is C7A's gate, so it reads the product as it was before C7C's
+  // sanctioned edit (`treeBeforeC7C`: C7C's four modules absent, the job, the client and the hook reversed).
   {
+    const tree = treeBeforeC7C(side.tree);
     const files = productFiles(tree);
     const wired = files.filter((file) => WORKER_WIRING.test(codeOnly(tree.read(file))));
     R.record("G2", "gate", "NO_WORKER_WIRING_IN_PRODUCT", wired.length === 0, { scanned: files.length, wired });
@@ -1319,7 +1344,8 @@ function cloneChecks(R, cur) {
 
 /** The job and its closure, as one script of the real modules (route-module-loader#emitModuleBundle). */
 function jobBundle(side) {
-  return emitModuleBundle({ tree: side.tree, transforms: side.transforms, entry: ROUTE_GENERATION_JOB });
+  // ROUTE-C7C: the generating realm's half — `runRouteGenerationSync` — is the runner's (the job's before C7C).
+  return emitModuleBundle({ tree: side.tree, transforms: side.transforms, entry: routeGenerationRunnerFile(side.tree) });
 }
 const WORKER_SOURCE = `
 const { parentPort, workerData } = require("node:worker_threads");
@@ -1628,6 +1654,8 @@ const replaceOnce = (file, anchor, replacement) => ({
     return source.replace(anchor, replacement);
   },
 });
+/** Where C7A's run lives in the working tree: the runner since ROUTE-C7C (moved verbatim from the job). */
+const RUNNER_FILE = routeGenerationRunnerFile(openSourceTree());
 const MUTANTS_LIST = [
   ["checkpoint one draw behind", replaceOnce(ROUTE_RANDOM_SEAM, "return { armedSeed, state: seededState };", "return { armedSeed, state: seededState - 0x6d2b79f5 };")],
   ["checkpoint one draw ahead", replaceOnce(ROUTE_RANDOM_SEAM, "return { armedSeed, state: seededState };", "return { armedSeed, state: seededState + 0x6d2b79f5 };")],
@@ -1641,10 +1669,10 @@ const MUTANTS_LIST = [
   ["randomItem consumes two draws", replaceOnce(ROUTE_RANDOM_SEAM, "  return items[Math.floor(routeRandom() * items.length)];", "  routeRandom();\n  return items[Math.floor(routeRandom() * items.length)];")],
   ["checkpoint with the seed but the wrong state", replaceOnce(ROUTE_RANDOM_SEAM, "return { armedSeed, state: seededState };", "return { armedSeed, state: armedSeed };")],
   ["the state wraps to uint32", replaceOnce(ROUTE_RANDOM_SEAM, "    seededState += 0x6d2b79f5;", "    seededState = (seededState + 0x6d2b79f5) >>> 0;")],
-  ["job result forgets the checkpoint", replaceOnce(ROUTE_GENERATION_JOB, "return { map, random: getRouteRandomCheckpoint() };", "return { map, random: null };")],
-  ["job result reports the request's stream, not generation's", replaceOnce(ROUTE_GENERATION_JOB, "return { map, random: getRouteRandomCheckpoint() };", "return { map, random: request.random };")],
+  ["job result forgets the checkpoint", replaceOnce(RUNNER_FILE, "return { map, random: getRouteRandomCheckpoint() };", "return { map, random: null };")],
+  ["job result reports the request's stream, not generation's", replaceOnce(RUNNER_FILE, "return { map, random: getRouteRandomCheckpoint() };", "return { map, random: request.random };")],
   ["accept does not restore", replaceOnce(ROUTE_GENERATION_JOB, "  restoreRouteRandomCheckpoint(result.random);\n  return result.map;", "  return result.map;")],
-  ["the generating realm keeps a stale seed in normal play", replaceOnce(ROUTE_GENERATION_JOB, "  if (request.random === null) clearRouteRandomSeed();\n  else restoreRouteRandomCheckpoint(request.random);", "  if (request.random !== null) restoreRouteRandomCheckpoint(request.random);")],
+  ["the generating realm keeps a stale seed in normal play", replaceOnce(RUNNER_FILE, "  if (request.random === null) clearRouteRandomSeed();\n  else restoreRouteRandomCheckpoint(request.random);", "  if (request.random !== null) restoreRouteRandomCheckpoint(request.random);")],
 ];
 
 // =================================================================================================

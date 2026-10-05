@@ -492,6 +492,10 @@ async function leave(session, lateOutcome) {
   await enterRouteFromHome(session);
   await waitForPhase(session, ["preparing", "error"]);
   await session.page.locator(".rsg-canvas").waitFor({ state: "attached", timeout: 60000 });
+  // ROUTE-C7C: the first board comes from a Web Worker, so its pending screen (which also draws in `.rsg-canvas`) lasts
+  // a Worker start-up longer than C7B's local generation did. The board's own loading text exists only once that board
+  // has arrived: read the canvas then, not at the first frame it is attached.
+  await session.page.waitForFunction(() => !document.querySelector('[data-route-generation="pending"]'), null, { timeout: 60000 });
   const loadingMarkup = await canvasMarkup(session.page);
   const outcome = await waitForEntryOutcome(session, { timeout: WATCHDOG_MS + 60000 });
   await Promise.all(session.pendingConsole.splice(0));

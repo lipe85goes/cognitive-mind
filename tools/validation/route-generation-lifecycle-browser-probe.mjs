@@ -13,9 +13,10 @@
  *   double-restart   two Restarts in one task: one pending, one new board, playing, turn 0.
  *   rapid-mode       Aberto → Equilibrado → Desafiador in one task: setup on Desafiador only.
  *   exit-pending     a Restart and "Voltar à jornada" in one task: back to the worlds, nothing reacts later.
- *   error-retry      the generation forced to fail (Math.random throws inside the local executor's one task —
- *                    the probe's own doing, the product has no test hook): the calm error and its retry; Math.random
- *                    back, retry: playing.
+ *   error-retry      the generation forced to fail — since ROUTE-C7C the next generation Worker fails to construct
+ *                    (as under a CSP block); on a C7B tree, Math.random throws inside the local executor's one task.
+ *                    The probe's own doing, the product has no test hook: the calm error and its retry; retry:
+ *                    playing.
  *
  * Read-only: nothing in the product is instrumented. Writes nothing unless `--out DIR` (report + screenshots).
  *
@@ -231,9 +232,18 @@ try {
     await session.page.locator(".rsg-details-trigger").click();
     const from = await mark(session.page);
     await session.page.evaluate(() => {
-      // Poison Math.random inside ONE task only: the local executor's (recognised by its own code — the response it
-      // builds names `requestId`, which survives minification), so generation throws there and nothing else on the
-      // page ever sees it.
+      // ROUTE-C7C: the Rota generates in a Web Worker. Make the NEXT Worker fail to construct, as a CSP block would —
+      // the executor reports it as the generation's failure; the constructor is put back at once.
+      const RealWorker = window.Worker;
+      if (RealWorker) {
+        window.Worker = function () {
+          window.Worker = RealWorker;
+          throw new DOMException("generation forced to fail by the probe", "SecurityError");
+        };
+      }
+      // C7B (a tree whose executor is local): poison Math.random inside ONE task only: the local executor's (recognised
+      // by its own code — the response it builds names `requestId`, which survives minification), so generation throws
+      // there and nothing else on the page ever sees it.
       const realSetTimeout = window.setTimeout;
       window.setTimeout = function (fn, ms, ...rest) {
         if (!ms && typeof fn === "function" && String(fn).includes("requestId")) {

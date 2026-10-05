@@ -1,10 +1,13 @@
 import {
   acceptRouteGenerationResult,
   createRouteGenerationRequest,
-  runRouteGenerationSync,
-  type RouteGenerationRequest,
-  type RouteGenerationResult,
 } from "@/games/escape-maze/route-generation-job";
+import { runRouteGenerationInWorker } from "@/games/escape-maze/route-generation-worker-executor";
+import type {
+  RouteGenerationCommand,
+  RouteGenerationExecutor,
+  RouteGenerationResponse,
+} from "@/games/escape-maze/route-generation-worker-protocol";
 import type { MazeMap } from "@/games/escape-maze/route-generation";
 import type { RouteGenerationIntent } from "@/games/escape-maze/route-session";
 import type { DifficultyLevel } from "@/types/game";
@@ -52,65 +55,38 @@ import type { DifficultyLevel } from "@/types/game";
  * that the response answers ITS request BEFORE `acceptRouteGenerationResult`
  * continues the seeded stream. A stale result never restores its checkpoint.
  *
- * Imports the C7A job, types and nothing else: no React, no UI, no Worker.
+ * ROUTE-C7C — the seam is unchanged; what it is bound to changed. The local
+ * executor described above moved, with the run it calls, to
+ * route-generation-runner.ts (the tooling's); `routeGenerationExecutor` is the
+ * Worker executor. Cancelling a started command is now real too — the Worker
+ * is terminated mid-generation — and the token above still guards whatever
+ * answer could be in flight. This module no longer reaches `generateMaze`: it
+ * imports the job's main-thread half (request, accept) and the Worker
+ * executor, which imports only the transport protocol.
+ *
+ * Imports the C7A job, the Worker executor, types and nothing else: no React,
+ * no UI, no generation.
  */
 
-export interface RouteGenerationCommand {
-  readonly requestId: number;
-  readonly intent: RouteGenerationIntent;
-  readonly request: RouteGenerationRequest;
-}
-
-export type RouteGenerationResponse =
-  | {
-      readonly requestId: number;
-      readonly status: "ready";
-      readonly result: RouteGenerationResult;
-    }
-  | {
-      readonly requestId: number;
-      readonly status: "failed";
-      readonly message: string;
-    };
-
-/**
- * Run `command` and call `deliver` exactly once with its response — never
- * synchronously, never after the returned cancel was called before the
- * command started. Returns that cancel.
- */
-export type RouteGenerationExecutor = (
-  command: RouteGenerationCommand,
-  deliver: (response: RouteGenerationResponse) => void,
-) => () => void;
-
-/** C7B's executor: this realm, one macrotask later. Main thread, still blocking while it runs. */
-export const runRouteGenerationLocally: RouteGenerationExecutor = (
-  command,
-  deliver,
-) => {
-  const timer = setTimeout(() => {
-    let response: RouteGenerationResponse;
-    try {
-      response = {
-        requestId: command.requestId,
-        status: "ready",
-        result: runRouteGenerationSync(command.request),
-      };
-    } catch (error) {
-      response = {
-        requestId: command.requestId,
-        status: "failed",
-        message: error instanceof Error ? error.message : String(error),
-      };
-    }
-    deliver(response);
-  }, 0);
-  return () => clearTimeout(timer);
+// ROUTE-C7C: the seam's three message types moved, unchanged, to the generation
+// protocol (route-generation-worker-protocol.ts), which the Worker executor and
+// the Worker entry read them from without importing this module back; they are
+// re-exported here, where the seam always offered them.
+export type {
+  RouteGenerationCommand,
+  RouteGenerationExecutor,
+  RouteGenerationResponse,
 };
 
-/** The executor the Rota uses. C7C points this at the Worker. */
+/**
+ * The executor the Rota uses. ROUTE-C7C: a dedicated Web Worker per command
+ * (route-generation-worker-executor.ts) — the generation and its
+ * certification run off the main thread, and cancelling terminates the
+ * Worker. C7B's local executor, `runRouteGenerationLocally`, moved with the
+ * run to route-generation-runner.ts: tooling only, never this binding.
+ */
 export const routeGenerationExecutor: RouteGenerationExecutor =
-  runRouteGenerationLocally;
+  runRouteGenerationInWorker;
 
 /** What a generation is asked for: the lifecycle's id and intent, the domain's mode and Route. */
 export interface RouteGenerationOrder {

@@ -78,6 +78,7 @@ import {
   openSourceTree,
   routeRandomBeforeC7A,
   treeBeforeC7B,
+  hookExportsBeforeC7C,
 } from "./route-module-loader.mjs";
 import { cellKey, loadRouteRuntime, pathBetween, walkableNeighbours } from "./route-runtime-harness.mjs";
 
@@ -621,7 +622,9 @@ const nextDraws = (rota, n = 3) => Array.from({ length: n }, () => rota.routeRan
 // createSentinelState / decideSentinelMove ARE the functions that decide (a re-export, not a copy); the constants the
 // validators read are the baseline's values.
 {
-  const keys = (rota) => sorted(Object.keys(rota.hook).filter((k) => k !== INTERNALS_EXPORT));
+  // ROUTE-C7C's one declared removal from the hook (`generateMaze`, route-module-loader#ROUTE_HOOK_C7C_REMOVED_EXPORTS)
+  // is counted back in: every other name is compared as before.
+  const keys = (rota) => hookExportsBeforeC7C(rota.graph.tree, Object.keys(rota.hook).filter((k) => k !== INTERNALS_EXPORT));
   const identity = Object.fromEntries(
     ["computePortalDefenceZone", "createSentinelState", "decideSentinelMove"].map((name) => [name, NOW.hook[name] === NOW.api[name]]),
   );
