@@ -83,3 +83,198 @@ share ≥ 37.5 %) is borderline, and borderline means DEFER, not NO-GO.
 - The Worker's cost side (RNG continuity, async lifecycle, transport, memory)
   is audited qualitatively and quantitatively, but a GO from §1.3 is not
   overturned by cost alone; a GO with a large cost is reported as such.
+
+---
+
+Everything below was written after the measurements. All figures are RUN
+METADATA (wall clock on one machine); they are not gameplay evidence and are
+not stored under `docs/archive`.
+
+## 2. Environment
+
+| item | value |
+| ---- | ----- |
+| machine | cloud container, Intel Xeon @ 2.10 GHz × 4 cores, 16 GiB, Linux 6.18 |
+| Node | v22.22.0 |
+| browser | Chromium 141.0.7390.37 (Playwright 1.56, headless), WebGL through **SwiftShader** (software rasterizer — there is no GPU) |
+| build | `next build` (16.3.6, Turbopack) + `next start -p 3100` at baseline `e384d76`; `src/` byte-identical |
+| viewport (product) | 390×844, `isMobile`, touch, deviceScaleFactor 1 (DPR 1 because every pixel goes through a software rasterizer, not a throttled GPU) |
+| throttling | CDP `Emulation.setCPUThrottlingRate` 1× / 4× / 6× — "CPU-throttled browser approximation", not a phone |
+| real device | **none available**; no Android/iPhone claim is made |
+| isolation | Node run, browser intrinsic run and browser product run executed one after another, nothing else running |
+
+Tools (new, read-only, `tools/validation/`):
+
+- `route-generation-performance-gate.mjs` — Node intrinsic timing + attribution.
+- `route-worker-browser-probe.mjs --phase intrinsic|product` — browser generation alone, transport, memory; production product actions.
+- `route-module-loader.mjs#emitModuleBundle` (additive) — the generation closure as a standalone script, so the same transpiled modules run natively in Node, in a page and in a throwaway Worker. Equivalence: the bundle gives the same map as the validators' `vm` graph for every seed checked (200/200 Route 3 hard in the gate, 30/30 in a spot check).
+
+## 3. Measurement 1+2 — intrinsic generation in Node (1×, native realm)
+
+Warm-up 50 per combination discarded; 3 repetitions × 500 per combination =
+1 500 samples per combination, 13 500 total. Same seeds replayed through a
+probed copy for attribution: **0/13 500 map mismatches** (the probes are
+behaviour-neutral; the counting PRNG is the product's). 0 throws, 0 recovery.
+
+| combination | p50 | p75 | p90 | p95 | p99 | max | mean | >16 | >32 | >50 | >100 | >200 | >500 | attempts p50/p95/max | draws p50/p95/max | p95 per rep |
+| --- | --: | --: | --: | --: | --: | --: | --: | --: | --: | --: | --: | --: | --: | --- | --- | --- |
+| R1 easy | 20.2 | 34.0 | 54.3 | 67.0 | 102.2 | 187.9 | 26.8 | 883 | 414 | 176 | 16 | 0 | 0 | 4/17/56 | 336/1289/4009 | 68.9/66.6/65.7 |
+| R1 medium | 18.1 | 28.0 | 44.7 | 54.8 | 78.6 | 123.1 | 21.9 | 850 | 277 | 98 | 5 | 0 | 0 | 2/9/20 | 212/644/1538 | 58.7/49.2/54.0 |
+| R1 hard | 16.3 | 24.0 | 36.1 | 45.4 | 64.6 | 131.8 | 19.8 | 762 | 200 | 61 | 6 | 0 | 0 | 4/15/42 | 225/709/2277 | 46.2/46.9/40.9 |
+| R2 easy | 50.4 | 96.0 | 152.3 | 202.3 | 297.5 | 437.2 | 70.2 | 1289 | 998 | 753 | 361 | 78 | 0 | 8/33/77 | 810/3284/7293 | 212.0/202.3/190.5 |
+| R2 medium | 23.8 | 41.6 | 67.9 | 87.8 | 120.6 | 206.7 | 32.3 | 1051 | 544 | 280 | 38 | 1 | 0 | 4/14/37 | 319/1109/2791 | 94.8/80.3/88.1 |
+| R2 hard | 13.5 | 21.3 | 31.4 | 38.9 | 63.9 | 96.3 | 17.4 | 636 | 145 | 39 | 0 | 0 | 0 | 4/13/36 | 223/711/1730 | 46.4/40.1/34.9 |
+| R3 easy | 70.4 | 139.4 | 221.0 | 286.6 | 417.5 | 1144.3 | 99.3 | 1339 | 1110 | 929 | 568 | 194 | 6 | 21/86/371 | 1721/6915/29796 | 287.1/274.2/286.6 |
+| R3 medium | 31.9 | 56.4 | 93.2 | 118.3 | 165.7 | 380.6 | 43.2 | 1152 | 750 | 444 | 131 | 10 | 0 | 9/37/135 | 685/2660/9092 | 120.1/108.9/126.4 |
+| R3 hard | 31.4 | 58.4 | 89.4 | 116.1 | 178.0 | 265.8 | 43.1 | 1132 | 746 | 461 | 111 | 9 | 0 | 10/45/108 | 661/2697/6561 | 120.5/108.1/112.7 |
+| **total** | **23.9** | 48.4 | 93.9 | **137.4** | **252.0** | **1144.3** | 41.6 | 9094 | 5184 | 3241 | 1236 | 292 | 6 | 5/39/371 | 388/2971/29796 | 141.1/135.8/136.2 |
+
+(ms; min 6.4–8.8 in every combination; counts out of 1 500, total out of 13 500.)
+
+Noise: pooled p95 per repetition 141.1 / 135.8 / 136.2 ms (±2 %); per-combination
+p95 varies up to ±10 % between repetitions. The maxima (663 / 1144 / 517 ms) are
+single-seed tails and are not used as gates.
+
+Cross-check: the validators' `vm` sandbox on the same 200 Route 3 hard seeds
+gives p50 37.8 / p95 124.5 ms vs native 36.3 / 113.5 ms — the sandbox costs
+≈ 5–10 %. The historical `final-acceptance` figures are therefore of the right
+order for Route 3 hard, but **Route 3 hard is not the worst case**: easy is.
+
+### Attribution (what makes a generation slow)
+
+- Cost is almost entirely the number of candidates built: Spearman ρ(ms,
+  attempts) = 0.93 overall (0.89–0.98 per combination), ρ(ms, draws) = 0.97
+  (0.96–0.99). Mean cost ≈ 4.0 ms per candidate on this CPU.
+- Recovery never ran (0 / 13 500): the outliers are long random phases, not the
+  deterministic sweep.
+- Slowest 1 % of each combination vs the rest: attempts 31 vs 6 (R1 easy),
+  58 vs 11 (R2 easy), 173 vs 29 (R3 easy), 84 vs 14 (R3 hard); draws scale the
+  same way.
+- Difficulty: **easy is the slow mode** (p95 213 ms, 16 attempts on average)
+  vs medium 93 ms / 7.0 and hard 79 ms / 8.5. Stage: Route 1 p95 57 ms, Route 2
+  133 ms, Route 3 195 ms. The product's first Route on its default mode is not
+  the expensive case; Route 2/3 on Aberto (easy) is.
+- Draws per generation: mean 804, p50 388, p95 2 971, max 29 796.
+
+## 4. Measurement 1 in the browser — generation alone, 1× / 4× / 6×
+
+Same Chromium as the product, the bundled generation closure in a blank page,
+each generation in its own task, product seed seam armed per sample. Warm-up 20
+per combination discarded; 3 repetitions × 100 per combination per rate
+(2 700 per rate). 0 throws. Counts: 1× >16 1655, >32 922, >50 542, >100 204,
+>200 28, >500 1; 4× >50 1983, >100 1313, >200 652, >500 165; 6× >50 2589,
+>100 1766, >200 1006, >500 346.
+
+| rate | p50 | p75 | p90 | p95 | p99 | max | mean | > 50 ms | Long Task entries | p95 per rep |
+| ---: | --: | --: | --: | --: | --: | --: | --: | --: | --: | --- |
+| 1× | 21.0 | 42.3 | 85.6 | **119.0** | 204.0 | 553.7 | 36.1 | **20.1 %** | 542 / 2 700 | 112.9 / 124.5 / 123.6 |
+| 4× | 96.7 | 192.8 | 389.7 | **560.6** | 960.1 | 2 573.9 | 165.4 | **73.4 %** | 1 986 / 2 700 | 528.5 / 582.8 / 578.2 |
+| 6× | 145.0 | 290.3 | 589.6 | **844.7** | 1 443.3 | 3 815.4 | 249.4 | **95.9 %** | 2 602 / 2 700 | 799.6 / 869.7 / 862.8 |
+
+Per combination (p95 ms; share > 50 ms):
+
+| combination | 1× | 4× | 6× |
+| --- | --: | --: | --: |
+| R1 easy | 56.9 (9 %) | 263.5 (77 %) | 396.7 (100 %) |
+| R1 medium | 45.9 (4 %) | 208.6 (52 %) | 318.4 (94 %) |
+| R1 hard | 42.9 (2 %) | 183.2 (56 %) | 292.0 (94 %) |
+| R2 easy | 170.7 (48 %) | 784.8 (87 %) | 1 167.0 (100 %) |
+| R2 medium | 69.0 (11 %) | 325.2 (78 %) | 469.4 (98 %) |
+| R2 hard | 32.0 (1 %) | 147.4 (53 %) | 214.5 (83 %) |
+| R3 easy | 231.2 (54 %) | 1 057.7 (90 %) | 1 573.6 (100 %) |
+| R3 medium | 103.4 (25 %) | 480.9 (87 %) | 712.1 (98 %) |
+| R3 hard | 99.2 (26 %) | 438.7 (82 %) | 685.7 (96 %) |
+
+The Long Task API sees generation: at every rate the number of Long Task
+entries matches the number of generations > 50 ms (542/542, 1986/1983,
+2602/2589 — one long task per slow generation). Browser 1× is close to Node 1× (p95 119 vs 137 ms). The
+throttled slowdown is ≈ 4.6× and ≈ 6.9× at the median.
+
+## 5. Measurement 9 + transport prototype — what a Worker would have to move
+
+Throwaway Blob Worker created by the probe page only (nothing in `src/`), 60
+real maps per rate:
+
+| metric | 1× | 4× | 6× |
+| --- | --: | --: | --: |
+| MazeMap JSON size (Sets as arrays), p50 / max | 626 B / 752 B | same | same |
+| walls per map, p50 / max | 21 / 30 | same | same |
+| `structuredClone(map)` on main, p95 | 0.1 ms | 0.5 ms | 0.3 ms |
+| main → Worker → main echo of a map, p95 | 0.2 ms | 0.9 ms | 1.7 ms |
+| main-thread cost of receiving a map (`event.data`), p95 | 0.1 ms | 0.5 ms | 1.1 ms |
+| `Set` survives `structuredClone` / `postMessage` (instanceof, size, every key, JSON-equal) | yes / yes | yes / yes | yes / yes |
+| generation of R3 easy (same 30 seeds) in the Worker vs on main, p50 | 54.1 vs 52.3 ms | 57.3 vs 241.1 ms | 55.3 vs 384.8 ms |
+
+Transport is negligible: a MazeMap is < 1 KB and crosses threads in about a
+millisecond even at 6×, and Chrome 141 clones its `Set<string>` faithfully.
+The last row also shows that CDP CPU throttling slows the main thread only —
+the Worker ran at full speed — so "in-Worker under 4×" is NOT a valid
+low-end estimate; on a real slow phone the Worker would be slow too, just not
+blocking input.
+
+Memory (CDP `HeapProfiler.collectGarbage` ×2 + `Runtime.getHeapUsage`, 1×):
+600 generations discarded grow the heap by 7 KB (noise level — no leak);
+a retained MazeMap costs ≈ 1.7 KB of heap. A Worker would add its own isolate
+(V8 baseline of a few MB) plus a second copy of the generation code (the
+bundle is ≈ 80 KB of source; the shipped chunk holding it is 32 KB minified) —
+modest, but it is per-session overhead that today is zero.
+
+## 6. Worker feasibility audit — RNG
+
+Today (`src/engine/route-random.ts`): every draw of the Rota goes through
+`routeRandom()`, which is `Math.random()` in normal play and a closure over a
+32-bit state (`createSeededDraw`) when the lab launcher armed a seed.
+`generateMaze` calls `beginSeededGeneration()` (restarts the armed stream from
+the seed), then draws for template, exit, walls, light/trap scoring; the Hunter
+(`route-defenders.ts`, `chooseGuardianMove`) and `difficulty.ts` keep drawing
+from the **same** stream afterwards. Draws per generation: mean 804, p95 2 971,
+max 29 796 (§3) — variable and unbounded in advance.
+
+A Worker is another realm: its own `Math.random`, its own module instance of
+`route-random` (nothing armed), so naively moving `generateMaze` there changes
+two things: the armed seed never reaches generation, and the main-thread
+stream is no longer advanced by generation's draws, so the Hunter's draws
+after a seeded generation differ from today's.
+
+| option | behaviour | cost / risk |
+| --- | --- | --- |
+| A. Worker uses its own RNG | Normal play: distribution-identical (both are uniform `Math.random`; normal play was never reproducible). Seeded diagnostics: **broken** — launcher boards stop being the witnesses, and the post-generation Hunter stream changes. | Small code, but every seeded validator and the launcher's contract ("same board on Launch / Start / Restart", next draws of the shared stream pinned by C2–C6 equivalence) fails. Not behaviour-preserving. |
+| B. Explicit seed/state in, final state out | Seeded mode: the seeded state is one uint32, so the Worker can start from `armedSeed` (what `beginSeededGeneration` does) and return the map **plus the final state**; main resumes its closure at that state → the Hunter's stream is exactly today's. Normal play: unseeded `Math.random` state cannot be read or set, but it is not observable either; distribution-identical. | Needs a small contract change in the seam (export a way to resume the seeded stream at a given state, and to hand the Worker the armed seed), and `generateMaze` must run against the Worker's seam instance armed the same way. Behaviour-identical for diagnostics, distribution-identical for play. Moderate. |
+| C. Pre-generate draws on main | Needs the draw count in advance — p95 2 971, max 29 796, unbounded through recovery. Over-drawing changes the seeded stream unless the state is re-seeked (= B); under-drawing needs a second round-trip. | Strictly worse than B. |
+| D. One request/response per draw | ~800 (p95 ~3 000) synchronous round-trips per generation; needs `Atomics.wait` + `SharedArrayBuffer` (cross-origin isolation headers, COOP/COEP) or async ping-pong at ≥ 0.2–1.7 ms each (§5) ≈ 0.2–5 s per generation. | Infeasible. |
+| E. Worker in normal play, synchronous path for seeded diagnostics | Diagnostics stay exactly today's code path. | Two runtimes for the same operation: the validated path (sync, everything C0–C6 proved) is not the path players run (async). Every lifecycle risk of §7 exists only on the untested path. Risky. |
+
+Conclusion: a behaviour-preserving Worker is possible (option B) without
+changing the RNG's semantics, but not without changing the seam's contract
+(state hand-off) and not without making generation asynchronous everywhere it
+is called. The RNG itself is not the obstacle; the asynchrony is.
+
+## 7. Worker feasibility audit — async lifecycle
+
+Generation is called at exactly two sites (`useEscapeMaze.ts`): the
+`useReducer` initialiser (mount: fresh entry, continuation, retry remount) and
+`startNewMaze` (Start, Restart, mode change). Both currently return a
+certified map **in the same task**, and C5/C6 rely on it: `ROUTE_STARTED`
+carries the map, one transition gives one coherent state, at most one commit
+per input.
+
+| concern | what an async generation forces |
+| --- | --- |
+| setup state | `createRouteState` needs a map. Either a new "generating" state with no map (route-state shape, reducer, every consumer — `RouteStrategyGame`, `RouteBabylonBoard` cannot mount a scene without walls) or the map is fetched before the session mounts (the game-agnostic shell would have to know about Rota maps). |
+| readiness / watchdog | entry readiness is the Babylon ready frame today; it must also wait for the map. The 28 s Rota watchdog has room, but a Worker that fails to load (chunk error, CSP) needs its own error path into `onEntryError`/retry. |
+| Strict Mode | the initialiser runs twice in development: two requests, the first must be discarded; effects mount/unmount/mount must cancel and re-request. |
+| cancellation / unmount | leaving to Home, browser back, or a retry while a request is in flight: the late response must be ignored (session token), and the Worker terminated or shared. |
+| retry | "Tentar novamente" remounts the session: a new token; the old response is stale. |
+| difficulty race | mode A then mode B quickly: two requests, responses can arrive out of order; latest-wins by request id, and the board must not show A's map labelled B. |
+| Start / Restart | today the status flips in the same frame; with a Worker the button needs a pending state (disabled, spinner, copy), inputs during it (moves, a second Restart, Details, exit) need defined behaviour. |
+| continuation | same as mount: the next Route's session must wait for its map. |
+| loading UI | new visual state + strings; the "instant" setup → playing transition becomes two commits. |
+| test harness | `route-runtime-harness`, `route-react-runtime` and every C1–C6 `[equivalence]` suite drive the hook synchronously and pin "at most one commit per input", generation calls per input and the RNG stream per input; all need an async Worker model (mock channel, awaited responses) and new expected traces. ≥ 10 suites change. |
+| lab seeded route | option B (state hand-off) or E (sync path) above. |
+
+Estimated size: route-state (new phase or nullable map), the hook (both call
+sites + request tokens + cancellation), the Rota component (pending UI), the
+board (no-map state), the entry readiness, the RNG seam (state hand-off), a
+Worker module + Turbopack worker wiring, and the validator suites — realistically
+3–4 missions of the C-series size, with the highest regression risk of the
+series because it changes the turn's timing model, not just where code lives.
