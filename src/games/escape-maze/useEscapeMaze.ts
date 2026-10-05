@@ -26,10 +26,7 @@ import {
   type PortalDefenceZone,
   type SentinelState,
 } from "@/games/escape-maze/route-defenders";
-import {
-  generateMaze,
-  type MazeMap,
-} from "@/games/escape-maze/route-generation";
+import type { MazeMap } from "@/games/escape-maze/route-generation";
 import { posKey, positionsEqual } from "@/games/escape-maze/route-geometry";
 import {
   inspectDynamicMazeState,
@@ -104,7 +101,12 @@ export type { RouteProgression };
 // `generateMaze(difficulty, routeNumber)` for a certified map — since ROUTE-C7B
 // through the generation client, never by calling it. What other modules
 // import from here is re-exported as it was.
-export { generateMaze, posKey, positionsEqual };
+// ROUTE-C7C: except `generateMaze`. Generation runs in the Rota's Worker
+// (route-generation.worker.ts), and re-exporting it here kept all of
+// generation in the main thread's Route chunk for no caller — no product
+// module imported it from the hook. Whoever needs it imports
+// route-generation.ts (or the runner) directly.
+export { posKey, positionsEqual };
 export type { MazeMap };
 
 // ROUTE-C3: how the Hunter and the Sentinel decide lives in route-defenders.ts

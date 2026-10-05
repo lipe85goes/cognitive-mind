@@ -73,6 +73,7 @@ import {
   openSourceTree,
   routeRandomBeforeC7A,
   treeBeforeC7B,
+  hookExportsBeforeC7C,
 } from "./route-module-loader.mjs";
 import { cellKey, loadRouteRuntime, pathBetween, walkableNeighbours } from "./route-runtime-harness.mjs";
 
@@ -517,11 +518,17 @@ const BASE = loadRouteModules({ rev: BASELINE, surface: SURFACE });
 // P5 — at run time: the same export names, and the hook's posKey / positionsEqual / generateMaze ARE the functions
 // that do the work (a re-export, not a copy).
 {
-  const keys = (rota) => sorted(Object.keys(rota.hook).filter((k) => k !== INTERNALS_EXPORT));
+  // ROUTE-C7C's one declared removal from the hook (`generateMaze`, route-module-loader#ROUTE_HOOK_C7C_REMOVED_EXPORTS)
+  // is counted back in: every other name is compared as before.
+  // Its identity check becomes: the hook no longer exports it, and generation still declares the real one.
+  const keys = (rota) => hookExportsBeforeC7C(rota.graph.tree, Object.keys(rota.hook).filter((k) => k !== INTERNALS_EXPORT));
+  const removedByC7C = (rota) => keys(rota).length !== Object.keys(rota.hook).filter((k) => k !== INTERNALS_EXPORT).length;
   const identity = (rota) => ({
     posKey: rota.hook.posKey === rota.api.posKey,
     positionsEqual: rota.hook.positionsEqual === rota.api.positionsEqual,
-    generateMaze: rota.hook.generateMaze === rota.api.generateMaze,
+    generateMaze: removedByC7C(rota)
+      ? !("generateMaze" in rota.hook) && typeof rota.api.generateMaze === "function"
+      : rota.hook.generateMaze === rota.api.generateMaze,
   });
   record("P5", "preserved", "RUNTIME_EXPORTS_UNCHANGED_AND_SHARED", same(keys(NOW), keys(BASE)) && Object.values(identity(NOW)).every(Boolean), {
     runtimeExports: keys(NOW),

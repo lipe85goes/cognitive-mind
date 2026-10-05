@@ -1,13 +1,9 @@
 import {
-  clearRouteRandomSeed,
   getRouteRandomCheckpoint,
   restoreRouteRandomCheckpoint,
   type RouteRandomCheckpoint,
 } from "@/engine/route-random";
-import {
-  generateMaze,
-  type MazeMap,
-} from "@/games/escape-maze/route-generation";
+import type { MazeMap } from "@/games/escape-maze/route-generation";
 import type { DifficultyLevel } from "@/types/game";
 
 /**
@@ -27,7 +23,8 @@ import type { DifficultyLevel } from "@/types/game";
  *                                 realm's seeded stream if a seed is armed;
  *   runRouteGenerationSync        (generating realm) make this realm's stream
  *                                 the request's, generate, report where the
- *                                 stream ended;
+ *                                 stream ended — since ROUTE-C7C in
+ *                                 route-generation-runner.ts, see below;
  *   acceptRouteGenerationResult   (requesting realm) continue the stream from
  *                                 that report, hand back the map.
  *
@@ -42,6 +39,14 @@ import type { DifficultyLevel } from "@/types/game";
  * directly. C7B owns the async lifecycle (pending generation, stale results,
  * Strict Mode); C7C moves `runRouteGenerationSync` into a real Worker. A
  * request id belongs to that lifecycle's envelope, not to the request.
+ *
+ * ROUTE-C7C split the contract from the generation it describes. This module
+ * keeps the requesting realm's half — the types, `createRouteGenerationRequest`
+ * and `acceptRouteGenerationResult` — and imports `MazeMap` as a type only, so
+ * the main thread can ask for a board and accept one without `generateMaze`
+ * being anywhere in its bundle. `runRouteGenerationSync`, the generating
+ * realm's half, moved verbatim to route-generation-runner.ts, which the Worker
+ * (route-generation.worker.ts) and the tooling import.
  *
  * Normal play has no seed, so it has no stream to carry: both checkpoints are
  * null, the generating realm draws from its own `Math.random()`, and the
@@ -80,25 +85,6 @@ export function createRouteGenerationRequest(
   routeNumber: number,
 ): RouteGenerationRequest {
   return { difficulty, routeNumber, random: getRouteRandomCheckpoint() };
-}
-
-/**
- * Generate in THIS realm: take on the request's stream (or none), make the one
- * `generateMaze` call, and report the stream it left. Synchronous; throws what
- * `generateMaze` throws.
- *
- * Taking on the stream is what keeps a long-lived generating realm honest: a
- * seeded request cannot inherit a stale position, and a normal-play request
- * cannot inherit an earlier session's seed. In the requesting realm itself it
- * changes nothing — the stream it restores is the one already there.
- */
-export function runRouteGenerationSync(
-  request: RouteGenerationRequest,
-): RouteGenerationResult {
-  if (request.random === null) clearRouteRandomSeed();
-  else restoreRouteRandomCheckpoint(request.random);
-  const map = generateMaze(request.difficulty, request.routeNumber);
-  return { map, random: getRouteRandomCheckpoint() };
 }
 
 /**

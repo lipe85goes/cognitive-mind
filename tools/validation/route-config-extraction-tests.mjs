@@ -45,7 +45,7 @@ import crypto from "node:crypto";
 import { execFileSync } from "node:child_process";
 import ts from "typescript";
 import { EXIT_OK, EXIT_USAGE, EXIT_VALIDATION_FAILED } from "./evidence.mjs";
-import { ROUTE_HOOK, ROUTE_MODULE_DIR, INTERNALS_EXPORT, loadRouteModules, openSourceTree, treeBeforeC7B } from "./route-module-loader.mjs";
+import { ROUTE_HOOK, ROUTE_MODULE_DIR, INTERNALS_EXPORT, hookExportsBeforeC7C, loadRouteModules, openSourceTree, treeBeforeC7B } from "./route-module-loader.mjs";
 import { loadRouteRuntime, playToEnd } from "./route-runtime-harness.mjs";
 
 /** The last revision whose Rota was one file: what C1 must be equivalent to. */
@@ -299,10 +299,10 @@ const B = ONE.api;
 const configFile = (rota) => rota.graph.modules().find((m) => Object.hasOwn(rota.graph.require(m.file)[INTERNALS_EXPORT] ?? {}, "ROWS"))?.file;
 
 // S6 — the hook's public run-time surface is unchanged by the move (ROWS/COLS are still exported from it, and are
-// route-config's own bindings, not copies).
+// route-config's own bindings, not copies). ROUTE-C7C's one declared removal (`generateMaze`) is counted back in.
 {
   const surface = (rota) => sorted(Object.keys(rota.hook).filter((k) => k !== INTERNALS_EXPORT));
-  const now = surface(NOW);
+  const now = hookExportsBeforeC7C(NOW.graph.tree, surface(NOW));
   const one = surface(ONE);
   record("S6", "preserved", "HOOK_PUBLIC_SURFACE_UNCHANGED", same(now, one) && NOW.hook.ROWS === A.ROWS && NOW.hook.COLS === A.COLS, {
     hookExports: now,

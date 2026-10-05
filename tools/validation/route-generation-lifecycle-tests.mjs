@@ -70,6 +70,7 @@ import {
   ROUTE_GAME_VIEW,
   ROUTE_GENERATION_CLIENT,
   ROUTE_GENERATION_JOB,
+  ROUTE_GENERATION_RUNNER,
   ROUTE_HOOK,
   ROUTE_HOOK_C7B_EDIT,
   ROUTE_RANDOM_SEAM,
@@ -78,6 +79,8 @@ import {
   createModuleGraph,
   loadRouteModules,
   openSourceTree,
+  routeGenerationRunnerFile,
+  treeBeforeC7C,
   routeGameBeforeC7B,
   routeHookBeforeC7B,
   routeVisualBeforeC7B,
@@ -236,7 +239,8 @@ function productFiles(tree) {
   if (tree.rev) {
     return execFileSync("git", ["ls-tree", "-r", "--name-only", tree.rev, "src/"], { encoding: "utf8" })
       .split("\n")
-      .filter((file) => /\.(ts|tsx|css)$/.test(file));
+      .filter((file) => /\.(ts|tsx|css)$/.test(file))
+      .filter((file) => tree.exists(file));
   }
   const walk = (dir) =>
     fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
@@ -245,7 +249,9 @@ function productFiles(tree) {
     });
   return walk(path.join(tree.root, "src"))
     .map((file) => path.relative(tree.root, file).replace(/\\/g, "/"))
-    .filter((file) => /\.(ts|tsx|css)$/.test(file));
+    .filter((file) => /\.(ts|tsx|css)$/.test(file))
+    // a view (`treeBeforeC7C`) hides the files added after it
+    .filter((file) => tree.exists(file));
 }
 
 // =================================================================================================
@@ -554,7 +560,7 @@ function instrumentedRota({ rev = null, sourceOverrides } = {}) {
  * the cancel and nothing else: an answer may still be delivered after it, as a Worker's would.
  */
 function controllableExecutor(tree) {
-  const otherRealm = createModuleGraph({ tree }).require(ROUTE_GENERATION_JOB);
+  const otherRealm = createModuleGraph({ tree }).require(routeGenerationRunnerFile(tree));
   const jobs = [];
   const executor = (command, deliver) => {
     const job = { command: structuredClone(command), deliver, cancels: 0 };
@@ -1133,7 +1139,7 @@ async function realReactLifecycleMain({ rev, sourceOverrides, strict }) {
   results.leavePending = { ...delta(s0, snapshot()), commands: log.commands.length - beforeLeave.commands, ran: log.ran - beforeLeave.ran };
 
   // the controllable executor: answers held until the scenario gives them, computed by a second realm
-  const otherRealm = createModuleGraph({ tree }).require(ROUTE_GENERATION_JOB);
+  const otherRealm = createModuleGraph({ tree }).require(routeGenerationRunnerFile(tree));
   const jobs = [];
   client.routeGenerationExecutor = (command, deliver) => {
     const j = { command: structuredClone(command), deliver, cancels: 0 };
@@ -1806,7 +1812,7 @@ async function viewMain({ rev, sourceOverrides, strict, suite }) {
       const view = loadView({ rev, sourceOverrides, React, board });
       if (!view.tree.exists(ROUTE_GENERATION_CLIENT)) return null;
       const client = view.graph.require(ROUTE_GENERATION_CLIENT);
-      const other = createModuleGraph({ tree: view.tree }).require(ROUTE_GENERATION_JOB);
+      const other = createModuleGraph({ tree: view.tree }).require(routeGenerationRunnerFile(view.tree));
       const jobs = [];
       client.routeGenerationExecutor = (command, deliver) => {
         const j = { command: structuredClone(command), deliver, cancels: 0 };
@@ -2179,13 +2185,15 @@ async function performanceInfo({ rev = null, sourceOverrides } = {}) {
   const tree = openSourceTree({ rev, sourceOverrides });
   if (!tree.exists(ROUTE_GENERATION_CLIENT)) return { id: "I1", kind: "performance", name: "LOCAL_EXECUTOR_SCHEDULING_OVERHEAD", pass: true, detail: { note: "no generation client in this tree" } };
   const graph = createModuleGraph({ tree, globals: { setTimeout, clearTimeout, Math, Date } });
-  const client = graph.require(ROUTE_GENERATION_CLIENT);
   const job = graph.require(ROUTE_GENERATION_JOB);
-  const realRun = job.runRouteGenerationSync;
+  // ROUTE-C7C: the run and the local executor moved to the runner (the job keeps request/accept). Same functions.
+  const runner = graph.require(routeGenerationRunnerFile(tree));
+  const { runRouteGenerationLocally } = runner.runRouteGenerationLocally ? runner : graph.require(ROUTE_GENERATION_CLIENT);
+  const realRun = runner.runRouteGenerationSync;
   const samples = [];
   for (let n = 0; n < 40; n += 1) {
     const sample = {};
-    job.runRouteGenerationSync = (request) => {
+    runner.runRouteGenerationSync = (request) => {
       sample.start = performance.now();
       const result = realRun(request);
       sample.end = performance.now();
@@ -2194,11 +2202,11 @@ async function performanceInfo({ rev = null, sourceOverrides } = {}) {
     await new Promise((resolve) => {
       const request = job.createRouteGenerationRequest(["easy", "medium", "hard"][n % 3], 1 + (n % 3));
       sample.issued = performance.now();
-      client.runRouteGenerationLocally({ requestId: n + 1, intent: "restart", request }, () => resolve());
+      runRouteGenerationLocally({ requestId: n + 1, intent: "restart", request }, () => resolve());
     });
     samples.push({ schedule: sample.start - sample.issued, compute: sample.end - sample.start });
   }
-  job.runRouteGenerationSync = realRun;
+  runner.runRouteGenerationSync = realRun;
   const pct = (list, q) => {
     const sortedList = [...list].sort((a, b) => a - b);
     return Number(sortedList[Math.min(sortedList.length - 1, Math.floor(q * sortedList.length))].toFixed(2));
@@ -2235,7 +2243,8 @@ const MUTANTS_LIST = [
   ["gameplay active while a board is pending", ROUTE_HOOK, ["    const tryMovePlayer = (delta: GridPosition) => {\n      if (awaitingRoute) return;\n", "    const tryMovePlayer = (delta: GridPosition) => {\n"]],
   ["the board mounted before the first board", ROUTE_GAME_VIEW, ["                <div className=\"rsg-canvas\">\n                  <div className=\"rsg-canvas-loading\">", "                <div className=\"rsg-canvas\">\n                  {RouteBabylonBoard && <RouteBabylonBoard {...({ onReady: onEntryReady, onError: onEntryError } as never)} />}\n                  <div className=\"rsg-canvas-loading\">"]],
   ["a second Restart does not withdraw the first", ROUTE_GENERATION_CLIENT, ["  return () => {\n    if (!open) return;\n    open = false;\n    cancel();\n  };", "  return () => {};"]],
-  ["Strict Mode's cleanup does not cancel the local run", ROUTE_GENERATION_CLIENT, ["  return () => clearTimeout(timer);", "  return () => {};"]],
+  // ROUTE-C7C: the local executor moved, verbatim, to the runner — the executor the Rota profile binds in validation.
+  ["Strict Mode's cleanup does not cancel the local run", ROUTE_GENERATION_RUNNER, ["  return () => clearTimeout(timer);", "  return () => {};"]],
   ["the launcher's page-level passive clear is back", LAUNCHER, ["  useLayoutEffect(() => {\n    if (session === null) return;\n    armRouteRandomSeed(session.seed);\n    return clearRouteRandomSeed;\n  }, [session]);", "  useLayoutEffect(() => {}, []);\n  // eslint-disable-next-line react-hooks/exhaustive-deps\n  useEffect(() => clearRouteRandomSeed, []);"]],
   ["a generation error goes silently to gameplay: the failure opens the match", ROUTE_SESSION, ["    case \"GENERATION_FAILED\":\n      if (", "    case \"GENERATION_FAILED\":\n      if (state.route !== null) return { ...state, generation: { phase: \"ready\" } };\n      if ("]],
 ];
@@ -2250,8 +2259,8 @@ async function mutantSuite({ sourceOverrides }) {
       results.push({ id: group, kind: group, name: "THREW", pass: false, detail: { error: String(error?.message ?? error).slice(0, 200) } });
     }
   };
-  await attempt("structure", () => structureChecks(tree));
-  await attempt("preserved", () => preservedChecks(tree));
+  await attempt("structure", () => structureChecks(treeBeforeC7C(tree)));
+  await attempt("preserved", () => preservedChecks(treeBeforeC7C(tree)));
   await attempt("lifecycle", () => lifecycleChecks({ sourceOverrides }));
   await attempt("real", () => realReactLifecycleChecks({ sourceOverrides }));
   await attempt("view", () => viewChecks({ sourceOverrides, includeBaseline: false }));
@@ -2315,8 +2324,11 @@ async function main() {
     results.push(...out);
     console.log("");
   };
-  await group("structure", () => structureChecks(tree));
-  await group("preserved", () => preservedChecks(tree));
+  // ROUTE-C7C came after: C7B's text checks are C7B's state, read through the tree before C7C (the job, the client and
+  // the hook reversed, C7C's modules absent — route-module-loader.mjs#treeBeforeC7C). route-generation-worker-tests
+  // holds that reversal exact and checks C7C's own state. The runs below load the tree's own code.
+  await group("structure", () => structureChecks(treeBeforeC7C(tree)));
+  await group("preserved", () => preservedChecks(treeBeforeC7C(tree)));
   await group("lifecycle", async () => [...lifecycleChecks({ rev: REV }), ...(await realReactLifecycleChecks({ rev: REV }))]);
   await group("equivalence", () => equivalenceChecks({ rev: REV }));
   await group("view", () => viewChecks({ rev: REV }));

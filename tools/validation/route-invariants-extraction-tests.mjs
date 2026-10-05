@@ -92,6 +92,7 @@ import {
   openSourceTree,
   routeRandomBeforeC7A,
   treeBeforeC7B,
+  hookExportsBeforeC7C,
 } from "./route-module-loader.mjs";
 import { cellKey, loadRouteRuntime, pathBetween, walkableNeighbours } from "./route-runtime-harness.mjs";
 
@@ -698,7 +699,9 @@ const BASE = loadRouteModules({ rev: BASELINE, surface: SURFACE });
 // P6 — at run time: the same export names as the baseline, and the hook's inspectDynamicMazeState IS the function that
 // inspects (a re-export, not a copy).
 {
-  const keys = (rota) => sorted(Object.keys(rota.hook).filter((k) => k !== INTERNALS_EXPORT));
+  // ROUTE-C7C's one declared removal from the hook (`generateMaze`, route-module-loader#ROUTE_HOOK_C7C_REMOVED_EXPORTS)
+  // is counted back in: every other name is compared as before.
+  const keys = (rota) => hookExportsBeforeC7C(rota.graph.tree, Object.keys(rota.hook).filter((k) => k !== INTERNALS_EXPORT));
   const shared = NOW.hook.inspectDynamicMazeState === NOW.api.inspectDynamicMazeState;
   record("P6", "preserved", "RUNTIME_SURFACE_UNCHANGED_AND_SHARED", same(keys(NOW), keys(BASE)) && shared && typeof NOW.hook.inspectDynamicMazeState === "function", {
     runtimeExports: keys(NOW),

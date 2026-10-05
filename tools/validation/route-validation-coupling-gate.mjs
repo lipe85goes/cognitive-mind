@@ -14,7 +14,10 @@
  *                     ROUTE-C3, route-invariants since ROUTE-C4, route-state
  *                     since ROUTE-C5, route-events since ROUTE-C6,
  *                     route-generation-job since ROUTE-C7A, route-session
- *                     and route-generation-client since ROUTE-C7B) in code;
+ *                     and route-generation-client since ROUTE-C7B,
+ *                     route-generation-runner, route-generation.worker,
+ *                     route-generation-worker-executor and
+ *                     route-generation-worker-protocol since ROUTE-C7C) in code;
  *   rota-resolver     answers a Rota import by hand (`=== "@/engine/…"`) — a
  *                     private module resolver;
  *   rota-ts-compile   compiles TypeScript in a file that also names Rota
@@ -68,11 +71,11 @@ if (REV) {
 // --- the patterns ------------------------------------------------------------------------------
 
 const codeOnly = (source) => source.replace(/\/\*[\s\S]*?\*\//g, " ").replace(/(^|[^:\\])\/\/.*$/gm, "$1");
-const ROTA_SPECIFIER = String.raw`@\/(?:engine\/(?:difficulty|route-random)|games\/escape-maze\/(?:continuation|route-config|route-defenders|route-events|route-generation|route-generation-job|route-generation-client|route-session|route-geometry|route-invariants|route-state|useEscapeMaze))`;
+const ROTA_SPECIFIER = String.raw`@\/(?:engine\/(?:difficulty|route-random)|games\/escape-maze\/(?:continuation|route-config|route-defenders|route-events|route-generation|route-generation-job|route-generation-client|route-generation-runner|route-generation\.worker|route-generation-worker-executor|route-generation-worker-protocol|route-session|route-geometry|route-invariants|route-state|useEscapeMaze))`;
 const SIGNALS = {
   "hook-path": /useEscapeMaze\.ts/,
   "hook-text": /(?<!function\s)\bproductionSource\s*\(/,
-  "rota-module-path": /["'](?:src\/engine\/)?(?:difficulty|route-random)\.ts["']|["'](?:src\/games\/escape-maze\/)?(?:continuation|route-config|route-defenders|route-events|route-generation|route-generation-job|route-generation-client|route-session|route-geometry|route-invariants|route-state)\.ts["']/,
+  "rota-module-path": /["'](?:src\/engine\/)?(?:difficulty|route-random)\.ts["']|["'](?:src\/games\/escape-maze\/)?(?:continuation|route-config|route-defenders|route-events|route-generation|route-generation-job|route-generation-client|route-generation-runner|route-generation\.worker|route-generation-worker-executor|route-generation-worker-protocol|route-session|route-geometry|route-invariants|route-state)\.ts["']/,
   "rota-resolver": new RegExp(String.raw`===\s*["']${ROTA_SPECIFIER}["']`),
   "single-file-seam": /\bhookSource\b/,
 };
@@ -180,6 +183,11 @@ const ALLOWED = {
     kinds: ["rota-module-path", "rota-ts-compile"],
     reason: "STRUCTURAL_ASSERTION",
     note: "ROUTE-C7B's static gate: the async seam in route-generation-client.ts, the hook's state in route-session.ts, route-state.ts/route-events.ts untouched, the launcher's seed ownership; its Rota runs through the graph, and the TypeScript it compiles is React's reconciler for the [view] stage",
+  },
+  "route-generation-worker-tests.mjs": {
+    kinds: ["rota-module-path"],
+    reason: "STRUCTURAL_ASSERTION",
+    note: "ROUTE-C7C's static gate: the Worker entry, its executor and protocol, the runner split out of the job, the product binding, the main thread's import graph without generation; its Rota runs through the graph",
   },
   "route-board-loader-tests.mjs": { kinds: ["rota-module-path", "rota-ts-compile"], reason: "UI_STAGE" },
   "diagnostic-launcher-tests.mjs": {
