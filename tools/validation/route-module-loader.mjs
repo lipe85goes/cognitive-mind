@@ -127,13 +127,16 @@ export function functionRange(file, source, name) {
  * was at `rev`. `sourceOverrides` replaces (or adds) single modules in memory,
  * and is the only way to mix revisions — explicitly, file by file.
  */
-export function openSourceTree({ root = process.cwd(), rev = null, sourceOverrides = {} } = {}) {
+export function openSourceTree({ root = process.cwd(), rev = null, sourceOverrides = {}, underlying = null } = {}) {
   const absoluteRoot = path.resolve(root);
   const toRepoPath = (file) =>
     (path.isAbsolute(file) ? path.relative(absoluteRoot, file) : file).replace(/\\/g, "/").replace(/^\.\//, "");
 
   let commit = null;
-  if (rev) {
+  // `underlying` (ROUTE-C7B): another tree to read every file through, instead of the disk or git — a view of that
+  // tree, whose resolution, closure and lookups then answer for the view's texts. It keeps that tree's revision label.
+  if (underlying) commit = underlying.rev ?? null;
+  else if (rev) {
     try {
       commit = git(absoluteRoot, ["rev-parse", "--verify", `${rev}^{commit}`]).trim();
     } catch {
@@ -152,6 +155,7 @@ export function openSourceTree({ root = process.cwd(), rev = null, sourceOverrid
   const exists = (file) => {
     const repoPath = toRepoPath(file);
     if (overrides.has(repoPath)) return true;
+    if (underlying) return underlying.exists(repoPath);
     if (commit) return filesAtRev().has(repoPath);
     try {
       return fs.statSync(path.join(absoluteRoot, repoPath)).isFile();
@@ -168,9 +172,11 @@ export function openSourceTree({ root = process.cwd(), rev = null, sourceOverrid
     if (!exists(repoPath)) {
       throw new Error(`route-module-loader: ${repoPath} does not exist${commit ? ` at ${commit.slice(0, 12)}` : " in the working tree"}`);
     }
-    const raw = commit
-      ? git(absoluteRoot, ["show", `${commit}:${repoPath}`])
-      : fs.readFileSync(path.join(absoluteRoot, repoPath), "utf8");
+    const raw = underlying
+      ? underlying.read(repoPath)
+      : commit
+        ? git(absoluteRoot, ["show", `${commit}:${repoPath}`])
+        : fs.readFileSync(path.join(absoluteRoot, repoPath), "utf8");
     const text = normalizeSource(raw);
     texts.set(repoPath, text);
     return text;
@@ -698,4 +704,273 @@ export function routeRandomBeforeC7A(tree) {
     .filter(([name]) => !ROUTE_RANDOM_C7A_EDIT.added.includes(name))
     .map(([name, statement]) => (ROUTE_RANDOM_C7A_EDIT.rewritten.includes(name) ? before.get(name) : statement))
     .join("");
+}
+
+// ---------------------------------------------------------------------------
+// ROUTE-C7B — the hook's and the Rota view's sanctioned edit
+// ---------------------------------------------------------------------------
+
+/** The last revision whose hook generated its boards synchronously: what ROUTE-C7B is measured against. */
+export const ROUTE_C7B_BASE = "e8971eb4f8f37207c2f76840f4ea0d1ecc4356ae";
+/** C7B's hook state (the match and its generation lifecycle). A tree that has it has C7B's lifecycle. */
+export const ROUTE_SESSION = "src/games/escape-maze/route-session.ts";
+/** C7B's async seam: command/response, executor, latest-wins acceptance. */
+export const ROUTE_GENERATION_CLIENT = "src/games/escape-maze/route-generation-client.ts";
+export const ROUTE_GAME_VIEW = "src/games/escape-maze/RouteStrategyGame.tsx";
+export const ROUTE_VISUAL_CSS = "src/games/escape-maze/route-visual.css";
+
+/**
+ * What ROUTE-C7B changed in the hook, by statement. Module level: the imports
+ * of the new state and client (and route-state's types), and the comment on
+ * the `generateMaze` re-export. Inside `useEscapeMaze`: `rewritten` are the
+ * statements whose text C7B replaced (the reducer and the state's
+ * destructuring, the derived views that now exist only with a board, the
+ * Start/Restart/mode functions and `startNewMaze`, which ask for and receive a
+ * board, the keyboard effect and the return); `added` are the lifecycle's own
+ * statements; `guarded` are the three inputs that gained exactly one line,
+ * `if (awaitingRoute) return;`, as their first statement; and the turn —
+ * `runDefenderPhase`, `tryMovePlayer`, `chooseReward`, `breakWall`, the Chest
+ * flags, the counts and the score — moved, unchanged, into `builder`. Every
+ * other statement is where it was, byte for byte.
+ */
+export const ROUTE_HOOK_C7B_EDIT = Object.freeze({
+  moduleRewritten: Object.freeze(["import:@/games/escape-maze/route-state", "export:generateMaze,posKey,positionsEqual"]),
+  moduleAdded: Object.freeze([
+    "import:@/games/escape-maze/route-session",
+    "import:@/games/escape-maze/route-generation-client",
+    "import:@/games/escape-maze/route-state:type",
+  ]),
+  rewritten: Object.freeze([
+    "state,dispatch",
+    "difficulty,mazeMap,player,guardian,sentinel,collectedStars,turns,blockedMoves,errors,status,message,blockedShake,moveTick,triggeredTraps,chestOpened,rewardSelected,rewardSpent,brokenWall",
+    "walls",
+    "portalDefenceZone",
+    "collectedSet",
+    "triggeredTrapSet",
+    "breakTargets",
+    "startNewMaze",
+    "startGame",
+    "restartGame",
+    "changeDifficulty",
+    "effect:keyboard",
+    "return",
+  ]),
+  added: Object.freeze([
+    "route,generation",
+    "awaitingRoute",
+    "requestedDifficulty",
+    "effect:generation",
+    "requestNewMaze",
+    "retryGeneration",
+    "boardMap",
+    "boardBrokenWall",
+    "boardCollectedStars",
+    "boardTriggeredTraps",
+    "boardStatus",
+    "boardPlayer",
+    "boardChoicePending",
+    "boardPickaxeAvailable",
+    "game",
+  ]),
+  guarded: Object.freeze(["tryMovePlayer", "chooseReward", "breakWall"]),
+  guard: "if (awaitingRoute) return;",
+  builder: "playRoute",
+});
+
+/**
+ * What ROUTE-C7B changed in the Rota's view: the hook's import (its `MazeMap`
+ * type), and `RouteStrategyGame`, which became the outer component (the
+ * board's code, the hook, the first board's pending/failed screen) over
+ * `RouteSessionView` (the view it was, with the pending board disabling its
+ * controls). Every other statement is byte for byte. Whether the view on an
+ * accepted board is the one it was is not a question of text:
+ * route-generation-lifecycle-tests renders both and compares them.
+ */
+export const ROUTE_GAME_C7B_EDIT = Object.freeze({
+  moduleRewritten: Object.freeze(["import:@/games/escape-maze/useEscapeMaze", "RouteStrategyGame"]),
+  moduleAdded: Object.freeze([
+    "GENERATION_PENDING_MESSAGE",
+    "GENERATION_ERROR_MESSAGE",
+    "RouteGame",
+    "PlayableRouteGame",
+    "RouteGenerationRetry",
+    "RouteSessionView",
+  ]),
+});
+
+/** The one rule ROUTE-C7B appended to route-visual.css: disabled controls while a board is pending. */
+export const ROUTE_VISUAL_C7B_RULE = `
+/*
+ * ROUTE-C7B — while the next board is being prepared (or failed), the match is
+ * frozen: its controls are disabled, visibly and without any new animation.
+ */
+.rsg-shell button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+`;
+
+/** A statement's key: its declared names, the module an import reads, an export's names, or what an effect is for. */
+function statementKey(sf, statement) {
+  if (ts.isImportDeclaration(statement)) {
+    const typeOnly = statement.importClause?.isTypeOnly ? ":type" : "";
+    return `import:${statement.moduleSpecifier.text}${typeOnly}`;
+  }
+  if (ts.isExportDeclaration(statement) && statement.exportClause && ts.isNamedExports(statement.exportClause)) {
+    return `export${statement.isTypeOnly ? "-type" : ""}:${statement.exportClause.elements.map((e) => e.name.text).join(",")}`;
+  }
+  if (ts.isVariableStatement(statement)) {
+    const names = [];
+    const collect = (name) => {
+      if (ts.isIdentifier(name)) names.push(name.text);
+      else for (const element of name.elements) if (!ts.isOmittedExpression(element)) collect(element.name);
+    };
+    for (const declaration of statement.declarationList.declarations) collect(declaration.name);
+    return names.join(",");
+  }
+  if (ts.isExpressionStatement(statement) && ts.isCallExpression(statement.expression)) {
+    const text = statement.getText(sf);
+    if (/^useEffect\(/.test(text)) return text.includes('"keydown"') ? "effect:keyboard" : text.includes("startRouteGeneration") ? "effect:generation" : "effect:?";
+  }
+  if (ts.isReturnStatement(statement)) return "return";
+  if (statement.name && ts.isIdentifier(statement.name)) return statement.name.text;
+  return `?:${statement.getText(sf).slice(0, 40)}`;
+}
+
+const keyedStatements = (sf, statements) => statements.map((statement) => [statementKey(sf, statement), statement.getFullText(sf)]);
+
+const dedent = (text, by) => text.replace(new RegExp(`\\n {${by}}`, "g"), "\n");
+
+/**
+ * The hook as it was before ROUTE-C7B, rebuilt from the tree's own hook: C7B's
+ * rewritten statements put back as they were at `ROUTE_C7B_BASE`, its added
+ * statements dropped, the turn taken back out of `playRoute`, and the one
+ * guard line of each input dropped — every other statement is the tree's own
+ * text. On a tree without C7B's lifecycle (or one missing a C7B statement) it
+ * is the tree's hook as it is. route-generation-lifecycle-tests holds it equal
+ * to the base hook byte for byte; earlier extractions (C2–C7A) read the hook
+ * through it, so an edit anywhere else in the hook still fails them.
+ */
+export function routeHookBeforeC7B(tree) {
+  const text = tree.read(ROUTE_HOOK);
+  if (!tree.exists(ROUTE_SESSION)) return text;
+  const base = openSourceTree({ root: tree.root, rev: ROUTE_C7B_BASE }).read(ROUTE_HOOK);
+  const sfNow = parse(ROUTE_HOOK, text);
+  const sfBase = parse(ROUTE_HOOK, base);
+  const hookOf = (sf) => sf.statements.find((s) => ts.isFunctionDeclaration(s) && s.name?.text === "useEscapeMaze");
+  const fnNow = hookOf(sfNow);
+  const fnBase = hookOf(sfBase);
+  if (!fnNow?.body || !fnBase?.body) return text;
+  const edit = ROUTE_HOOK_C7B_EDIT;
+
+  // Module level, in the base's order.
+  const moduleNow = new Map(keyedStatements(sfNow, sfNow.statements));
+  const moduleBase = keyedStatements(sfBase, sfBase.statements);
+  // Inside the hook: its own statements, and the builder's (one level deeper).
+  const bodyNow = new Map(keyedStatements(sfNow, fnNow.body.statements));
+  const builder = fnNow.body.statements.find((s) => statementKey(sfNow, s) === edit.builder);
+  const builderFn = builder && ts.isVariableStatement(builder) ? builder.declarationList.declarations[0].initializer : null;
+  if (!builderFn || !ts.isArrowFunction(builderFn) || !ts.isBlock(builderFn.body)) return text;
+  for (const [key, statement] of keyedStatements(sfNow, builderFn.body.statements)) {
+    if (!bodyNow.has(key)) bodyNow.set(key, dedent(statement, 2));
+  }
+  // A kept statement's own blank lines in front of it follow its new neighbours; what precedes it is compared from its
+  // first comment or token on.
+  const leadingBlank = (statement) => statement.match(/^\s*/)[0];
+  const asAtBase = (baseStatement, nowStatement) => leadingBlank(baseStatement) + nowStatement.slice(leadingBlank(nowStatement).length);
+  const unguard = (key, statement) => {
+    if (!edit.guarded.includes(key)) return statement;
+    const guardLine = `\n    ${edit.guard}`;
+    return statement.includes(guardLine) ? statement.replace(guardLine, "") : statement;
+  };
+  const missing = [];
+  const body = keyedStatements(sfBase, fnBase.body.statements)
+    .map(([key, statement]) => {
+      if (edit.rewritten.includes(key)) return statement;
+      if (!bodyNow.has(key)) {
+        missing.push(key);
+        return "";
+      }
+      return asAtBase(statement, unguard(key, bodyNow.get(key)));
+    })
+    .join("");
+  if (missing.length) return text;
+  const fnText = fnNow.getFullText(sfNow);
+  const head = fnText.slice(0, fnNow.body.getStart(sfNow) - fnNow.getFullStart() + 1);
+  const tail = base.slice(fnBase.body.statements.end, fnBase.end);
+  const hook = head + body + tail;
+  return (
+    moduleBase
+      .map(([key, statement]) =>
+        key === "useEscapeMaze" ? hook : edit.moduleRewritten.includes(key) || !moduleNow.has(key) ? statement : moduleNow.get(key),
+      )
+      .join("") + sfBase.endOfFileToken.getFullText(sfBase)
+  );
+}
+
+/**
+ * RouteStrategyGame.tsx as it was before ROUTE-C7B: its two rewritten
+ * statements put back as at `ROUTE_C7B_BASE`, its added ones dropped, every
+ * other statement the tree's own. The tree's view as it is otherwise.
+ */
+export function routeGameBeforeC7B(tree) {
+  const text = tree.read(ROUTE_GAME_VIEW);
+  if (!tree.exists(ROUTE_SESSION)) return text;
+  const base = openSourceTree({ root: tree.root, rev: ROUTE_C7B_BASE }).read(ROUTE_GAME_VIEW);
+  const sfNow = parse(ROUTE_GAME_VIEW, text);
+  const sfBase = parse(ROUTE_GAME_VIEW, base);
+  const now = new Map(keyedStatements(sfNow, sfNow.statements));
+  return (
+    keyedStatements(sfBase, sfBase.statements)
+      .map(([key, statement]) => (ROUTE_GAME_C7B_EDIT.moduleRewritten.includes(key) || !now.has(key) ? statement : now.get(key)))
+      .join("") + sfBase.endOfFileToken.getFullText(sfBase)
+  );
+}
+
+/** route-visual.css without the one rule ROUTE-C7B appended. */
+export function routeVisualBeforeC7B(tree) {
+  const text = tree.read(ROUTE_VISUAL_CSS);
+  return text.endsWith(ROUTE_VISUAL_C7B_RULE) ? text.slice(0, -ROUTE_VISUAL_C7B_RULE.length) : text;
+}
+
+/**
+ * A Rota file's text as the checks before ROUTE-C7B knew it: the hook, the
+ * view and the stylesheet through their C7B reversal, every other file as it
+ * is (the RNG seam included: C7A's reversal is `routeRandomBeforeC7A`'s).
+ */
+export function routeFileBeforeC7B(tree, file) {
+  const repoPath = tree.toRepoPath(file);
+  if (repoPath === ROUTE_HOOK) return routeHookBeforeC7B(tree);
+  if (repoPath === ROUTE_GAME_VIEW) return routeGameBeforeC7B(tree);
+  if (repoPath === ROUTE_VISUAL_CSS) return routeVisualBeforeC7B(tree);
+  return tree.read(repoPath);
+}
+
+/** The files ROUTE-C7B added to the Rota. They did not exist before it. */
+export const ROUTE_C7B_ADDED_FILES = Object.freeze([ROUTE_SESSION, ROUTE_GENERATION_CLIENT]);
+
+/**
+ * A read-only view of `tree` as the checks written before ROUTE-C7B read it:
+ * every Rota file through `routeFileBeforeC7B`, and C7B's two new modules
+ * absent — so its graph questions (`closure`, `locate`, `declaring`,
+ * `runtimeImports`) answer for that text too. For TEXT checks only (structure,
+ * preserved): the code that runs is the tree's own, so a validator loads its
+ * runs from the tree, never from this view. On a tree without C7B it is the
+ * tree.
+ */
+export function treeBeforeC7B(tree) {
+  if (!tree.exists(ROUTE_SESSION)) return tree;
+  const added = (file) => ROUTE_C7B_ADDED_FILES.includes(tree.toRepoPath(file));
+  const view = openSourceTree({
+    root: tree.root,
+    underlying: {
+      rev: tree.rev,
+      exists: (file) => !added(file) && tree.exists(file),
+      read: (file) => {
+        if (added(file)) throw new Error(`route-module-loader: ${tree.toRepoPath(file)} does not exist before ROUTE-C7B`);
+        return routeFileBeforeC7B(tree, file);
+      },
+    },
+  });
+  return { ...view, beforeC7B: true };
 }

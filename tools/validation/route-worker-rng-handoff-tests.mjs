@@ -91,6 +91,8 @@ import {
   openSourceTree,
   routeMocks,
   routeRandomBeforeC7A,
+  treeBeforeC7B,
+  ROUTE_GENERATION_CLIENT,
   topLevelStatements,
 } from "./route-module-loader.mjs";
 import { applyAction, mapDigest, nextAction, observeRoute, runInRealReact } from "./route-react-runtime.mjs";
@@ -314,7 +316,9 @@ function productFiles(tree) {
       .split("\n")
       .filter((file) => /\.(ts|tsx)$/.test(file));
   }
-  return walk(path.join(tree.root, "src")).map((file) => path.relative(tree.root, file).replace(/\\/g, "/"));
+  return walk(path.join(tree.root, "src"))
+    .map((file) => path.relative(tree.root, file).replace(/\\/g, "/"))
+    .filter((file) => tree.exists(file));
 }
 
 const SEAM_EXPORTS_BEFORE = ["routeRandom", "randomItem", "armRouteRandomSeed", "clearRouteRandomSeed", "getArmedRouteSeed", "beginSeededGeneration"];
@@ -417,7 +421,11 @@ function structureChecks(R, side) {
   // S4 — the product boundary: nothing in src/ but the seam and the job reads or restores a stream; nothing imports
   // the job yet (C7A leaves it unwired); arming is still the launcher's alone; no UI file knows the checkpoint;
   // the Rota's component and board still do not touch the seam.
+  // ROUTE-C7B wired the job (through route-generation-client, which only the hook imports). This is C7A's boundary,
+  // so it reads the product as it was before C7B's sanctioned edit (`treeBeforeC7B`); the wired boundary is
+  // route-generation-lifecycle-tests' to hold.
   {
+    const tree = treeBeforeC7B(side.tree);
     const files = productFiles(tree);
     const code = (file) => codeOnly(tree.read(file));
     const callers = (pattern) => files.filter((file) => pattern.test(code(file)));
@@ -444,8 +452,11 @@ function gateChecks(R, side) {
   // G1 — no async in the hook: it still calls `generateMaze` directly, exactly twice (the reducer's initialiser and
   // startNewMaze), imports no job, and has none of the lifecycle C7B will bring (Worker, await, Promise, request
   // tokens, pending/loading state).
+  // ROUTE-C7B made exactly this asynchronous: its own gate (route-generation-lifecycle-tests) requires the opposite.
+  // Here the hook is read through C7B's sanctioned edit, which gives back the synchronous hook only if nothing else
+  // in it changed.
   {
-    const hook = codeOnly(tree.read(ROUTE_HOOK));
+    const hook = codeOnly(treeBeforeC7B(tree).read(ROUTE_HOOK));
     const calls = hook.match(/\bgenerateMaze\s*\(/g)?.length ?? 0;
     const lifecycle = hook.match(new RegExp(HOOK_ASYNC_LIFECYCLE.source, "g")) ?? [];
     const importsJob = /route-generation-job/.test(hook);
@@ -718,6 +729,34 @@ const REMOTE_EDITS = [
   ["const nextMap = generateMaze(nextDifficulty, nextRouteNumber);", "const nextMap = (globalThis as any).__c7aGenerate(nextDifficulty, nextRouteNumber);"],
 ];
 function remoteRuntime(side) {
+  // ROUTE-C7B gave this flow a seam of its own: the hook no longer calls `generateMaze`, it asks the generation client,
+  // whose executor is the one binding C7C points at a Worker. On such a tree the "Worker" is that executor — the
+  // request built by the client in the hook's realm, cloned into the second realm, run by the job there, cloned back
+  // and delivered on the sandbox's timer for the client to accept — and no source is edited.
+  if (side.tree.exists(ROUTE_GENERATION_CLIENT)) {
+    const runtime = loadRouteRuntime({ rev: side.tree.rev, transforms: side.transforms });
+    const local = runtime.LAB.graph.require(ROUTE_GENERATION);
+    const realLocal = local.generateMaze;
+    let localCount = 0;
+    local.generateMaze = (...a) => {
+      localCount += 1;
+      return realLocal(...a);
+    };
+    const worker = rotaRealm(side, 4242);
+    const stats = { remote: 0, seededResults: 0, nullResults: 0 };
+    const client = runtime.LAB.graph.require(ROUTE_GENERATION_CLIENT);
+    client.routeGenerationExecutor = (command, deliver) => {
+      const timer = runtime.LAB.sb.setTimeout(() => {
+        stats.remote += 1;
+        const result = requireJob(worker).runRouteGenerationSync(structuredClone(command.request));
+        if (result.random === null) stats.nullResults += 1;
+        else stats.seededResults += 1;
+        deliver(structuredClone({ requestId: command.requestId, status: "ready", result }));
+      }, 0);
+      return () => runtime.LAB.sb.clearTimeout(timer);
+    };
+    return { runtime, counter: () => stats.remote, localCount: () => localCount, stats, worker };
+  }
   const hookEdit = {
     [ROUTE_HOOK]: (source) =>
       REMOTE_EDITS.reduce((text, [anchor, replacement]) => {

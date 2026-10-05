@@ -370,6 +370,8 @@ async function product(session) {
   await boardReady(session);
   const fresh = await onScreen(session);
   await page.locator(`.rsg-difficulty-btn[aria-label^="Modo ${MODE_TITLE[MODE]}"]`).click();
+  // ROUTE-C7B: a mode arrives with its board, which is generated on a later task — read the setup once it has.
+  await page.waitForFunction(() => document.querySelector(".rsg-objective-message")?.textContent !== "Preparando a rota…", null, { timeout: 30000 });
 
   const hops = [];
   for (let hop = 1; hop <= 2; hop += 1) {

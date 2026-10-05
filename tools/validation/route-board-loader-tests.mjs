@@ -242,6 +242,10 @@ const GAME_STATE = {
   tryMovePlayer: () => {},
   chooseReward: noop,
   breakWall: noop,
+  // ROUTE-C7B: the board this stub hands over has been accepted; nothing is pending.
+  generationPhase: "ready",
+  requestedDifficulty: null,
+  retryGeneration: noop,
 };
 
 /**
@@ -416,6 +420,12 @@ function findElement(node, predicate) {
  */
 function expand(node, escapes) {
   if (!isElement(node)) return node;
+  // ROUTE-C7B: the Rota renders its board view through a component of its own module (`RouteSessionView`). It is
+  // rendered inline, as React would render it: its hooks take the next cells of this mount, in order. Stubs (tagged)
+  // are never rendered.
+  if (typeof node.type === "function" && !node.type.tag && typeof node.type.expand !== "function") {
+    return expand(node.type(node.props), escapes);
+  }
   if (typeof node.type?.expand === "function") {
     try {
       return expand(node.type.expand(node.props), escapes);
@@ -477,8 +487,9 @@ function mount(page, { strict = false, label = "rota" } = {}) {
   /** A settled load re-renders what waited on it: GameScreen's state, or the lazy's Suspense. */
   const settle = () => {
     if (!store.mounted) return;
-    if (store.dirty) render();
-    else rendered = expand(tree, log.escapes);
+    // A full render: since ROUTE-C7B the tree holds components of the Rota's own module, whose hooks only have their
+    // cells when rendered after the Rota's, in order.
+    render();
   };
 
   render();

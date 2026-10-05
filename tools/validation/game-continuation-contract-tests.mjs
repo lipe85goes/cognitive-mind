@@ -89,6 +89,8 @@ const FILES = {
   routeState: "src/games/escape-maze/route-state.ts",
   routeEvents: "src/games/escape-maze/route-events.ts",
   routeGenerationJob: "src/games/escape-maze/route-generation-job.ts",
+  routeGenerationClient: "src/games/escape-maze/route-generation-client.ts",
+  routeSession: "src/games/escape-maze/route-session.ts",
   storage: "src/engine/storage.ts",
   stageProgress: "src/engine/stage-progress.ts",
   routeRandom: "src/engine/route-random.ts",
@@ -1720,6 +1722,10 @@ const GARBAGE = [null, 7, "result", { id: "half", gameId: ROUTE }, { ...LEGACY[0
 // ROUTE-C7A added `route-generation-job` (one generation as a transportable request/result, for the future Worker):
 // a second run-time importer of route-generation, importing only it and the RNG seam — and imported by nothing yet,
 // so the hook's edges, the Rota chunk and the shell are what they were.
+// ROUTE-C7B wired it: `route-generation-client` (the async seam: command/response, the local executor, latest-wins
+// acceptance) is the job's one importer and is reached only by the hook; `route-session` (the hook's state: the match
+// and its generation lifecycle, pure) imports `route-state` at run time and is reached only by the hook, which now
+// names route-state's types only. Still nothing reaches the shell, UI or Babylon, and nothing reaches the Rota.
 {
   const reader = importsOf(FILES.routeContinuation);
   const importers = SRC_FILES.filter((file) =>
@@ -1757,6 +1763,10 @@ const GARBAGE = [null, 7, "result", { id: "half", gameId: ROUTE }, { ...LEGACY[0
     routeEventsImportedAtRuntimeBy: runtimeImportersOf(FILES.routeEvents),
     routeGenerationJobRuntimeImports: runtimeSpecifiersOf(FILES.routeGenerationJob),
     routeGenerationJobImportedAtRuntimeBy: runtimeImportersOf(FILES.routeGenerationJob),
+    routeGenerationClientRuntimeImports: runtimeSpecifiersOf(FILES.routeGenerationClient),
+    routeGenerationClientImportedAtRuntimeBy: runtimeImportersOf(FILES.routeGenerationClient),
+    routeSessionRuntimeImports: runtimeSpecifiersOf(FILES.routeSession),
+    routeSessionImportedAtRuntimeBy: runtimeImportersOf(FILES.routeSession),
   };
   const expected = {
     readerExists: true,
@@ -1770,9 +1780,10 @@ const GARBAGE = [null, 7, "result", { id: "half", gameId: ROUTE }, { ...LEGACY[0
       "@/games/escape-maze/route-defenders",
       "@/games/escape-maze/route-events",
       "@/games/escape-maze/route-generation",
+      "@/games/escape-maze/route-generation-client",
       "@/games/escape-maze/route-geometry",
       "@/games/escape-maze/route-invariants",
-      "@/games/escape-maze/route-state",
+      "@/games/escape-maze/route-session",
       "@/lib/game-sounds",
       "react",
     ],
@@ -1798,11 +1809,15 @@ const GARBAGE = [null, 7, "result", { id: "half", gameId: ROUTE }, { ...LEGACY[0
     routeInvariantsRuntimeImports: ["@/games/escape-maze/route-config", "@/games/escape-maze/route-geometry"],
     routeInvariantsImportedAtRuntimeBy: [FILES.hook],
     routeStateRuntimeImports: [],
-    routeStateImportedAtRuntimeBy: [FILES.hook],
+    routeStateImportedAtRuntimeBy: [FILES.routeSession],
     routeEventsRuntimeImports: [],
     routeEventsImportedAtRuntimeBy: [FILES.hook],
     routeGenerationJobRuntimeImports: ["@/engine/route-random", "@/games/escape-maze/route-generation"],
-    routeGenerationJobImportedAtRuntimeBy: [],
+    routeGenerationJobImportedAtRuntimeBy: [FILES.routeGenerationClient],
+    routeGenerationClientRuntimeImports: ["@/games/escape-maze/route-generation-job"],
+    routeGenerationClientImportedAtRuntimeBy: [FILES.hook],
+    routeSessionRuntimeImports: ["@/games/escape-maze/route-state"],
+    routeSessionImportedAtRuntimeBy: [FILES.hook],
   };
   record("I1", "contract", "CONTRACT_COSTS_NOTHING", same(actual, expected), { actual });
 }

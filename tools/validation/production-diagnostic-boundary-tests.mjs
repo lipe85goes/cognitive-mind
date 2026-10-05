@@ -119,9 +119,13 @@ const rngContract = {
     seedArmCallers.length === 2 &&
     seedArmCallers.includes("src/app/lab/route-launcher/page.tsx") &&
     seedArmCallers.includes("src/engine/route-random.ts"),
-  launcherClearsOnUnmount: /useEffect\(\(\)\s*=>\s*clearRouteRandomSeed/.test(
-    codeOnly(launcher),
-  ),
+  // ROUTE-C7B: the active session owns the seed (a layout effect arms it and its cleanup — on replacement, exit or
+  // the page's unmount — disarms it); before C7B a page-level passive effect disarmed on unmount.
+  launcherClearsOnUnmount:
+    /useEffect\(\(\)\s*=>\s*clearRouteRandomSeed/.test(codeOnly(launcher)) ||
+    /useLayoutEffect\(\(\)\s*=>\s*\{\s*if\s*\(session === null\)\s*return;\s*armRouteRandomSeed\(session\.seed\);\s*return clearRouteRandomSeed;\s*\},\s*\[session\]\)/.test(
+      codeOnly(launcher),
+    ),
   launcherClearsOnExit: /const exitDiagnostic\s*=\s*\(\)\s*=>\s*\{[\s\S]*?clearRouteRandomSeed\(\)/.test(
     codeOnly(launcher),
   ),

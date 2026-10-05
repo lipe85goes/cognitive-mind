@@ -91,6 +91,7 @@ import {
   loadRouteModules,
   openSourceTree,
   routeRandomBeforeC7A,
+  treeBeforeC7B,
 } from "./route-module-loader.mjs";
 import { cellKey, loadRouteRuntime, pathBetween, walkableNeighbours } from "./route-runtime-harness.mjs";
 
@@ -249,7 +250,10 @@ const tally = (counts, label) => {
   counts[label] = (counts[label] ?? 0) + 1;
 };
 
-const TREE = openSourceTree({ rev: REV });
+// ROUTE-C7B: the text this extraction pins is read through C7B's sanctioned edit of the hook, the Rota's view and its
+// stylesheet (route-module-loader.mjs `treeBeforeC7B`), and C7B's two new modules are not in it; every other byte is
+// still compared. Its graph questions (closure, declaring, locate) are the tree's own, and its runs load `rev`.
+const TREE = treeBeforeC7B(openSourceTree({ rev: REV }));
 const BASE_TREE = openSourceTree({ rev: BASELINE });
 const label = REV ? `rev ${TREE.rev.slice(0, 12)}` : "working tree";
 console.log(`route-invariants extraction · ${label} vs baseline ${BASELINE.slice(0, 7)} (invariants in the hook)\n`);

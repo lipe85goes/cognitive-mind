@@ -680,3 +680,12 @@
     transition: none;
   }
 }
+
+/*
+ * ROUTE-C7B — while the next board is being prepared (or failed), the match is
+ * frozen: its controls are disabled, visibly and without any new animation.
+ */
+.rsg-shell button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

@@ -372,6 +372,8 @@ function ownerOf(node) {
     },
     useCallback: (fn) => (index++, fn),
     useEffect: () => void index++,
+    // ROUTE-C7B: the launcher's session owns its seed through a layout effect.
+    useLayoutEffect: () => void index++,
   };
   const GameScreen = () => null;
   const armed = [];
