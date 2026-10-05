@@ -946,6 +946,8 @@ async function productPhase() {
       log(`  ${label.padEnd(12)} n ${s.n} · next frame p50 ${s.nextFrameMs.p50} p95 ${s.nextFrameMs.p95} max ${s.nextFrameMs.max} · ready p95 ${s.readyMs.p95} · LT max p95 ${s.longTaskMaxMs.p95} · with LT ${s.withLongTask} · busy ${a.meanMs.busy} gen ${a.meanMs.generateMaze} (${a.generationShareMean}%) babylon ${round((a.meanMs.babylon ?? 0) + (a.meanMs["route-scene"] ?? 0))} webgl/native ${a.meanMs.native} react ${a.meanMs["react-framework"]}`);
     }
     await session.context.close();
+    // A long run is not lost to a late failure: the rates measured so far are written as they finish.
+    if (OUT) fs.writeFileSync(OUT, `${JSON.stringify({ mission: "ROUTE-PERF-WORKER-DECISION-01", partial: true, phase: PHASE, machine, ...result }, null, 2)}\n`);
   }
   result.generationLocation = generation ? { url: generation.url.replace(BASE, ""), functionStart: generation.start, functionEnd: generation.end } : null;
   return result;
