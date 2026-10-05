@@ -737,7 +737,7 @@ async function productPhase() {
   }
   async function exitHome(page) {
     await closeDetails(page);
-    await page.locator('button[aria-label="Voltar à jornada cognitiva"]').click();
+    await page.locator(".rsg-back").click();
     await page.locator(".hj-stage").waitFor({ timeout: 60000 });
     await page.waitForTimeout(1500);
   }
