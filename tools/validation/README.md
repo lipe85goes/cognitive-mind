@@ -143,6 +143,25 @@ won → "Jornada concluída" → "Voltar aos mundos" → Home → the Rota again
 entry's 12 s watchdog; the probe then presses the product's "Tentar novamente"
 (same session) and reports how often.
 
+**GAMEPLAY / PLATFORM LOCK v1** — the manifest of what
+`docs/GAMEPLAY_PLATFORM_LOCK_V1.md` froze: canonical modules, no run-time
+cycles, a Home without game code, a lazy registry, lazy Babylon, generation
+only in the Worker (and a pure Worker graph), the C7C binding, a game-agnostic
+shell/GameScreen, a game-owned continuation, three product Routes (evaluated),
+the v1 modes/rewards/actions/events, the Rota hook's state shape, the Circuit's session-owned timers, and
+the lock document itself (decision, canonical commit, every debt classified,
+no BLOCKER, older decisions not reopened). It is a checksum of contracts, not
+a second CORE: behaviour is the other suites'. Writes nothing:
+
+```bash
+node tools/validation/gameplay-platform-lock-v1.mjs                   # <5 s
+node tools/validation/gameplay-platform-lock-v1.mjs --rev=<commit>    # code checks on another tree, [doc] skipped
+node tools/validation/gameplay-platform-lock-v1.mjs --counterfactuals # bd75e69, 7b740e4, 61c3b04, 3e30148, 415cead must each fail their check
+```
+
+A change that moves a locked contract fails the gate until the lock document
+and the manifest are updated in the same commit, naming the change class.
+
 **EVIDENCE UPDATE** — after a deliberate change, once you have read the diffs:
 
 ```bash
@@ -238,7 +257,7 @@ is declared in its `ALLOWED` table with a reason:
 
 | reason | validators | why they still name Rota files |
 | --- | --- | --- |
-| STRUCTURAL_ASSERTION | game-continuation-contract, route-journey-ownership, route-journey-terminal, route-config-extraction, route-generation-extraction, route-defenders-extraction, route-invariants-extraction, route-state-reducer, route-domain-events, route-worker-rng-handoff, route-generation-lifecycle, route-generation-worker, diagnostic-launcher, production-diagnostic-boundary, cross-eol | the check is about where code lives (I1/O3/T11, C1's, C2's, C3's, C4's, C5's, C6's, C7A's, C7B's and C7C's static gates, the seed seam's own code, CRLF of the hook's text); their Rota runs through the graph |
+| STRUCTURAL_ASSERTION | game-continuation-contract, route-journey-ownership, route-journey-terminal, route-config-extraction, route-generation-extraction, route-defenders-extraction, route-invariants-extraction, route-state-reducer, route-domain-events, route-worker-rng-handoff, route-generation-lifecycle, route-generation-worker, gameplay-platform-lock-v1, diagnostic-launcher, production-diagnostic-boundary, cross-eol | the check is about where code lives (I1/O3/T11, C1's, C2's, C3's, C4's, C5's, C6's, C7A's, C7B's and C7C's static gates, the lock's manifest, the seed seam's own code, CRLF of the hook's text); their Rota runs through the graph |
 | UI_STAGE | route-board-loader | compiles the Rota component under a chunk gate with stage stubs |
 | REPORT_LABEL | breakable-wall-feasibility, dynamic-solvability-finalize | a path inside report text |
 | LEGACY_LEDGER | chest-acceptance | ROTA-CHEST-REWARDS-01 ledger; rewrites its archive when run |
