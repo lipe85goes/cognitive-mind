@@ -1,9 +1,9 @@
 import {
   Route,
+  ScanSearch,
   SlidersHorizontal,
   Sparkles,
   Sprout,
-  Waypoints,
   type LucideIcon,
 } from "lucide-react";
 import type { WorldKey } from "@/data/worlds";
@@ -13,7 +13,7 @@ export type WorldMotionKind =
   | "portal"
   | "circuit"
   | "signal"
-  | "path"
+  | "glint"
   | "bloom";
 
 export type WorldArtMode = "rendered" | "sprite";
@@ -93,22 +93,23 @@ export const WORLD_VISUALS: Record<GameId, WorldVisualContract> = {
     entryCopy: "Os comandos estão ao seu alcance.",
     motion: "signal",
   },
-  "number-trail": {
-    gameId: "number-trail",
-    world: "logic",
-    visualName: "Trilha Lógica",
-    homeDescription: "Siga os marcos e complete o percurso.",
-    accent: "#b69ada",
-    accentSoft: "rgba(182, 154, 218, 0.2)",
-    accentDeep: "#432d59",
+  "hidden-objects": {
+    gameId: "hidden-objects",
+    world: "discovery",
+    visualName: "Estúdio das Descobertas",
+    homeDescription: "Explore o estúdio e encontre os objetos.",
+    accent: "#e8a46f",
+    accentSoft: "rgba(232, 164, 111, 0.22)",
+    accentDeep: "#5b3320",
     atmosphere: "/illustrations/home/home-background-desktop.webp",
-    transitionArt: "/illustrations/home/world-trail.webp",
-    introArt: "/illustrations/home/world-trail.webp",
-    artMode: "sprite",
-    symbol: Waypoints,
-    entryEyebrow: "Iluminando a trilha",
-    entryCopy: "O próximo passo aparece com calma.",
-    motion: "path",
+    // GAME03-SKELETON-01: provisional art, a crop of the prototype scene.
+    transitionArt: "/assets/hidden-objects/explorer-studio/v0/hero.webp",
+    introArt: "/assets/hidden-objects/explorer-studio/v0/hero.webp",
+    artMode: "rendered",
+    symbol: ScanSearch,
+    entryEyebrow: "Abrindo o estúdio",
+    entryCopy: "A luz da tarde revela os detalhes.",
+    motion: "glint",
   },
   "seed-garden": {
     gameId: "seed-garden",

@@ -103,11 +103,14 @@ const FILES = {
   worlds: "src/data/worlds.ts",
   launcher: "src/app/lab/route-launcher/page.tsx",
 };
-const GAME_IDS = ["color-sequence", "escape-maze", "security-panel", "number-trail", "seed-garden"];
+/**
+ * The product's five games. GAME03-SKELETON-01 retired the Trilha Lógica
+ * (`number-trail`): the Estúdio das Descobertas (`hidden-objects`) took its place.
+ */
+const GAME_IDS = ["color-sequence", "escape-maze", "security-panel", "hidden-objects", "seed-garden"];
 const ROUTE = "escape-maze";
 const ROUTE_KIND = "escape-maze-route";
 const MODES = ["easy", "medium", "hard"];
-const OTHER_GAMES = GAME_IDS.filter((gameId) => gameId !== ROUTE);
 
 const args = process.argv.slice(2);
 const revArg = args.find((arg) => arg.startsWith("--rev="));
@@ -400,6 +403,19 @@ const same = (a, b) => canonical(a) === canonical(b);
 // --- shared real modules ------------------------------------------------------------------
 
 const STAGE_PROGRESS = evaluate(FILES.stageProgress, {}, {});
+/**
+ * The other worlds the journeys visit. On the working tree: all four, each must
+ * be on the Home. Under --rev, a world that revision's Home does not offer yet
+ * (the Estúdio, before GAME03-SKELETON-01) is left out and reported.
+ */
+const OTHER_GAMES = GAME_IDS.filter(
+  (gameId) => gameId !== ROUTE && (!REV || STAGE_PROGRESS.PLAYABLE_STAGE_IDS.includes(gameId)),
+);
+if (REV && OTHER_GAMES.length < GAME_IDS.length - 1) {
+  console.log(
+    `note: rev ${REV} does not offer ${GAME_IDS.filter((id) => id !== ROUTE && !OTHER_GAMES.includes(id)).join(", ")}; left out of the cross-world checks\n`,
+  );
+}
 const ACTIVITIES = evaluate(FILES.activities, {}, {});
 const WORLDS = evaluate(FILES.worlds, {}, { "lucide-react": LUCIDE });
 const ENTRY_CONTRACT = evaluate(FILES.entryContract, {}, {});
@@ -1437,7 +1453,7 @@ function gameFolder(gameId) {
     "color-sequence": "color-sequence/MemoryCircuit3DGame#MemoryCircuit3DGame",
     "escape-maze": "escape-maze/RouteStrategyGame#RouteStrategyGame",
     "security-panel": "security-panel/SecurityPanelGame#SecurityPanelGame",
-    "number-trail": "number-trail/NumberTrailGame#NumberTrailGame",
+    "hidden-objects": "hidden-objects/HiddenObjectsGame#HiddenObjectsGame",
     "seed-garden": "seed-garden/SeedGardenGame#SeedGardenGame",
   }[gameId];
 }

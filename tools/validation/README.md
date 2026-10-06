@@ -162,6 +162,34 @@ node tools/validation/gameplay-platform-lock-v1.mjs --counterfactuals # bd75e69,
 A change that moves a locked contract fails the gate until the lock document
 and the manifest are updated in the same commit, naming the change class.
 
+**GAME 03 — ESTÚDIO DAS DESCOBERTAS** — the skeleton (`hidden-objects`) and the
+retirement of the Trilha Lógica (`number-trail`). Neither writes anything unless
+asked to (`--out`/`--json` on the probe):
+
+```bash
+node tools/validation/hidden-objects-skeleton-tests.mjs                    # 38 checks, no browser, ~8 s
+node tools/validation/hidden-objects-skeleton-tests.mjs --rev=<commit>     # every source at <commit>
+node tools/validation/hidden-objects-skeleton-tests.mjs --counterfactuals  # base f9254429 + 18 in-memory mutants, ~35 s
+node tools/validation/hidden-objects-browser-probe.mjs                     # Playwright, needs `next build && next start -p 3100`
+```
+
+The first runs the real code from source: the pure scene/camera/gesture/model
+modules, the scene controller on a fake viewport under a virtual clock, the real
+`HiddenObjectsGame` with its real scene under a small React (every gesture is a
+Pointer Event on the viewport), and the real Home on a device holding an old
+Trilha result. `[contract]` checks fail on the base (`f9254429`, the Trilha
+active); `[preserved]` ones — the Rota, the Circuito, the Central, the Jardim,
+the shell's agnosticism, no new dependency, the platform boundaries — hold on
+both. `--counterfactuals` also requires each in-memory mutant (eager import,
+lost explicit readiness, the Trilha kept active, a drag or a pinch that selects,
+a camera that escapes the room, a wrong list, an unreachable target, a second
+completion, ready before decode/paint, a listener left behind, React state per
+pointermove, an old Trilha result that crashes, is shown as the Estúdio or is
+dropped) to fail the checks it names. The probe drives the production build on
+desktop, phone, small phone and reduced motion, with a stored Trilha result,
+and audits the bundle; `--out DIR` saves the visual witnesses
+(`docs/archive/game03-skeleton-01/`).
+
 **EVIDENCE UPDATE** — after a deliberate change, once you have read the diffs:
 
 ```bash

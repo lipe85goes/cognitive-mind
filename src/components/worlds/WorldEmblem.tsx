@@ -102,27 +102,22 @@ function CommandsMark() {
   );
 }
 
-/** Trilha Lógica: degraus subindo com marcos de altura crescente. */
-function TrailMark() {
+/** Estúdio das Descobertas: janela em arco e a lupa que procura diante dela. */
+function DiscoveryMark() {
   return (
     <Frame>
       <path
-        d="M10.5 33h7v4h-7zM19.5 28.5h7V37h-7zM28.5 23.5h7V37h-7z"
+        d="M12 33V20.5a8 8 0 0 1 16 0V33Z"
         fill="#1d3b3f"
         stroke={STONE}
         strokeWidth="1.3"
         strokeLinejoin="round"
       />
-      <circle cx="14" cy="28.5" r="2" fill={TEAL} stroke={TEAL_DEEP} strokeWidth="1" />
-      <circle cx="23" cy="23.4" r="2" fill={AMBER} stroke="#a97b0a" strokeWidth="1" />
-      <circle cx="32" cy="18.2" r="2.2" fill={TEAL} stroke={TEAL_DEEP} strokeWidth="1" />
-      <path
-        d="M14 26.4v-3.2M23 21.3v-3.1M32 16v-3"
-        stroke={RING}
-        strokeWidth="1.3"
-        strokeLinecap="round"
-        opacity="0.8"
-      />
+      <path d="M20 12.6V33M12 23.5h16" stroke={STONE} strokeWidth="0.9" opacity="0.6" />
+      <path d="M31.2 31.2 37 37" stroke={RING} strokeWidth="3" strokeLinecap="round" />
+      <circle cx="27.4" cy="27.4" r="6.4" fill={TEAL} fillOpacity="0.85" stroke={RING} strokeWidth="2" />
+      <path d="M24.4 25.6a3.6 3.6 0 0 1 2.4-2.2" stroke="#e8fffb" strokeWidth="1.2" strokeLinecap="round" opacity="0.9" />
+      <path d="M15.4 14.6l.9 1.9 1.9.9-1.9.9-.9 1.9-.9-1.9-1.9-.9 1.9-.9Z" fill={AMBER} />
     </Frame>
   );
 }
@@ -153,7 +148,7 @@ const MARKS: Record<GameId, () => React.ReactElement> = {
   "escape-maze": RouteMark,
   "color-sequence": CircuitMark,
   "security-panel": CommandsMark,
-  "number-trail": TrailMark,
+  "hidden-objects": DiscoveryMark,
   "seed-garden": GardenMark,
 };
 

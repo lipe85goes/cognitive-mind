@@ -46,6 +46,14 @@
  *                   `--rev=3bb9232` is the code before lazy loading: every B* and
  *                   C* check passes, every L* check fails.
  *
+ * GAME03-SKELETON-01 retired the Trilha Lógica (`number-trail`) and pinned the
+ * Estúdio das Descobertas (`hidden-objects`, readiness `explicit`) in its
+ * place: the five pins are the five games the product ships. Under `--rev`, a
+ * pin whose game module does not exist at that revision (the Estúdio, before
+ * GAME03-SKELETON-01) is reported and left out — the game postdates the code
+ * under test, which is not what the counterfactual is about. On the working
+ * tree every pin applies.
+ *
  * Writes nothing. Exit 0 = every check holds, 1 = a check failed, 3 = usage error.
  */
 import fs from "node:fs";
@@ -157,9 +165,10 @@ const PINNED = {
     component: "@/games/security-panel/SecurityPanelGame#SecurityPanelGame",
     readiness: "frame-fallback",
   },
-  "number-trail": {
-    component: "@/games/number-trail/NumberTrailGame#NumberTrailGame",
-    readiness: "frame-fallback",
+  // GAME03-SKELETON-01: took the Trilha Lógica's place; reports its own paint.
+  "hidden-objects": {
+    component: "@/games/hidden-objects/HiddenObjectsGame#HiddenObjectsGame",
+    readiness: "explicit",
   },
   "seed-garden": {
     component: "@/games/seed-garden/SeedGardenGame#SeedGardenGame",
@@ -167,6 +176,19 @@ const PINNED = {
   },
 };
 const READINESS = ["explicit", "frame-fallback"];
+
+/** The pins this run holds the code to: all of them, except — under --rev — games the revision does not have yet. */
+const pinnedModuleFile = (component) => {
+  const base = component.split("#")[0].replace(/^@\//, "src/");
+  return [`${base}.tsx`, `${base}.ts`].find((candidate) => readSource(candidate) !== null) ?? null;
+};
+const PINS = REV
+  ? Object.fromEntries(Object.entries(PINNED).filter(([, pin]) => pinnedModuleFile(pin.component)))
+  : PINNED;
+const POSTDATING_REV = Object.keys(PINNED).filter((gameId) => !(gameId in PINS));
+if (POSTDATING_REV.length > 0) {
+  console.log(`note: rev ${REV} predates ${POSTDATING_REV.join(", ")}; those pins are left out of this run\n`);
+}
 const FRAMES_ADVANCED = 5;
 
 // --- stubs ----------------------------------------------------------------------
@@ -805,9 +827,9 @@ const record = (id, name, pass, detail) => {
  * register one.
  */
 const subjects = Object.fromEntries([
-  ...Object.entries(PINNED).map(([id, pin]) => [id, pin]),
+  ...Object.entries(PINS).map(([id, pin]) => [id, pin]),
   ...Object.entries(DECLARED ?? {})
-    .filter(([id]) => !(id in PINNED))
+    .filter(([id]) => !(id in PINS))
     .map(([id, entry]) => [id, { component: RESOLVED[id]?.component?.tag, readiness: entry.readiness }]),
 ]);
 const subjectIds = Object.keys(subjects);
@@ -932,7 +954,7 @@ for (const [id, name] of [["B2", "intro-first"], ["B3", "game-first"], ["B4", "s
       );
     })
     .map(([gameId]) => gameId);
-  const drift = Object.entries(PINNED)
+  const drift = Object.entries(PINS)
     .filter(
       ([gameId, pin]) =>
         RESOLVED[gameId]?.component?.tag !== pin.component ||

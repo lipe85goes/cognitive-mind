@@ -6,6 +6,8 @@ export function isSuccessfulResult(
 ): boolean {
   if (result.details.won === true) return true;
   if (result.details.won === false) return false;
+  // A game without winning or losing (the Estúdio) says it finished.
+  if (result.details.completed === true) return true;
 
   if (typeof result.details.panelsCompleted === "number") {
     return result.details.panelsCompleted > 0;
@@ -54,11 +56,11 @@ const WORLD_REWARD_COPY: Record<GameResult["gameId"], WorldRewardCopy> = {
     attemptSubtitle: "Você praticou observação e controle de passos.",
     registeredLine: "A central foi registrada na sua jornada.",
   },
-  "number-trail": {
-    successTitle: "Trilha concluída",
-    successSubtitle: "Você praticou atenção e ordem lógica.",
-    attemptSubtitle: "Você praticou atenção visual e sequência.",
-    registeredLine: "A trilha foi registrada na sua jornada.",
+  "hidden-objects": {
+    successTitle: "Estúdio explorado",
+    successSubtitle: "Você praticou atenção e observação.",
+    attemptSubtitle: "Você praticou atenção e observação.",
+    registeredLine: "A exploração foi registrada na sua jornada.",
   },
   "seed-garden": {
     successTitle: "Jardim equilibrado",

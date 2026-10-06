@@ -30,6 +30,9 @@ export const DETAIL_LABELS: Record<string, string> = {
   movesUsed: "Movimentos usados",
   movesRemaining: "Movimentos restantes",
   targetCompleted: "Objetivo concluído",
+  foundObjects: "Objetos encontrados",
+  totalObjects: "Objetos da lista",
+  completed: "Exploração concluída",
 };
 
 export const DIFFICULTY_PT: Record<DifficultyLevel, string> = {

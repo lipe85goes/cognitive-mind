@@ -32,23 +32,6 @@ export function calculateSecurityPanelScore(stats: {
   return Math.max(0, base + levelBonus);
 }
 
-/** Max mistakes allowed in Number Trail before the session ends. */
-export const NUMBER_TRAIL_MAX_ERRORS = 3;
-
-/**
- * Score for Number Trail: +20 per correct number, +100 per completed round,
- * -20 per error.
- */
-export function calculateNumberTrailScore(stats: {
-  correctNumbers: number;
-  roundsCompleted: number;
-  errors: number;
-}): number {
-  const base = stats.correctNumbers * 20 + stats.roundsCompleted * 100;
-  const penalty = stats.errors * 20;
-  return Math.max(0, base - penalty);
-}
-
 /**
  * Score for Seed Garden: completion bonus plus calm move efficiency.
  */

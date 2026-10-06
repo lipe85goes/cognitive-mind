@@ -5,6 +5,6 @@ export const PLAYABLE_STAGE_IDS: GameId[] = [
   "color-sequence",
   "escape-maze",
   "security-panel",
-  "number-trail",
+  "hidden-objects",
   "seed-garden",
 ];

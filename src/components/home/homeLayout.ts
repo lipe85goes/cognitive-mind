@@ -7,7 +7,7 @@ export type HomeWorldKind =
   | "route"
   | "memory"
   | "commands"
-  | "logic"
+  | "discovery"
   | "garden";
 
 export interface HomeWorldLayout {
@@ -52,10 +52,10 @@ export const HOME_WORLD_LAYOUT: Record<GameId, HomeWorldLayout> = {
     mobileOrder: 3,
     desktop: { sizeRem: 43 },
   },
-  "number-trail": {
-    gameId: "number-trail",
-    world: "logic",
-    kind: "logic",
+  "hidden-objects": {
+    gameId: "hidden-objects",
+    world: "discovery",
+    kind: "discovery",
     tier: "quiet",
     navOrder: 4,
     mobileOrder: 4,

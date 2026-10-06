@@ -243,9 +243,11 @@ Keep the root theme variables, safe-area variables, world palettes, reset rules 
 
 ### Shared Game UI
 
-Preserve shared game layout/button/status classes while `security-panel`, `number-trail` and `seed-garden` still use the older shared UI components.
+Preserve shared game layout/button/status classes while `security-panel` and `seed-garden` still use the older shared UI components.
 
-Risk of removing now: breaking the three older active games before they are rebuilt.
+Risk of removing now: breaking the two older active games before they are rebuilt.
+
+GAME03-SKELETON-01 retired `number-trail`: the rules only the Trilha used — `.logic-*`, `.game-world-logic` and `.reward-world-number-trail` in `src/app/globals.css` — have no consumer now. They were left in place (that mission was not a CSS cleanup) and can go in a cleanup pass with the usual reference search. The Estúdio das Descobertas (`hidden-objects`) does not use `globals.css` game classes: its styles are `.hos-*` in `src/games/hidden-objects/hidden-objects.css`.
 
 ### Active 2.5D Home
 

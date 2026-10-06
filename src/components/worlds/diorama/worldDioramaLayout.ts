@@ -6,7 +6,7 @@ export type WorldDioramaKind =
   | "route"
   | "circuit"
   | "panel"
-  | "trail"
+  | "discovery"
   | "garden";
 
 /** Mundos com maquete em camadas (todos, desde HOME-WORLDS-FINAL-01). */
@@ -49,7 +49,7 @@ const SECONDARY_SUFFIXES = [
   ["front", 6, "wd-layer-front"],
 ] as const;
 
-function buildSecondaryLayers(kind: "panel" | "trail" | "garden") {
+function buildSecondaryLayers(kind: "panel" | "discovery" | "garden") {
   const base = `/illustrations/home/dioramas/${kind}`;
   return SECONDARY_SUFFIXES.map(([suffix, depth, className]) => ({
     id: suffix,
@@ -127,12 +127,13 @@ export const WORLD_DIORAMA_CONFIGS: Record<GameId, WorldDioramaConfig> = {
     height: 780,
     layers: buildSecondaryLayers("panel"),
   },
-  "number-trail": {
-    gameId: "number-trail",
-    kind: "trail",
+  "hidden-objects": {
+    gameId: "hidden-objects",
+    kind: "discovery",
     width: 1040,
     height: 780,
-    layers: buildSecondaryLayers("trail"),
+    // GAME03-SKELETON-01: provisional maquette from tools/assets/create_hidden_objects_scene.mjs.
+    layers: buildSecondaryLayers("discovery"),
   },
   "seed-garden": {
     gameId: "seed-garden",

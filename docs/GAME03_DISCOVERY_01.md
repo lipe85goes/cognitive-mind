@@ -14,6 +14,10 @@ plataforma travada e qual é o menor skeleton jogável que vale construir?**
 - Respeita `docs/GAMEPLAY_PLATFORM_LOCK_V1.md`: o Game 03 é o primeiro novo
   consumidor da plataforma depois do lock. Regra aplicada em todo o documento:
   **second consumer first, abstraction second**.
+- **Atualização GAME03-SKELETON-01**: a decisão humana aprovou a substituição
+  da Trilha Lógica e a antecipou para a missão do skeleton — ver §20.4
+  (`GAME03_REPLACEMENT_DECISION = APPROVED`). O resto do documento fica como a
+  Discovery o registrou.
 
 Convenções: **su** = unidade de cena (1 su = 1 px da prancha no tier `m`,
 §16); "Explorador" = quem joga; números marcados `TO_VALIDATE_IN_SKELETON`
@@ -46,6 +50,7 @@ completa, com um fechamento tranquilo e o `GameResult` normal da plataforma.
 | `GAME03_ASSET_PIPELINE` | mockup → briefing → geração por zona → master Photoshop 6400×3200 com camadas nomeadas → limpeza e auditoria de iscas → passe de fairness → exports sem perda → script `sharp` → `public/assets/hidden-objects/explorer-studio/v1/` (§17) |
 | `GAME03_PLATFORM_REUSE` | registry + `import()` próprio, contrato de entrada `explicit` com watchdog padrão, `GameScreen`, transição/retry, intro, `GameComponentProps`, `GameResult` + persistência do shell, `RewardResultModal`, metadados de mundo, `lib/game-sounds`, convenções de validação. **Zero refactor da plataforma** (§18) |
 | `GAME03_LEGACY_SLOT_RECOMMENDATION` | **`number-trail` (Trilha Lógica)** — aposentar quando o Game 03 for promovido; `security-panel` é o segundo candidato, mais tarde; `seed-garden` fica (§20) |
+| `GAME03_REPLACEMENT_DECISION` | **APPROVED** — decisão humana (GAME03-SKELETON-01): `number-trail` aposentado como jogo ativo; `hidden-objects` no mesmo slot da Home; o skeleton entra direto nesse slot, sem rota de laboratório; histórico antigo da Trilha preservado por compatibilidade de leitura (§20.4) |
 | `GAME03_SKELETON_SCOPE` | entrada **só por rota de laboratório** pelos componentes reais da plataforma; 1 cena, 3 estações, pool de 10 alvos, listas 5/6/8, pan/zoom/pinch/teclado, pista, conclusão, resultado, restart, readiness (§22) |
 | Babylon | **NÃO** (quebraria o gate A5 do lock; §15) |
 | `GAME03_NEW_RUNTIME_DEPENDENCY_REQUIRED` | **NO** (§15.3) |
@@ -1248,6 +1253,43 @@ Só depois do gate de diversão do skeleton (§22.7):
    de um tratamento para mundo aposentado (metadado de exibição ou fallback
    neutro): requisito de plataforma achado pelo Game 03 (classe 5).
 
+### 20.4 Decisão humana final (GAME03-SKELETON-01)
+
+```text
+GAME03_LEGACY_SLOT_RECOMMENDATION = number-trail
+GAME03_REPLACEMENT_DECISION = APPROVED
+```
+
+A decisão humana aprovou a substituição e a antecipou para a própria missão do
+skeleton. Ela substitui a condição "só depois do gate de diversão" de §20.3 e o
+escopo "só por rota de laboratório" de `GAME03_SKELETON_SCOPE`:
+
+- **`number-trail` (Trilha Lógica) foi aposentado como jogo ativo** em
+  GAME03-SKELETON-01: saiu do `GameId`, do registry, do contrato de entrada, de
+  `PLAYABLE_STAGE_IDS` e das tabelas de atividade, mundo, intro, Home, visual,
+  maquete e cópia de recompensa; o componente foi removido e a arte da Home foi
+  arquivada em `docs/archive/number-trail-retired/`.
+- **`hidden-objects` (Estúdio das Descobertas) ocupa o lugar dela**: posição 4
+  do mapa, mundo quieto, `navOrder`/`mobileOrder` 4, a mesma geometria de slot e
+  de maquete. O produto continua com cinco jogos ativos.
+- **Rota Estratégica e Circuito de Memória permanecem** — travados pelo lock e
+  intactos —, assim como a Central de Comandos e o Jardim de Sementes.
+- **O histórico antigo da Trilha continua seguro e legível**, por
+  compatibilidade de leitura, sem migração: nenhuma entrada do `localStorage` é
+  apagada, filtrada ou convertida; `getRecentResults` devolve os resultados
+  antigos como foram gravados, e um resultado novo só entra à frente da lista
+  (com o limite de 12 de sempre). Nada transforma um resultado da Trilha em
+  resultado do Estúdio. Um id aposentado não abre nada (não tem loader,
+  contrato nem atividade); como resultado mais recente, ele só deixa de
+  pré-selecionar um mundo e a Home cai no primeiro mundo do mapa.
+- Auditoria do item 3 de §20.3: hoje nenhuma tela lista o histórico salvo
+  (`RewardResultModal` só recebe o resultado da sessão que acabou de terminar),
+  então o fallback de `getWorldMeta`/`WORLD_REWARD_COPY` para o Circuito não é
+  alcançável por um resultado antigo. A primeira tela que listar o histórico
+  deve dar aos mundos aposentados um metadado de exibição próprio.
+- O gate de diversão (§22.7) passa a ser o playtest humano do skeleton já
+  promovido (`GAME03_FUN_GATE`).
+
 ---
 
 ## 21. Risks
@@ -1450,6 +1492,7 @@ GAME03_PLATFORM_REUSE              = registry + import(), contrato explicit (wat
                                      do shell, RewardResultModal, metadados de mundo, game-sounds,
                                      convenções de validação; zero refactor
 GAME03_LEGACY_SLOT_RECOMMENDATION  = number-trail (Trilha Lógica), na promoção; security-panel depois
+GAME03_REPLACEMENT_DECISION        = APPROVED (decisão humana, GAME03-SKELETON-01; §20.4)
 GAME03_SKELETON_SCOPE              = §22: lab-only pela plataforma real; 1 cena; 3 estações; pool de 10;
                                      listas 5/6/8; pan/zoom/pinch/teclado; pista + Mostrar; fechamento;
                                      resultado; restart; readiness; mobile + desktop

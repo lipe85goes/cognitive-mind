@@ -569,10 +569,10 @@
   --hj-world-plaque-dark: #203c31;
 }
 
-.hj-world-logic {
-  --hj-world-glow: rgba(171, 142, 220, 0.34);
-  --hj-world-plaque: #4f3767;
-  --hj-world-plaque-dark: #322244;
+.hj-world-discovery {
+  --hj-world-glow: rgba(232, 164, 111, 0.34);
+  --hj-world-plaque: #6b3f24;
+  --hj-world-plaque-dark: #452816;
 }
 
 .hj-world-garden {
