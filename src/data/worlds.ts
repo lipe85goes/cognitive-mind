@@ -1,11 +1,11 @@
-import { Grid3x3, Hash, LayoutGrid, Palette, Sprout } from "lucide-react";
+import { Grid3x3, LayoutGrid, Palette, ScanSearch, Sprout } from "lucide-react";
 import type { GameId } from "@/types/game";
 
 /**
  * Visual theme key shared with the CSS world classes
  * (game-world-*, game-intro-*, reward-world-*, recent-circuit-*).
  */
-export type WorldKey = "memory" | "route" | "commands" | "logic" | "garden";
+export type WorldKey = "memory" | "route" | "commands" | "discovery" | "garden";
 
 /**
  * Per-world presentation for the shared game HUD.
@@ -31,10 +31,10 @@ export const WORLDS: Record<
     boardLabel: "Console de comandos",
     tagline: "Ative os sistemas",
   },
-  logic: {
-    icon: Hash,
-    boardLabel: "Caminho lógico",
-    tagline: "Ilumine a trilha",
+  discovery: {
+    icon: ScanSearch,
+    boardLabel: "Cena de exploração",
+    tagline: "Observe e encontre",
   },
   garden: {
     icon: Sprout,
@@ -83,12 +83,12 @@ export const GAME_WORLDS: Record<GameId, WorldMeta> = {
     purpose: "Atenção e controle em cada movimento.",
     icon: WORLDS.commands.icon,
   },
-  "number-trail": {
-    world: "logic",
-    name: "Trilha Lógica",
-    skill: "Atenção e ordem lógica",
-    purpose: "Conecte ideias e resolva passo a passo.",
-    icon: WORLDS.logic.icon,
+  "hidden-objects": {
+    world: "discovery",
+    name: "Estúdio das Descobertas",
+    skill: "Atenção e observação",
+    purpose: "Observe com calma. Há mais do que parece.",
+    icon: WORLDS.discovery.icon,
   },
   "seed-garden": {
     world: "garden",

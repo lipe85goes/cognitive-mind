@@ -31,11 +31,11 @@ export const WORLD_3D_PALETTE: Record<WorldKey, World3DPalette> = {
     glow: "#5eead4",
     accents: ["#fbbf24", "#38bdf8", "#fb7185"],
   },
-  logic: {
-    base: "#5570b6",
-    deep: "#2a3c6b",
-    glow: "#a5b4fc",
-    accents: ["#a78bfa", "#60a5fa", "#34d399"],
+  discovery: {
+    base: "#a8693f",
+    deep: "#5b3320",
+    glow: "#ffcf8a",
+    accents: ["#e8a46f", "#2f6a86", "#d9b56a"],
   },
   garden: {
     base: "#5d934e",

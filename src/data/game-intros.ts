@@ -49,15 +49,15 @@ const INTRO_COPY: Record<
       "Finalize em Ativar para acender a central.",
     ],
   },
-  "number-trail": {
-    originalName: "Trilha de Números",
+  "hidden-objects": {
+    originalName: "Explore e encontre",
     description:
-      "Toque nas pedras numeradas, em ordem, e veja a trilha se acender atrás de você.",
-    reassurance: "A ordem muda a cada trilha; não há cronômetro.",
+      "Explore o estúdio do explorador, aproxime a cena e encontre os objetos da sua lista.",
+    reassurance: "Sem cronômetro: observe com calma. Há mais do que parece.",
     steps: [
-      "Veja o número da próxima pedra.",
-      "Toque nas pedras na ordem certa.",
-      "Ilumine a trilha completa no seu ritmo.",
+      "Escolha a dificuldade e entre no estúdio.",
+      "Arraste para explorar e aproxime para olhar de perto.",
+      "Toque em cada objeto da lista quando o encontrar.",
     ],
   },
   "seed-garden": {

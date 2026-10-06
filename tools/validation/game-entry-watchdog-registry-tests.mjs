@@ -120,12 +120,16 @@ const same = (a, b) => canonical(a) === canonical(b);
 // --- what the watchdog did before the contract owned it (93ed0f1) -------------------
 
 const DEFAULT_WINDOW_MS = 12_000;
-/** Effective "preparing" window per game, in ms. */
+/**
+ * Effective "preparing" window per game, in ms. GAME03-SKELETON-01 retired the
+ * Trilha Lógica (`number-trail`); the Estúdio das Descobertas (`hidden-objects`)
+ * took its place and declares no window of its own (it only paints images).
+ */
 const PINNED = {
   "color-sequence": 12_000,
   "escape-maze": 28_000,
   "security-panel": 12_000,
-  "number-trail": 12_000,
+  "hidden-objects": 12_000,
   "seed-garden": 12_000,
 };
 const WATCHDOG_MESSAGE =

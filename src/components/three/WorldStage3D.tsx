@@ -8,7 +8,7 @@ import { WORLD_3D_PALETTE } from "@/components/three/world-palette";
 import { MemoryWorld3D } from "@/components/three/worlds/MemoryWorld3D";
 import { RouteWorld3D } from "@/components/three/worlds/RouteWorld3D";
 import { CommandWorld3D } from "@/components/three/worlds/CommandWorld3D";
-import { LogicWorld3D } from "@/components/three/worlds/LogicWorld3D";
+import { DiscoveryWorld3D } from "@/components/three/worlds/DiscoveryWorld3D";
 import { GardenWorld3D } from "@/components/three/worlds/GardenWorld3D";
 import type { WorldKey } from "@/data/worlds";
 
@@ -28,8 +28,8 @@ function WorldContent({ world }: { world: WorldKey }) {
       return <RouteWorld3D palette={palette} />;
     case "commands":
       return <CommandWorld3D palette={palette} />;
-    case "logic":
-      return <LogicWorld3D palette={palette} />;
+    case "discovery":
+      return <DiscoveryWorld3D palette={palette} />;
     case "garden":
       return <GardenWorld3D palette={palette} />;
   }

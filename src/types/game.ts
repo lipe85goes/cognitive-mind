@@ -4,7 +4,7 @@ export type GameId =
   | "color-sequence"
   | "escape-maze"
   | "security-panel"
-  | "number-trail"
+  | "hidden-objects"
   | "seed-garden";
 
 export type DifficultyLevel = "easy" | "medium" | "hard";

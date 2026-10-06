@@ -41,6 +41,6 @@ export const GAME_ENTRY_CONTRACTS: Record<GameId, GameEntryContract> = {
    */
   "escape-maze": { readiness: "explicit", entryWatchdogMs: 28_000 },
   "security-panel": { readiness: "frame-fallback" },
-  "number-trail": { readiness: "frame-fallback" },
+  "hidden-objects": { readiness: "explicit" },
   "seed-garden": { readiness: "frame-fallback" },
 };

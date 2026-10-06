@@ -31,12 +31,12 @@ export const ACTIVITIES: Activity[] = [
     icon: "🛡️",
   },
   {
-    id: "number-trail",
-    gameId: "number-trail",
-    title: "Trilha de Números",
-    description: "Trilha Lógica: siga a ordem indicada pelos números.",
+    id: "hidden-objects",
+    gameId: "hidden-objects",
+    title: "Estúdio das Descobertas",
+    description: "Explore e encontre: observe o estúdio e descubra os objetos da lista.",
     status: "available",
-    icon: "🔢",
+    icon: "🔎",
   },
   {
     id: "seed-garden",

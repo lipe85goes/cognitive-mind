@@ -48,6 +48,13 @@ npm 10.9.4 (`npm ci` limpo a partir do `package-lock.json`), Next 16.3.6
 | plataforma | App Shell, GameScreen, registry, entrada, resultado, persistência, Home | **contrato v1 travado** (§4.3) |
 | `security-panel`, `number-trail`, `seed-garden` | jogos legados | **fora do lock** — continuam ativos e compilando; serão recriados em missões próprias (dívida D11) |
 
+> **Pós-lock — GAME03-SKELETON-01 (classe 5 do §12):** `number-trail` foi
+> aposentado como jogo ativo e o Estúdio das Descobertas (`hidden-objects`)
+> ocupou o slot dele; o produto continua com cinco jogos ativos. O Estúdio fica
+> fora deste lock, como os legados — é o segundo consumidor da plataforma, não
+> um contrato travado —, e a dívida D11 perde os 3 timers da Trilha. Nenhum
+> contrato do §4 mudou (o gate segue verde). Ver `docs/GAME03_SKELETON_01.md`.
+
 ## 4. Frozen contracts
 
 ### 4.1 Rota Estratégica v1 — contrato de produto

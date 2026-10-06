@@ -33,9 +33,9 @@ const GAME_LOADERS: Record<GameId, GameComponentLoader> = {
     import("@/games/security-panel/SecurityPanelGame").then(
       (mod) => mod.SecurityPanelGame,
     ),
-  "number-trail": () =>
-    import("@/games/number-trail/NumberTrailGame").then(
-      (mod) => mod.NumberTrailGame,
+  "hidden-objects": () =>
+    import("@/games/hidden-objects/HiddenObjectsGame").then(
+      (mod) => mod.HiddenObjectsGame,
     ),
   "seed-garden": () =>
     import("@/games/seed-garden/SeedGardenGame").then(

@@ -1,0 +1,794 @@
+{
+  "base": "http://localhost:3100",
+  "buildId": "n4I686HZfmwsHnF7-f3-Z",
+  "scenarios": [
+    "desktop",
+    "mobile",
+    "small",
+    "reduced-motion",
+    "legacy",
+    "bundle"
+  ],
+  "results": [
+    {
+      "scenario": "desktop",
+      "id": "01_HOME_LOADS",
+      "pass": true,
+      "detail": {
+        "pips": [
+          "Selecionar Rota Estratégica",
+          "Selecionar Circuito de Memória",
+          "Selecionar Central de Comandos",
+          "Selecionar Estúdio das Descobertas",
+          "Selecionar Jardim de Sementes"
+        ]
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "02_STUDIO_IN_THE_TRAILS_SLOT",
+      "pass": true,
+      "detail": {
+        "order": [
+          "Selecionar Rota Estratégica",
+          "Selecionar Circuito de Memória",
+          "Selecionar Central de Comandos",
+          "Selecionar Estúdio das Descobertas",
+          "Selecionar Jardim de Sementes"
+        ]
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "03_04_OPENS_THROUGH_THE_TRANSITION",
+      "pass": true,
+      "detail": {
+        "transitionWorld": "Estúdio das Descobertas",
+        "readyAfterMs": 4098,
+        "phase": "revealing"
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "05_INTRO",
+      "pass": true,
+      "detail": {
+        "title": "Estúdio das Descobertas",
+        "steps": 3
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "06_READY_REPORTED_NOT_TIMED_OUT",
+      "pass": true,
+      "detail": {
+        "phase": "revealing",
+        "readyAfterMs": 4098
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "07_SETUP",
+      "pass": true,
+      "detail": {
+        "title": "Estúdio das Descobertas",
+        "levels": [
+          "Fácil",
+          "Médio",
+          "Difícil"
+        ],
+        "status": "setup"
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "08_CHOOSE_EASY",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "desktop",
+      "id": "09_EXPLORE_STARTS_PLAYING",
+      "pass": true,
+      "detail": {
+        "list": [
+          "Lupa: procurar",
+          "Ampulheta: procurar",
+          "Barco em miniatura: procurar",
+          "Lanterna: procurar",
+          "Bússola: procurar"
+        ]
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "10_PAN_MOVES_THE_CAMERA",
+      "pass": true,
+      "detail": {
+        "before": {
+          "x": 1600,
+          "y": 800
+        },
+        "after": {
+          "x": 2057.6877234803337,
+          "y": 800
+        }
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "10_PAN_RENDERS_NO_REACT_PER_POINTERMOVE",
+      "pass": true,
+      "detail": {
+        "pointerMoves": 24,
+        "reactCommitsDuringDrag": 0,
+        "styleMutations": 24,
+        "longTasks": []
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "10_COMMIT_COUNTER_IS_LIVE",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "desktop",
+      "id": "11_WHEEL_ZOOMS_AT_THE_CURSOR",
+      "pass": true,
+      "detail": {
+        "scale": [
+          0.524375,
+          0.655469
+        ],
+        "drift": 0.2504239610309665
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "11_ZOOM_BUTTONS",
+      "pass": true,
+      "detail": {
+        "scales": [
+          0.655469,
+          0.819336,
+          0.655469
+        ]
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "12_MESA_STATION",
+      "pass": true,
+      "detail": {
+        "centre": {
+          "x": 1600,
+          "y": 800
+        },
+        "cover": 0.524375
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "13_FREE_TAP_IS_FREE",
+      "pass": true,
+      "detail": {
+        "ripple": true,
+        "live": ""
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "14_TAP_FINDS_THE_TARGET",
+      "pass": true,
+      "detail": {
+        "id": "lupa",
+        "comfortable": true,
+        "before": 0,
+        "after": 1,
+        "announced": "Encontrou: Lupa. 1 de 5."
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "15_DRAG_FROM_A_TARGET_DOES_NOT_SELECT",
+      "pass": true,
+      "detail": {
+        "found": 1,
+        "moved": 120
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "16_HINT_1_NAMES_THE_ZONE",
+      "pass": true,
+      "detail": {
+        "subject": "Ampulheta",
+        "banner": "Pista: procure perto da janela.",
+        "hinted": "Janela",
+        "halo": false
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "17_HINT_2_LIGHTS_A_REGION",
+      "pass": true,
+      "detail": {
+        "banner": "Pista: procure na mesinha junto à janela.",
+        "halo": "hos-halo hos-halo-hint",
+        "button": "Mostrar onde está"
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "18_SHOW_WHERE_FRAMES_IT",
+      "pass": true,
+      "detail": {
+        "banner": "Aqui está: Ampulheta.",
+        "halo": "hos-halo hos-halo-reveal",
+        "viewCentre": {
+          "x": 800,
+          "y": 1062.9993014542451
+        },
+        "object": {
+          "x": 800,
+          "y": 1063
+        }
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "18_REVEALED_OBJECT_IS_TAPPED_BY_THE_EXPLORADOR",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "desktop",
+      "id": "19_FIND_ALL",
+      "pass": true,
+      "detail": {
+        "rest": [
+          {
+            "id": "barco",
+            "comfortable": true,
+            "before": 2,
+            "after": 3
+          },
+          {
+            "id": "lanterna",
+            "comfortable": true,
+            "before": 3,
+            "after": 4
+          },
+          {
+            "id": "bussola",
+            "comfortable": true,
+            "before": 4,
+            "after": 5
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "20_RESULT_SCREEN",
+      "pass": true,
+      "detail": {
+        "world": "Estúdio das Descobertas",
+        "title": "Estúdio explorado",
+        "summary": "Você encontrou todos os objetos do Estúdio.",
+        "details": {
+          "Modo": "Aberto",
+          "Objetos encontrados": "5",
+          "Objetos da lista": "5",
+          "Exploração concluída": "Sim"
+        }
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "20_ONE_RESULT_PER_SESSION",
+      "pass": true,
+      "detail": {
+        "before": 0,
+        "after": 1
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "20_RESULT_CONTRACT",
+      "pass": true,
+      "detail": {
+        "saved": {
+          "activityId": "hidden-objects",
+          "activityTitle": "Estúdio das Descobertas",
+          "gameId": "hidden-objects",
+          "score": 5,
+          "summary": "Você encontrou todos os objetos do Estúdio.",
+          "details": {
+            "difficulty": "easy",
+            "foundObjects": 5,
+            "totalObjects": 5,
+            "completed": true
+          },
+          "id": "hidden-objects-1791284562726",
+          "playedAt": "2026-10-06T11:02:42.726Z"
+        }
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "21_PLAY_AGAIN_IS_FRESH",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "desktop",
+      "id": "22_RESTART",
+      "pass": true,
+      "detail": {
+        "status": "playing",
+        "progress": {
+          "found": 0,
+          "total": 6
+        },
+        "centre": {
+          "x": 1600,
+          "y": 800
+        },
+        "list": 6
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "23_EXIT_SAVES_NOTHING",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "desktop",
+      "id": "24_BACK_HOME",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "desktop",
+      "id": "NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "NO_RETIRED_GAME_REQUESTED",
+      "pass": true,
+      "detail": {
+        "offending": []
+      }
+    },
+    {
+      "scenario": "mobile",
+      "id": "25_OPENS_ON_A_PHONE",
+      "pass": true,
+      "detail": {
+        "transitionWorld": "Estúdio das Descobertas",
+        "readyAfterMs": 1889,
+        "phase": "revealing"
+      }
+    },
+    {
+      "scenario": "mobile",
+      "id": "26_TOUCH_DRAG_PANS",
+      "pass": true,
+      "detail": {
+        "before": {
+          "x": 1599.998977763807,
+          "y": 799.9996486063087
+        },
+        "afterDrag": {
+          "x": 1216.6604054699858,
+          "y": 799.9996486063087
+        },
+        "dragCommits": 0
+      }
+    },
+    {
+      "scenario": "mobile",
+      "id": "27_PINCH_ZOOMS",
+      "pass": true,
+      "detail": {
+        "scale": [
+          0.391299,
+          1.07607
+        ]
+      }
+    },
+    {
+      "scenario": "mobile",
+      "id": "28_TOUCH_TAP_FINDS",
+      "pass": true,
+      "detail": {
+        "id": "lupa",
+        "comfortable": true,
+        "before": 0,
+        "after": 1
+      }
+    },
+    {
+      "scenario": "mobile",
+      "id": "29_TRAY",
+      "pass": true,
+      "detail": {
+        "panelTop": 687.078125,
+        "sceneBottom": 687.078125,
+        "sceneHeightShare": 0.7417987263033176,
+        "oneRow": true,
+        "minTarget": 44
+      }
+    },
+    {
+      "scenario": "mobile",
+      "id": "30_HINT_ON_A_PHONE",
+      "pass": true,
+      "detail": {
+        "banner": "Pista: procure perto da janela."
+      }
+    },
+    {
+      "scenario": "mobile",
+      "id": "31_COMPLETES_ON_A_PHONE",
+      "pass": true,
+      "detail": {
+        "saved": {
+          "activityId": "hidden-objects",
+          "activityTitle": "Estúdio das Descobertas",
+          "gameId": "hidden-objects",
+          "score": 5,
+          "summary": "Você encontrou todos os objetos do Estúdio.",
+          "details": {
+            "difficulty": "easy",
+            "foundObjects": 5,
+            "totalObjects": 5,
+            "completed": true
+          },
+          "id": "hidden-objects-1791284582373",
+          "playedAt": "2026-10-06T11:03:02.373Z"
+        }
+      }
+    },
+    {
+      "scenario": "mobile",
+      "id": "32_NO_HORIZONTAL_PAGE_OVERFLOW",
+      "pass": true,
+      "detail": {
+        "overflows": [
+          {
+            "step": "home",
+            "px": 0
+          },
+          {
+            "step": "playing",
+            "px": 0
+          },
+          {
+            "step": "found all",
+            "px": 0
+          },
+          {
+            "step": "result",
+            "px": 0
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "mobile",
+      "id": "NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "small",
+      "id": "SMALL_SETUP_REACHABLE",
+      "pass": true,
+      "detail": {
+        "explore": {
+          "x": 34.59375,
+          "y": 526.046875,
+          "width": 290.8125,
+          "height": 52
+        }
+      }
+    },
+    {
+      "scenario": "small",
+      "id": "SMALL_SCENE_KEEPS_ITS_SPACE",
+      "pass": true,
+      "detail": {
+        "sceneShare": 0.6594970703125,
+        "overflow": 0
+      }
+    },
+    {
+      "scenario": "small",
+      "id": "SMALL_FIND",
+      "pass": true,
+      "detail": {
+        "id": "barco",
+        "comfortable": true,
+        "before": 0,
+        "after": 1
+      }
+    },
+    {
+      "scenario": "small",
+      "id": "NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "reduced-motion",
+      "id": "RM_STATION_CUTS_INSTANTLY",
+      "pass": true,
+      "detail": {
+        "centre": {
+          "x": 2154.9463647199045,
+          "y": 800
+        },
+        "expectedX": 2154.9463647199045,
+        "movingMarks": 0
+      }
+    },
+    {
+      "scenario": "reduced-motion",
+      "id": "RM_HALO_WITHOUT_FADES",
+      "pass": true,
+      "detail": {
+        "halo": {
+          "animation": "hos-halo-life-still",
+          "timing": "steps(1)"
+        }
+      }
+    },
+    {
+      "scenario": "reduced-motion",
+      "id": "RM_NO_PARALLAX",
+      "pass": true,
+      "detail": {
+        "parallax": "translate3d(0px, 0px, 0px)"
+      }
+    },
+    {
+      "scenario": "reduced-motion",
+      "id": "NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "legacy",
+      "id": "33_LEGACY_RESULT_IS_READ_SAFELY",
+      "pass": true,
+      "detail": {
+        "selected": "Rota Estratégica",
+        "worlds": [
+          "Rota Estratégica",
+          "Circuito de Memória",
+          "Central de Comandos",
+          "Estúdio das Descobertas",
+          "Jardim de Sementes"
+        ],
+        "stage": true
+      }
+    },
+    {
+      "scenario": "legacy",
+      "id": "34_NO_CRASH",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "legacy",
+      "id": "35_NOT_SHOWN_AS_THE_STUDIO",
+      "pass": true,
+      "detail": {
+        "selected": "Rota Estratégica",
+        "worlds": [
+          "Rota Estratégica",
+          "Circuito de Memória",
+          "Central de Comandos",
+          "Estúdio das Descobertas",
+          "Jardim de Sementes"
+        ],
+        "stage": true
+      }
+    },
+    {
+      "scenario": "legacy",
+      "id": "35_OLD_RESULT_KEPT_NOT_CONVERTED",
+      "pass": true,
+      "detail": {
+        "stored": [
+          {
+            "gameId": "hidden-objects",
+            "score": 5
+          },
+          {
+            "gameId": "number-trail",
+            "score": 340
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "legacy",
+      "id": "35_RELOAD_FOLLOWS_THE_NEWEST_PLAYABLE_RESULT",
+      "pass": true,
+      "detail": {
+        "selected": "Estúdio das Descobertas"
+      }
+    },
+    {
+      "scenario": "legacy",
+      "id": "NO_RETIRED_GAME_REQUESTED",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "legacy",
+      "id": "NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "bundle",
+      "id": "BUNDLE_HOME_HAS_NO_STUDIO_CODE",
+      "pass": true,
+      "detail": {
+        "js": {
+          "files": 10,
+          "raw": 773153,
+          "gzip": 242550
+        },
+        "css": {
+          "files": 7,
+          "raw": 206111,
+          "gzip": 44525
+        }
+      }
+    },
+    {
+      "scenario": "bundle",
+      "id": "BUNDLE_STUDIO_IS_ITS_OWN_LAZY_SET",
+      "pass": true,
+      "detail": {
+        "files": [
+          "static/chunks/0utju0rjfhvz-.js",
+          "static/chunks/3_p8or-2m5xrm.css"
+        ]
+      }
+    },
+    {
+      "scenario": "bundle",
+      "id": "BUNDLE_STUDIO_SET_HAS_NO_BABYLON_ROUTE_OR_CIRCUIT",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "bundle",
+      "id": "BUNDLE_ROUTE_CIRCUIT_BABYLON_FREE_OF_THE_STUDIO",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "bundle",
+      "id": "BUNDLE_BABYLON_STILL_LAZY",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "bundle",
+      "id": "BUNDLE_NO_RETIRED_GAME_CHUNK",
+      "pass": true,
+      "detail": {}
+    }
+  ],
+  "metrics": {
+    "entryToReadyMs": 4098,
+    "desktopDrag": {
+      "pointerMoves": 24,
+      "reactCommitsDuringDrag": 0,
+      "styleMutations": 24,
+      "longTasks": []
+    },
+    "resultDetailsShown": {
+      "Modo": "Aberto",
+      "Objetos encontrados": "5",
+      "Objetos da lista": "5",
+      "Exploração concluída": "Sim"
+    },
+    "mobileEntryToReadyMs": 1889,
+    "mobileDrag": {
+      "touchMoves": 16,
+      "reactCommitsDuringDrag": 0
+    },
+    "mobileTray": {
+      "panelTop": 687.078125,
+      "sceneBottom": 687.078125,
+      "sceneHeightShare": 0.7417987263033176,
+      "oneRow": true,
+      "minTarget": 44
+    },
+    "bundle": {
+      "homeInitial": {
+        "js": {
+          "files": 10,
+          "raw": 773153,
+          "gzip": 242550
+        },
+        "css": {
+          "files": 7,
+          "raw": 206111,
+          "gzip": 44525
+        }
+      },
+      "studio": {
+        "js": {
+          "files": 1,
+          "raw": 31937,
+          "gzip": 10537
+        },
+        "css": {
+          "files": 1,
+          "raw": 12926,
+          "gzip": 3551
+        },
+        "files": [
+          "static/chunks/0utju0rjfhvz-.js",
+          "static/chunks/3_p8or-2m5xrm.css"
+        ]
+      },
+      "route": {
+        "js": {
+          "files": 3,
+          "raw": 55385,
+          "gzip": 18820
+        },
+        "css": {
+          "files": 1,
+          "raw": 9721,
+          "gzip": 2523
+        }
+      },
+      "circuit": {
+        "js": {
+          "files": 1,
+          "raw": 19502,
+          "gzip": 6549
+        },
+        "css": {
+          "files": 1,
+          "raw": 17603,
+          "gzip": 4162
+        }
+      },
+      "babylon": {
+        "js": {
+          "files": 36,
+          "raw": 8028358,
+          "gzip": 1767214
+        }
+      }
+    }
+  }
+}

@@ -82,8 +82,15 @@ commit `da551b17eddbf0a156228c7e2a5fc9ca178180c9` (2026-10-05).
   performance, an approved Rota 2.0 mission, or a platform requirement found by
   a real second consumer). `node tools/validation/gameplay-platform-lock-v1.mjs`
   checks the frozen contracts.
-- Game 03 is the next planned consumer of the platform (Game 03 Discovery). It
-  is not implemented.
+- Game 03 — the Estúdio das Descobertas (`hidden-objects`) — is the platform's
+  real second consumer, implemented as a playable skeleton (V0,
+  GAME03-SKELETON-01, `docs/GAME03_SKELETON_01.md`). By human decision it took
+  the active slot of the Trilha Lógica (`number-trail`), which is retired as an
+  active game: the product still has exactly five active games. Old Trilha
+  results stay in players' history as they were saved (read compatibility —
+  nothing deleted, filtered or converted). The Rota and the Circuito stay locked
+  and untouched. What Game 03 does next depends on the human playtest
+  (`GAME03_FUN_GATE`).
 - Rota 2.0 is a later phase, explicitly separate from v1.
 
 ## Reproducing the project

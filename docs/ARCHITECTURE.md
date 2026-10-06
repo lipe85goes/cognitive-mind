@@ -15,8 +15,11 @@ política de mudança: `docs/GAMEPLAY_PLATFORM_LOCK_V1.md`. Gate:
 
 - `v06-portal-requires-lights` continua a integração canônica; ROUTE-C0 a
   ROUTE-C7 (C7A/C7B/C7C) estão fechadas.
-- Próximo consumidor planejado da plataforma: Game 03 (Discovery liberado; não
-  implementado). Regra: segundo consumidor primeiro, abstração depois.
+- Game 03 — Estúdio das Descobertas (`hidden-objects`) — é o segundo
+  consumidor real da plataforma: skeleton V0 jogável desde GAME03-SKELETON-01,
+  no slot da Trilha Lógica (aposentada). Ver "Estúdio das Descobertas (Game 03)"
+  abaixo e `docs/GAME03_SKELETON_01.md`. Regra: segundo consumidor primeiro,
+  abstração depois.
 - Rota 2.0 é uma fase posterior, separada da v1 (microsequência de captura,
   armadilha que altera o mapa, objetivos dependentes, mapa que muda em jogo,
   Caçador adaptativo — nada disso existe na v1).
@@ -84,8 +87,10 @@ home (HomeStage)
 | Pontuação e limites | `src/engine/scoring.ts` |
 | Resultado/recompensa | `src/engine/rewards.ts` |
 | Persistência local | `src/engine/storage.ts` |
+| Estúdio das Descobertas: a cena como dados (alvos, estações, listas por dificuldade, camadas) | `src/games/hidden-objects/hidden-objects-scene.ts` |
+| Estúdio: câmera, gestos e regras da sessão (puros) e o controlador DOM da câmera | `src/games/hidden-objects/hidden-objects-{camera,gesture,model,controller}.ts` |
 
-Use `getWorldMeta(gameId)` para dados derivados de histórico salvo. Ele tem fallback seguro para resultados antigos ou ids desconhecidos.
+Use `getWorldMeta(gameId)` para dados derivados de histórico salvo. Ele tem fallback seguro para resultados antigos ou ids desconhecidos — para um jogo aposentado (`number-trail`) o fallback é o Circuito, então a primeira tela que listar o histórico deve dar aos mundos aposentados um metadado de exibição próprio.
 
 ## Jogos ativos
 
@@ -94,10 +99,16 @@ Use `getWorldMeta(gameId)` para dados derivados de histórico salvo. Ele tem fal
 | `escape-maze` | Rota Estratégica | Jogo principal em foco. Usa Babylon + GLBs. |
 | `color-sequence` | Circuito de Memória | Jogo de memória em foco. Usa palco 2.5D com board mestre e overlays. |
 | `security-panel` | Central de Comandos | Ativo, mas ainda é jogo legado a recriar futuramente. |
-| `number-trail` | Trilha Lógica | Ativo, mas ainda é jogo legado a recriar futuramente. |
+| `hidden-objects` | Estúdio das Descobertas | Game 03, skeleton V0 jogável (GAME03-SKELETON-01) no slot da antiga Trilha; arte provisória; o próximo passo depende do playtest humano (`GAME03_FUN_GATE`). |
 | `seed-garden` | Jardim de Sementes | Ativo, mas ainda é jogo legado a recriar futuramente. |
 
-Os jogos legados continuam compilando e aparecem no registry. Não remova `GameLayout`, `GameActions`, `StatusBanner` ou `StatCard` enquanto esses três jogos dependerem deles.
+São exatamente esses cinco. Os dois jogos legados continuam compilando e aparecem no registry. Não remova `GameLayout`, `GameActions`, `StatusBanner` ou `StatCard` enquanto eles dependerem deles.
+
+### Histórico da Trilha (`number-trail`, aposentada)
+
+A Trilha Lógica deixou de ser jogo ativo em GAME03-SKELETON-01 (decisão humana registrada em `docs/GAME03_DISCOVERY_01.md` §20.4): saiu do `GameId`, do registry, do contrato de entrada, das estações e das tabelas de mundo/intro/Home/visual/maquete/recompensa; o componente foi removido e a arte da Home está em `docs/archive/number-trail-retired/`.
+
+Resultados antigos com `gameId: "number-trail"` continuam no `localStorage` exatamente como foram gravados — compatibilidade de leitura, sem migração: nada os apaga, filtra ou converte em resultado do Estúdio, e um resultado novo só entra à frente da lista. Um id aposentado não abre nada (não tem loader, contrato nem atividade); como resultado mais recente, só deixa de pré-selecionar um mundo e a Home cai no primeiro do mapa. `hidden-objects-skeleton-tests.mjs` (H13) e o cenário `legacy` de `hidden-objects-browser-probe.mjs` fixam esse comportamento.
 
 ## Home ativa
 
@@ -115,7 +126,7 @@ Contrato da Home:
 - `/` não usa Three, R3F, Canvas, `requestAnimationFrame` ou render loop contínuo.
 - O CSS novo da Home fica isolado em `src/styles/home.css` e usa prefixo `.hj-*`.
 - `Rota Estratégica` e `Circuito de Memória` são mundos-herói.
-- `Central de Comandos`, `Trilha Numérica` e `Jardim de Sementes` continuam acessíveis como mundos secundários.
+- `Central de Comandos`, `Estúdio das Descobertas` (no slot da antiga Trilha, mesma geometria) e `Jardim de Sementes` são os mundos secundários.
 
 Assets ativos/permitidos da Home:
 
@@ -309,6 +320,23 @@ A cena mestre do Circuito (Home, transição, introdução, preparação) carreg
 
 `useColorSequenceGame.ts` é regra de jogo. Não altere sequência, timing, tentativas, scoring, progressão, reward ou localStorage por motivo visual.
 
+## Estúdio das Descobertas (Game 03)
+
+Skeleton V0 (GAME03-SKELETON-01), fora do lock como os legados: é o segundo consumidor da plataforma, não um contrato travado. Registro completo — arquitetura, alvos, dificuldade, câmera, gestos, medições, `TO_VALIDATE_IN_SKELETON` e o protocolo `GAME03_FUN_GATE` — em `docs/GAME03_SKELETON_01.md`; decisões de produto em `docs/GAME03_DISCOVERY_01.md`.
+
+Arquivos (`src/games/hidden-objects/`):
+
+- `hidden-objects-scene.ts` — a cena como dados (3200×1600 su, estações, 10 alvos, listas 5/6/8, camadas);
+- `hidden-objects-camera.ts`, `hidden-objects-gesture.ts`, `hidden-objects-model.ts` — câmera, reconhecedor TAP/DRAG/PINCH e regras da sessão, puros;
+- `hidden-objects-controller.ts` — Pointer Events, roda, teclado e `ResizeObserver` ligados à câmera sem React; escreve o `transform` só dentro de `requestAnimationFrame`;
+- `HiddenObjectsScene.tsx`, `HiddenObjectsGame.tsx`, `hidden-objects.css` (`.hos-*`).
+
+Contrato com a plataforma: `GameId` `hidden-objects`; loader com `import()` literal (chunk próprio, nada no grafo inicial da Home); `readiness: "explicit"` com o watchdog padrão (pronto só depois de as três camadas essenciais decodificarem e de uma oportunidade de pintura; falha de camada → `onEntryError`); sem continuação; resultado com `score` = objetos encontrados e `details` `{ difficulty, foundObjects, totalObjects, completed }`. Não importa nada da Rota, do Circuito nem Babylon.
+
+Runtime visual: `public/assets/hidden-objects/explorer-studio/v0/` (prancha, janela, primeiro plano, miniaturas, arte de transição) e a maquete da Home em `public/illustrations/home/dioramas/discovery/`, todos gerados por `tools/assets/create_hidden_objects_scene.mjs` (determinístico, lê as regiões da cena). Pasta versionada: arte nova é pasta nova, nunca sobrescrita.
+
+Validação: `node tools/validation/hidden-objects-skeleton-tests.mjs` (`--counterfactuals` para a base e os mutantes) e `node tools/validation/hidden-objects-browser-probe.mjs` (build de produção).
+
 ## Engine e libs compartilhadas
 
 `src/engine/` contém lógica compartilhada e deve permanecer independente de UI:
@@ -333,6 +361,9 @@ A cena mestre do Circuito (Home, transição, introdução, preparação) carreg
 - `docs/archive/route-previews/` — previews PNG dos GLBs da Rota.
 - `docs/archive/memory-circuit/` — protótipos visuais antigos do Circuito.
 - `docs/archive/home-legacy/` — ilustração antiga da Home.
+- `docs/archive/number-trail-retired/` — arte da Home da Trilha Lógica aposentada.
+- `docs/archive/hidden-objects/explorer-studio/` — mockup conceitual (só referência) e pranchas de revisão do Estúdio.
+- `docs/archive/game03-skeleton-01/` — testemunhas visuais e o registro do probe do skeleton do Game 03.
 
 Não importe nada de `docs/archive/` no app. Se um asset voltar a ser runtime, mova para `public/` com uma missão explícita e atualize a documentação.
 
@@ -351,6 +382,8 @@ Scripts ativos de geração visual:
 - `tools/blender/create_route_trap_glb.py`
 - `tools/blender/route_prop_asset_utils.py`
 - `tools/assets/generate_route_board_textures.py`
+
+Arte provisória do Estúdio das Descobertas (sem Blender): `tools/assets/create_hidden_objects_scene.mjs`.
 
 Geradores com `--preview` podem recriar PNGs dentro de `public/`; esses previews não devem ser commitados como runtime sem nova decisão.
 
@@ -381,7 +414,8 @@ Preserve obrigatoriamente:
 
 - Registro classificado (BLOCKER / POST-LOCK / ROTA-2.0 / DEV/TOOLING) do Gameplay/Platform Lock v1: `docs/GAMEPLAY_PLATFORM_LOCK_V1.md` §9.
 - `globals.css` ainda tem CSS legado misturado com CSS ativo. Use `docs/CSS_CLEANUP_MAP.md` antes de qualquer limpeza e remova apenas com busca de referência e validação visual.
-- `security-panel`, `number-trail` e `seed-garden` continuam ativos, mas ainda devem ser recriados no padrão visual atual em missões futuras.
+- `security-panel` e `seed-garden` continuam ativos, mas ainda devem ser recriados no padrão visual atual em missões futuras; `number-trail` foi aposentado em GAME03-SKELETON-01. O CSS que só a Trilha usava (`.logic-*`, `.game-world-logic`, `.reward-world-number-trail` em `globals.css`) ficou sem consumidor e sai numa limpeza de CSS própria (`docs/CSS_CLEANUP_MAP.md`).
+- Estúdio das Descobertas: arte definitiva, recortes de "encontrado", som e segunda cena dependem do playtest (`docs/GAME03_SKELETON_01.md` §7–§11); a primeira tela que listar o histórico precisa de metadado de exibição para mundos aposentados.
 - Home/Jornada ainda pode receber refinamento visual, mas sem quebrar o fluxo de entrada dos mundos.
 - Rota Estratégica ainda tem dívidas de evolução visual e possíveis expansões futuras como 9x9/armadilha ativa, fora do escopo atual.
 - Circuito de Memória ainda precisa de art pass fino, mas a arquitetura atual deve continuar modular e baseada no board mestre.
