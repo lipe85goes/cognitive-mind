@@ -4,9 +4,12 @@ import {
   DIFFICULTY_PRESETS,
   HIDDEN_OBJECTS,
   SCENE_HEIGHT,
+  SCENE_ID,
   SCENE_STATIONS,
   SCENE_WIDTH,
   type HiddenObjectDefinition,
+  type HintRung,
+  type ListStyle,
   type SceneRegion,
   type StationId,
   type TargetId,
@@ -98,7 +101,7 @@ export function hitTest(
 
 export type SessionStatus = "setup" | "playing" | "completed";
 
-/** 0 = no hint yet; 1 = zone; 2 = sub-region; 3 = "Mostrar onde está". */
+/** 0 = no hint yet; n = the n-th rung of the difficulty's ladder (at most three). */
 export type HintStage = 0 | 1 | 2 | 3;
 
 export type SessionEvent =
@@ -220,9 +223,11 @@ export function sessionReducer(state: SessionState, action: SessionAction): Sess
       if (state.status !== "playing") return state;
       const subject = hintSubject(state);
       if (!subject) return state;
-      // The ladder is per object: a new object starts at the first rung.
+      // The ladder is per object: a new object starts at the first rung, and
+      // pressing at the top repeats the top rung — it never climbs past it.
+      const top = hintLadderFor(state.difficulty).length;
       const stage: HintStage =
-        subject === state.hintTarget ? (Math.min(3, state.hintStage + 1) as HintStage) : 1;
+        subject === state.hintTarget ? (Math.min(top, state.hintStage + 1) as HintStage) : 1;
       return emit(
         { ...state, hintTarget: subject, hintStage: stage, hintSeq: state.hintSeq + 1 },
         { kind: "hint", targetId: subject, stage },
@@ -249,23 +254,40 @@ export interface HintHalo {
   r: number;
 }
 
-/** Share of the halo radius the centre may sit away from the object (it is inside, never centred). */
+/** Share of the pool's radius its centre sits away from the object (it is inside, never centred). */
 export const HINT_OFFSET_SHARE = 0.4;
 /** The reveal halo hugs the object with this much room. */
 export const REVEAL_HALO_PADDING = 28;
 
+export function hintLadderFor(difficulty: DifficultyLevel): readonly HintRung[] {
+  return DIFFICULTY_PRESETS[difficulty].hintLadder;
+}
+
+/** The rung a stage of the ladder stands for; null for stage 0 (and past the top). */
+export function hintRung(difficulty: DifficultyLevel, stage: HintStage): HintRung | null {
+  return stage > 0 ? (hintLadderFor(difficulty)[stage - 1] ?? null) : null;
+}
+
+/** Whether a difficulty can ever point at the object itself ("Mostrar onde está"). */
+export function revealsExactly(difficulty: DifficultyLevel): boolean {
+  return hintLadderFor(difficulty).includes("reveal");
+}
+
 /**
- * Stage 2: a soft pool of light that holds the whole object, centred off it.
- * Stage 3: a halo exactly on the object. Other stages have no halo.
+ * The light a rung lays over the room, if any:
+ *   area / wide-area — a soft pool that holds the whole object, centred off it;
+ *   reveal           — a halo exactly on the object;
+ *   every other rung — none (Difícil never lights anything).
  */
 export function hintHalo(id: TargetId, difficulty: DifficultyLevel, stage: HintStage): HintHalo | null {
+  const rung = hintRung(difficulty, stage);
   const { region } = targetById(id);
   const centre = regionCenter(region);
   const objectRadius = regionRadius(region);
-  if (stage === 3) return { cx: centre.x, cy: centre.y, r: objectRadius + REVEAL_HALO_PADDING };
-  if (stage !== 2) return null;
+  if (rung === "reveal") return { cx: centre.x, cy: centre.y, r: objectRadius + REVEAL_HALO_PADDING };
+  if (rung !== "area" && rung !== "wide-area") return null;
   const r = Math.max(DIFFICULTY_PRESETS[difficulty].hintRadius, 1.8 * objectRadius);
-  // Room for the object inside the halo, wherever the offset points.
+  // Room for the object inside the pool, wherever the offset points.
   const offset = Math.min(HINT_OFFSET_SHARE * r, r - objectRadius);
   const angle = hintAngle(id);
   const clampTo = (value: number, max: number) => Math.min(max - r * 0.25, Math.max(r * 0.25, value));
@@ -276,28 +298,106 @@ export function hintHalo(id: TargetId, difficulty: DifficultyLevel, stage: HintS
   };
 }
 
+/** What a rung asks of the camera — only ever because the Explorador pressed Pista. */
+export type HintCameraMove =
+  | { kind: "station"; station: StationId }
+  | { kind: "circle"; center: Point; radius: number }
+  | { kind: "frame"; bounds: Rect };
+
+/**
+ * station → glide to the station; area / wide-area → bring the pool on screen
+ * if it is not; reveal → frame the object. Direction and context leave the
+ * camera where the Explorador put it.
+ */
+export function hintCameraMove(id: TargetId, difficulty: DifficultyLevel, stage: HintStage): HintCameraMove | null {
+  const rung = hintRung(difficulty, stage);
+  const target = targetById(id);
+  if (rung === "station") return { kind: "station", station: target.station };
+  if (rung === "reveal") return { kind: "frame", bounds: regionBounds(target.region) };
+  const halo = hintHalo(id, difficulty, stage);
+  return halo ? { kind: "circle", center: { x: halo.cx, y: halo.cy }, radius: halo.r } : null;
+}
+
 export function stationLabel(id: StationId): string {
   return SCENE_STATIONS.find((station) => station.id === id)?.label ?? id;
 }
 
-export function hintMessage(id: TargetId, stage: HintStage): string {
+/** The hint line for a rung. Only "Mostrar onde está" names the object: Difícil never does. */
+export function hintMessage(id: TargetId, difficulty: DifficultyLevel, stage: HintStage): string {
   const target = targetById(id);
   const station = SCENE_STATIONS.find((candidate) => candidate.id === target.station);
-  if (stage === 1) return `Pista: procure ${station?.hintPhrase ?? "pela sala"}.`;
-  if (stage === 2) return `Pista: procure ${target.hintRegion}.`;
-  if (stage === 3) return `Aqui está: ${target.label}.`;
-  return "";
+  switch (hintRung(difficulty, stage)) {
+    case "station":
+      return `Pista: procure ${station?.hintPhrase ?? "pela sala"}.`;
+    case "area":
+      return `Pista: procure ${target.hintRegion}.`;
+    case "wide-area":
+      return "Pista: o brilho marca a região — procure por ali.";
+    case "direction":
+      return `Pista: olhe ${target.hintDirection}.`;
+    case "context":
+      return `Pista: está ${target.hintContext}.`;
+    case "reveal":
+      return `Aqui está: ${target.label}.`;
+    default:
+      return "";
+  }
 }
 
 /** What the Pista button offers next for its subject. */
 export function hintButtonLabel(state: SessionState): string {
   const subject = hintSubject(state);
   if (!subject) return "Pista";
+  const ladder = hintLadderFor(state.difficulty);
   const stage = subject === state.hintTarget ? state.hintStage : 0;
   if (stage === 0) return "Pista";
-  if (stage === 1) return "Mais uma pista";
-  if (stage === 2) return "Mostrar onde está";
-  return "Mostrar de novo";
+  if (stage < ladder.length) return ladder[stage] === "reveal" ? "Mostrar onde está" : "Outra pista";
+  return ladder[stage - 1] === "reveal" ? "Mostrar de novo" : "Rever pista";
+}
+
+// --- the list ------------------------------------------------------------------------------------------
+
+export interface ListEntry {
+  id: TargetId;
+  found: boolean;
+  /** The line the list shows: the name, or — Difícil, not found yet — what the object is for. */
+  text: string;
+  /** Difícil, once found: the clue it answered, kept under the name. */
+  answered: string | null;
+  /** The thumbnail's treatment; null = no image (Difícil before the find). */
+  art: "picture" | "silhouette" | null;
+  /** What the item's button says to assistive technology (never the name of an unfound Difícil object). */
+  accessibleText: string;
+}
+
+export function listStyleFor(difficulty: DifficultyLevel): ListStyle {
+  return DIFFICULTY_PRESETS[difficulty].listStyle;
+}
+
+/** How the list shows one object right now. */
+export function listEntryFor(state: Pick<SessionState, "difficulty" | "foundIds">, id: TargetId): ListEntry {
+  const target = targetById(id);
+  const found = state.foundIds.includes(id);
+  const style = listStyleFor(state.difficulty);
+  if (found) {
+    return {
+      id,
+      found,
+      text: target.label,
+      answered: style === "clue" ? target.clue : null,
+      art: "picture",
+      accessibleText: `${target.accessibleLabel}: encontrado`,
+    };
+  }
+  if (style === "clue") {
+    return { id, found, text: target.clue, answered: null, art: null, accessibleText: `${target.clue} Procurar.` };
+  }
+  return { id, found, text: target.label, answered: null, art: style, accessibleText: `${target.accessibleLabel}: procurar` };
+}
+
+/** How the Pista button refers to its subject: as the list does (Difícil: by its clue). */
+export function subjectText(state: Pick<SessionState, "difficulty" | "foundIds">, id: TargetId): string {
+  return listEntryFor(state, id).text;
 }
 
 // --- copy and result ------------------------------------------------------------------------------------
@@ -306,25 +406,33 @@ export function progressLabel(state: SessionState): string {
   return `${state.foundIds.length} de ${targetsFor(state.difficulty).length}`;
 }
 
-/** The short live-region line for what just happened (a free tap announces nothing). */
+/**
+ * The short live-region line for what just happened (a free tap announces
+ * nothing). A find names the object — in Difícil that is when the name is
+ * first said, with the clue it answered.
+ */
 export function announcementFor(state: SessionState): string {
   const event = state.lastEvent;
   if (!event) return "";
   if (event.kind === "found") {
+    const target = targetById(event.targetId);
+    const answered = listStyleFor(state.difficulty) === "clue" ? ` ${target.clue}` : "";
     const done = state.status === "completed";
     return done
-      ? `Encontrou: ${targetById(event.targetId).label}. Estúdio explorado!`
-      : `Encontrou: ${targetById(event.targetId).label}. ${progressLabel(state)}.`;
+      ? `Encontrou: ${target.label}.${answered} Estúdio explorado!`
+      : `Encontrou: ${target.label}.${answered} ${progressLabel(state)}.`;
   }
   if (event.kind === "already") return `Você já encontrou: ${targetById(event.targetId).label}.`;
-  if (event.kind === "hint") return hintMessage(event.targetId, event.stage);
+  if (event.kind === "hint") return hintMessage(event.targetId, state.difficulty, event.stage);
   return "";
 }
 
 /**
  * The session's result: only a finished exploration produces one. `score` is
  * neutral — how many objects were found (5, 6 or 8) — never reduced by hints,
- * "Mostrar onde está" or free taps, none of which is recorded.
+ * "Mostrar onde está" or free taps, none of which is recorded. `sceneId` says
+ * which room was explored (results saved before it existed are all the Estúdio
+ * do Explorador).
  */
 export function buildHiddenObjectsResult(state: SessionState): Omit<GameResult, "id" | "playedAt"> {
   const total = targetsFor(state.difficulty).length;
@@ -339,6 +447,7 @@ export function buildHiddenObjectsResult(state: SessionState): Omit<GameResult, 
       foundObjects: state.foundIds.length,
       totalObjects: total,
       completed: state.status === "completed",
+      sceneId: SCENE_ID,
     },
   };
 }

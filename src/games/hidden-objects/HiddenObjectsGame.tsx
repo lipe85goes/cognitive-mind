@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useCallback, useEffect, useId, useMemo, useReducer, useRef, useState } from "react";
-import { ArrowLeft, Check, Lightbulb, RotateCcw, Search } from "lucide-react";
+import { ArrowLeft, Check, Lightbulb, ListChecks, RotateCcw, Search } from "lucide-react";
 import type { DifficultyLevel, GameComponentProps } from "@/types/game";
 import type { CameraView, HiddenObjectsSceneController, SceneTap } from "@/games/hidden-objects/hidden-objects-controller";
 import {
@@ -12,11 +12,14 @@ import {
   buildHiddenObjectsResult,
   createSession,
   hintButtonLabel,
+  hintCameraMove,
   hintHalo,
   hintMessage,
+  hintRung,
   hintSubject,
-  regionBounds,
+  listEntryFor,
   sessionReducer,
+  subjectText,
   targetById,
   targetsFor,
 } from "@/games/hidden-objects/hidden-objects-model";
@@ -33,26 +36,29 @@ import "@/games/hidden-objects/hidden-objects.css";
 export const COMPLETION_CARD_DELAY_MS = 700;
 
 const DIFFICULTY_NOTE: Record<DifficultyLevel, string> = {
-  easy: "5 objetos · lista com imagens",
-  medium: "6 objetos · lista com silhuetas",
-  hard: "8 objetos · lista só com palavras",
+  easy: "5 objetos · lista com imagens · a pista pode mostrar onde está",
+  medium: "6 objetos · lista com silhuetas · pistas mais vagas",
+  hard: "8 objetos · a lista descreve, não nomeia · a pista nunca revela",
 };
 
 /**
- * Estúdio das Descobertas (GAME03-SKELETON-01). React owns the session and
- * the HUD; the camera, gestures and hit geometry live in plain modules and
- * reach React only as discrete events (a tap, a settled view).
+ * Estúdio das Descobertas (GAME03-SKELETON-01, GAME03-EXPERIENCE-02). React
+ * owns the session and the HUD; the camera, gestures and hit geometry live in
+ * plain modules and reach React only as discrete events (a tap, a settled view).
  */
 export function HiddenObjectsGame({ onComplete, onExit, onEntryReady, onEntryError }: GameComponentProps) {
   const [state, dispatch] = useReducer(sessionReducer, undefined, () => createSession());
   const [view, setView] = useState<CameraView | null>(null);
   const [cardRound, setCardRound] = useState<number | null>(null);
   const [dismissedRound, setDismissedRound] = useState<number | null>(null);
+  /** The objectives tray can fold away so the room takes the screen (never remembered: the game stores nothing). */
+  const [trayOpen, setTrayOpen] = useState(true);
   const controllerRef = useRef<HiddenObjectsSceneController | null>(null);
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const concludeRef = useRef<HTMLButtonElement>(null);
   const completionSent = useRef(false);
   const instructionsId = useId();
+  const trayId = useId();
 
   const listed = targetsFor(state.difficulty);
   const preset = DIFFICULTY_PRESETS[state.difficulty];
@@ -61,7 +67,7 @@ export function HiddenObjectsGame({ onComplete, onExit, onEntryReady, onEntryErr
   const cardVisible = finished && cardRound === state.round && dismissedRound !== state.round;
   const subject = hintSubject(state);
   const hintText =
-    state.hintTarget && state.hintStage > 0 ? hintMessage(state.hintTarget, state.hintStage) : "";
+    state.hintTarget && state.hintStage > 0 ? hintMessage(state.hintTarget, state.difficulty, state.hintStage) : "";
   const hintedStation =
     state.hintTarget && state.hintStage >= 1 ? targetById(state.hintTarget).station : null;
 
@@ -79,18 +85,15 @@ export function HiddenObjectsGame({ onComplete, onExit, onEntryReady, onEntryErr
     if (state.round > 0) viewportRef.current?.focus({ preventScroll: true });
   }, [state.round]);
 
-  // The hint ladder moves the camera only because the Explorador asked.
+  // The hint ladder moves the camera only because the Explorador asked, and only as far as its rung allows.
   useEffect(() => {
     const event = state.lastEvent;
     const controller = controllerRef.current;
     if (!controller || event?.kind !== "hint") return;
-    const target = targetById(event.targetId);
-    if (event.stage === 1) controller.goToStation(target.station);
-    if (event.stage === 2) {
-      const halo = hintHalo(event.targetId, state.difficulty, 2);
-      if (halo) controller.showCircle({ x: halo.cx, y: halo.cy }, halo.r);
-    }
-    if (event.stage === 3) controller.reveal(regionBounds(target.region));
+    const move = hintCameraMove(event.targetId, state.difficulty, event.stage);
+    if (move?.kind === "station") controller.goToStation(move.station);
+    if (move?.kind === "circle") controller.showCircle(move.center, move.radius);
+    if (move?.kind === "frame") controller.reveal(move.bounds);
   }, [state.eventSeq, state.lastEvent, state.difficulty]);
 
   // The closing card follows the last find after a short pause (cleared on restart/unmount).
@@ -115,25 +118,28 @@ export function HiddenObjectsGame({ onComplete, onExit, onEntryReady, onEntryErr
   const feedback = useMemo<SceneFeedback>(() => {
     const event = state.lastEvent;
     const seq = state.eventSeq;
-    const haloStage = state.hintTarget ? state.hintStage : 0;
-    const halo =
-      state.hintTarget && (haloStage === 2 || haloStage === 3)
-        ? hintHalo(state.hintTarget, state.difficulty, haloStage)
-        : null;
-    const haloSeq = state.hintSeq;
+    const halo = state.hintTarget ? hintHalo(state.hintTarget, state.difficulty, state.hintStage) : null;
+    const reveal = state.hintTarget ? hintRung(state.difficulty, state.hintStage) === "reveal" : false;
     return {
       found: state.foundIds,
-      latestFound: event?.kind === "found" ? { id: event.targetId, seq } : null,
+      latestFound:
+        event?.kind === "found" ? { id: event.targetId, seq, label: targetById(event.targetId).label } : null,
       again: event?.kind === "already" ? { id: event.targetId, seq } : null,
       ripple: event?.kind === "miss" ? { x: event.point.x, y: event.point.y, seq } : null,
-      halo: halo ? { ...halo, kind: haloStage === 3 ? "reveal" : "hint", seq: haloSeq } : null,
+      halo: halo ? { ...halo, kind: reveal ? "reveal" : "hint", seq: state.hintSeq } : null,
     };
   }, [state.lastEvent, state.eventSeq, state.foundIds, state.hintTarget, state.hintStage, state.hintSeq, state.difficulty]);
 
   const announcement = announcementFor(state);
+  const trayShown = trayOpen || state.status === "setup";
 
   return (
-    <div className="hos-shell" data-status={state.status} data-list={preset.listStyle}>
+    <div
+      className="hos-shell"
+      data-status={state.status}
+      data-list={preset.listStyle}
+      data-tray={trayShown ? "open" : "closed"}
+    >
       <header className="hos-topbar">
         <button type="button" className="hos-chip-button" onClick={onExit} aria-label="Voltar à jornada">
           <ArrowLeft size={20} aria-hidden="true" />
@@ -141,7 +147,9 @@ export function HiddenObjectsGame({ onComplete, onExit, onEntryReady, onEntryErr
         </button>
         <div className="hos-title">
           <strong>{HIDDEN_OBJECTS_TITLE}</strong>
-          <span className="hos-hide-narrow">{HIDDEN_OBJECTS_SUBTITLE}</span>
+          <span className="hos-hide-narrow">
+            {state.status === "setup" ? HIDDEN_OBJECTS_SUBTITLE : `${preset.label} · ${HIDDEN_OBJECTS_SUBTITLE}`}
+          </span>
         </div>
         <button
           type="button"
@@ -194,34 +202,54 @@ export function HiddenObjectsGame({ onComplete, onExit, onEntryReady, onEntryErr
             >
               <span style={{ width: `${(100 * state.foundIds.length) / listed.length}%` }} />
             </div>
+            <button
+              type="button"
+              className="hos-tray-toggle"
+              aria-expanded={trayShown}
+              aria-controls={trayId}
+              aria-label={
+                trayShown
+                  ? "Recolher a lista de objetos"
+                  : `Mostrar a lista de objetos: ${state.foundIds.length} de ${listed.length} encontrados`
+              }
+              onClick={() => setTrayOpen((open) => !open)}
+            >
+              <ListChecks size={18} aria-hidden="true" />
+              <span>{trayShown ? "Recolher" : "Lista"}</span>
+              <span className="hos-tray-count">
+                {state.foundIds.length}/{listed.length}
+              </span>
+            </button>
           </div>
 
-          <ul className="hos-list">
+          <ul className="hos-list" id={trayId} hidden={!trayShown}>
             {listed.map((id) => {
-              const target = targetById(id);
-              const found = state.foundIds.includes(id);
-              const focused = !found && subject === id && state.focusedTarget === id;
-              const showArt = found || preset.listStyle !== "word";
+              const entry = listEntryFor(state, id);
+              const focused = !entry.found && subject === id && state.focusedTarget === id;
               return (
                 <li key={id}>
                   <button
                     type="button"
                     className="hos-item"
-                    data-found={found ? "true" : undefined}
+                    data-found={entry.found ? "true" : undefined}
                     data-focused={focused ? "true" : undefined}
-                    aria-pressed={found ? undefined : focused}
-                    disabled={found || !playing}
+                    data-clue={entry.answered !== null || (!entry.found && preset.listStyle === "clue") ? "true" : undefined}
+                    aria-pressed={entry.found ? undefined : focused}
+                    disabled={entry.found || !playing}
                     onClick={() => dispatch({ type: "focus-target", targetId: id })}
-                    aria-label={found ? `${target.accessibleLabel}: encontrado` : `${target.accessibleLabel}: procurar`}
+                    aria-label={entry.accessibleText}
                   >
-                    {showArt && (
-                      <span className="hos-item-art" data-style={found ? "picture" : preset.listStyle}>
+                    {entry.art && (
+                      <span className="hos-item-art" data-style={entry.art}>
                         <Image src={thumbnailSrc(id)} alt="" width={64} height={64} unoptimized loading="eager" draggable={false} />
                       </span>
                     )}
-                    <span className="hos-item-label">{target.label}</span>
+                    <span className="hos-item-label">
+                      {entry.text}
+                      {entry.answered && <small className="hos-item-answered">{entry.answered}</small>}
+                    </span>
                     <span className="hos-item-state" aria-hidden="true">
-                      {found ? <Check size={18} strokeWidth={3.2} /> : null}
+                      {entry.found ? <Check size={18} strokeWidth={3.2} /> : null}
                     </span>
                   </button>
                 </li>
@@ -239,7 +267,7 @@ export function HiddenObjectsGame({ onComplete, onExit, onEntryReady, onEntryErr
               <Lightbulb size={19} aria-hidden="true" />
               <span>
                 {hintButtonLabel(state)}
-                {subject && playing ? <small>{targetById(subject).label}</small> : null}
+                {subject && playing ? <small>{subjectText(state, subject)}</small> : null}
               </span>
             </button>
             {finished && !cardVisible && (

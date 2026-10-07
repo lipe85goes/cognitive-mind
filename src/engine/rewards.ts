@@ -1,4 +1,4 @@
-import type { GameResult } from "@/types/game";
+import type { DifficultyLevel, GameResult } from "@/types/game";
 
 /** Whether the session counts as a successful completion for rewards/confetti. */
 export function isSuccessfulResult(
@@ -32,7 +32,32 @@ interface WorldRewardCopy {
   successSubtitle: string;
   attemptSubtitle: string;
   registeredLine: string;
+  /**
+   * How the result screen presents this game's record (GAME03-EXPERIENCE-02,
+   * the platform's second consumer). Every field is optional: a game without
+   * them is shown exactly as before.
+   */
+  presentation?: Partial<ResultPresentation>;
 }
+
+/** What the result screen shows of a record, beyond its copy. */
+export interface ResultPresentation {
+  /** The score card's caption. */
+  scoreLabel: string;
+  /**
+   * The details listed, in this order; absent = every stored detail, in stored
+   * order. A detail left out is still in the saved result, only not listed.
+   */
+  detailKeys: readonly string[] | null;
+  /** The game's own names for its difficulty levels (the `difficulty` detail). */
+  modeLabels: Readonly<Record<DifficultyLevel, string>> | null;
+}
+
+const DEFAULT_PRESENTATION: ResultPresentation = {
+  scoreLabel: "Registro da prática",
+  detailKeys: null,
+  modeLabels: null,
+};
 
 const DEFAULT_REWARD_COPY: WorldRewardCopy = {
   successTitle: "Circuito ativado",
@@ -61,6 +86,13 @@ const WORLD_REWARD_COPY: Record<GameResult["gameId"], WorldRewardCopy> = {
     successSubtitle: "Você praticou atenção e observação.",
     attemptSubtitle: "Você praticou atenção e observação.",
     registeredLine: "A exploração foi registrada na sua jornada.",
+    // The score is how many objects were found: it says so, the screen names the
+    // modes as the game does, and "concluída: Sim" or the list size repeat nothing.
+    presentation: {
+      scoreLabel: "Objetos encontrados",
+      detailKeys: ["difficulty"],
+      modeLabels: { easy: "Fácil", medium: "Médio", hard: "Difícil" },
+    },
   },
   "seed-garden": {
     successTitle: "Jardim equilibrado",
@@ -69,6 +101,12 @@ const WORLD_REWARD_COPY: Record<GameResult["gameId"], WorldRewardCopy> = {
     registeredLine: "O jardim foi registrado na sua jornada.",
   },
 };
+
+/** How the result screen presents a record; unknown ids (older saved results) use the defaults. */
+export function getResultPresentation(result: Pick<GameResult, "gameId">): ResultPresentation {
+  const own = WORLD_REWARD_COPY[result.gameId]?.presentation;
+  return { ...DEFAULT_PRESENTATION, ...own };
+}
 
 /** Portuguese reward messages for the result modal. */
 export function getRewardCopy(

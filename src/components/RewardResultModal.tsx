@@ -4,13 +4,10 @@ import { useEffect, useRef } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { ArrowLeft, CircleCheck, RotateCcw } from "lucide-react";
 import { getWorldMeta } from "@/data/worlds";
-import { getRewardCopy, isSuccessfulResult } from "@/engine/rewards";
+import { getResultPresentation, getRewardCopy, isSuccessfulResult } from "@/engine/rewards";
 import { celebrateSuccess } from "@/lib/confetti";
 import { fadeSlideUp } from "@/lib/feedback-motion";
-import {
-  formatDetailKeyPt,
-  formatDetailValuePt,
-} from "@/lib/detail-labels";
+import { formatResultDetails } from "@/lib/detail-labels";
 import type { GameResult } from "@/types/game";
 
 interface RewardResultModalProps {
@@ -102,9 +99,9 @@ export function RewardResultModal({
   const primaryActionAria = isRouteResult
     ? primaryActionLabel
     : "Praticar este desafio outra vez";
-  const detailEntries = Object.entries(result.details).filter(
-    ([, value]) => typeof value !== "object",
-  );
+  /** What each game asked to show of its record (defaults: every detail, the shared labels). */
+  const presentation = getResultPresentation(result);
+  const detailEntries = formatResultDetails(result.details, presentation);
 
   useEffect(() => {
     // Move focus to the result so screen readers announce it after the game.
@@ -154,7 +151,7 @@ export function RewardResultModal({
             <strong>{displayCopy.progressLine}</strong>
           </section>
           <section className="prm-score-card">
-            <p>Registro da prática</p>
+            <p>{presentation.scoreLabel}</p>
             <strong>{result.score}</strong>
           </section>
         </div>
@@ -163,10 +160,10 @@ export function RewardResultModal({
 
         {detailEntries.length > 0 && (
           <dl className="prm-details">
-            {detailEntries.map(([key, value]) => (
+            {detailEntries.map(({ key, label, value }) => (
               <div key={key} className="prm-detail">
-                <dt>{formatDetailKeyPt(key)}</dt>
-                <dd>{formatDetailValuePt(value)}</dd>
+                <dt>{label}</dt>
+                <dd>{value}</dd>
               </div>
             ))}
           </dl>

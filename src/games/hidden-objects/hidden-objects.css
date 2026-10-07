@@ -1,21 +1,30 @@
 /*
- * Estúdio das Descobertas (GAME03-SKELETON-01) — every selector is .hos-*.
+ * Estúdio das Descobertas — every selector is .hos-*.
+ * GAME03-EXPERIENCE-02: the room is the protagonist. The HUD speaks the
+ * product's language (dark glass, aged brass, serif titles — the Home's world
+ * card, the intro and the result screen) instead of an ivory form beside a
+ * picture, and the objectives fold away (desktop: a narrow rail; phone: one row).
  * Desktop: scene + objectives column. Phone (portrait): scene + compact tray.
  * The camera never animates through CSS transitions: the controller writes
  * the world's transform once per frame while something moves.
  */
 
 .hos-shell {
-  --hos-ink: #2c241b;
-  --hos-ink-soft: #6b5f4d;
-  --hos-ivory: #f7f0e3;
-  --hos-card: #fffaf0;
-  --hos-line: #e0d1b6;
-  --hos-teal: #1e9583;
+  --hos-cream: #fff6e0;
+  --hos-cream-dim: #e3d3b4;
+  --hos-ink-soft: #b9a888;
+  --hos-brass: #e7c074;
+  --hos-brass-mid: #c79a44;
+  --hos-brass-deep: #8c6a2e;
+  --hos-line: rgb(231 192 116 / 0.26);
+  --hos-line-strong: rgb(231 192 116 / 0.46);
+  --hos-glass: rgb(255 244 214 / 0.045);
+  --hos-panel-bg: rgb(17 11 7 / 0.94);
+  --hos-teal: #3cc0a6;
   --hos-teal-deep: #136b5d;
   --hos-amber: #e8a46f;
-  --hos-brass: #f4d58d;
-  --hos-panel-w: 21.5rem;
+  --hos-panel-w: 19.5rem;
+  --hos-rail-w: 7.75rem;
 
   position: relative;
   display: grid;
@@ -24,8 +33,8 @@
   height: 100dvh;
   min-height: 0;
   overflow: hidden;
-  background: #0b120f;
-  color: var(--hos-ivory);
+  background: #0d0906;
+  color: var(--hos-cream);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
 }
 
@@ -38,16 +47,21 @@
   white-space: nowrap;
 }
 
-/* —— top bar —— */
+/* —— top bar: a slim strip of the same dark wood as the panel —— */
 .hos-topbar {
+  position: relative;
+  z-index: 5;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
-  padding: max(0.5rem, env(safe-area-inset-top)) max(0.9rem, env(safe-area-inset-right)) 0.5rem
+  padding: max(0.4rem, env(safe-area-inset-top)) max(0.9rem, env(safe-area-inset-right)) 0.4rem
     max(0.9rem, env(safe-area-inset-left));
-  border-bottom: 1px solid rgba(232, 196, 122, 0.26);
-  background: linear-gradient(180deg, #17221e, #0e1714);
+  border-bottom: 1px solid var(--hos-line);
+  background:
+    linear-gradient(180deg, rgb(255 236 190 / 0.05), transparent 70%),
+    linear-gradient(180deg, #1a120b, #120c08);
+  box-shadow: 0 0.5rem 1.2rem rgb(0 0 0 / 0.38);
 }
 
 .hos-title {
@@ -59,16 +73,17 @@
 
 .hos-title strong {
   overflow: hidden;
-  color: #fff0c8;
+  color: #ffeec2;
   font-family: Georgia, "Times New Roman", serif;
-  font-size: 1.2rem;
+  font-size: 1.16rem;
+  letter-spacing: 0.01em;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .hos-title span {
-  color: #a8c6bf;
-  font-size: 0.85rem;
+  color: var(--hos-ink-soft);
+  font-size: 0.8rem;
 }
 
 .hos-chip-button {
@@ -79,10 +94,12 @@
   align-items: center;
   justify-content: center;
   gap: 0.45rem;
-  padding: 0 0.9rem;
-  border: 1px solid rgba(242, 207, 117, 0.36);
+  padding: 0 0.95rem;
+  border: 1px solid var(--hos-line-strong);
   border-radius: 999px;
-  background: linear-gradient(180deg, #2a3d37, #17241f);
+  background:
+    linear-gradient(180deg, rgb(255 240 200 / 0.08), transparent 60%),
+    rgb(28 19 12 / 0.9);
   color: var(--hos-brass);
   font-weight: 700;
   cursor: pointer;
@@ -100,6 +117,10 @@
   min-height: 0;
 }
 
+.hos-shell[data-tray="closed"] .hos-body {
+  grid-template-columns: minmax(0, 1fr) var(--hos-rail-w);
+}
+
 .hos-scene-column {
   position: relative;
   min-width: 0;
@@ -110,7 +131,7 @@
   position: absolute;
   inset: 0;
   overflow: hidden;
-  background: #1b120b;
+  background: #120c08;
 }
 
 .hos-viewport {
@@ -161,8 +182,24 @@
   z-index: 1;
 }
 
-.hos-layer-front {
+.hos-layer-front,
+.hos-layer-front-right {
   z-index: 2;
+}
+
+/*
+ * The lens vignette and the shade under the top bar: fixed to the view, never
+ * to the room, so they add depth without moving anything the hit test reads.
+ * Light enough that no corner of the room ever goes dark (fairness F4).
+ */
+.hos-vignette {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgb(0 0 0 / 0.26), transparent 3.2rem),
+    radial-gradient(125% 105% at 50% 46%, transparent 64%, rgb(10 6 3 / 0.34) 100%);
+  pointer-events: none;
 }
 
 /* —— feedback, painted in room coordinates —— */
@@ -181,12 +218,27 @@
   position: absolute;
   inset: -16%;
   border-radius: 50%;
-  background: radial-gradient(closest-side, rgba(255, 228, 156, 0.5), rgba(255, 210, 120, 0.2) 58%, transparent 74%);
-  opacity: 0.7;
+  background: radial-gradient(closest-side, rgba(255, 228, 156, 0.42), rgba(255, 210, 120, 0.16) 58%, transparent 74%);
+  opacity: 0.6;
+  mix-blend-mode: screen;
 }
 
 .hos-found[data-fresh="true"] .hos-found-glow {
   animation: hos-breath 950ms ease-out both;
+}
+
+/* The ring closes around a fresh find once, then lets the room have it back. */
+.hos-found-ring {
+  position: absolute;
+  inset: -18%;
+  box-sizing: border-box;
+  border: calc(3px / var(--hos-scale, 1)) solid rgba(255, 230, 160, 0.92);
+  border-radius: 50%;
+  box-shadow:
+    0 0 calc(14px / var(--hos-scale, 1)) rgba(255, 210, 130, 0.55),
+    inset 0 0 calc(10px / var(--hos-scale, 1)) rgba(255, 210, 130, 0.35);
+  opacity: 0;
+  animation: hos-ring 1400ms ease-out forwards;
 }
 
 /* The seal keeps ~30 px on screen at any zoom (counter-scaled). */
@@ -198,11 +250,11 @@
   width: 30px;
   height: 30px;
   place-items: center;
-  border: 2px solid #fff8e6;
+  border: 2px solid #f6dc8e;
   border-radius: 50%;
-  background: var(--hos-teal);
+  background: linear-gradient(180deg, #3cc0a6, #188a75);
   color: #ffffff;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.45);
   transform: translate(35%, -35%) scale(calc(1 / var(--hos-scale, 1)));
   transform-origin: 100% 0;
 }
@@ -214,6 +266,28 @@
 
 .hos-found-seal[data-again="true"] {
   animation: hos-seal-pulse 420ms ease-out;
+}
+
+/* The found object's name, for a moment, just under it (counter-scaled like the seal). */
+.hos-found-tag {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  padding: 5px 12px 6px;
+  border: 1px solid rgba(246, 220, 142, 0.7);
+  border-radius: 999px;
+  background: rgba(20, 13, 8, 0.9);
+  color: #fff3d2;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  transform: translate(-50%, 8px) scale(calc(1 / var(--hos-scale, 1)));
+  transform-origin: 0 0;
+  animation: hos-tag 2800ms ease forwards;
 }
 
 .hos-ripple {
@@ -235,14 +309,15 @@
   animation: hos-ripple 520ms ease-out forwards;
 }
 
+/* The pool reads against the room's own light: warm inside, the rest of the room dimmed (never black). */
 .hos-halo {
   position: absolute;
   inset: 0;
   background: radial-gradient(
     circle at var(--hos-halo-x) var(--hos-halo-y),
-    rgba(255, 236, 190, 0.24) 0,
-    rgba(255, 226, 160, 0.1) calc(var(--hos-halo-r) * 0.82),
-    rgba(8, 5, 3, 0.4) calc(var(--hos-halo-r) * 1.2)
+    rgba(255, 236, 190, 0.3) 0,
+    rgba(255, 226, 160, 0.14) calc(var(--hos-halo-r) * 0.8),
+    rgba(6, 4, 2, 0.5) calc(var(--hos-halo-r) * 1.15)
   );
   animation: hos-halo-life 6.5s ease forwards;
 }
@@ -263,6 +338,7 @@
 /* —— controls over the scene —— */
 .hos-reticle {
   position: absolute;
+  z-index: 2;
   top: 50%;
   left: 50%;
   color: #fff6dc;
@@ -278,6 +354,7 @@
 
 .hos-zoom {
   position: absolute;
+  z-index: 2;
   right: 0.9rem;
   bottom: 0.9rem;
   display: grid;
@@ -289,11 +366,13 @@
   width: 48px;
   height: 48px;
   place-items: center;
-  border: 1px solid rgba(242, 207, 117, 0.5);
+  border: 1px solid var(--hos-line-strong);
   border-radius: 50%;
-  background: rgba(14, 23, 20, 0.84);
+  background:
+    linear-gradient(180deg, rgb(255 240 200 / 0.1), transparent 60%),
+    rgb(20 13 8 / 0.86);
   color: var(--hos-brass);
-  box-shadow: 0 0.4rem 0.9rem rgba(0, 0, 0, 0.35);
+  box-shadow: 0 0.4rem 0.9rem rgba(0, 0, 0, 0.4);
   cursor: pointer;
 }
 
@@ -302,95 +381,157 @@
   cursor: default;
 }
 
+/* Centred over the full width (not left: 50%, which would cap a long hint at half the screen). */
 .hos-hint-banner {
   position: absolute;
+  z-index: 3;
   top: 0.8rem;
-  left: 50%;
+  right: 0;
+  left: 0;
   display: flex;
+  width: fit-content;
   max-width: min(34rem, calc(100% - 2rem));
   align-items: center;
-  gap: 0.5rem;
-  margin: 0;
-  padding: 0.55rem 0.95rem;
-  border: 1px solid rgba(242, 207, 117, 0.42);
+  gap: 0.55rem;
+  margin: 0 auto;
+  padding: 0.55rem 1rem;
+  border: 1px solid var(--hos-line-strong);
   border-radius: 999px;
-  background: rgba(14, 23, 20, 0.88);
+  background: rgb(18 12 8 / 0.9);
   color: #fff0c8;
   font-weight: 650;
   line-height: 1.3;
+  box-shadow: 0 0.6rem 1.4rem rgb(0 0 0 / 0.4);
   pointer-events: none;
-  transform: translateX(-50%);
   animation: hos-fade-in 260ms ease both;
 }
 
-/* —— objectives panel —— */
+.hos-hint-banner svg {
+  flex: none;
+  color: var(--hos-brass);
+}
+
+/* —— objectives panel: dark glass docked beside the room (never over it) —— */
 .hos-panel {
+  position: relative;
+  z-index: 4;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto auto;
   min-height: 0;
-  gap: 0.85rem;
-  padding: 1rem max(1rem, env(safe-area-inset-right)) max(1rem, env(safe-area-inset-bottom)) 1rem;
+  gap: 0.8rem;
+  padding: 0.95rem max(0.95rem, env(safe-area-inset-right)) max(0.95rem, env(safe-area-inset-bottom)) 0.95rem;
   overflow: hidden;
   border-left: 1px solid var(--hos-line);
-  background: var(--hos-ivory);
-  color: var(--hos-ink);
+  background:
+    linear-gradient(180deg, rgb(255 244 205 / 0.05), transparent 32%),
+    var(--hos-panel-bg);
+  color: var(--hos-cream);
+  box-shadow: -1.1rem 0 2rem rgb(0 0 0 / 0.36);
+}
+
+.hos-panel-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 0.6rem;
 }
 
 .hos-panel-head h2 {
-  margin: 0 0 0.2rem;
+  grid-row: 1;
+  grid-column: 1 / -1;
+  margin: 0 0 0.15rem;
+  color: #ffeec2;
   font-family: Georgia, "Times New Roman", serif;
-  font-size: 1.3rem;
+  font-size: 1.22rem;
   font-weight: 700;
 }
 
 .hos-progress-text {
-  margin: 0 0 0.4rem;
+  grid-row: 2;
+  grid-column: 1;
+  margin: 0 0 0.45rem;
   color: var(--hos-ink-soft);
 }
 
 .hos-progress-text strong {
-  color: var(--hos-teal-deep);
+  color: var(--hos-teal);
   font-size: 1.05rem;
 }
 
 .hos-progress {
-  height: 0.6rem;
+  grid-row: 3;
+  grid-column: 1 / -1;
+  height: 0.5rem;
   overflow: hidden;
   border-radius: 999px;
-  background: #e6dccb;
+  background: rgb(255 240 210 / 0.1);
+  box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.5);
 }
 
 .hos-progress span {
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, #2aa58f, #1e8574);
+  background: linear-gradient(90deg, #2aa58f, #48caa9);
   transition: width 0.4s ease;
+}
+
+.hos-tray-toggle {
+  display: inline-flex;
+  min-height: 44px;
+  grid-column: 2;
+  grid-row: 2;
+  margin-bottom: 0.4rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0 0.7rem;
+  border: 1px solid var(--hos-line);
+  border-radius: 999px;
+  background: var(--hos-glass);
+  color: var(--hos-cream-dim);
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.hos-tray-count {
+  color: var(--hos-teal);
+  font-weight: 800;
+}
+
+/* Desktop with the list open: the head already shows the count. */
+.hos-shell[data-tray="open"] .hos-tray-count {
+  display: none;
 }
 
 .hos-list {
   display: grid;
   min-height: 0;
   align-content: start;
-  gap: 0.5rem;
+  gap: 0.45rem;
   margin: 0;
   padding: 0.15rem;
   overflow-y: auto;
   list-style: none;
 }
 
+.hos-list[hidden] {
+  display: none;
+}
+
 .hos-item {
   display: grid;
   width: 100%;
-  min-height: 56px;
+  min-height: 54px;
   grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: 0.7rem;
   padding: 0.4rem 0.75rem;
-  border: 1px solid #e2d5bd;
+  border: 1px solid var(--hos-line);
   border-radius: 14px;
-  background: var(--hos-card);
-  color: var(--hos-ink);
+  background: var(--hos-glass);
+  color: var(--hos-cream);
   font-size: 1.02rem;
   font-weight: 650;
   text-align: left;
@@ -405,6 +546,7 @@
 .hos-primary-small:focus-visible,
 .hos-chip-button:focus-visible,
 .hos-round-button:focus-visible,
+.hos-tray-toggle:focus-visible,
 .hos-difficulty-option:focus-within {
   outline: 3px solid var(--hos-teal);
   outline-offset: 2px;
@@ -412,12 +554,13 @@
 
 .hos-item[data-focused="true"] {
   border-color: var(--hos-amber);
-  box-shadow: 0 0 0 3px rgba(232, 164, 111, 0.35);
+  box-shadow: 0 0 0 3px rgba(232, 164, 111, 0.3);
 }
 
 .hos-item[data-found="true"] {
-  background: #f1ecdf;
-  color: var(--hos-ink-soft);
+  border-color: rgb(60 192 166 / 0.35);
+  background: rgb(60 192 166 / 0.08);
+  color: var(--hos-cream-dim);
   cursor: default;
 }
 
@@ -428,7 +571,7 @@
   grid-column: 1;
   place-items: center;
   border-radius: 10px;
-  background: #f1e7d4;
+  background: radial-gradient(circle at 40% 35%, rgb(255 238 200 / 0.16), rgb(255 238 200 / 0.05) 70%);
 }
 
 .hos-item-art img {
@@ -437,14 +580,43 @@
   object-fit: contain;
 }
 
-/* Médio: the object's outline only — recognised by shape. */
+/* Médio: the object's outline only, in warm cream — recognised by shape. */
 .hos-item-art[data-style="silhouette"] img {
-  filter: brightness(0);
-  opacity: 0.68;
+  filter: brightness(0) invert(0.92) sepia(0.35);
+  opacity: 0.62;
 }
 
 .hos-item-label {
+  display: grid;
   grid-column: 2;
+  gap: 0.1rem;
+}
+
+/* Difícil: the clue is the item until the object is found — read like a line from a notebook. */
+.hos-item[data-clue="true"]:not([data-found="true"]) .hos-item-label {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 0.98rem;
+  font-style: italic;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.hos-item[data-clue="true"]:not([data-found="true"]) {
+  grid-template-columns: 1fr auto;
+}
+
+.hos-item[data-clue="true"]:not([data-found="true"]) .hos-item-label,
+.hos-item[data-clue="true"]:not([data-found="true"]) .hos-item-state {
+  grid-column: auto;
+}
+
+.hos-item-answered {
+  color: var(--hos-ink-soft);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 0.8rem;
+  font-style: italic;
+  font-weight: 500;
+  line-height: 1.25;
 }
 
 .hos-item-state {
@@ -453,14 +625,14 @@
   height: 28px;
   grid-column: 3;
   place-items: center;
-  border: 2px solid #cbbd9f;
+  border: 2px solid rgb(231 192 116 / 0.42);
   border-radius: 50%;
 }
 
 .hos-item[data-found="true"] .hos-item-state {
   border-color: var(--hos-teal);
   background: var(--hos-teal);
-  color: #ffffff;
+  color: #0c1f1a;
 }
 
 .hos-hint-row {
@@ -470,28 +642,46 @@
 
 .hos-hint-button {
   display: flex;
+  min-width: 0;
   min-height: 52px;
   align-items: center;
   justify-content: center;
   gap: 0.6rem;
+  overflow: hidden;
   padding: 0.4rem 1rem;
-  border: 1px solid #d9b56a;
+  border: 1px solid var(--hos-line-strong);
   border-radius: 999px;
-  background: linear-gradient(180deg, #fff4dc, #f3e2bd);
-  color: #5b3320;
+  background:
+    linear-gradient(180deg, rgb(255 236 190 / 0.12), transparent 60%),
+    rgb(52 34 18 / 0.92);
+  color: #ffeec2;
   font-weight: 800;
+  text-align: center;
   cursor: pointer;
+}
+
+.hos-hint-button svg {
+  flex: none;
+  color: var(--hos-brass);
+}
+
+.hos-hint-button > span {
+  min-width: 0;
 }
 
 .hos-hint-button small {
   display: block;
-  color: #7a5a33;
-  font-size: 0.82rem;
+  overflow: hidden;
+  max-width: 14rem;
+  color: var(--hos-ink-soft);
+  font-size: 0.8rem;
   font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .hos-hint-button:disabled {
-  opacity: 0.5;
+  opacity: 0.45;
   cursor: default;
 }
 
@@ -504,26 +694,68 @@
 .hos-station {
   min-height: 44px;
   padding: 0 0.3rem;
-  border: 1px solid #d8c8a8;
+  border: 1px solid var(--hos-line);
   border-radius: 12px;
-  background: var(--hos-card);
-  color: #3a2d20;
+  background: var(--hos-glass);
+  color: var(--hos-cream-dim);
   font-weight: 700;
   cursor: pointer;
 }
 
 .hos-station[aria-pressed="true"] {
   border-color: var(--hos-teal);
-  background: var(--hos-teal);
-  color: #ffffff;
+  background: rgb(60 192 166 / 0.2);
+  color: #eafff8;
 }
 
 .hos-station[data-hinted="true"] {
-  box-shadow: 0 0 0 3px rgba(232, 164, 111, 0.65);
+  box-shadow: 0 0 0 3px rgba(232, 164, 111, 0.6);
 }
 
 .hos-station:disabled {
   opacity: 0.5;
+}
+
+/* —— the rail: the objectives folded away, the room takes the width —— */
+.hos-shell[data-tray="closed"] .hos-panel {
+  grid-template-rows: auto auto auto;
+  align-content: start;
+  padding-right: max(0.6rem, env(safe-area-inset-right));
+  padding-left: 0.6rem;
+}
+
+.hos-shell[data-tray="closed"] .hos-panel-head {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.hos-shell[data-tray="closed"] .hos-panel-head > :not(.hos-tray-toggle) {
+  display: none;
+}
+
+.hos-shell[data-tray="closed"] .hos-tray-toggle {
+  grid-column: 1;
+  grid-row: auto;
+  flex-direction: column;
+  min-height: 64px;
+  margin-bottom: 0;
+  gap: 0.15rem;
+  border-radius: 16px;
+}
+
+.hos-shell[data-tray="closed"] .hos-hint-button {
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.5rem 0.4rem;
+  border-radius: 16px;
+  font-size: 0.85rem;
+}
+
+.hos-shell[data-tray="closed"] .hos-hint-button small {
+  display: none;
+}
+
+.hos-shell[data-tray="closed"] .hos-stations {
+  grid-template-columns: minmax(0, 1fr);
 }
 
 /* —— setup and closing cards —— */
@@ -535,8 +767,8 @@
   place-items: center;
   padding: 1rem;
   overflow-y: auto;
-  background: rgba(6, 10, 8, 0.52);
-  backdrop-filter: blur(2px);
+  background: rgba(8, 5, 3, 0.56);
+  backdrop-filter: blur(3px);
 }
 
 .hos-overlay-complete {
@@ -545,31 +777,37 @@
 
 .hos-card {
   display: grid;
-  width: min(30rem, 100%);
+  width: min(31rem, 100%);
   gap: 0.7rem;
-  padding: 1.4rem;
-  border: 1px solid var(--hos-line);
-  border-radius: 22px;
-  background: var(--hos-ivory);
-  color: var(--hos-ink);
+  padding: 1.45rem;
+  border: 2px solid var(--hos-brass-deep);
+  border-radius: 1.4rem;
+  background:
+    linear-gradient(180deg, rgb(255 244 205 / 0.07), transparent 26%),
+    rgb(17 11 7 / 0.92);
+  color: var(--hos-cream);
   text-align: center;
-  box-shadow: 0 1.5rem 3rem rgba(0, 0, 0, 0.45);
+  box-shadow:
+    inset 0 1px 0 rgb(255 235 190 / 0.16),
+    inset 0 0 0 1px rgb(231 192 116 / 0.16),
+    0 1.6rem 3.2rem rgb(0 0 0 / 0.6);
 }
 
 .hos-card h2 {
   margin: 0;
+  color: #ffeec2;
   font-family: Georgia, "Times New Roman", serif;
   font-size: 1.75rem;
 }
 
 .hos-card p {
   margin: 0;
-  color: var(--hos-ink-soft);
+  color: var(--hos-cream-dim);
   line-height: 1.45;
 }
 
 .hos-card .hos-kicker {
-  color: var(--hos-teal-deep);
+  color: var(--hos-teal);
   font-size: 0.8rem;
   font-weight: 800;
   letter-spacing: 0.08em;
@@ -578,7 +816,7 @@
 
 .hos-card .hos-subtitle {
   margin-top: -0.4rem;
-  color: #8a5a32;
+  color: var(--hos-brass);
   font-weight: 700;
 }
 
@@ -588,9 +826,11 @@
   height: 56px;
   margin: 0 auto;
   place-items: center;
+  border: 2px solid var(--hos-brass);
   border-radius: 50%;
-  background: var(--hos-teal);
-  color: #ffffff;
+  background: radial-gradient(circle at 35% 28%, #fff3c4, #cf9a33 64%, #6f4a13);
+  color: #3a2608;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.6), 0 0.4rem 0.9rem rgb(0 0 0 / 0.5);
 }
 
 .hos-difficulty {
@@ -604,6 +844,7 @@
 .hos-difficulty legend {
   margin-bottom: 0.45rem;
   padding: 0;
+  color: var(--hos-brass);
   font-weight: 800;
 }
 
@@ -615,7 +856,7 @@
   padding: 0.55rem 0.9rem;
   border: 1px solid var(--hos-line);
   border-radius: 14px;
-  background: var(--hos-card);
+  background: var(--hos-glass);
   text-align: left;
   cursor: pointer;
 }
@@ -627,6 +868,10 @@
   accent-color: var(--hos-teal);
 }
 
+.hos-difficulty-option strong {
+  color: var(--hos-cream);
+}
+
 .hos-difficulty-option small {
   display: block;
   color: var(--hos-ink-soft);
@@ -634,10 +879,12 @@
 
 .hos-difficulty-option[data-selected="true"] {
   border-color: var(--hos-teal);
-  box-shadow: 0 0 0 2px rgba(30, 149, 131, 0.35);
+  background: rgb(60 192 166 / 0.1);
+  box-shadow: 0 0 0 2px rgba(60, 192, 166, 0.3);
 }
 
 .hos-card .hos-controls-line {
+  color: var(--hos-ink-soft);
   font-size: 0.9rem;
 }
 
@@ -649,13 +896,15 @@
   justify-content: center;
   gap: 0.5rem;
   padding: 0 1.4rem;
-  border: 1px solid var(--hos-teal-deep);
+  border: 1px solid #5fdcc2;
   border-radius: 999px;
-  background: linear-gradient(180deg, #2fb39b, #1e8574);
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.16), transparent 42%),
+    linear-gradient(180deg, #2fb39b, #136b5d);
   color: #ffffff;
   font-size: 1.12rem;
   font-weight: 800;
-  box-shadow: 0 0.6rem 1.2rem rgba(19, 107, 93, 0.32);
+  box-shadow: 0 0.6rem 1.2rem rgba(10, 60, 52, 0.45);
   cursor: pointer;
 }
 
@@ -667,10 +916,10 @@
 .hos-secondary {
   min-height: 48px;
   padding: 0 1.2rem;
-  border: 1px solid #d8c8a8;
+  border: 1px solid var(--hos-line-strong);
   border-radius: 999px;
-  background: var(--hos-card);
-  color: #3a2d20;
+  background: var(--hos-glass);
+  color: var(--hos-cream);
   font-weight: 700;
   cursor: pointer;
 }
@@ -681,42 +930,68 @@
   margin-top: 0.3rem;
 }
 
-/* —— phones in portrait: the objectives become a compact tray —— */
+/* —— phones in portrait: the objectives become a compact tray (one row when folded) —— */
 @media (max-width: 899px) {
-  .hos-body {
+  .hos-body,
+  .hos-shell[data-tray="closed"] .hos-body {
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: minmax(0, 1fr) auto;
   }
 
+  /*
+   * Two rows: the list, then [count/toggle · Pista · stations]. The count lives
+   * in the toggle and the progress is a filament along the tray's top edge, so
+   * the room keeps the height a third row would take.
+   */
   .hos-panel {
     grid-template-areas:
-      "head head"
-      "list list"
-      "hint stations";
-    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr);
-    grid-template-rows: auto auto auto;
+      "list list list"
+      "head hint stations";
+    grid-template-columns: auto minmax(0, 1fr) minmax(0, 1.45fr);
+    grid-template-rows: auto auto;
+    align-items: center;
     gap: 0.45rem;
-    padding: 0.55rem max(0.7rem, env(safe-area-inset-right)) max(0.55rem, env(safe-area-inset-bottom))
+    padding: 0.55rem max(0.7rem, env(safe-area-inset-right)) max(0.5rem, env(safe-area-inset-bottom))
       max(0.7rem, env(safe-area-inset-left));
     border-top: 1px solid var(--hos-line);
     border-left: 0;
+    box-shadow: 0 -0.9rem 1.6rem rgb(0 0 0 / 0.36);
   }
 
   .hos-panel-head {
-    display: grid;
     grid-area: head;
-    grid-template-columns: auto minmax(0, 1fr);
-    align-items: center;
-    gap: 0.6rem;
+    grid-template-columns: auto;
   }
 
-  .hos-panel-head h2 {
+  .hos-panel-head h2,
+  .hos-progress-text {
     display: none;
   }
 
-  .hos-progress-text {
-    margin: 0;
-    font-size: 0.9rem;
+  .hos-progress {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 3px;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .hos-tray-toggle {
+    grid-column: 1;
+    grid-row: 1;
+    min-height: 46px;
+    margin-bottom: 0;
+  }
+
+  .hos-shell[data-tray="open"] .hos-tray-count {
+    display: inline;
+  }
+
+  /* the filament stays when the list folds away */
+  .hos-shell[data-tray="closed"] .hos-panel-head > .hos-progress {
+    display: block;
   }
 
   .hos-list {
@@ -734,11 +1009,25 @@
 
   .hos-item {
     width: auto;
+    max-width: 13.5rem;
     min-height: 46px;
     gap: 0.4rem;
     padding: 0.25rem 0.55rem 0.25rem 0.35rem;
     border-radius: 999px;
     font-size: 0.9rem;
+  }
+
+  .hos-item[data-clue="true"]:not([data-found="true"]) {
+    padding-left: 0.75rem;
+    border-radius: 16px;
+  }
+
+  .hos-item[data-clue="true"]:not([data-found="true"]) .hos-item-label {
+    font-size: 0.86rem;
+  }
+
+  .hos-item-answered {
+    display: none;
   }
 
   .hos-item-art {
@@ -769,7 +1058,12 @@
   }
 
   .hos-hint-button small {
-    font-size: 0.75rem;
+    max-width: 100%;
+    font-size: 0.74rem;
+  }
+
+  .hos-hint-row {
+    min-width: 0;
   }
 
   .hos-stations {
@@ -798,6 +1092,31 @@
     width: 46px;
     height: 46px;
   }
+
+  /* folded: one row — the count, Pista, the stations */
+  .hos-shell[data-tray="closed"] .hos-panel {
+    grid-template-areas: "head hint stations";
+    grid-template-columns: auto minmax(0, 1fr) minmax(0, 1.5fr);
+    grid-template-rows: auto;
+    align-items: center;
+    padding-left: max(0.6rem, env(safe-area-inset-left));
+  }
+
+  .hos-shell[data-tray="closed"] .hos-tray-toggle {
+    flex-direction: row;
+    min-height: 46px;
+    border-radius: 999px;
+  }
+
+  .hos-shell[data-tray="closed"] .hos-hint-button {
+    flex-direction: row;
+    min-height: 46px;
+    border-radius: 999px;
+  }
+
+  .hos-shell[data-tray="closed"] .hos-stations {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 599px) {
@@ -820,6 +1139,22 @@
   .hos-card h2 {
     font-size: 1.45rem;
   }
+
+  .hos-tray-toggle span:not(.hos-tray-count) {
+    display: none;
+  }
+}
+
+@media (max-width: 399px) {
+  .hos-station {
+    padding: 0;
+    font-size: 0.78rem;
+  }
+
+  .hos-shell[data-tray="closed"] .hos-hint-button {
+    padding: 0.2rem 0.45rem;
+    font-size: 0.82rem;
+  }
 }
 
 /* —— phones in landscape: the scene keeps the width, the objectives a narrow column —— */
@@ -829,6 +1164,12 @@
     grid-template-rows: minmax(0, 1fr);
   }
 
+  .hos-shell[data-tray="closed"] .hos-body {
+    grid-template-columns: minmax(0, 1fr) var(--hos-rail-w);
+    grid-template-rows: minmax(0, 1fr);
+  }
+
+  /* the list scrolls inside its own row, so Pista and the stations never sit over it */
   .hos-panel {
     grid-template-areas:
       "head"
@@ -836,14 +1177,35 @@
       "hint"
       "stations";
     grid-template-columns: minmax(0, 1fr);
-    overflow-y: auto;
+    grid-template-rows: auto minmax(0, 1fr) auto auto;
+    align-items: stretch;
     border-top: 0;
     border-left: 1px solid var(--hos-line);
   }
 
+  .hos-shell[data-tray="closed"] .hos-panel {
+    grid-template-areas:
+      "head"
+      "hint"
+      "stations";
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto auto;
+  }
+
+  .hos-shell[data-tray="closed"] .hos-stations {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .hos-list {
-    flex-wrap: wrap;
-    overflow: visible;
+    display: grid;
+    align-content: start;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .hos-item {
+    width: 100%;
+    max-width: none;
   }
 
   .hos-topbar {
@@ -863,15 +1225,49 @@
     transform: scale(1.03);
   }
   100% {
-    opacity: 0.7;
+    opacity: 0.6;
     transform: scale(1);
+  }
+}
+
+@keyframes hos-ring {
+  0% {
+    opacity: 0;
+    transform: scale(1.4);
+  }
+  35% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  75% {
+    opacity: 0.85;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+
+@keyframes hos-tag {
+  0% {
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  78% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
   }
 }
 
 @keyframes hos-seal-pulse {
   50% {
     filter: brightness(1.25);
-    box-shadow: 0 0 0 6px rgba(30, 149, 131, 0.35);
+    box-shadow: 0 0 0 6px rgba(60, 192, 166, 0.35);
   }
 }
 
@@ -901,6 +1297,7 @@
   }
 }
 
+/* Same lifetime, no fades: on, then off. */
 @keyframes hos-halo-life-still {
   0% {
     opacity: 1;
@@ -940,9 +1337,17 @@
     animation: hos-fade-out 400ms linear forwards;
   }
 
-  /* Same lifetime, no fades: on, then off. */
+  /* Same lifetimes, no fades and no scaling: on, then off. */
   .hos-halo {
     animation: hos-halo-life-still 6.5s steps(1, end) forwards;
+  }
+
+  .hos-found-ring {
+    animation: hos-halo-life-still 1.4s steps(1, end) forwards;
+  }
+
+  .hos-found-tag {
+    animation: hos-halo-life-still 2.8s steps(1, end) forwards;
   }
 
   .hos-progress span {

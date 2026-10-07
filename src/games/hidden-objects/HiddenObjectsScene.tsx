@@ -26,8 +26,12 @@ const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 /** Feedback the scene paints in room coordinates (it zooms and pans with the room). */
 export interface SceneFeedback {
   found: readonly TargetId[];
-  /** The newest find gets one soft "breath"; repeats are told apart by `seq`. */
-  latestFound: { id: TargetId; seq: number } | null;
+  /**
+   * The newest find gets one soft "breath", a ring that closes around it and its
+   * name on a small tag for a moment (in Difícil, the first time the name is
+   * shown); repeats are told apart by `seq`.
+   */
+  latestFound: { id: TargetId; seq: number; label: string } | null;
   /** A target tapped again: its seal pulses once. */
   again: { id: TargetId; seq: number } | null;
   /** A free tap: a small ripple where it landed. */
@@ -216,6 +220,8 @@ export function HiddenObjectsScene({
           <SceneFeedbackLayer feedback={feedback} />
         </div>
       </div>
+      {/* A lens vignette fixed to the view, not the room: depth without touching the room's coordinates. */}
+      <span className="hos-vignette" aria-hidden="true" />
       <span className="hos-reticle" aria-hidden="true">
         <Crosshair size={34} strokeWidth={1.6} />
       </span>
@@ -282,6 +288,7 @@ function SceneFeedbackLayer({ feedback }: { feedback: SceneFeedback }) {
             style={{ left: bounds.x, top: bounds.y, width: bounds.w, height: bounds.h }}
           >
             <span key={fresh ? `glow-${feedback.latestFound?.seq}` : "glow"} className="hos-found-glow" />
+            {fresh && <span key={`ring-${feedback.latestFound?.seq}`} className="hos-found-ring" />}
             <span
               key={again ? `seal-${feedback.again?.seq}` : "seal"}
               className="hos-found-seal"
@@ -291,6 +298,11 @@ function SceneFeedbackLayer({ feedback }: { feedback: SceneFeedback }) {
                 <path d="M5 12.5 10 17.5 19 7" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </span>
+            {fresh && (
+              <span key={`tag-${feedback.latestFound?.seq}`} className="hos-found-tag">
+                {feedback.latestFound?.label}
+              </span>
+            )}
           </span>
         );
       })}

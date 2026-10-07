@@ -1,5 +1,5 @@
 /**
- * GAME03-SKELETON-01 — browser probe for the Estúdio das Descobertas.
+ * GAME03-SKELETON-01 / GAME03-EXPERIENCE-02 — browser probe for the Estúdio das Descobertas.
  *
  * Drives the PRODUCTION build (`next build && next start`) the way a person
  * would — the Home, the world entry, the intro, the setup, the scene, the
@@ -10,17 +10,29 @@
  * extension in production.
  *
  * Scenarios (all by default; pick with --scenario a,b):
- *   desktop        1440×900, mouse: Home slot → entry → intro → setup → pan → wheel/±
- *                  zoom → Mesa → free tap → find → drag over a target → hints 1/2/3 →
- *                  find all → result (one) → play again → restart → exit → Home
- *   mobile         390×844, touch (CDP touch events): entry → drag → pinch → tap → tray →
- *                  hint → find all → result; never a horizontal page overflow
+ *   desktop        1440×900, mouse: Home slot → entry → intro → setup → Fácil → pan → wheel/±
+ *                  zoom → Mesa → free tap → find → drag over a target → Fácil's whole ladder
+ *                  (station, pool, "Mostrar onde está") → find all → result (one, the new
+ *                  presentation) → play again → Médio: silhouettes, a ladder that never points
+ *                  (station, wide pool, direction) → finds → restart → exit → Home
+ *   hard           1440×900, mouse: Difícil — the list is the clues; station → context → the
+ *                  top, never a halo or a glide to the object; a find says the name (list, tag,
+ *                  live region); pan, zoom, stations; the objectives fold; all eight → result
+ *   mobile         390×844, touch (CDP touch events), Difícil: entry → drag → pinch → tray (two
+ *                  rows, readable clues) → hint → tap → fold/unfold → find all → result; never a
+ *                  horizontal page overflow
  *   small          360×640, touch: setup reachable, scene area kept, one find, no overflow
- *   reduced-motion 1440×900 with prefers-reduced-motion: station cuts instantly, halos still
+ *   reduced-motion 1440×900 with prefers-reduced-motion: station cuts instantly, halos, the
+ *                  found ring and tag on/off without fades, no parallax
  *   legacy         a stored `number-trail` result: Home loads, nothing breaks, nothing opens the
  *                  retired game, nothing converts the old result
  *   bundle         the build directory: Game 03 code only in its own lazy set; Babylon, the
  *                  Rota and the Circuito sets free of it; sizes
+ *
+ * Playtest measurements (metrics.playtest — diagnostics of THIS automated run, never a
+ * score, nothing reaches the product): how many listed objects are fully on screen before
+ * any pan, the zoom each needs on the phone to reach 44 px, the hint presses the run used,
+ * and the technical time from "Explorar" to the closing card.
  *
  * Usage:
  *   node tools/validation/hidden-objects-browser-probe.mjs [--base http://localhost:3100]
@@ -53,7 +65,7 @@ const BASE = arg("--base", "http://localhost:3100");
 const BUILD = arg("--build", ".next");
 const OUT = arg("--out", null);
 const JSON_OUT = arg("--json", null);
-const ALL = ["desktop", "mobile", "small", "reduced-motion", "legacy", "bundle"];
+const ALL = ["desktop", "hard", "mobile", "small", "reduced-motion", "legacy", "bundle"];
 const SCENARIOS = (arg("--scenario", ALL.join(",")) ?? "").split(",").filter(Boolean);
 if (SCENARIOS.some((name) => !ALL.includes(name))) {
   console.error(`unknown scenario; choose from ${ALL.join(", ")}`);
@@ -374,6 +386,59 @@ async function listedIds(page) {
 }
 
 const easyIds = SCENE.DIFFICULTY_PRESETS.easy.targets;
+const mediumIds = SCENE.DIFFICULTY_PRESETS.medium.targets;
+const hardIds = SCENE.DIFFICULTY_PRESETS.hard.targets;
+const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+const norm = (text) => (text ?? "").normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase();
+
+/** What the hint UI shows right now (banner, light, button, camera). */
+async function hintState(page) {
+  return page.evaluate(() => ({
+    banner: document.querySelector(".hos-hint-banner")?.textContent ?? "",
+    halo: document.querySelector(".hos-halo")?.className ?? null,
+    button: document.querySelector(".hos-hint-button span")?.childNodes[0]?.textContent ?? "",
+    hinted: document.querySelector('.hos-station[data-hinted="true"]')?.textContent ?? null,
+  }));
+}
+
+/** The list as the Explorador reads it: the item's line, its accessible name, whether it shows art. */
+async function listEntries(page) {
+  return page.evaluate(() =>
+    [...document.querySelectorAll(".hos-item")].map((item) => ({
+      text: item.querySelector(".hos-item-label")?.childNodes[0]?.textContent ?? "",
+      aria: item.getAttribute("aria-label"),
+      art: item.querySelector(".hos-item-art")?.dataset.style ?? null,
+      found: item.dataset.found === "true",
+    })),
+  );
+}
+
+/** Playtest diagnostics: how many of `ids` are fully on screen right now (no pan yet). */
+async function onScreenCount(page, ids) {
+  const cam = await camera(page);
+  const inside = ids.filter((id) => {
+    const r = TARGET[id].region;
+    const box = r.kind === "rect" ? r : { x: r.cx - r.r, y: r.cy - r.r, w: 2 * r.r, h: 2 * r.r };
+    const a = toScreen(cam, { x: box.x, y: box.y });
+    const z = toScreen(cam, { x: box.x + box.w, y: box.y + box.h });
+    return a.x >= cam.left && a.y >= cam.top && z.x <= cam.left + cam.width && z.y <= cam.top + cam.height;
+  });
+  return { visibleWithoutPan: inside.length, of: ids.length, ids: inside };
+}
+
+/** The result screen as shown (score caption, listed details). */
+async function resultScreen(page) {
+  return page.evaluate(() => ({
+    world: document.querySelector(".prm-world")?.textContent,
+    title: document.querySelector(".prm-title")?.textContent,
+    summary: document.querySelector("#reward-summary")?.textContent,
+    scoreLabel: document.querySelector(".prm-score-card p")?.textContent,
+    score: document.querySelector(".prm-score-card strong")?.textContent,
+    details: Object.fromEntries([...document.querySelectorAll(".prm-detail")].map((d) => [d.querySelector("dt")?.textContent, d.querySelector("dd")?.textContent])),
+  }));
+}
+
+metrics.playtest = { hintPresses: {}, technicalMsToClosingCard: {}, visibleWithoutPan: {} };
 
 // --- scenario: desktop ---------------------------------------------------------------------------------
 
@@ -387,10 +452,10 @@ async function desktop() {
   const pips = await page.locator(".hj-gallery-pip").evaluateAll((nodes) => nodes.map((n) => n.getAttribute("aria-label")));
   check("01_HOME_LOADS", pips.length === 5, { pips });
   check("02_STUDIO_IN_THE_TRAILS_SLOT", pips[3] === "Selecionar Estúdio das Descobertas" && !pips.some((p) => /Trilha/.test(p)), { order: pips });
-  await witness(page, "01-home");
+  await witness(page, "e00-home");
 
   // 3–6 entry, transition, intro, readiness
-  const entry = await enterStudio(session, { onSelected: () => witness(page, "02-home-slot-selected", 700) });
+  const entry = await enterStudio(session, { onSelected: () => witness(page, "e01-home-selected", 700) });
   metrics.entryToReadyMs = entry.readyAfterMs;
   check("03_04_OPENS_THROUGH_THE_TRANSITION", entry.transitionWorld === "Estúdio das Descobertas", entry);
   const intro = await page.evaluate(() => ({
@@ -399,7 +464,7 @@ async function desktop() {
   }));
   check("05_INTRO", intro.title === "Estúdio das Descobertas" && intro.steps === 3, intro);
   check("06_READY_REPORTED_NOT_TIMED_OUT", entry.phase === "revealing" || entry.phase === "gone", { phase: entry.phase, readyAfterMs: entry.readyAfterMs });
-  await witness(page, "03-intro");
+  await witness(page, "e01b-intro");
 
   // 7–9 setup
   await press(session, page.locator(".pgi-cta"));
@@ -410,7 +475,7 @@ async function desktop() {
     status: document.querySelector(".hos-shell")?.dataset.status,
   }));
   check("07_SETUP", setup.title === "Estúdio das Descobertas" && setup.levels.join("|") === "Fácil|Médio|Difícil" && setup.status === "setup", setup);
-  await witness(page, "04-setup");
+  await witness(page, "e01c-setup");
   await press(session, page.locator(".hos-difficulty-option", { hasText: "Fácil" }));
   check("08_CHOOSE_EASY", await page.locator('.hos-difficulty-option input[value="easy"]').isChecked());
   await press(session, page.getByRole("button", { name: "Explorar", exact: true }));
@@ -418,7 +483,11 @@ async function desktop() {
   await settle(page);
   const list = await listedIds(page);
   check("09_EXPLORE_STARTS_PLAYING", (await status(page)) === "playing" && list.length === 5 && (await progress(page)).found === 0, { list });
-  await witness(page, "05-playing-desktop");
+  metrics.playtest.visibleWithoutPan["desktop easy"] = await onScreenCount(page, easyIds);
+  const easyEntries = await listEntries(page);
+  check("X00_FACIL_LIST_IS_PICTURE_AND_NAME", same(easyEntries.map((e) => e.text), easyIds.map((id) => TARGET[id].label)) && easyEntries.every((e) => e.art === "picture"), { easyEntries });
+  const easyStarted = Date.now();
+  await witness(page, "e02-easy-playing");
 
   // 10 pan (and the React side of it)
   let cam = await camera(page);
@@ -477,7 +546,7 @@ async function desktop() {
   await settle(page);
   const minus = await camera(page);
   check("11_ZOOM_BUTTONS", plus.s > zoomed.s && minus.s < plus.s, { scales: [zoomed.s, plus.s, minus.s] });
-  await witness(page, "06-mesa-zoom");
+  await witness(page, "e09-zoom-table");
 
   // 12 Mesa
   await press(session, page.locator(".hos-station", { hasText: "Mesa" }));
@@ -534,9 +603,9 @@ async function desktop() {
     button: document.querySelector(".hos-hint-button span")?.childNodes[0]?.textContent ?? "",
   }));
   check("17_HINT_2_LIGHTS_A_REGION", /hos-halo-hint/.test(hint2.halo ?? "") && hint2.button === "Mostrar onde está", hint2);
-  await witness(page, "07-hint", 900);
   await press(session, page.locator(".hos-hint-button"));
   await settle(page);
+  metrics.playtest.hintPresses["desktop easy"] = 3;
   cam = await camera(page);
   const revealCentre = viewCentre(cam);
   const subjectCentre = centreOf(subjectTarget.region);
@@ -549,7 +618,7 @@ async function desktop() {
     viewCentre: revealCentre,
     object: subjectCentre,
   });
-  await witness(page, "08-show-where");
+  await witness(page, "e10-hint-easy-final", 600);
   await tapAt(session, toScreen(cam, subjectCentre));
   await page.waitForTimeout(150);
   check("18_REVEALED_OBJECT_IS_TAPPED_BY_THE_EXPLORADOR", (await progress(page)).found === 2);
@@ -564,7 +633,8 @@ async function desktop() {
 
   // 20 the closing card and exactly one result
   await page.waitForSelector(".hos-overlay-complete", { state: "visible", timeout: 4000 });
-  await witness(page, "09-completion", 600);
+  metrics.playtest.technicalMsToClosingCard["desktop easy"] = Date.now() - easyStarted;
+  await witness(page, "e11-completion", 600);
   const resultsBefore = (await storedResults(page)).length;
   await page.evaluate(() => {
     const button = [...document.querySelectorAll(".hos-overlay-complete button")].find((b) => b.textContent === "Concluir exploração");
@@ -572,12 +642,7 @@ async function desktop() {
     button.click();
   });
   await page.waitForSelector(".prm-card", { timeout: 6000 });
-  const modal = await page.evaluate(() => ({
-    world: document.querySelector(".prm-world")?.textContent,
-    title: document.querySelector(".prm-title")?.textContent,
-    summary: document.querySelector("#reward-summary")?.textContent,
-    details: Object.fromEntries([...document.querySelectorAll(".prm-detail")].map((d) => [d.querySelector("dt")?.textContent, d.querySelector("dd")?.textContent])),
-  }));
+  const modal = await resultScreen(page);
   const stored = await storedResults(page);
   const saved = stored[0];
   check("20_RESULT_SCREEN", modal.world === "Estúdio das Descobertas" && modal.title === "Estúdio explorado" && modal.summary === "Você encontrou todos os objetos do Estúdio.", modal);
@@ -588,12 +653,14 @@ async function desktop() {
       saved.activityId === "hidden-objects" &&
       saved.activityTitle === "Estúdio das Descobertas" &&
       saved.score === 5 &&
-      JSON.stringify(saved.details) === JSON.stringify({ difficulty: "easy", foundObjects: 5, totalObjects: 5, completed: true }) &&
+      JSON.stringify(saved.details) === JSON.stringify({ difficulty: "easy", foundObjects: 5, totalObjects: 5, completed: true, sceneId: "explorer-studio" }) &&
       saved.continuation === undefined,
     { saved },
   );
+  // GAME03-EXPERIENCE-02: the score says what it counts, the mode is named as the game names it, nothing technical
+  check("X04_RESULT_PRESENTATION", modal.scoreLabel === "Objetos encontrados" && modal.score === "5" && same(modal.details, { Modo: "Fácil" }), modal);
   metrics.resultDetailsShown = modal.details;
-  await witness(page, "10-result");
+  await witness(page, "e12-result", 500);
 
   // 21 play again: a fresh session through the shell (intro, setup, nothing found)
   await press(session, page.getByRole("button", { name: "Praticar este desafio outra vez" }));
@@ -603,12 +670,50 @@ async function desktop() {
   await page.waitForSelector(".hos-setup", { state: "visible" });
   check("21_PLAY_AGAIN_IS_FRESH", (await status(page)) === "setup" && (await progress(page)).found === 0);
 
-  // 22 restart: same difficulty, nothing found, the camera back at the table
+  // X01–X03 Médio: silhouettes + names, and a ladder that never points at the object
   await press(session, page.locator(".hos-difficulty-option", { hasText: "Médio" }));
   await press(session, page.getByRole("button", { name: "Explorar", exact: true }));
   await page.waitForFunction(() => document.querySelector(".hos-shell")?.dataset.status === "playing");
   await settle(page);
-  await findTarget(session, SCENE.DIFFICULTY_PRESETS.medium.targets[0]);
+  metrics.playtest.visibleWithoutPan["desktop medium"] = await onScreenCount(page, mediumIds);
+  const mediumEntries = await listEntries(page);
+  check(
+    "X01_MEDIO_LIST_IS_SILHOUETTE_AND_NAME",
+    same(mediumEntries.map((e) => e.text), mediumIds.map((id) => TARGET[id].label)) && mediumEntries.every((e) => e.art === "silhouette"),
+    { mediumEntries },
+  );
+  await witness(page, "e03-medium-playing");
+  const mediumSubject = TARGET[mediumIds[0]];
+  const mediumLadder = [];
+  let poolCamera = null;
+  for (let i = 0; i < 4; i += 1) {
+    await press(session, page.locator(".hos-hint-button"));
+    await settle(page);
+    mediumLadder.push({ ...(await hintState(page)), centre: viewCentre(await camera(page)) });
+    if (i === 1) {
+      poolCamera = await camera(page);
+      await witness(page, "e04-medium-hint-pool", 700);
+    }
+  }
+  metrics.playtest.hintPresses["desktop medium"] = 4;
+  const neverPoints = mediumLadder.every((s) => !/hos-halo-reveal/.test(s.halo ?? "") && !/Aqui está/.test(s.banner) && !/Mostrar/.test(s.button));
+  check(
+    "X02_MEDIO_HINTS_NEVER_POINT",
+    /^Pista: procure/.test(mediumLadder[0].banner) && mediumLadder[0].hinted === STATION[mediumSubject.station].label &&
+      /hos-halo-hint/.test(mediumLadder[1].halo ?? "") &&
+      mediumLadder[2].halo === null && mediumLadder[2].banner === `Pista: olhe ${mediumSubject.hintDirection}.` &&
+      mediumLadder[3].button === "Rever pista" && neverPoints,
+    { mediumLadder },
+  );
+  const directionCamera = await camera(page);
+  check("X03_MEDIO_DIRECTION_LEAVES_THE_CAMERA", Math.abs(directionCamera.tx - poolCamera.tx) < 0.5 && Math.abs(directionCamera.s - poolCamera.s) < 1e-6, {
+    afterPool: viewCentre(poolCamera),
+    afterDirection: viewCentre(directionCamera),
+  });
+
+  // 22 restart: same difficulty, nothing found, the camera back at the table
+  await findTarget(session, mediumIds[0]);
+  await findTarget(session, mediumIds[1]);
   await press(session, page.locator(".hos-station", { hasText: "Estante" }));
   await settle(page);
   await press(session, page.getByRole("button", { name: "Recomeçar a exploração" }));
@@ -643,10 +748,12 @@ async function mobile() {
   await noteOverflow("home");
   const entry = await enterStudio(session);
   metrics.mobileEntryToReadyMs = entry.readyAfterMs;
-  await startExploring(session, "Fácil");
+  await startExploring(session, "Difícil");
+  const hardStarted = Date.now();
   await noteOverflow("playing");
   check("25_OPENS_ON_A_PHONE", (await status(page)) === "playing", entry);
-  await witness(page, "11-mobile-playing");
+  metrics.playtest.visibleWithoutPan["phone hard"] = await onScreenCount(page, hardIds);
+  await witness(page, "e13-mobile-hard");
 
   // 26 one-finger drag: the camera moves, nothing is found
   let cam = await camera(page);
@@ -667,48 +774,64 @@ async function mobile() {
   await settle(page);
   cam = await camera(page);
   check("27_PINCH_ZOOMS", cam.s > scaleBefore * 1.6 && (await progress(page)).found === 0, { scale: [scaleBefore, cam.s] });
-  await witness(page, "12-mobile-pinch");
+  await witness(page, "e14-mobile-pinch");
   await press(session, page.getByRole("button", { name: "Recentrar" }));
   await settle(page);
+
+  // 29 the tray: below the scene, two rows (the clues, then count · Pista · stations), readable, nothing behind hover
+  const tray = await page.evaluate(() => {
+    const panel = document.querySelector(".hos-panel").getBoundingClientRect();
+    const scene = document.querySelector(".hos-viewport").getBoundingClientRect();
+    const items = [...document.querySelectorAll(".hos-item")];
+    const labels = items.map((n) => n.querySelector(".hos-item-label"));
+    return {
+      panelTop: panel.top,
+      sceneBottom: scene.bottom,
+      sceneHeightShare: scene.height / window.innerHeight,
+      chipsInOneRow: new Set(items.map((n) => Math.round(n.getBoundingClientRect().top))).size === 1,
+      clueFontPx: Math.min(...labels.map((l) => parseFloat(getComputedStyle(l).fontSize))),
+      cluesFit: labels.every((l) => l.scrollWidth <= l.clientWidth + 1 && l.scrollHeight <= l.clientHeight + 1),
+      minTarget: Math.min(...[...document.querySelectorAll(".hos-panel button, .hos-zoom button, .hos-topbar button")].map((b) => Math.min(b.getBoundingClientRect().width, b.getBoundingClientRect().height))),
+    };
+  });
+  metrics.mobileTray = tray;
+  check("29_TRAY", tray.panelTop >= tray.sceneBottom - 1 && tray.chipsInOneRow && tray.sceneHeightShare > 0.7 && tray.minTarget >= 44, tray);
+  check("X20_CLUES_READABLE_ON_A_PHONE", tray.clueFontPx >= 13 && tray.cluesFit, { clueFontPx: tray.clueFontPx, cluesFit: tray.cluesFit });
+
+  // 30 hint (Difícil: the station, in words; never a halo)
+  await press(session, page.locator(".hos-hint-button"));
+  await settle(page);
+  const hint = await hintState(page);
+  check("30_HINT_ON_A_PHONE", /^Pista: procure/.test(hint.banner) && hint.halo === null, hint);
+  await witness(page, "e15-mobile-hint", 300);
 
   // 28 a tap on a target
   const tapped = await findTarget(session, "lupa");
   check("28_TOUCH_TAP_FINDS", tapped.after === 1, tapped);
 
-  // 29 the tray: below the scene, chips in a row, nothing essential behind hover
-  const tray = await page.evaluate(() => {
-    const panel = document.querySelector(".hos-panel").getBoundingClientRect();
-    const scene = document.querySelector(".hos-viewport").getBoundingClientRect();
-    const items = [...document.querySelectorAll(".hos-item")].map((n) => n.getBoundingClientRect());
-    return {
-      panelTop: panel.top,
-      sceneBottom: scene.bottom,
-      sceneHeightShare: scene.height / window.innerHeight,
-      oneRow: new Set(items.map((r) => Math.round(r.top))).size === 1,
-      minTarget: Math.min(...[...document.querySelectorAll(".hos-panel button, .hos-zoom button, .hos-topbar button")].map((b) => Math.min(b.getBoundingClientRect().width, b.getBoundingClientRect().height))),
-    };
-  });
-  metrics.mobileTray = tray;
-  check("29_TRAY", tray.panelTop >= tray.sceneBottom - 1 && tray.oneRow && tray.sceneHeightShare > 0.55 && tray.minTarget >= 44, tray);
-
-  // 30 hint
-  await press(session, page.locator(".hos-hint-button"));
+  // X21 the tray folds to one row and unfolds; the room grows while it is folded
+  const openHeight = (await camera(page)).height;
+  await press(session, page.locator(".hos-tray-toggle"));
   await settle(page);
-  const banner = await page.evaluate(() => document.querySelector(".hos-hint-banner")?.textContent ?? "");
-  check("30_HINT_ON_A_PHONE", /^Pista: procure/.test(banner), { banner });
-  await witness(page, "13-mobile-hint", 300);
+  const folded = { height: (await camera(page)).height, tray: await page.evaluate(() => document.querySelector(".hos-shell")?.dataset.tray), overflow: await overflow(page) };
+  await witness(page, "e16-mobile-tray-folded", 300);
+  await press(session, page.locator(".hos-tray-toggle"));
+  await settle(page);
+  const unfolded = await page.evaluate(() => document.querySelector(".hos-shell")?.dataset.tray);
+  metrics.mobileFold = { openHeight, foldedHeight: folded.height, share: folded.height / 844 };
+  check("X21_TRAY_FOLDS_AND_THE_ROOM_GROWS", folded.tray === "closed" && folded.height > openHeight + 40 && unfolded === "open" && folded.overflow <= 0, { openHeight, folded, unfolded });
 
-  // 31 completion
-  for (const id of easyIds) {
+  // 31 completion: all eight of Difícil
+  for (const id of hardIds) {
     if (!(await page.locator(`.hos-found[data-target="${id}"]`).count())) await findTarget(session, id);
   }
   await noteOverflow("found all");
   await page.waitForSelector(".hos-overlay-complete", { state: "visible", timeout: 4000 });
-  await witness(page, "14-mobile-completion", 600);
+  metrics.playtest.technicalMsToClosingCard["phone hard"] = Date.now() - hardStarted;
   await press(session, page.getByRole("button", { name: "Concluir exploração" }));
   await page.waitForSelector(".prm-card", { timeout: 6000 });
   const saved = (await storedResults(page))[0];
-  check("31_COMPLETES_ON_A_PHONE", saved?.gameId === "hidden-objects" && saved.score === 5, { saved });
+  check("31_COMPLETES_ON_A_PHONE", saved?.gameId === "hidden-objects" && saved.score === 8 && saved.details.difficulty === "hard", { saved });
   await noteOverflow("result");
   check("32_NO_HORIZONTAL_PAGE_OVERFLOW", overflows.every((o) => o.px <= 0), { overflows });
   check("NO_PAGE_ERRORS", session.errors.length === 0, { errors: session.errors });
@@ -735,7 +858,7 @@ async function small() {
     overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
   }));
   const found = await findTarget(session, "barco");
-  await witness(page, "15-small-phone");
+  await witness(page, "e18-small-phone");
   check("SMALL_SCENE_KEEPS_ITS_SPACE", layout.sceneShare > 0.45 && layout.overflow <= 0, layout);
   check("SMALL_FIND", found.after === 1, found);
   check("NO_PAGE_ERRORS", session.errors.length === 0, { errors: session.errors });
@@ -777,8 +900,146 @@ async function reducedMotion() {
     return element ? { animation: getComputedStyle(element).animationName, timing: getComputedStyle(element).animationTimingFunction } : null;
   });
   check("RM_HALO_WITHOUT_FADES", halo?.animation === "hos-halo-life-still" && /steps/.test(halo.timing), { halo });
-  const parallax = await page.evaluate(() => document.querySelector(".hos-layer-back")?.style.transform);
-  check("RM_NO_PARALLAX", /translate3d\(0px, 0px, 0px\)/.test(parallax ?? ""), { parallax });
+  const parallax = await page.evaluate(() =>
+    [...document.querySelectorAll(".hos-layer-back, .hos-layer-front, .hos-layer-front-right")].map((layer) => layer.style.transform),
+  );
+  check("RM_NO_PARALLAX", parallax.length === 3 && parallax.every((t) => /translate3d\(0px, 0px, 0px\)/.test(t ?? "")), { parallax });
+  // GAME03-EXPERIENCE-02: the found ring and the name tag switch on and off, no fades, no scaling
+  await findTarget(session, "lupa");
+  const feedback = await page.evaluate(() => {
+    const read = (selector) => {
+      const element = document.querySelector(selector);
+      return element ? { animation: getComputedStyle(element).animationName, timing: getComputedStyle(element).animationTimingFunction } : null;
+    };
+    return { ring: read(".hos-found-ring"), tag: read(".hos-found-tag"), glow: read('.hos-found[data-fresh="true"] .hos-found-glow') };
+  });
+  check(
+    "RM_FOUND_FEEDBACK_WITHOUT_MOTION",
+    /steps/.test(feedback.ring?.timing ?? "") && /steps/.test(feedback.tag?.timing ?? "") && (feedback.glow?.animation ?? "none") === "none",
+    feedback,
+  );
+  check("NO_PAGE_ERRORS", session.errors.length === 0, { errors: session.errors });
+  await session.context.close();
+}
+
+// --- scenario: Difícil on the desktop ----------------------------------------------------------------------
+
+async function hard() {
+  current = "hard";
+  const session = await openSession({ width: 1440, height: 900 });
+  const { page } = session;
+  await page.goto(`${BASE}/`, { waitUntil: "networkidle" });
+  await enterStudio(session);
+  await startExploring(session, "Difícil");
+  const started = Date.now();
+  metrics.playtest.visibleWithoutPan["desktop hard"] = await onScreenCount(page, hardIds);
+
+  // X10 the list is what each object is for; no image, no name of anything still hidden
+  const entries = await listEntries(page);
+  const names = hardIds.map((id) => TARGET[id].label);
+  check(
+    "X10_DIFICIL_LIST_IS_THE_CLUES",
+    same(entries.map((e) => e.text), hardIds.map((id) => TARGET[id].clue)) && entries.every((e) => e.art === null) &&
+      !entries.some((e) => names.some((name) => norm(`${e.text} ${e.aria}`).includes(norm(name)))),
+    { entries },
+  );
+  await witness(page, "e05-hard-playing");
+
+  // X11 every object's ladder: the station, then what it is near, then the same again — never a light, never a glide to it
+  const ladders = {};
+  const problems = [];
+  for (const [index, id] of hardIds.entries()) {
+    const target = TARGET[id];
+    await press(session, page.locator(".hos-item").nth(index));
+    const steps = [];
+    let previous = null;
+    for (let i = 0; i < 3; i += 1) {
+      await press(session, page.locator(".hos-hint-button"));
+      await settle(page);
+      await page.waitForTimeout(120);
+      const state = await hintState(page);
+      const cam = await camera(page);
+      steps.push(state.banner);
+      if (state.halo) problems.push(`${id}: halo after press ${i + 1}`);
+      if (/Aqui está|Mostrar/.test(`${state.banner} ${state.button}`)) problems.push(`${id}: "${state.button}" / "${state.banner}"`);
+      if (norm(state.banner).includes(norm(target.label))) problems.push(`${id}: the banner names it`);
+      if (i === 0 && Math.abs(viewCentre(cam).x - Math.min(Math.max(STATION[target.station].center.x, cam.width / (2 * cam.s)), SCENE.SCENE_WIDTH - cam.width / (2 * cam.s))) > 2) problems.push(`${id}: press 1 is not the station`);
+      if (i > 0 && previous && (Math.abs(cam.tx - previous.tx) > 0.5 || Math.abs(cam.s - previous.s) > 1e-6)) problems.push(`${id}: press ${i + 1} moved the camera`);
+      if (i === 1 && state.banner !== `Pista: está ${target.hintContext}.`) problems.push(`${id}: context "${state.banner}"`);
+      if (i === 2 && state.button !== "Rever pista") problems.push(`${id}: top button "${state.button}"`);
+      previous = cam;
+    }
+    ladders[id] = steps;
+    if (index === 6) await witness(page, "e06-hard-hint-max", 300);
+  }
+  metrics.playtest.hintPresses["desktop hard"] = hardIds.length * 3;
+  check("X11_DIFICIL_HINTS_NEVER_REVEAL", problems.length === 0, { problems: problems.slice(0, 8), ladders });
+
+  // X12 a find says the name: in the list (with the clue it answered), on a tag in the room, to the live region
+  const first = hardIds[0];
+  await findTarget(session, first);
+  const revealed = await page.evaluate((label) => {
+    const item = [...document.querySelectorAll(".hos-item")].find((n) => n.dataset.found === "true");
+    return {
+      line: item?.querySelector(".hos-item-label")?.childNodes[0]?.textContent ?? null,
+      answered: item?.querySelector(".hos-item-answered")?.textContent ?? null,
+      tag: document.querySelector(".hos-found-tag")?.textContent ?? null,
+      live: document.querySelector('.hos-sr-only[aria-live]')?.textContent ?? "",
+      label,
+    };
+  }, TARGET[first].label);
+  check(
+    "X12_A_FIND_SAYS_THE_NAME",
+    revealed.line === TARGET[first].label && revealed.answered === TARGET[first].clue && revealed.tag === TARGET[first].label && revealed.live.includes(TARGET[first].label),
+    revealed,
+  );
+  await witness(page, "e07-hard-semantic-found", 150);
+
+  // X13 the camera still answers in Difícil: pan, wheel, stations
+  let cam = await camera(page);
+  const centre = { x: cam.left + cam.width / 2, y: cam.top + cam.height / 2 };
+  const before = viewCentre(cam);
+  await drag(session, centre, { x: centre.x + 200, y: centre.y });
+  await settle(page);
+  cam = await camera(page);
+  const panned = before.x - viewCentre(cam).x > 200;
+  await page.mouse.move(centre.x, centre.y);
+  await page.mouse.wheel(0, -240);
+  await page.waitForTimeout(300);
+  await settle(page);
+  const zoomedIn = (await camera(page)).s > cam.s * 1.15;
+  await press(session, page.locator(".hos-station", { hasText: "Estante" }));
+  await settle(page);
+  const atShelf = Math.abs(viewCentre(await camera(page)).x - Math.min(STATION.estante.center.x, SCENE.SCENE_WIDTH - (await camera(page)).width / (2 * (await camera(page)).s))) < 2;
+  check("X13_PAN_ZOOM_STATIONS_IN_DIFICIL", panned && zoomedIn && atShelf, { panned, zoomedIn, atShelf });
+
+  // X14 the objectives fold away on the desktop too (a rail), and come back
+  const openWidth = (await camera(page)).width;
+  await press(session, page.locator(".hos-tray-toggle"));
+  await settle(page);
+  const railWidth = (await camera(page)).width;
+  await witness(page, "e17-desktop-rail", 300);
+  await press(session, page.locator(".hos-tray-toggle"));
+  await settle(page);
+  check("X14_THE_LIST_FOLDS_TO_A_RAIL", railWidth > openWidth + 120 && (await camera(page)).width === openWidth, { openWidth, railWidth });
+
+  // X15 all eight, one result, the result screen in Difícil's words
+  for (const id of hardIds) {
+    if (!(await page.locator(`.hos-found[data-target="${id}"]`).count())) await findTarget(session, id);
+  }
+  await page.waitForSelector(".hos-overlay-complete", { state: "visible", timeout: 4000 });
+  metrics.playtest.technicalMsToClosingCard["desktop hard"] = Date.now() - started;
+  await press(session, page.getByRole("button", { name: "Concluir exploração" }));
+  await page.waitForSelector(".prm-card", { timeout: 6000 });
+  const modal = await resultScreen(page);
+  const saved = (await storedResults(page))[0];
+  check(
+    "X15_DIFICIL_RESULT",
+    saved?.score === 8 && saved.details.difficulty === "hard" && saved.details.sceneId === "explorer-studio" &&
+      modal.scoreLabel === "Objetos encontrados" && modal.score === "8" && same(modal.details, { Modo: "Difícil" }),
+    { saved, modal },
+  );
+  await witness(page, "e08-hard-result", 500);
   check("NO_PAGE_ERRORS", session.errors.length === 0, { errors: session.errors });
   await session.context.close();
 }
@@ -822,7 +1083,7 @@ async function legacy() {
   check("33_LEGACY_RESULT_IS_READ_SAFELY", home.stage && home.worlds.length === 5 && !home.worlds.includes("Trilha Lógica"), home);
   check("34_NO_CRASH", session.errors.length === 0, { errors: session.errors });
   check("35_NOT_SHOWN_AS_THE_STUDIO", home.selected !== "Estúdio das Descobertas" && (await page.locator(".hos-shell").count()) === 0, home);
-  await witness(page, "16-legacy-home");
+  await witness(page, "e19-legacy-home");
 
   // A full Estúdio session next to it: the old entry stays exactly as it was.
   await enterStudio(session);
@@ -838,9 +1099,13 @@ async function legacy() {
   await press(session, page.getByRole("button", { name: "Continuar na jornada cognitiva" }));
   await page.waitForSelector(".hj-stage", { timeout: 6000 });
   await page.reload({ waitUntil: "networkidle" });
-  await page.waitForTimeout(400);
+  // the server renders the default world; the stored history selects after hydration (give it time)
+  await page
+    .waitForFunction(() => document.querySelector(".hj-world-selected .hj-world-copy strong")?.textContent === "Estúdio das Descobertas", null, { timeout: 6000 })
+    .catch(() => {});
   const reloaded = await page.evaluate(() => document.querySelector(".hj-world-selected .hj-world-copy strong")?.textContent ?? null);
-  check("35_RELOAD_FOLLOWS_THE_NEWEST_PLAYABLE_RESULT", reloaded === "Estúdio das Descobertas", { selected: reloaded });
+  const storedAfterReload = (await storedResults(page)).map((r) => r.gameId);
+  check("35_RELOAD_FOLLOWS_THE_NEWEST_PLAYABLE_RESULT", reloaded === "Estúdio das Descobertas", { selected: reloaded, storedAfterReload });
   check("NO_RETIRED_GAME_REQUESTED", !session.requests.some((url) => /number-trail|NumberTrail/.test(url)));
   check("NO_PAGE_ERRORS", session.errors.length === 0, { errors: session.errors });
   await session.context.close();
@@ -907,7 +1172,31 @@ function bundle() {
 
 // --- run --------------------------------------------------------------------------------------------------------
 
-const runners = { desktop, mobile, small, "reduced-motion": reducedMotion, legacy, bundle };
+/** Playtest diagnostics from the scene data: the zoom each object needs on the reference phone to reach 44 px. */
+function phoneZoomNeeds() {
+  const phone = { width: 390, height: 662 };
+  const cover = Math.max(phone.width / SCENE.SCENE_WIDTH, phone.height / SCENE.SCENE_HEIGHT);
+  return Object.fromEntries(
+    SCENE.HIDDEN_OBJECTS.map((t) => {
+      const r = t.region;
+      const side = r.kind === "rect" ? Math.min(r.w, r.h) : 2 * r.r;
+      return [t.id, { tier: t.tier, atCoverPx: Math.round(side * cover), zoomFor44px: Number(Math.max(1, 44 / (side * cover)).toFixed(2)) }];
+    }),
+  );
+}
+
+const runners = {
+  desktop,
+  hard,
+  mobile,
+  small,
+  "reduced-motion": reducedMotion,
+  legacy,
+  bundle: () => {
+    bundle();
+    metrics.playtest.phoneZoomFor44px = phoneZoomNeeds();
+  },
+};
 for (const name of SCENARIOS) {
   try {
     await runners[name]();

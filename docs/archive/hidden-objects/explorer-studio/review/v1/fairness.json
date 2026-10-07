@@ -1,0 +1,111 @@
+{
+  "kit": "/assets/hidden-objects/explorer-studio/v1",
+  "plateSha256": "052ec527e9b3fd38c3fcc04da3be1ee95cbafb6dab5135472ac1ed7a813499ec",
+  "rule": {
+    "visible": "share of the target's own pixels the finished plate shows (plate rendered with and without the target)",
+    "contrast": "F4 as written: mean-luminance ratio, visible target vs a 24 su ring, on the composed room",
+    "edge": "median luminance ratio across the visible silhouette's edge (each edge pixel vs the background within 3 su)"
+  },
+  "targets": [
+    {
+      "id": "ampulheta",
+      "tier": "A",
+      "visible": 0.956,
+      "contrast": 1.95,
+      "edge": 1.77,
+      "lookAlikes": [
+        "vaso-torneado"
+      ]
+    },
+    {
+      "id": "binoculo",
+      "tier": "B",
+      "visible": 0.846,
+      "contrast": 1.06,
+      "edge": 1.33,
+      "lookAlikes": [
+        "tinteiros"
+      ]
+    },
+    {
+      "id": "chave",
+      "tier": "C",
+      "visible": 0.71,
+      "contrast": 1.63,
+      "edge": 1.66,
+      "lookAlikes": [
+        "alca-do-bau",
+        "fivela"
+      ]
+    },
+    {
+      "id": "lupa",
+      "tier": "A",
+      "visible": 0.998,
+      "contrast": 1.34,
+      "edge": 1.75,
+      "lookAlikes": [
+        "carimbo"
+      ]
+    },
+    {
+      "id": "bussola",
+      "tier": "B",
+      "visible": 0.88,
+      "contrast": 1.06,
+      "edge": 1.94,
+      "lookAlikes": [
+        "lata-redonda"
+      ]
+    },
+    {
+      "id": "relogio",
+      "tier": "C",
+      "visible": 0.859,
+      "contrast": 1.58,
+      "edge": 1.62,
+      "lookAlikes": [
+        "moedas"
+      ]
+    },
+    {
+      "id": "barco",
+      "tier": "A",
+      "visible": 0.957,
+      "contrast": 3.05,
+      "edge": 1.91,
+      "lookAlikes": []
+    },
+    {
+      "id": "lanterna",
+      "tier": "B",
+      "visible": 0.749,
+      "contrast": 2.49,
+      "edge": 1.53,
+      "lookAlikes": [
+        "chaleira"
+      ]
+    },
+    {
+      "id": "camera",
+      "tier": "C",
+      "visible": 0.836,
+      "contrast": 1.94,
+      "edge": 2.99,
+      "lookAlikes": [
+        "caixinha-de-musica"
+      ]
+    },
+    {
+      "id": "estatueta",
+      "tier": "C",
+      "visible": 0.753,
+      "contrast": 3.74,
+      "edge": 2.91,
+      "lookAlikes": [
+        "vaso-de-porcelana",
+        "rolo-de-papel"
+      ]
+    }
+  ]
+}

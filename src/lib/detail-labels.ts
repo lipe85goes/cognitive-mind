@@ -52,3 +52,34 @@ export function formatDetailValuePt(value: number | string | boolean): string {
   }
   return String(value);
 }
+
+export interface ResultDetailLine {
+  key: string;
+  label: string;
+  value: string;
+}
+
+/**
+ * The details a result screen lists. Without options: every stored detail that
+ * is not an object, in stored order, with the shared labels. A game may list
+ * only `detailKeys` (in that order) and name its own modes (`modeLabels`, for
+ * the `difficulty` detail) — see `getResultPresentation` in engine/rewards.
+ */
+export function formatResultDetails(
+  details: Record<string, unknown>,
+  options: {
+    detailKeys?: readonly string[] | null;
+    modeLabels?: Readonly<Record<DifficultyLevel, string>> | null;
+  } = {},
+): ResultDetailLine[] {
+  const keys = options.detailKeys ?? Object.keys(details);
+  return keys.flatMap((key) => {
+    const value = details[key];
+    if (typeof value !== "number" && typeof value !== "string" && typeof value !== "boolean") return [];
+    const mode =
+      key === "difficulty" && options.modeLabels && (value === "easy" || value === "medium" || value === "hard")
+        ? options.modeLabels[value]
+        : null;
+    return [{ key, label: formatDetailKeyPt(key), value: mode ?? formatDetailValuePt(value) }];
+  });
+}

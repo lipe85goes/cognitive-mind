@@ -102,9 +102,9 @@ export const WORLD_VISUALS: Record<GameId, WorldVisualContract> = {
     accentSoft: "rgba(232, 164, 111, 0.22)",
     accentDeep: "#5b3320",
     atmosphere: "/illustrations/home/home-background-desktop.webp",
-    // GAME03-SKELETON-01: provisional art, a crop of the prototype scene.
-    transitionArt: "/assets/hidden-objects/explorer-studio/v0/hero.webp",
-    introArt: "/assets/hidden-objects/explorer-studio/v0/hero.webp",
+    // A crop of the scene's current art kit (still authored by script — GAME03-EXPERIENCE-02's v1).
+    transitionArt: "/assets/hidden-objects/explorer-studio/v1/hero.webp",
+    introArt: "/assets/hidden-objects/explorer-studio/v1/hero.webp",
     artMode: "rendered",
     symbol: ScanSearch,
     entryEyebrow: "Abrindo o estúdio",
