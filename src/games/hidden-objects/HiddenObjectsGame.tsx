@@ -21,7 +21,6 @@ import {
   sessionReducer,
   subjectText,
   targetById,
-  targetsFor,
 } from "@/games/hidden-objects/hidden-objects-model";
 import {
   DIFFICULTY_ORDER,
@@ -36,10 +35,19 @@ import "@/games/hidden-objects/hidden-objects.css";
 export const COMPLETION_CARD_DELAY_MS = 700;
 
 const DIFFICULTY_NOTE: Record<DifficultyLevel, string> = {
-  easy: "5 objetos · lista com imagens · a pista pode mostrar onde está",
-  medium: "6 objetos · lista com silhuetas · pistas mais vagas",
-  hard: "8 objetos · a lista descreve, não nomeia · a pista nunca revela",
+  easy: "lista com imagens · a pista pode mostrar onde está",
+  medium: "lista com silhuetas · pistas mais vagas",
+  hard: "a lista descreve, não nomeia · a pista nunca revela",
 };
+
+/**
+ * A new round's seed, drawn once per exploration — when "Explorar" is pressed,
+ * never during a render. It is the only randomness in the game: the list itself
+ * is a pure function of the difficulty and this number.
+ */
+function freshRoundSeed(): number {
+  return globalThis.crypto.getRandomValues(new Uint32Array(1))[0];
+}
 
 /**
  * Estúdio das Descobertas (GAME03-SKELETON-01, GAME03-EXPERIENCE-02). React
@@ -60,8 +68,10 @@ export function HiddenObjectsGame({ onComplete, onExit, onEntryReady, onEntryErr
   const instructionsId = useId();
   const trayId = useId();
 
-  const listed = targetsFor(state.difficulty);
+  const listed = state.targets;
   const preset = DIFFICULTY_PRESETS[state.difficulty];
+  /** In setup no list is drawn yet: the panel counts what the chosen difficulty will ask for. */
+  const total = state.status === "setup" ? preset.count : listed.length;
   const playing = state.status === "playing";
   const finished = state.status === "completed";
   const cardVisible = finished && cardRound === state.round && dismissedRound !== state.round;
@@ -139,6 +149,7 @@ export function HiddenObjectsGame({ onComplete, onExit, onEntryReady, onEntryErr
       data-status={state.status}
       data-list={preset.listStyle}
       data-tray={trayShown ? "open" : "closed"}
+      data-round-seed={state.roundSeed ?? undefined}
     >
       <header className="hos-topbar">
         <button type="button" className="hos-chip-button" onClick={onExit} aria-label="Voltar à jornada">
@@ -189,18 +200,18 @@ export function HiddenObjectsGame({ onComplete, onExit, onEntryReady, onEntryErr
           <div className="hos-panel-head">
             <h2>Objetos para encontrar</h2>
             <p className="hos-progress-text">
-              <strong>{state.foundIds.length}/{listed.length}</strong> encontrados
+              <strong>{state.foundIds.length}/{total}</strong> encontrados
             </p>
             <div
               className="hos-progress"
               role="progressbar"
               aria-label="Objetos encontrados"
               aria-valuemin={0}
-              aria-valuemax={listed.length}
+              aria-valuemax={total}
               aria-valuenow={state.foundIds.length}
-              aria-valuetext={`${state.foundIds.length} de ${listed.length}`}
+              aria-valuetext={`${state.foundIds.length} de ${total}`}
             >
-              <span style={{ width: `${(100 * state.foundIds.length) / listed.length}%` }} />
+              <span style={{ width: `${(100 * state.foundIds.length) / total}%` }} />
             </div>
             <button
               type="button"
@@ -210,14 +221,14 @@ export function HiddenObjectsGame({ onComplete, onExit, onEntryReady, onEntryErr
               aria-label={
                 trayShown
                   ? "Recolher a lista de objetos"
-                  : `Mostrar a lista de objetos: ${state.foundIds.length} de ${listed.length} encontrados`
+                  : `Mostrar a lista de objetos: ${state.foundIds.length} de ${total} encontrados`
               }
               onClick={() => setTrayOpen((open) => !open)}
             >
               <ListChecks size={18} aria-hidden="true" />
               <span>{trayShown ? "Recolher" : "Lista"}</span>
               <span className="hos-tray-count">
-                {state.foundIds.length}/{listed.length}
+                {state.foundIds.length}/{total}
               </span>
             </button>
           </div>
@@ -231,6 +242,7 @@ export function HiddenObjectsGame({ onComplete, onExit, onEntryReady, onEntryErr
                   <button
                     type="button"
                     className="hos-item"
+                    data-target={id}
                     data-found={entry.found ? "true" : undefined}
                     data-focused={focused ? "true" : undefined}
                     data-clue={entry.answered !== null || (!entry.found && preset.listStyle === "clue") ? "true" : undefined}
@@ -308,7 +320,7 @@ export function HiddenObjectsGame({ onComplete, onExit, onEntryReady, onEntryErr
         <SetupCard
           difficulty={state.difficulty}
           onDifficulty={(difficulty) => dispatch({ type: "select-difficulty", difficulty })}
-          onStart={() => dispatch({ type: "start" })}
+          onStart={() => dispatch({ type: "start", seed: freshRoundSeed() })}
         />
       )}
 
@@ -350,7 +362,7 @@ function SetupCard({
         <p className="hos-kicker">Preparar</p>
         <h2 id="hos-setup-title">{HIDDEN_OBJECTS_TITLE}</h2>
         <p className="hos-subtitle">{HIDDEN_OBJECTS_SUBTITLE}</p>
-        <p className="hos-setup-copy">Observe com calma. Há mais do que parece.</p>
+        <p className="hos-setup-copy">Observe com calma. A cada visita, a sala pede outros objetos.</p>
         <fieldset className="hos-difficulty">
           <legend>Dificuldade</legend>
           {DIFFICULTY_ORDER.map((level) => (
@@ -364,7 +376,9 @@ function SetupCard({
               />
               <span>
                 <strong>{DIFFICULTY_PRESETS[level].label}</strong>
-                <small>{DIFFICULTY_NOTE[level]}</small>
+                <small>
+                  {DIFFICULTY_PRESETS[level].count} objetos · {DIFFICULTY_NOTE[level]}
+                </small>
               </span>
             </label>
           ))}

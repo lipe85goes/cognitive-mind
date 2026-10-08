@@ -1,5 +1,6 @@
 import type { DifficultyLevel, GameResult } from "@/types/game";
 import type { Point, Rect } from "@/games/hidden-objects/hidden-objects-camera";
+import { selectRoundTargets } from "@/games/hidden-objects/hidden-objects-rounds";
 import {
   DIFFICULTY_PRESETS,
   HIDDEN_OBJECTS,
@@ -17,7 +18,8 @@ import {
 
 /**
  * The Estúdio's rules: hit testing, the session (setup → playing → completed),
- * the hint ladder and the result. Pure: no React, no DOM, no clock, no RNG.
+ * the hint ladder and the result. Pure: no React, no DOM, no clock, no ambient
+ * randomness — a round's list comes from the seed the "start" action carries.
  */
 
 export const HIDDEN_OBJECTS_TITLE = "Estúdio das Descobertas";
@@ -29,11 +31,6 @@ export function targetById(id: TargetId): HiddenObjectDefinition {
   const target = BY_ID.get(id);
   if (!target) throw new Error(`Unknown target ${id}`);
   return target;
-}
-
-/** The fixed list for a difficulty, in the order it is shown. */
-export function targetsFor(difficulty: DifficultyLevel): readonly TargetId[] {
-  return DIFFICULTY_PRESETS[difficulty].targets;
 }
 
 // --- geometry --------------------------------------------------------------------------------------
@@ -113,6 +110,14 @@ export type SessionEvent =
 export interface SessionState {
   status: SessionStatus;
   difficulty: DifficultyLevel;
+  /**
+   * The round's list, in the order it is shown: drawn once, when the
+   * exploration starts (empty in setup), and kept until the session ends —
+   * no render, camera move, hint or restart ever draws it again.
+   */
+  targets: readonly TargetId[];
+  /** The seed the list was drawn with: the same difficulty and seed always give the same list. */
+  roundSeed: number | null;
   foundIds: readonly TargetId[];
   /** The object the hint ladder is climbing for, and how far it has climbed. */
   hintTarget: TargetId | null;
@@ -130,7 +135,8 @@ export interface SessionState {
 
 export type SessionAction =
   | { type: "select-difficulty"; difficulty: DifficultyLevel }
-  | { type: "start" }
+  /** `seed`: drawn by the game when "Explorar" is pressed; it picks the round's list. */
+  | { type: "start"; seed: number }
   /** A tap the gesture recogniser accepted: scene point (su), px per su, pointer kind. */
   | { type: "tap"; point: Point; scale: number; pointerType: string }
   | { type: "focus-target"; targetId: TargetId }
@@ -141,6 +147,8 @@ export function createSession(difficulty: DifficultyLevel = "easy"): SessionStat
   return {
     status: "setup",
     difficulty,
+    targets: [],
+    roundSeed: null,
     foundIds: [],
     hintTarget: null,
     hintStage: 0,
@@ -152,6 +160,7 @@ export function createSession(difficulty: DifficultyLevel = "easy"): SessionStat
   };
 }
 
+/** A round from the top. The list is not touched: start draws it, restart keeps it. */
 const freshRound = (state: SessionState): SessionState => ({
   ...state,
   status: "playing",
@@ -170,7 +179,7 @@ const emit = (state: SessionState, event: SessionEvent): SessionState => ({
 });
 
 export function pendingTargets(state: SessionState): TargetId[] {
-  return targetsFor(state.difficulty).filter((id) => !state.foundIds.includes(id));
+  return state.targets.filter((id) => !state.foundIds.includes(id));
 }
 
 /** Who the Pista button is for right now. */
@@ -186,15 +195,19 @@ export function sessionReducer(state: SessionState, action: SessionAction): Sess
     case "select-difficulty":
       return state.status === "setup" ? { ...state, difficulty: action.difficulty } : state;
 
-    case "start":
-      return state.status === "setup" ? freshRound(state) : state;
+    case "start": {
+      if (state.status !== "setup") return state;
+      const roundSeed = action.seed >>> 0;
+      return freshRound({ ...state, targets: selectRoundTargets(state.difficulty, roundSeed), roundSeed });
+    }
 
+    // "Recomeçar": the same list from the top. A new list is a new exploration (a new entry).
     case "restart":
       return state.status === "setup" ? state : freshRound(state);
 
     case "tap": {
       if (state.status !== "playing") return state;
-      const listed = targetsFor(state.difficulty);
+      const listed = state.targets;
       const hit = hitTest(action.point, listed, action.scale, tolerancePxFor(state.difficulty, action.pointerType));
       // A free tap costs nothing: no counter, no penalty, nothing recorded.
       if (hit === null) return emit(state, { kind: "miss", point: action.point });
@@ -403,7 +416,7 @@ export function subjectText(state: Pick<SessionState, "difficulty" | "foundIds">
 // --- copy and result ------------------------------------------------------------------------------------
 
 export function progressLabel(state: SessionState): string {
-  return `${state.foundIds.length} de ${targetsFor(state.difficulty).length}`;
+  return `${state.foundIds.length} de ${state.targets.length}`;
 }
 
 /**
@@ -432,10 +445,11 @@ export function announcementFor(state: SessionState): string {
  * neutral — how many objects were found (5, 6 or 8) — never reduced by hints,
  * "Mostrar onde está" or free taps, none of which is recorded. `sceneId` says
  * which room was explored (results saved before it existed are all the Estúdio
- * do Explorador).
+ * do Explorador) and `roundSeed` which list it asked for (with the difficulty,
+ * it draws that same list again).
  */
 export function buildHiddenObjectsResult(state: SessionState): Omit<GameResult, "id" | "playedAt"> {
-  const total = targetsFor(state.difficulty).length;
+  const total = state.targets.length;
   return {
     activityId: "hidden-objects",
     activityTitle: HIDDEN_OBJECTS_TITLE,
@@ -448,6 +462,7 @@ export function buildHiddenObjectsResult(state: SessionState): Omit<GameResult, 
       totalObjects: total,
       completed: state.status === "completed",
       sceneId: SCENE_ID,
+      roundSeed: state.roundSeed ?? 0,
     },
   };
 }

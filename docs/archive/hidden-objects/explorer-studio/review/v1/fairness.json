@@ -1,6 +1,6 @@
 {
   "kit": "/assets/hidden-objects/explorer-studio/v1",
-  "plateSha256": "052ec527e9b3fd38c3fcc04da3be1ee95cbafb6dab5135472ac1ed7a813499ec",
+  "plateSha256": "bd874d6590f0ebf8fc314a2dcf9f86be6feafaf9e99493a0b48a50453fcd3648",
   "rule": {
     "visible": "share of the target's own pixels the finished plate shows (plate rendered with and without the target)",
     "contrast": "F4 as written: mean-luminance ratio, visible target vs a 24 su ring, on the composed room",
@@ -22,7 +22,7 @@
       "tier": "B",
       "visible": 0.846,
       "contrast": 1.06,
-      "edge": 1.33,
+      "edge": 1.32,
       "lookAlikes": [
         "tinteiros"
       ]
@@ -32,11 +32,27 @@
       "tier": "C",
       "visible": 0.71,
       "contrast": 1.63,
-      "edge": 1.66,
+      "edge": 1.67,
       "lookAlikes": [
         "alca-do-bau",
         "fivela"
       ]
+    },
+    {
+      "id": "guarda-chuva",
+      "tier": "A",
+      "visible": 0.965,
+      "contrast": 2.09,
+      "edge": 1.44,
+      "lookAlikes": []
+    },
+    {
+      "id": "gaiola",
+      "tier": "C",
+      "visible": 0.934,
+      "contrast": 1.41,
+      "edge": 1.53,
+      "lookAlikes": []
     },
     {
       "id": "lupa",
@@ -53,7 +69,7 @@
       "tier": "B",
       "visible": 0.88,
       "contrast": 1.06,
-      "edge": 1.94,
+      "edge": 1.97,
       "lookAlikes": [
         "lata-redonda"
       ]
@@ -69,11 +85,43 @@
       ]
     },
     {
+      "id": "xicara",
+      "tier": "C",
+      "visible": 0.538,
+      "contrast": 1.52,
+      "edge": 1.75,
+      "lookAlikes": []
+    },
+    {
+      "id": "pena",
+      "tier": "B",
+      "visible": 0.999,
+      "contrast": 1.87,
+      "edge": 2.93,
+      "lookAlikes": []
+    },
+    {
+      "id": "borboleta",
+      "tier": "A",
+      "visible": 1,
+      "contrast": 2.81,
+      "edge": 1.33,
+      "lookAlikes": []
+    },
+    {
+      "id": "chapeu",
+      "tier": "B",
+      "visible": 1,
+      "contrast": 1.76,
+      "edge": 1.91,
+      "lookAlikes": []
+    },
+    {
       "id": "barco",
       "tier": "A",
       "visible": 0.957,
-      "contrast": 3.05,
-      "edge": 1.91,
+      "contrast": 3.06,
+      "edge": 1.93,
       "lookAlikes": []
     },
     {
@@ -81,7 +129,7 @@
       "tier": "B",
       "visible": 0.749,
       "contrast": 2.49,
-      "edge": 1.53,
+      "edge": 1.54,
       "lookAlikes": [
         "chaleira"
       ]
@@ -101,11 +149,27 @@
       "tier": "C",
       "visible": 0.753,
       "contrast": 3.74,
-      "edge": 2.91,
+      "edge": 2.93,
       "lookAlikes": [
         "vaso-de-porcelana",
         "rolo-de-papel"
       ]
+    },
+    {
+      "id": "globo",
+      "tier": "A",
+      "visible": 0.997,
+      "contrast": 1.99,
+      "edge": 1.7,
+      "lookAlikes": []
+    },
+    {
+      "id": "bolsa",
+      "tier": "B",
+      "visible": 0.99,
+      "contrast": 1.88,
+      "edge": 2.25,
+      "lookAlikes": []
     }
   ]
 }

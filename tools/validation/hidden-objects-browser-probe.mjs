@@ -25,9 +25,23 @@
  *   reduced-motion 1440×900 with prefers-reduced-motion: station cuts instantly, halos, the
  *                  found ring and tag on/off without fades, no parallax
  *   legacy         a stored `number-trail` result: Home loads, nothing breaks, nothing opens the
- *                  retired game, nothing converts the old result
+ *                  retired game, nothing converts the old result; after a reload (read once the Home
+ *                  has hydrated) the newest playable result is selected
+ *   landscape      844×390, touch, Médio: entry → drag → pinch → hint → finds → the phone turned
+ *                  upright mid-round (the round holds) → back → find all → result; no page overflow
+ *   rounds         nine planted seeds (three per difficulty), each a new entry from the Home: the list on
+ *                  screen is exactly the one its seed draws, spread over the three stations, all different
+ *   reload-race    the Home/reload anomaly, reproduced and explained: the server HTML selects the default
+ *                  world; a read at networkidle + 400 ms (the base probe's) under CPU throttling lands
+ *                  before hydration and sees that default; the hydrated Home always selects the newest
+ *                  playable result
  *   bundle         the build directory: Game 03 code only in its own lazy set; Babylon, the
  *                  Rota and the Circuito sets free of it; sizes
+ *
+ * Rounds (GAME03-EXPERIENCE-02's target pool): every scenario plants its own seeds in the platform's
+ * random source (`crypto.getRandomValues`, the game's only randomness, drawn on "Explorar"), reads the
+ * round the shell reports (`data-round-seed`, the list's `data-target`s) and holds it to the list that
+ * seed draws (hidden-objects-rounds.ts, read from source). Nothing in the product is a test hook.
  *
  * Playtest measurements (metrics.playtest — diagnostics of THIS automated run, never a
  * score, nothing reaches the product): how many listed objects are fully on screen before
@@ -52,6 +66,7 @@ import vm from "node:vm";
 import zlib from "node:zlib";
 import { pathToFileURL } from "node:url";
 import ts from "typescript";
+import { createModuleGraph } from "./route-module-loader.mjs";
 
 const EXIT_OK = 0;
 const EXIT_FAILED = 1;
@@ -65,7 +80,7 @@ const BASE = arg("--base", "http://localhost:3100");
 const BUILD = arg("--build", ".next");
 const OUT = arg("--out", null);
 const JSON_OUT = arg("--json", null);
-const ALL = ["desktop", "hard", "mobile", "small", "reduced-motion", "legacy", "bundle"];
+const ALL = ["desktop", "hard", "mobile", "landscape", "small", "reduced-motion", "legacy", "rounds", "reload-race", "bundle"];
 const SCENARIOS = (arg("--scenario", ALL.join(",")) ?? "").split(",").filter(Boolean);
 if (SCENARIOS.some((name) => !ALL.includes(name))) {
   console.error(`unknown scenario; choose from ${ALL.join(", ")}`);
@@ -104,6 +119,29 @@ const centreOf = (region) =>
   region.kind === "rect" ? { x: region.x + region.w / 2, y: region.y + region.h / 2 } : { x: region.cx, y: region.cy };
 const STORAGE_KEY = /const STORAGE_KEY = "([^"]+)"/.exec(fs.readFileSync("src/engine/storage.ts", "utf8"))[1];
 
+// --- rounds: the selection itself, from source; the seeds each scenario plants ---------------------------
+
+const ROUNDS = createModuleGraph({ mocks: {}, globals: {} }).require("src/games/hidden-objects/hidden-objects-rounds.ts");
+/** The list a difficulty and seed draw, in the order shown. */
+const drawn = (difficulty, seed) => ROUNDS.selectRoundTargets(difficulty, seed);
+/** Each scenario's seeds, one per "Explorar", in order. */
+const SEEDS = {
+  desktop: [101, 202, 303], // Fácil · Médio after "Praticar outra vez" · Fácil again, a new entry from the Home
+  hard: [404],
+  mobile: [505],
+  landscape: [606],
+  small: [707],
+  "reduced-motion": [808],
+  legacy: [909],
+  rounds: [1001, 1002, 1003, 2001, 2002, 2003, 3001, 3002, 3003],
+};
+const ROUND_PLAN = ["easy", "easy", "easy", "medium", "medium", "medium", "hard", "hard", "hard"];
+// the plan itself must ask for what it claims: a new entry's Fácil differs from the first one
+if (JSON.stringify([...drawn("easy", SEEDS.desktop[0])].sort()) === JSON.stringify([...drawn("easy", SEEDS.desktop[2])].sort())) {
+  console.error("seed plan: the desktop's two Fácil seeds draw the same list — pick another");
+  process.exit(EXIT_USAGE);
+}
+
 // --- results ----------------------------------------------------------------------------------------
 
 const results = [];
@@ -139,7 +177,8 @@ if (SCENARIOS.some((name) => name !== "bundle")) {
 
 /** A stand-in for the React DevTools hook: React reports each commit to it, in production too. */
 function installObservers() {
-  window.__probe = { commits: 0, longTasks: [], transformWrites: 0 };
+  // homeCommits: the world the Home selects as each React commit lands (only while the Home is on screen)
+  window.__probe = { commits: 0, longTasks: [], transformWrites: 0, homeCommits: [] };
   window.__REACT_DEVTOOLS_GLOBAL_HOOK__ = {
     supportsFiber: true,
     isDisabled: false,
@@ -153,6 +192,8 @@ function installObservers() {
     onScheduleFiberRoot() {},
     onCommitFiberRoot() {
       window.__probe.commits += 1;
+      const selected = document.querySelector(".hj-world-selected .hj-world-copy strong")?.textContent;
+      if (selected !== undefined && window.__probe.homeCommits.length < 50) window.__probe.homeCommits.push({ commit: window.__probe.commits, selected });
     },
     onCommitFiberUnmount() {},
     onPostCommitFiberRoot() {},
@@ -167,20 +208,44 @@ function installObservers() {
   }
 }
 
+/**
+ * The platform's random source, made deterministic for one context: each 32-bit draw takes the next
+ * planted seed (then a fixed generator). Every draw is recorded, so a stray consumer would show as a
+ * seed the round does not report.
+ */
+function plantSeeds(seeds) {
+  const queue = [...seeds];
+  let state = 0x2545f491;
+  const draws = [];
+  const native = crypto.getRandomValues.bind(crypto);
+  crypto.getRandomValues = (array) => {
+    if (!(array instanceof Uint32Array)) return native(array);
+    for (let i = 0; i < array.length; i += 1) {
+      state = (Math.imul(state, 1664525) + 1013904223) >>> 0;
+      array[i] = queue.length ? queue.shift() >>> 0 : state;
+      draws.push(array[i]);
+    }
+    return array;
+  };
+  Object.defineProperty(window, "__probeDraws", { configurable: true, get: () => draws.slice() });
+}
+
 const browser = await chromium.launch({
   args: ["--use-angle=swiftshader", "--use-gl=angle", "--ignore-gpu-blocklist", "--enable-unsafe-swiftshader"],
 });
 
-async function openSession({ width, height, touch = false, reducedMotion = "no-preference", init = null }) {
+async function openSession({ width, height, touch = false, reducedMotion = "no-preference", seeds = [], storage = null }) {
   const context = await browser.newContext({
     viewport: { width, height },
     deviceScaleFactor: 1,
     hasTouch: touch,
     isMobile: touch,
     reducedMotion,
+    // `storage`: results already on the device before the first load (no script writes them)
+    ...(storage ? { storageState: { cookies: [], origins: [{ origin: BASE, localStorage: [{ name: STORAGE_KEY, value: JSON.stringify(storage) }] }] } } : {}),
   });
   await context.addInitScript(installObservers);
-  if (init) await context.addInitScript(init.fn, init.arg);
+  await context.addInitScript(plantSeeds, seeds);
   const page = await context.newPage();
   const session = { context, page, errors: [], requests: [], touch, cdp: null };
   page.on("pageerror", (error) => session.errors.push(`pageerror: ${error.message}`));
@@ -369,6 +434,7 @@ async function enterStudio(session, { onSelected } = {}) {
   return { transitionWorld, readyAfterMs, phase };
 }
 
+/** Intro → setup → a level → "Explorar". Returns the round the shell reports. */
 async function startExploring(session, level = "Fácil") {
   const { page } = session;
   await press(session, page.locator(".pgi-cta"));
@@ -377,19 +443,103 @@ async function startExploring(session, level = "Fácil") {
   await press(session, page.getByRole("button", { name: "Explorar", exact: true }));
   await page.waitForFunction(() => document.querySelector(".hos-shell")?.dataset.status === "playing");
   await settle(page);
+  return roundOnScreen(page);
 }
 
-async function listedIds(page) {
-  return page.evaluate(() =>
-    [...document.querySelectorAll(".hos-item")].map((item) => item.getAttribute("aria-label")),
-  );
+/** The round on screen: the seed the shell reports and the list, in the order shown. */
+async function roundOnScreen(page) {
+  const round = await page.evaluate(() => ({
+    seed: document.querySelector(".hos-shell")?.dataset.roundSeed ?? null,
+    ids: [...document.querySelectorAll(".hos-item")].map((item) => item.dataset.target ?? null),
+    draws: window.__probeDraws?.length ?? null,
+  }));
+  return { seed: round.seed === null ? null : Number(round.seed), ids: round.ids, draws: round.draws };
 }
 
-const easyIds = SCENE.DIFFICULTY_PRESETS.easy.targets;
-const mediumIds = SCENE.DIFFICULTY_PRESETS.medium.targets;
-const hardIds = SCENE.DIFFICULTY_PRESETS.hard.targets;
+/** Whether a round is the one its planted seed draws for `difficulty`. */
+const isDrawn = (round, difficulty, seed) => round.seed === seed && same(round.ids, drawn(difficulty, seed));
+
+/**
+ * The page has hydrated and settled: React has committed at least once (the DevTools-hook stand-in counts
+ * every commit, in production too) and then not again for `quietMs`. It does not wait for any particular
+ * answer — whatever the hydrated page shows is what gets read.
+ */
+async function hydrated(page, quietMs = 800) {
+  await page.waitForFunction(() => (window.__probe?.commits ?? 0) >= 1, null, { timeout: 60000, polling: 50 });
+  let last = -1;
+  let since = Date.now();
+  for (;;) {
+    const now = await page.evaluate(() => window.__probe.commits);
+    if (now !== last) {
+      last = now;
+      since = Date.now();
+    } else if (Date.now() - since >= quietMs) {
+      return last;
+    }
+    await page.waitForTimeout(50);
+  }
+}
+
+/** What the Home selects right now, how many commits React has made, and what the device has stored. */
+async function homeSnapshot(page) {
+  return page.evaluate((key) => ({
+    selected: document.querySelector(".hj-world-selected .hj-world-copy strong")?.textContent ?? null,
+    commits: window.__probe?.commits ?? null,
+    stored: JSON.parse(window.localStorage.getItem(key) ?? "[]").map((r) => r.gameId),
+    commitLog: window.__probe?.homeCommits?.slice(0, 6) ?? [],
+  }), STORAGE_KEY);
+}
+
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+const sorted = (list) => [...list].sort();
 const norm = (text) => (text ?? "").normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase();
+
+/** How many of a list's objects each station holds. */
+const spreadOf = (ids) => Object.fromEntries(SCENE.SCENE_STATIONS.map((s) => [s.id, ids.filter((id) => TARGET[id].station === s.id).length]));
+/** Every station holds ⌊k/3⌋ or ⌈k/3⌉ of the list: the round crosses the whole room. */
+const evenlySpread = (ids) =>
+  Object.values(spreadOf(ids)).every((n) => n >= Math.floor(ids.length / SCENE.SCENE_STATIONS.length) && n <= Math.ceil(ids.length / SCENE.SCENE_STATIONS.length));
+
+/** The sideways drag with room to move: towards the middle of the room (at a station by a wall the camera rests against it). */
+const towardsTheMiddle = (cam) => (viewCentre(cam).x < SCENE.SCENE_WIDTH / 2 ? -1 : 1);
+
+/**
+ * The tab hidden and shown again, the way a person does it: another tab comes to the front, then this one.
+ * Where the headless browser keeps both tabs "visible", the page is told so itself (visibilityState and the
+ * event), which is what a hidden tab would see.
+ */
+async function hideAndShow(session) {
+  const { page, context } = session;
+  await page.evaluate(() => {
+    window.__probe.visibility = [];
+    document.addEventListener("visibilitychange", () => window.__probe.visibility.push(document.visibilityState));
+  });
+  const other = await context.newPage();
+  await other.bringToFront();
+  await page.waitForTimeout(200);
+  await other.close();
+  await page.bringToFront();
+  await page.waitForTimeout(200);
+  let seen = await page.evaluate(() => window.__probe.visibility.slice());
+  let method = "another tab in front";
+  if (!seen.includes("hidden")) {
+    method = "visibilityState and visibilitychange on the page";
+    await page.evaluate(async () => {
+      const set = (hidden) => {
+        Object.defineProperty(document, "visibilityState", { configurable: true, get: () => (hidden ? "hidden" : "visible") });
+        Object.defineProperty(document, "hidden", { configurable: true, get: () => hidden });
+        document.dispatchEvent(new Event("visibilitychange"));
+      };
+      set(true);
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      set(false);
+      delete document.visibilityState;
+      delete document.hidden;
+    });
+    seen = await page.evaluate(() => window.__probe.visibility.slice());
+  }
+  return { method, seen };
+}
 
 /** What the hint UI shows right now (banner, light, button, camera). */
 async function hintState(page) {
@@ -439,14 +589,17 @@ async function resultScreen(page) {
 }
 
 metrics.playtest = { hintPresses: {}, technicalMsToClosingCard: {}, visibleWithoutPan: {} };
+/** The round each scenario saw on screen (seed, list in order, draws so far). */
+metrics.roundsOnScreen = {};
 
 // --- scenario: desktop ---------------------------------------------------------------------------------
 
 async function desktop() {
   current = "desktop";
-  const session = await openSession({ width: 1440, height: 900 });
+  const session = await openSession({ width: 1440, height: 900, seeds: SEEDS.desktop });
   const { page } = session;
   await page.goto(`${BASE}/`, { waitUntil: "networkidle" });
+  await hydrated(page);
 
   // 1–2 Home and the slot
   const pips = await page.locator(".hj-gallery-pip").evaluateAll((nodes) => nodes.map((n) => n.getAttribute("aria-label")));
@@ -478,11 +631,20 @@ async function desktop() {
   await witness(page, "e01c-setup");
   await press(session, page.locator(".hos-difficulty-option", { hasText: "Fácil" }));
   check("08_CHOOSE_EASY", await page.locator('.hos-difficulty-option input[value="easy"]').isChecked());
+  const drawsBeforeExplorar = await page.evaluate(() => window.__probeDraws.length);
   await press(session, page.getByRole("button", { name: "Explorar", exact: true }));
   await page.waitForFunction(() => document.querySelector(".hos-shell")?.dataset.status === "playing");
   await settle(page);
-  const list = await listedIds(page);
-  check("09_EXPLORE_STARTS_PLAYING", (await status(page)) === "playing" && list.length === 5 && (await progress(page)).found === 0, { list });
+  const easy = await roundOnScreen(page);
+  const easyIds = easy.ids;
+  check("09_EXPLORE_STARTS_PLAYING", (await status(page)) === "playing" && easyIds.length === 5 && (await progress(page)).found === 0, { list: easyIds });
+  // GAME03-EXPERIENCE-02 rounds: "Explorar" draws once, and the list on screen is exactly what that seed draws
+  check(
+    "X05_EXPLORAR_DRAWS_THE_ROUND_ONCE",
+    drawsBeforeExplorar === 0 && easy.draws === 1 && isDrawn(easy, "easy", SEEDS.desktop[0]) && evenlySpread(easyIds),
+    { drawsBeforeExplorar, round: easy, drawn: drawn("easy", SEEDS.desktop[0]), spread: spreadOf(easyIds) },
+  );
+  metrics.roundsOnScreen["desktop easy"] = easy;
   metrics.playtest.visibleWithoutPan["desktop easy"] = await onScreenCount(page, easyIds);
   const easyEntries = await listEntries(page);
   check("X00_FACIL_LIST_IS_PICTURE_AND_NAME", same(easyEntries.map((e) => e.text), easyIds.map((id) => TARGET[id].label)) && easyEntries.every((e) => e.art === "picture"), { easyEntries });
@@ -566,25 +728,27 @@ async function desktop() {
   }));
   check("13_FREE_TAP_IS_FREE", (await progress(page)).found === 0 && free.ripple && free.live === "", free);
 
-  // 14 select a target
-  const first = await findTarget(session, "lupa");
-  const seal = await page.locator('.hos-found[data-target="lupa"] .hos-found-seal').count();
-  const listed = await page.locator(".hos-item", { hasText: "Lupa" }).getAttribute("data-found");
+  // 14 select a target (the round's first line)
+  const [firstId, secondId] = easyIds;
+  const first = await findTarget(session, firstId);
+  const seal = await page.locator(`.hos-found[data-target="${firstId}"] .hos-found-seal`).count();
+  const listed = await page.locator(`.hos-item[data-target="${firstId}"]`).getAttribute("data-found");
   const announced = await page.evaluate(() => document.querySelector('.hos-sr-only[aria-live]')?.textContent ?? "");
-  check("14_TAP_FINDS_THE_TARGET", first.after === 1 && seal === 1 && listed === "true" && /Encontrou: Lupa/.test(announced), { ...first, announced });
+  check("14_TAP_FINDS_THE_TARGET", first.after === 1 && seal === 1 && listed === "true" && announced.includes(`Encontrou: ${TARGET[firstId].label}`), { ...first, announced });
 
-  // 15 a drag that starts on a target finds nothing
-  const compass = await bringIntoView(session, "bussola");
+  // 15 a drag that starts on a target finds nothing (sideways, towards the room's middle: there is always room)
+  const onTarget = await bringIntoView(session, secondId);
   const camBefore = await camera(page);
-  await drag(session, compass.point, { x: compass.point.x + 120, y: compass.point.y - 30 });
+  await drag(session, onTarget.point, { x: onTarget.point.x + 120 * towardsTheMiddle(camBefore), y: onTarget.point.y - 30 });
   await settle(page);
   const camAfter = await camera(page);
   check("15_DRAG_FROM_A_TARGET_DOES_NOT_SELECT", (await progress(page)).found === 1 && Math.abs(camAfter.tx - camBefore.tx) > 60, {
+    target: secondId,
     found: (await progress(page)).found,
     moved: camAfter.tx - camBefore.tx,
   });
 
-  // 16–18 hints for the next pending object (the Ampulheta, by list order: the Lupa is found)
+  // 16–18 hints for the next pending object (by list order: the first line is found)
   const subject = await page.evaluate(() => document.querySelector(".hos-hint-button small")?.textContent);
   await press(session, page.locator(".hos-hint-button"));
   await settle(page);
@@ -623,6 +787,31 @@ async function desktop() {
   await page.waitForTimeout(150);
   check("18_REVEALED_OBJECT_IS_TAPPED_BY_THE_EXPLORADOR", (await progress(page)).found === 2);
 
+  // X30 the round holds through everything a session does: the pan, zooms, stations and hints above, then a
+  // resize, reduced motion switched on and off, the tab hidden and shown, the list folded and unfolded —
+  // the same list in the same order, the same seed, still one draw, nothing found lost
+  const heldBefore = await progress(page);
+  await page.setViewportSize({ width: 1180, height: 820 });
+  await settle(page);
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await settle(page);
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await frames(page, 4);
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await frames(page, 4);
+  const visibility = await hideAndShow(session);
+  await press(session, page.locator(".hos-tray-toggle"));
+  await settle(page);
+  await press(session, page.locator(".hos-tray-toggle"));
+  await settle(page);
+  const held = await roundOnScreen(page);
+  const heldAfter = await progress(page);
+  check(
+    "X30_THE_ROUND_HOLDS_THROUGH_THE_SESSION",
+    same(held, easy) && heldAfter.found === heldBefore.found && heldAfter.total === 5 && visibility.seen.includes("hidden"),
+    { before: easy, after: held, progress: [heldBefore, heldAfter], visibility },
+  );
+
   // 19 everything else
   const rest = [];
   for (const id of easyIds) {
@@ -653,7 +842,8 @@ async function desktop() {
       saved.activityId === "hidden-objects" &&
       saved.activityTitle === "Estúdio das Descobertas" &&
       saved.score === 5 &&
-      JSON.stringify(saved.details) === JSON.stringify({ difficulty: "easy", foundObjects: 5, totalObjects: 5, completed: true, sceneId: "explorer-studio" }) &&
+      JSON.stringify(saved.details) ===
+        JSON.stringify({ difficulty: "easy", foundObjects: 5, totalObjects: 5, completed: true, sceneId: "explorer-studio", roundSeed: SEEDS.desktop[0] }) &&
       saved.continuation === undefined,
     { saved },
   );
@@ -675,6 +865,14 @@ async function desktop() {
   await press(session, page.getByRole("button", { name: "Explorar", exact: true }));
   await page.waitForFunction(() => document.querySelector(".hos-shell")?.dataset.status === "playing");
   await settle(page);
+  const medium = await roundOnScreen(page);
+  const mediumIds = medium.ids;
+  check("X06_PLAYING_AGAIN_DRAWS_A_NEW_ROUND", isDrawn(medium, "medium", SEEDS.desktop[1]) && medium.draws === 2 && evenlySpread(mediumIds), {
+    round: medium,
+    drawn: drawn("medium", SEEDS.desktop[1]),
+    spread: spreadOf(mediumIds),
+  });
+  metrics.roundsOnScreen["desktop medium"] = medium;
   metrics.playtest.visibleWithoutPan["desktop medium"] = await onScreenCount(page, mediumIds);
   const mediumEntries = await listEntries(page);
   check(
@@ -719,8 +917,10 @@ async function desktop() {
   await press(session, page.getByRole("button", { name: "Recomeçar a exploração" }));
   await settle(page);
   cam = await camera(page);
-  const restarted = { status: await status(page), progress: await progress(page), centre: viewCentre(cam), list: (await listedIds(page)).length };
+  const restarted = { status: await status(page), progress: await progress(page), centre: viewCentre(cam), round: await roundOnScreen(page) };
   check("22_RESTART", restarted.status === "playing" && restarted.progress.found === 0 && restarted.progress.total === 6 && Math.abs(restarted.centre.x - STATION.mesa.center.x) < 2, restarted);
+  // "Recomeçar" starts the same list again from the top: no new draw
+  check("X07_RECOMECAR_KEEPS_THE_ROUND", same(restarted.round, medium), { before: medium, after: restarted.round });
 
   // 23–24 exit: no result, back to the Home
   const resultsAtExit = (await storedResults(page)).length;
@@ -729,6 +929,22 @@ async function desktop() {
   await page.waitForTimeout(400);
   check("23_EXIT_SAVES_NOTHING", (await storedResults(page)).length === resultsAtExit && !(await page.locator(".hos-shell").count()));
   check("24_BACK_HOME", (await page.locator(".hj-gallery-pip").count()) === 5);
+
+  // X31 a new entry from the Home is a new exploration: a new seed, a new list (and leaving it saves nothing)
+  await enterStudio(session);
+  const again = await startExploring(session, "Fácil");
+  check(
+    "X31_A_NEW_ENTRY_DRAWS_A_NEW_ROUND",
+    isDrawn(again, "easy", SEEDS.desktop[2]) && again.draws === 3 && !same(sorted(again.ids), sorted(easyIds)) && evenlySpread(again.ids),
+    { first: easy, again, drawn: drawn("easy", SEEDS.desktop[2]) },
+  );
+  metrics.roundsOnScreen["desktop easy, new entry"] = again;
+  await witness(page, "e02b-easy-new-entry");
+  const resultsAtSecondExit = (await storedResults(page)).length;
+  await press(session, page.getByRole("button", { name: "Voltar à jornada" }));
+  await page.waitForSelector(".hj-stage", { timeout: 6000 });
+  await page.waitForTimeout(400);
+  check("X31_LEAVING_SAVES_NOTHING", (await storedResults(page)).length === resultsAtSecondExit && (await page.locator(".hj-gallery-pip").count()) === 5);
   check("NO_PAGE_ERRORS", session.errors.length === 0, { errors: session.errors });
   check("NO_RETIRED_GAME_REQUESTED", !session.requests.some((url) => /number-trail|NumberTrail|world-trail|dioramas\/trail/.test(url)), {
     offending: session.requests.filter((url) => /number-trail|NumberTrail|world-trail|dioramas\/trail/.test(url)),
@@ -740,18 +956,26 @@ async function desktop() {
 
 async function mobile() {
   current = "mobile";
-  const session = await openSession({ width: 390, height: 844, touch: true });
+  const session = await openSession({ width: 390, height: 844, touch: true, seeds: SEEDS.mobile });
   const { page } = session;
   const overflows = [];
   const noteOverflow = async (step) => overflows.push({ step, px: await overflow(page) });
   await page.goto(`${BASE}/`, { waitUntil: "networkidle" });
+  await hydrated(page);
   await noteOverflow("home");
   const entry = await enterStudio(session);
   metrics.mobileEntryToReadyMs = entry.readyAfterMs;
-  await startExploring(session, "Difícil");
+  const round = await startExploring(session, "Difícil");
+  const hardIds = round.ids;
   const hardStarted = Date.now();
   await noteOverflow("playing");
   check("25_OPENS_ON_A_PHONE", (await status(page)) === "playing", entry);
+  check("X17_THE_PHONE_ROUND_IS_ITS_SEED", isDrawn(round, "hard", SEEDS.mobile[0]) && round.draws === 1 && hardIds.length === 8 && evenlySpread(hardIds), {
+    round,
+    drawn: drawn("hard", SEEDS.mobile[0]),
+    spread: spreadOf(hardIds),
+  });
+  metrics.roundsOnScreen["phone hard"] = round;
   metrics.playtest.visibleWithoutPan["phone hard"] = await onScreenCount(page, hardIds);
   await witness(page, "e13-mobile-hard");
 
@@ -805,8 +1029,8 @@ async function mobile() {
   check("30_HINT_ON_A_PHONE", /^Pista: procure/.test(hint.banner) && hint.halo === null, hint);
   await witness(page, "e15-mobile-hint", 300);
 
-  // 28 a tap on a target
-  const tapped = await findTarget(session, "lupa");
+  // 28 a tap on a target (the one the hint was for: the first line)
+  const tapped = await findTarget(session, hardIds[0]);
   check("28_TOUCH_TAP_FINDS", tapped.after === 1, tapped);
 
   // X21 the tray folds to one row and unfolds; the room grows while it is folded
@@ -831,7 +1055,7 @@ async function mobile() {
   await press(session, page.getByRole("button", { name: "Concluir exploração" }));
   await page.waitForSelector(".prm-card", { timeout: 6000 });
   const saved = (await storedResults(page))[0];
-  check("31_COMPLETES_ON_A_PHONE", saved?.gameId === "hidden-objects" && saved.score === 8 && saved.details.difficulty === "hard", { saved });
+  check("31_COMPLETES_ON_A_PHONE", saved?.gameId === "hidden-objects" && saved.score === 8 && saved.details.difficulty === "hard" && saved.details.roundSeed === SEEDS.mobile[0], { saved });
   await noteOverflow("result");
   check("32_NO_HORIZONTAL_PAGE_OVERFLOW", overflows.every((o) => o.px <= 0), { overflows });
   check("NO_PAGE_ERRORS", session.errors.length === 0, { errors: session.errors });
@@ -842,9 +1066,10 @@ async function mobile() {
 
 async function small() {
   current = "small";
-  const session = await openSession({ width: 360, height: 640, touch: true });
+  const session = await openSession({ width: 360, height: 640, touch: true, seeds: SEEDS.small });
   const { page } = session;
   await page.goto(`${BASE}/`, { waitUntil: "networkidle" });
+  await hydrated(page);
   await enterStudio(session);
   await press(session, page.locator(".pgi-cta"));
   await page.waitForSelector(".hos-setup", { state: "visible" });
@@ -853,11 +1078,15 @@ async function small() {
   await press(session, page.getByRole("button", { name: "Explorar", exact: true }));
   await page.waitForFunction(() => document.querySelector(".hos-shell")?.dataset.status === "playing");
   await settle(page);
+  const round = await roundOnScreen(page);
   const layout = await page.evaluate(() => ({
     sceneShare: document.querySelector(".hos-viewport").getBoundingClientRect().height / window.innerHeight,
     overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
   }));
-  const found = await findTarget(session, "barco");
+  // nothing chosen in the setup: Fácil, and the round its seed draws
+  check("SMALL_ROUND_IS_ITS_SEED", isDrawn(round, "easy", SEEDS.small[0]) && round.draws === 1, { round, drawn: drawn("easy", SEEDS.small[0]) });
+  metrics.roundsOnScreen["small phone easy"] = round;
+  const found = await findTarget(session, round.ids[0]);
   await witness(page, "e18-small-phone");
   check("SMALL_SCENE_KEEPS_ITS_SPACE", layout.sceneShare > 0.45 && layout.overflow <= 0, layout);
   check("SMALL_FIND", found.after === 1, found);
@@ -869,11 +1098,14 @@ async function small() {
 
 async function reducedMotion() {
   current = "reduced-motion";
-  const session = await openSession({ width: 1440, height: 900, reducedMotion: "reduce" });
+  const session = await openSession({ width: 1440, height: 900, reducedMotion: "reduce", seeds: SEEDS["reduced-motion"] });
   const { page } = session;
   await page.goto(`${BASE}/`, { waitUntil: "networkidle" });
+  await hydrated(page);
   await enterStudio(session);
-  await startExploring(session, "Fácil");
+  const round = await startExploring(session, "Fácil");
+  check("RM_ROUND_IS_ITS_SEED", isDrawn(round, "easy", SEEDS["reduced-motion"][0]) && round.draws === 1, { round, drawn: drawn("easy", SEEDS["reduced-motion"][0]) });
+  metrics.roundsOnScreen["reduced motion easy"] = round;
   await page.evaluate(() => {
     window.__probe.movingMarks = 0;
     const world = document.querySelector(".hos-world");
@@ -905,7 +1137,7 @@ async function reducedMotion() {
   );
   check("RM_NO_PARALLAX", parallax.length === 3 && parallax.every((t) => /translate3d\(0px, 0px, 0px\)/.test(t ?? "")), { parallax });
   // GAME03-EXPERIENCE-02: the found ring and the name tag switch on and off, no fades, no scaling
-  await findTarget(session, "lupa");
+  await findTarget(session, round.ids[0]);
   const feedback = await page.evaluate(() => {
     const read = (selector) => {
       const element = document.querySelector(selector);
@@ -926,12 +1158,20 @@ async function reducedMotion() {
 
 async function hard() {
   current = "hard";
-  const session = await openSession({ width: 1440, height: 900 });
+  const session = await openSession({ width: 1440, height: 900, seeds: SEEDS.hard });
   const { page } = session;
   await page.goto(`${BASE}/`, { waitUntil: "networkidle" });
+  await hydrated(page);
   await enterStudio(session);
-  await startExploring(session, "Difícil");
+  const round = await startExploring(session, "Difícil");
+  const hardIds = round.ids;
   const started = Date.now();
+  check("X16_DIFICIL_ROUND_IS_ITS_SEED", isDrawn(round, "hard", SEEDS.hard[0]) && round.draws === 1 && hardIds.length === 8 && evenlySpread(hardIds), {
+    round,
+    drawn: drawn("hard", SEEDS.hard[0]),
+    spread: spreadOf(hardIds),
+  });
+  metrics.roundsOnScreen["desktop hard"] = round;
   metrics.playtest.visibleWithoutPan["desktop hard"] = await onScreenCount(page, hardIds);
 
   // X10 the list is what each object is for; no image, no name of anything still hidden
@@ -995,14 +1235,17 @@ async function hard() {
   );
   await witness(page, "e07-hard-semantic-found", 150);
 
-  // X13 the camera still answers in Difícil: pan, wheel, stations
+  // X13 the camera still answers in Difícil: pan, wheel, stations. The pan goes towards the room's middle: after
+  // a find the camera may rest against a wall (the earlier probe always dragged right, which cannot move a camera
+  // resting against the Janela's wall — its one failure on the recovered build)
   let cam = await camera(page);
   const centre = { x: cam.left + cam.width / 2, y: cam.top + cam.height / 2 };
   const before = viewCentre(cam);
-  await drag(session, centre, { x: centre.x + 200, y: centre.y });
+  await drag(session, centre, { x: centre.x + 200 * towardsTheMiddle(cam), y: centre.y });
   await settle(page);
   cam = await camera(page);
-  const panned = before.x - viewCentre(cam).x > 200;
+  const pannedPx = Math.abs(before.x - viewCentre(cam).x) * cam.s;
+  const panned = pannedPx > 150;
   await page.mouse.move(centre.x, centre.y);
   await page.mouse.wheel(0, -240);
   await page.waitForTimeout(300);
@@ -1011,7 +1254,7 @@ async function hard() {
   await press(session, page.locator(".hos-station", { hasText: "Estante" }));
   await settle(page);
   const atShelf = Math.abs(viewCentre(await camera(page)).x - Math.min(STATION.estante.center.x, SCENE.SCENE_WIDTH - (await camera(page)).width / (2 * (await camera(page)).s))) < 2;
-  check("X13_PAN_ZOOM_STATIONS_IN_DIFICIL", panned && zoomedIn && atShelf, { panned, zoomedIn, atShelf });
+  check("X13_PAN_ZOOM_STATIONS_IN_DIFICIL", panned && zoomedIn && atShelf, { panned, pannedPx, zoomedIn, atShelf });
 
   // X14 the objectives fold away on the desktop too (a rail), and come back
   const openWidth = (await camera(page)).width;
@@ -1035,7 +1278,7 @@ async function hard() {
   const saved = (await storedResults(page))[0];
   check(
     "X15_DIFICIL_RESULT",
-    saved?.score === 8 && saved.details.difficulty === "hard" && saved.details.sceneId === "explorer-studio" &&
+    saved?.score === 8 && saved.details.difficulty === "hard" && saved.details.sceneId === "explorer-studio" && saved.details.roundSeed === SEEDS.hard[0] &&
       modal.scoreLabel === "Objetos encontrados" && modal.score === "8" && same(modal.details, { Modo: "Difícil" }),
     { saved, modal },
   );
@@ -1060,26 +1303,18 @@ const LEGACY_RESULT = {
 
 async function legacy() {
   current = "legacy";
-  const session = await openSession({
-    width: 1440,
-    height: 900,
-    init: {
-      fn: ([key, entry]) => {
-        if (window.sessionStorage.getItem("probe-seeded")) return;
-        window.sessionStorage.setItem("probe-seeded", "1");
-        window.localStorage.setItem(key, JSON.stringify([entry]));
-      },
-      arg: [STORAGE_KEY, LEGACY_RESULT],
-    },
-  });
+  // the old result is on the device before the first load (the context's storage; no script writes it)
+  const session = await openSession({ width: 1440, height: 900, seeds: SEEDS.legacy, storage: [LEGACY_RESULT] });
   const { page } = session;
   await page.goto(`${BASE}/`, { waitUntil: "networkidle" });
-  await page.waitForTimeout(400);
+  // read the Home once it has hydrated (see reload-race: before that, the page is the server's default)
+  const commitsAtFirstRead = await hydrated(page);
   const home = await page.evaluate(() => ({
     selected: document.querySelector(".hj-world-selected .hj-world-copy strong")?.textContent ?? null,
     worlds: [...document.querySelectorAll(".hj-world-copy strong")].map((n) => n.textContent),
     stage: Boolean(document.querySelector(".hj-stage")),
   }));
+  home.commitsAtRead = commitsAtFirstRead;
   check("33_LEGACY_RESULT_IS_READ_SAFELY", home.stage && home.worlds.length === 5 && !home.worlds.includes("Trilha Lógica"), home);
   check("34_NO_CRASH", session.errors.length === 0, { errors: session.errors });
   check("35_NOT_SHOWN_AS_THE_STUDIO", home.selected !== "Estúdio das Descobertas" && (await page.locator(".hos-shell").count()) === 0, home);
@@ -1087,8 +1322,9 @@ async function legacy() {
 
   // A full Estúdio session next to it: the old entry stays exactly as it was.
   await enterStudio(session);
-  await startExploring(session, "Fácil");
-  for (const id of easyIds) await findTarget(session, id);
+  const round = await startExploring(session, "Fácil");
+  check("LEGACY_ROUND_IS_ITS_SEED", isDrawn(round, "easy", SEEDS.legacy[0]) && round.draws === 1, { round, drawn: drawn("easy", SEEDS.legacy[0]) });
+  for (const id of round.ids) await findTarget(session, id);
   await page.waitForSelector(".hos-overlay-complete", { state: "visible", timeout: 4000 });
   await press(session, page.getByRole("button", { name: "Concluir exploração" }));
   await page.waitForSelector(".prm-card", { timeout: 6000 });
@@ -1099,14 +1335,235 @@ async function legacy() {
   await press(session, page.getByRole("button", { name: "Continuar na jornada cognitiva" }));
   await page.waitForSelector(".hj-stage", { timeout: 6000 });
   await page.reload({ waitUntil: "networkidle" });
-  // the server renders the default world; the stored history selects after hydration (give it time)
-  await page
-    .waitForFunction(() => document.querySelector(".hj-world-selected .hj-world-copy strong")?.textContent === "Estúdio das Descobertas", null, { timeout: 6000 })
-    .catch(() => {});
-  const reloaded = await page.evaluate(() => document.querySelector(".hj-world-selected .hj-world-copy strong")?.textContent ?? null);
-  const storedAfterReload = (await storedResults(page)).map((r) => r.gameId);
-  check("35_RELOAD_FOLLOWS_THE_NEWEST_PLAYABLE_RESULT", reloaded === "Estúdio das Descobertas", { selected: reloaded, storedAfterReload });
+  // The Home is static: the server's HTML selects the default world, and the stored history selects the newest
+  // playable result in a mount effect, after hydration. So the read waits for the page to hydrate and settle —
+  // for React's commits, never for the answer it expects — and whatever the hydrated Home shows is what counts.
+  const commitsAtRead = await hydrated(page);
+  const reloaded = await homeSnapshot(page);
+  check("35_RELOAD_FOLLOWS_THE_NEWEST_PLAYABLE_RESULT", reloaded.selected === "Estúdio das Descobertas" && commitsAtRead >= 1 && same(reloaded.stored, ["hidden-objects", "number-trail"]), {
+    ...reloaded,
+    commitsAtRead,
+  });
   check("NO_RETIRED_GAME_REQUESTED", !session.requests.some((url) => /number-trail|NumberTrail/.test(url)));
+  check("NO_PAGE_ERRORS", session.errors.length === 0, { errors: session.errors });
+  await session.context.close();
+}
+
+// --- scenario: a phone held sideways ------------------------------------------------------------------------
+
+async function landscape() {
+  current = "landscape";
+  const session = await openSession({ width: 844, height: 390, touch: true, seeds: SEEDS.landscape });
+  const { page } = session;
+  const overflows = [];
+  const noteOverflow = async (step) => overflows.push({ step, px: await overflow(page) });
+  await page.goto(`${BASE}/`, { waitUntil: "networkidle" });
+  await hydrated(page);
+  await noteOverflow("home");
+  await enterStudio(session);
+  const round = await startExploring(session, "Médio");
+  const started = Date.now();
+  await noteOverflow("playing");
+  check("L01_OPENS_SIDEWAYS_WITH_ITS_ROUND", (await status(page)) === "playing" && isDrawn(round, "medium", SEEDS.landscape[0]) && round.draws === 1 && evenlySpread(round.ids), {
+    round,
+    drawn: drawn("medium", SEEDS.landscape[0]),
+  });
+  metrics.roundsOnScreen["phone landscape medium"] = round;
+
+  // L02 the list beside the room (its own scrolling column), the room keeps most of the width, touch-sized controls
+  const layout = await page.evaluate(() => {
+    const scene = document.querySelector(".hos-viewport").getBoundingClientRect();
+    const panel = document.querySelector(".hos-panel").getBoundingClientRect();
+    const first = document.querySelector(".hos-item")?.getBoundingClientRect();
+    return {
+      panelBesideScene: panel.left >= scene.right - 1,
+      sceneWidthShare: Number((scene.width / window.innerWidth).toFixed(3)),
+      sceneHeightShare: Number((scene.height / window.innerHeight).toFixed(3)),
+      items: document.querySelectorAll(".hos-item").length,
+      firstItemVisible: Boolean(first) && first.top >= panel.top - 1 && first.bottom <= panel.bottom + 1,
+      minTarget: Math.min(
+        ...[...document.querySelectorAll(".hos-panel button, .hos-zoom button, .hos-topbar button")].map((b) => Math.min(b.getBoundingClientRect().width, b.getBoundingClientRect().height)),
+      ),
+    };
+  });
+  metrics.landscapeLayout = layout;
+  check("L02_LANDSCAPE_LAYOUT", layout.panelBesideScene && layout.sceneWidthShare > 0.6 && layout.items === 6 && layout.firstItemVisible && layout.minTarget >= 44, layout);
+  metrics.playtest.visibleWithoutPan["phone landscape medium"] = await onScreenCount(page, round.ids);
+  await witness(page, "e20-landscape-medium");
+
+  // L03 two fingers zoom, then one finger pans, nothing is found by either. Sideways the whole room nearly fits
+  // the width at the opening zoom (the camera can move only (room − view) / 2 either way), so a person zooms first
+  let cam = await camera(page);
+  const centre = { x: cam.left + cam.width / 2, y: cam.top + cam.height / 2 };
+  const scaleBefore = cam.s;
+  const roomToPanPx = ((SCENE.SCENE_WIDTH - cam.width / cam.s) / 2) * cam.s;
+  await pinch(session, centre, 70, 200);
+  await settle(page);
+  cam = await camera(page);
+  const pinchedScale = cam.s;
+  const before = viewCentre(cam);
+  await drag(session, centre, { x: centre.x + 120 * towardsTheMiddle(cam), y: centre.y }, 14);
+  await settle(page);
+  cam = await camera(page);
+  const movedPx = Math.abs(viewCentre(cam).x - before.x) * cam.s;
+  check("L03_PINCH_AND_DRAG_SIDEWAYS", pinchedScale > scaleBefore * 1.5 && movedPx > 80 && (await progress(page)).found === 0, {
+    scale: [scaleBefore, pinchedScale],
+    movedPx,
+    roomToPanAtOpeningZoomPx: Number(roomToPanPx.toFixed(1)),
+  });
+  await press(session, page.getByRole("button", { name: "Recentrar" }));
+  await settle(page);
+
+  // L04 a hint (Médio: first the station, in words) and two finds
+  await press(session, page.locator(".hos-hint-button"));
+  await settle(page);
+  const hint = await hintState(page);
+  check("L04_HINT_SIDEWAYS", /^Pista: procure/.test(hint.banner) && hint.hinted === STATION[TARGET[round.ids[0]].station].label, hint);
+  const finds = [await findTarget(session, round.ids[0]), await findTarget(session, round.ids[1])];
+  check("L05_FINDS_SIDEWAYS", finds[1].after === 2, { finds });
+  await witness(page, "e21-landscape-found", 300);
+
+  // L06 the phone turned upright mid-round, then back: the same round, nothing lost, nothing drawn again
+  await page.setViewportSize({ width: 390, height: 844 });
+  await settle(page);
+  const upright = { round: await roundOnScreen(page), progress: await progress(page), overflow: await overflow(page) };
+  await witness(page, "e22-landscape-turned-upright", 300);
+  await page.setViewportSize({ width: 844, height: 390 });
+  await settle(page);
+  const back = { round: await roundOnScreen(page), progress: await progress(page), overflow: await overflow(page) };
+  check(
+    "L06_TURNING_THE_PHONE_KEEPS_THE_ROUND",
+    same(upright.round, round) && same(back.round, round) && upright.progress.found === 2 && back.progress.found === 2 && upright.overflow <= 0 && back.overflow <= 0,
+    { round, upright, back },
+  );
+
+  // L07 the rest, and one result that records its round
+  for (const id of round.ids) {
+    if (!(await page.locator(`.hos-found[data-target="${id}"]`).count())) await findTarget(session, id);
+  }
+  await noteOverflow("found all");
+  await page.waitForSelector(".hos-overlay-complete", { state: "visible", timeout: 4000 });
+  metrics.playtest.technicalMsToClosingCard["phone landscape medium"] = Date.now() - started;
+  await witness(page, "e23-landscape-complete", 600);
+  await press(session, page.getByRole("button", { name: "Concluir exploração" }));
+  await page.waitForSelector(".prm-card", { timeout: 6000 });
+  const saved = (await storedResults(page))[0];
+  check("L07_COMPLETES_SIDEWAYS", saved?.gameId === "hidden-objects" && saved.score === 6 && saved.details.difficulty === "medium" && saved.details.roundSeed === SEEDS.landscape[0], { saved });
+  await noteOverflow("result");
+  check("L08_NO_HORIZONTAL_PAGE_OVERFLOW", overflows.every((o) => o.px <= 0), { overflows });
+  check("NO_PAGE_ERRORS", session.errors.length === 0, { errors: session.errors });
+  await session.context.close();
+}
+
+// --- scenario: rounds — nine entries, nine planted seeds ------------------------------------------------------
+
+async function rounds() {
+  current = "rounds";
+  const session = await openSession({ width: 1440, height: 900, seeds: SEEDS.rounds });
+  const { page } = session;
+  await page.goto(`${BASE}/`, { waitUntil: "networkidle" });
+  await hydrated(page);
+  const LEVEL = { easy: "Fácil", medium: "Médio", hard: "Difícil" };
+  const STYLE = { easy: "picture", medium: "silhouette", hard: null };
+  const seen = [];
+  const problems = [];
+  let scenery = null;
+  for (const [index, difficulty] of ROUND_PLAN.entries()) {
+    const seed = SEEDS.rounds[index];
+    await enterStudio(session);
+    const round = await startExploring(session, LEVEL[difficulty]);
+    const entries = await listEntries(page);
+    const total = (await progress(page)).total;
+    seen.push({ difficulty, seed: round.seed, ids: round.ids, draws: round.draws, spread: spreadOf(round.ids) });
+    if (!isDrawn(round, difficulty, seed)) problems.push(`${difficulty} ${seed}: on screen ${round.ids.join(",")} (seed ${round.seed}), drawn ${drawn(difficulty, seed).join(",")}`);
+    if (round.draws !== index + 1) problems.push(`${difficulty} ${seed}: ${round.draws} draws after ${index + 1} entries`);
+    if (!evenlySpread(round.ids)) problems.push(`${difficulty} ${seed}: spread ${JSON.stringify(spreadOf(round.ids))}`);
+    if (new Set(round.ids).size !== round.ids.length) problems.push(`${difficulty} ${seed}: an object listed twice`);
+    if (total !== SCENE.DIFFICULTY_PRESETS[difficulty].count || round.ids.length !== total) problems.push(`${difficulty} ${seed}: ${round.ids.length} listed, ${total} counted`);
+    if (!entries.every((e) => e.art === STYLE[difficulty])) problems.push(`${difficulty} ${seed}: list style ${entries.map((e) => e.art).join(",")}`);
+    if (index === 0) {
+      // an object of the pool this round does not ask for is part of the room: a tap on it finds nothing, says nothing
+      const unlisted = SCENE.HIDDEN_OBJECTS.find((t) => t.tier === "A" && !round.ids.includes(t.id));
+      const { point } = await bringIntoView(session, unlisted.id);
+      await tapAt(session, point);
+      await page.waitForTimeout(250);
+      scenery = {
+        id: unlisted.id,
+        found: (await progress(page)).found,
+        marks: await page.locator(".hos-found").count(),
+        live: await page.evaluate(() => document.querySelector('.hos-sr-only[aria-live]')?.textContent ?? ""),
+      };
+      await witness(page, `e24-round-${difficulty}-${seed}`);
+    }
+    if (index === 3 || index === 6) await witness(page, `e24-round-${difficulty}-${seed}`);
+    await press(session, page.getByRole("button", { name: "Voltar à jornada" }));
+    await page.waitForSelector(".hj-stage", { timeout: 6000 });
+  }
+  metrics.rounds = seen;
+  check("R01_EVERY_ENTRY_SHOWS_THE_ROUND_ITS_SEED_DRAWS", problems.length === 0 && seen.length === 9, { problems, seen });
+  const distinct = Object.fromEntries(["easy", "medium", "hard"].map((d) => [d, new Set(seen.filter((s) => s.difficulty === d).map((s) => sorted(s.ids).join())).size]));
+  check("R02_NEW_ENTRIES_ASK_FOR_OTHER_LISTS", Object.values(distinct).every((n) => n === 3), { distinctListsPerDifficulty: distinct });
+  check("R03_UNLISTED_POOL_OBJECTS_ARE_SCENERY", scenery && scenery.found === 0 && scenery.marks === 0 && !/Encontrou/.test(scenery.live), scenery ?? {});
+  check("NO_PAGE_ERRORS", session.errors.length === 0, { errors: session.errors });
+  await session.context.close();
+}
+
+// --- scenario: the Home/reload race, reproduced and explained ------------------------------------------------
+
+/** A finished Estúdio result as the game writes it: the newest playable result on the device. */
+const STUDIO_RESULT = {
+  id: "hidden-objects-1759900000000",
+  activityId: "hidden-objects",
+  activityTitle: "Estúdio das Descobertas",
+  gameId: "hidden-objects",
+  score: 5,
+  playedAt: "2026-10-07T18:00:00.000Z",
+  summary: "Você encontrou todos os objetos do Estúdio.",
+  details: { difficulty: "easy", foundObjects: 5, totalObjects: 5, completed: true, sceneId: "explorer-studio", roundSeed: 101 },
+};
+
+async function reloadRace() {
+  current = "reload-race";
+  // RR1 the Home is prerendered once: the HTML the server sends selects the default world, whatever a device holds
+  const html = await (await fetch(`${BASE}/`)).text();
+  const serverSelected = /hj-world-selected[^>]*>[\s\S]*?<strong[^>]*>([^<]+)<\/strong>/.exec(html)?.[1] ?? null;
+  check("RR1_THE_SERVER_HTML_SELECTS_THE_DEFAULT_WORLD", serverSelected === "Rota Estratégica", { serverSelected });
+
+  // The device holds [Estúdio, Trilha] before the load. Each load is read twice: as the base probe read it
+  // (networkidle, then 400 ms) and once hydrated (React has committed, then stayed quiet). The CPU is slowed
+  // step by step (CDP) until the base read lands before React's first commit.
+  const session = await openSession({ width: 1440, height: 900, storage: [STUDIO_RESULT, LEGACY_RESULT] });
+  const { page } = session;
+  const cdp = await session.context.newCDPSession(page);
+  const runs = [];
+  for (const rate of [1, 20, 50, 100, 200]) {
+    await cdp.send("Emulation.setCPUThrottlingRate", { rate });
+    if (runs.length === 0) await page.goto(`${BASE}/`, { waitUntil: "networkidle" });
+    else await page.reload({ waitUntil: "networkidle" });
+    await page.waitForTimeout(400);
+    const baseRead = await homeSnapshot(page);
+    const commitsAtRead = await hydrated(page);
+    const hydratedRead = await homeSnapshot(page);
+    await cdp.send("Emulation.setCPUThrottlingRate", { rate: 1 });
+    runs.push({ cpuSlowdown: rate, baseRead, hydratedRead: { ...hydratedRead, commitsAtRead } });
+    if (rate > 1 && baseRead.commits === 0) break;
+  }
+  metrics.reloadRace = { serverSelected, runs };
+  const raced = runs.find((run) => run.cpuSlowdown > 1 && run.baseRead.commits === 0);
+  // RR2 the anomaly: the base read saw the server's default while the device held the Estúdio — before hydration
+  check(
+    "RR2_THE_BASE_READ_CAN_LAND_BEFORE_HYDRATION",
+    Boolean(raced) && raced.baseRead.selected === "Rota Estratégica" && same(raced.baseRead.stored, ["hidden-objects", "number-trail"]),
+    { raced: raced ?? null, slowdowns: runs.map((run) => run.cpuSlowdown) },
+  );
+  // RR3 the product: hydration keeps the server's default (commit 1), the stored history then selects the newest
+  // playable result (a later commit) — at every speed, the hydrated Home shows the Estúdio
+  const ordered = (log) => log[0]?.selected === "Rota Estratégica" && log.some((entry) => entry.commit > 1 && entry.selected === "Estúdio das Descobertas");
+  check(
+    "RR3_THE_HYDRATED_HOME_SELECTS_THE_NEWEST_PLAYABLE_RESULT",
+    runs.every((run) => run.hydratedRead.selected === "Estúdio das Descobertas" && run.hydratedRead.commitsAtRead >= 1 && ordered(run.hydratedRead.commitLog)),
+    { runs: runs.map((run) => ({ cpuSlowdown: run.cpuSlowdown, hydrated: run.hydratedRead.selected, commitLog: run.hydratedRead.commitLog })) },
+  );
   check("NO_PAGE_ERRORS", session.errors.length === 0, { errors: session.errors });
   await session.context.close();
 }
@@ -1189,9 +1646,12 @@ const runners = {
   desktop,
   hard,
   mobile,
+  landscape,
   small,
   "reduced-motion": reducedMotion,
   legacy,
+  rounds,
+  "reload-race": reloadRace,
   bundle: () => {
     bundle();
     metrics.playtest.phoneZoomFor44px = phoneZoomNeeds();

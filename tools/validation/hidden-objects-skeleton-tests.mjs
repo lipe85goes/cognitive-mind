@@ -43,6 +43,13 @@
  * hidden-objects-experience-tests.mjs. The harness (fake browser, small React,
  * openers) moved to hidden-objects-harness.mjs, verbatim, and is shared.
  *
+ * GAME03-EXPERIENCE-02's target pool superseded three more points on purpose:
+ * the ten targets became a pool of eighteen that keeps the ten (H24), the
+ * fixed lists became rounds drawn from a seed — still 5/6/8, still each
+ * difficulty's tier mix (H25, H26) — and the result records its round (H30,
+ * H31). The session checks play Difficulty V2's last fixed lists, which are
+ * valid rounds of the pool, through the seed that draws each.
+ *
  * Usage:
  *   node tools/validation/hidden-objects-skeleton-tests.mjs                  # the working tree
  *   node tools/validation/hidden-objects-skeleton-tests.mjs --rev=<commit>   # every source at <commit> (git show)
@@ -89,6 +96,9 @@ import {
   sample,
   tapOn,
   regionGap,
+  possibleRounds,
+  seedDrawing,
+  startSession,
   DIR,
   FILES,
   APP_ROOTS,
@@ -122,6 +132,7 @@ const PREFERRED_LABELS = ["Lupa", "Chave antiga", "Bússola", "Relógio", "Câme
 /** GAME03-EXPERIENCE-02 added `clue` (Difícil's list) and the two words-only hint lines. */
 const TARGET_FIELDS = ["accessibleLabel", "clue", "hintContext", "hintDirection", "hintRegion", "id", "label", "region", "station", "tier"];
 const AMBIGUOUS_LABELS = /planta|livro azul/i;
+const LIST_STYLES = ["picture", "silhouette", "clue"];
 const COLOUR_WORDS = /\b(azul|vermelh[oa]|verde|amarel[oa]|rox[oa]|rosa|laranja|pret[oa]|branc[oa]|cinza|marrom|dourad[oa]|pratead[oa])\b/i;
 const ALLOWED_STUDIO_PACKAGES = ["lucide-react", "next/image", "react"];
 const ROUTE_OR_CIRCUIT_NAMES = /route-(config|geometry|generation|defenders|invariants|state|events|session|random)|useEscapeMaze|RouteBabylon|routeBabylon|escape-maze|color-sequence|MemoryCircuit/;
@@ -151,15 +162,29 @@ const LEGACY_RESULT = {
   summary: "Você iluminou 2 trilhas completas na Trilha Lógica.",
   details: { level: 3, currentNumber: 12, errors: 0, roundsCompleted: 2, correctNumbers: 12, maxErrors: 3 },
 };
-/** The result a finished session hands the shell (GAME03-EXPERIENCE-02 added which scene was explored). */
-const resultFor = (difficulty, total) => ({
+/** The result a finished session hands the shell (GAME03-EXPERIENCE-02 added which scene was explored, and which round). */
+const resultFor = (difficulty, total, roundSeed) => ({
   activityId: STUDIO,
   activityTitle: TITLE,
   gameId: STUDIO,
   score: total,
   summary: SUMMARY,
-  details: { difficulty, foundObjects: total, totalObjects: total, completed: true, sceneId: "explorer-studio" },
+  details: { difficulty, foundObjects: total, totalObjects: total, completed: true, sceneId: "explorer-studio", roundSeed },
 });
+
+/**
+ * Difficulty V2's last fixed lists (before the target pool). Each is still a
+ * valid round of the pool, so the session checks play exactly these, through
+ * the seed that draws each (the list's order is the seed's own).
+ */
+const V2_LISTS = {
+  easy: ["lupa", "ampulheta", "barco", "lanterna", "bussola"],
+  medium: ["ampulheta", "binoculo", "bussola", "relogio", "camera", "lanterna"],
+  hard: ["binoculo", "chave", "lupa", "bussola", "relogio", "lanterna", "camera", "estatueta"],
+};
+const v2Seed = (tree, difficulty) => seedDrawing(tree, difficulty, V2_LISTS[difficulty]);
+/** The real game, ready to draw Difficulty V2's list for `difficulty` on its first "Explorar". */
+const openV2Studio = (tree, difficulty, options = {}) => openStudio(tree, { ...options, seeds: [v2Seed(tree, difficulty)] });
 
 // --- the checks ----------------------------------------------------------------------------------------
 
@@ -702,7 +727,7 @@ async function runChecks(tree) {
     const caught = gliding && rig.taps.length === 0 && nearCamera(rig.camera(), caughtAt);
     rig.controller.destroy();
     // the game: a drag over the Lupa in a real session finds nothing; the same press without the drag does
-    const studio = openStudio(tree);
+    const studio = openV2Studio(tree, "easy");
     studio.start("easy");
     const p = studio.targetClient("lupa");
     studio.drag(p, { x: p.x + 50, y: p.y + 8 }, { steps: 6 });
@@ -755,7 +780,7 @@ async function runChecks(tree) {
     const controllerAborts = rig.taps.length === 0;
     rig.controller.destroy();
     // the game: a pinch on the Lupa finds nothing
-    const studio = openStudio(tree);
+    const studio = openV2Studio(tree, "easy");
     studio.start("easy");
     studio.pinch(studio.targetClient("lupa"));
     studio.settle();
@@ -785,7 +810,7 @@ async function runChecks(tree) {
     ];
     const tolerances = DIFFICULTIES.map((d) => ({ difficulty: d, touch: model.tolerancePxFor(d, "touch"), pen: model.tolerancePxFor(d, "pen"), mouse: model.tolerancePxFor(d, "mouse") }));
     const tolerancesOk = tolerances.every((t) => t.touch > t.mouse && t.pen === t.touch);
-    const start = model.sessionReducer(model.createSession("easy"), { type: "start" });
+    const start = startSession(model, "easy", v2Seed(tree, "easy"));
     const missed = model.sessionReducer(start, { type: "tap", point: { x: 5, y: 5 }, scale: 1, pointerType: "mouse" });
     const missRecordsNothing = missed.lastEvent?.kind === "miss" && missed.foundIds.length === 0 && same(sorted(Object.keys(missed)), sorted(Object.keys(start)));
     const hit = model.sessionReducer(start, tapOn(model, "lupa"));
@@ -800,7 +825,8 @@ async function runChecks(tree) {
 
   // --- 24–27: targets, lists, tiers, fairness ------------------------------------------------------
 
-  await check("H24", "contract", "EXACTLY_TEN_TARGETS", () => {
+  await check("H24", "contract", "THE_POOL_KEEPS_THE_TEN_AND_IS_WELL_FORMED", () => {
+    // GAME03-EXPERIENCE-02's target pool: the skeleton's ten stay, among at least twice as many objects as any round lists
     const { scene, model } = pureModules(tree);
     const pool = scene.HIDDEN_OBJECTS;
     const labels = pool.map((target) => target.label);
@@ -809,48 +835,61 @@ async function runChecks(tree) {
     const malformed = pool
       .filter(
         (t) =>
-          !same(sorted(Object.keys(t)), TARGET_FIELDS) || !t.label || !normalizeText(t.accessibleLabel).includes(normalizeText(t.label)) ||
+          !same(sorted(Object.keys(t).filter((key) => key !== "listedAs")), TARGET_FIELDS) || !t.label || !normalizeText(t.accessibleLabel).includes(normalizeText(t.label)) ||
           !["A", "B", "C"].includes(t.tier) || !scene.SCENE_STATIONS.some((station) => station.id === t.station) || !t.hintRegion || !regionValid(t.region) ||
-          ![t.clue, t.hintDirection, t.hintContext].every((line) => typeof line === "string" && line.trim().length > 0),
+          ![t.clue, t.hintDirection, t.hintContext].every((line) => typeof line === "string" && line.trim().length > 0) ||
+          (t.listedAs !== undefined && !(Array.isArray(t.listedAs) && t.listedAs.length > 0 && t.listedAs.every((style) => LIST_STYLES.includes(style)))),
       )
       .map((t) => t.id);
     const ambiguous = labels.filter((label) => AMBIGUOUS_LABELS.test(label));
+    const largestRound = Math.max(...DIFFICULTIES.map((d) => scene.DIFFICULTY_PRESETS[d]?.count ?? 0));
+    const keepsTheTen = PREFERRED_LABELS.every((label) => labels.includes(label));
     return {
       pass:
-        pool.length === 10 && new Set(pool.map((t) => t.id)).size === 10 && new Set(labels).size === 10 &&
-        same(sorted(labels), sorted(PREFERRED_LABELS)) && malformed.length === 0 && ambiguous.length === 0 &&
-        pool.every((t) => model.targetById(t.id) === t),
+        pool.length >= 2 * largestRound && new Set(pool.map((t) => t.id)).size === pool.length && new Set(labels).size === pool.length &&
+        keepsTheTen && malformed.length === 0 && ambiguous.length === 0 && pool.every((t) => model.targetById(t.id) === t),
       count: pool.length,
+      largestRound,
+      keepsTheTen,
       labels,
       malformed,
       ambiguous,
     };
   });
 
-  await check("H25", "contract", "DIFFICULTY_LISTS_ARE_5_6_8_AND_FIXED", () => {
-    const { scene, model } = pureModules(tree);
+  await check("H25", "contract", "DIFFICULTY_ROUNDS_ARE_5_6_8_AND_SEEDED", () => {
+    // GAME03-EXPERIENCE-02's target pool: no fixed list any more — every round has the difficulty's size, and the
+    // same difficulty and seed always draw the same list; the only randomness is that seed, drawn by the game
+    const { scene, model, rounds } = pureModules(tree);
     const ids = new Set(scene.HIDDEN_OBJECTS.map((target) => target.id));
-    // GAME03-EXPERIENCE-02: Difícil's list says what each object is for ("clue"), not its name.
     const expected = { easy: [5, "picture", "Fácil"], medium: [6, "silhouette", "Médio"], hard: [8, "clue", "Difícil"] };
-    const lists = Object.fromEntries(DIFFICULTIES.map((d) => [d, [...(scene.DIFFICULTY_PRESETS[d]?.targets ?? [])]]));
     const wrong = DIFFICULTIES.filter((d) => {
       const preset = scene.DIFFICULTY_PRESETS[d];
       const [size, style, label] = expected[d];
-      return !preset || preset.targets.length !== size || new Set(preset.targets).size !== size || preset.targets.some((id) => !ids.has(id)) || preset.listStyle !== style || preset.label !== label;
+      const all = possibleRounds(tree, d);
+      return (
+        !preset || preset.count !== size || preset.listStyle !== style || preset.label !== label || all.length === 0 ||
+        all.some((round) => round.length !== size || new Set(round).size !== size || round.some((id) => !ids.has(id)))
+      );
     });
-    const fixed = DIFFICULTIES.every((d) => {
-      const a = model.sessionReducer(model.createSession(d), { type: "start" });
-      const b = model.sessionReducer(model.createSession(d), { type: "start" });
-      return same(model.pendingTargets(a), model.pendingTargets(b)) && same(model.pendingTargets(a), lists[d]);
-    });
+    const seeded = DIFFICULTIES.every((d) =>
+      [1, 2, 77, 4096, 2 ** 32 - 1].every((seed) => {
+        const a = startSession(model, d, seed);
+        const b = startSession(model, d, seed);
+        return same(a.targets, b.targets) && same(model.pendingTargets(a), rounds.selectRoundTargets(d, seed)) && a.roundSeed === seed >>> 0;
+      }),
+    );
     const code = listFiles(tree, DIR).filter((file) => /\.(ts|tsx)$/.test(file)).map((file) => [file, codeOnly(tree.read(file))]);
-    const chance = code.filter(([, text]) => /Math\.random|getRandomValues|randomUUID/.test(text)).map(([file]) => file);
+    const draws = code.flatMap(([file, text]) => [...text.matchAll(/getRandomValues\(/g)].map(() => file));
+    const chance = code.filter(([, text]) => /Math\.random|randomUUID/.test(text)).map(([file]) => file);
     const clocks = code.filter(([, text]) => /setInterval|Date\.now|new Date\(/.test(text)).map(([file]) => file);
     return {
-      pass: wrong.length === 0 && fixed && chance.length === 0 && clocks.length === 0 && same(scene.DIFFICULTY_ORDER, DIFFICULTIES),
-      lists,
+      pass: wrong.length === 0 && seeded && same(draws, [FILES.game]) && chance.length === 0 && clocks.length === 0 && same(scene.DIFFICULTY_ORDER, DIFFICULTIES),
+      roundsPerDifficulty: Object.fromEntries(DIFFICULTIES.map((d) => [d, possibleRounds(tree, d).length])),
       wrong,
-      randomness: chance,
+      sameSeedSameList: seeded,
+      randomSource: draws,
+      otherRandomness: chance,
       clockDriven: clocks,
     };
   });
@@ -858,17 +897,18 @@ async function runChecks(tree) {
   await check("H26", "contract", "TIER_COMPOSITION", () => {
     const { scene, model } = pureModules(tree);
     const count = (list) => list.reduce((acc, id) => ({ ...acc, [model.targetById(id).tier]: acc[model.targetById(id).tier] + 1 }), { A: 0, B: 0, C: 0 });
+    // GAME03-EXPERIENCE-02 re-tiered the lanterna (A → B) and the câmera (B → C) with the art that integrates them,
+    // then grew the pool to six of each tier; every round keeps its difficulty's mix, so Difícil leans on C.
+    const expected = { pool: { A: 6, B: 6, C: 6 }, easy: { A: 3, B: 2, C: 0 }, medium: { A: 1, B: 3, C: 2 }, hard: { A: 1, B: 3, C: 4 } };
+    const mixes = (d) => [...new Set(possibleRounds(tree, d).map((round) => JSON.stringify(count(round))))].map((mix) => JSON.parse(mix));
     const actual = {
       pool: count(scene.HIDDEN_OBJECTS.map((target) => target.id)),
-      ...Object.fromEntries(DIFFICULTIES.map((d) => [d, count(scene.DIFFICULTY_PRESETS[d].targets)])),
+      ...Object.fromEntries(DIFFICULTIES.map((d) => [d, mixes(d).length === 1 ? mixes(d)[0] : mixes(d)])),
     };
-    // GAME03-EXPERIENCE-02 re-tiered the lanterna (A → B) and the câmera (B → C) with the art that
-    // integrates them, so Difícil can lean on C: 1A+3B+4C (the skeleton's was 2A+3B+3C).
-    const expected = { pool: { A: 3, B: 3, C: 4 }, easy: { A: 3, B: 2, C: 0 }, medium: { A: 1, B: 3, C: 2 }, hard: { A: 1, B: 3, C: 4 } };
     return {
       pass: same(actual, expected),
       ...actual,
-      note: "one A per list beyond Fácil keeps a warm-up find; Difícil leaves out two of the three A",
+      note: "every round of a difficulty has the same mix; one A beyond Fácil keeps a warm-up find",
     };
   });
 
@@ -900,8 +940,10 @@ async function runChecks(tree) {
       if (station?.id !== t.station) problems.push(`F3 ${t.id} is not in ${t.station}`);
     }
     for (const s of scene.SCENE_STATIONS) if (pool.filter((t) => t.station === s.id).length < 3) problems.push(`F3 ${s.id} holds fewer than 3`);
+    const listable = Object.fromEntries(DIFFICULTIES.map((d) => [d, possibleRounds(tree, d)]));
     for (const d of DIFFICULTIES) {
-      if (new Set(scene.DIFFICULTY_PRESETS[d].targets.map((id) => model.targetById(id).station)).size !== scene.SCENE_STATIONS.length) problems.push(`F3 ${d} skips a station`);
+      const skipping = listable[d].filter((round) => new Set(round.map((id) => model.targetById(id).station)).size !== scene.SCENE_STATIONS.length);
+      if (skipping.length) problems.push(`F3 ${skipping.length} ${d} round(s) skip a station`);
     }
     // F4 never covered: paint in front of the plate, at its furthest parallax drift plus clearance, misses every target
     const order = scene.SCENE_LAYERS.map((layer) => layer.id);
@@ -936,7 +978,7 @@ async function runChecks(tree) {
     const topScale = cover * cam.maxZoom(REFERENCE_PHONE);
     const sizes = pool.map((t) => {
       const b = box(t);
-      const reach = DIFFICULTIES.filter((d) => scene.DIFFICULTY_PRESETS[d].targets.includes(t.id)).map((d) => model.tolerancePxFor(d, "touch"));
+      const reach = DIFFICULTIES.filter((d) => listable[d].some((round) => round.includes(t.id))).map((d) => model.tolerancePxFor(d, "touch"));
       return {
         id: t.id,
         atCoverPx: Math.max(b.w, b.h) * cover,
@@ -969,7 +1011,8 @@ async function runChecks(tree) {
   await check("H28", "contract", "HINTS_CLIMB_ON_REQUEST_AND_COST_NOTHING", () => {
     const { model, scene, camera: cam } = pureModules(tree);
     const R = model.sessionReducer;
-    let s = R(model.createSession("easy"), { type: "start" });
+    // Difficulty V2's Fácil list, with the hint asked for the Lupa
+    let s = R(startSession(model, "easy", v2Seed(tree, "easy")), { type: "focus-target", targetId: "lupa" });
     const ladder = [];
     for (let i = 0; i < 4; i += 1) {
       s = R(s, { type: "hint" });
@@ -986,7 +1029,7 @@ async function runChecks(tree) {
     const haloProblems = [];
     for (const d of DIFFICULTIES) {
       const rungs = [...(scene.DIFFICULTY_PRESETS[d].hintLadder ?? [])];
-      for (const id of scene.DIFFICULTY_PRESETS[d].targets) {
+      for (const id of new Set(possibleRounds(tree, d).flat())) {
         const t = model.targetById(id);
         const c = model.regionCenter(t.region);
         const b = model.regionBounds(t.region);
@@ -1010,8 +1053,9 @@ async function runChecks(tree) {
       }
     }
     // the game: nothing appears by itself; each press climbs and moves the camera only then
-    const studio = openStudio(tree);
+    const studio = openV2Studio(tree, "easy");
     studio.start("easy");
+    studio.focusTarget("lupa");
     studio.frames(300);
     const nothingByItself = studio.banner() === null && studio.halo() === null;
     studio.goTo("janela");
@@ -1040,7 +1084,7 @@ async function runChecks(tree) {
     };
     studio.tapAt(studio.targetClient("lupa"));
     const cleared = studio.banner() === null && studio.halo() === null && same(studio.found(), ["Lupa"]);
-    for (const id of scene.DIFFICULTY_PRESETS.easy.targets.filter((targetId) => targetId !== "lupa")) studio.find(id);
+    for (const id of studio.round().ids.filter((targetId) => targetId !== "lupa")) studio.find(id);
     studio.frames(60);
     studio.click(studio.cls("hos-primary"));
     const [result] = studio.calls.complete;
@@ -1051,7 +1095,7 @@ async function runChecks(tree) {
       stage2: two.banner === "Pista: procure sobre o mapa." && two.halo && two.onScreen && two.next.startsWith("Mostrar onde está"),
       stage3: three.banner === "Aqui está: Lupa." && three.halo && three.framed && three.next.startsWith("Mostrar de novo"),
       findClearsTheHint: cleared,
-      costsNothing: same(result, resultFor("easy", 5)),
+      costsNothing: same(result, resultFor("easy", 5, v2Seed(tree, "easy"))),
     };
     const failed = Object.entries({ climbs, perObject, findClears, ...game }).filter(([, ok]) => !ok).map(([name]) => name);
     return { pass: failed.length === 0 && haloProblems.length === 0, failed, ladder, haloProblems, banners: [one.banner, two.banner, three.banner] };
@@ -1060,14 +1104,15 @@ async function runChecks(tree) {
   await check("H29", "contract", "RESTART_KEEPS_THE_LIST_AND_CLEARS_THE_ROUND", () => {
     const { model, camera: cam } = pureModules(tree);
     const R = model.sessionReducer;
-    let s = R(R(model.createSession(), { type: "select-difficulty", difficulty: "medium" }), { type: "start" });
+    let s = startSession(model, "medium", v2Seed(tree, "medium"));
+    const drawn = model.pendingTargets(s);
     for (const id of ["ampulheta", "bussola"]) s = R(s, tapOn(model, id));
     s = R(R(s, { type: "hint" }), { type: "focus-target", targetId: "camera" });
     const restarted = R(s, { type: "restart" });
     const reducer = {
       playing: restarted.status === "playing",
       sameDifficulty: restarted.difficulty === "medium",
-      sameList: same(model.pendingTargets(restarted), [...model.targetsFor("medium")]),
+      sameList: same(model.pendingTargets(restarted), drawn),
       clearsFound: restarted.foundIds.length === 0,
       clearsHint: restarted.hintTarget === null && restarted.hintStage === 0 && restarted.focusedTarget === null && restarted.lastEvent === null,
       newRound: restarted.round === s.round + 1,
@@ -1075,7 +1120,7 @@ async function runChecks(tree) {
       difficultyLockedWhilePlaying: R(s, { type: "select-difficulty", difficulty: "hard" }).difficulty === "medium",
     };
     // the game: same component and scene controller (no reload), back to the table
-    const studio = openStudio(tree);
+    const studio = openV2Studio(tree, "medium");
     const restartButton = (entry) => entry.props["aria-label"] === "Recomeçar a exploração";
     const disabledInSetup = studio.button(restartButton)?.props.disabled === true;
     studio.start("medium");
@@ -1109,21 +1154,21 @@ async function runChecks(tree) {
   await check("H30", "contract", "COMPLETION_HAPPENS_ONCE", () => {
     const { model, scene } = pureModules(tree);
     const R = model.sessionReducer;
-    let s = R(model.createSession("easy"), { type: "start" });
+    let s = startSession(model, "easy", v2Seed(tree, "easy"));
     const statuses = [];
-    for (const id of scene.DIFFICULTY_PRESETS.easy.targets) {
+    for (const id of model.pendingTargets(s)) {
       s = R(s, tapOn(model, id));
       statuses.push(s.status);
     }
     const reducer = {
       completesOnTheLastFind: same(statuses, ["playing", "playing", "playing", "playing", "completed"]),
       frozenAfterwards:
-        R(s, tapOn(model, "lupa")) === s && R(s, { type: "hint" }) === s && R(s, { type: "focus-target", targetId: "lupa" }) === s && R(s, { type: "start" }) === s,
+        R(s, tapOn(model, "lupa")) === s && R(s, { type: "hint" }) === s && R(s, { type: "focus-target", targetId: "lupa" }) === s && R(s, { type: "start", seed: 9 }) === s,
     };
     // the game: the closing card waits for the last glow; one result, however many times "Concluir" is pressed
-    const studio = openStudio(tree);
+    const studio = openV2Studio(tree, "easy");
     studio.start("easy");
-    for (const id of scene.DIFFICULTY_PRESETS.easy.targets) studio.find(id);
+    for (const id of studio.round().ids) studio.find(id);
     const completed = studio.status() === "completed";
     const cardAtOnce = studio.card() !== null;
     studio.frames(30);
@@ -1146,7 +1191,7 @@ async function runChecks(tree) {
       cardWaits: !cardAtOnce && !cardBeforeDelay && cardShown,
       noResultBeforeConclude: resultBeforeConclude === 0,
       exactlyOneResult: results.length === 1,
-      theResult: same(results[0], resultFor("easy", 5)),
+      theResult: same(results[0], resultFor("easy", 5, v2Seed(tree, "easy"))),
       continueLookingKeepsConclude: small,
       quietAfterwards,
     };
@@ -1160,13 +1205,13 @@ async function runChecks(tree) {
     const R = model.sessionReducer;
     const results = {};
     for (const d of DIFFICULTIES) {
-      let s = R(R(model.createSession(), { type: "select-difficulty", difficulty: d }), { type: "start" });
+      let s = startSession(model, d, v2Seed(tree, d));
       s = R(R(s, { type: "hint" }), { type: "hint" });
       s = R(s, { type: "tap", point: { x: 3, y: 3 }, scale: 1, pointerType: "touch" });
-      for (const id of scene.DIFFICULTY_PRESETS[d].targets) s = R(s, tapOn(model, id));
+      for (const id of model.pendingTargets(s)) s = R(s, tapOn(model, id));
       results[d] = model.buildHiddenObjectsResult(s);
     }
-    const wrongShape = DIFFICULTIES.filter((d) => !same(results[d], resultFor(d, scene.DIFFICULTY_PRESETS[d].targets.length)));
+    const wrongShape = DIFFICULTIES.filter((d) => !same(results[d], resultFor(d, V2_LISTS[d].length, v2Seed(tree, d))));
     const forbiddenKeys = Object.values(results).flatMap((r) => Object.keys(r).concat(Object.keys(r.details))).filter((key) => /time|elapsed|error|miss|hint|star|rank|streak|lives|continuation/i.test(key));
     const shell = Object.values(results).every((r) => t.rewards.isSuccessfulResult(r) && t.rewards.getRewardCopy(r).title === "Estúdio explorado");
     const labelled = ["difficulty", "foundObjects", "totalObjects", "completed"].every((key) => typeof t.labels.DETAIL_LABELS[key] === "string");
@@ -1236,16 +1281,16 @@ async function runChecks(tree) {
   await check("H33", "contract", "EVERYTHING_IS_RELEASED_ON_EXIT_AND_UNMOUNT", () => {
     const { scene } = pureModules(tree);
     // exit: the shell's onExit, and no partial result
-    const exiting = openStudio(tree);
+    const exiting = openV2Studio(tree, "easy");
     exiting.start("easy");
     exiting.find("lupa");
     exiting.click((entry) => entry.props["aria-label"] === "Voltar à jornada");
     const exit = exiting.calls.exit === 1 && exiting.calls.complete.length === 0;
     exiting.unmount();
     // unmount in the middle of everything: a captured drag, a wheel burst, a glide, the closing card's timer
-    const busy = openStudio(tree);
+    const busy = openV2Studio(tree, "easy");
     busy.start("easy");
-    for (const id of scene.DIFFICULTY_PRESETS.easy.targets) busy.find(id);
+    for (const id of busy.round().ids) busy.find(id);
     busy.frames(2);
     const viewport = busy.viewport;
     const centre = busy.centre();
@@ -1300,8 +1345,9 @@ async function runChecks(tree) {
     const layersStill = still.parallax.every((layer) => /^translate3d\(0px, 0px, 0\)$/.test(layer.style.transform));
     still.controller.destroy();
     // the game under reduced motion: "Mostrar onde está" frames the object in one frame
-    const studio = openStudio(tree, { reducedMotion: true });
+    const studio = openV2Studio(tree, "easy", { reducedMotion: true });
     studio.start("easy");
+    studio.focusTarget("lupa");
     studio.goTo("estante");
     for (let i = 0; i < 3; i += 1) studio.clickHint();
     studio.frames(1);
@@ -1515,7 +1561,7 @@ const MUTANTS = [
   },
   {
     name: "Médio lists five objects",
-    files: { [FILES.scene]: [['    targets: ["ampulheta", "binoculo", "bussola", "relogio", "camera", "lanterna"],', '    targets: ["ampulheta", "binoculo", "bussola", "relogio", "camera"],']] },
+    files: { [FILES.scene]: [["    tiers: { A: 1, B: 3, C: 2 },", "    tiers: { A: 1, B: 2, C: 2 },"]] },
     mustFail: ["H25"],
   },
   {

@@ -120,6 +120,12 @@ const DEFS = `
   <linearGradient id="silver" x1="0" y1="0" x2="0" y2="1">
     <stop offset="0" stop-color="#e6e1d6"/><stop offset=".5" stop-color="#aaa497"/><stop offset="1" stop-color="#6f6a60"/>
   </linearGradient>
+  <linearGradient id="bronzeAged" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#ad8d50"/><stop offset=".5" stop-color="#7e6130"/><stop offset="1" stop-color="#4a3818"/>
+  </linearGradient>
+  <linearGradient id="umbrellaCloth" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#2b5c55"/><stop offset=".42" stop-color="#418277"/><stop offset="1" stop-color="#1d423d"/>
+  </linearGradient>
   <linearGradient id="leatherDark" x1="0" y1="0" x2="1" y2="1">
     <stop offset="0" stop-color="#4a3a2c"/><stop offset=".5" stop-color="#2d231a"/><stop offset="1" stop-color="#17110c"/>
   </linearGradient>
@@ -430,6 +436,9 @@ function targetSvg(id, box = boxOf(TARGETS[id].region)) {
   return fit(art.body, art.nominal, box);
 }
 
+/** A pool object in its place — or nothing, when the audit renders the room without it. */
+const paint = (id, omit) => (omit === id ? "" : targetSvg(id));
+
 /** The magnifier's handle reaches past its lens circle: it is painted in the lens's frame. */
 function lupaHandleSvg(box) {
   const art = ART.lupa;
@@ -679,9 +688,17 @@ function trailingPlant(cx, baseY, scale = 1, { pot = true } = {}) {
 }
 
 function frame(x, y, w, h, inner) {
+  return `${frameShadow(x, y, w, h)}${frameBody(x, y, w, h, inner)}`;
+}
+
+/** What a frame casts on the wall (scenery even when the frame is in the pool). */
+function frameShadow(x, y, w, h) {
   return `${shadow(x + w / 2 + 12, y + h + 8, w * 0.5, 10, 0.55)}
-    <rect x="${x - 6}" y="${y + 8}" width="${w + 12}" height="${h + 8}" fill="#0a0603" opacity=".35" filter="url(#blur8)"/>
-    <rect x="${x}" y="${y}" width="${w}" height="${h}" fill="url(#brass)" stroke="#5a3d16" stroke-width="1.6"/>
+    <rect x="${x - 6}" y="${y + 8}" width="${w + 12}" height="${h + 8}" fill="#0a0603" opacity=".35" filter="url(#blur8)"/>`;
+}
+
+function frameBody(x, y, w, h, inner) {
+  return `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="url(#brass)" stroke="#5a3d16" stroke-width="1.6"/>
     <rect x="${x + 5}" y="${y + 5}" width="${w - 10}" height="${h - 10}" fill="none" stroke="#f3dc9c" stroke-width="1.6" opacity=".55"/>
     <rect x="${x + 14}" y="${y + 14}" width="${w - 28}" height="${h - 28}" fill="#3a2a18"/>
     <svg x="${x + 18}" y="${y + 18}" width="${w - 36}" height="${h - 36}" viewBox="0 0 100 ${n((100 * (h - 36)) / (w - 36))}" preserveAspectRatio="none">${inner}</svg>
@@ -904,12 +921,12 @@ function sillPotOverBinoculars() {
   return plant(b.x + b.w - 4, WINDOW.bottom, 0.66, { leaves: "url(#leafDark)" });
 }
 
-function wallFrames() {
+function wallFrames(omit = null) {
   return `
     ${frame(1196, 330, 280, 236, PAINTING_LAKE)}
     ${frame(1560, 300, 330, 230, PAINTING_MAP)}
     ${frame(1950, 590, 116, 140, PAINTING_LEAF)}
-    ${frame(1932, 318, 104, 124, PAINTING_BUTTERFLY)}
+    ${frameShadow(1932, 318, 104, 124)}${paint("borboleta", omit)}
     <rect x="1180" y="700" width="300" height="16" rx="3" fill="url(#woodV)" stroke="#2b170b" stroke-width="1.6" filter="url(#grainH)"/>
     ${occlusion(1180, 714, 300, 14, 0.5)}
     <path d="M1200 716 l16 22 h4 v-22 Z M1440 716 l16 22 h4 v-22 Z" fill="#4a2a16"/>
@@ -920,18 +937,10 @@ function wallFrames() {
     </g>`;
 }
 
-function globe() {
+function globe(omit = null) {
   return `
     ${shadow(2200, 1420, 116, 18)}
-    <path d="M2200 1100 V1390 M2200 1390 L2130 1418 M2200 1390 L2270 1418 M2200 1390 L2200 1426" stroke="#4a2a16" stroke-width="12" stroke-linecap="round"/>
-    <ellipse cx="2200" cy="1102" rx="40" ry="10" fill="url(#brassV)"/>
-    <circle cx="2200" cy="990" r="96" fill="#2c6480"/>
-    <circle cx="2200" cy="990" r="96" fill="url(#glassLens)" opacity=".3"/>
-    <path d="M2140 930 C2160 910 2196 914 2204 936 C2212 956 2190 972 2170 968 C2152 964 2132 952 2140 930 Z M2214 990 C2236 970 2268 980 2272 1004 C2276 1028 2250 1046 2230 1036 C2214 1028 2204 1006 2214 990 Z M2140 1010 C2156 1004 2170 1020 2166 1036 C2160 1052 2140 1050 2134 1036 C2130 1026 2132 1014 2140 1010 Z" fill="#d3b678" stroke="#7a5a33" stroke-width="1.3"/>
-    <path d="M2112 960 A96 96 0 0 1 2180 896" stroke="#ffffff" stroke-opacity=".28" stroke-width="5" fill="none" stroke-linecap="round"/>
-    <circle cx="2200" cy="990" r="96" fill="none" stroke="#0b1a24" stroke-width="2" opacity=".6"/>
-    <path d="M2112 1060 A110 110 0 0 0 2290 920" stroke="url(#brass)" stroke-width="9" fill="none"/>
-    <path d="M2122 910 A110 110 0 0 1 2292 940" stroke="url(#brass)" stroke-width="9" fill="none" opacity=".9"/>`;
+    ${paint("globo", omit)}`;
 }
 
 function table() {
@@ -946,7 +955,7 @@ function table() {
     <path d="M1110 1080 C1150 1150 1400 1200 1700 1196" stroke="#d29a62" stroke-width="3" fill="none" opacity=".32"/>`;
 }
 
-function tableItems() {
+function tableItems(omit = null) {
   const map = `
     <g>
       <path d="M1486 990 L1984 972 L2006 1170 L1500 1196 Z" fill="#1a0e06" opacity=".3" transform="translate(6 8)" filter="url(#blur3)"/>
@@ -993,17 +1002,14 @@ function tableItems() {
     </g>`;
   return `
     ${bookStack(1150, 1046, [[150, 22, "#2d4a68"], [140, 20, "#7a3024", 6], [128, 18, "#4a6a3a", 10]])}
-    <g>${shadow(1430, 1002, 54, 10)}<ellipse cx="1430" cy="996" rx="48" ry="12" fill="#ece3d1" stroke="#8a7a62" stroke-width="1.6"/>
-      <path d="M1400 960 C1400 1000 1460 1000 1460 960 Z" fill="#f2e9d8" stroke="#8a7a62" stroke-width="1.6"/>
-      <ellipse cx="1430" cy="960" rx="30" ry="8" fill="#5e321b"/>
-      <path d="M1460 968 C1478 968 1478 988 1458 986" stroke="#f2e9d8" stroke-width="5" fill="none"/>
-      <path d="M1420 950 C1410 930 1430 920 1420 900 M1438 948 C1430 930 1448 922 1440 904" stroke="#ffffff" stroke-width="3" opacity=".3" fill="none" stroke-linecap="round"/></g>
+    ${shadow(1430, 1002, 54, 10)}
+    ${paint("xicara", omit)}
     ${map}
     ${shadow(1540, 1180, 62, 10, 0.8)}
-    ${targetSvg("bussola")}
+    ${paint("bussola", omit)}
     ${watchChain}
     ${shadow(1330, 1206, 44, 8, 0.8)}
-    ${targetSvg("relogio")}
+    ${paint("relogio", omit)}
     ${openBook}
     ${note}
     ${shadow(1426, 1206, 18, 4, 0.7)}
@@ -1014,11 +1020,8 @@ function tableItems() {
       <rect x="1890" y="1150" width="120" height="58" rx="6" fill="url(#woodDark)" stroke="#1c0f07" stroke-width="1.6" filter="url(#grainH)"/>
       <path d="M1886 1150 L1900 1132 H2004 L2014 1150 Z" fill="#6b4024" stroke="#1c0f07" stroke-width="1.6"/>
       <rect x="1940" y="1168" width="18" height="14" rx="2" fill="url(#brassDim)"/></g>
-    <g>${shadow(2020, 1068, 36, 8)}
-      <path d="M2000 1064 C1994 1030 2000 1010 2010 1004 H2032 C2042 1010 2048 1030 2042 1064 Z" fill="#1f3848" opacity=".88" stroke="#0f1d27" stroke-width="1.6"/>
-      <rect x="2010" y="994" width="22" height="12" rx="2" fill="url(#brassDim)"/>
-      <path d="M2026 996 C2040 940 2070 900 2100 880 C2086 920 2060 960 2030 1000 Z" fill="#ece3cf" stroke="#a89470" stroke-width="1.3"/>
-      <path d="M2030 1000 C2050 960 2076 920 2098 884" stroke="#a89470" stroke-width="1.3" fill="none"/></g>
+    ${shadow(2020, 1068, 36, 8)}
+    ${paint("pena", omit)}
     ${shadow(1923, 1086, 24, 5, 0.7)}
     ${lookSvg("carimbo")}
     <g>${shadow(1215, 1004, 60, 8)}
@@ -1068,7 +1071,7 @@ function bookcase() {
   return svg;
 }
 
-function bookcaseItems() {
+function bookcaseItems(omit = null) {
   const { s1, s2, s3, s4, s5 } = SHELVES;
   const est = boxOf(TARGETS.estatueta.region);
   const cam = boxOf(TARGETS.camera.region);
@@ -1085,7 +1088,7 @@ function bookcaseItems() {
     ${shadow(2553, s1 - 2, 18, 4, 0.8)}
     ${lookSvg("rolo-de-papel")}
     ${shadow(est.x + est.w / 2, s1 - 2, est.w * 0.6, 6, 0.8)}
-    ${targetSvg("estatueta")}
+    ${paint("estatueta", omit)}
     ${book(est.x - 12, s1 - 132, 28, 132, "#5a3b5c", { tilt: 16 })}
     ${runB.svg}
     ${shadow(2854, s1 - 2, 22, 4, 0.8)}
@@ -1099,13 +1102,13 @@ function bookcaseItems() {
     ${bookRun(cam.x - 2, s2, 6, 43, { minH: 150, maxH: 178, minW: 24, maxW: 32, gap: 1, colors: ["#c9b48a", "#d8c69e", "#bfa678", "#d1bd92"] }).svg}
     ${occlusion(cam.x, s2 - 24, cam.w, 22, 0.4)}
     ${shadow(cam.x + cam.w / 2, s2 - 2, cam.w * 0.55, 7, 0.9)}
-    ${targetSvg("camera")}
+    ${paint("camera", omit)}
     ${book(cam.x + cam.w - 18, s2 - 168, 30, 168, "#2f5d58", { tilt: -16 })}
     <g>${shadow(2930, s2 - 2, 30, 6)}<path d="M2906 ${s2} V${s2 - 66} C2906 ${s2 - 80} 2954 ${s2 - 80} 2954 ${s2 - 66} V${s2} Z" fill="#b9cec7" opacity=".78" stroke="#5f7a74" stroke-width="1.6"/><rect x="2912" y="${s2 - 90}" width="36" height="14" rx="3" fill="#8a5a32"/>
       <g fill="#a0442c" opacity=".65"><circle cx="2920" cy="${s2 - 26}" r="7"/><circle cx="2936" cy="${s2 - 18}" r="7"/><circle cx="2930" cy="${s2 - 38}" r="6"/></g></g>
     ${bookRun(2970, s2, 3, 91, { minH: 140, maxH: 180 }).svg}
     ${shadow(2505, s3 - 2, 150, 9, 0.9)}
-    ${targetSvg("barco")}
+    ${paint("barco", omit)}
     ${runD.svg}
     ${book(runD.end + 6, s3 - 160, 32, 160, "#5a3b5c", { tilt: 16 })}
     <g>${shadow(2985, s3 - 2, 72, 8)}<rect x="2930" y="${s3 - 74}" width="112" height="72" rx="5" fill="url(#woodDark)" stroke="#1c0f07" stroke-width="1.6" filter="url(#grainH)"/><rect x="2926" y="${s3 - 82}" width="120" height="12" rx="3" fill="#6b4024" stroke="#1c0f07" stroke-width="1.3"/><circle cx="2986" cy="${s3 - 38}" r="6" fill="url(#brassDim)"/></g>
@@ -1115,7 +1118,7 @@ function bookcaseItems() {
     ${shadow(2702, s4 - 2, 36, 6)}
     ${lookSvg("chaleira")}
     ${shadow(lan.x + lan.w / 2, s4 - 2, lan.w * 0.5, 7, 0.9)}
-    ${targetSvg("lanterna")}
+    ${paint("lanterna", omit)}
     ${bookStack(lan.x - 6, s4, [[96, 22, "#2d4a68"], [88, 20, "#7a3024", 4], [80, 18, "#6d5a3a", 10]])}
     ${runF.svg}
     <g>${shadow(2420, s5 - 2, 124, 9)}
@@ -1188,25 +1191,17 @@ function floorAndRug() {
     ${fringe}`;
 }
 
-/** Wall decor between the frames and the bookcase: an explorer's hat and satchel on a peg rail. */
-function pegRail() {
+/** Wall decor between the frames and the bookcase: an explorer's hat and satchel on a peg rail (both in the pool). */
+function pegRail(omit = null) {
   return `
-    <rect x="2070" y="430" width="170" height="20" rx="4" fill="url(#woodV)" stroke="#1c0f07" stroke-width="1.6"/>
+    <rect x="2070" y="430" width="170" height="20" rx="4" fill="url(#woodDark)" stroke="#1c0f07" stroke-width="1.6"/>
     ${[2100, 2160, 2215].map((x) => `<rect x="${x - 5}" y="440" width="10" height="26" rx="4" fill="#4a2a16"/>`).join("")}
-    <g>
-      <ellipse cx="2130" cy="486" rx="64" ry="14" fill="#000" opacity=".25" filter="url(#blur8)"/>
-      <ellipse cx="2128" cy="478" rx="62" ry="14" fill="#6b4a2a" stroke="#2b170b" stroke-width="1.6"/>
-      <path d="M2088 476 C2090 440 2100 430 2128 430 C2156 430 2166 440 2168 476 Z" fill="#7e5a34" stroke="#2b170b" stroke-width="1.6"/>
-      <path d="M2090 466 C2110 472 2146 472 2166 466 L2166 476 C2146 482 2110 482 2090 476 Z" fill="#3a2414"/>
-    </g>
-    <g>
-      <path d="M2216 456 C2196 520 2196 560 2204 600" stroke="#5a3418" stroke-width="5" fill="none"/>
-      <path d="M2216 456 C2236 520 2236 560 2228 600" stroke="#5a3418" stroke-width="5" fill="none"/>
-      <path d="M2172 610 H2264 L2258 714 C2232 726 2202 726 2178 714 Z" fill="#000" opacity=".25" filter="url(#blur8)"/>
-      <path d="M2170 596 H2262 L2256 700 C2230 712 2200 712 2176 700 Z" fill="#86582f" stroke="#2b170b" stroke-width="1.6" filter="url(#grainH)"/>
-      <path d="M2168 596 H2264 L2258 640 C2230 654 2202 654 2174 640 Z" fill="#9c663a" stroke="#2b170b" stroke-width="1.6"/>
-      <rect x="2208" y="632" width="16" height="14" rx="2" fill="url(#brassDim)"/>
-    </g>`;
+    <ellipse cx="2134" cy="490" rx="62" ry="12" fill="#000" opacity=".16" filter="url(#blur8)"/>
+    ${paint("chapeu", omit)}
+    <path d="M2216 456 C2196 520 2196 560 2204 600" stroke="#5a3418" stroke-width="5" fill="none"/>
+    <path d="M2216 456 C2236 520 2236 560 2228 600" stroke="#5a3418" stroke-width="5" fill="none"/>
+    <path d="M2176 612 H2268 L2262 716 C2236 728 2206 728 2182 716 Z" fill="#000" opacity=".17" filter="url(#blur8)"/>
+    ${paint("bolsa", omit)}`;
 }
 
 /** Floor clutter that makes the room feel lived in (no target shares a category with it). */
@@ -1225,7 +1220,156 @@ function floorDecor() {
       <path d="M1090 118 V250" stroke="#3a2414" stroke-width="3"/>
       <path d="M1040 250 H1140 L1126 300 H1054 Z" fill="#a17c4a" stroke="#4a3013" stroke-width="1.6"/>
       ${trailingPlant(1090, 262, 0.75, { pot: false })}
+      ${ivyDrape()}
     </g>`;
+}
+
+/** GAME03-EXPERIENCE-02: one long strand of the hanging plant, over the birdcage's right shoulder. */
+function ivyDrape() {
+  const leaves = [
+    [1046, 318, -30, 1],
+    [1043, 352, 30, 0],
+    [1040, 386, -30, 1],
+    [1034, 420, 30, 1],
+    [1027, 452, -30, 0],
+    [1031, 462, 30, 1],
+    [1022, 480, 30, 1],
+    [1014, 490, -30, 0],
+    [1021, 506, -30, 1],
+    [1029, 516, 30, 1],
+    [1025, 528, 30, 0],
+    [1016, 544, -30, 1],
+    [1026, 558, 30, 0],
+  ];
+  return `<path d="M1052 296 C1042 350 1046 396 1032 440 C1022 470 1018 500 1024 532 C1028 546 1024 556 1022 566" stroke="#355c2e" stroke-width="2.4" fill="none"/>
+    ${leaves.map(([x, y, angle, light]) => `<ellipse cx="${x + (angle > 0 ? 7 : -7)}" cy="${y}" rx="8" ry="5" fill="${light ? "url(#leaf)" : "url(#leafDark)"}" transform="rotate(${angle} ${x} ${y})"/>`).join("")}`;
+}
+
+// --- the rest of the pool (GAME03-EXPERIENCE-02) -------------------------------------------------
+//
+// Six things the room already showed — the same paint, now each with its
+// region in hidden-objects-scene.ts (the hat and the satchel lightened, with
+// the window's rim light: in their dark felt and leather the fairness audit
+// measured them under the edge floor) — and two new ones by the window.
+// The promoted ones were authored in room coordinates: `anchored` re-anchors
+// them on the origin of the region they were drawn for, so (like every
+// target) the art follows its region. `view` frames a thumbnail that needs
+// more than the region (steam, a stand, a quill's tip).
+
+const anchored = (origin, nominal, svg, view = null) => ({
+  nominal,
+  ...(view ? { view } : {}),
+  body: `<g transform="translate(${-origin.x} ${-origin.y})">${svg}</g>`,
+});
+
+Object.assign(ART, {
+  xicara: anchored(
+    { x: 1380, y: 950 },
+    { w: 100, h: 60 },
+    `<ellipse cx="1430" cy="996" rx="48" ry="12" fill="#ece3d1" stroke="#8a7a62" stroke-width="1.6"/>
+      <path d="M1400 960 C1400 1000 1460 1000 1460 960 Z" fill="#f2e9d8" stroke="#8a7a62" stroke-width="1.6"/>
+      <ellipse cx="1430" cy="960" rx="30" ry="8" fill="#5e321b"/>
+      <path d="M1460 968 C1478 968 1478 988 1458 986" stroke="#f2e9d8" stroke-width="5" fill="none"/>
+      <path d="M1420 950 C1410 930 1430 920 1420 900 M1438 948 C1430 930 1448 922 1440 904" stroke="#ffffff" stroke-width="3" opacity=".3" fill="none" stroke-linecap="round"/>`,
+    { x: -2, y: -54, w: 104, h: 116 },
+  ),
+  pena: anchored(
+    { x: 1994, y: 896 },
+    { w: 82, h: 170 },
+    `<path d="M2000 1064 C1994 1030 2000 1010 2010 1004 H2032 C2042 1010 2048 1030 2042 1064 Z" fill="#1f3848" opacity=".88" stroke="#0f1d27" stroke-width="1.6"/>
+      <rect x="2010" y="994" width="22" height="12" rx="2" fill="url(#brassDim)"/>
+      <path d="M2026 996 C2040 940 2070 900 2100 880 C2086 920 2060 960 2030 1000 Z" fill="#ece3cf" stroke="#a89470" stroke-width="1.3"/>
+      <path d="M2030 1000 C2050 960 2076 920 2098 884" stroke="#a89470" stroke-width="1.3" fill="none"/>`,
+    { x: -4, y: -20, w: 112, h: 192 },
+  ),
+  borboleta: anchored({ x: 1932, y: 318 }, { w: 104, h: 124 }, frameBody(1932, 318, 104, 124, PAINTING_BUTTERFLY)),
+  chapeu: anchored(
+    { x: 2066, y: 428 },
+    { w: 124, h: 66 },
+    `<ellipse cx="2128" cy="478" rx="62" ry="14" fill="#8c653c" stroke="#b8905e" stroke-width="1.4"/>
+      <path d="M2070 474 C2090 466 2166 466 2186 474" stroke="#e0b67a" stroke-width="2.2" fill="none" opacity=".7" stroke-linecap="round"/>
+      <path d="M2088 476 C2090 440 2100 430 2128 430 C2156 430 2166 440 2168 476 Z" fill="#9c7446" stroke="#b8905e" stroke-width="1.4"/>
+      <path d="M2096 470 C2096 448 2104 438 2122 436" stroke="#e6c08a" stroke-width="2.4" fill="none" opacity=".55" stroke-linecap="round"/>
+      <path d="M2090 466 C2110 472 2146 472 2166 466 L2166 476 C2146 482 2110 482 2090 476 Z" fill="#4a2c18"/>
+      <path d="M2092 468 C2112 473 2144 473 2164 468" stroke="#b8865a" stroke-width="1.2" fill="none" opacity=".6"/>`,
+  ),
+  bolsa: anchored(
+    { x: 2168, y: 594 },
+    { w: 96, h: 120 },
+    `<path d="M2170 596 H2262 L2256 700 C2230 712 2200 712 2176 700 Z" fill="#a06c3a" stroke="#c6925c" stroke-width="1.4" filter="url(#grainH)"/>
+      <path d="M2178 652 L2180 694 M2254 652 L2252 694" stroke="#d29a62" stroke-width="1.2" stroke-dasharray="4 4" opacity=".55"/>
+      <path d="M2168 596 H2264 L2258 640 C2230 654 2202 654 2174 640 Z" fill="#b57e48" stroke="#c6925c" stroke-width="1.4"/>
+      <path d="M2174 600 H2258" stroke="#e6b47c" stroke-width="2" opacity=".6"/>
+      <path d="M2178 636 C2204 648 2228 648 2252 636" stroke="#7a4a24" stroke-width="1.2" stroke-dasharray="4 4" opacity=".6" fill="none"/>
+      <rect x="2208" y="632" width="16" height="14" rx="2" fill="url(#brassDim)"/>`,
+  ),
+  globo: anchored(
+    { x: 2104, y: 894 },
+    { w: 192, h: 192 },
+    `<path d="M2200 1100 V1390 M2200 1390 L2130 1418 M2200 1390 L2270 1418 M2200 1390 L2200 1426" stroke="#4a2a16" stroke-width="12" stroke-linecap="round"/>
+      <ellipse cx="2200" cy="1102" rx="40" ry="10" fill="url(#brassV)"/>
+      <circle cx="2200" cy="990" r="96" fill="#2c6480"/>
+      <circle cx="2200" cy="990" r="96" fill="url(#glassLens)" opacity=".3"/>
+      <path d="M2140 930 C2160 910 2196 914 2204 936 C2212 956 2190 972 2170 968 C2152 964 2132 952 2140 930 Z M2214 990 C2236 970 2268 980 2272 1004 C2276 1028 2250 1046 2230 1036 C2214 1028 2204 1006 2214 990 Z M2140 1010 C2156 1004 2170 1020 2166 1036 C2160 1052 2140 1050 2134 1036 C2130 1026 2132 1014 2140 1010 Z" fill="#d3b678" stroke="#7a5a33" stroke-width="1.3"/>
+      <path d="M2112 960 A96 96 0 0 1 2180 896" stroke="#ffffff" stroke-opacity=".28" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <circle cx="2200" cy="990" r="96" fill="none" stroke="#0b1a24" stroke-width="2" opacity=".6"/>
+      <path d="M2112 1060 A110 110 0 0 0 2290 920" stroke="url(#brass)" stroke-width="9" fill="none"/>
+      <path d="M2122 910 A110 110 0 0 1 2292 940" stroke="url(#brass)" stroke-width="9" fill="none" opacity=".9"/>`,
+    { x: -16, y: -14, w: 224, h: 238 },
+  ),
+  // New: furled, its crook catching the window light, left leaning in the corner by the sill.
+  "guarda-chuva": {
+    nominal: { w: 64, h: 258 },
+    body: `
+      <g transform="rotate(5 33 254)">
+        <path d="M33 60 V26 C33 8 12 6 10 20 C9 28 15 31 18 26" stroke="#3a210e" stroke-width="10" fill="none" stroke-linecap="round"/>
+        <path d="M33 60 V26 C33 8 12 6 10 20 C9 28 15 31 18 26" stroke="url(#woodH)" stroke-width="6.5" fill="none" stroke-linecap="round"/>
+        <path d="M31 54 V28 C31 15 21 12 15 17" stroke="#f0c088" stroke-width="1.8" fill="none" opacity=".6" stroke-linecap="round"/>
+        <rect x="27" y="56" width="12" height="9" rx="2" fill="url(#brassDim)" stroke="#4a3216" stroke-width="1.1"/>
+        <path d="M25 64 C18 98 20 150 30 232 L36 232 C46 150 48 98 41 64 Z" fill="url(#umbrellaCloth)" stroke="#16312d" stroke-width="1.5"/>
+        <path d="M29 70 C25 112 27 168 32 228 M37 70 C40 112 39 168 34 228" stroke="#10241f" stroke-width="1.3" fill="none" opacity=".6"/>
+        <path d="M27 76 C23 112 25 160 30 214" stroke="#ffffff" stroke-width="2.4" fill="none" opacity=".2" stroke-linecap="round"/>
+        <path d="M23 122 C29 117 39 117 45 122 L44 131 C38 126 30 126 24 131 Z" fill="#1b3a35" stroke="#0e221e" stroke-width="1"/>
+        <circle cx="34" cy="125" r="2.6" fill="url(#brassDim)"/>
+        <path d="M30 230 H36 L34.5 250 H31.5 Z" fill="url(#brassDim)" stroke="#4a3216" stroke-width="1"/>
+        <ellipse cx="33" cy="252" rx="3.2" ry="2" fill="#3d2810"/>
+      </g>`,
+  },
+  // New: an old brass birdcage on a wall bracket, half under the hanging plant's ivy (tier C).
+  gaiola: {
+    nominal: { w: 76, h: 142 },
+    body: `
+      <rect x="70" y="0" width="6" height="13" rx="1.5" fill="#2a221a"/>
+      <path d="M72 5 H48 C42 5 38 7 38 12" stroke="#2a221a" stroke-width="3.6" fill="none" stroke-linecap="round"/>
+      <circle cx="38" cy="16" r="5" fill="none" stroke="url(#bronzeAged)" stroke-width="2.4"/>
+      <path d="M8 58 C8 24 68 24 68 58" fill="none" stroke="url(#bronzeAged)" stroke-width="3.2"/>
+      <g stroke="url(#bronzeAged)" stroke-width="1.8" fill="none">
+        <path d="M38 24 C26 28 16 40 14 58 M38 24 C32 30 28 42 26 58 M38 24 V58 M38 24 C44 30 48 42 50 58 M38 24 C50 28 60 40 62 58"/>
+      </g>
+      <circle cx="38" cy="22" r="3.6" fill="url(#bronzeAged)" stroke="#3a2a10" stroke-width="1"/>
+      <g stroke="url(#bronzeAged)" stroke-width="1.9"><path d="M10 58 V122 M18 58 V122 M26 58 V122 M34 58 V122 M42 58 V122 M50 58 V122 M58 58 V122 M66 58 V122"/></g>
+      <ellipse cx="38" cy="58" rx="30" ry="4" fill="none" stroke="url(#bronzeAged)" stroke-width="3"/>
+      <ellipse cx="38" cy="92" rx="29" ry="3.4" fill="none" stroke="url(#bronzeAged)" stroke-width="1.6" opacity=".9"/>
+      <path d="M16 100 H60" stroke="#6b4a24" stroke-width="2.6" stroke-linecap="round"/>
+      <path d="M30 66 C26 78 30 84 38 84 C46 84 50 78 46 66" fill="none" stroke="#8d6a30" stroke-width="1.4"/>
+      <path d="M4 122 H72 L68 136 H8 Z" fill="url(#bronzeAged)" stroke="#4a3216" stroke-width="1.4"/>
+      <ellipse cx="38" cy="122" rx="34" ry="4.4" fill="#5a4119"/>
+      <path d="M10 128 H66" stroke="#d9b877" stroke-width="1.4" opacity=".3"/>
+      <ellipse cx="38" cy="138" rx="28" ry="3" fill="#3d2810"/>`,
+  },
+});
+
+/** The birdcage's soft shadow on the wall (the light comes from the window, on its left), then the cage. */
+function birdcage(omit) {
+  return `<rect x="974" y="512" width="72" height="84" rx="22" fill="#0a0603" opacity=".24" filter="url(#blur8)"/>
+    ${paint("gaiola", omit)}`;
+}
+
+/** The umbrella's shade on the wainscot and its contact on the floor, then the umbrella. */
+function cornerUmbrella(omit) {
+  return `<path d="M1024 944 L1054 944 L1052 1184 L1038 1184 Z" fill="#0a0603" opacity=".28" filter="url(#blur8)"/>
+    ${shadow(1022, 1186, 26, 6, 0.85)}
+    ${paint("guarda-chuva", omit)}`;
 }
 
 function plateSvg({ debug = false, omit = null } = {}) {
@@ -1240,13 +1384,15 @@ function plateSvg({ debug = false, omit = null } = {}) {
   ${wall()}
   ${windowSvg()}
   ${curtain()}
-  ${wallFrames()}
+  ${birdcage(omit)}
+  ${wallFrames(omit)}
   ${floorAndRug()}
-  ${pegRail()}
+  ${pegRail(omit)}
   ${bookcase()}
-  ${bookcaseItemsFor(omit)}
-  ${globe()}
+  ${bookcaseItems(omit)}
+  ${globe(omit)}
   ${sillItems()}
+  ${cornerUmbrella(omit)}
   ${t("binoculo", targetSvg("binoculo"))}
   ${sillPotOverBinoculars()}
   ${trunk()}
@@ -1262,21 +1408,10 @@ function plateSvg({ debug = false, omit = null } = {}) {
   ${shadow(ampBox.x + ampBox.w / 2, ampBox.y + ampBox.h - 2, ampBox.w * 0.58, 8, 0.9)}
   ${t("ampulheta", targetSvg("ampulheta"))}
   ${table()}
-  ${tableItemsFor(omit)}
+  ${tableItems(omit)}
   ${t("lupa", lupaOnMap())}
   ${debug ? debugOverlay() : ""}
 </svg>`;
-}
-
-/** The same painters with one target left out (the fairness audit's "without" plate). */
-function bookcaseItemsFor(omit) {
-  const svg = bookcaseItems();
-  return omit && ["estatueta", "camera", "barco", "lanterna"].includes(omit) ? svg.replace(targetSvg(omit), "") : svg;
-}
-
-function tableItemsFor(omit) {
-  const svg = tableItems();
-  return omit && ["bussola", "relogio"].includes(omit) ? svg.replace(targetSvg(omit), "") : svg;
 }
 
 // --- light: what the window's golden hour does to the room ---------------------------------------------
@@ -1473,6 +1608,10 @@ function thumbSvg(id) {
     const nominal = { w: 250, h: 250 };
     const scale = Math.min(box.w / nominal.w, box.h / nominal.h);
     body = `<g transform="translate(${pad} ${pad}) scale(${n(scale * 1000) / 1000})">${art.handle}${art.clip}${art.body}</g>`;
+  } else if (art.view) {
+    // the object with what reaches past its region (steam, a stand, a quill's tip)
+    const { x, y, w, h } = art.view;
+    body = fit(`<g transform="translate(${-x} ${-y})">${art.body}</g>`, { w, h }, box);
   } else {
     body = fit(art.body, art.nominal, box);
   }
@@ -1550,9 +1689,37 @@ function dioramaPasses() {
 const render = (svg) => sharp(Buffer.from(svg), { density: 72, limitInputPixels: false });
 const kb = (bytes) => `${(bytes / 1024).toFixed(1)} KB`;
 
-/** Fine painterly grain (neutral grey around 128), soft-lit over the plate. */
+/** mulberry32: a long-period 32-bit generator for the grain (the room's `rng` repeats too soon for millions of samples). */
+function grainRandom(seed) {
+  let state = seed >>> 0;
+  return () => {
+    state = (state + 0x6d2b79f5) >>> 0;
+    let t = state;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/**
+ * Fine painterly grain (neutral grey around 128), soft-lit over the plate.
+ * Seeded (GAME03-EXPERIENCE-02): sharp's own noise is drawn afresh on every
+ * run, so the kit came out with new bytes each time; now the same script gives
+ * the same plate.
+ */
 async function grainLayer(width, height, sigma = 6) {
-  return sharp({ create: { width: Math.round(width / 2), height: Math.round(height / 2), channels: 3, noise: { type: "gaussian", mean: 128, sigma } } })
+  const w = Math.round(width / 2);
+  const h = Math.round(height / 2);
+  const random = grainRandom(0x5eed_9a17);
+  const noise = Buffer.alloc(w * h * 3);
+  for (let i = 0; i < noise.length; i += 2) {
+    // Box–Muller: two independent gaussian samples per pair of uniforms
+    const radius = Math.sqrt(-2 * Math.log(1 - random()));
+    const angle = 2 * Math.PI * random();
+    noise[i] = Math.max(0, Math.min(255, Math.round(128 + sigma * radius * Math.cos(angle))));
+    if (i + 1 < noise.length) noise[i + 1] = Math.max(0, Math.min(255, Math.round(128 + sigma * radius * Math.sin(angle))));
+  }
+  return sharp(noise, { raw: { width: w, height: h, channels: 3 } })
     .resize(width, height)
     .grayscale()
     .toColourspace("srgb")
@@ -1759,17 +1926,19 @@ async function main() {
     .toBuffer();
   await sharp(regions).resize(1600, 800).webp({ quality: 86 }).toFile(path.join(reviewDir, "regions.webp"));
   await sharp(composedPng).resize(1600, 800).grayscale().webp({ quality: 86 }).toFile(path.join(reviewDir, "scene-grayscale.webp"));
-  // Each target at the desktop's maximum zoom (1.25 px/su): what "aproximar" shows (F7).
+  // Each pool object at the desktop's maximum zoom (1.25 px/su): what "aproximar" shows (F7).
   const tiles = [];
+  const columns = 6;
+  const rows = Math.ceil(SCENE.HIDDEN_OBJECTS.length / columns);
   for (const [i, target] of SCENE.HIDDEN_OBJECTS.entries()) {
     const b = boxOf(target.region);
     const side = 340;
     const left = Math.round(Math.min(W - side, Math.max(0, b.x + b.w / 2 - side / 2)));
     const top = Math.round(Math.min(H - side, Math.max(0, b.y + b.h / 2 - side / 2)));
     const tile = await sharp(composedPng).extract({ left, top, width: side, height: side }).resize(425, 425).png().toBuffer();
-    tiles.push({ input: tile, left: (i % 5) * 430, top: Math.floor(i / 5) * 430 });
+    tiles.push({ input: tile, left: (i % columns) * 430, top: Math.floor(i / columns) * 430 });
   }
-  await sharp({ create: { width: 5 * 430 - 5, height: 2 * 430 - 5, channels: 3, background: "#111111" } })
+  await sharp({ create: { width: columns * 430 - 5, height: rows * 430 - 5, channels: 3, background: "#111111" } })
     .composite(tiles)
     .webp({ quality: 84 })
     .toFile(path.join(reviewDir, "targets-zoom.webp"));

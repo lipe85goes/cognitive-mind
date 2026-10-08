@@ -41,6 +41,7 @@ export const FILES = {
   transition: "src/components/WorldEntryTransition.tsx",
   rewardModal: "src/components/RewardResultModal.tsx",
   scene: `${DIR}hidden-objects-scene.ts`,
+  rounds: `${DIR}hidden-objects-rounds.ts`,
   camera: `${DIR}hidden-objects-camera.ts`,
   gesture: `${DIR}hidden-objects-gesture.ts`,
   model: `${DIR}hidden-objects-model.ts`,
@@ -406,7 +407,29 @@ export class FakeElement {
   }
 }
 
-export function createEnvironment({ viewport = DESKTOP, reducedMotion = false, storage = {} } = {}) {
+/**
+ * The platform's random source, made deterministic (GAME03-EXPERIENCE-02): each
+ * `getRandomValues` call takes the next of `seeds`, then continues from a fixed
+ * generator — so a test decides which round "Explorar" draws, and two runs of
+ * the same check draw the same rounds. `calls` counts the draws.
+ */
+export function createRandomSource(seeds = []) {
+  const queue = [...seeds];
+  let next = lcg(0x0e57d10);
+  const source = {
+    calls: 0,
+    getRandomValues(array) {
+      for (let i = 0; i < array.length; i += 1) {
+        source.calls += 1;
+        array[i] = queue.length ? queue.shift() >>> 0 : Math.floor(next() * 2 ** 32) >>> 0;
+      }
+      return array;
+    },
+  };
+  return source;
+}
+
+export function createEnvironment({ viewport = DESKTOP, reducedMotion = false, storage = {}, seeds = [] } = {}) {
   const clock = createClock();
   const env = {
     clock,
@@ -414,6 +437,7 @@ export function createEnvironment({ viewport = DESKTOP, reducedMotion = false, s
     nodes: [],
     observers: [],
     store: new Map(Object.entries(storage)),
+    random: createRandomSource(seeds),
   };
   const localStorage = {
     getItem: (key) => (env.store.has(key) ? env.store.get(key) : null),
@@ -453,11 +477,18 @@ export function createEnvironment({ viewport = DESKTOP, reducedMotion = false, s
     setTimeout: (callback, ms) => clock.setTimeout(callback, ms),
     clearTimeout: (id) => clock.clearTimeout(id),
   };
+  // the reduced-motion preference can change while the game runs (GAME03-EXPERIENCE-02): `matches` is read live
+  let reduced = reducedMotion;
+  env.setReducedMotion = (value) => {
+    reduced = value;
+  };
   const window = {
     ...timers,
     matchMedia: (query) => ({
       media: query,
-      matches: /prefers-reduced-motion:\s*reduce/.test(query) ? reducedMotion : false,
+      get matches() {
+        return /prefers-reduced-motion:\s*reduce/.test(query) ? reduced : false;
+      },
       addEventListener() {},
       removeEventListener() {},
       addListener() {},
@@ -476,7 +507,7 @@ export function createEnvironment({ viewport = DESKTOP, reducedMotion = false, s
     return node;
   };
   env.node = (name) => env.nodes.filter((node) => node.name === name).at(-1) ?? null;
-  env.globals = { window, document, performance: { now: () => clock.now }, ResizeObserver, console, ...timers };
+  env.globals = { window, document, performance: { now: () => clock.now }, ResizeObserver, console, crypto: env.random, ...timers };
   return env;
 }
 
@@ -756,7 +787,11 @@ export function browserMocks(harness) {
 
 // --- what the checks open ---------------------------------------------------------------------------
 
-/** Scene data, camera, gesture recogniser and session model: pure modules, no mocks. */
+/**
+ * Scene data, camera, gesture recogniser, session model and (GAME03-EXPERIENCE-02's
+ * target pool) the round selection: pure modules, no mocks. `rounds` is null on
+ * trees from before the pool, whose lists were fixed.
+ */
 export function pureModules(tree) {
   return cached(tree, "pure", () => {
     const graph = createModuleGraph({ tree, mocks: {}, globals: {} });
@@ -765,8 +800,43 @@ export function pureModules(tree) {
       camera: graph.require(FILES.camera),
       gesture: graph.require(FILES.gesture),
       model: graph.require(FILES.model),
+      rounds: tree.exists(FILES.rounds) ? graph.require(FILES.rounds) : null,
     };
   });
+}
+
+/** Every list a difficulty can show on this tree: each valid round of the pool, or the one fixed list before it. */
+export function possibleRounds(tree, difficulty) {
+  const { scene, rounds } = pureModules(tree);
+  return rounds ? rounds.validRounds(difficulty).map((round) => [...round]) : [[...scene.DIFFICULTY_PRESETS[difficulty].targets]];
+}
+
+/** The first seed (from 1 up) whose round lists every id in `ids`; null if none does. Fixed-list trees: 1 when the list has them. */
+export function seedListing(tree, difficulty, ids) {
+  const { scene, rounds } = pureModules(tree);
+  if (!rounds) return ids.every((id) => scene.DIFFICULTY_PRESETS[difficulty].targets.includes(id)) ? 1 : null;
+  for (let seed = 1; seed < 100000; seed += 1) {
+    const list = rounds.selectRoundTargets(difficulty, seed);
+    if (ids.every((id) => list.includes(id))) return seed;
+  }
+  return null;
+}
+
+/** The first seed (from 1 up) whose round lists exactly `ids`, in any order; null if none. Fixed-list trees: 1 when their list is that set. */
+export function seedDrawing(tree, difficulty, ids) {
+  const want = sorted(ids).join();
+  const { scene, rounds } = pureModules(tree);
+  if (!rounds) return sorted(scene.DIFFICULTY_PRESETS[difficulty].targets).join() === want ? 1 : null;
+  return cached(tree, `seedDrawing:${difficulty}:${want}`, () => {
+    for (let seed = 1; seed < 1_000_000; seed += 1) if (sorted(rounds.selectRoundTargets(difficulty, seed)).join() === want) return seed;
+    return null;
+  });
+}
+
+/** A session started on `difficulty` with `seed` (trees from before the pool ignore the seed). */
+export function startSession(model, difficulty, seed = 1) {
+  const R = model.sessionReducer;
+  return R(R(model.createSession(), { type: "select-difficulty", difficulty }), { type: "start", seed });
 }
 
 /** The platform tables, evaluated. */
@@ -900,9 +970,13 @@ export function openRig(tree, { viewport = DESKTOP, reducedMotion = false } = {}
   return rig;
 }
 
-/** The real game, mounted the way GameScreen mounts it, with the shell's four callbacks recorded. */
-export function openStudio(tree, { viewport = DESKTOP, reducedMotion = false } = {}) {
-  const env = createEnvironment({ viewport, reducedMotion });
+/**
+ * The real game, mounted the way GameScreen mounts it, with the shell's four
+ * callbacks recorded. `seeds`: what the platform's random source hands out, in
+ * order — the first "Explorar" draws the round of `seeds[0]`.
+ */
+export function openStudio(tree, { viewport = DESKTOP, reducedMotion = false, seeds = [] } = {}) {
+  const env = createEnvironment({ viewport, reducedMotion, seeds });
   const harness = createReact(env.createNode);
   const graph = createModuleGraph({ tree, mocks: browserMocks(harness), globals: env.globals });
   const { HiddenObjectsGame } = graph.require(FILES.game);
@@ -949,6 +1023,26 @@ export function openStudio(tree, { viewport = DESKTOP, reducedMotion = false } =
     listStyle: () => host(cls("hos-shell"))?.props["data-list"] ?? null,
     items: () => harness.hosts(cls("hos-item")).map((entry) => ({ label: entry.text, found: entry.props["data-found"] === "true" })),
     found: () => studio.items().filter((item) => item.found).map((item) => item.label),
+    /** The list's objects, in the order shown (by `data-target`, or — trees from before the pool — by accessible name). */
+    listedIds: () =>
+      harness.hosts(cls("hos-item")).map(
+        (entry) =>
+          entry.props["data-target"] ??
+          scene.HIDDEN_OBJECTS.find((t) => [`${t.accessibleLabel}: procurar`, `${t.accessibleLabel}: encontrado`, `${t.clue} Procurar.`].includes(entry.props["aria-label"]))?.id ??
+          null,
+      ),
+    /** The round on screen: the seed the shell reports (null before the pool, or in setup) and its list. */
+    round() {
+      const seed = host(cls("hos-shell"))?.props["data-round-seed"];
+      return { seed: seed === undefined ? null : Number(seed), ids: studio.listedIds() };
+    },
+    /** Press a listed object's line (the next Pista is for it). */
+    focusTarget(id) {
+      const entry = harness.hosts(cls("hos-item"))[studio.listedIds().indexOf(id)];
+      if (!entry) throw new Error(`${id} is not on the list`);
+      entry.props.onClick?.({ preventDefault() {}, currentTarget: entry.node, target: entry.node });
+      harness.flush();
+    },
     banner: () => host(cls("hos-hint-banner"))?.text ?? null,
     halo() {
       const entry = host(cls("hos-halo"));
@@ -1056,6 +1150,13 @@ export function openStudio(tree, { viewport = DESKTOP, reducedMotion = false } =
     find(id) {
       studio.goTo(model.targetById(id).station);
       studio.tapAt(studio.targetClient(id));
+      studio.settle();
+    },
+    /** The viewport takes a new size (a window resized, a phone turned): every live ResizeObserver fires. */
+    resize({ width, height }) {
+      studio.viewport.rect = { ...studio.viewport.rect, width, height };
+      for (const observer of env.observers) if (observer.connected) observer.callback([], observer);
+      harness.flush();
       studio.settle();
     },
     renders: () => (harness.stats.renders.HiddenObjectsGame ?? 0) + (harness.stats.renders.HiddenObjectsScene ?? 0),

@@ -64,13 +64,21 @@ export type TargetId =
   | "ampulheta"
   | "binoculo"
   | "chave"
+  | "guarda-chuva"
+  | "gaiola"
   | "lupa"
   | "bussola"
   | "relogio"
+  | "xicara"
+  | "pena"
+  | "borboleta"
+  | "chapeu"
   | "barco"
   | "lanterna"
   | "camera"
-  | "estatueta";
+  | "estatueta"
+  | "globo"
+  | "bolsa";
 
 /**
  * Findability, not score: A is in plain sight, B is partly covered or sits
@@ -104,13 +112,24 @@ export interface HiddenObjectDefinition {
   hintDirection: string;
   /** Difícil's last hint, "Está …": what the object is near, never where exactly. */
   hintContext: string;
+  /**
+   * The list styles that may present it (absent: all three). A framed picture's
+   * outline is a plain rectangle, so Médio's silhouette list never shows it.
+   */
+  listedAs?: readonly ListStyle[];
 }
 
 /**
- * The pool: ten objects, each painted exactly once in the scene (A3 · B3 · C4).
+ * The pool: every object a round may ask for, each painted exactly once and
+ * always in the room — a round lists a handful (DIFFICULTY_PRESETS), the rest
+ * stay scenery and distractors, never marked as candidates.
  * GAME03-EXPERIENCE-02 moved the lanterna to B (dimmer, behind books, beside a
- * look-alike) and the câmera to C (darker, half behind a leaning book), so
- * Difícil can be 1A + 3B + 4C.
+ * look-alike) and the câmera to C (darker, half behind a leaning book), then
+ * grew the pool from the skeleton's ten to eighteen: six things the room
+ * already showed (xícara, pena, borboleta, chapéu, bolsa, globo — the same
+ * paint, now with a region) and two new ones by the window (guarda-chuva,
+ * gaiola), so every station holds every tier. Positions are authored, never
+ * drawn at random: only which of them a round lists is.
  */
 export const HIDDEN_OBJECTS: readonly HiddenObjectDefinition[] = [
   {
@@ -150,6 +169,30 @@ export const HIDDEN_OBJECTS: readonly HiddenObjectDefinition[] = [
     hintContext: "em cima de algo que guarda coisas fechadas",
   },
   {
+    id: "guarda-chuva",
+    label: "Guarda-chuva",
+    accessibleLabel: "Guarda-chuva",
+    clue: "Abre-se para proteger da água do céu.",
+    tier: "A",
+    station: "janela",
+    region: { kind: "rect", x: 986, y: 930, w: 64, h: 258 },
+    hintRegion: "encostado na parede, entre a janela e a mesa",
+    hintDirection: "mais embaixo, à direita da janela",
+    hintContext: "encostado num canto, perto da mesa redonda",
+  },
+  {
+    id: "gaiola",
+    label: "Gaiola",
+    accessibleLabel: "Gaiola de passarinho",
+    clue: "Casinha com grades para um passarinho.",
+    tier: "C",
+    station: "janela",
+    region: { kind: "rect", x: 960, y: 446, w: 76, h: 142 },
+    hintRegion: "pendurada na parede, à direita da janela",
+    hintDirection: "no alto, entre a janela e os quadros",
+    hintContext: "presa num gancho, perto de uma planta pendurada",
+  },
+  {
     id: "lupa",
     label: "Lupa",
     accessibleLabel: "Lupa",
@@ -184,6 +227,55 @@ export const HIDDEN_OBJECTS: readonly HiddenObjectDefinition[] = [
     hintRegion: "perto do livro aberto",
     hintDirection: "no lado esquerdo da mesa, bem na frente",
     hintContext: "junto de moedas, preso a uma corrente",
+  },
+  {
+    id: "xicara",
+    label: "Xícara",
+    accessibleLabel: "Xícara de chá",
+    clue: "Leva o chá quentinho até a boca.",
+    tier: "C",
+    station: "mesa",
+    region: { kind: "rect", x: 1380, y: 950, w: 100, h: 60 },
+    hintRegion: "atrás do livro aberto",
+    hintDirection: "no fundo da mesa, à esquerda do mapa",
+    hintContext: "soltando vapor, perto de páginas abertas",
+  },
+  {
+    id: "pena",
+    label: "Pena",
+    accessibleLabel: "Pena de escrever",
+    clue: "Escrevia molhando a ponta na tinta.",
+    tier: "B",
+    station: "mesa",
+    region: { kind: "rect", x: 1994, y: 896, w: 82, h: 170 },
+    hintRegion: "na ponta direita da mesa",
+    hintDirection: "na beirada direita da mesa, junto da parede",
+    hintContext: "de pé num frasco escuro, na beira da mesa",
+  },
+  {
+    id: "borboleta",
+    label: "Borboleta",
+    accessibleLabel: "Borboleta emoldurada",
+    clue: "Tem asas coloridas, mas não voa mais.",
+    tier: "A",
+    station: "mesa",
+    region: { kind: "rect", x: 1932, y: 318, w: 104, h: 124 },
+    hintRegion: "no quadrinho mais alto da parede",
+    hintDirection: "no alto da parede, à direita dos quadros grandes",
+    hintContext: "atrás de um vidro, entre molduras douradas",
+    listedAs: ["picture", "clue"],
+  },
+  {
+    id: "chapeu",
+    label: "Chapéu",
+    accessibleLabel: "Chapéu de explorador",
+    clue: "Vai na cabeça de quem viaja.",
+    tier: "B",
+    station: "mesa",
+    region: { kind: "rect", x: 2066, y: 428, w: 124, h: 66 },
+    hintRegion: "no cabideiro da parede",
+    hintDirection: "na parede, logo antes da estante",
+    hintContext: "pendurado num gancho de madeira, perto da estante",
   },
   {
     id: "barco",
@@ -232,6 +324,30 @@ export const HIDDEN_OBJECTS: readonly HiddenObjectDefinition[] = [
     hintRegion: "na prateleira mais alta",
     hintDirection: "bem no alto da estante",
     hintContext: "entre lombadas de livros, perto do teto",
+  },
+  {
+    id: "globo",
+    label: "Globo",
+    accessibleLabel: "Globo terrestre",
+    clue: "Mostra o mundo inteiro numa bola.",
+    tier: "A",
+    station: "estante",
+    region: { kind: "circle", cx: 2200, cy: 990, r: 96 },
+    hintRegion: "entre a mesa e a estante",
+    hintDirection: "embaixo, na beirada esquerda da estante",
+    hintContext: "num pé alto, ao lado da mesa redonda",
+  },
+  {
+    id: "bolsa",
+    label: "Bolsa de couro",
+    accessibleLabel: "Bolsa de couro",
+    clue: "Leva as coisas pendurada no ombro.",
+    tier: "B",
+    station: "estante",
+    region: { kind: "rect", x: 2168, y: 594, w: 96, h: 120 },
+    hintRegion: "pendurada junto à estante",
+    hintDirection: "à esquerda da estante, no alto",
+    hintContext: "presa por uma alça comprida, num gancho",
   },
 ];
 
@@ -355,8 +471,13 @@ export type HintRung = "station" | "area" | "wide-area" | "direction" | "context
 
 export interface DifficultyPreset {
   label: string;
-  /** Fixed (no draw): the list, in the order it is shown. */
-  targets: readonly TargetId[];
+  /** How many objects a round lists. */
+  count: number;
+  /**
+   * The round's findability mix: exactly this many of each tier (they add up to
+   * `count`). Which A, B and C objects is drawn per round (hidden-objects-rounds.ts).
+   */
+  tiers: Readonly<Record<TargetTier, number>>;
   listStyle: ListStyle;
   /** What each press of Pista adds, per object; the ladder stops at its last rung. */
   hintLadder: readonly HintRung[];
@@ -374,11 +495,14 @@ export interface DifficultyPreset {
  *   Difícil 8 · 1A+3B+4C · what it is for (the name only once found) · station → context.
  * Médio and Difícil never point at the object; Difícil never lights anything.
  * The tolerances are the skeleton's: difficulty never comes from smaller targets.
+ * The objects themselves are drawn per round from the pool (hidden-objects-rounds.ts):
+ * the mix of tiers is fixed, which A, B and C is not.
  */
 export const DIFFICULTY_PRESETS: Readonly<Record<DifficultyLevel, DifficultyPreset>> = {
   easy: {
     label: "Fácil",
-    targets: ["lupa", "ampulheta", "barco", "lanterna", "bussola"],
+    count: 5,
+    tiers: { A: 3, B: 2, C: 0 },
     listStyle: "picture",
     hintLadder: ["station", "area", "reveal"],
     hintRadius: 240,
@@ -386,7 +510,8 @@ export const DIFFICULTY_PRESETS: Readonly<Record<DifficultyLevel, DifficultyPres
   },
   medium: {
     label: "Médio",
-    targets: ["ampulheta", "binoculo", "bussola", "relogio", "camera", "lanterna"],
+    count: 6,
+    tiers: { A: 1, B: 3, C: 2 },
     listStyle: "silhouette",
     hintLadder: ["station", "wide-area", "direction"],
     hintRadius: 400,
@@ -394,7 +519,8 @@ export const DIFFICULTY_PRESETS: Readonly<Record<DifficultyLevel, DifficultyPres
   },
   hard: {
     label: "Difícil",
-    targets: ["binoculo", "chave", "lupa", "bussola", "relogio", "lanterna", "camera", "estatueta"],
+    count: 8,
+    tiers: { A: 1, B: 3, C: 4 },
     listStyle: "clue",
     hintLadder: ["station", "context"],
     hintRadius: 0,
