@@ -17,8 +17,10 @@ política de mudança: `docs/GAMEPLAY_PLATFORM_LOCK_V1.md`. Gate:
   ROUTE-C7 (C7A/C7B/C7C) estão fechadas.
 - Game 03 — Estúdio das Descobertas (`hidden-objects`) — é o segundo
   consumidor real da plataforma: skeleton V0 jogável desde GAME03-SKELETON-01,
-  no slot da Trilha Lógica (aposentada). Ver "Estúdio das Descobertas (Game 03)"
-  abaixo e `docs/GAME03_SKELETON_01.md`. Regra: segundo consumidor primeiro,
+  no slot da Trilha Lógica (aposentada); experiência V2 e pool de alvos V1
+  (rodadas sorteadas por semente) em GAME03-EXPERIENCE-02. Ver "Estúdio das
+  Descobertas (Game 03)" abaixo, `docs/GAME03_SKELETON_01.md` e
+  `docs/GAME03_EXPERIENCE_02.md`. Regra: segundo consumidor primeiro,
   abstração depois.
 - Rota 2.0 é uma fase posterior, separada da v1 (microsequência de captura,
   armadilha que altera o mapa, objetivos dependentes, mapa que muda em jogo,
@@ -87,7 +89,8 @@ home (HomeStage)
 | Pontuação e limites | `src/engine/scoring.ts` |
 | Resultado/recompensa | `src/engine/rewards.ts` |
 | Persistência local | `src/engine/storage.ts` |
-| Estúdio das Descobertas: a cena como dados (alvos, estações, listas por dificuldade, camadas) | `src/games/hidden-objects/hidden-objects-scene.ts` |
+| Estúdio das Descobertas: a cena como dados (pool de alvos e metadados, estações, presets de dificuldade, sósias, camadas) | `src/games/hidden-objects/hidden-objects-scene.ts` |
+| Estúdio: quais objetos uma rodada pede (seleção pura por dificuldade + semente) | `src/games/hidden-objects/hidden-objects-rounds.ts` |
 | Estúdio: câmera, gestos e regras da sessão (puros) e o controlador DOM da câmera | `src/games/hidden-objects/hidden-objects-{camera,gesture,model,controller}.ts` |
 
 Use `getWorldMeta(gameId)` para dados derivados de histórico salvo. Ele tem fallback seguro para resultados antigos ou ids desconhecidos — para um jogo aposentado (`number-trail`) o fallback é o Circuito, então a primeira tela que listar o histórico deve dar aos mundos aposentados um metadado de exibição próprio.
@@ -99,7 +102,7 @@ Use `getWorldMeta(gameId)` para dados derivados de histórico salvo. Ele tem fal
 | `escape-maze` | Rota Estratégica | Jogo principal em foco. Usa Babylon + GLBs. |
 | `color-sequence` | Circuito de Memória | Jogo de memória em foco. Usa palco 2.5D com board mestre e overlays. |
 | `security-panel` | Central de Comandos | Ativo, mas ainda é jogo legado a recriar futuramente. |
-| `hidden-objects` | Estúdio das Descobertas | Game 03, skeleton V0 jogável (GAME03-SKELETON-01) no slot da antiga Trilha; arte provisória; o próximo passo depende do playtest humano (`GAME03_FUN_GATE`). |
+| `hidden-objects` | Estúdio das Descobertas | Game 03 no slot da antiga Trilha: skeleton V0 (GAME03-SKELETON-01), experiência V2 e pool de alvos V1 (GAME03-EXPERIENCE-02, `TECHNICAL_PASS_HUMAN_PLAYTEST_REQUIRED`); arte ainda gerada por script; o próximo passo depende do playtest humano 02. |
 | `seed-garden` | Jardim de Sementes | Ativo, mas ainda é jogo legado a recriar futuramente. |
 
 São exatamente esses cinco. Os dois jogos legados continuam compilando e aparecem no registry. Não remova `GameLayout`, `GameActions`, `StatusBanner` ou `StatCard` enquanto eles dependerem deles.
@@ -322,20 +325,21 @@ A cena mestre do Circuito (Home, transição, introdução, preparação) carreg
 
 ## Estúdio das Descobertas (Game 03)
 
-Skeleton V0 (GAME03-SKELETON-01), fora do lock como os legados: é o segundo consumidor da plataforma, não um contrato travado. Registro completo — arquitetura, alvos, dificuldade, câmera, gestos, medições, `TO_VALIDATE_IN_SKELETON` e o protocolo `GAME03_FUN_GATE` — em `docs/GAME03_SKELETON_01.md`; decisões de produto em `docs/GAME03_DISCOVERY_01.md`.
+Skeleton V0 (GAME03-SKELETON-01) e experiência V2 + pool de alvos V1 (GAME03-EXPERIENCE-02), fora do lock como os legados: é o segundo consumidor da plataforma, não um contrato travado. Registro completo — arquitetura, alvos, dificuldade, câmera, gestos, medições, `TO_VALIDATE_IN_SKELETON` e o protocolo `GAME03_FUN_GATE` — em `docs/GAME03_SKELETON_01.md`; a experiência V2, o pool, as rodadas, a justiça medida e o que fica para o playtest humano 02 em `docs/GAME03_EXPERIENCE_02.md`; decisões de produto em `docs/GAME03_DISCOVERY_01.md`.
 
 Arquivos (`src/games/hidden-objects/`):
 
-- `hidden-objects-scene.ts` — a cena como dados (3200×1600 su, estações, 10 alvos, listas 5/6/8, camadas);
+- `hidden-objects-scene.ts` — a cena como dados (3200×1600 su, estações, pool de 18 alvos autorais com tier, estação, região e textos de lista/pista, 11 sósias, presets 5/6/8, camadas);
+- `hidden-objects-rounds.ts` — a seleção da rodada, pura: (dificuldade, semente) → lista; mistura exata de tiers, distribuição pelas três estações, só o que o estilo de lista mostra; toda rodada válida igualmente provável; sem `Math.random` nem relógio;
 - `hidden-objects-camera.ts`, `hidden-objects-gesture.ts`, `hidden-objects-model.ts` — câmera, reconhecedor TAP/DRAG/PINCH e regras da sessão, puros;
 - `hidden-objects-controller.ts` — Pointer Events, roda, teclado e `ResizeObserver` ligados à câmera sem React; escreve o `transform` só dentro de `requestAnimationFrame`;
 - `HiddenObjectsScene.tsx`, `HiddenObjectsGame.tsx`, `hidden-objects.css` (`.hos-*`).
 
-Contrato com a plataforma: `GameId` `hidden-objects`; loader com `import()` literal (chunk próprio, nada no grafo inicial da Home); `readiness: "explicit"` com o watchdog padrão (pronto só depois de as três camadas essenciais decodificarem e de uma oportunidade de pintura; falha de camada → `onEntryError`); sem continuação; resultado com `score` = objetos encontrados e `details` `{ difficulty, foundObjects, totalObjects, completed }`. Não importa nada da Rota, do Circuito nem Babylon.
+Contrato com a plataforma: `GameId` `hidden-objects`; loader com `import()` literal (chunk próprio, nada no grafo inicial da Home); `readiness: "explicit"` com o watchdog padrão (pronto só depois de as camadas essenciais decodificarem e de uma oportunidade de pintura; falha de camada → `onEntryError`); sem continuação; resultado com `score` = objetos encontrados e `details` `{ difficulty, foundObjects, totalObjects, completed, sceneId, roundSeed }` (a semente, com a dificuldade, refaz a mesma lista). A semente da rodada é a única aleatoriedade do jogo: um `crypto.getRandomValues` por "Explorar"; "Recomeçar" mantém a lista. A tela de resultado lê a apresentação do jogo em `rewards.ts` (`getResultPresentation`: rótulo do placar, detalhes listados, nomes dos modos — classe 5 do lock). Não importa nada da Rota, do Circuito nem Babylon.
 
-Runtime visual: `public/assets/hidden-objects/explorer-studio/v0/` (prancha, janela, primeiro plano, miniaturas, arte de transição) e a maquete da Home em `public/illustrations/home/dioramas/discovery/`, todos gerados por `tools/assets/create_hidden_objects_scene.mjs` (determinístico, lê as regiões da cena). Pasta versionada: arte nova é pasta nova, nunca sobrescrita.
+Runtime visual: `public/assets/hidden-objects/explorer-studio/v1/` (prancha, janela, dois primeiros planos, 18 miniaturas, arte de transição) e a maquete da Home em `public/illustrations/home/dioramas/discovery/`, todos gerados por `tools/assets/create_hidden_objects_scene.mjs` (determinístico — o grão tem semente —, lê as regiões da cena; `--audit` mede visibilidade, contraste e borda de cada alvo em `docs/archive/hidden-objects/explorer-studio/review/v1/fairness.json`). Pasta versionada: arte nova é pasta nova, nunca sobrescrita.
 
-Validação: `node tools/validation/hidden-objects-skeleton-tests.mjs` (`--counterfactuals` para a base e os mutantes) e `node tools/validation/hidden-objects-browser-probe.mjs` (build de produção).
+Validação: `node tools/validation/hidden-objects-skeleton-tests.mjs` e `node tools/validation/hidden-objects-experience-tests.mjs` (cada um com `--counterfactuals` para as bases e os mutantes), `node tools/validation/hidden-objects-round-fairness.mjs` (relatório de justiça das rodadas) e `node tools/validation/hidden-objects-browser-probe.mjs` (build de produção; `--scenario` roda qualquer cenário sozinho).
 
 ## Engine e libs compartilhadas
 
@@ -364,6 +368,7 @@ Validação: `node tools/validation/hidden-objects-skeleton-tests.mjs` (`--count
 - `docs/archive/number-trail-retired/` — arte da Home da Trilha Lógica aposentada.
 - `docs/archive/hidden-objects/explorer-studio/` — mockup conceitual (só referência) e pranchas de revisão do Estúdio.
 - `docs/archive/game03-skeleton-01/` — testemunhas visuais e o registro do probe do skeleton do Game 03.
+- `docs/archive/game03-experience-02/` — testemunhas, registro do probe V2, cenários rodados sozinhos e o relatório de justiça das rodadas do Game 03.
 
 Não importe nada de `docs/archive/` no app. Se um asset voltar a ser runtime, mova para `public/` com uma missão explícita e atualize a documentação.
 
@@ -415,7 +420,7 @@ Preserve obrigatoriamente:
 - Registro classificado (BLOCKER / POST-LOCK / ROTA-2.0 / DEV/TOOLING) do Gameplay/Platform Lock v1: `docs/GAMEPLAY_PLATFORM_LOCK_V1.md` §9.
 - `globals.css` ainda tem CSS legado misturado com CSS ativo. Use `docs/CSS_CLEANUP_MAP.md` antes de qualquer limpeza e remova apenas com busca de referência e validação visual.
 - `security-panel` e `seed-garden` continuam ativos, mas ainda devem ser recriados no padrão visual atual em missões futuras; `number-trail` foi aposentado em GAME03-SKELETON-01. O CSS que só a Trilha usava (`.logic-*`, `.game-world-logic`, `.reward-world-number-trail` em `globals.css`) ficou sem consumidor e sai numa limpeza de CSS própria (`docs/CSS_CLEANUP_MAP.md`).
-- Estúdio das Descobertas: arte definitiva, recortes de "encontrado", som e segunda cena dependem do playtest (`docs/GAME03_SKELETON_01.md` §7–§11); a primeira tela que listar o histórico precisa de metadado de exibição para mundos aposentados.
+- Estúdio das Descobertas: arte definitiva, recortes de "encontrado", som e segunda cena dependem do playtest humano 02 (`docs/GAME03_EXPERIENCE_02.md` §10–§11); a primeira tela que listar o histórico precisa de metadado de exibição para mundos aposentados.
 - Home/Jornada ainda pode receber refinamento visual, mas sem quebrar o fluxo de entrada dos mundos.
 - Rota Estratégica ainda tem dívidas de evolução visual e possíveis expansões futuras como 9x9/armadilha ativa, fora do escopo atual.
 - Circuito de Memória ainda precisa de art pass fino, mas a arquitetura atual deve continuar modular e baseada no board mestre.

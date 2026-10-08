@@ -89,8 +89,12 @@ commit `da551b17eddbf0a156228c7e2a5fc9ca178180c9` (2026-10-05).
   active game: the product still has exactly five active games. Old Trilha
   results stay in players' history as they were saved (read compatibility —
   nothing deleted, filtered or converted). The Rota and the Circuito stay locked
-  and untouched. What Game 03 does next depends on the human playtest
-  (`GAME03_FUN_GATE`).
+  and untouched. GAME03-EXPERIENCE-02 (`docs/GAME03_EXPERIENCE_02.md`) added
+  the experience V2 (what each difficulty tells, semantic clues, hint ladders,
+  calm named feedback, foldable HUD, art kit v1) and the target pool V1: 18
+  authored objects, of which each exploration asks for 5/6/8 drawn by a seed —
+  technically validated, still waiting for the human playtest (Human Playtest
+  02, `GAME03_FUN_GATE`).
 - Rota 2.0 is a later phase, explicitly separate from v1.
 
 ## Reproducing the project

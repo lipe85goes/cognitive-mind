@@ -1593,7 +1593,13 @@ const MUTANTS = [
   },
   {
     name: "the Rota is touched",
-    files: { "src/games/escape-maze/continuation.ts": [["export ", "// touched\nexport "]] },
+    // any source file of the Rota's folder, picked when the mutant runs: the suite never names a Rota module
+    // (route-validation-coupling-gate R1), so the Rota may move its files without breaking this mutant
+    files: (worktree) => {
+      const file = listFiles(worktree, KEPT_GAME_FOLDERS.rota).find((candidate) => /\.tsx?$/.test(candidate));
+      const text = worktree.read(file);
+      return { [file]: [[text, `// touched\n${text}`]] };
+    },
     mustFail: ["E22"],
   },
   {
@@ -1688,11 +1694,12 @@ const MUTANTS = [
 
 function mutate(worktree, mutant) {
   const overrides = {};
-  for (const [file, edits] of Object.entries(mutant.files)) {
+  const files = typeof mutant.files === "function" ? mutant.files(worktree) : mutant.files;
+  for (const [file, edits] of Object.entries(files)) {
     let text = worktree.read(file);
     for (const [from, to] of edits) {
       const count = text.split(from).length - 1;
-      if (count !== 1 && !(file.endsWith("continuation.ts") && count >= 1)) throw new Error(`anchor ${JSON.stringify(clip(from, 70))} appears ${count}x in ${file}`);
+      if (count !== 1) throw new Error(`anchor ${JSON.stringify(clip(from, 70))} appears ${count}x in ${file}`);
       text = text.replace(from, () => to);
     }
     overrides[file] = text;

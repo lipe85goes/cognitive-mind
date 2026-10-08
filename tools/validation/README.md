@@ -162,16 +162,35 @@ node tools/validation/gameplay-platform-lock-v1.mjs --counterfactuals # bd75e69,
 A change that moves a locked contract fails the gate until the lock document
 and the manifest are updated in the same commit, naming the change class.
 
-**GAME 03 — ESTÚDIO DAS DESCOBERTAS** — the skeleton (`hidden-objects`) and the
-retirement of the Trilha Lógica (`number-trail`). Neither writes anything unless
-asked to (`--out`/`--json` on the probe):
+**GAME 03 — ESTÚDIO DAS DESCOBERTAS** — the skeleton (`hidden-objects`), the
+retirement of the Trilha Lógica (`number-trail`), the experience V2 and the
+target pool V1 (GAME03-EXPERIENCE-02). None writes anything unless asked to
+(`--out`/`--json`):
 
 ```bash
-node tools/validation/hidden-objects-skeleton-tests.mjs                    # 38 checks, no browser, ~8 s
-node tools/validation/hidden-objects-skeleton-tests.mjs --rev=<commit>     # every source at <commit>
-node tools/validation/hidden-objects-skeleton-tests.mjs --counterfactuals  # base f9254429 + 18 in-memory mutants, ~35 s
-node tools/validation/hidden-objects-browser-probe.mjs                     # Playwright, needs `next build && next start -p 3100`
+node tools/validation/hidden-objects-skeleton-tests.mjs                      # 38 checks, no browser, ~8 s
+node tools/validation/hidden-objects-skeleton-tests.mjs --rev=<commit>       # every source at <commit>
+node tools/validation/hidden-objects-skeleton-tests.mjs --counterfactuals    # base f9254429 + 18 in-memory mutants, ~1 min
+node tools/validation/hidden-objects-experience-tests.mjs                    # 45 checks ([experience], [pool], [preserved]), ~9 s
+node tools/validation/hidden-objects-experience-tests.mjs --counterfactuals  # bases 87f30d3 and 8fbd638 + 31 mutants, ~3.5 min
+node tools/validation/hidden-objects-round-fairness.mjs [--out DIR]         # the real selection over 1,000,000 seeds per difficulty
+node tools/validation/hidden-objects-browser-probe.mjs [--scenario NAME]    # Playwright, needs `next build && next start -p 3100`
 ```
+
+The experience suite holds the experience V2 (`[experience]`: what each
+difficulty tells, the hint ladders, the found feedback, the result
+presentation, the art kit and its measured audit) and the target pool
+(`[pool]`: the authored pool and its metadata, every possible round valid, the
+same seed always drawing the same round, seeds reaching every round without
+bias, the round holding through the whole session, Recomeçar keeping it, a new
+exploration drawing a new one, unlisted objects staying scenery, the result
+recording its round). `--counterfactuals` requires the skeleton (`87f30d3`) to
+fail every `[experience]` and `[pool]` check, the pre-addendum state
+(`8fbd638`, fixed lists) to fail every `[pool]` check and hold the rest, and
+each in-memory mutant to fail the checks it names. The fairness report runs
+the game's own `selectRoundTargets` over a fixed seed stream and writes the
+per-object frequencies, the tier and station distributions and the
+perceptual load of each difficulty (`docs/archive/game03-experience-02/`).
 
 The first runs the real code from source: the pure scene/camera/gesture/model
 modules, the scene controller on a fake viewport under a virtual clock, the real
@@ -186,9 +205,13 @@ a camera that escapes the room, a wrong list, an unreachable target, a second
 completion, ready before decode/paint, a listener left behind, React state per
 pointermove, an old Trilha result that crashes, is shown as the Estúdio or is
 dropped) to fail the checks it names. The probe drives the production build on
-desktop, phone, small phone and reduced motion, with a stored Trilha result,
-and audits the bundle; `--out DIR` saves the visual witnesses
-(`docs/archive/game03-skeleton-01/`).
+desktop (Fácil, Médio, Difícil), phone portrait and landscape, small phone and
+reduced motion, with a stored Trilha result, nine planted round seeds and the
+Home/reload race, and audits the bundle. Each scenario plants its own seeds in
+`crypto.getRandomValues` and holds the list on screen to the one that seed
+draws; every scenario also runs alone (`--scenario NAME`). `--out DIR` saves
+the visual witnesses (`docs/archive/game03-skeleton-01/`,
+`docs/archive/game03-experience-02/`).
 
 **EVIDENCE UPDATE** — after a deliberate change, once you have read the diffs:
 

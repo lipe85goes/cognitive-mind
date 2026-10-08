@@ -1,0 +1,113 @@
+{
+  "mission": "GAME03-EXPERIENCE-02",
+  "what": "every probe scenario run alone: its own process, its own browser, nothing from another scenario",
+  "base": "http://localhost:3100 (next build && next start -p 3100)",
+  "runs": [
+    {
+      "scenario": "desktop",
+      "command": "node tools/validation/hidden-objects-browser-probe.mjs --scenario desktop",
+      "exit": 0,
+      "seconds": 53,
+      "checks": 42,
+      "held": 42,
+      "failing": [],
+      "buildId": "KG83Vc3AWgjyjHArqw3xz"
+    },
+    {
+      "scenario": "hard",
+      "command": "node tools/validation/hidden-objects-browser-probe.mjs --scenario hard",
+      "exit": 0,
+      "seconds": 30,
+      "checks": 8,
+      "held": 8,
+      "failing": [],
+      "buildId": "KG83Vc3AWgjyjHArqw3xz"
+    },
+    {
+      "scenario": "mobile",
+      "command": "node tools/validation/hidden-objects-browser-probe.mjs --scenario mobile",
+      "exit": 0,
+      "seconds": 17,
+      "checks": 12,
+      "held": 12,
+      "failing": [],
+      "buildId": "KG83Vc3AWgjyjHArqw3xz"
+    },
+    {
+      "scenario": "landscape",
+      "command": "node tools/validation/hidden-objects-browser-probe.mjs --scenario landscape",
+      "exit": 0,
+      "seconds": 16,
+      "checks": 9,
+      "held": 9,
+      "failing": [],
+      "buildId": "KG83Vc3AWgjyjHArqw3xz"
+    },
+    {
+      "scenario": "small",
+      "command": "node tools/validation/hidden-objects-browser-probe.mjs --scenario small",
+      "exit": 0,
+      "seconds": 7,
+      "checks": 5,
+      "held": 5,
+      "failing": [],
+      "buildId": "KG83Vc3AWgjyjHArqw3xz"
+    },
+    {
+      "scenario": "reduced-motion",
+      "command": "node tools/validation/hidden-objects-browser-probe.mjs --scenario reduced-motion",
+      "exit": 0,
+      "seconds": 11,
+      "checks": 6,
+      "held": 6,
+      "failing": [],
+      "buildId": "KG83Vc3AWgjyjHArqw3xz"
+    },
+    {
+      "scenario": "legacy",
+      "command": "node tools/validation/hidden-objects-browser-probe.mjs --scenario legacy",
+      "exit": 0,
+      "seconds": 22,
+      "checks": 8,
+      "held": 8,
+      "failing": [],
+      "buildId": "KG83Vc3AWgjyjHArqw3xz"
+    },
+    {
+      "scenario": "rounds",
+      "command": "node tools/validation/hidden-objects-browser-probe.mjs --scenario rounds",
+      "exit": 0,
+      "seconds": 74,
+      "checks": 4,
+      "held": 4,
+      "failing": [],
+      "buildId": "KG83Vc3AWgjyjHArqw3xz"
+    },
+    {
+      "scenario": "reload-race",
+      "command": "node tools/validation/hidden-objects-browser-probe.mjs --scenario reload-race",
+      "exit": 0,
+      "seconds": 11,
+      "checks": 4,
+      "held": 4,
+      "failing": [],
+      "buildId": "KG83Vc3AWgjyjHArqw3xz"
+    },
+    {
+      "scenario": "bundle",
+      "command": "node tools/validation/hidden-objects-browser-probe.mjs --scenario bundle",
+      "exit": 0,
+      "seconds": 2,
+      "checks": 6,
+      "held": 6,
+      "failing": [],
+      "buildId": "KG83Vc3AWgjyjHArqw3xz"
+    }
+  ],
+  "total": {
+    "scenarios": 10,
+    "checks": 104,
+    "held": 104,
+    "allExitZero": true
+  }
+}

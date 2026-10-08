@@ -54,6 +54,18 @@ npm 10.9.4 (`npm ci` limpo a partir do `package-lock.json`), Next 16.3.6
 > fora deste lock, como os legados — é o segundo consumidor da plataforma, não
 > um contrato travado —, e a dívida D11 perde os 3 timers da Trilha. Nenhum
 > contrato do §4 mudou (o gate segue verde). Ver `docs/GAME03_SKELETON_01.md`.
+>
+> **Pós-lock — GAME03-EXPERIENCE-02 (classe 5 do §12):** a tela de resultado
+> ganhou apresentação por jogo como metadado, pedida pelo segundo consumidor
+> real: `ResultPresentation` em `src/engine/rewards.ts` (rótulo do placar,
+> detalhes listados, nomes dos modos; `getResultPresentation`) e
+> `formatResultDetails` em `src/lib/detail-labels.ts`, lidos pelo
+> `RewardResultModal`. Um jogo sem `presentation` aparece exatamente como antes —
+> Rota, Circuito, legados e resultados antigos da Trilha
+> (`hidden-objects-experience-tests.mjs` E15). Isso paga a parte de
+> rótulo/detalhes da D14; o ramo da Rota no modal (`routeNumber`,
+> `journeyCompleted`) continua como estava. Nenhum contrato do §4 mudou (o gate
+> segue verde). Ver `docs/GAME03_EXPERIENCE_02.md`.
 
 ## 4. Frozen contracts
 
