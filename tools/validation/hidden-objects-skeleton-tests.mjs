@@ -50,6 +50,13 @@
  * H31). The session checks play Difficulty V2's last fixed lists, which are
  * valid rounds of the pool, through the seed that draws each.
  *
+ * GAME03-MULTISCENE-03 made the engine take its room as data. The checks are
+ * unchanged: the harness shows them the Estúdio as they knew it (its data under
+ * the old names, the scene-first functions bound to it — "multiscene trees" in
+ * hidden-objects-harness.mjs), and three mutants edit the code where it now is
+ * (the Estúdio's regions in scenes/explorer-studio.ts; the camera's clamp and
+ * the controller's pan, which name the scene they are given).
+ *
  * Usage:
  *   node tools/validation/hidden-objects-skeleton-tests.mjs                  # the working tree
  *   node tools/validation/hidden-objects-skeleton-tests.mjs --rev=<commit>   # every source at <commit> (git show)
@@ -1556,7 +1563,7 @@ const MUTANTS = [
   },
   {
     name: "the camera escapes the room",
-    files: { [FILES.camera]: [["    x: clamp(camera.x, halfW, SCENE_WIDTH - halfW),\n    y: clamp(camera.y, halfH, SCENE_HEIGHT - halfH),", "    x: camera.x,\n    y: camera.y,"]] },
+    files: { [FILES.camera]: [["    x: clamp(camera.x, halfW, scene.width - halfW),\n    y: clamp(camera.y, halfH, scene.height - halfH),", "    x: camera.x,\n    y: camera.y,"]] },
     mustFail: ["H17"],
   },
   {
@@ -1566,7 +1573,7 @@ const MUTANTS = [
   },
   {
     name: "a target out of reach",
-    files: { [FILES.scene]: [['    region: { kind: "rect", x: 2615, y: 245, w: 84, h: 122 },', '    region: { kind: "rect", x: 3150, y: 245, w: 84, h: 122 },']] },
+    files: { [FILES.studioScene]: [['    region: { kind: "rect", x: 2615, y: 245, w: 84, h: 122 },', '    region: { kind: "rect", x: 3150, y: 245, w: 84, h: 122 },']] },
     mustFail: ["H27"],
   },
   {
@@ -1594,8 +1601,8 @@ const MUTANTS = [
     files: {
       [FILES.controller]: [
         [
-          "        this.camera = panBy(this.camera, effect.dx, effect.dy, this.size);\n        this.moving = true;\n        this.requestRender();\n        return;",
-          '        this.camera = panBy(this.camera, effect.dx, effect.dy, this.size);\n        this.moving = true;\n        this.requestRender();\n        this.lastView = "";\n        this.notifySettle();\n        return;',
+          "        this.camera = panBy(this.scene, this.camera, effect.dx, effect.dy, this.size);\n        this.moving = true;\n        this.requestRender();\n        return;",
+          '        this.camera = panBy(this.scene, this.camera, effect.dx, effect.dy, this.size);\n        this.moving = true;\n        this.requestRender();\n        this.lastView = "";\n        this.notifySettle();\n        return;',
         ],
       ],
     },

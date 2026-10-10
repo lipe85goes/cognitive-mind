@@ -14,12 +14,7 @@ import {
   targetById,
   type HintHalo,
 } from "@/games/hidden-objects/hidden-objects-model";
-import {
-  SCENE_HEIGHT,
-  SCENE_LAYERS,
-  SCENE_WIDTH,
-  type TargetId,
-} from "@/games/hidden-objects/hidden-objects-scene";
+import type { SceneDefinition, TargetId } from "@/games/hidden-objects/hidden-objects-scene";
 
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 
@@ -40,7 +35,12 @@ export interface SceneFeedback {
   halo: (HintHalo & { kind: "hint" | "reveal"; seq: number }) | null;
 }
 
+/** How the room's essential art is doing: painted, still on its way, or unable to load. */
+export type SceneLoadState = "loading" | "ready" | "failed";
+
 interface HiddenObjectsSceneProps {
+  /** The room on screen (a new room is a new mount: its own controller and readiness). */
+  scene: SceneDefinition;
   controllerRef: MutableRefObject<HiddenObjectsSceneController | null>;
   viewportRef: MutableRefObject<HTMLDivElement | null>;
   feedback: SceneFeedback;
@@ -49,11 +49,12 @@ interface HiddenObjectsSceneProps {
   instructionsId: string;
   onTap: (tap: SceneTap) => void;
   onSettle: (view: CameraView) => void;
+  /** The shell's entry callbacks (GameComponentProps): the room reports to them exactly as it always did. */
   onReady?: () => void;
   onError?: (error: Error) => void;
+  /** The same two moments, for the game's own setup card (a room chosen after the entry has no transition to cover it). */
+  onLoad?: (state: SceneLoadState) => void;
 }
-
-const ESSENTIAL_LAYERS = SCENE_LAYERS.map((layer) => layer.id);
 
 interface ReadinessCallbacks {
   onReady?: () => void;
@@ -92,7 +93,7 @@ export class SceneReadiness {
   layerFailed(src: string): void {
     if (this.done) return;
     this.done = true;
-    this.callbacks.onError?.(new Error(`Failed to load essential Estúdio asset: ${src}`));
+    this.callbacks.onError?.(new Error(`Failed to load essential scene asset: ${src}`));
   }
 
   attach(): void {
@@ -124,12 +125,13 @@ export class SceneReadiness {
 }
 
 /**
- * The room: a focusable viewport (the only gesture surface) over a 3200×1600
- * world element holding the back / plate / front layers and the feedback
- * layer. The camera never goes through React: the controller writes the
- * world's transform itself.
+ * The room: a focusable viewport (the only gesture surface) over a world
+ * element the size of the room (in su) holding its layers, back to front, and
+ * the feedback layer. The camera never goes through React: the controller
+ * writes the world's transform itself.
  */
 export function HiddenObjectsScene({
+  scene,
   controllerRef,
   viewportRef,
   feedback,
@@ -140,16 +142,28 @@ export function HiddenObjectsScene({
   onSettle,
   onReady,
   onError,
+  onLoad,
 }: HiddenObjectsSceneProps) {
   const worldRef = useRef<HTMLDivElement>(null);
   const layerRefs = useRef<Partial<Record<string, HTMLImageElement | null>>>({});
   const callbacks = useRef({ onTap, onSettle });
-  const [readiness] = useState(() => new SceneReadiness(ESSENTIAL_LAYERS));
+  // A room's layers are fixed for the life of this mount (the game remounts the scene for another room).
+  const [readiness] = useState(() => new SceneReadiness(scene.layers.map((layer) => layer.id)));
+  const [room] = useState(() => scene);
 
   useEffect(() => {
     callbacks.current = { onTap, onSettle };
-    readiness.setCallbacks({ onReady, onError });
-  }, [onTap, onSettle, onReady, onError, readiness]);
+    readiness.setCallbacks({
+      onReady: () => {
+        onReady?.();
+        onLoad?.("ready");
+      },
+      onError: (error) => {
+        onError?.(error);
+        onLoad?.("failed");
+      },
+    });
+  }, [onTap, onSettle, onReady, onError, onLoad, readiness]);
 
   useEffect(() => {
     const viewport = viewportRef.current;
@@ -157,9 +171,10 @@ export function HiddenObjectsScene({
     if (!viewport || !world) return;
     const motion = window.matchMedia(REDUCED_MOTION_QUERY);
     const controller = new HiddenObjectsSceneController({
+      scene: room,
       viewport,
       world,
-      parallax: SCENE_LAYERS.filter((layer) => layer.parallax !== 1).flatMap((layer) => {
+      parallax: room.layers.filter((layer) => layer.parallax !== 1).flatMap((layer) => {
         const element = layerRefs.current[layer.id];
         return element ? [{ element, factor: layer.parallax }] : [];
       }),
@@ -176,7 +191,7 @@ export function HiddenObjectsScene({
       controller.destroy();
       if (controllerRef.current === controller) controllerRef.current = null;
     };
-  }, [controllerRef, readiness, viewportRef]);
+  }, [controllerRef, readiness, room, viewportRef]);
 
   const handleLoaded = (id: string, src: string, image: HTMLImageElement) => {
     image
@@ -186,18 +201,23 @@ export function HiddenObjectsScene({
   };
 
   return (
-    <div className="hos-stage" data-interactive={interactive ? "true" : "false"}>
+    <div
+      className="hos-stage"
+      data-interactive={interactive ? "true" : "false"}
+      data-scene={room.id}
+      style={{ background: room.backdrop }}
+    >
       <div
         ref={viewportRef}
         className="hos-viewport"
         tabIndex={interactive ? 0 : -1}
         role="application"
         aria-roledescription="cena explorável"
-        aria-label="Cena do Estúdio das Descobertas"
+        aria-label={room.copy.viewportLabel}
         aria-describedby={instructionsId}
       >
-        <div ref={worldRef} className="hos-world" style={{ width: SCENE_WIDTH, height: SCENE_HEIGHT }}>
-          {SCENE_LAYERS.map((layer) => (
+        <div ref={worldRef} className="hos-world" style={{ width: room.width, height: room.height }}>
+          {room.layers.map((layer, depth) => (
             <Image
               key={layer.id}
               ref={(element) => {
@@ -212,12 +232,12 @@ export function HiddenObjectsScene({
               fetchPriority={layer.id === "plate" ? "high" : "auto"}
               draggable={false}
               className={`hos-layer hos-layer-${layer.id}`}
-              style={{ left: layer.rect.x, top: layer.rect.y, width: layer.rect.w, height: layer.rect.h }}
+              style={{ left: layer.rect.x, top: layer.rect.y, width: layer.rect.w, height: layer.rect.h, zIndex: depth }}
               onLoad={(event) => handleLoaded(layer.id, layer.src, event.currentTarget)}
               onError={() => readiness.layerFailed(layer.src)}
             />
           ))}
-          <SceneFeedbackLayer feedback={feedback} />
+          <SceneFeedbackLayer scene={room} feedback={feedback} />
         </div>
       </div>
       {/* A lens vignette fixed to the view, not the room: depth without touching the room's coordinates. */}
@@ -259,9 +279,10 @@ export function HiddenObjectsScene({
 }
 
 /** Everything here is pointer-events: none — the viewport hit-tests geometry, not DOM. */
-function SceneFeedbackLayer({ feedback }: { feedback: SceneFeedback }) {
+function SceneFeedbackLayer({ scene, feedback }: { scene: SceneDefinition; feedback: SceneFeedback }) {
   return (
-    <div className="hos-fx" aria-hidden="true">
+    // above every layer of the room, whatever its depth
+    <div className="hos-fx" aria-hidden="true" style={{ zIndex: scene.layers.length }}>
       {feedback.halo && (
         <span
           key={`halo-${feedback.halo.seq}`}
@@ -276,7 +297,7 @@ function SceneFeedbackLayer({ feedback }: { feedback: SceneFeedback }) {
         />
       )}
       {feedback.found.map((id) => {
-        const bounds = regionBounds(targetById(id).region);
+        const bounds = regionBounds(targetById(scene, id).region);
         const fresh = feedback.latestFound?.id === id;
         const again = feedback.again?.id === id;
         return (

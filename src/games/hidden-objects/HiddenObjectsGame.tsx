@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useId, useMemo, useReducer, useRef, useState } from "react";
-import { ArrowLeft, Check, Lightbulb, ListChecks, RotateCcw, Search } from "lucide-react";
+import { useCallback, useEffect, useId, useMemo, useReducer, useRef, useState, type CSSProperties } from "react";
+import { ArrowLeft, Check, DoorOpen, Lightbulb, ListChecks, RotateCcw, Search } from "lucide-react";
 import type { DifficultyLevel, GameComponentProps } from "@/types/game";
 import type { CameraView, HiddenObjectsSceneController, SceneTap } from "@/games/hidden-objects/hidden-objects-controller";
 import {
@@ -25,10 +25,10 @@ import {
 import {
   DIFFICULTY_ORDER,
   DIFFICULTY_PRESETS,
-  SCENE_STATIONS,
-  thumbnailSrc,
+  type SceneDefinition,
 } from "@/games/hidden-objects/hidden-objects-scene";
-import { HiddenObjectsScene, type SceneFeedback } from "@/games/hidden-objects/HiddenObjectsScene";
+import { SCENES, forgetScene, rememberScene, rememberedScene } from "@/games/hidden-objects/hidden-objects-scenes";
+import { HiddenObjectsScene, type SceneFeedback, type SceneLoadState } from "@/games/hidden-objects/HiddenObjectsScene";
 import "@/games/hidden-objects/hidden-objects.css";
 
 /** The closing card waits this long, so the last find's glow is seen first. */
@@ -43,24 +43,41 @@ const DIFFICULTY_NOTE: Record<DifficultyLevel, string> = {
 /**
  * A new round's seed, drawn once per exploration — when "Explorar" is pressed,
  * never during a render. It is the only randomness in the game: the list itself
- * is a pure function of the difficulty and this number.
+ * is a pure function of the room, the difficulty and this number.
  */
 function freshRoundSeed(): number {
   return globalThis.crypto.getRandomValues(new Uint32Array(1))[0];
 }
 
+/** "1, 2 e 3 vão para Janela, Mesa e Estante": the keyboard's station keys, said for this room. */
+function stationKeysLine(scene: SceneDefinition): string {
+  const join = (items: readonly string[]) =>
+    items.length > 1 ? `${items.slice(0, -1).join(", ")} e ${items[items.length - 1]}` : items.join("");
+  return `${join(scene.stations.map((_, index) => String(index + 1)))} vão para ${join(scene.stations.map((station) => station.label))}`;
+}
+
 /**
- * Estúdio das Descobertas (GAME03-SKELETON-01, GAME03-EXPERIENCE-02). React
- * owns the session and the HUD; the camera, gestures and hit geometry live in
- * plain modules and reach React only as discrete events (a tap, a settled view).
+ * Estúdio das Descobertas (GAME03-SKELETON-01, GAME03-EXPERIENCE-02,
+ * GAME03-MULTISCENE-03). React owns the session and the HUD; the camera,
+ * gestures and hit geometry live in plain modules and reach React only as
+ * discrete events (a tap, a settled view). The room is data: the setup offers
+ * every room of the registry, and the same session, scene and HUD play it.
  */
 export function HiddenObjectsGame({ onComplete, onExit, onEntryReady, onEntryError }: GameComponentProps) {
-  const [state, dispatch] = useReducer(sessionReducer, undefined, () => createSession());
+  const [state, dispatch] = useReducer(sessionReducer, undefined, () => createSession(rememberedScene()));
   const [view, setView] = useState<CameraView | null>(null);
   const [cardRound, setCardRound] = useState<number | null>(null);
   const [dismissedRound, setDismissedRound] = useState<number | null>(null);
   /** The objectives tray can fold away so the room takes the screen (never remembered: the game stores nothing). */
   const [trayOpen, setTrayOpen] = useState(true);
+  /** How the room on screen is loading; `attempt` remounts it for "Tentar de novo". */
+  const [load, setLoad] = useState<{ sceneId: string; attempt: number; state: SceneLoadState }>(() => ({
+    sceneId: state.scene.id,
+    attempt: 0,
+    state: "loading",
+  }));
+  /** Once a room has painted, the entry is behind us: a room chosen later is waited for by the setup card. */
+  const [painted, setPainted] = useState(false);
   const controllerRef = useRef<HiddenObjectsSceneController | null>(null);
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const concludeRef = useRef<HTMLButtonElement>(null);
@@ -68,6 +85,8 @@ export function HiddenObjectsGame({ onComplete, onExit, onEntryReady, onEntryErr
   const instructionsId = useId();
   const trayId = useId();
 
+  const scene = state.scene;
+  const sceneLoad = load.sceneId === scene.id ? load.state : "loading";
   const listed = state.targets;
   const preset = DIFFICULTY_PRESETS[state.difficulty];
   /** In setup no list is drawn yet: the panel counts what the chosen difficulty will ask for. */
@@ -77,15 +96,39 @@ export function HiddenObjectsGame({ onComplete, onExit, onEntryReady, onEntryErr
   const cardVisible = finished && cardRound === state.round && dismissedRound !== state.round;
   const subject = hintSubject(state);
   const hintText =
-    state.hintTarget && state.hintStage > 0 ? hintMessage(state.hintTarget, state.difficulty, state.hintStage) : "";
+    state.hintTarget && state.hintStage > 0 ? hintMessage(scene, state.hintTarget, state.difficulty, state.hintStage) : "";
   const hintedStation =
-    state.hintTarget && state.hintStage >= 1 ? targetById(state.hintTarget).station : null;
+    state.hintTarget && state.hintStage >= 1 ? targetById(scene, state.hintTarget).station : null;
 
   const handleTap = useCallback((tap: SceneTap) => {
     dispatch({ type: "tap", point: tap.point, scale: tap.scale, pointerType: tap.pointerType });
   }, []);
 
-  // Every start and restart: the camera goes back to the table.
+  /** The room's own readiness, for the setup card (the shell hears it through onEntryReady / onEntryError). */
+  const handleLoad = useCallback(
+    (next: SceneLoadState) => {
+      setLoad((current) => (current.sceneId === scene.id ? { ...current, state: next } : current));
+      if (next === "ready") setPainted(true);
+      // a room that cannot load is not offered first next time: the next entry opens on one that works
+      if (next === "failed") forgetScene(scene);
+    },
+    [scene],
+  );
+
+  const chooseScene = (next: SceneDefinition) => {
+    if (next === scene) return;
+    dispatch({ type: "select-scene", scene: next });
+    setLoad({ sceneId: next.id, attempt: 0, state: "loading" });
+  };
+
+  const retryScene = () => setLoad((current) => ({ sceneId: scene.id, attempt: current.attempt + 1, state: "loading" }));
+
+  const explore = () => {
+    rememberScene(scene);
+    dispatch({ type: "start", seed: freshRoundSeed() });
+  };
+
+  // Every start and restart: the camera goes back to where the room opens.
   useEffect(() => {
     if (state.round > 0) controllerRef.current?.reset();
   }, [state.round]);
@@ -100,11 +143,11 @@ export function HiddenObjectsGame({ onComplete, onExit, onEntryReady, onEntryErr
     const event = state.lastEvent;
     const controller = controllerRef.current;
     if (!controller || event?.kind !== "hint") return;
-    const move = hintCameraMove(event.targetId, state.difficulty, event.stage);
+    const move = hintCameraMove(state.scene, event.targetId, state.difficulty, event.stage);
     if (move?.kind === "station") controller.goToStation(move.station);
     if (move?.kind === "circle") controller.showCircle(move.center, move.radius);
     if (move?.kind === "frame") controller.reveal(move.bounds);
-  }, [state.eventSeq, state.lastEvent, state.difficulty]);
+  }, [state.eventSeq, state.lastEvent, state.difficulty, state.scene]);
 
   // The closing card follows the last find after a short pause (cleared on restart/unmount).
   useEffect(() => {
@@ -128,17 +171,17 @@ export function HiddenObjectsGame({ onComplete, onExit, onEntryReady, onEntryErr
   const feedback = useMemo<SceneFeedback>(() => {
     const event = state.lastEvent;
     const seq = state.eventSeq;
-    const halo = state.hintTarget ? hintHalo(state.hintTarget, state.difficulty, state.hintStage) : null;
+    const halo = state.hintTarget ? hintHalo(state.scene, state.hintTarget, state.difficulty, state.hintStage) : null;
     const reveal = state.hintTarget ? hintRung(state.difficulty, state.hintStage) === "reveal" : false;
     return {
       found: state.foundIds,
       latestFound:
-        event?.kind === "found" ? { id: event.targetId, seq, label: targetById(event.targetId).label } : null,
+        event?.kind === "found" ? { id: event.targetId, seq, label: targetById(state.scene, event.targetId).label } : null,
       again: event?.kind === "already" ? { id: event.targetId, seq } : null,
       ripple: event?.kind === "miss" ? { x: event.point.x, y: event.point.y, seq } : null,
       halo: halo ? { ...halo, kind: reveal ? "reveal" : "hint", seq: state.hintSeq } : null,
     };
-  }, [state.lastEvent, state.eventSeq, state.foundIds, state.hintTarget, state.hintStage, state.hintSeq, state.difficulty]);
+  }, [state.lastEvent, state.eventSeq, state.foundIds, state.hintTarget, state.hintStage, state.hintSeq, state.difficulty, state.scene]);
 
   const announcement = announcementFor(state);
   const trayShown = trayOpen || state.status === "setup";
@@ -149,6 +192,7 @@ export function HiddenObjectsGame({ onComplete, onExit, onEntryReady, onEntryErr
       data-status={state.status}
       data-list={preset.listStyle}
       data-tray={trayShown ? "open" : "closed"}
+      data-scene={scene.id}
       data-round-seed={state.roundSeed ?? undefined}
     >
       <header className="hos-topbar">
@@ -159,24 +203,38 @@ export function HiddenObjectsGame({ onComplete, onExit, onEntryReady, onEntryErr
         <div className="hos-title">
           <strong>{HIDDEN_OBJECTS_TITLE}</strong>
           <span className="hos-hide-narrow">
-            {state.status === "setup" ? HIDDEN_OBJECTS_SUBTITLE : `${preset.label} · ${HIDDEN_OBJECTS_SUBTITLE}`}
+            {state.status === "setup" ? HIDDEN_OBJECTS_SUBTITLE : `${scene.name} · ${preset.label}`}
           </span>
         </div>
-        <button
-          type="button"
-          className="hos-chip-button"
-          onClick={() => dispatch({ type: "restart" })}
-          disabled={state.status === "setup"}
-          aria-label="Recomeçar a exploração"
-        >
-          <RotateCcw size={19} aria-hidden="true" />
-          <span className="hos-hide-narrow">Recomeçar</span>
-        </button>
+        <div className="hos-topbar-actions">
+          <button
+            type="button"
+            className="hos-chip-button"
+            onClick={() => dispatch({ type: "change-scene" })}
+            disabled={state.status !== "playing"}
+            aria-label="Trocar de cena"
+          >
+            <DoorOpen size={19} aria-hidden="true" />
+            <span className="hos-hide-narrow">Trocar de cena</span>
+          </button>
+          <button
+            type="button"
+            className="hos-chip-button"
+            onClick={() => dispatch({ type: "restart" })}
+            disabled={state.status === "setup"}
+            aria-label="Recomeçar a exploração"
+          >
+            <RotateCcw size={19} aria-hidden="true" />
+            <span className="hos-hide-narrow">Recomeçar</span>
+          </button>
+        </div>
       </header>
 
       <div className="hos-body">
         <div className="hos-scene-column" inert={state.status === "setup" ? true : undefined}>
           <HiddenObjectsScene
+            key={`${scene.id}:${load.sceneId === scene.id ? load.attempt : 0}`}
+            scene={scene}
             controllerRef={controllerRef}
             viewportRef={viewportRef}
             feedback={feedback}
@@ -187,6 +245,7 @@ export function HiddenObjectsGame({ onComplete, onExit, onEntryReady, onEntryErr
             onSettle={setView}
             onReady={onEntryReady}
             onError={onEntryError}
+            onLoad={handleLoad}
           />
           {hintText && (
             <p className="hos-hint-banner" key={`hint-${state.hintSeq}`}>
@@ -253,7 +312,7 @@ export function HiddenObjectsGame({ onComplete, onExit, onEntryReady, onEntryErr
                   >
                     {entry.art && (
                       <span className="hos-item-art" data-style={entry.art}>
-                        <Image src={thumbnailSrc(id)} alt="" width={64} height={64} unoptimized loading="eager" draggable={false} />
+                        <Image src={scene.thumbnail(id)} alt="" width={64} height={64} unoptimized loading="eager" draggable={false} />
                       </span>
                     )}
                     <span className="hos-item-label">
@@ -289,8 +348,12 @@ export function HiddenObjectsGame({ onComplete, onExit, onEntryReady, onEntryErr
             )}
           </div>
 
-          <nav className="hos-stations" aria-label="Estações">
-            {SCENE_STATIONS.map((station) => (
+          <nav
+            className="hos-stations"
+            aria-label="Estações"
+            style={{ "--hos-station-count": scene.stations.length } as CSSProperties}
+          >
+            {scene.stations.map((station) => (
               <button
                 key={station.id}
                 type="button"
@@ -309,8 +372,8 @@ export function HiddenObjectsGame({ onComplete, onExit, onEntryReady, onEntryErr
 
       <p id={instructionsId} className="hos-sr-only">
         Arraste para explorar a sala; aproxime com dois dedos, com a roda do mouse ou com os botões mais e menos.
-        No teclado: setas movem, mais e menos aproximam, 1, 2 e 3 vão para Janela, Mesa e Estante, 0 recentra e
-        Enter toca no centro da mira.
+        No teclado: setas movem, mais e menos aproximam, {stationKeysLine(scene)}, 0 recentra e Enter toca no
+        centro da mira.
       </p>
       <p className="hos-sr-only" aria-live="polite" key={`live-${state.eventSeq}`}>
         {announcement}
@@ -318,9 +381,15 @@ export function HiddenObjectsGame({ onComplete, onExit, onEntryReady, onEntryErr
 
       {state.status === "setup" && (
         <SetupCard
+          scene={scene}
+          sceneLoad={sceneLoad}
+          // before the first paint the entry transition covers the room; after it, the card waits for a new one
+          waitForScene={painted}
           difficulty={state.difficulty}
+          onScene={chooseScene}
+          onRetryScene={retryScene}
           onDifficulty={(difficulty) => dispatch({ type: "select-difficulty", difficulty })}
-          onStart={() => dispatch({ type: "start", seed: freshRoundSeed() })}
+          onStart={explore}
         />
       )}
 
@@ -330,7 +399,7 @@ export function HiddenObjectsGame({ onComplete, onExit, onEntryReady, onEntryErr
             <span className="hos-card-emblem" aria-hidden="true">
               <Search size={26} />
             </span>
-            <h2 id="hos-complete-title">Estúdio explorado</h2>
+            <h2 id="hos-complete-title">{scene.copy.completeTitle}</h2>
             <p>Você encontrou os {listed.length} objetos. Observe com calma sempre que quiser voltar.</p>
             <div className="hos-card-actions">
               <button ref={concludeRef} type="button" className="hos-primary" onClick={conclude}>
@@ -348,14 +417,26 @@ export function HiddenObjectsGame({ onComplete, onExit, onEntryReady, onEntryErr
 }
 
 function SetupCard({
+  scene,
+  sceneLoad,
+  waitForScene,
   difficulty,
+  onScene,
+  onRetryScene,
   onDifficulty,
   onStart,
 }: {
+  scene: SceneDefinition;
+  sceneLoad: SceneLoadState;
+  waitForScene: boolean;
   difficulty: DifficultyLevel;
+  onScene: (scene: SceneDefinition) => void;
+  onRetryScene: () => void;
   onDifficulty: (difficulty: DifficultyLevel) => void;
   onStart: () => void;
 }) {
+  const failed = sceneLoad === "failed";
+  const preparing = waitForScene && sceneLoad === "loading";
   return (
     <div className="hos-overlay hos-overlay-setup">
       <section className="hos-card hos-setup" aria-labelledby="hos-setup-title">
@@ -363,6 +444,35 @@ function SetupCard({
         <h2 id="hos-setup-title">{HIDDEN_OBJECTS_TITLE}</h2>
         <p className="hos-subtitle">{HIDDEN_OBJECTS_SUBTITLE}</p>
         <p className="hos-setup-copy">Observe com calma. A cada visita, a sala pede outros objetos.</p>
+        <fieldset className="hos-scenes">
+          <legend>Cena</legend>
+          {SCENES.map((option) => (
+            <label key={option.id} className="hos-scene-option" data-selected={option === scene ? "true" : undefined}>
+              <input
+                type="radio"
+                name="hos-scene"
+                value={option.id}
+                checked={option === scene}
+                onChange={() => onScene(option)}
+              />
+              <span className="hos-scene-preview" aria-hidden="true">
+                <Image src={option.preview} alt="" width={320} height={240} unoptimized loading="eager" draggable={false} />
+              </span>
+              <span className="hos-scene-text">
+                <strong>{option.name}</strong>
+                <small>{option.copy.tagline}</small>
+              </span>
+            </label>
+          ))}
+        </fieldset>
+        {failed && (
+          <div className="hos-scene-failed" role="status">
+            <p>Não foi possível abrir o {scene.name} agora.</p>
+            <button type="button" className="hos-secondary" onClick={onRetryScene}>
+              Tentar de novo
+            </button>
+          </div>
+        )}
         <fieldset className="hos-difficulty">
           <legend>Dificuldade</legend>
           {DIFFICULTY_ORDER.map((level) => (
@@ -384,9 +494,9 @@ function SetupCard({
           ))}
         </fieldset>
         <p className="hos-controls-line">Arraste para explorar · pince, use a roda ou + e − para aproximar</p>
-        <button type="button" className="hos-primary" onClick={onStart}>
+        <button type="button" className="hos-primary" onClick={onStart} disabled={failed || preparing}>
           <Search size={20} aria-hidden="true" />
-          Explorar
+          {preparing ? "Preparando a cena…" : "Explorar"}
         </button>
       </section>
     </div>

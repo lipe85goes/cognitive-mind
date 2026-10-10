@@ -30,6 +30,19 @@
  * [preserved] checks read the lists through the harness (every possible round,
  * or the one fixed list), so they hold on every tree they describe.
  *
+ * GAME03-MULTISCENE-03 made the engine take its room as data, and three points
+ * say the new truth on purpose. E01 pinned the camera, the gesture recogniser
+ * and the controller BYTE FOR BYTE to the skeleton; the camera and the
+ * controller had to change (they read the room's size and stations from the
+ * scene they are given), so E01 now holds the recogniser byte for byte and the
+ * camera and controller to the skeleton's BEHAVIOUR: a fixed sweep of every
+ * camera function and a fixed script of input through the controller (normal
+ * and reduced motion) must give exactly what the skeleton's code gives. P01
+ * reads the Estúdio's literal regions where its data now lives
+ * (scenes/explorer-studio.ts), and P04's fresh module graph draws through the
+ * Estúdio like the first. Every other check reads the Estúdio through the
+ * harness exactly as before (hidden-objects-harness.mjs, "multiscene trees").
+ *
  * Usage:
  *   node tools/validation/hidden-objects-experience-tests.mjs                  # the working tree
  *   node tools/validation/hidden-objects-experience-tests.mjs --rev=<commit>   # every source at <commit>
@@ -49,6 +62,12 @@ import {
   FILES,
   VIEWPORTS,
   activeSets,
+  cached,
+  cameraSweep,
+  controllerRecord,
+  freshRounds,
+  sameControllerRecord,
+  studioSceneFile,
   clip,
   codeOnly,
   createEnvironment,
@@ -247,11 +266,26 @@ async function runChecks(tree) {
 
   // --- the skeleton's core, kept --------------------------------------------------------------------
 
-  await check("E01", "preserved", "CAMERA_GESTURE_CONTROLLER_UNTOUCHED", () => {
-    // the camera math, the gesture recogniser and the DOM controller are the playtested ones
-    const files = [FILES.camera, FILES.gesture, FILES.controller];
-    const changed = files.filter((file) => tree.read(file) !== BASE_TREE.read(file));
-    return { pass: changed.length === 0, files, changedSinceTheSkeleton: changed };
+  await check("E01", "preserved", "CAMERA_GESTURE_CONTROLLER_BEHAVE_AS_PLAYTESTED", () => {
+    // the gesture recogniser is the playtested one, byte for byte
+    const gestureUnchanged = tree.read(FILES.gesture) === BASE_TREE.read(FILES.gesture);
+    // the camera math and the DOM controller compute, for the Estúdio, exactly what the skeleton's did
+    const sweep = JSON.stringify(cameraSweep(pureModules(tree).camera));
+    const baseSweep = cached(BASE_TREE, "cameraSweep", () => JSON.stringify(cameraSweep(pureModules(BASE_TREE).camera)));
+    const records = [false, true].map((reducedMotion) => ({
+      reducedMotion,
+      mine: controllerRecord(tree, { reducedMotion }),
+      skeleton: cached(BASE_TREE, `controllerRecord:${reducedMotion}`, () => controllerRecord(BASE_TREE, { reducedMotion })),
+    }));
+    const controllerDiffers = records.filter((r) => !sameControllerRecord(r.mine, r.skeleton)).map((r) => (r.reducedMotion ? "reduced motion" : "full motion"));
+    return {
+      pass: gestureUnchanged && sweep === baseSweep && controllerDiffers.length === 0,
+      gestureUnchanged,
+      cameraSweepAsTheSkeleton: sweep === baseSweep,
+      cameraSweepBytes: sweep.length,
+      controllerDiffers,
+      worldWrites: records[0].mine.writes["hos-world"]?.length ?? 0,
+    };
   });
 
   await check("E02", "preserved", "THE_TEN_STAY_AND_EVERY_POOL_OBJECT_IS_PAINTED_ONCE", () => {
@@ -1100,7 +1134,7 @@ async function runChecks(tree) {
     const largest = Math.max(...DIFFICULTIES.map((d) => scene.DIFFICULTY_PRESETS[d].count ?? scene.DIFFICULTY_PRESETS[d].targets?.length ?? 0));
     // positions are authored: every region (pool and look-alikes) is a literal in the scene module, nothing computes one
     const literal = /region: \{ kind: "(?:rect", x: \d+, y: \d+, w: \d+, h: \d+|circle", cx: \d+, cy: \d+, r: \d+) \}/g;
-    const literalRegions = [...tree.read(FILES.scene).matchAll(literal)].length;
+    const literalRegions = [...tree.read(studioSceneFile(tree)).matchAll(literal)].length;
     const regions = pool.length + (scene.SCENE_LOOKALIKES?.length ?? 0);
     const tiers = tierCount({ targetById: (id) => pool.find((t) => t.id === id) }, pool.map((t) => t.id));
     const grid = Object.fromEntries(scene.SCENE_STATIONS.map((s) => [s.id, Object.fromEntries(["A", "B", "C"].map((tier) => [tier, pool.filter((t) => t.station === s.id && t.tier === tier).length]))]));
@@ -1188,7 +1222,7 @@ async function runChecks(tree) {
       }
     }
     // a module graph of its own (no state shared with the first): the very same lists
-    const fresh = createModuleGraph({ tree, mocks: {}, globals: {} }).require(FILES.rounds);
+    const fresh = freshRounds(tree);
     const freshDiffers = DIFFICULTIES.flatMap((d) => seeds.slice(0, 60).filter((seed) => !same(fresh.selectRoundTargets(d, seed), rounds.selectRoundTargets(d, seed))).map((seed) => `${d}/${seed}`));
     return {
       pass: unstable.length === 0 && freshDiffers.length === 0,
@@ -1519,8 +1553,8 @@ const MUTANTS = [
     files: {
       [FILES.controller]: [
         [
-          "      point: viewportToScene(point, this.camera, this.size),",
-          "      point: viewportToScene({ x: point.x + parallaxOffset(this.camera, 1.05, false).x * scaleOf(this.camera, this.size), y: point.y }, this.camera, this.size),",
+          "      point: viewportToScene(this.scene, point, this.camera, this.size),",
+          "      point: viewportToScene(this.scene, { x: point.x + parallaxOffset(this.scene, this.camera, 1.05, false).x * scaleOf(this.scene, this.camera, this.size), y: point.y }, this.camera, this.size),",
         ],
       ],
     },
@@ -1538,7 +1572,7 @@ const MUTANTS = [
   },
   {
     name: "a target moved out of reach",
-    files: { [FILES.scene]: [['    region: { kind: "rect", x: 2615, y: 245, w: 84, h: 122 },', '    region: { kind: "rect", x: 3150, y: 245, w: 84, h: 122 },']] },
+    files: { [FILES.studioScene]: [['    region: { kind: "rect", x: 2615, y: 245, w: 84, h: 122 },', '    region: { kind: "rect", x: 3150, y: 245, w: 84, h: 122 },']] },
     mustFail: ["E17"],
   },
   {
@@ -1551,8 +1585,8 @@ const MUTANTS = [
     files: {
       [FILES.controller]: [
         [
-          "        this.camera = panBy(this.camera, effect.dx, effect.dy, this.size);\n        this.moving = true;\n        this.requestRender();\n        return;",
-          '        this.camera = panBy(this.camera, effect.dx, effect.dy, this.size);\n        this.moving = true;\n        this.requestRender();\n        this.lastView = "";\n        this.notifySettle();\n        return;',
+          "        this.camera = panBy(this.scene, this.camera, effect.dx, effect.dy, this.size);\n        this.moving = true;\n        this.requestRender();\n        return;",
+          '        this.camera = panBy(this.scene, this.camera, effect.dx, effect.dy, this.size);\n        this.moving = true;\n        this.requestRender();\n        this.lastView = "";\n        this.notifySettle();\n        return;',
         ],
       ],
     },
@@ -1573,7 +1607,7 @@ const MUTANTS = [
   },
   {
     name: "a look-alike sits on its target",
-    files: { [FILES.scene]: [['    region: { kind: "rect", x: 1410, y: 1180, w: 32, h: 28 },', '    region: { kind: "rect", x: 1360, y: 1180, w: 32, h: 28 },']] },
+    files: { [FILES.studioScene]: [['    region: { kind: "rect", x: 1410, y: 1180, w: 32, h: 28 },', '    region: { kind: "rect", x: 1360, y: 1180, w: 32, h: 28 },']] },
     mustFail: ["E16"],
   },
   {
@@ -1638,7 +1672,7 @@ const MUTANTS = [
     files: {
       [FILES.game]: [
         ['import "@/games/hidden-objects/hidden-objects.css";', 'import "@/games/hidden-objects/hidden-objects.css";\nimport { selectRoundTargets } from "@/games/hidden-objects/hidden-objects-rounds";'],
-        ["  const listed = state.targets;", '  const listed = state.status === "setup" ? state.targets : selectRoundTargets(state.difficulty, freshRoundSeed());'],
+        ["  const listed = state.targets;", '  const listed = state.status === "setup" ? state.targets : selectRoundTargets(state.scene, state.difficulty, freshRoundSeed());'],
       ],
     },
     mustFail: ["P06"],
@@ -1659,7 +1693,7 @@ const MUTANTS = [
       [FILES.model]: [
         [
           '      return state.status === "setup" ? state : freshRound(state);',
-          '      return state.status === "setup" ? state : freshRound({ ...state, targets: selectRoundTargets(state.difficulty, ((state.roundSeed ?? 0) + 1) >>> 0), roundSeed: ((state.roundSeed ?? 0) + 1) >>> 0 });',
+          '      return state.status === "setup" ? state : freshRound({ ...state, targets: selectRoundTargets(state.scene, state.difficulty, ((state.roundSeed ?? 0) + 1) >>> 0), roundSeed: ((state.roundSeed ?? 0) + 1) >>> 0 });',
         ],
       ],
     },
@@ -1667,7 +1701,7 @@ const MUTANTS = [
   },
   {
     name: "every pool object answers a tap, listed or not",
-    files: { [FILES.model]: [["      const listed = state.targets;", "      const listed = HIDDEN_OBJECTS.map((target) => target.id);"]] },
+    files: { [FILES.model]: [["      const listed = state.targets;", "      const listed = state.scene.pool.map((target) => target.id);"]] },
     mustFail: ["P09"],
   },
   {
@@ -1687,7 +1721,7 @@ const MUTANTS = [
   },
   {
     name: "a pool object loses its hint words",
-    files: { [FILES.scene]: [['    hintContext: "presa num gancho, perto de uma planta pendurada",\n', ""]] },
+    files: { [FILES.studioScene]: [['    hintContext: "presa num gancho, perto de uma planta pendurada",\n', ""]] },
     mustFail: ["P02"],
   },
 ];

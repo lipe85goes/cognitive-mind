@@ -1,20 +1,20 @@
-import {
-  SCENE_HEIGHT,
-  SCENE_STATIONS,
-  SCENE_WIDTH,
-  type SceneStation,
-  type StationId,
-} from "@/games/hidden-objects/hidden-objects-scene";
+import type { SceneDefinition, SceneStation, StationId } from "@/games/hidden-objects/hidden-objects-scene";
 
 /**
- * Camera math for the Estúdio: pure functions, no DOM, no React.
+ * Camera math for Game 03: pure functions, no DOM, no React.
  *
- * The scene is a 3200×1600 su world seen through a viewport (the scene area,
- * in CSS px). The camera is the su point at the centre of the viewport plus a
- * zoom relative to "cover" — the smallest scale at which the scene still
+ * A room is a `width`×`height` su world seen through a viewport (the scene
+ * area, in CSS px). The camera is the su point at the centre of the viewport
+ * plus a zoom relative to "cover" — the smallest scale at which the room still
  * fills the whole viewport. Zoom 1 is cover, so the camera can never show
  * anything outside the room.
+ *
+ * GAME03-MULTISCENE-03: the room is an argument — every function that needs its
+ * size or its stations takes the scene first — so one camera serves every room.
  */
+
+/** What the camera needs to know about a room. */
+export type SceneFrame = Pick<SceneDefinition, "width" | "height" | "stations" | "initialStation">;
 
 export interface Point {
   x: number;
@@ -65,43 +65,38 @@ export const KEY_PAN_FRACTION_FAST = 0.3;
 export const CAMERA_GLIDE_MS = 450;
 /** "Mostrar onde está" frames the object at this share of the viewport's short side. */
 export const REVEAL_FILL = 0.25;
-/** The camera opens on the table. */
-export const INITIAL_STATION: StationId = "mesa";
-
-const SCENE_CENTER: Point = { x: SCENE_WIDTH / 2, y: SCENE_HEIGHT / 2 };
-
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
 /** px per su at zoom 1. Never 0, so an unmeasured viewport cannot divide by zero. */
-export function coverScale(viewport: Size): number {
-  return Math.max(viewport.width / SCENE_WIDTH, viewport.height / SCENE_HEIGHT, 1e-6);
+export function coverScale(scene: SceneFrame, viewport: Size): number {
+  return Math.max(viewport.width / scene.width, viewport.height / scene.height, 1e-6);
 }
 
-export function maxZoom(viewport: Size): number {
-  return clamp(MAX_SCALE_PX_PER_SU / coverScale(viewport), MAX_ZOOM_FLOOR, MAX_ZOOM_CEILING);
+export function maxZoom(scene: SceneFrame, viewport: Size): number {
+  return clamp(MAX_SCALE_PX_PER_SU / coverScale(scene, viewport), MAX_ZOOM_FLOOR, MAX_ZOOM_CEILING);
 }
 
 /** px per su for this camera. */
-export function scaleOf(camera: Camera, viewport: Size): number {
-  return coverScale(viewport) * camera.zoom;
+export function scaleOf(scene: SceneFrame, camera: Camera, viewport: Size): number {
+  return coverScale(scene, viewport) * camera.zoom;
 }
 
 /** Zoom inside [MIN_ZOOM, maxZoom], centre such that the viewport stays inside the room. */
-export function clampCamera(camera: Camera, viewport: Size): Camera {
-  const zoom = clamp(camera.zoom, MIN_ZOOM, maxZoom(viewport));
-  const scale = coverScale(viewport) * zoom;
-  const halfW = Math.min(viewport.width / (2 * scale), SCENE_WIDTH / 2);
-  const halfH = Math.min(viewport.height / (2 * scale), SCENE_HEIGHT / 2);
+export function clampCamera(scene: SceneFrame, camera: Camera, viewport: Size): Camera {
+  const zoom = clamp(camera.zoom, MIN_ZOOM, maxZoom(scene, viewport));
+  const scale = coverScale(scene, viewport) * zoom;
+  const halfW = Math.min(viewport.width / (2 * scale), scene.width / 2);
+  const halfH = Math.min(viewport.height / (2 * scale), scene.height / 2);
   return {
-    x: clamp(camera.x, halfW, SCENE_WIDTH - halfW),
-    y: clamp(camera.y, halfH, SCENE_HEIGHT - halfH),
+    x: clamp(camera.x, halfW, scene.width - halfW),
+    y: clamp(camera.y, halfH, scene.height - halfH),
     zoom,
   };
 }
 
 /** The world element's CSS transform: `translate(tx, ty) scale(scale)` with origin 0 0. */
-export function worldTransform(camera: Camera, viewport: Size) {
-  const scale = scaleOf(camera, viewport);
+export function worldTransform(scene: SceneFrame, camera: Camera, viewport: Size) {
+  const scale = scaleOf(scene, camera, viewport);
   return {
     tx: viewport.width / 2 - camera.x * scale,
     ty: viewport.height / 2 - camera.y * scale,
@@ -110,8 +105,8 @@ export function worldTransform(camera: Camera, viewport: Size) {
 }
 
 /** The part of the room on screen, in su. */
-export function visibleRect(camera: Camera, viewport: Size): Rect {
-  const scale = scaleOf(camera, viewport);
+export function visibleRect(scene: SceneFrame, camera: Camera, viewport: Size): Rect {
+  const scale = scaleOf(scene, camera, viewport);
   const w = viewport.width / scale;
   const h = viewport.height / scale;
   return { x: camera.x - w / 2, y: camera.y - h / 2, w, h };
@@ -123,8 +118,8 @@ export function clientToViewport(clientX: number, clientY: number, rect: { left:
 }
 
 /** Viewport px → scene su (the inverse of the camera transform). */
-export function viewportToScene(point: Point, camera: Camera, viewport: Size): Point {
-  const scale = scaleOf(camera, viewport);
+export function viewportToScene(scene: SceneFrame, point: Point, camera: Camera, viewport: Size): Point {
+  const scale = scaleOf(scene, camera, viewport);
   return {
     x: camera.x + (point.x - viewport.width / 2) / scale,
     y: camera.y + (point.y - viewport.height / 2) / scale,
@@ -132,8 +127,8 @@ export function viewportToScene(point: Point, camera: Camera, viewport: Size): P
 }
 
 /** Scene su → viewport px. */
-export function sceneToViewport(point: Point, camera: Camera, viewport: Size): Point {
-  const scale = scaleOf(camera, viewport);
+export function sceneToViewport(scene: SceneFrame, point: Point, camera: Camera, viewport: Size): Point {
+  const scale = scaleOf(scene, camera, viewport);
   return {
     x: (point.x - camera.x) * scale + viewport.width / 2,
     y: (point.y - camera.y) * scale + viewport.height / 2,
@@ -141,20 +136,21 @@ export function sceneToViewport(point: Point, camera: Camera, viewport: Size): P
 }
 
 /** Drag: the room follows the pointer 1:1 (dx, dy in screen px). */
-export function panBy(camera: Camera, dx: number, dy: number, viewport: Size): Camera {
-  const scale = scaleOf(camera, viewport);
-  return clampCamera({ x: camera.x - dx / scale, y: camera.y - dy / scale, zoom: camera.zoom }, viewport);
+export function panBy(scene: SceneFrame, camera: Camera, dx: number, dy: number, viewport: Size): Camera {
+  const scale = scaleOf(scene, camera, viewport);
+  return clampCamera(scene, { x: camera.x - dx / scale, y: camera.y - dy / scale, zoom: camera.zoom }, viewport);
 }
 
 /**
  * Focal zoom: the scene point under `focal` (viewport px) stays under it, unless
  * the room's edge would come into view — then the clamp wins.
  */
-export function zoomAt(camera: Camera, factor: number, focal: Point, viewport: Size): Camera {
-  const anchor = viewportToScene(focal, camera, viewport);
-  const zoom = clamp(camera.zoom * factor, MIN_ZOOM, maxZoom(viewport));
-  const scale = coverScale(viewport) * zoom;
+export function zoomAt(scene: SceneFrame, camera: Camera, factor: number, focal: Point, viewport: Size): Camera {
+  const anchor = viewportToScene(scene, focal, camera, viewport);
+  const zoom = clamp(camera.zoom * factor, MIN_ZOOM, maxZoom(scene, viewport));
+  const scale = coverScale(scene, viewport) * zoom;
   return clampCamera(
+    scene,
     {
       x: anchor.x - (focal.x - viewport.width / 2) / scale,
       y: anchor.y - (focal.y - viewport.height / 2) / scale,
@@ -174,12 +170,13 @@ export interface PinchFrame {
  * that was under their centroid when the pinch began, which then follows the
  * centroid (pinch and pan in one gesture).
  */
-export function pinchCamera(startCamera: Camera, start: PinchFrame, current: PinchFrame, viewport: Size): Camera {
-  const anchor = viewportToScene(start.centroid, startCamera, viewport);
+export function pinchCamera(scene: SceneFrame, startCamera: Camera, start: PinchFrame, current: PinchFrame, viewport: Size): Camera {
+  const anchor = viewportToScene(scene, start.centroid, startCamera, viewport);
   const ratio = start.distance > 0 ? current.distance / start.distance : 1;
-  const zoom = clamp(startCamera.zoom * ratio, MIN_ZOOM, maxZoom(viewport));
-  const scale = coverScale(viewport) * zoom;
+  const zoom = clamp(startCamera.zoom * ratio, MIN_ZOOM, maxZoom(scene, viewport));
+  const scale = coverScale(scene, viewport) * zoom;
   return clampCamera(
+    scene,
     {
       x: anchor.x - (current.centroid.x - viewport.width / 2) / scale,
       y: anchor.y - (current.centroid.y - viewport.height / 2) / scale,
@@ -189,36 +186,37 @@ export function pinchCamera(startCamera: Camera, start: PinchFrame, current: Pin
   );
 }
 
-export function stationById(id: StationId): SceneStation {
-  const station = SCENE_STATIONS.find((candidate) => candidate.id === id);
+export function stationById(scene: SceneFrame, id: StationId): SceneStation {
+  const station = scene.stations.find((candidate) => candidate.id === id);
   if (!station) throw new Error(`Unknown station ${id}`);
   return station;
 }
 
 /** A station shortcut: its centre at cover zoom (clamped to the room). */
-export function stationCamera(id: StationId, viewport: Size): Camera {
-  const { center } = stationById(id);
-  return clampCamera({ x: center.x, y: center.y, zoom: DEFAULT_ZOOM }, viewport);
+export function stationCamera(scene: SceneFrame, id: StationId, viewport: Size): Camera {
+  const { center } = stationById(scene, id);
+  return clampCamera(scene, { x: center.x, y: center.y, zoom: DEFAULT_ZOOM }, viewport);
 }
 
-export function initialCamera(viewport: Size): Camera {
-  return stationCamera(INITIAL_STATION, viewport);
+/** Where every exploration of the room opens. */
+export function initialCamera(scene: SceneFrame, viewport: Size): Camera {
+  return stationCamera(scene, scene.initialStation, viewport);
 }
 
 /** "Você está em …": the station whose span holds the centre of the view. */
-export function nearestStation(camera: Camera): StationId {
-  const inside = SCENE_STATIONS.find((station) => camera.x >= station.span.x0 && camera.x < station.span.x1);
-  return (inside ?? SCENE_STATIONS[SCENE_STATIONS.length - 1]).id;
+export function nearestStation(scene: SceneFrame, camera: Camera): StationId {
+  const inside = scene.stations.find((station) => camera.x >= station.span.x0 && camera.x < station.span.x1);
+  return (inside ?? scene.stations[scene.stations.length - 1]).id;
 }
 
 /** Recentre: cover zoom, centred on the station nearest to where the Explorador is. */
-export function recenterCamera(camera: Camera, viewport: Size): Camera {
-  return stationCamera(nearestStation(camera), viewport);
+export function recenterCamera(scene: SceneFrame, camera: Camera, viewport: Size): Camera {
+  return stationCamera(scene, nearestStation(scene, camera), viewport);
 }
 
 /** Whether a scene circle is entirely on screen. */
-export function circleVisible(center: Point, radius: number, camera: Camera, viewport: Size): boolean {
-  const view = visibleRect(camera, viewport);
+export function circleVisible(scene: SceneFrame, center: Point, radius: number, camera: Camera, viewport: Size): boolean {
+  const view = visibleRect(scene, camera, viewport);
   return (
     center.x - radius >= view.x &&
     center.x + radius <= view.x + view.w &&
@@ -231,18 +229,19 @@ export function circleVisible(center: Point, radius: number, camera: Camera, vie
  * Bring a scene circle on screen: keep the current zoom when the circle fits
  * (zooming out only as far as needed), centre on it, clamp to the room.
  */
-export function frameCircle(center: Point, radius: number, camera: Camera, viewport: Size, margin = 1.15): Camera {
-  const cover = coverScale(viewport);
+export function frameCircle(scene: SceneFrame, center: Point, radius: number, camera: Camera, viewport: Size, margin = 1.15): Camera {
+  const cover = coverScale(scene, viewport);
   const fitScale = Math.min(viewport.width, viewport.height) / (2 * radius * margin);
   const zoom = Math.min(camera.zoom, fitScale / cover);
-  return clampCamera({ x: center.x, y: center.y, zoom }, viewport);
+  return clampCamera(scene, { x: center.x, y: center.y, zoom }, viewport);
 }
 
 /** "Mostrar onde está": the object's longer side fills REVEAL_FILL of the viewport's short side. */
-export function revealCamera(bounds: Rect, viewport: Size): Camera {
-  const cover = coverScale(viewport);
+export function revealCamera(scene: SceneFrame, bounds: Rect, viewport: Size): Camera {
+  const cover = coverScale(scene, viewport);
   const targetScale = (REVEAL_FILL * Math.min(viewport.width, viewport.height)) / Math.max(bounds.w, bounds.h);
   return clampCamera(
+    scene,
     { x: bounds.x + bounds.w / 2, y: bounds.y + bounds.h / 2, zoom: targetScale / cover },
     viewport,
   );
@@ -267,19 +266,19 @@ export function interpolateCamera(from: Camera, to: Camera, t: number): Camera {
  * A parallax layer's offset from the plate, in su: it drifts by (factor − 1) of
  * the camera's travel from the room's centre. 0 under reduced motion.
  */
-export function parallaxOffset(camera: Camera, factor: number, reducedMotion: boolean): Point {
+export function parallaxOffset(scene: SceneFrame, camera: Camera, factor: number, reducedMotion: boolean): Point {
   if (reducedMotion || factor === 1) return { x: 0, y: 0 };
   return {
-    x: (1 - factor) * (camera.x - SCENE_CENTER.x),
-    y: (1 - factor) * (camera.y - SCENE_CENTER.y),
+    x: (1 - factor) * (camera.x - scene.width / 2),
+    y: (1 - factor) * (camera.y - scene.height / 2),
   };
 }
 
 /** The largest offset a parallax layer can reach, over every camera the clamp allows. */
-export function maxParallaxOffset(factor: number): Point {
+export function maxParallaxOffset(scene: SceneFrame, factor: number): Point {
   return {
-    x: Math.abs(1 - factor) * (SCENE_WIDTH / 2),
-    y: Math.abs(1 - factor) * (SCENE_HEIGHT / 2),
+    x: Math.abs(1 - factor) * (scene.width / 2),
+    y: Math.abs(1 - factor) * (scene.height / 2),
   };
 }
 
@@ -291,6 +290,6 @@ export function wheelZoomFactor(deltaY: number, deltaMode: number, ctrlKey: bool
 }
 
 /** Keep the same scene point centred and the same zoom relative to cover across a resize. */
-export function resizeCamera(camera: Camera, next: Size): Camera {
-  return clampCamera(camera, next);
+export function resizeCamera(scene: SceneFrame, camera: Camera, next: Size): Camera {
+  return clampCamera(scene, camera, next);
 }

@@ -28,6 +28,7 @@ import {
   type PinchFrame,
   type Point,
   type Rect,
+  type SceneFrame,
   type Size,
 } from "@/games/hidden-objects/hidden-objects-camera";
 import {
@@ -81,6 +82,8 @@ interface ResizeObserverLike {
 }
 
 export interface SceneControllerOptions {
+  /** The room the camera moves through (its size and stations). */
+  scene: SceneFrame;
   viewport: HTMLElement;
   world: HTMLElement;
   parallax: readonly { element: HTMLElement; factor: number }[];
@@ -107,6 +110,7 @@ const browserResizeObserver = (callback: () => void): ResizeObserverLike | null 
 
 export class HiddenObjectsSceneController {
   private readonly options: SceneControllerOptions;
+  private readonly scene: SceneFrame;
   private readonly host: ControllerHost;
   private size: Size = { width: 0, height: 0 };
   private origin = { left: 0, top: 0 };
@@ -124,6 +128,7 @@ export class HiddenObjectsSceneController {
 
   constructor(options: SceneControllerOptions) {
     this.options = options;
+    this.scene = options.scene;
     this.host = options.host ?? browserHost();
   }
 
@@ -137,7 +142,7 @@ export class HiddenObjectsSceneController {
     viewport.addEventListener("wheel", this.handleWheel, { passive: false });
     viewport.addEventListener("keydown", this.handleKeyDown);
     this.measure();
-    this.camera = initialCamera(this.size);
+    this.camera = initialCamera(this.scene, this.size);
     this.observer = (this.options.createResizeObserver ?? browserResizeObserver)(this.handleResize);
     this.observer?.observe(viewport);
     this.render();
@@ -188,35 +193,35 @@ export class HiddenObjectsSceneController {
     this.gesture = IDLE_GESTURE;
     this.pinchStart = null;
     this.moving = false;
-    this.camera = initialCamera(this.size);
+    this.camera = initialCamera(this.scene, this.size);
     this.requestRender();
     this.notifySettle();
   }
 
   zoomBy(factor: number): void {
     this.stopGlide();
-    this.camera = zoomAt(this.camera, factor, { x: this.size.width / 2, y: this.size.height / 2 }, this.size);
+    this.camera = zoomAt(this.scene, this.camera, factor, { x: this.size.width / 2, y: this.size.height / 2 }, this.size);
     this.requestRender();
     this.notifySettle();
   }
 
   goToStation(id: StationId): void {
-    this.glideTo(stationCamera(id, this.size));
+    this.glideTo(stationCamera(this.scene, id, this.size));
   }
 
   recenter(): void {
-    this.glideTo(recenterCamera(this.camera, this.size));
+    this.glideTo(recenterCamera(this.scene, this.camera, this.size));
   }
 
   /** Hint 2: bring the halo on screen only if it is not already. */
   showCircle(center: Point, radius: number): void {
-    if (circleVisible(center, radius, this.camera, this.size)) return;
-    this.glideTo(frameCircle(center, radius, this.camera, this.size));
+    if (circleVisible(this.scene, center, radius, this.camera, this.size)) return;
+    this.glideTo(frameCircle(this.scene, center, radius, this.camera, this.size));
   }
 
   /** "Mostrar onde está". */
   reveal(bounds: Rect): void {
-    this.glideTo(revealCamera(bounds, this.size));
+    this.glideTo(revealCamera(this.scene, bounds, this.size));
   }
 
   /** The keyboard reticle: a tap at the centre of the view. */
@@ -253,14 +258,14 @@ export class HiddenObjectsSceneController {
   /** The only place the camera reaches the DOM. */
   private render(): void {
     const { world, parallax, isReducedMotion } = this.options;
-    const { tx, ty, scale } = worldTransform(this.camera, this.size);
+    const { tx, ty, scale } = worldTransform(this.scene, this.camera, this.size);
     world.style.transform = `translate3d(${tx}px, ${ty}px, 0) scale(${scale})`;
     world.style.setProperty("--hos-scale", String(scale));
     if (this.moving) world.dataset.moving = "true";
     else delete world.dataset.moving;
     const reduced = isReducedMotion();
     for (const layer of parallax) {
-      const offset = parallaxOffset(this.camera, layer.factor, reduced);
+      const offset = parallaxOffset(this.scene, this.camera, layer.factor, reduced);
       layer.element.style.transform = `translate3d(${offset.x}px, ${offset.y}px, 0)`;
     }
   }
@@ -268,8 +273,8 @@ export class HiddenObjectsSceneController {
   private notifySettle(): void {
     if (this.destroyed) return;
     const view: CameraView = {
-      station: nearestStation(this.camera),
-      canZoomIn: this.camera.zoom < maxZoom(this.size) - 1e-3,
+      station: nearestStation(this.scene, this.camera),
+      canZoomIn: this.camera.zoom < maxZoom(this.scene, this.size) - 1e-3,
       canZoomOut: this.camera.zoom > MIN_ZOOM + 1e-3,
     };
     const key = `${view.station}|${view.canZoomIn}|${view.canZoomOut}`;
@@ -279,7 +284,7 @@ export class HiddenObjectsSceneController {
   }
 
   private glideTo(target: Camera): void {
-    const to = clampCamera(target, this.size);
+    const to = clampCamera(this.scene, target, this.size);
     if (this.options.isReducedMotion()) {
       this.glide = null;
       this.camera = to;
@@ -313,8 +318,8 @@ export class HiddenObjectsSceneController {
     const before = this.size;
     this.measure();
     if (before.width === this.size.width && before.height === this.size.height) return;
-    this.camera = resizeCamera(this.camera, this.size);
-    if (this.glide) this.glide = { ...this.glide, to: clampCamera(this.glide.to, this.size) };
+    this.camera = resizeCamera(this.scene, this.camera, this.size);
+    if (this.glide) this.glide = { ...this.glide, to: clampCamera(this.scene, this.glide.to, this.size) };
     this.requestRender();
     this.notifySettle();
   };
@@ -383,7 +388,7 @@ export class HiddenObjectsSceneController {
   private applyEffect(effect: GestureEffect): void {
     switch (effect.kind) {
       case "pan":
-        this.camera = panBy(this.camera, effect.dx, effect.dy, this.size);
+        this.camera = panBy(this.scene, this.camera, effect.dx, effect.dy, this.size);
         this.moving = true;
         this.requestRender();
         return;
@@ -393,7 +398,7 @@ export class HiddenObjectsSceneController {
         return;
       case "pinch":
         if (!this.pinchStart) return;
-        this.camera = pinchCamera(this.pinchStart.camera, this.pinchStart.frame, effect, this.size);
+        this.camera = pinchCamera(this.scene, this.pinchStart.camera, this.pinchStart.frame, effect, this.size);
         this.requestRender();
         return;
       case "pinch-end":
@@ -413,9 +418,9 @@ export class HiddenObjectsSceneController {
 
   private emitTap(point: Point, pointerType: string): void {
     this.options.onTap({
-      point: viewportToScene(point, this.camera, this.size),
+      point: viewportToScene(this.scene, point, this.camera, this.size),
       pointerType,
-      scale: scaleOf(this.camera, this.size),
+      scale: scaleOf(this.scene, this.camera, this.size),
     });
   }
 
@@ -426,7 +431,7 @@ export class HiddenObjectsSceneController {
     const rect = this.options.viewport.getBoundingClientRect();
     this.origin = { left: rect.left, top: rect.top };
     const focal = { x: event.clientX - rect.left, y: event.clientY - rect.top };
-    this.camera = zoomAt(this.camera, factor, focal, this.size);
+    this.camera = zoomAt(this.scene, this.camera, factor, focal, this.size);
     this.moving = true;
     this.requestRender();
     if (this.wheelTimer) this.host.clearTimeout(this.wheelTimer);
@@ -447,20 +452,21 @@ export class HiddenObjectsSceneController {
       ArrowUp: [0, -1],
       ArrowDown: [0, 1],
     };
-    const stations: Record<string, StationId> = { "1": "janela", "2": "mesa", "3": "estante" };
+    // 1, 2, 3…: the room's stations, left to right
+    const station = /^[1-9]$/.test(event.key) ? this.scene.stations[Number(event.key) - 1] : undefined;
     if (event.key in panKeys) {
       const [dx, dy] = panKeys[event.key];
       this.stopGlide();
       // Look further right = the room moves left under the view.
-      this.camera = panBy(this.camera, -dx * fraction * this.size.width, -dy * fraction * this.size.height, this.size);
+      this.camera = panBy(this.scene, this.camera, -dx * fraction * this.size.width, -dy * fraction * this.size.height, this.size);
       this.requestRender();
       this.notifySettle();
     } else if (event.key === "+" || event.key === "=") {
       this.zoomBy(ZOOM_STEP);
     } else if (event.key === "-" || event.key === "_") {
       this.zoomBy(1 / ZOOM_STEP);
-    } else if (event.key in stations) {
-      this.goToStation(stations[event.key]);
+    } else if (station) {
+      this.goToStation(station.id);
     } else if (event.key === "0") {
       this.recenter();
     } else if (event.key === "Enter" || event.key === " ") {

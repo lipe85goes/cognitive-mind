@@ -1,45 +1,37 @@
 import type { DifficultyLevel } from "@/types/game";
 import {
   DIFFICULTY_PRESETS,
-  HIDDEN_OBJECTS,
-  SCENE_STATIONS,
   type DifficultyPreset,
   type HiddenObjectDefinition,
-  type StationId,
+  type SceneDefinition,
   type TargetId,
   type TargetTier,
 } from "@/games/hidden-objects/hidden-objects-scene";
 
 /**
- * Estúdio das Descobertas — which objects a round asks for (GAME03-EXPERIENCE-02).
+ * Game 03 — which objects a round asks for (GAME03-EXPERIENCE-02, made
+ * per-room by GAME03-MULTISCENE-03).
  *
- * The room is authored: every object of the pool is painted where the scene
+ * A room is authored: every object of its pool is painted where the scene
  * says, in every round. A round only chooses which of them the list names, and
- * that choice is a pure function of (difficulty, seed): the same pair always
- * gives the same list, in the same order. Nothing here reads a clock or
- * Math.random — the seed comes from the game, once, when "Explorar" is pressed.
+ * that choice is a pure function of (room, difficulty, seed): the same three
+ * always give the same list, in the same order — and a seed means nothing
+ * outside its room, since each room draws from its own pool and stations.
+ * Nothing here reads a clock or Math.random — the seed comes from the game,
+ * once, when "Explorar" is pressed.
  *
  * A round is valid when it
  *   - holds exactly the difficulty's mix of tiers (DIFFICULTY_PRESETS[d].tiers);
  *   - lists each object once, and only objects its list style can show;
- *   - spreads over the stations as evenly as its size allows (each holds
- *     ⌊count/3⌋ or ⌈count/3⌉ of them), so every round crosses the whole room.
+ *   - spreads over the room's stations as evenly as its size allows (each holds
+ *     ⌊count/stations⌋ or ⌈count/stations⌉ of them), so every round crosses the
+ *     whole room.
  * Every valid round is equally likely, and the order the list shows is drawn
  * too, so the first line never says where to start.
  */
 
-/** What rounds are drawn from: a scene's stations, its pool and its difficulties (one scene exists today). */
-export interface RoundSource {
-  stations: readonly { id: StationId }[];
-  pool: readonly HiddenObjectDefinition[];
-  presets: Readonly<Record<DifficultyLevel, DifficultyPreset>>;
-}
-
-export const EXPLORER_STUDIO_ROUNDS: RoundSource = {
-  stations: SCENE_STATIONS,
-  pool: HIDDEN_OBJECTS,
-  presets: DIFFICULTY_PRESETS,
-};
+/** What rounds are drawn from: a room's stations and its pool (the difficulty contract is global). */
+export type RoundSource = Pick<SceneDefinition, "stations" | "pool">;
 
 const TIERS: readonly TargetTier[] = ["A", "B", "C"];
 
@@ -59,23 +51,20 @@ export function listableIn(target: HiddenObjectDefinition, preset: DifficultyPre
   return !target.listedAs || target.listedAs.includes(preset.listStyle);
 }
 
-/** The rounds depend only on constant data: enumerated once per source and difficulty. */
+/** The rounds depend only on constant data: enumerated once per room and difficulty. */
 const enumerated = new WeakMap<RoundSource, Map<DifficultyLevel, readonly (readonly TargetId[])[]>>();
 
-/** Every valid round of a difficulty, each as its ids in pool order. */
-export function validRounds(
-  difficulty: DifficultyLevel,
-  source: RoundSource = EXPLORER_STUDIO_ROUNDS,
-): readonly (readonly TargetId[])[] {
-  let bySource = enumerated.get(source);
-  if (!bySource) enumerated.set(source, (bySource = new Map()));
-  let rounds = bySource.get(difficulty);
-  if (!rounds) bySource.set(difficulty, (rounds = enumerateRounds(difficulty, source)));
+/** Every valid round of a difficulty in this room, each as its ids in pool order. */
+export function validRounds(scene: RoundSource, difficulty: DifficultyLevel): readonly (readonly TargetId[])[] {
+  let byScene = enumerated.get(scene);
+  if (!byScene) enumerated.set(scene, (byScene = new Map()));
+  let rounds = byScene.get(difficulty);
+  if (!rounds) byScene.set(difficulty, (rounds = enumerateRounds(scene, difficulty)));
   return rounds;
 }
 
-function enumerateRounds(difficulty: DifficultyLevel, source: RoundSource): TargetId[][] {
-  const preset = source.presets[difficulty];
+function enumerateRounds(source: RoundSource, difficulty: DifficultyLevel): TargetId[][] {
+  const preset = DIFFICULTY_PRESETS[difficulty];
   const eligible = source.pool.filter((target) => listableIn(target, preset));
   const spread = stationSpread(preset.count, source.stations.length);
   let rounds: HiddenObjectDefinition[][] = [[]];
@@ -106,13 +95,9 @@ export function seededRandom(seed: number): () => number {
   };
 }
 
-/** The round for (difficulty, seed): one valid round, every one equally likely, in a drawn order. */
-export function selectRoundTargets(
-  difficulty: DifficultyLevel,
-  seed: number,
-  source: RoundSource = EXPLORER_STUDIO_ROUNDS,
-): TargetId[] {
-  const rounds = validRounds(difficulty, source);
+/** The round for (room, difficulty, seed): one valid round, every one equally likely, in a drawn order. */
+export function selectRoundTargets(scene: RoundSource, difficulty: DifficultyLevel, seed: number): TargetId[] {
+  const rounds = validRounds(scene, difficulty);
   if (rounds.length === 0) throw new Error(`No valid round for ${difficulty}`);
   const random = seededRandom(seed);
   const list = [...rounds[Math.floor(random() * rounds.length)]];

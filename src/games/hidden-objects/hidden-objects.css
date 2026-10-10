@@ -110,6 +110,12 @@
   cursor: default;
 }
 
+.hos-topbar-actions {
+  display: flex;
+  flex: none;
+  gap: 0.5rem;
+}
+
 /* —— body: scene + objectives —— */
 .hos-body {
   display: grid;
@@ -166,25 +172,13 @@
   will-change: transform;
 }
 
+/* A room's layers stack back to front in the order its scene lists them (inline z-index). */
 .hos-layer {
   position: absolute;
   max-width: none;
   pointer-events: none;
   user-select: none;
   -webkit-user-drag: none;
-}
-
-.hos-layer-back {
-  z-index: 0;
-}
-
-.hos-layer-plate {
-  z-index: 1;
-}
-
-.hos-layer-front,
-.hos-layer-front-right {
-  z-index: 2;
 }
 
 /*
@@ -547,7 +541,8 @@
 .hos-chip-button:focus-visible,
 .hos-round-button:focus-visible,
 .hos-tray-toggle:focus-visible,
-.hos-difficulty-option:focus-within {
+.hos-difficulty-option:focus-within,
+.hos-scene-option:focus-within {
   outline: 3px solid var(--hos-teal);
   outline-offset: 2px;
 }
@@ -687,7 +682,7 @@
 
 .hos-stations {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(var(--hos-station-count, 3), minmax(0, 1fr));
   gap: 0.4rem;
 }
 
@@ -881,6 +876,105 @@
   border-color: var(--hos-teal);
   background: rgb(60 192 166 / 0.1);
   box-shadow: 0 0 0 2px rgba(60, 192, 166, 0.3);
+}
+
+/* —— GAME03-MULTISCENE-03: the rooms, side by side, each with its light preview —— */
+.hos-scenes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: 0.6rem;
+  margin: 0.2rem 0 0;
+  padding: 0;
+  border: 0;
+}
+
+.hos-scenes legend {
+  margin-bottom: 0.45rem;
+  padding: 0;
+  color: var(--hos-brass);
+  font-weight: 800;
+}
+
+.hos-scene-option {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 0.4rem;
+  padding: 0.45rem;
+  border: 1px solid var(--hos-line);
+  border-radius: 14px;
+  background: var(--hos-glass);
+  text-align: left;
+  cursor: pointer;
+}
+
+/* the radio stays a real, focusable radio: drawn as a small dot over the preview's corner */
+.hos-scene-option input {
+  position: absolute;
+  z-index: 1;
+  top: 0.8rem;
+  left: 0.8rem;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  accent-color: var(--hos-teal);
+}
+
+.hos-scene-preview {
+  display: block;
+  overflow: hidden;
+  border-radius: 10px;
+  aspect-ratio: 16 / 9;
+  background: #120c08;
+}
+
+.hos-scene-preview img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hos-scene-text {
+  display: grid;
+  gap: 0.1rem;
+  padding: 0 0.15rem 0.1rem;
+}
+
+.hos-scene-text strong {
+  color: var(--hos-cream);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
+.hos-scene-text small {
+  color: var(--hos-ink-soft);
+  font-size: 0.8rem;
+  line-height: 1.3;
+}
+
+.hos-scene-option[data-selected="true"] {
+  border-color: var(--hos-teal);
+  background: rgb(60 192 166 / 0.1);
+  box-shadow: 0 0 0 2px rgba(60, 192, 166, 0.3);
+}
+
+.hos-scene-failed {
+  display: grid;
+  gap: 0.5rem;
+  justify-items: center;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--hos-line-strong);
+  border-radius: 14px;
+  background: rgb(232 164 111 / 0.08);
+}
+
+.hos-primary:disabled {
+  border-color: var(--hos-line);
+  background: rgb(60 192 166 / 0.18);
+  box-shadow: none;
+  cursor: default;
 }
 
 .hos-card .hos-controls-line {
@@ -1115,7 +1209,7 @@
   }
 
   .hos-shell[data-tray="closed"] .hos-stations {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(var(--hos-station-count, 3), minmax(0, 1fr));
   }
 }
 

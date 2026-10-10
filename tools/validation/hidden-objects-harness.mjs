@@ -10,6 +10,17 @@
  * by GAME03-EXPERIENCE-02, so its suite and hidden-objects-experience-tests.mjs
  * share one harness instead of two copies. Nothing here asserts anything, and
  * nothing here writes: suites decide what holds.
+ *
+ * GAME03-MULTISCENE-03 made the engine take its room as data: on a tree with a
+ * scene registry, the Estúdio's data lives in `scenes/explorer-studio.ts` (the
+ * contract — types and the difficulty presets — stays in hidden-objects-scene.ts)
+ * and every engine function that reads a room takes the scene first. The two
+ * earlier suites check the Estúdio, so their openers show them that room the
+ * way they knew it: `scene` is the contract plus the Estúdio's data under the
+ * old names, and `camera` / `model` / `rounds` are the real modules with their
+ * scene-first functions bound to the Estúdio (`boundToScene`). Their checks
+ * read exactly what they read before; trees from before the registry are
+ * opened as they always were.
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -42,6 +53,10 @@ export const FILES = {
   rewardModal: "src/components/RewardResultModal.tsx",
   scene: `${DIR}hidden-objects-scene.ts`,
   rounds: `${DIR}hidden-objects-rounds.ts`,
+  /** GAME03-MULTISCENE-03: the registry of rooms, and each room's data. */
+  scenes: `${DIR}hidden-objects-scenes.ts`,
+  studioScene: `${DIR}scenes/explorer-studio.ts`,
+  observatoryScene: `${DIR}scenes/explorer-observatory.ts`,
   camera: `${DIR}hidden-objects-camera.ts`,
   gesture: `${DIR}hidden-objects-gesture.ts`,
   model: `${DIR}hidden-objects-model.ts`,
@@ -787,20 +802,58 @@ export function browserMocks(harness) {
 
 // --- what the checks open ---------------------------------------------------------------------------
 
+// --- multiscene trees (GAME03-MULTISCENE-03) --------------------------------------------------------
+
+/** Whether the tree's engine takes its room as data (a scene registry exists). */
+export const isMultiscene = (tree) => tree.exists(FILES.scenes);
+/** The module holding the Estúdio's data on this tree (its literal regions, its look-alikes). */
+export const studioSceneFile = (tree) => (isMultiscene(tree) ? FILES.studioScene : FILES.scene);
+
+/** A function whose first parameter is named `scene`: the engine's convention for "reads a room". */
+export const takesSceneFirst = (fn) =>
+  typeof fn === "function" && /^(?:async\s+)?(?:function\s*[\w$]*\s*)?\(\s*scene\b/.test(Function.prototype.toString.call(fn));
+
+/** A module with every scene-first function bound to `scene` (everything else as it is). */
+export function boundToScene(module, scene) {
+  return Object.fromEntries(
+    Object.entries(module).map(([name, value]) => [name, takesSceneFirst(value) ? (...rest) => value(scene, ...rest) : value]),
+  );
+}
+
+/** The Estúdio as the earlier suites knew it: the contract plus the room's data, under the old names. */
+function studioView(contract, studio) {
+  return { ...contract, ...studio };
+}
+
 /**
  * Scene data, camera, gesture recogniser, session model and (GAME03-EXPERIENCE-02's
  * target pool) the round selection: pure modules, no mocks. `rounds` is null on
- * trees from before the pool, whose lists were fixed.
+ * trees from before the pool, whose lists were fixed. On a multiscene tree they
+ * are the Estúdio's (see the header); `studio` is its SceneDefinition there.
  */
 export function pureModules(tree) {
   return cached(tree, "pure", () => {
     const graph = createModuleGraph({ tree, mocks: {}, globals: {} });
+    const rounds = tree.exists(FILES.rounds) ? graph.require(FILES.rounds) : null;
+    if (!isMultiscene(tree)) {
+      return {
+        scene: graph.require(FILES.scene),
+        camera: graph.require(FILES.camera),
+        gesture: graph.require(FILES.gesture),
+        model: graph.require(FILES.model),
+        rounds,
+        studio: null,
+      };
+    }
+    const studioModule = graph.require(FILES.studioScene);
+    const studio = studioModule.EXPLORER_STUDIO;
     return {
-      scene: graph.require(FILES.scene),
-      camera: graph.require(FILES.camera),
+      scene: studioView(graph.require(FILES.scene), studioModule),
+      camera: boundToScene(graph.require(FILES.camera), studio),
       gesture: graph.require(FILES.gesture),
-      model: graph.require(FILES.model),
-      rounds: tree.exists(FILES.rounds) ? graph.require(FILES.rounds) : null,
+      model: boundToScene(graph.require(FILES.model), studio),
+      rounds: rounds && boundToScene(rounds, studio),
+      studio,
     };
   });
 }
@@ -907,8 +960,10 @@ export function openRig(tree, { viewport = DESKTOP, reducedMotion = false } = {}
   const env = createEnvironment({ viewport, reducedMotion });
   const graph = createModuleGraph({ tree, mocks: {}, globals: env.globals });
   const { HiddenObjectsSceneController } = graph.require(FILES.controller);
-  const scene = graph.require(FILES.scene);
-  const cam = graph.require(FILES.camera);
+  const multiscene = isMultiscene(tree);
+  const studioModule = multiscene ? graph.require(FILES.studioScene) : null;
+  const scene = multiscene ? studioView(graph.require(FILES.scene), studioModule) : graph.require(FILES.scene);
+  const cam = multiscene ? boundToScene(graph.require(FILES.camera), studioModule.EXPLORER_STUDIO) : graph.require(FILES.camera);
   const viewportNode = env.createNode("div", { className: "hos-viewport" });
   const world = env.createNode("div", { className: "hos-world" });
   const parallax = scene.SCENE_LAYERS.filter((layer) => layer.parallax !== 1).map((layer) => ({
@@ -918,6 +973,8 @@ export function openRig(tree, { viewport = DESKTOP, reducedMotion = false } = {}
   const taps = [];
   const settles = [];
   const controller = new HiddenObjectsSceneController({
+    // the room (multiscene trees; earlier controllers knew theirs and ignore it)
+    scene: studioModule?.EXPLORER_STUDIO,
     viewport: viewportNode,
     world,
     parallax,
@@ -980,9 +1037,12 @@ export function openStudio(tree, { viewport = DESKTOP, reducedMotion = false, se
   const harness = createReact(env.createNode);
   const graph = createModuleGraph({ tree, mocks: browserMocks(harness), globals: env.globals });
   const { HiddenObjectsGame } = graph.require(FILES.game);
-  const cam = graph.require(FILES.camera);
-  const scene = graph.require(FILES.scene);
-  const model = graph.require(FILES.model);
+  // the Estúdio, the room a first visit opens on (multiscene trees: bound as in pureModules)
+  const studioModule = isMultiscene(tree) ? graph.require(FILES.studioScene) : null;
+  const room = studioModule?.EXPLORER_STUDIO ?? null;
+  const cam = room ? boundToScene(graph.require(FILES.camera), room) : graph.require(FILES.camera);
+  const scene = room ? studioView(graph.require(FILES.scene), studioModule) : graph.require(FILES.scene);
+  const model = room ? boundToScene(graph.require(FILES.model), room) : graph.require(FILES.model);
   const calls = { complete: [], exit: 0, ready: 0, errors: [] };
   const props = {
     onComplete: (result) => {
@@ -1194,4 +1254,145 @@ export function regionGap(model, a, b) {
   const dx = Math.max(a.x - (b.x + b.w), b.x - (a.x + a.w), 0);
   const dy = Math.max(a.y - (b.y + b.h), b.y - (a.y + a.h), 0);
   return Math.hypot(dx, dy);
+}
+
+// --- behavioural equivalence of the Estúdio across trees (GAME03-MULTISCENE-03) -------------------
+
+/** A rounds module from a module graph of its own (no state shared), bound to that graph's Estúdio on multiscene trees. */
+export function freshRounds(tree) {
+  const graph = createModuleGraph({ tree, mocks: {}, globals: {} });
+  const rounds = graph.require(FILES.rounds);
+  return isMultiscene(tree) ? boundToScene(rounds, graph.require(FILES.studioScene).EXPLORER_STUDIO) : rounds;
+}
+
+/**
+ * Every camera function, on a fixed sweep of cameras, viewports, points and
+ * steps: what the camera math computes for the Estúdio, as data. Two trees
+ * whose sweeps are equal compute the same camera, whatever their code looks like.
+ */
+export function cameraSweep(cam, viewports = VIEWPORTS) {
+  const random = lcg(0xca3e7a);
+  const range = (min, max) => min + (max - min) * random();
+  const out = [];
+  const constants = ["MIN_ZOOM", "DEFAULT_ZOOM", "MAX_SCALE_PX_PER_SU", "MAX_ZOOM_FLOOR", "MAX_ZOOM_CEILING", "ZOOM_STEP", "WHEEL_ZOOM_DIVISOR", "PINCH_WHEEL_ZOOM_DIVISOR", "WHEEL_STEP_MIN", "WHEEL_STEP_MAX", "KEY_PAN_FRACTION", "KEY_PAN_FRACTION_FAST", "CAMERA_GLIDE_MS", "REVEAL_FILL"];
+  out.push(constants.map((name) => [name, cam[name]]));
+  for (const viewport of viewports) {
+    const v = { width: viewport.width, height: viewport.height };
+    out.push(["cover", cam.coverScale(v), cam.maxZoom(v), cam.initialCamera(v)]);
+    for (const id of ["janela", "mesa", "estante"]) out.push(["station", id, cam.stationCamera(id, v)]);
+    for (let i = 0; i < 40; i += 1) {
+      const c = cam.clampCamera({ x: range(-800, 4000), y: range(-800, 2400), zoom: range(0.3, 6) }, v);
+      const point = { x: range(0, v.width), y: range(0, v.height) };
+      const scenePoint = { x: range(0, 3200), y: range(0, 1600) };
+      const next = cam.clampCamera({ x: range(0, 3200), y: range(0, 1600), zoom: range(1, 4) }, v);
+      out.push([
+        c,
+        cam.scaleOf(c, v),
+        cam.worldTransform(c, v),
+        cam.visibleRect(c, v),
+        cam.viewportToScene(point, c, v),
+        cam.sceneToViewport(scenePoint, c, v),
+        cam.panBy(c, range(-900, 900), range(-900, 900), v),
+        cam.zoomAt(c, [0.5, 0.8, 1.25, 3][i % 4], point, v),
+        cam.pinchCamera(c, { centroid: point, distance: range(20, 200) }, { centroid: { x: range(0, v.width), y: range(0, v.height) }, distance: range(10, 600) }, v),
+        cam.nearestStation(c),
+        cam.recenterCamera(c, v),
+        cam.circleVisible(scenePoint, range(20, 500), c, v),
+        cam.frameCircle(scenePoint, range(20, 500), c, v),
+        cam.revealCamera({ x: range(0, 3100), y: range(0, 1500), w: range(20, 300), h: range(20, 300) }, v),
+        cam.interpolateCamera(c, next, cam.easeInOut(random())),
+        cam.parallaxOffset(c, [0.92, 1.05, 1][i % 3], i % 5 === 0),
+        cam.resizeCamera(c, { width: v.height, height: v.width }),
+        cam.wheelZoomFactor(range(-400, 400), i % 3, i % 2 === 0, v.height),
+        cam.clientToViewport(range(0, 2000), range(0, 1200), { left: 24, top: 72 }),
+      ]);
+    }
+  }
+  for (const factor of [0.92, 1.05, 1.1]) out.push(["maxParallax", factor, cam.maxParallaxOffset(factor)]);
+  return out;
+}
+
+/**
+ * The scene controller of `tree` on a fake viewport, through one fixed script of
+ * input — drags, taps, wheel bursts, keys (stations, recentre, zoom, the
+ * reticle), hint glides, a pinch, two resizes, a reset, drags past every wall —
+ * and what it did: every transform it wrote (world and parallax layers, per
+ * element), every tap it reported and every view it settled. Two trees with the
+ * same record drive the Estúdio's camera the same way (`sameControllerRecord`
+ * compares the layers both rooms have: the skeleton's kit had one fewer).
+ */
+export function controllerRecord(tree, { viewport = DESKTOP, reducedMotion = false } = {}) {
+  const rig = openRig(tree, { viewport, reducedMotion });
+  const centre = rig.centre();
+  const at = (x, y) => rig.client({ x, y });
+  rig.settle();
+  rig.drag(centre, { x: centre.x - 300, y: centre.y - 120 });
+  rig.settle();
+  rig.tap(centre);
+  rig.tap(at(100, 80), { pointerType: "touch", id: 4 });
+  for (let i = 0; i < 3; i += 1) {
+    rig.wheel(at(200, 150), -240);
+    rig.frame();
+  }
+  rig.frame(14);
+  for (const [key, extra] of [["ArrowRight"], ["ArrowDown", { shiftKey: true }], ["+"], ["-"], ["1"], ["3"], ["2"], ["0"], ["Enter"], [" "]]) {
+    rig.key(key, extra);
+    rig.settle();
+  }
+  rig.controller.showCircle({ x: 2600, y: 520 }, 300);
+  rig.settle();
+  rig.controller.reveal({ x: 2720, y: 480, w: 166, h: 118 });
+  rig.frame(5);
+  rig.tap(centre); // catches the glide: never a tap
+  rig.settle();
+  const left = { x: centre.x - 40, y: centre.y };
+  const right = { x: centre.x + 40, y: centre.y };
+  rig.pointer("pointerdown", { pointerId: 7, clientX: left.x, clientY: left.y, pointerType: "touch", button: 0 });
+  rig.pointer("pointerdown", { pointerId: 8, clientX: right.x, clientY: right.y, pointerType: "touch", button: 0 });
+  for (let i = 1; i <= 6; i += 1) {
+    rig.pointer("pointermove", { pointerId: 8, clientX: right.x + 20 * i, clientY: right.y - 4 * i, pointerType: "touch" });
+    rig.pointer("pointermove", { pointerId: 7, clientX: left.x - 20 * i, clientY: left.y - 4 * i, pointerType: "touch" });
+    rig.frame();
+  }
+  rig.pointer("pointerup", { pointerId: 8, clientX: right.x + 120, clientY: right.y - 24, pointerType: "touch", button: 0 });
+  rig.pointer("pointerup", { pointerId: 7, clientX: left.x - 120, clientY: left.y - 24, pointerType: "touch", button: 0 });
+  rig.settle();
+  const resize = (width, height) => {
+    rig.viewport.rect = { ...rig.viewport.rect, width, height };
+    for (const observer of rig.env.observers) if (observer.connected) observer.callback([], observer);
+    rig.settle();
+  };
+  resize(596, 337);
+  rig.drag(centre, { x: centre.x + 2000, y: centre.y + 1500 }, { pointerType: "touch" });
+  rig.settle();
+  resize(viewport.width, viewport.height);
+  rig.controller.reset();
+  rig.settle();
+  rig.drag(centre, { x: centre.x - 5000, y: centre.y - 5000 });
+  rig.settle();
+  rig.tap(at(300, 300), { pointerType: "pen", id: 9 });
+  const round = (value) => (typeof value === "number" ? Number(value.toFixed(6)) : value);
+  const writes = {};
+  for (const write of rig.env.log.writes) (writes[write.name] ??= []).push(write.value);
+  const record = {
+    // per element: the world, then each parallax layer the tree's room declares
+    writes,
+    taps: rig.taps.map((tap) => ({ x: round(tap.point.x), y: round(tap.point.y), pointerType: tap.pointerType, scale: round(tap.scale) })),
+    settles: rig.settles,
+    camera: rig.camera(),
+  };
+  rig.controller.destroy();
+  return record;
+}
+
+/** Two controller records agree: same world writes, taps, settles and camera, and the same writes on every layer both have. */
+export function sameControllerRecord(a, b) {
+  const { writes: wa, ...ra } = a;
+  const { writes: wb, ...rb } = b;
+  const shared = Object.keys(wa).filter((name) => name in wb);
+  return (
+    JSON.stringify(ra) === JSON.stringify(rb) &&
+    shared.includes("hos-world") &&
+    shared.every((name) => JSON.stringify(wa[name]) === JSON.stringify(wb[name]))
+  );
 }

@@ -3,33 +3,36 @@ import type { Point, Rect } from "@/games/hidden-objects/hidden-objects-camera";
 import { selectRoundTargets } from "@/games/hidden-objects/hidden-objects-rounds";
 import {
   DIFFICULTY_PRESETS,
-  HIDDEN_OBJECTS,
-  SCENE_HEIGHT,
-  SCENE_ID,
-  SCENE_STATIONS,
-  SCENE_WIDTH,
   type HiddenObjectDefinition,
   type HintRung,
   type ListStyle,
+  type SceneDefinition,
   type SceneRegion,
   type StationId,
   type TargetId,
 } from "@/games/hidden-objects/hidden-objects-scene";
 
 /**
- * The Estúdio's rules: hit testing, the session (setup → playing → completed),
+ * Game 03's rules: hit testing, the session (setup → playing → completed),
  * the hint ladder and the result. Pure: no React, no DOM, no clock, no ambient
  * randomness — a round's list comes from the seed the "start" action carries.
+ *
+ * GAME03-MULTISCENE-03: the rules belong to no room. A session carries the room
+ * it explores (`state.scene`); everything that reads a room's targets, stations
+ * or size takes the scene first.
  */
 
 export const HIDDEN_OBJECTS_TITLE = "Estúdio das Descobertas";
 export const HIDDEN_OBJECTS_SUBTITLE = "Explore e encontre";
 
-const BY_ID = new Map(HIDDEN_OBJECTS.map((target) => [target.id, target]));
+/** Each room's pool by id, built once per room. */
+const byId = new WeakMap<SceneDefinition, Map<TargetId, HiddenObjectDefinition>>();
 
-export function targetById(id: TargetId): HiddenObjectDefinition {
-  const target = BY_ID.get(id);
-  if (!target) throw new Error(`Unknown target ${id}`);
+export function targetById(scene: SceneDefinition, id: TargetId): HiddenObjectDefinition {
+  let index = byId.get(scene);
+  if (!index) byId.set(scene, (index = new Map(scene.pool.map((target) => [target.id, target]))));
+  const target = index.get(id);
+  if (!target) throw new Error(`Unknown target ${id} in ${scene.id}`);
   return target;
 }
 
@@ -75,6 +78,7 @@ export function tolerancePxFor(difficulty: DifficultyLevel, pointerType: string)
  * are candidates: the rest of the pool is decoration in this session.
  */
 export function hitTest(
+  scene: SceneDefinition,
   point: Point,
   candidates: readonly TargetId[],
   scale: number,
@@ -83,7 +87,7 @@ export function hitTest(
   const reach = tolerancePx / Math.max(scale, 1e-6);
   let best: { id: TargetId; distance: number; centre: number } | null = null;
   for (const id of candidates) {
-    const region = targetById(id).region;
+    const region = targetById(scene, id).region;
     const distance = distanceToRegion(point, region);
     if (distance > reach) continue;
     const centre = Math.hypot(point.x - regionCenter(region).x, point.y - regionCenter(region).y);
@@ -108,6 +112,8 @@ export type SessionEvent =
   | { kind: "hint"; targetId: TargetId; stage: HintStage };
 
 export interface SessionState {
+  /** The room this session explores: chosen in setup, fixed from "Explorar" on. */
+  scene: SceneDefinition;
   status: SessionStatus;
   difficulty: DifficultyLevel;
   /**
@@ -134,6 +140,8 @@ export interface SessionState {
 }
 
 export type SessionAction =
+  /** Setup only: explore another room (nothing of the previous one is kept but the difficulty). */
+  | { type: "select-scene"; scene: SceneDefinition }
   | { type: "select-difficulty"; difficulty: DifficultyLevel }
   /** `seed`: drawn by the game when "Explorar" is pressed; it picks the round's list. */
   | { type: "start"; seed: number }
@@ -141,10 +149,13 @@ export type SessionAction =
   | { type: "tap"; point: Point; scale: number; pointerType: string }
   | { type: "focus-target"; targetId: TargetId }
   | { type: "hint" }
-  | { type: "restart" };
+  | { type: "restart" }
+  /** "Trocar de cena": leave this exploration (nothing is recorded) and choose again, in setup. */
+  | { type: "change-scene" };
 
-export function createSession(difficulty: DifficultyLevel = "easy"): SessionState {
+export function createSession(scene: SceneDefinition, difficulty: DifficultyLevel = "easy"): SessionState {
   return {
+    scene,
     status: "setup",
     difficulty,
     targets: [],
@@ -172,6 +183,18 @@ const freshRound = (state: SessionState): SessionState => ({
   round: state.round + 1,
 });
 
+/**
+ * Setup again, in `scene`: no list, nothing found, no hint — only the difficulty
+ * stays. The counters keep counting, so the view still tells every later round
+ * and every later event apart.
+ */
+const setupIn = (state: SessionState, scene: SceneDefinition): SessionState => ({
+  ...createSession(scene, state.difficulty),
+  round: state.round,
+  eventSeq: state.eventSeq,
+  hintSeq: state.hintSeq,
+});
+
 const emit = (state: SessionState, event: SessionEvent): SessionState => ({
   ...state,
   lastEvent: event,
@@ -192,14 +215,21 @@ export function hintSubject(state: SessionState): TargetId | null {
 
 export function sessionReducer(state: SessionState, action: SessionAction): SessionState {
   switch (action.type) {
+    case "select-scene":
+      return state.status !== "setup" || action.scene === state.scene ? state : setupIn(state, action.scene);
+
     case "select-difficulty":
       return state.status === "setup" ? { ...state, difficulty: action.difficulty } : state;
 
     case "start": {
       if (state.status !== "setup") return state;
       const roundSeed = action.seed >>> 0;
-      return freshRound({ ...state, targets: selectRoundTargets(state.difficulty, roundSeed), roundSeed });
+      return freshRound({ ...state, targets: selectRoundTargets(state.scene, state.difficulty, roundSeed), roundSeed });
     }
+
+    // Back to setup in the same room and difficulty: the round is dropped, a new "Explorar" draws a new one.
+    case "change-scene":
+      return state.status === "setup" ? state : setupIn(state, state.scene);
 
     // "Recomeçar": the same list from the top. A new list is a new exploration (a new entry).
     case "restart":
@@ -208,7 +238,7 @@ export function sessionReducer(state: SessionState, action: SessionAction): Sess
     case "tap": {
       if (state.status !== "playing") return state;
       const listed = state.targets;
-      const hit = hitTest(action.point, listed, action.scale, tolerancePxFor(state.difficulty, action.pointerType));
+      const hit = hitTest(state.scene, action.point, listed, action.scale, tolerancePxFor(state.difficulty, action.pointerType));
       // A free tap costs nothing: no counter, no penalty, nothing recorded.
       if (hit === null) return emit(state, { kind: "miss", point: action.point });
       if (state.foundIds.includes(hit)) return emit(state, { kind: "already", targetId: hit });
@@ -292,9 +322,9 @@ export function revealsExactly(difficulty: DifficultyLevel): boolean {
  *   reveal           — a halo exactly on the object;
  *   every other rung — none (Difícil never lights anything).
  */
-export function hintHalo(id: TargetId, difficulty: DifficultyLevel, stage: HintStage): HintHalo | null {
+export function hintHalo(scene: SceneDefinition, id: TargetId, difficulty: DifficultyLevel, stage: HintStage): HintHalo | null {
   const rung = hintRung(difficulty, stage);
-  const { region } = targetById(id);
+  const { region } = targetById(scene, id);
   const centre = regionCenter(region);
   const objectRadius = regionRadius(region);
   if (rung === "reveal") return { cx: centre.x, cy: centre.y, r: objectRadius + REVEAL_HALO_PADDING };
@@ -305,8 +335,8 @@ export function hintHalo(id: TargetId, difficulty: DifficultyLevel, stage: HintS
   const angle = hintAngle(id);
   const clampTo = (value: number, max: number) => Math.min(max - r * 0.25, Math.max(r * 0.25, value));
   return {
-    cx: clampTo(centre.x + Math.cos(angle) * offset, SCENE_WIDTH),
-    cy: clampTo(centre.y + Math.sin(angle) * offset, SCENE_HEIGHT),
+    cx: clampTo(centre.x + Math.cos(angle) * offset, scene.width),
+    cy: clampTo(centre.y + Math.sin(angle) * offset, scene.height),
     r,
   };
 }
@@ -322,23 +352,23 @@ export type HintCameraMove =
  * if it is not; reveal → frame the object. Direction and context leave the
  * camera where the Explorador put it.
  */
-export function hintCameraMove(id: TargetId, difficulty: DifficultyLevel, stage: HintStage): HintCameraMove | null {
+export function hintCameraMove(scene: SceneDefinition, id: TargetId, difficulty: DifficultyLevel, stage: HintStage): HintCameraMove | null {
   const rung = hintRung(difficulty, stage);
-  const target = targetById(id);
+  const target = targetById(scene, id);
   if (rung === "station") return { kind: "station", station: target.station };
   if (rung === "reveal") return { kind: "frame", bounds: regionBounds(target.region) };
-  const halo = hintHalo(id, difficulty, stage);
+  const halo = hintHalo(scene, id, difficulty, stage);
   return halo ? { kind: "circle", center: { x: halo.cx, y: halo.cy }, radius: halo.r } : null;
 }
 
-export function stationLabel(id: StationId): string {
-  return SCENE_STATIONS.find((station) => station.id === id)?.label ?? id;
+export function stationLabel(scene: SceneDefinition, id: StationId): string {
+  return scene.stations.find((station) => station.id === id)?.label ?? id;
 }
 
 /** The hint line for a rung. Only "Mostrar onde está" names the object: Difícil never does. */
-export function hintMessage(id: TargetId, difficulty: DifficultyLevel, stage: HintStage): string {
-  const target = targetById(id);
-  const station = SCENE_STATIONS.find((candidate) => candidate.id === target.station);
+export function hintMessage(scene: SceneDefinition, id: TargetId, difficulty: DifficultyLevel, stage: HintStage): string {
+  const target = targetById(scene, id);
+  const station = scene.stations.find((candidate) => candidate.id === target.station);
   switch (hintRung(difficulty, stage)) {
     case "station":
       return `Pista: procure ${station?.hintPhrase ?? "pela sala"}.`;
@@ -388,8 +418,8 @@ export function listStyleFor(difficulty: DifficultyLevel): ListStyle {
 }
 
 /** How the list shows one object right now. */
-export function listEntryFor(state: Pick<SessionState, "difficulty" | "foundIds">, id: TargetId): ListEntry {
-  const target = targetById(id);
+export function listEntryFor(state: Pick<SessionState, "scene" | "difficulty" | "foundIds">, id: TargetId): ListEntry {
+  const target = targetById(state.scene, id);
   const found = state.foundIds.includes(id);
   const style = listStyleFor(state.difficulty);
   if (found) {
@@ -409,7 +439,7 @@ export function listEntryFor(state: Pick<SessionState, "difficulty" | "foundIds"
 }
 
 /** How the Pista button refers to its subject: as the list does (Difícil: by its clue). */
-export function subjectText(state: Pick<SessionState, "difficulty" | "foundIds">, id: TargetId): string {
+export function subjectText(state: Pick<SessionState, "scene" | "difficulty" | "foundIds">, id: TargetId): string {
   return listEntryFor(state, id).text;
 }
 
@@ -428,15 +458,15 @@ export function announcementFor(state: SessionState): string {
   const event = state.lastEvent;
   if (!event) return "";
   if (event.kind === "found") {
-    const target = targetById(event.targetId);
+    const target = targetById(state.scene, event.targetId);
     const answered = listStyleFor(state.difficulty) === "clue" ? ` ${target.clue}` : "";
     const done = state.status === "completed";
     return done
-      ? `Encontrou: ${target.label}.${answered} Estúdio explorado!`
+      ? `Encontrou: ${target.label}.${answered} ${state.scene.copy.completeTitle}!`
       : `Encontrou: ${target.label}.${answered} ${progressLabel(state)}.`;
   }
-  if (event.kind === "already") return `Você já encontrou: ${targetById(event.targetId).label}.`;
-  if (event.kind === "hint") return hintMessage(event.targetId, state.difficulty, event.stage);
+  if (event.kind === "already") return `Você já encontrou: ${targetById(state.scene, event.targetId).label}.`;
+  if (event.kind === "hint") return hintMessage(state.scene, event.targetId, state.difficulty, event.stage);
   return "";
 }
 
@@ -445,8 +475,8 @@ export function announcementFor(state: SessionState): string {
  * neutral — how many objects were found (5, 6 or 8) — never reduced by hints,
  * "Mostrar onde está" or free taps, none of which is recorded. `sceneId` says
  * which room was explored (results saved before it existed are all the Estúdio
- * do Explorador) and `roundSeed` which list it asked for (with the difficulty,
- * it draws that same list again).
+ * do Explorador) and `roundSeed` which list it asked for (with the room and the
+ * difficulty, it draws that same list again). The summary is the room's own line.
  */
 export function buildHiddenObjectsResult(state: SessionState): Omit<GameResult, "id" | "playedAt"> {
   const total = state.targets.length;
@@ -455,13 +485,13 @@ export function buildHiddenObjectsResult(state: SessionState): Omit<GameResult, 
     activityTitle: HIDDEN_OBJECTS_TITLE,
     gameId: "hidden-objects",
     score: state.foundIds.length,
-    summary: "Você encontrou todos os objetos do Estúdio.",
+    summary: state.scene.copy.summary,
     details: {
       difficulty: state.difficulty,
       foundObjects: state.foundIds.length,
       totalObjects: total,
       completed: state.status === "completed",
-      sceneId: SCENE_ID,
+      sceneId: state.scene.id,
       roundSeed: state.roundSeed ?? 0,
     },
   };
