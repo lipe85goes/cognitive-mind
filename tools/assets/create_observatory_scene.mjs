@@ -1,5 +1,5 @@
 /**
- * Observatório do Explorador — the room's art kit (v1, GAME03-MULTISCENE-03).
+ * Observatório do Explorador — the room's art kit (v2, GAME03-CALIBRATION-02A; v1 was GAME03-MULTISCENE-03's).
  *
  * Painted here in SVG and finished with `sharp` (already a devDependency), the
  * way the Estúdio's kit is, with more passes: an albedo plate; a light pass
@@ -17,11 +17,21 @@
  * every look-alike exactly in its own, and the foreground layers only paint
  * inside that module's `opaque` rects — the module is read below.
  *
+ * GAME03-CALIBRATION-02A (kit v2): the same room, harder to search where the
+ * round model asked for it — five more objects tucked into what was already
+ * there (a mug at the end of a bookcase shelf, half behind its post; a
+ * horseshoe hung from the ladder's brass rail in front of the books; a set
+ * square behind the right star chart; a dried seahorse behind a bowl in the
+ * glass cabinet; a padlock among the map cabinet's brass pulls) and eight more
+ * look-alikes, each of the same shape or material as an object and of another
+ * kind. Nothing else moved. The audit adds `clutter`, measured on the shipped
+ * layers (hidden-objects-art-kit.mjs, measureClutter).
+ *
  * Writes:
- *   public/assets/hidden-objects/explorer-observatory/v1/{back,plate,front-top,front,front-right,hero}.webp
- *   public/assets/hidden-objects/explorer-observatory/v1/thumbs/<id>.webp
- *   docs/archive/hidden-objects/explorer-observatory/review/v1/*.webp (review boards)
- *   with --audit: docs/archive/hidden-objects/explorer-observatory/review/v1/fairness.json
+ *   public/assets/hidden-objects/explorer-observatory/v2/{back,plate,front-top,front,front-right,hero}.webp
+ *   public/assets/hidden-objects/explorer-observatory/v2/thumbs/<id>.webp
+ *   docs/archive/hidden-objects/explorer-observatory/review/v2/*.webp (review boards)
+ *   with --audit: docs/archive/hidden-objects/explorer-observatory/review/v2/fairness.json
  *
  * Usage: node tools/assets/create_observatory_scene.mjs [--audit] [--preview=DIR]
  *   --preview=DIR  renders the composed room and the review boards into DIR only (nothing else written)
@@ -34,6 +44,8 @@ import sharp from "sharp";
 import {
   auditRoom,
   boxOf,
+  composeShipped,
+  measureClutter,
   debugOverlaySvg,
   fit,
   grainLayer,
@@ -547,6 +559,64 @@ const ART = {
 };
 
 /** A target's art placed on the plate (or, with `into`, anywhere else). */
+// --- GAME03-CALIBRATION-02A: five objects tucked into what the room already had (kit v2) -------------
+
+Object.assign(ART, {
+  // at the end of a bookcase shelf, its right side behind the bookcase's post (tier C)
+  caneca: {
+    nominal: { w: 58, h: 60 },
+    body: `
+      <path d="M16 18 C2 18 2 44 16 44" stroke="#1f2d38" stroke-width="9" fill="none"/>
+      <path d="M16 18 C2 18 2 44 16 44" stroke="#5a7488" stroke-width="5.5" fill="none"/>
+      <path d="M14 6 H54 V52 C54 57 50 60 45 60 H23 C18 60 14 57 14 52 Z" fill="#4c667a" stroke="#1f2d38" stroke-width="1.6"/>
+      <ellipse cx="34" cy="6" rx="20" ry="4" fill="#24323e" stroke="#e8dcc0" stroke-width="1.8"/>
+      <path d="M14 42 H54" stroke="#d8c8a0" stroke-width="3" opacity=".75"/>
+      <path d="M21 12 V50" stroke="#ffffff" stroke-width="3" opacity=".22"/>`,
+  },
+  // hung from the ladder's brass rail, points up, in front of the top shelf's books (tier B)
+  ferradura: {
+    nominal: { w: 70, h: 78 },
+    body: `
+      <path d="M35 0 V62" stroke="#3a2a14" stroke-width="2"/>
+      <path d="M8 8 C2 32 4 62 35 75 C66 62 68 32 62 8 L49 8 C53 30 51 52 35 60 C19 52 17 30 21 8 Z" fill="#6f6b64" stroke="#d6ccb8" stroke-width="2.2"/>
+      <path d="M12 12 C8 34 12 56 30 68" stroke="#b9b3a6" stroke-width="2.4" fill="none" opacity=".6"/>
+      ${[[13, 24], [12, 38], [17, 52], [57, 24], [58, 38], [53, 52]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="2.4" fill="#2a2622"/>`).join("")}
+      <path d="M8 8 H21 M49 8 H62" stroke="#2a2622" stroke-width="3"/>`,
+  },
+  // hung on a nail behind the right star chart, its left corner under the paper (tier C)
+  esquadro: {
+    nominal: { w: 84, h: 84 },
+    body: `
+      <path d="M4 80 L4 4 L80 80 Z" fill="url(#woodLight)" stroke="#5a3a1f" stroke-width="1.8"/>
+      <path d="M18 66 L18 36 L48 66 Z" fill="#2f3958" stroke="#5a3a1f" stroke-width="1.4"/>
+      <path d="${Array.from({ length: 12 }, (_, i) => `M4 ${10 + i * 6} h${i % 2 ? 4 : 7}`).join(" ")}" stroke="#5a3a1f" stroke-width="1.2"/>
+      <path d="${Array.from({ length: 12 }, (_, i) => `M${10 + i * 6} 80 v-${i % 2 ? 4 : 7}`).join(" ")}" stroke="#5a3a1f" stroke-width="1.2"/>
+      <path d="M8 8 L76 76" stroke="#f3dcae" stroke-width="2" opacity=".45"/>
+      <circle cx="11" cy="15" r="3" fill="#2a1a0c"/>`,
+  },
+  // a dried seahorse in the glass cabinet, behind a bowl (tier C)
+  "cavalo-marinho": {
+    nominal: { w: 54, h: 84 },
+    body: `
+      <path d="M26 6 C34 2 42 8 40 16 C48 24 48 40 40 50 C34 58 30 62 32 70 C34 78 44 78 44 70 C44 64 38 64 38 68 C36 74 30 72 30 66 C28 58 30 52 26 46 C20 38 20 28 24 22 L10 24 C6 24 6 18 10 18 L24 16 C22 12 22 8 26 6 Z" fill="#c38a48" stroke="#5e3c1c" stroke-width="1.6"/>
+      <path d="M24 30 L15 34 L22 41 Z" fill="#e2b67a" stroke="#5e3c1c" stroke-width="1"/>
+      <path d="M32 24 H45 M31 30 H47 M30 36 H47 M30 42 H44 M30 48 H39" stroke="#7a5228" stroke-width="1.4"/>
+      <path d="M28 4 L30 0 M34 3 L37 0" stroke="#5e3c1c" stroke-width="1.6" stroke-linecap="round"/>
+      <circle cx="30" cy="12" r="2.6" fill="#2a1a0c"/>
+      <path d="M38 22 C44 30 44 40 38 48" stroke="#f3d6a6" stroke-width="2" fill="none" opacity=".5"/>`,
+  },
+  // hung from a drawer pull of the map cabinet, among the brass pulls and label cards (tier C)
+  cadeado: {
+    nominal: { w: 54, h: 70 },
+    body: `
+      <path d="M15 32 V18 C15 4 39 4 39 18 V32" stroke="#8e7c58" stroke-width="8" fill="none"/>
+      <path d="M15 32 V18 C15 4 39 4 39 18 V32" stroke="url(#steel)" stroke-width="6" fill="none"/>
+      <rect x="4" y="28" width="46" height="40" rx="7" fill="url(#brass)" stroke="#a88a52" stroke-width="1.8"/>
+      <path d="M8 34 H46" stroke="#f6dc92" stroke-width="2" opacity=".55"/>
+      <circle cx="27" cy="45" r="5" fill="#2a1a0c"/><path d="M25 47 L23 58 H31 L29 47 Z" fill="#2a1a0c"/>`,
+  },
+});
+
 function targetSvg(id, into = box(id)) {
   return fit(ART[id].body, ART[id].nominal, into);
 }
@@ -655,6 +725,122 @@ const LOOK_ART = {
       <path d="M32 52 L48 52 L44 46 L36 46 Z" fill="#d8b49a"/>`,
   },
 };
+
+// GAME03-CALIBRATION-02A (kit v2): eight more, each the same shape or material as an object and another kind of thing.
+Object.assign(LOOK_ART, {
+  // on the bookcase's crown, right of the owl: a brown glazed vase with two ear-like handles
+  "vaso-de-ceramica": {
+    nominal: { w: 40, h: 68 },
+    body: `
+      <path d="M10 16 L3 3 L15 11 Z M30 16 L37 3 L25 11 Z" fill="#7a4c27" stroke="#3e2414" stroke-width="1.2"/>
+      <path d="M10 14 C5 30 3 52 11 62 C15 67 25 67 29 62 C37 52 35 30 30 14 Z" fill="#8a5a32" stroke="#3e2414" stroke-width="1.6"/>
+      <ellipse cx="20" cy="14" rx="10" ry="3" fill="#3e2414"/>
+      <path d="M12 30 C12 44 14 52 18 58" stroke="#e9c48c" stroke-width="2" fill="none" opacity=".45"/>`,
+  },
+  // on a lower bookcase shelf: a lidded jar of the same glaze as the mug, no handle
+  "pote-de-ceramica": {
+    nominal: { w: 46, h: 58 },
+    body: `
+      <path d="M6 16 C4 34 6 52 12 56 H34 C40 52 42 34 40 16 Z" fill="#4c667a" stroke="#1f2d38" stroke-width="1.6"/>
+      <path d="M8 14 C8 6 38 6 38 14 Z" fill="#5a7488" stroke="#1f2d38" stroke-width="1.4"/>
+      <circle cx="23" cy="6" r="3.5" fill="#d8c8a0"/>
+      <path d="M6 36 H40" stroke="#d8c8a0" stroke-width="2.6" opacity=".7"/>
+      <path d="M12 20 V50" stroke="#ffffff" stroke-width="2.6" opacity=".2"/>`,
+  },
+  // on the floor by the books: a pair of knitted gloves — fingers, no soles
+  luvas: {
+    nominal: { w: 70, h: 40 },
+    body: `
+      <g stroke="#5a4a32" stroke-width="1.2">
+        <path d="M8 22 L4 10 M14 20 L12 6 M20 20 L20 6 M26 21 L28 8" stroke="#b8a07a" stroke-width="7" stroke-linecap="round"/>
+        <rect x="4" y="18" width="28" height="18" rx="7" fill="#b8a07a"/>
+        <path d="M32 26 L38 20" stroke="#b8a07a" stroke-width="7" stroke-linecap="round"/>
+        <path d="M44 24 L40 12 M50 22 L48 8 M56 22 L56 8 M62 23 L64 10" stroke="#9c845e" stroke-width="7" stroke-linecap="round"/>
+        <rect x="40" y="20" width="28" height="18" rx="7" fill="#9c845e"/>
+        <path d="M40 30 L34 26" stroke="#9c845e" stroke-width="7" stroke-linecap="round"/>
+      </g>
+      <path d="M6 32 H30 M42 34 H66" stroke="#e2d0a8" stroke-width="2" stroke-dasharray="3 3" opacity=".6"/>`,
+  },
+  // on the floor below the mouse hole: a rolled wool sock — no ears, no tail
+  meia: {
+    nominal: { w: 60, h: 36 },
+    body: `
+      <path d="M4 22 C4 10 18 6 30 8 C44 10 56 12 56 22 C56 32 44 34 30 33 C16 32 4 32 4 22 Z" fill="#8f8a82" stroke="#4a4640" stroke-width="1.4"/>
+      <path d="M40 9 C46 14 46 28 40 33" stroke="#6e6a62" stroke-width="2" fill="none"/>
+      <path d="M8 16 C20 14 34 14 46 16 M8 26 C20 28 34 28 46 26" stroke="#b5b0a6" stroke-width="2" fill="none" opacity=".6"/>
+      <ellipse cx="50" cy="21" rx="6" ry="10" fill="#7a3a34" opacity=".75"/>`,
+  },
+  // on the left wall by the star charts: a cloth pennant — no hole, no measure marks
+  flamula: {
+    nominal: { w: 56, h: 80 },
+    body: `
+      <path d="M2 6 H54" stroke="#6a4a26" stroke-width="5" stroke-linecap="round"/>
+      <path d="M6 8 H50 L28 76 Z" fill="#9e2a2a" stroke="#4a1010" stroke-width="1.4"/>
+      <path d="M10 14 H46 L28 64 Z" fill="none" stroke="#e7cf98" stroke-width="2"/>
+      <path d="${starPath(28, 26, 7)}" fill="#e7cf98"/>`,
+  },
+  // under the desk, by the basket: a red rubber ball — no stalk, no leaf
+  "bola-de-borracha": {
+    nominal: { w: 50, h: 50 },
+    body: `
+      <circle cx="25" cy="26" r="22" fill="#a8322c" stroke="#4a1210" stroke-width="1.6"/>
+      <path d="M5 22 C16 30 34 30 45 22" stroke="#e7cf98" stroke-width="4" fill="none"/>
+      <path d="M12 14 A16 16 0 0 1 26 7" stroke="#ffffff" stroke-width="2.4" fill="none" opacity=".4" stroke-linecap="round"/>`,
+  },
+  // on the atlases on the reading stool: a carved knight — a horse's head on a base, no curled tail
+  "peca-de-xadrez": {
+    nominal: { w: 40, h: 60 },
+    body: `
+      <path d="M6 58 H34 L32 50 H8 Z" fill="#4a2c18" stroke="#24140a" stroke-width="1.4"/>
+      <path d="M10 50 C8 40 12 34 16 30 L8 26 C6 20 10 12 18 8 L22 2 L25 8 C32 10 36 20 32 34 C30 40 30 46 30 50 Z" fill="#5c3a22" stroke="#24140a" stroke-width="1.4"/>
+      <circle cx="20" cy="15" r="2" fill="#e7cf98"/>
+      <path d="M26 12 C30 18 30 28 27 36" stroke="#c9905a" stroke-width="2" fill="none" opacity=".5"/>`,
+  },
+  // on a lower drawer of the map cabinet: a brass escutcheon with its keyhole — no shackle
+  fechadura: {
+    nominal: { w: 40, h: 50 },
+    body: `
+      <path d="M8 4 H32 C36 4 38 8 38 12 V40 C38 46 32 48 20 48 C8 48 2 46 2 40 V12 C2 8 4 4 8 4 Z" fill="url(#brass)" stroke="#5e3f14" stroke-width="1.6"/>
+      <circle cx="20" cy="22" r="5" fill="#2a1a0c"/><path d="M18 24 L16 36 H24 L22 24 Z" fill="#2a1a0c"/>
+      <circle cx="8" cy="10" r="1.8" fill="#5e3f14"/><circle cx="32" cy="10" r="1.8" fill="#5e3f14"/>`,
+  },
+  // lying on the panelling's rail under the dome's window: a paper tube with a printed pattern — one piece, no brass lens
+  caleidoscopio: {
+    nominal: { w: 120, h: 30 },
+    body: `
+      <rect x="10" y="5" width="104" height="20" rx="4" fill="#2f4a6e" stroke="#16243a" stroke-width="1.4"/>
+      ${Array.from({ length: 6 }, (_, i) => `<path d="M${18 + i * 16} 15 L${24 + i * 16} 8 L${30 + i * 16} 15 L${24 + i * 16} 22 Z" fill="${["#c9a24a", "#9e2a2a", "#4f8a6a"][i % 3]}" opacity=".9"/>`).join("")}
+      <rect x="2" y="3" width="12" height="24" rx="3" fill="#7a5a3a" stroke="#3a2614" stroke-width="1.4"/>
+      <circle cx="8" cy="15" r="3" fill="#1a120a"/>
+      <rect x="112" y="4" width="6" height="22" rx="2" fill="#7a5a3a" stroke="#3a2614" stroke-width="1.2"/>
+      <rect x="14" y="7" width="96" height="3" fill="#ffffff" opacity=".18"/>`,
+  },
+  // hung on a nail by the star charts: a brass protractor — a half moon of degrees, no right angle
+  transferidor: {
+    nominal: { w: 84, h: 46 },
+    body: `
+      <path d="M4 42 A38 38 0 0 1 80 42 Z" fill="#d8bf7a" fill-opacity=".8" stroke="#6a5426" stroke-width="1.6"/>
+      <path d="M18 42 A24 24 0 0 1 66 42" fill="none" stroke="#6a5426" stroke-width="1.2"/>
+      ${Array.from({ length: 13 }, (_, i) => {
+        const a = Math.PI - (i * Math.PI) / 12;
+        const c = Math.cos(a);
+        const d = Math.sin(a);
+        return `<path d="M${(42 + 38 * c).toFixed(1)} ${(42 - 38 * d).toFixed(1)} L${(42 + 31 * c).toFixed(1)} ${(42 - 31 * d).toFixed(1)}" stroke="#4a3a16" stroke-width="1.2"/>`;
+      }).join("")}
+      <circle cx="42" cy="38" r="3" fill="#2a1a0c"/>
+      <path d="M4 42 H80" stroke="#4a3a16" stroke-width="2"/>`,
+  },
+  // hung by a ribbon from a drawer pull of the map cabinet: an oval brass locket — no shackle, no keyhole
+  medalhao: {
+    nominal: { w: 40, h: 56 },
+    body: `
+      <path d="M20 2 V14" stroke="#6a2a2a" stroke-width="3"/>
+      <circle cx="20" cy="16" r="4" fill="none" stroke="#a8823c" stroke-width="2.2"/>
+      <ellipse cx="20" cy="37" rx="16" ry="18" fill="url(#brass)" stroke="#5e3f14" stroke-width="1.6"/>
+      <ellipse cx="20" cy="37" rx="10" ry="12" fill="none" stroke="#f3dca0" stroke-width="1.4" opacity=".7"/>
+      <path d="M14 30 C18 26 24 28 25 33" stroke="#ffffff" stroke-width="2" fill="none" opacity=".3"/>`,
+  },
+});
 
 function lookSvg(id) {
   const art = LOOK_ART[id];
@@ -893,7 +1079,7 @@ function floorAndRug() {
 
 // --- Cúpula ----------------------------------------------------------------------------------------------
 
-function bookcase() {
+function bookcase(omit) {
   const x0 = 190;
   const x1 = 580;
   const top = 466;
@@ -908,6 +1094,8 @@ function bookcase() {
   <rect x="${x0}" y="${top}" width="${x1 - x0}" height="${FLOOR_Y - top}" fill="#24150b" stroke="#120a05" stroke-width="3"/>
   ${shelves.map((y) => `<rect x="${x0}" y="${y}" width="${x1 - x0}" height="14" fill="url(#woodV)"/>${occlusion(x0, y + 10, x1 - x0, 16, 0.45)}`).join("")}
   ${books}
+  ${shadow(530, 880, 26, 4, 0.8)}${lookSvg("pote-de-ceramica")}
+  ${shadow(536, 740, 40, 4, 0.8)}${t(omit, "caneca")}
   <rect x="${x0 - 16}" y="${top - 14}" width="${x1 - x0 + 32}" height="26" fill="url(#woodV)" stroke="#1a0f08" stroke-width="2"/>
   <rect x="${x0 - 16}" y="${top - 14}" width="${x1 - x0 + 32}" height="4" fill="#d8a874" opacity=".5"/>
   <rect x="${x0}" y="${top}" width="18" height="${FLOOR_Y - top}" fill="url(#woodH)"/>
@@ -1059,6 +1247,8 @@ function cupulaFloor() {
   ${lookSvg("escova")}
   ${shadow(842, 1312, 80, 8, 0.7)}
   ${bookStack(790, 1310, [[110, 22, "#2d4a68"], [96, 18, "#7a3024", 6], [84, 16, "#bba57c", 10]])}
+  ${shadow(915, 1368, 38, 5, 0.75)}${lookSvg("luvas")}
+  ${shadow(630, 1270, 32, 5, 0.75)}${lookSvg("meia")}
   ${shadow(520, 1372, 110, 12, 0.8)}
   <rect x="420" y="1300" width="200" height="66" rx="8" fill="#3c4a5a" stroke="#141c24" stroke-width="3"/>
   <rect x="420" y="1300" width="200" height="12" rx="6" fill="#56687a"/>
@@ -1216,7 +1406,8 @@ function underDesk() {
   return `
   <path d="M1530 1188 L1664 1188 L1654 1252 L1540 1252 Z" fill="#8a6a3c" stroke="#3e2a14" stroke-width="2"/>
   ${[1196, 1212, 1228, 1244].map((y) => `<path d="M1534 ${y} L1660 ${y}" stroke="#5e4424" stroke-width="2"/>`).join("")}
-  ${lookSvg("novelo")}`;
+  ${lookSvg("novelo")}
+  ${shadow(1725, 1240, 24, 4, 0.7)}${lookSvg("bola-de-borracha")}`;
 }
 
 // --- Arquivo ---------------------------------------------------------------------------------------------
@@ -1273,6 +1464,9 @@ function mapCabinet(omit) {
   <rect x="${n(ox - 18)}" y="${oy + 36}" width="${n(colW + 36)}" height="${n(rowH)}" rx="3" fill="#6e4428" stroke="#2a170b" stroke-width="2.5"/>
   <rect x="${n(ox - 14)}" y="${oy + 38}" width="${n(colW + 28)}" height="4" fill="#d8a874" opacity=".5"/>
   <rect x="${n(ox + colW / 2 - 20)}" y="${n(oy + 36 + rowH / 2 - 5)}" width="40" height="10" rx="3" fill="url(#brass)"/>
+  ${lookSvg("fechadura")}
+  ${t(omit, "cadeado")}
+  ${lookSvg("medalhao")}
   ${t(omit, "gramofone")}
   ${t(omit, "gato")}
   ${bookStack(2918, top, [[56, 10, "#3c3833"], [52, 8, "#2d4a68", 2], [58, 12, "#6d5a3a", -2], [50, 9, "#bba57c", 3]])}`;
@@ -1316,6 +1510,7 @@ function curioCabinet(omit) {
   <path d="M3270 836 L3286 790 L3306 812 L3322 780 L3336 836 Z" fill="#9a8ab0" stroke="#5a4a6a" stroke-width="1.5"/>
   <circle cx="3140" cy="826" r="12" fill="#d6c8a8" stroke="#8a7a5a" stroke-width="1.2"/>
   ${bookStack(3132, 980, [[96, 16, "#683040"], [88, 14, "#21324f", 4]])}
+  ${t(omit, "cavalo-marinho")}
   <ellipse cx="3290" cy="960" rx="36" ry="20" fill="#3a6a8a" stroke="#1a3a4a" stroke-width="2"/>
   <path d="M3256 960 C3270 950 3310 950 3324 960" stroke="#d6ac5c" stroke-width="2" fill="none"/>
   <rect x="${x0 + 14}" y="${top + 14}" width="${x1 - x0 - 28}" height="${bottom - top - 160}" fill="url(#glassPane)" opacity=".35"/>
@@ -1390,7 +1585,8 @@ function readingStool() {
     [116, 17, "#7a3024", 8],
     [100, 15, "#4a6a3a", 4],
   ])}
-  <path d="${starPath(x + 66, seat - 44, 5)}" fill="#e7cf98"/>`;
+  <path d="${starPath(x + 66, seat - 44, 5)}" fill="#e7cf98"/>
+  ${shadow(3170, seat - 52, 20, 3, 0.7)}${lookSvg("peca-de-xadrez")}`;
 }
 
 // --- the composed plate ----------------------------------------------------------------------------------
@@ -1406,9 +1602,12 @@ function plateSvg({ omit = null, debug = false } = {}) {
   ${wainscot()}
   ${posts()}
   ${floorAndRug()}
-  ${bookcase()}
+  ${shadow(700, 869, 58, 4, 0.7)}${lookSvg("caleidoscopio")}
+  ${bookcase(omit)}
   ${ladder()}
+  ${t(omit, "ferradura")}
   ${t(omit, "coruja")}
+  ${shadow(568, 452, 22, 4, 0.8)}${lookSvg("vaso-de-ceramica")}
   ${t(omit, "pipa")}
   ${sideTable(omit)}
   ${mouseHole(omit)}
@@ -1417,7 +1616,13 @@ function plateSvg({ omit = null, debug = false } = {}) {
   ${eyepieceBox(omit)}
   ${chairAndBlanket(omit)}
   ${cupulaFloor()}
+  <rect x="2222" y="362" width="84" height="84" fill="#000" opacity=".3" filter="url(#soft6)"/>
+  ${t(omit, "esquadro")}
   ${wallCharts()}
+  <path d="M1480 330 V318" stroke="#3a2a14" stroke-width="2"/><circle cx="1480" cy="318" r="3" fill="#8a8580"/>
+  ${lookSvg("flamula")}
+  <path d="M1474 452 V444" stroke="#3a2a14" stroke-width="2"/><circle cx="1474" cy="444" r="3" fill="#8a8580"/>
+  ${lookSvg("transferidor")}
   ${leftShelf(omit)}
   ${rightShelf()}
   ${pendantLamp()}
@@ -1728,7 +1933,12 @@ async function main() {
       alone: (target) => `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}"><defs>${DEFS}</defs>${targetSvg(target.id)}</svg>`,
       composed: data,
     });
-    for (const row of rows) console.log(`${row.id.padEnd(14)} ${row.tier}  visible ${(row.visible * 100).toFixed(0).padStart(3)}%  contrast ${row.contrast.toFixed(2).padStart(5)}:1  edge ${row.edge.toFixed(2).padStart(5)}:1  look-alikes ${row.lookAlikes.join(", ") || "—"}`);
+    // GAME03-CALIBRATION-02A: how busy the room is around each object, on the layers as they ship
+    if (!preview) {
+      const shipped = await composeShipped(ROOM, (publicPath) => fs.readFileSync(path.join(ROOT, publicPath)));
+      for (const row of rows) row.clutter = measureClutter(shipped, W, H, TARGETS[row.id].region);
+    }
+    for (const row of rows) console.log(`${row.id.padEnd(14)} ${row.tier}  visible ${(row.visible * 100).toFixed(0).padStart(3)}%  contrast ${row.contrast.toFixed(2).padStart(5)}:1  edge ${row.edge.toFixed(2).padStart(5)}:1  clutter ${row.clutter ?? "—"}  look-alikes ${row.lookAlikes.join(", ") || "—"}`);
     const platePath = path.join(OUT, "plate.webp");
     const plateSha256 = !preview && fs.existsSync(platePath) ? createHash("sha256").update(fs.readFileSync(platePath)).digest("hex") : null;
     fs.writeFileSync(
@@ -1741,6 +1951,7 @@ async function main() {
             visible: "share of the target's own pixels the finished plate shows (plate rendered with and without the target)",
             contrast: "F4 as written: mean-luminance ratio, visible target vs a 24 su ring, on the composed room",
             edge: "median luminance ratio across the visible silhouette's edge (each edge pixel vs the background within 3 su)",
+            clutter: "share of busy pixels (Sobel luminance gradient > 40) in the ring 16–120 su around the object's box, on the shipped layers composed at rest",
           },
           targets: rows,
         },

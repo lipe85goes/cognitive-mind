@@ -22,7 +22,7 @@ import {
  *
  * A round is valid when it
  *   - lists the difficulty's number of objects, each once, and only objects its
- *     list style can show;
+ *     list style can show (a clue list: objects with a clue of its levels);
  *   - spreads over the room's stations as evenly as its size allows (each holds
  *     ⌊count/stations⌋ or ⌈count/stations⌉ of them), so every round crosses the
  *     whole room;
@@ -48,9 +48,15 @@ export function stationSpread(count: number, stations: number): { min: number; m
   return { min: Math.floor(count / stations), max: Math.ceil(count / stations) };
 }
 
-/** Whether the difficulty's list style can present this object. */
+/**
+ * Whether the difficulty's list can present this object: its list style may
+ * show it, and a clue list has a clue of each level it tells (the list's, and
+ * a reclue's) in the object's bank.
+ */
 export function listableIn(target: HiddenObjectDefinition, preset: DifficultyPreset): boolean {
-  return !target.listedAs || target.listedAs.includes(preset.listStyle);
+  if (target.listedAs && !target.listedAs.includes(preset.listStyle)) return false;
+  const tells = [preset.listClue, preset.reclue].filter((level) => level !== null);
+  return tells.every((level) => target.clues.some((clue) => clue.level === level));
 }
 
 /** Every round the structural rules allow (count, list style, station spread), before the round rule reads it. */

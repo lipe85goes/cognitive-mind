@@ -21,6 +21,22 @@
  * (data, camera, controller, rounds, rules, results), the shared platform, the
  * difficulty contract, the dependencies — and hold on both.
  *
+ * GAME03-CALIBRATION-02A changed the difficulty contract on purpose, for every
+ * room at once (Difficulty V3: clue banks, measured round rules, art kits v2),
+ * as M20 foresaw. The checks it superseded read each tree by its own
+ * generation ("calibrated trees": isCalibrated in the harness): M02 reads a
+ * clue bank and the object's measurements where the one clue was; M15's
+ * independent brute force applies Difficulty V3's measured rule
+ * (v3RoundKeeper) and does not ask Difícil for the glance finds its rule
+ * excludes; M16 holds every variant of every clue bank to what the one clue
+ * was held to; M20 holds the contract frozen at Difficulty V3. M06 keeps the
+ * Estúdio exactly as EXPERIENCE-02 left it wherever the calibration did not
+ * reach — the camera, the controller, the room's frame and layers' geometry,
+ * every object and look-alike EXPERIENCE-02 had (where it is, what it is
+ * called, how its hints read), the hit testing of those objects, the intro
+ * hero byte for byte — and leaves the rounds, the sessions' lists and the
+ * art kit to Difficulty V3's own contract (hidden-objects-calibration-tests.mjs).
+ *
  * Usage:
  *   node tools/validation/hidden-objects-multiscene-tests.mjs                  # the working tree
  *   node tools/validation/hidden-objects-multiscene-tests.mjs --rev=<commit>   # every source at <commit>
@@ -62,11 +78,13 @@ import {
   pureModules,
   readBinary,
   regionGap,
+  isCalibrated,
   same,
   sameControllerRecord,
   sorted,
   sourceFiles,
   staticGraph,
+  v3RoundKeeper,
   webpSize,
 } from "./hidden-objects-harness.mjs";
 
@@ -91,15 +109,23 @@ const OBSERVATORY_ID = "explorer-observatory";
 const SCENE_IDS = [STUDIO_ID, OBSERVATORY_ID];
 const DIFFICULTIES = ["easy", "medium", "hard"];
 /** The difficulty contract is frozen (CALIBRATION-02A may change it later, for every room at once). */
-const FROZEN = {
+const FROZEN_V2 = {
   easy: { count: 5, tiers: { A: 3, B: 2, C: 0 }, listStyle: "picture", hintLadder: ["station", "area", "reveal"], hintRadius: 240, tolerancePx: { touch: 16, mouse: 8 } },
   medium: { count: 6, tiers: { A: 1, B: 3, C: 2 }, listStyle: "silhouette", hintLadder: ["station", "wide-area", "direction"], hintRadius: 400, tolerancePx: { touch: 12, mouse: 6 } },
   hard: { count: 8, tiers: { A: 1, B: 3, C: 4 }, listStyle: "clue", hintLadder: ["station", "context"], hintRadius: 0, tolerancePx: { touch: 10, mouse: 5 } },
+};
+/** GAME03-CALIBRATION-02A changed it, for every room at once: Difficulty V3 (a round's tiers are bounds). */
+const FROZEN_V3 = {
+  easy: { count: 5, tiers: { A: [0, 1], B: [0, 5], C: [1, 5] }, listStyle: "picture", hintLadder: ["station", "area", "reveal"], hintRadius: 240, tolerancePx: { touch: 16, mouse: 8 } },
+  medium: { count: 6, tiers: { A: [0, 1], B: [0, 6], C: [2, 6] }, listStyle: "clue", hintLadder: ["station", "reclue", "direction"], hintRadius: 0, tolerancePx: { touch: 12, mouse: 6 } },
+  hard: { count: 8, tiers: { A: [0, 0], B: [0, 4], C: [4, 8] }, listStyle: "clue", hintLadder: ["station", "context"], hintRadius: 0, tolerancePx: { touch: 10, mouse: 5 } },
 };
 /** The scene-definition contract: what every room declares. */
 const SCENE_FIELDS = ["backdrop", "copy", "height", "id", "initialStation", "layers", "lookAlikes", "name", "pool", "preview", "stations", "thumbnail", "width"];
 const COPY_FIELDS = ["completeTitle", "summary", "tagline", "viewportLabel"];
 const TARGET_FIELDS = ["accessibleLabel", "clue", "hintContext", "hintDirection", "hintRegion", "id", "label", "region", "station", "tier"];
+/** A calibrated tree: a clue bank and the object's measurements where the one clue was. */
+const targetFieldsOf = (tree) => (isCalibrated(tree) ? [...TARGET_FIELDS.filter((f) => f !== "clue"), "clues", "measured"] : TARGET_FIELDS);
 /** The fairness floors (Discovery §9; the same numbers the Estúdio is held to — never lowered for new art). */
 const VISIBLE_FLOOR = { A: 0.8, B: 0.6, C: 0.4 };
 const EDGE_FLOOR = 1.3;
@@ -112,6 +138,10 @@ const LOOKALIKE_LIMIT = { A: 1, B: 2, C: 3 };
 /** A tap on a look-alike's centre, with every difficulty's touch reach, at this scale (px/su), finds nothing (the Estúdio's E16). */
 const LOOKALIKE_TAP_SCALE = 0.375;
 const CLUE_MAX_CHARS = 48;
+/** A direct variant of a clue bank is only said by a hint banner (Médio's reclue): one more short clause. */
+const DIRECT_CLUE_MAX_CHARS = 56;
+/** Every clue an object can be told by, with the length it must fit: its bank's variants, or its one clue. */
+const cluesOf = (t) => (Array.isArray(t.clues) ? t.clues.map((c) => ({ text: c.text, max: c.level === "direct" ? DIRECT_CLUE_MAX_CHARS : CLUE_MAX_CHARS })) : [{ text: t.clue, max: CLUE_MAX_CHARS }]);
 const COLOUR_WORDS = /\b(azul|vermelh[oa]|verde|amarel[oa]|rox[oa]|rosa|laranja|pret[oa]|branc[oa]|cinza|marrom|dourad[oa]|pratead[oa])\b/i;
 /** A room's art (layers, thumbnails, preview) stays light: the skeleton's entry budget, per room. */
 const ROOM_ENTRY_BUDGET_BYTES = 1_300_000;
@@ -341,7 +371,7 @@ async function startIn(tree, sceneId, difficulty, seed, options = {}) {
 }
 
 /** Every valid round the rules allow, found the slow way (written apart from the product's enumeration). */
-function bruteForceRounds(pool, preset, stations) {
+function bruteForceRounds(pool, preset, stations, keep = null) {
   const k = preset.count;
   const eligible = pool.filter((t) => !t.listedAs || t.listedAs.includes(preset.listStyle));
   const fewest = Math.floor(k / stations.length);
@@ -349,17 +379,76 @@ function bruteForceRounds(pool, preset, stations) {
   const found = [];
   const pick = (start, chosen) => {
     if (chosen.length === k) {
+      const held = stations.map((s) => chosen.filter((t) => t.station === s.id).length);
+      if (!held.every((n) => n >= fewest && n <= most)) return;
       const tiers = { A: 0, B: 0, C: 0 };
       for (const t of chosen) tiers[t.tier] += 1;
-      if (!same(tiers, preset.tiers)) return;
-      const held = stations.map((s) => chosen.filter((t) => t.station === s.id).length);
-      if (held.every((n) => n >= fewest && n <= most)) found.push(chosen.map((t) => t.id).sort().join());
+      // a calibrated tree: Difficulty V3's measured rule (v3RoundKeeper); before it, the difficulty's one tier mix
+      if (keep ? keep(chosen.map((t) => t.id)) : same(tiers, preset.tiers)) found.push(chosen.map((t) => t.id).sort().join());
       return;
     }
     for (let i = start; i <= eligible.length - (k - chosen.length); i += 1) pick(i + 1, [...chosen, eligible[i]]);
   };
   pick(0, []);
   return found;
+}
+
+/**
+ * M06 on a calibrated tree (GAME03-CALIBRATION-02A): the Estúdio exactly as
+ * EXPERIENCE-02 left it wherever the calibration did not reach. The room's
+ * frame, the layers' geometry, every object and look-alike EXPERIENCE-02 had
+ * (where it is, what it is called, its tier, station and hint lines — only its
+ * one clue became a clue bank, and it gained its measurements), the camera,
+ * the controller, the hit testing of those objects and the intro hero (byte
+ * for byte). The rounds, the sessions' lists, the difficulty contract and the
+ * art kit are Difficulty V3's: hidden-objects-calibration-tests.mjs holds them.
+ */
+function studioBeyondTheCalibration(tree, mine, base) {
+  const dataKeys = ["SCENE_ID", "SCENE_WIDTH", "SCENE_HEIGHT", "SAFE_MARGIN_X", "SAFE_MARGIN_Y", "SCENE_STATIONS", "LOOKALIKE_CLEARANCE_SU", "DIFFICULTY_ORDER"];
+  const dataDiffers = dataKeys.filter((key) => !same(mine.scene[key], base.scene[key]));
+  const geometry = (layers) => layers.map((l) => ({ id: l.id, rect: l.rect, parallax: l.parallax, opaque: l.opaque }));
+  if (!same(geometry(mine.scene.SCENE_LAYERS), geometry(base.scene.SCENE_LAYERS))) dataDiffers.push("SCENE_LAYERS geometry");
+  // the one clue became a clue bank and the object gained its measurements; a listedAs that only kept an object
+  // out of the silhouette list (a style Difficulty V3 dropped) says nothing any more
+  const asBefore = (target) => {
+    const rest = Object.fromEntries(Object.entries(target).filter(([key]) => !["clue", "clues", "measured", "listedAs"].includes(key)));
+    const styles = target.listedAs?.filter((style) => style !== "silhouette");
+    return styles && !(styles.includes("picture") && styles.includes("clue")) ? { ...rest, listedAs: styles } : rest;
+  };
+  const objectsMoved = base.scene.HIDDEN_OBJECTS.filter((t) => {
+    const now = mine.scene.HIDDEN_OBJECTS.find((candidate) => candidate.id === t.id);
+    return !now || !same(asBefore(now), asBefore(t));
+  }).map((t) => t.id);
+  const lookAlikesMoved = base.scene.SCENE_LOOKALIKES.filter((l) => !same(mine.scene.SCENE_LOOKALIKES.find((candidate) => candidate.id === l.id), l)).map((l) => l.id);
+  const thumbsDiffer = base.scene.HIDDEN_OBJECTS.filter((t) => mine.scene.thumbnailSrc(t.id) !== base.scene.thumbnailSrc(t.id).replace("/v1/", "/v2/")).map((t) => t.id);
+  const cameraSame = JSON.stringify(cameraSweep(mine.camera)) === cached(BASE_TREE, "ms-sweep", () => JSON.stringify(cameraSweep(base.camera)));
+  const controllerSame = [false, true].every((reducedMotion) =>
+    sameControllerRecord(controllerRecord(tree, { reducedMotion }), cached(BASE_TREE, `ms-controller:${reducedMotion}`, () => controllerRecord(BASE_TREE, { reducedMotion }))),
+  );
+  // hit testing on a grid, at three scales: EXPERIENCE-02's objects listed, the same answers
+  const theirIds = base.scene.HIDDEN_OBJECTS.map((t) => t.id);
+  let hitsDiffer = 0;
+  for (let x = 0; x <= 3200; x += 40) {
+    for (let y = 0; y <= 1600; y += 40) {
+      for (const [scale, tol] of [[0.375, 16], [0.8, 10], [1.25, 5]]) {
+        if (mine.model.hitTest({ x, y }, theirIds, scale, tol) !== base.model.hitTest({ x, y }, theirIds, scale, tol)) hitsDiffer += 1;
+      }
+    }
+  }
+  const hero = "public/assets/hidden-objects/explorer-studio/v1/hero.webp";
+  const heroKept = tree.exists(hero) && sha256(readBinary(tree, hero)) === sha256(readBinary(BASE_TREE, hero));
+  return {
+    pass: dataDiffers.length === 0 && objectsMoved.length === 0 && lookAlikesMoved.length === 0 && thumbsDiffer.length === 0 && cameraSame && controllerSame && hitsDiffer === 0 && heroKept,
+    calibrated: "rounds, sessions' lists, difficulty and art kit are Difficulty V3's (hidden-objects-calibration-tests.mjs)",
+    dataDiffers,
+    objectsMoved,
+    lookAlikesMoved,
+    thumbsDiffer,
+    cameraSame,
+    controllerSame,
+    hitsDiffer,
+    heroKept,
+  };
 }
 
 /** An old Game 03 result exactly as EXPERIENCE-02 saved it, and an old Trilha result. */
@@ -432,7 +521,7 @@ async function runChecks(tree) {
       const pool = scene.pool;
       if (new Set(pool.map((t) => t.id)).size !== pool.length || new Set(pool.map((t) => t.label)).size !== pool.length) p("duplicate target ids or labels");
       for (const t of pool) {
-        const fields = TARGET_FIELDS.filter((f) => !(f in t) || (typeof t[f] === "string" && !t[f].trim()));
+        const fields = targetFieldsOf(tree).filter((f) => !(f in t) || (typeof t[f] === "string" && !t[f].trim()) || (Array.isArray(t[f]) && t[f].length === 0));
         if (fields.length) p(`${t.id} lacks ${fields.join(",")}`);
         if (!scene.stations.some((s) => s.id === t.station)) p(`${t.id} in an unknown station`);
         if (!["A", "B", "C"].includes(t.tier)) p(`${t.id} tier ${t.tier}`);
@@ -564,6 +653,7 @@ async function runChecks(tree) {
     // the Estúdio, read the way the earlier suites read it (bound to the Estúdio on a multiscene tree), against 58b5f08
     const mine = pureModules(tree);
     const base = pureModules(BASE_TREE);
+    if (isCalibrated(tree)) return studioBeyondTheCalibration(tree, mine, base);
     const dataKeys = ["SCENE_ID", "SCENE_WIDTH", "SCENE_HEIGHT", "SAFE_MARGIN_X", "SAFE_MARGIN_Y", "SCENE_STATIONS", "HIDDEN_OBJECTS", "SCENE_LOOKALIKES", "LOOKALIKE_CLEARANCE_SU", "DIFFICULTY_PRESETS", "DIFFICULTY_ORDER", "SCENE_ASSET_BASE", "SCENE_LAYERS"];
     const dataDiffers = dataKeys.filter((key) => !same(mine.scene[key], base.scene[key]));
     const thumbsDiffer = mine.scene.HIDDEN_OBJECTS.filter((t) => mine.scene.thumbnailSrc(t.id) !== base.scene.thumbnailSrc(t.id)).map((t) => t.id);
@@ -870,14 +960,16 @@ async function runChecks(tree) {
   });
 
   await check("M15", "multiscene", "EVERY_ROUND_CROSSES_ITS_ROOM", () => {
-    const { scenes, rounds, contract } = rooms(tree);
+    const { scenes, rounds, contract, graph } = rooms(tree);
+    const keeper = v3RoundKeeper(tree);
+    const difficulty = keeper ? graph.require(FILES.difficulty) : null;
     const problems = [];
     const counts = {};
     for (const scene of scenes) {
       for (const d of DIFFICULTIES) {
         const preset = contract.DIFFICULTY_PRESETS[d];
         const valid = rounds.validRounds(scene, d);
-        const brute = bruteForceRounds(scene.pool, preset, scene.stations);
+        const brute = bruteForceRounds(scene.pool, preset, scene.stations, keeper && ((ids) => keeper(scene, d, ids)));
         counts[`${scene.id}/${d}`] = valid.length;
         if (!same(sorted(valid.map((r) => [...r].sort().join())), sorted(brute))) problems.push(`${scene.id}/${d}: enumeration ≠ brute force (${valid.length} vs ${brute.length})`);
         if (valid.length < 20) problems.push(`${scene.id}/${d}: only ${valid.length} rounds`);
@@ -889,11 +981,16 @@ async function runChecks(tree) {
           if (held.some((n) => n < fewest || n > most)) problems.push(`${scene.id}/${d}: ${round.join(",")} crowds a station`);
           const tiers = { A: 0, B: 0, C: 0 };
           for (const id of round) tiers[byId[id].tier] += 1;
-          if (!same(tiers, preset.tiers) || new Set(round).size !== preset.count) problems.push(`${scene.id}/${d}: ${round.join(",")} breaks the mix`);
+          if ((keeper ? !keeper(scene, d, round) : !same(tiers, preset.tiers)) || new Set(round).size !== preset.count) problems.push(`${scene.id}/${d}: ${round.join(",")} breaks the mix`);
         }
-        // every object the list style can show is reachable, and drawing is not stuck on a few rounds
+        // every object the list style can show is reachable, and drawing is not stuck on a few rounds (a calibrated
+        // tree: every object its tiers allow, except a glance find where the rule allows none)
         const reachable = new Set(valid.flat());
-        const listable = scene.pool.filter((t) => (!t.listedAs || t.listedAs.includes(preset.listStyle)) && preset.tiers[t.tier] > 0);
+        const allowed = (t) =>
+          keeper
+            ? preset.round.tiers[t.tier][1] > 0 && (preset.round.maxPopOuts > 0 || difficulty.loadOf(scene, t.id) >= difficulty.POP_OUT_BELOW)
+            : preset.tiers[t.tier] > 0;
+        const listable = scene.pool.filter((t) => (!t.listedAs || t.listedAs.includes(preset.listStyle)) && allowed(t));
         if (listable.some((t) => !reachable.has(t.id))) problems.push(`${scene.id}/${d}: an object can never be asked for`);
         const random = lcg(0x15 + d.length);
         const seen = new Set();
@@ -975,9 +1072,11 @@ async function runChecks(tree) {
     const labelWords = new Set(pool.flatMap((t) => words(t.label)));
     for (const t of pool) {
       if (COLOUR_WORDS.test(t.label) || COLOUR_WORDS.test(t.accessibleLabel)) problems.push(`F7 ${t.id} named by a colour`);
-      if (t.clue.length > CLUE_MAX_CHARS) problems.push(`clue ${t.id} too long`);
-      const clueWords = new Set(words(t.clue));
-      for (const other of pool) if (words(other.label).some((w) => clueWords.has(w))) problems.push(`clue of ${t.id} names ${other.id}`);
+      for (const { text, max } of cluesOf(t)) {
+        if (text.length > max) problems.push(`clue ${t.id} too long`);
+        const clueWords = new Set(words(text));
+        for (const other of pool) if (words(other.label).some((w) => clueWords.has(w))) problems.push(`clue of ${t.id} names ${other.id}`);
+      }
       for (const field of ["hintRegion", "hintDirection", "hintContext"]) if (words(t[field]).some((w) => words(t.label).includes(w))) problems.push(`${field} of ${t.id} names it`);
     }
     // look-alikes: in their target's station, clear of every target, not too many, never named like a target or by a clue
@@ -987,7 +1086,7 @@ async function runChecks(tree) {
       if (scene.stations.find((s) => c.x >= s.span.x0 && c.x < s.span.x1)?.id !== target.station) problems.push(`look-alike ${l.id} not in ${target.station}`);
       for (const t of pool) if (regionGap(model, l.region, t.region) < LOOKALIKE_CLEARANCE_SU - EPS) problems.push(`look-alike ${l.id} ${regionGap(model, l.region, t.region).toFixed(1)} su from ${t.id}`);
       if (words(l.label).some((w) => labelWords.has(w))) problems.push(`look-alike ${l.id} shares a target's name`);
-      if (pool.some((t) => normalizeText(t.clue).includes(normalizeText(l.label)))) problems.push(`look-alike ${l.id} named by a clue`);
+      if (pool.some((t) => cluesOf(t).some(({ text }) => normalizeText(text).includes(normalizeText(l.label))))) problems.push(`look-alike ${l.id} named by a clue`);
       for (const d of DIFFICULTIES) if (model.hitTest(scene, c, pool.map((t) => t.id), LOOKALIKE_TAP_SCALE, model.tolerancePxFor(d, "touch")) !== null) problems.push(`${d}: tapping ${l.id} finds something`);
     }
     for (let i = 0; i < scene.lookAlikes.length; i += 1) for (let j = i + 1; j < scene.lookAlikes.length; j += 1) if (regionGap(model, scene.lookAlikes[i].region, scene.lookAlikes[j].region) <= 0) problems.push(`look-alikes ${scene.lookAlikes[i].id}/${scene.lookAlikes[j].id} overlap`);
@@ -1154,7 +1253,7 @@ async function runChecks(tree) {
     const actual = Object.fromEntries(
       DIFFICULTIES.map((d) => {
         const p = scene.DIFFICULTY_PRESETS[d];
-        return [d, { count: p.count, tiers: p.tiers, listStyle: p.listStyle, hintLadder: [...p.hintLadder], hintRadius: p.hintRadius, tolerancePx: p.tolerancePx }];
+        return [d, { count: p.count, tiers: p.tiers ?? p.round?.tiers, listStyle: p.listStyle, hintLadder: [...p.hintLadder], hintRadius: p.hintRadius, tolerancePx: p.tolerancePx }];
       }),
     );
     // no room brings its own difficulty, and nothing in Game 03 counts time, lives or score against the Explorador
@@ -1162,7 +1261,8 @@ async function runChecks(tree) {
     const pressure = listFiles(tree, DIR)
       .filter((file) => /\.(ts|tsx)$/.test(file))
       .filter((file) => /setInterval|Date\.now|performance\.now\(\)\s*-|\blives\b|\bstreak|\branking|countdown|timeLeft/i.test(codeOnly(tree.read(file))) && !file.endsWith("hidden-objects-controller.ts"));
-    return { pass: same(actual, FROZEN) && same(scene.DIFFICULTY_ORDER, DIFFICULTIES) && perRoomPresets.length === 0 && pressure.length === 0, actual, perRoomPresets, pressure };
+    const frozen = isCalibrated(tree) ? FROZEN_V3 : FROZEN_V2;
+    return { pass: same(actual, frozen) && same(scene.DIFFICULTY_ORDER, DIFFICULTIES) && perRoomPresets.length === 0 && pressure.length === 0, actual, perRoomPresets, pressure };
   });
 
   return results;

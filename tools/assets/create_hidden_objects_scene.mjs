@@ -1,5 +1,5 @@
 /**
- * Estúdio das Descobertas — the scene's art kit (v1, GAME03-EXPERIENCE-02).
+ * Estúdio das Descobertas — the scene's art kit (v2, GAME03-CALIBRATION-02A; v1 was GAME03-EXPERIENCE-02's).
  *
  * The room is painted here, in SVG, and finished with `sharp` (already a
  * devDependency): an albedo plate, a light pass multiplied over it (the window's
@@ -16,11 +16,21 @@
  * that module's `opaque` rects — the module is transpiled and read below, so the
  * art cannot drift from the data the game hit-tests against.
  *
+ * GAME03-CALIBRATION-02A (kit v2): the same room, harder to search where the
+ * round model asked for it — five more objects tucked into what was already
+ * there (a snail on the wainscot under the sill, a spinning top on the rug's
+ * edge, scissors under the map's edge, a pine cone on the wall shelf, a
+ * harmonica on the book pile at the foot of the bookcase) and eleven more
+ * look-alikes, each of the same shape or material as an object and of another
+ * kind. Nothing else moved. The audit adds `clutter`, measured on the shipped
+ * layers (hidden-objects-art-kit.mjs, measureClutter). The intro art stays kit
+ * v1's hero (the platform's world visuals name it; it is the room's picture).
+ *
  * Writes:
- *   public/assets/hidden-objects/explorer-studio/v1/{back,plate,front,front-right,hero}.webp
- *   public/assets/hidden-objects/explorer-studio/v1/thumbs/<id>.webp
- *   docs/archive/hidden-objects/explorer-studio/review/v1/*.webp (review boards)
- *   with --audit: docs/archive/hidden-objects/explorer-studio/review/v1/fairness.json
+ *   public/assets/hidden-objects/explorer-studio/v2/{back,plate,front,front-right}.webp
+ *   public/assets/hidden-objects/explorer-studio/v2/thumbs/<id>.webp
+ *   docs/archive/hidden-objects/explorer-studio/review/v2/*.webp (review boards)
+ *   with --audit: docs/archive/hidden-objects/explorer-studio/review/v2/fairness.json
  *   with --home:  public/illustrations/home/dioramas/discovery/discovery-<pass>.webp
  *                 (the Home maquette — the mission's quality reference, so it is
  *                 only rewritten when asked)
@@ -35,6 +45,7 @@ import vm from "node:vm";
 import { fileURLToPath } from "node:url";
 import sharp from "sharp";
 import ts from "typescript";
+import { composeShipped, measureClutter } from "./hidden-objects-art-kit.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const CONTRACT_MODULE = path.join(ROOT, "src/games/hidden-objects/hidden-objects-scene.ts");
@@ -199,6 +210,15 @@ const DEFS = `
   </linearGradient>
   <linearGradient id="inkGlass" x1="0" y1="0" x2="1" y2="0">
     <stop offset="0" stop-color="#3a4448"/><stop offset=".4" stop-color="#1c2326"/><stop offset="1" stop-color="#0c1012"/>
+  </linearGradient>
+  <radialGradient id="snailShell" cx=".4" cy=".35" r=".7">
+    <stop offset="0" stop-color="#b98652"/><stop offset=".55" stop-color="#7c4f2b"/><stop offset="1" stop-color="#4a2c16"/>
+  </radialGradient>
+  <linearGradient id="nickelDim" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#b9b6ad"/><stop offset=".5" stop-color="#8a867c"/><stop offset="1" stop-color="#57544d"/>
+  </linearGradient>
+  <linearGradient id="pineCone" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#9b6a3c"/><stop offset=".6" stop-color="#6b4325"/><stop offset="1" stop-color="#3f2513"/>
   </linearGradient>
   <linearGradient id="kilim" x1="0" y1="0" x2="0" y2="1">
     <stop offset="0" stop-color="#8a3a2c"/><stop offset="1" stop-color="#5e2219"/>
@@ -545,6 +565,106 @@ const LOOK_ART = {
   },
 };
 
+// GAME03-CALIBRATION-02A (kit v2): eleven more, each the same shape or material as an object and another kind of thing.
+Object.assign(LOOK_ART, {
+  // hanging from the curtain rod by a chain, right of the arch: a wire basket — open, no door, no perch
+  "cesta-de-arame": {
+    nominal: { w: 52, h: 74 },
+    body: `
+      <path d="M26 0 V18" stroke="#3a2a14" stroke-width="2" stroke-dasharray="3 2"/>
+      <path d="M6 44 C6 22 46 22 46 44" fill="none" stroke="url(#bronzeAged)" stroke-width="2.6"/>
+      <g stroke="url(#bronzeAged)" stroke-width="1.6" fill="none"><path d="M26 20 C18 26 12 34 10 44 M26 20 V44 M26 20 C34 26 40 34 42 44"/></g>
+      <path d="M6 44 C6 60 14 70 26 70 C38 70 46 60 46 44 Z" fill="#2a3b1e" stroke="url(#bronzeAged)" stroke-width="2"/>
+      <g fill="url(#leaf)"><ellipse cx="16" cy="46" rx="9" ry="5" transform="rotate(-20 16 46)"/><ellipse cx="34" cy="44" rx="9" ry="5" transform="rotate(24 34 44)"/><ellipse cx="26" cy="40" rx="7" ry="4"/></g>
+      <path d="M8 52 H44 M12 62 H40" stroke="url(#bronzeAged)" stroke-width="1.4" opacity=".9"/>`,
+  },
+  // carved into the wainscot panel left of the snail: a wooden spiral rosette
+  "roseta-entalhada": {
+    nominal: { w: 48, h: 48 },
+    body: `
+      <circle cx="24" cy="24" r="22" fill="#5c3a20" stroke="#2b170b" stroke-width="1.6"/>
+      <circle cx="24" cy="24" r="17" fill="none" stroke="#a87242" stroke-width="1.4" opacity=".7"/>
+      <path d="M24 24 a3 3 0 0 1 3 3 a6 6 0 0 1 -6 6 a9 9 0 0 1 -9 -9 a12 12 0 0 1 12 -12 a14 14 0 0 1 14 14" stroke="#2b170b" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <path d="M10 16 A16 16 0 0 1 22 8" stroke="#d29a62" stroke-width="2" fill="none" opacity=".5" stroke-linecap="round"/>`,
+  },
+  // dropped on the rug by the spinning top: an ivory pawn — round head, no stripes, it does not spin
+  "peao-de-xadrez": {
+    nominal: { w: 40, h: 64 },
+    body: `
+      <ellipse cx="20" cy="60" rx="17" ry="4" fill="#3a2a1c" opacity=".45"/>
+      <path d="M5 58 C5 50 10 48 14 46 C14 36 16 28 17 24 H23 C24 28 26 36 26 46 C30 48 35 50 35 58 Z" fill="url(#ivory)" stroke="#8a7a58" stroke-width="1.4"/>
+      <rect x="12" y="20" width="16" height="6" rx="2" fill="#e8ddc3" stroke="#8a7a58" stroke-width="1.1"/>
+      <circle cx="20" cy="12" r="9" fill="url(#ivory)" stroke="#8a7a58" stroke-width="1.4"/>
+      <path d="M15 8 A6 6 0 0 1 21 5" stroke="#ffffff" stroke-width="1.8" fill="none" opacity=".6"/>`,
+  },
+  // on top of the book pile left of the table: a brass medal on its ribbon, no hands
+  medalha: {
+    nominal: { w: 48, h: 42 },
+    body: `
+      <path d="M8 2 L20 2 L28 18 L22 22 Z" fill="#2d4a68" stroke="#1a2a3a" stroke-width="1"/>
+      <path d="M40 2 L28 2 L20 18 L26 22 Z" fill="#7a3024" stroke="#3a140e" stroke-width="1"/>
+      <circle cx="24" cy="28" r="13" fill="#5a3d16"/><circle cx="24" cy="27" r="13" fill="url(#brass)"/>
+      <circle cx="24" cy="27" r="8.5" fill="none" stroke="#7a5521" stroke-width="1.4"/>
+      <path d="M24 21 L25.8 25 L30 25.4 L26.8 28 L27.8 32 L24 29.8 L20.2 32 L21.2 28 L18 25.4 L22.2 25 Z" fill="#8d6a30"/>`,
+  },
+  // on the wall shelf, where a jar stood: a porcelain sugar bowl with its lid and two small handles
+  acucareiro: {
+    nominal: { w: 48, h: 52 },
+    body: `
+      <path d="M8 22 C8 44 16 50 24 50 C32 50 40 44 40 22 Z" fill="url(#porcelain)" stroke="#8a7f68" stroke-width="1.4"/>
+      <path d="M8 26 C0 26 0 36 8 36 M40 26 C48 26 48 36 40 36" stroke="#d8d0c0" stroke-width="3.2" fill="none"/>
+      <ellipse cx="24" cy="21" rx="17" ry="4" fill="#ece5d6" stroke="#8a7f68" stroke-width="1.2"/>
+      <path d="M12 21 C12 12 36 12 36 21" fill="#f2ebdc" stroke="#8a7f68" stroke-width="1.2"/>
+      <circle cx="24" cy="10" r="3.4" fill="#ece5d6" stroke="#8a7f68" stroke-width="1.1"/>
+      <path d="M12 32 H36" stroke="#7a8aa0" stroke-width="1.6" opacity=".5"/>
+      <path d="M13 26 C13 36 16 42 20 46" stroke="#ffffff" stroke-width="2" fill="none" opacity=".45"/>`,
+  },
+  // dropped on the rug in front of the table: a plain brass lid — no needle, no ring
+  "tampa-de-pote": {
+    nominal: { w: 56, h: 40 },
+    body: `
+      <ellipse cx="28" cy="24" rx="26" ry="13" fill="#4a3216"/>
+      <ellipse cx="28" cy="20" rx="26" ry="13" fill="url(#brassDim)" stroke="#4a3216" stroke-width="1.4"/>
+      <ellipse cx="28" cy="20" rx="17" ry="8" fill="none" stroke="#7a5521" stroke-width="1.4"/>
+      <path d="M8 16 A20 10 0 0 1 26 9" stroke="#f3dc9c" stroke-width="2.4" fill="none" opacity=".55" stroke-linecap="round"/>`,
+  },
+  // on the map below the magnifier: navigation dividers — two thin legs on a hinge, no rings
+  "compasso-de-pontas": {
+    nominal: { w: 48, h: 34 },
+    body: `
+      <path d="M8 6 L44 22 L42 25 L7 10 Z" fill="url(#silver)" stroke="#4d4b47" stroke-width="1"/>
+      <path d="M8 6 L40 31 L37 33 L6 10 Z" fill="url(#silver)" stroke="#4d4b47" stroke-width="1"/>
+      <circle cx="8" cy="8" r="5" fill="url(#brassDim)" stroke="#3a2a12" stroke-width="1.1"/>`,
+  },
+  // on the books at the shelf's right end: a carved wooden pineapple — a crown of leaves, no loose scales
+  "abacaxi-de-madeira": {
+    nominal: { w: 36, h: 56 },
+    body: `
+      <path d="M18 22 L10 2 L16 12 L18 0 L20 12 L26 2 Z" fill="#4f6a32" stroke="#2c3a1c" stroke-width="1"/>
+      <ellipse cx="18" cy="38" rx="14" ry="17" fill="url(#woodH)" stroke="#3a2010" stroke-width="1.4"/>
+      <path d="M7 30 L29 46 M7 40 L23 54 M11 24 L29 36 M29 30 L7 46 M29 40 L13 54 M25 24 L7 36" stroke="#3a2010" stroke-width="1.1" opacity=".7"/>`,
+  },
+  // on the second crate at the foot of the bookcase: a matchbox, its drawer half out — no holes
+  "caixa-de-fosforos": {
+    nominal: { w: 60, h: 40 },
+    body: `
+      <path d="M4 14 L48 8 L58 14 L14 20 Z" fill="#c9b48a" stroke="#6e5a3a" stroke-width="1.2"/>
+      <path d="M14 20 L58 14 L58 34 L14 40 Z" fill="#7e4a30" stroke="#4a2414" stroke-width="1.3"/>
+      <path d="M4 14 L14 20 L14 40 L4 34 Z" fill="#6b4a2a" stroke="#3a2010" stroke-width="1.1"/>
+      <rect x="24" y="22" width="22" height="10" fill="#e8d9b4" transform="skewY(-7.8)" opacity=".85"/>
+      <path d="M2 30 L-6 31 L-6 38 L4 37" fill="#d8c69e" stroke="#6e5a3a" stroke-width="1"/>`,
+  },
+  // on the rolled maps at the bookcase's foot: a leather spectacle case, shut — no reed holes
+  "estojo-de-oculos": {
+    nominal: { w: 70, h: 36 },
+    body: `
+      <rect x="2" y="6" width="66" height="26" rx="12" fill="url(#leatherDark)" stroke="#0f0c09" stroke-width="1.4"/>
+      <path d="M6 19 H64" stroke="url(#brassDim)" stroke-width="1.6" opacity=".9"/>
+      <path d="M10 10 C24 8 46 8 60 10" stroke="#8a7a62" stroke-width="1.6" fill="none" opacity=".5"/>
+      <circle cx="35" cy="19" r="2.6" fill="url(#brassDim)"/>`,
+  },
+});
+
 function lookSvg(id) {
   const art = LOOK_ART[id];
   if (!art) throw new Error(`no art for look-alike ${id}`);
@@ -751,6 +871,12 @@ const PAINTING_LEAF = `
   <path d="M50 52 C28 56 22 76 50 82 C76 76 70 56 50 52 Z" fill="#6c894e" opacity=".85"/>
   <path d="M50 26 V46 M50 58 V78" stroke="#4d5e32" stroke-width=".8" opacity=".8"/>`;
 
+// GAME03-CALIBRATION-02A: the framed pressed leaf on the wall (scenery since the skeleton, now named): a leaf, no wings.
+LOOK_ART["folha-emoldurada"] = {
+  nominal: { w: 116, h: 140 },
+  body: `<g transform="translate(-1950 -590)">${frameBody(1950, 590, 116, 140, PAINTING_LEAF)}</g>`,
+};
+
 function wall() {
   return `
     <g filter="url(#plaster)">
@@ -933,15 +1059,17 @@ function wallFrames(omit = null) {
   return `
     ${frame(1196, 330, 280, 236, PAINTING_LAKE)}
     ${frame(1560, 300, 330, 230, PAINTING_MAP)}
-    ${frame(1950, 590, 116, 140, PAINTING_LEAF)}
+    ${frameShadow(1950, 590, 116, 140)}${lookSvg("folha-emoldurada")}
     ${frameShadow(1932, 318, 104, 124)}${paint("borboleta", omit)}
     <rect x="1180" y="700" width="300" height="16" rx="3" fill="url(#woodV)" stroke="#2b170b" stroke-width="1.6" filter="url(#grainH)"/>
     ${occlusion(1180, 714, 300, 14, 0.5)}
     <path d="M1200 716 l16 22 h4 v-22 Z M1440 716 l16 22 h4 v-22 Z" fill="#4a2a16"/>
     <g>
-      <path d="M1210 700 V650 C1210 636 1244 636 1244 650 V700 Z" fill="#d1e1db" opacity=".75" stroke="#5f7a74" stroke-width="1.6"/><rect x="1214" y="632" width="26" height="10" fill="#8a5a32"/>
-      <path d="M1262 700 V666 C1262 656 1290 656 1290 666 V700 Z" fill="#b1cbc1" opacity=".8" stroke="#5f7a74" stroke-width="1.6"/><rect x="1266" y="652" width="20" height="9" fill="#8a5a32"/>
-      ${bookStack(1320, 700, [[110, 16, "#7a3024"], [100, 14, "#2d4a68", 6], [92, 13, "#9c7230", 3]])}
+      ${shadow(1218, 698, 26, 4, 0.7)}${lookSvg("acucareiro")}
+      ${shadow(1306, 698, 30, 4, 0.8)}${paint("pinha", omit)}
+      <path d="M1344 700 V668 C1344 658 1366 658 1366 668 V700 Z" fill="#b1cbc1" opacity=".8" stroke="#5f7a74" stroke-width="1.6"/><rect x="1348" y="654" width="14" height="9" fill="#8a5a32"/>
+      ${bookStack(1370, 700, [[106, 16, "#7a3024"], [96, 14, "#2d4a68", 6], [88, 13, "#9c7230", 3]])}
+      ${shadow(1408, 656, 18, 3, 0.7)}${lookSvg("abacaxi-de-madeira")}
     </g>`;
 }
 
@@ -1012,6 +1140,8 @@ function tableItems(omit = null) {
     ${bookStack(1150, 1046, [[150, 22, "#2d4a68"], [140, 20, "#7a3024", 6], [128, 18, "#4a6a3a", 10]])}
     ${shadow(1430, 1002, 54, 10)}
     ${paint("xicara", omit)}
+    ${shadow(1560, 996, 46, 6, 0.6)}
+    ${paint("tesoura", omit)}
     ${map}
     ${shadow(1540, 1180, 62, 10, 0.8)}
     ${paint("bussola", omit)}
@@ -1022,6 +1152,10 @@ function tableItems(omit = null) {
     ${note}
     ${shadow(1426, 1206, 18, 4, 0.7)}
     ${lookSvg("moedas")}
+    ${shadow(1664, 1176, 22, 4, 0.5)}
+    ${lookSvg("compasso-de-pontas")}
+    ${shadow(1200, 984, 24, 4, 0.7)}
+    ${lookSvg("medalha")}
     ${shadow(1660, 1224, 22, 5, 0.7)}
     ${lookSvg("lata-redonda")}
     <g>${shadow(1950, 1216, 74, 11)}
@@ -1135,8 +1269,14 @@ function bookcaseItems(omit = null) {
       <path d="M2456 ${s5} L2466 ${s5 - 96} H2560 L2570 ${s5} Z" fill="#b18c56" stroke="#4a3013" stroke-width="1.6" filter="url(#grainH)"/>
       <g stroke="#6e5230" stroke-width="3" opacity=".7"><path d="M2462 ${s5 - 30} H2566 M2464 ${s5 - 60} H2564"/></g></g>
     ${bookStack(2590, s5, [[170, 24, "#2f5d58"], [160, 22, "#86582b", 6], [150, 22, "#5a3b5c", 10], [140, 20, "#7a3024", 14]])}
+    ${shadow(2656, 1150, 52, 5, 0.8)}
+    ${paint("gaita", omit)}
+    <g transform="rotate(-9 2620 1140)">${bookStack(2552, 1152, [[92, 17, "#6d5a3a"]])}</g>
+    ${shadow(2506, 1142, 30, 4, 0.8)}
+    ${lookSvg("caixa-de-fosforos")}
     <g>${shadow(2920, s5 - 2, 124, 9)}
-      ${[0, 1, 2].map((i) => `<rect x="${2806 + i * 6}" y="${s5 - 44 - i * 30}" width="${226 - i * 12}" height="26" rx="13" fill="url(#parchment)" stroke="#8a6a3c" stroke-width="1.3"/><ellipse cx="${3030 - i * 6}" cy="${s5 - 31 - i * 30}" rx="8" ry="13" fill="#d3b97f" stroke="#8a6a3c" stroke-width="1.3"/>`).join("")}</g>
+      ${[0, 1, 2].map((i) => `<rect x="${2806 + i * 6}" y="${s5 - 44 - i * 30}" width="${226 - i * 12}" height="26" rx="13" fill="url(#parchment)" stroke="#8a6a3c" stroke-width="1.3"/><ellipse cx="${3030 - i * 6}" cy="${s5 - 31 - i * 30}" rx="8" ry="13" fill="#d3b97f" stroke="#8a6a3c" stroke-width="1.3"/>`).join("")}
+      ${shadow(2856, 1132, 34, 4, 0.7)}${lookSvg("estojo-de-oculos")}</g>
     ${trailingPlant(2330, 134, 0.95)}`;
 }
 
@@ -1367,6 +1507,84 @@ Object.assign(ART, {
   },
 });
 
+// --- GAME03-CALIBRATION-02A: five objects tucked into what the room already had (kit v2) -------------
+
+Object.assign(ART, {
+  // On the wainscot under the sill, crawling right: a brown shell on brown wood (tier C), a sill tendril over its back.
+  caracol: {
+    nominal: { w: 88, h: 60 },
+    body: `
+      <path d="M4 56 C4 50 12 47 24 47 H60 C68 47 72 43 74 35 L77 22 C78 16 86 16 86 22 L84 36 C82 48 76 56 66 56 Z" fill="#8c7c64" stroke="#4f4434" stroke-width="1.4"/>
+      <path d="M78 22 L73 7 M84 22 L86 7" stroke="#8a7a62" stroke-width="2.6" stroke-linecap="round"/>
+      <circle cx="73" cy="6" r="2.8" fill="#2f261c"/><circle cx="86" cy="6" r="2.8" fill="#2f261c"/>
+      <path d="M8 53 C18 50 40 50 62 51" stroke="#d8c8a8" stroke-width="1.6" fill="none" opacity=".35"/>
+      <circle cx="38" cy="28" r="24" fill="url(#snailShell)" stroke="#40250f" stroke-width="1.8"/>
+      <path d="M38 28 a4 4 0 0 1 4 4 a8 8 0 0 1 -8 8 a12 12 0 0 1 -12 -12 a16 16 0 0 1 16 -16 a20 20 0 0 1 20 20" stroke="#3a220f" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+      <path d="M20 17 A20 20 0 0 1 38 6" stroke="#e6c08a" stroke-width="2.4" fill="none" opacity=".5" stroke-linecap="round"/>`,
+  },
+  // On the rug's first row of gold lozenges, at its edge: red and gold bands like the rug's own (tier C).
+  piao: {
+    nominal: { w: 82, h: 74 },
+    body: `
+      <g transform="rotate(-12 41 40)">
+        <rect x="37" y="2" width="8" height="16" rx="3" fill="url(#woodH)" stroke="#3a2010" stroke-width="1.2"/>
+        <path d="M12 26 C12 18 70 18 70 26 C70 34 58 44 48 56 L43 68 H39 L34 56 C24 44 12 34 12 26 Z" fill="#8c2e22" stroke="#e2bf86" stroke-width="2.2"/>
+        <path d="M13 29 C26 36 56 36 69 29 L66 34 C54 40 28 40 16 34 Z" fill="#cf9f55"/>
+        <path d="M22 41 C32 46 50 46 60 41 L56 46 C48 50 34 50 26 46 Z" fill="#cf9f55"/>
+        <path d="M33 54 C38 56 44 56 49 54 L47 58 C43 59 39 59 35 58 Z" fill="#21384f"/>
+        <ellipse cx="41" cy="23" rx="28" ry="6" fill="#a8432f" stroke="#e2bf86" stroke-width="1.6"/>
+        <path d="M39 68 L41 74 L43 68 Z" fill="#9aa0a6" stroke="#3a3a3a" stroke-width="1"/>
+        <path d="M20 27 C24 34 30 40 36 46" stroke="#ffffff" stroke-width="2" opacity=".28" fill="none" stroke-linecap="round"/>
+      </g>`,
+  },
+  // Behind the open book, under the map's edge: steel blades on the table, the rings under the page's corner (tier C).
+  tesoura: {
+    nominal: { w: 92, h: 60 },
+    body: `
+      <ellipse cx="15" cy="17" rx="12" ry="10" fill="none" stroke="#2c2a27" stroke-width="5.5"/>
+      <ellipse cx="17" cy="45" rx="12" ry="10" fill="none" stroke="#2c2a27" stroke-width="5.5"/>
+      <path d="M25 22 C32 25 38 28 44 30 L90 31 L46 35 C38 33 31 30 25 27 Z" fill="url(#silver)" stroke="#4d4b47" stroke-width="1.2"/>
+      <path d="M27 40 C34 38 40 35 46 33 L90 31 L44 37 C38 40 32 43 27 45 Z" fill="url(#silver)" stroke="#4d4b47" stroke-width="1.2"/>
+      <circle cx="44" cy="32.5" r="3.2" fill="url(#brassDim)" stroke="#3a2a12" stroke-width="1"/>
+      <path d="M50 31.5 L86 31" stroke="#ffffff" stroke-width="1.2" opacity=".55"/>`,
+  },
+  // On the wall shelf between a sugar bowl and the books, scales in the shelf's own browns (tier B).
+  pinha: {
+    nominal: { w: 60, h: 84 },
+    body: `
+      <path d="M30 83 C13 76 6 58 8 40 C10 22 19 8 30 3 C41 8 50 22 52 40 C54 58 47 76 30 83 Z" fill="url(#pineCone)" stroke="#c48a55" stroke-width="2"/>
+      <path d="M12.0 14 Q17.0 21 22.0 14" stroke="#2f1a0c" stroke-width="1.6" fill="#7e5230"/><path d="M25.0 14 Q30.0 21 35.0 14" stroke="#2f1a0c" stroke-width="1.6" fill="#7e5230"/><path d="M38.0 14 Q43.0 21 48.0 14" stroke="#2f1a0c" stroke-width="1.6" fill="#7e5230"/><path d="M8.5 22 Q13.5 29 18.5 22" stroke="#2f1a0c" stroke-width="1.6" fill="#7e5230"/><path d="M19.5 22 Q24.5 29 29.5 22" stroke="#2f1a0c" stroke-width="1.6" fill="#7e5230"/><path d="M30.5 22 Q35.5 29 40.5 22" stroke="#2f1a0c" stroke-width="1.6" fill="#7e5230"/><path d="M41.5 22 Q46.5 29 51.5 22" stroke="#2f1a0c" stroke-width="1.6" fill="#7e5230"/><path d="M7.0 31 Q12.0 38 17.0 31" stroke="#2f1a0c" stroke-width="1.6" fill="#7e5230"/><path d="M16.0 31 Q21.0 38 26.0 31" stroke="#2f1a0c" stroke-width="1.6" fill="#7e5230"/><path d="M25.0 31 Q30.0 38 35.0 31" stroke="#2f1a0c" stroke-width="1.6" fill="#7e5230"/><path d="M34.0 31 Q39.0 38 44.0 31" stroke="#2f1a0c" stroke-width="1.6" fill="#7e5230"/><path d="M43.0 31 Q48.0 38 53.0 31" stroke="#2f1a0c" stroke-width="1.6" fill="#7e5230"/><path d="M9.0 40 Q14.0 47 19.0 40" stroke="#2f1a0c" stroke-width="1.6" fill="#7e5230"/><path d="M17.0 40 Q22.0 47 27.0 40" stroke="#2f1a0c" stroke-width="1.6" fill="#7e5230"/><path d="M25.0 40 Q30.0 47 35.0 40" stroke="#2f1a0c" stroke-width="1.6" fill="#7e5230"/><path d="M33.0 40 Q38.0 47 43.0 40" stroke="#2f1a0c" stroke-width="1.6" fill="#7e5230"/><path d="M41.0 40 Q46.0 47 51.0 40" stroke="#2f1a0c" stroke-width="1.6" fill="#7e5230"/><path d="M9.0 49 Q14.0 56 19.0 49" stroke="#2f1a0c" stroke-width="1.6" fill="#7e5230"/><path d="M17.0 49 Q22.0 56 27.0 49" stroke="#2f1a0c" stroke-width="1.6" fill="#7e5230"/><path d="M25.0 49 Q30.0 56 35.0 49" stroke="#2f1a0c" stroke-width="1.6" fill="#7e5230"/><path d="M33.0 49 Q38.0 56 43.0 49" stroke="#2f1a0c" stroke-width="1.6" fill="#7e5230"/><path d="M41.0 49 Q46.0 56 51.0 49" stroke="#2f1a0c" stroke-width="1.6" fill="#7e5230"/><path d="M9.0 58 Q14.0 65 19.0 58" stroke="#2f1a0c" stroke-width="1.6" fill="#7e5230"/><path d="M17.0 58 Q22.0 65 27.0 58" stroke="#2f1a0c" stroke-width="1.6" fill="#7e5230"/><path d="M25.0 58 Q30.0 65 35.0 58" stroke="#2f1a0c" stroke-width="1.6" fill="#7e5230"/><path d="M33.0 58 Q38.0 65 43.0 58" stroke="#2f1a0c" stroke-width="1.6" fill="#7e5230"/><path d="M41.0 58 Q46.0 65 51.0 58" stroke="#2f1a0c" stroke-width="1.6" fill="#7e5230"/><path d="M11.5 67 Q16.5 74 21.5 67" stroke="#2f1a0c" stroke-width="1.6" fill="#7e5230"/><path d="M20.5 67 Q25.5 74 30.5 67" stroke="#2f1a0c" stroke-width="1.6" fill="#7e5230"/><path d="M29.5 67 Q34.5 74 39.5 67" stroke="#2f1a0c" stroke-width="1.6" fill="#7e5230"/><path d="M38.5 67 Q43.5 74 48.5 67" stroke="#2f1a0c" stroke-width="1.6" fill="#7e5230"/><path d="M14.0 75 Q19.0 82 24.0 75" stroke="#2f1a0c" stroke-width="1.6" fill="#7e5230"/><path d="M25.0 75 Q30.0 82 35.0 75" stroke="#2f1a0c" stroke-width="1.6" fill="#7e5230"/><path d="M36.0 75 Q41.0 82 46.0 75" stroke="#2f1a0c" stroke-width="1.6" fill="#7e5230"/>
+      <path d="M14 30 C12 44 14 58 22 70" stroke="#d6a46a" stroke-width="2.2" fill="none" opacity=".35" stroke-linecap="round"/>
+      <path d="M28 3 L30 -2 L32 3" stroke="#5a3a1c" stroke-width="2" fill="none"/>`,
+  },
+  // On the book pile at the foot of the bookcase, its left end under a book laid across it (tier C).
+  gaita: {
+    nominal: { w: 100, h: 56 },
+    body: `
+      <path d="M4 22 L84 8 L98 14 L18 28 Z" fill="#aeaba2" stroke="#4a4842" stroke-width="1.2"/>
+      <path d="M18 28 L98 14 L98 40 L18 54 Z" fill="url(#nickelDim)" stroke="#3d3b36" stroke-width="1.4"/>
+      <path d="M4 22 L18 28 L18 54 L4 48 Z" fill="#6f6c64" stroke="#3d3b36" stroke-width="1.2"/>
+      <path d="M18 36 L98 22 L98 30 L18 44 Z" fill="#6e4328" stroke="#2f1a0c" stroke-width="1"/>
+      <g fill="#1d1510">${Array.from({ length: 10 }, (_, i) => {
+        const x = 23 + i * 7.6;
+        const y = 37.6 - i * 1.33;
+        return `<rect x="${n(x)}" y="${n(y)}" width="4.2" height="4.4" rx="0.8"/>`;
+      }).join("")}</g>
+      <path d="M22 31 L94 18 M22 48 L94 35" stroke="#ffffff" stroke-width="1.2" opacity=".3"/>
+      <rect x="92" y="22" width="7" height="10" rx="2" fill="url(#nickelDim)" stroke="#3d3b36" stroke-width="1"/>`,
+  },
+});
+
+/** A tendril from the sill's pot over the snail's back (the sill's plants hang over the wainscot). */
+function sillTendril() {
+  const c = boxOf(TARGETS.caracol.region);
+  const x0 = c.x + 14;
+  return `<path d="M${x0 - 6} 1046 C${x0 - 2} 1060 ${x0 + 6} 1068 ${x0 + 4} 1084" stroke="#355c2e" stroke-width="2.6" fill="none"/>
+    <ellipse cx="${x0 - 8}" cy="1058" rx="13" ry="7" fill="url(#leafDark)" transform="rotate(-28 ${x0 - 8} 1058)"/>
+    <ellipse cx="${x0 + 10}" cy="1068" rx="14" ry="7" fill="url(#leaf)" transform="rotate(30 ${x0 + 10} 1068)"/>
+    <ellipse cx="${x0 + 1}" cy="1082" rx="12" ry="6.5" fill="url(#leafDark)" transform="rotate(-36 ${x0 + 1} 1082)"/>`;
+}
+
 /** The birdcage's soft shadow on the wall (the light comes from the window, on its left), then the cage. */
 function birdcage(omit) {
   return `<rect x="974" y="512" width="72" height="84" rx="22" fill="#0a0603" opacity=".24" filter="url(#blur8)"/>
@@ -1392,6 +1610,8 @@ function plateSvg({ debug = false, omit = null } = {}) {
   ${wall()}
   ${windowSvg()}
   ${curtain()}
+  <path d="M926 164 V222" stroke="#3a2a14" stroke-width="2" stroke-dasharray="3 2"/>
+  ${lookSvg("cesta-de-arame")}
   ${birdcage(omit)}
   ${wallFrames(omit)}
   ${floorAndRug()}
@@ -1403,6 +1623,13 @@ function plateSvg({ debug = false, omit = null } = {}) {
   ${cornerUmbrella(omit)}
   ${t("binoculo", targetSvg("binoculo"))}
   ${sillPotOverBinoculars()}
+  ${lookSvg("roseta-entalhada")}
+  ${t("caracol", targetSvg("caracol"))}
+  ${sillTendril()}
+  ${shadow(740, 1398, 30, 5, 0.8)}
+  ${t("piao", targetSvg("piao"))}
+  ${shadow(846, 1424, 18, 4, 0.7)}
+  ${lookSvg("peao-de-xadrez")}
   ${trunk()}
   ${t("chave", targetSvg("chave"))}
   ${trunkStraps()}
@@ -1416,6 +1643,8 @@ function plateSvg({ debug = false, omit = null } = {}) {
   ${shadow(ampBox.x + ampBox.w / 2, ampBox.y + ampBox.h - 2, ampBox.w * 0.58, 8, 0.9)}
   ${t("ampulheta", targetSvg("ampulheta"))}
   ${table()}
+  ${shadow(1208, 1326, 30, 6, 0.6)}
+  ${lookSvg("tampa-de-pote")}
   ${tableItems(omit)}
   ${t("lupa", lupaOnMap())}
   ${debug ? debugOverlay() : ""}
@@ -1907,12 +2136,7 @@ async function main() {
     await write(sharp(plate), path.join(OUT, "plate.webp"), { quality: 80, alphaQuality: 90, effort: 6, smartSubsample: true });
     await write(sharp(front), path.join(OUT, "front.webp"), { quality: 80, alphaQuality: 90, effort: 6 });
     await write(sharp(frontRight), path.join(OUT, "front-right.webp"), { quality: 80, alphaQuality: 90, effort: 6 });
-    // Intro / transition art: a 4:3 view of the window and the table.
-    await write(
-      sharp(composedPng).extract({ left: 380, top: 100, width: 2000, height: 1500 }).resize(960, 720),
-      path.join(OUT, "hero.webp"),
-      { quality: 76, effort: 6 },
-    );
+    // Kit v2 writes no hero: the intro and the selector keep kit v1's (the platform's world visuals name it).
     for (const id of Object.keys(ART)) {
       await write(render(thumbSvg(id)), path.join(OUT, "thumbs", `${id}.webp`), { quality: 82, alphaQuality: 90, effort: 6 });
     }
@@ -1955,7 +2179,15 @@ async function main() {
   if (AUDIT) {
     const { data } = await sharp(composedPng).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
     const rows = await audit(data);
-    for (const row of rows) console.log(`${row.id.padEnd(10)} ${row.tier}  visible ${(row.visible * 100).toFixed(0).padStart(3)}%  contrast ${row.contrast.toFixed(2).padStart(5)}:1  edge ${row.edge.toFixed(2).padStart(5)}:1  look-alikes ${row.lookAlikes.join(", ") || "—"}`);
+    // GAME03-CALIBRATION-02A: how busy the room is around each object, on the layers as they ship
+    if (!preview) {
+      const shipped = await composeShipped(
+        { width: W, height: H, layers: SCENE.SCENE_LAYERS },
+        (publicPath) => fs.readFileSync(path.join(ROOT, publicPath)),
+      );
+      for (const row of rows) row.clutter = measureClutter(shipped, W, H, TARGETS[row.id].region);
+    }
+    for (const row of rows) console.log(`${row.id.padEnd(12)} ${row.tier}  visible ${(row.visible * 100).toFixed(0).padStart(3)}%  contrast ${row.contrast.toFixed(2).padStart(5)}:1  edge ${row.edge.toFixed(2).padStart(5)}:1  clutter ${row.clutter ?? "—"}  look-alikes ${row.lookAlikes.join(", ") || "—"}`);
     const file = path.join(reviewDir, "fairness.json");
     // the shipped plate the numbers describe: a later art change without --audit is a stale record
     const platePath = path.join(OUT, "plate.webp");
@@ -1970,6 +2202,7 @@ async function main() {
             visible: "share of the target's own pixels the finished plate shows (plate rendered with and without the target)",
             contrast: "F4 as written: mean-luminance ratio, visible target vs a 24 su ring, on the composed room",
             edge: "median luminance ratio across the visible silhouette's edge (each edge pixel vs the background within 3 su)",
+            clutter: "share of busy pixels (Sobel luminance gradient > 40) in the ring 16–120 su around the object's box, on the shipped layers composed at rest",
           },
           targets: rows,
         },

@@ -173,5 +173,11 @@ export function meetsRule(rule: RoundRule, profile: RoundProfile): boolean {
   const tiersFit = (Object.keys(rule.tiers) as TargetTier[]).every(
     (tier) => profile.tiers[tier] >= rule.tiers[tier][0] && profile.tiers[tier] <= rule.tiers[tier][1],
   );
-  return tiersFit && profile.popOuts <= rule.maxPopOuts && profile.search >= rule.minSearch && profile.decoys >= rule.minDecoys;
+  return (
+    tiersFit &&
+    profile.popOuts <= rule.maxPopOuts &&
+    profile.search >= rule.minSearch &&
+    profile.search < rule.maxSearch &&
+    profile.decoys >= rule.minDecoys
+  );
 }

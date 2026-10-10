@@ -165,6 +165,11 @@ export interface RoundRule {
   maxPopOuts: number;
   /** The floor of the round's mean search load. */
   minSearch: number;
+  /**
+   * Its ceiling, exclusive: the next difficulty's floor (none for the last), so
+   * a round never asks as much as the least the next difficulty asks.
+   */
+  maxSearch: number;
   /** The floor of the round's look-alike pressure (painted look-alikes per listed object). */
   minDecoys: number;
 }
@@ -220,7 +225,7 @@ export const DIFFICULTY_PRESETS: Readonly<Record<DifficultyLevel, DifficultyPres
   easy: {
     label: "Fácil",
     count: 5,
-    round: { tiers: { A: [0, 1], B: [0, 5], C: [1, 5] }, maxPopOuts: 1, minSearch: ROUND_FLOORS.easy, minDecoys: DECOY_FLOORS.easy },
+    round: { tiers: { A: [0, 1], B: [0, 5], C: [1, 5] }, maxPopOuts: 1, minSearch: ROUND_FLOORS.easy, maxSearch: ROUND_FLOORS.medium, minDecoys: DECOY_FLOORS.easy },
     listStyle: "picture",
     listClue: null,
     hintLadder: ["station", "area", "reveal"],
@@ -231,7 +236,7 @@ export const DIFFICULTY_PRESETS: Readonly<Record<DifficultyLevel, DifficultyPres
   medium: {
     label: "Médio",
     count: 6,
-    round: { tiers: { A: [0, 1], B: [0, 6], C: [2, 6] }, maxPopOuts: 0, minSearch: ROUND_FLOORS.medium, minDecoys: DECOY_FLOORS.medium },
+    round: { tiers: { A: [0, 1], B: [0, 6], C: [2, 6] }, maxPopOuts: 1, minSearch: ROUND_FLOORS.medium, maxSearch: ROUND_FLOORS.hard, minDecoys: DECOY_FLOORS.medium },
     listStyle: "clue",
     listClue: "associative",
     hintLadder: ["station", "reclue", "direction"],
@@ -242,7 +247,7 @@ export const DIFFICULTY_PRESETS: Readonly<Record<DifficultyLevel, DifficultyPres
   hard: {
     label: "Difícil",
     count: 8,
-    round: { tiers: { A: [0, 0], B: [0, 4], C: [4, 8] }, maxPopOuts: 0, minSearch: ROUND_FLOORS.hard, minDecoys: DECOY_FLOORS.hard },
+    round: { tiers: { A: [0, 0], B: [0, 4], C: [4, 8] }, maxPopOuts: 0, minSearch: ROUND_FLOORS.hard, maxSearch: Infinity, minDecoys: DECOY_FLOORS.hard },
     listStyle: "clue",
     listClue: "indirect",
     hintLadder: ["station", "context"],

@@ -2,8 +2,11 @@ import type { HiddenObjectDefinition, SceneDefinition, SceneLayer, SceneLookAlik
 
 /**
  * Estúdio do Explorador — Game 03's first room (GAME03-SKELETON-01, GAME03-EXPERIENCE-02),
- * as data. Moved here unchanged by GAME03-MULTISCENE-03: the same 3200×1600 su
- * room, the same pool of eighteen, the same look-alikes and the same art kit v1.
+ * as data. Moved here unchanged by GAME03-MULTISCENE-03 (3200×1600 su, a pool of
+ * eighteen, art kit v1). GAME03-CALIBRATION-02A made it harder to search without
+ * moving anything already there: art kit v2 tucks five more objects into the room
+ * and paints eleven more look-alikes, every object carries a clue bank and the
+ * audit's measurements of it (`measured`, from the kit's fairness.json).
  * tools/assets/create_hidden_objects_scene.mjs paints every target exactly where
  * its `region` says, and reads this module to do it.
  */
@@ -47,8 +50,11 @@ export const SCENE_STATIONS: readonly SceneStation[] = [
  * grew the pool from the skeleton's ten to eighteen: six things the room
  * already showed (xícara, pena, borboleta, chapéu, bolsa, globo — the same
  * paint, now with a region) and two new ones by the window (guarda-chuva,
- * gaiola), so every station holds every tier. Positions are authored, never
- * drawn at random: only which of them a round lists is.
+ * gaiola), so every station holds every tier. GAME03-CALIBRATION-02A added five
+ * objects the room hides in plain materials — a snail on the wainscot, a spinning
+ * top on the rug's edge, scissors under the map, a pine cone on the wall shelf, a
+ * harmonica on the book pile (twenty-three: A6 · B7 · C10). Positions are
+ * authored, never drawn at random: only which of them a round lists is.
  */
 export const HIDDEN_OBJECTS: readonly HiddenObjectDefinition[] = [
   {
@@ -65,7 +71,7 @@ export const HIDDEN_OBJECTS: readonly HiddenObjectDefinition[] = [
     tier: "A",
     station: "janela",
     region: { kind: "rect", x: 742, y: 952, w: 116, h: 222 },
-    measured: { visible: 0.956, edge: 1.77, clutter: 0.139 },
+    measured: { visible: 0.956, edge: 1.77, clutter: 0.15 },
     hintRegion: "na mesinha junto à janela",
     hintDirection: "mais abaixo, ao lado da poltrona",
     hintContext: "perto de onde alguém se senta para ler",
@@ -84,7 +90,7 @@ export const HIDDEN_OBJECTS: readonly HiddenObjectDefinition[] = [
     tier: "B",
     station: "janela",
     region: { kind: "rect", x: 424, y: 930, w: 152, h: 78 },
-    measured: { visible: 0.846, edge: 1.32, clutter: 0.131 },
+    measured: { visible: 0.846, edge: 1.32, clutter: 0.157 },
     hintRegion: "no peitoril da janela",
     hintDirection: "na base da janela, do lado esquerdo",
     hintContext: "onde a luz da tarde entra, entre vasos e pedrinhas",
@@ -103,7 +109,7 @@ export const HIDDEN_OBJECTS: readonly HiddenObjectDefinition[] = [
     tier: "C",
     station: "janela",
     region: { kind: "rect", x: 452, y: 1246, w: 132, h: 56 },
-    measured: { visible: 0.71, edge: 1.67, clutter: 0.133 },
+    measured: { visible: 0.71, edge: 1.67, clutter: 0.135 },
     hintRegion: "sobre o baú",
     hintDirection: "mais embaixo, perto do chão",
     hintContext: "em cima de algo que guarda coisas fechadas",
@@ -122,7 +128,7 @@ export const HIDDEN_OBJECTS: readonly HiddenObjectDefinition[] = [
     tier: "A",
     station: "janela",
     region: { kind: "rect", x: 986, y: 930, w: 64, h: 258 },
-    measured: { visible: 0.965, edge: 1.44, clutter: 0.134 },
+    measured: { visible: 0.965, edge: 1.44, clutter: 0.136 },
     hintRegion: "encostado na parede, entre a janela e a mesa",
     hintDirection: "mais embaixo, à direita da janela",
     hintContext: "encostado num canto, perto da mesa redonda",
@@ -133,7 +139,7 @@ export const HIDDEN_OBJECTS: readonly HiddenObjectDefinition[] = [
     accessibleLabel: "Gaiola de passarinho",
     clues: [
       { level: "direct", text: "Casinha com grades para um passarinho." },
-      { level: "associative", text: "Tem um poleiro e uma portinha de arame." },
+      { level: "associative", text: "Tem um poleiro, um bebedouro e uma portinha." },
       { level: "associative", text: "Pendurada, ainda espera um canário." },
       { level: "indirect", text: "Ali dentro, alguém cantava todas as manhãs." },
       { level: "indirect", text: "Um alpiste esquecido lembra quem morava ali." },
@@ -141,10 +147,48 @@ export const HIDDEN_OBJECTS: readonly HiddenObjectDefinition[] = [
     tier: "C",
     station: "janela",
     region: { kind: "rect", x: 960, y: 446, w: 76, h: 142 },
-    measured: { visible: 0.934, edge: 1.53, clutter: 0.048 },
+    measured: { visible: 0.934, edge: 1.53, clutter: 0.047 },
     hintRegion: "pendurada na parede, à direita da janela",
     hintDirection: "no alto, entre a janela e os quadros",
     hintContext: "presa num gancho, perto de uma planta pendurada",
+  },
+  {
+    id: "caracol",
+    label: "Caracol",
+    accessibleLabel: "Caracol",
+    clues: [
+      { level: "direct", text: "Bichinho lento que carrega a casa nas costas." },
+      { level: "associative", text: "Deixa um rastro brilhante por onde passa." },
+      { level: "associative", text: "Tem antenas com olhinhos na ponta." },
+      { level: "indirect", text: "Depois do temporal, aparece no muro sem pressa." },
+      { level: "indirect", text: "Leva o dia todo para atravessar o jardim." },
+    ],
+    tier: "C",
+    station: "janela",
+    region: { kind: "rect", x: 598, y: 1052, w: 88, h: 60 },
+    measured: { visible: 0.794, edge: 2.02, clutter: 0.201 },
+    hintRegion: "no lambri, logo abaixo do peitoril",
+    hintDirection: "embaixo da janela, perto das plantas do peitoril",
+    hintContext: "subindo devagar pela madeira da parede",
+  },
+  {
+    id: "piao",
+    label: "Pião",
+    accessibleLabel: "Pião de madeira",
+    clues: [
+      { level: "direct", text: "Brinquedo que gira na ponta depois de lançado." },
+      { level: "associative", text: "Enrola-se a fieira e lança-se no chão." },
+      { level: "associative", text: "Dança sozinho até ficar tonto e cair." },
+      { level: "indirect", text: "Na roda, ganha quem o deixa de pé mais tempo." },
+      { level: "indirect", text: "Um barbante, um puxão e começa a festa no chão." },
+    ],
+    tier: "C",
+    station: "janela",
+    region: { kind: "rect", x: 698, y: 1326, w: 82, h: 74 },
+    measured: { visible: 0.977, edge: 2.28, clutter: 0.144 },
+    hintRegion: "na beirada do tapete, junto do baú",
+    hintDirection: "no chão, entre o baú e a mesinha",
+    hintContext: "no chão, perto de onde o tapete começa",
   },
   {
     id: "lupa",
@@ -160,7 +204,7 @@ export const HIDDEN_OBJECTS: readonly HiddenObjectDefinition[] = [
     tier: "A",
     station: "mesa",
     region: { kind: "circle", cx: 1760, cy: 1040, r: 92 },
-    measured: { visible: 0.998, edge: 1.75, clutter: 0.145 },
+    measured: { visible: 0.998, edge: 1.75, clutter: 0.153 },
     hintRegion: "sobre o mapa",
     hintDirection: "no meio da mesa, um pouco à direita",
     hintContext: "sobre um papel cheio de caminhos",
@@ -179,7 +223,7 @@ export const HIDDEN_OBJECTS: readonly HiddenObjectDefinition[] = [
     tier: "B",
     station: "mesa",
     region: { kind: "circle", cx: 1540, cy: 1160, r: 66 },
-    measured: { visible: 0.88, edge: 1.97, clutter: 0.199 },
+    measured: { visible: 0.88, edge: 1.97, clutter: 0.209 },
     hintRegion: "na borda do mapa",
     hintDirection: "na frente da mesa, perto da beirada",
     hintContext: "entre um livro aberto e um mapa",
@@ -198,7 +242,7 @@ export const HIDDEN_OBJECTS: readonly HiddenObjectDefinition[] = [
     tier: "C",
     station: "mesa",
     region: { kind: "circle", cx: 1330, cy: 1178, r: 48 },
-    measured: { visible: 0.859, edge: 1.62, clutter: 0.234 },
+    measured: { visible: 0.859, edge: 1.62, clutter: 0.236 },
     hintRegion: "perto do livro aberto",
     hintDirection: "no lado esquerdo da mesa, bem na frente",
     hintContext: "junto de moedas, preso a uma corrente",
@@ -217,7 +261,7 @@ export const HIDDEN_OBJECTS: readonly HiddenObjectDefinition[] = [
     tier: "C",
     station: "mesa",
     region: { kind: "rect", x: 1380, y: 950, w: 100, h: 60 },
-    measured: { visible: 0.538, edge: 1.75, clutter: 0.181 },
+    measured: { visible: 0.538, edge: 1.75, clutter: 0.191 },
     hintRegion: "atrás do livro aberto",
     hintDirection: "no fundo da mesa, à esquerda do mapa",
     hintContext: "soltando vapor, perto de páginas abertas",
@@ -236,7 +280,7 @@ export const HIDDEN_OBJECTS: readonly HiddenObjectDefinition[] = [
     tier: "B",
     station: "mesa",
     region: { kind: "rect", x: 1994, y: 896, w: 82, h: 170 },
-    measured: { visible: 0.999, edge: 2.93, clutter: 0.124 },
+    measured: { visible: 0.999, edge: 2.93, clutter: 0.126 },
     hintRegion: "na ponta direita da mesa",
     hintDirection: "na beirada direita da mesa, junto da parede",
     hintContext: "de pé num frasco escuro, na beira da mesa",
@@ -255,7 +299,7 @@ export const HIDDEN_OBJECTS: readonly HiddenObjectDefinition[] = [
     tier: "A",
     station: "mesa",
     region: { kind: "rect", x: 1932, y: 318, w: 104, h: 124 },
-    measured: { visible: 1, edge: 1.33, clutter: 0.082 },
+    measured: { visible: 1, edge: 1.33, clutter: 0.08 },
     hintRegion: "no quadrinho mais alto da parede",
     hintDirection: "no alto da parede, à direita dos quadros grandes",
     hintContext: "atrás de um vidro, entre molduras douradas",
@@ -278,6 +322,44 @@ export const HIDDEN_OBJECTS: readonly HiddenObjectDefinition[] = [
     hintRegion: "no cabideiro da parede",
     hintDirection: "na parede, logo antes da estante",
     hintContext: "pendurado num gancho de madeira, perto da estante",
+  },
+  {
+    id: "tesoura",
+    label: "Tesoura",
+    accessibleLabel: "Tesoura",
+    clues: [
+      { level: "direct", text: "Corta com duas lâminas que se cruzam." },
+      { level: "associative", text: "Dois anéis para os dedos e um bico afiado." },
+      { level: "associative", text: "Faz pedaços de fita em festa de inauguração." },
+      { level: "indirect", text: "Sem ela, o recorte do mapa sairia rasgado." },
+      { level: "indirect", text: "O barbeiro a faz cantar perto da orelha." },
+    ],
+    tier: "C",
+    station: "mesa",
+    region: { kind: "rect", x: 1512, y: 952, w: 92, h: 60 },
+    measured: { visible: 0.624, edge: 2.01, clutter: 0.188 },
+    hintRegion: "atrás do livro aberto, na borda do mapa",
+    hintDirection: "no fundo da mesa, logo acima do mapa",
+    hintContext: "meio escondida pela borda de um papel cheio de caminhos",
+  },
+  {
+    id: "pinha",
+    label: "Pinha",
+    accessibleLabel: "Pinha",
+    clues: [
+      { level: "direct", text: "Fruto de pinheiro, cheio de escamas." },
+      { level: "associative", text: "Os pinhões moram entre as escamas dela." },
+      { level: "associative", text: "Cai das árvores de Natal de verdade." },
+      { level: "indirect", text: "A semente da festa junina cresce dentro dela." },
+      { level: "indirect", text: "O esquilo daria tudo para levá-la para a toca." },
+    ],
+    tier: "B",
+    station: "mesa",
+    region: { kind: "rect", x: 1276, y: 614, w: 60, h: 84 },
+    measured: { visible: 1, edge: 1.51, clutter: 0.135 },
+    hintRegion: "na prateleira de parede, entre os potes e os livros",
+    hintDirection: "na parede, acima da mesa, à esquerda",
+    hintContext: "numa prateleira, entre um pote de louça e livros deitados",
   },
   {
     id: "barco",
@@ -312,7 +394,7 @@ export const HIDDEN_OBJECTS: readonly HiddenObjectDefinition[] = [
     tier: "B",
     station: "estante",
     region: { kind: "rect", x: 2780, y: 848, w: 126, h: 212 },
-    measured: { visible: 0.749, edge: 1.54, clutter: 0.153 },
+    measured: { visible: 0.749, edge: 1.54, clutter: 0.166 },
     hintRegion: "nas prateleiras de baixo",
     hintDirection: "na parte de baixo da estante, à direita",
     hintContext: "numa prateleira baixa, cercada de livros",
@@ -331,7 +413,7 @@ export const HIDDEN_OBJECTS: readonly HiddenObjectDefinition[] = [
     tier: "C",
     station: "estante",
     region: { kind: "rect", x: 2720, y: 480, w: 166, h: 118 },
-    measured: { visible: 0.836, edge: 2.99, clutter: 0.175 },
+    measured: { visible: 0.836, edge: 2.99, clutter: 0.176 },
     hintRegion: "na segunda prateleira",
     hintDirection: "no alto da estante, do lado direito",
     hintContext: "numa prateleira cheia de livros, perto de potes de vidro",
@@ -350,7 +432,7 @@ export const HIDDEN_OBJECTS: readonly HiddenObjectDefinition[] = [
     tier: "C",
     station: "estante",
     region: { kind: "rect", x: 2615, y: 245, w: 84, h: 122 },
-    measured: { visible: 0.753, edge: 2.93, clutter: 0.15 },
+    measured: { visible: 0.753, edge: 2.93, clutter: 0.148 },
     hintRegion: "na prateleira mais alta",
     hintDirection: "bem no alto da estante",
     hintContext: "entre lombadas de livros, perto do teto",
@@ -369,7 +451,7 @@ export const HIDDEN_OBJECTS: readonly HiddenObjectDefinition[] = [
     tier: "A",
     station: "estante",
     region: { kind: "circle", cx: 2200, cy: 990, r: 96 },
-    measured: { visible: 0.997, edge: 1.7, clutter: 0.128 },
+    measured: { visible: 0.997, edge: 1.7, clutter: 0.129 },
     hintRegion: "entre a mesa e a estante",
     hintDirection: "embaixo, na beirada esquerda da estante",
     hintContext: "num pé alto, ao lado da mesa redonda",
@@ -392,6 +474,25 @@ export const HIDDEN_OBJECTS: readonly HiddenObjectDefinition[] = [
     hintRegion: "pendurada junto à estante",
     hintDirection: "à esquerda da estante, no alto",
     hintContext: "presa por uma alça comprida, num gancho",
+  },
+  {
+    id: "gaita",
+    label: "Gaita",
+    accessibleLabel: "Gaita de boca",
+    clues: [
+      { level: "direct", text: "Toca-se soprando e puxando o ar pelos furinhos." },
+      { level: "associative", text: "Cabe no bolso e tem várias casinhas de sopro." },
+      { level: "associative", text: "O caubói a tocava em volta da fogueira." },
+      { level: "indirect", text: "Um blues solitário cabe na palma da mão." },
+      { level: "indirect", text: "Some na mão do músico, mas a canção aparece." },
+    ],
+    tier: "C",
+    station: "estante",
+    region: { kind: "rect", x: 2604, y: 1098, w: 100, h: 56 },
+    measured: { visible: 0.808, edge: 1.65, clutter: 0.175 },
+    hintRegion: "em cima da pilha de livros no pé da estante",
+    hintDirection: "embaixo, na parte de baixo da estante, no meio",
+    hintContext: "sobre livros empilhados, perto do chão",
   },
 ];
 
@@ -474,10 +575,91 @@ export const SCENE_LOOKALIKES: readonly SceneLookAlike[] = [
     tellApart: "um cilindro claro em pé, sem forma de figura",
     region: { kind: "rect", x: 2540, y: 252, w: 26, h: 118 },
   },
+  {
+    id: "cesta-de-arame",
+    label: "Cesta de arame",
+    resembles: "gaiola",
+    tellApart: "uma cesta aberta de arame pendurada, sem portinha e sem poleiro",
+    region: { kind: "rect", x: 900, y: 220, w: 52, h: 74 },
+  },
+  {
+    id: "roseta-entalhada",
+    label: "Roseta entalhada",
+    resembles: "caracol",
+    tellApart: "um enfeite redondo esculpido na madeira, sem antenas e sem corpo",
+    region: { kind: "rect", x: 452, y: 1066, w: 48, h: 48 },
+  },
+  {
+    id: "peao-de-xadrez",
+    label: "Peão de xadrez",
+    resembles: "piao",
+    tellApart: "uma peça de jogo de cabeça redonda, que não gira",
+    region: { kind: "rect", x: 826, y: 1360, w: 40, h: 64 },
+  },
+  {
+    id: "medalha",
+    label: "Medalha",
+    resembles: "relogio",
+    tellApart: "um disco de latão com fita, sem ponteiros",
+    region: { kind: "rect", x: 1176, y: 942, w: 48, h: 42 },
+  },
+  {
+    id: "acucareiro",
+    label: "Açucareiro",
+    resembles: "xicara",
+    tellApart: "um pote de louça com tampa e duas alcinhas, sem pires",
+    region: { kind: "rect", x: 1194, y: 648, w: 48, h: 52 },
+  },
+  {
+    id: "tampa-de-pote",
+    label: "Tampa de pote",
+    resembles: "bussola",
+    tellApart: "um disco de latão liso, sem agulha e sem argola",
+    region: { kind: "rect", x: 1180, y: 1292, w: 56, h: 40 },
+  },
+  {
+    id: "compasso-de-pontas",
+    label: "Compasso de pontas",
+    resembles: "tesoura",
+    tellApart: "duas hastes finas unidas por uma dobradiça, sem anéis",
+    region: { kind: "rect", x: 1640, y: 1146, w: 48, h: 34 },
+  },
+  {
+    id: "abacaxi-de-madeira",
+    label: "Abacaxi de madeira",
+    resembles: "pinha",
+    tellApart: "um enfeite entalhado com coroa de folhas, sem escamas soltas",
+    region: { kind: "rect", x: 1390, y: 600, w: 36, h: 56 },
+  },
+  {
+    id: "folha-emoldurada",
+    label: "Folha emoldurada",
+    resembles: "borboleta",
+    tellApart: "uma folha prensada num quadro, sem asas",
+    region: { kind: "rect", x: 1950, y: 590, w: 116, h: 140 },
+  },
+  {
+    id: "caixa-de-fosforos",
+    label: "Caixa de fósforos",
+    resembles: "gaita",
+    tellApart: "uma caixinha de papelão com gaveta, sem furos",
+    region: { kind: "rect", x: 2476, y: 1100, w: 60, h: 40 },
+  },
+  {
+    id: "estojo-de-oculos",
+    label: "Estojo de óculos",
+    resembles: "gaita",
+    tellApart: "um estojo fechado de couro, sem furinhos de sopro",
+    region: { kind: "rect", x: 2820, y: 1094, w: 70, h: 36 },
+  },
 ];
 
-/** Versioned folder: a new art kit is a new folder, never an overwrite (v0 was the skeleton's). */
-export const SCENE_ASSET_BASE = "/assets/hidden-objects/explorer-studio/v1";
+/**
+ * Versioned folder: a new art kit is a new folder, never an overwrite (v0 was the
+ * skeleton's, v1 EXPERIENCE-02's; v2 is GAME03-CALIBRATION-02A's — five new
+ * objects tucked into the room and eleven more look-alikes).
+ */
+export const SCENE_ASSET_BASE = "/assets/hidden-objects/explorer-studio/v2";
 
 export const SCENE_LAYERS: readonly SceneLayer[] = [
   {
@@ -531,8 +713,8 @@ export const EXPLORER_STUDIO: SceneDefinition = {
     completeTitle: "Estúdio explorado",
     summary: "Você encontrou todos os objetos do Estúdio.",
   },
-  // the intro's art: already on the device when the selector shows it
-  preview: `${SCENE_ASSET_BASE}/hero.webp`,
+  // the intro's art (kit v1, which the platform's world visuals name): already on the device when the selector shows it
+  preview: "/assets/hidden-objects/explorer-studio/v1/hero.webp",
   width: SCENE_WIDTH,
   height: SCENE_HEIGHT,
   stations: SCENE_STATIONS,

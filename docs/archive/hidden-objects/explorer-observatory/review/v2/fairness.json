@@ -1,0 +1,260 @@
+{
+  "kit": "/assets/hidden-objects/explorer-observatory/v2",
+  "plateSha256": "945f4e9353541ea9c534e71551bd7d5b9855c470820bf48372b769765db904cb",
+  "rule": {
+    "visible": "share of the target's own pixels the finished plate shows (plate rendered with and without the target)",
+    "contrast": "F4 as written: mean-luminance ratio, visible target vs a 24 su ring, on the composed room",
+    "edge": "median luminance ratio across the visible silhouette's edge (each edge pixel vs the background within 3 su)",
+    "clutter": "share of busy pixels (Sobel luminance gradient > 40) in the ring 16–120 su around the object's box, on the shipped layers composed at rest"
+  },
+  "targets": [
+    {
+      "id": "coruja",
+      "tier": "A",
+      "visible": 1,
+      "contrast": 2.54,
+      "edge": 2.48,
+      "lookAlikes": [
+        "vaso-de-ceramica"
+      ],
+      "clutter": 0.161
+    },
+    {
+      "id": "pipa",
+      "tier": "A",
+      "visible": 1,
+      "contrast": 2.68,
+      "edge": 4.19,
+      "lookAlikes": [],
+      "clutter": 0.065
+    },
+    {
+      "id": "luneta",
+      "tier": "B",
+      "visible": 0.77,
+      "contrast": 1.89,
+      "edge": 1.91,
+      "lookAlikes": [
+        "rolo-de-mapas",
+        "caleidoscopio"
+      ],
+      "clutter": 0.241
+    },
+    {
+      "id": "pantufas",
+      "tier": "B",
+      "visible": 0.887,
+      "contrast": 3.03,
+      "edge": 2.52,
+      "lookAlikes": [
+        "luvas"
+      ],
+      "clutter": 0.137
+    },
+    {
+      "id": "oculos",
+      "tier": "C",
+      "visible": 0.853,
+      "contrast": 1.48,
+      "edge": 1.86,
+      "lookAlikes": [
+        "argolas"
+      ],
+      "clutter": 0.119
+    },
+    {
+      "id": "ratinho",
+      "tier": "C",
+      "visible": 0.778,
+      "contrast": 3.11,
+      "edge": 1.87,
+      "lookAlikes": [
+        "escova",
+        "meia"
+      ],
+      "clutter": 0.132
+    },
+    {
+      "id": "caneca",
+      "tier": "C",
+      "visible": 0.892,
+      "contrast": 1.72,
+      "edge": 1.67,
+      "lookAlikes": [
+        "pote-de-ceramica"
+      ],
+      "clutter": 0.185
+    },
+    {
+      "id": "ferradura",
+      "tier": "B",
+      "visible": 0.999,
+      "contrast": 1.59,
+      "edge": 2.96,
+      "lookAlikes": [],
+      "clutter": 0.233
+    },
+    {
+      "id": "sistema-solar",
+      "tier": "A",
+      "visible": 0.998,
+      "contrast": 2.71,
+      "edge": 2.92,
+      "lookAlikes": [
+        "esfera-armilar"
+      ],
+      "clutter": 0.134
+    },
+    {
+      "id": "vela",
+      "tier": "A",
+      "visible": 0.999,
+      "contrast": 2.04,
+      "edge": 2.02,
+      "lookAlikes": [],
+      "clutter": 0.116
+    },
+    {
+      "id": "compasso",
+      "tier": "B",
+      "visible": 0.884,
+      "contrast": 2.1,
+      "edge": 2.68,
+      "lookAlikes": [
+        "pinca"
+      ],
+      "clutter": 0.152
+    },
+    {
+      "id": "bule",
+      "tier": "B",
+      "visible": 0.848,
+      "contrast": 2.58,
+      "edge": 1.96,
+      "lookAlikes": [
+        "regador"
+      ],
+      "clutter": 0.146
+    },
+    {
+      "id": "sino",
+      "tier": "C",
+      "visible": 0.598,
+      "contrast": 2.98,
+      "edge": 1.93,
+      "lookAlikes": [
+        "funil"
+      ],
+      "clutter": 0.113
+    },
+    {
+      "id": "maca",
+      "tier": "C",
+      "visible": 0.695,
+      "contrast": 1.27,
+      "edge": 1.48,
+      "lookAlikes": [
+        "novelo",
+        "bola-de-borracha"
+      ],
+      "clutter": 0.181
+    },
+    {
+      "id": "esquadro",
+      "tier": "C",
+      "visible": 0.578,
+      "contrast": 1.11,
+      "edge": 1.76,
+      "lookAlikes": [
+        "flamula",
+        "transferidor"
+      ],
+      "clutter": 0.1
+    },
+    {
+      "id": "violino",
+      "tier": "A",
+      "visible": 1,
+      "contrast": 2.44,
+      "edge": 3.31,
+      "lookAlikes": [],
+      "clutter": 0.09
+    },
+    {
+      "id": "gramofone",
+      "tier": "A",
+      "visible": 0.931,
+      "contrast": 1.63,
+      "edge": 1.92,
+      "lookAlikes": [],
+      "clutter": 0.162
+    },
+    {
+      "id": "microscopio",
+      "tier": "B",
+      "visible": 0.788,
+      "contrast": 1.61,
+      "edge": 1.44,
+      "lookAlikes": [
+        "luminaria"
+      ],
+      "clutter": 0.107
+    },
+    {
+      "id": "gato",
+      "tier": "B",
+      "visible": 0.819,
+      "contrast": 2.12,
+      "edge": 3.7,
+      "lookAlikes": [
+        "almofada"
+      ],
+      "clutter": 0.192
+    },
+    {
+      "id": "balanca",
+      "tier": "C",
+      "visible": 0.884,
+      "contrast": 1.81,
+      "edge": 1.62,
+      "lookAlikes": [
+        "mobile"
+      ],
+      "clutter": 0.165
+    },
+    {
+      "id": "leque",
+      "tier": "C",
+      "visible": 0.867,
+      "contrast": 1.5,
+      "edge": 1.49,
+      "lookAlikes": [
+        "concha"
+      ],
+      "clutter": 0.29
+    },
+    {
+      "id": "cavalo-marinho",
+      "tier": "C",
+      "visible": 0.969,
+      "contrast": 2.38,
+      "edge": 1.41,
+      "lookAlikes": [
+        "peca-de-xadrez"
+      ],
+      "clutter": 0.128
+    },
+    {
+      "id": "cadeado",
+      "tier": "C",
+      "visible": 0.968,
+      "contrast": 2.02,
+      "edge": 1.9,
+      "lookAlikes": [
+        "fechadura",
+        "medalhao"
+      ],
+      "clutter": 0.24
+    }
+  ]
+}

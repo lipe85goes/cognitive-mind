@@ -57,6 +57,9 @@ export const FILES = {
   scenes: `${DIR}hidden-objects-scenes.ts`,
   studioScene: `${DIR}scenes/explorer-studio.ts`,
   observatoryScene: `${DIR}scenes/explorer-observatory.ts`,
+  /** GAME03-CALIBRATION-02A: the clue banks' seeded selection, and the round model. */
+  clues: `${DIR}hidden-objects-clues.ts`,
+  difficulty: `${DIR}hidden-objects-difficulty.ts`,
   camera: `${DIR}hidden-objects-camera.ts`,
   gesture: `${DIR}hidden-objects-gesture.ts`,
   model: `${DIR}hidden-objects-model.ts`,
@@ -806,6 +809,12 @@ export function browserMocks(harness) {
 
 /** Whether the tree's engine takes its room as data (a scene registry exists). */
 export const isMultiscene = (tree) => tree.exists(FILES.scenes);
+/**
+ * Whether the tree is GAME03-CALIBRATION-02A's or later: every object carries a
+ * clue bank, a round tells the variants its seed draws, and the rounds are what
+ * Difficulty V3's measured round rule accepts.
+ */
+export const isCalibrated = (tree) => tree.exists(FILES.clues);
 /** The module holding the Estúdio's data on this tree (its literal regions, its look-alikes). */
 export const studioSceneFile = (tree) => (isMultiscene(tree) ? FILES.studioScene : FILES.scene);
 
@@ -853,9 +862,63 @@ export function pureModules(tree) {
       gesture: graph.require(FILES.gesture),
       model: boundToScene(graph.require(FILES.model), studio),
       rounds: rounds && boundToScene(rounds, studio),
+      clues: isCalibrated(tree) ? boundToScene(graph.require(FILES.clues), studio) : null,
       studio,
     };
   });
+}
+
+/**
+ * Difficulty V3's round rule, applied apart from the product's
+ * (GAME03-CALIBRATION-02A), for the brute-force enumerations that check the
+ * product's: a round's tiers within its difficulty's bounds, at most so many
+ * glance finds, its mean search load inside the difficulty's band and its
+ * look-alikes per object at the floor. The loads are the product's ruler
+ * (hidden-objects-difficulty.ts, loadOf — measured data); the rule is read off
+ * the preset and applied here. Null on trees before the calibration.
+ */
+export function v3RoundKeeper(tree) {
+  if (!isCalibrated(tree)) return null;
+  return cached(tree, "v3RoundKeeper", () => {
+    const graph = createModuleGraph({ tree, mocks: {}, globals: {} });
+    const contract = graph.require(FILES.scene);
+    const difficulty = graph.require(FILES.difficulty);
+    return (scene, d, ids) => {
+      const rule = contract.DIFFICULTY_PRESETS[d].round;
+      const tiers = { A: 0, B: 0, C: 0 };
+      let load = 0;
+      let glances = 0;
+      let decoys = 0;
+      for (const id of ids) {
+        const target = scene.pool.find((t) => t.id === id);
+        tiers[target.tier] += 1;
+        const own = difficulty.loadOf(scene, id);
+        load += own;
+        if (own < difficulty.POP_OUT_BELOW) glances += 1;
+        decoys += scene.lookAlikes.filter((l) => l.resembles === id).length;
+      }
+      const mean = load / ids.length;
+      return (
+        ["A", "B", "C"].every((tier) => tiers[tier] >= rule.tiers[tier][0] && tiers[tier] <= rule.tiers[tier][1]) &&
+        glances <= rule.maxPopOuts &&
+        mean >= rule.minSearch &&
+        mean < rule.maxSearch &&
+        decoys / ids.length >= rule.minDecoys
+      );
+    };
+  });
+}
+
+/**
+ * The line a clue list shows for `id` in the round (difficulty, seed, ids): on
+ * a calibrated tree the variant of its clue bank the round's seed drew; before
+ * it, the object's one clue.
+ */
+export function listedClue(tree, difficulty, seed, ids, id) {
+  const { model, clues } = pureModules(tree);
+  const target = model.targetById(id);
+  if (!clues) return target.clue;
+  return clues.clueAt(target, clues.selectRoundClues(difficulty, seed, ids)[id]?.list ?? null)?.text ?? null;
 }
 
 /** Every list a difficulty can show on this tree: each valid round of the pool, or the one fixed list before it. */

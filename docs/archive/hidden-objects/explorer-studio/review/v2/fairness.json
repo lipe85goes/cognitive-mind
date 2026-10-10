@@ -1,0 +1,258 @@
+{
+  "kit": "/assets/hidden-objects/explorer-studio/v2",
+  "plateSha256": "53e36d0ff3a85e1d65b18d548a23e5aa855031fdb98a37cfd5b61fb1e46e3f59",
+  "rule": {
+    "visible": "share of the target's own pixels the finished plate shows (plate rendered with and without the target)",
+    "contrast": "F4 as written: mean-luminance ratio, visible target vs a 24 su ring, on the composed room",
+    "edge": "median luminance ratio across the visible silhouette's edge (each edge pixel vs the background within 3 su)",
+    "clutter": "share of busy pixels (Sobel luminance gradient > 40) in the ring 16–120 su around the object's box, on the shipped layers composed at rest"
+  },
+  "targets": [
+    {
+      "id": "ampulheta",
+      "tier": "A",
+      "visible": 0.956,
+      "contrast": 1.95,
+      "edge": 1.77,
+      "lookAlikes": [
+        "vaso-torneado"
+      ],
+      "clutter": 0.15
+    },
+    {
+      "id": "binoculo",
+      "tier": "B",
+      "visible": 0.846,
+      "contrast": 1.06,
+      "edge": 1.32,
+      "lookAlikes": [
+        "tinteiros"
+      ],
+      "clutter": 0.157
+    },
+    {
+      "id": "chave",
+      "tier": "C",
+      "visible": 0.71,
+      "contrast": 1.63,
+      "edge": 1.67,
+      "lookAlikes": [
+        "alca-do-bau",
+        "fivela"
+      ],
+      "clutter": 0.135
+    },
+    {
+      "id": "guarda-chuva",
+      "tier": "A",
+      "visible": 0.965,
+      "contrast": 2.09,
+      "edge": 1.44,
+      "lookAlikes": [],
+      "clutter": 0.136
+    },
+    {
+      "id": "gaiola",
+      "tier": "C",
+      "visible": 0.934,
+      "contrast": 1.41,
+      "edge": 1.53,
+      "lookAlikes": [
+        "cesta-de-arame"
+      ],
+      "clutter": 0.047
+    },
+    {
+      "id": "caracol",
+      "tier": "C",
+      "visible": 0.794,
+      "contrast": 2.03,
+      "edge": 2.02,
+      "lookAlikes": [
+        "roseta-entalhada"
+      ],
+      "clutter": 0.201
+    },
+    {
+      "id": "piao",
+      "tier": "C",
+      "visible": 0.977,
+      "contrast": 1.6,
+      "edge": 2.28,
+      "lookAlikes": [
+        "peao-de-xadrez"
+      ],
+      "clutter": 0.144
+    },
+    {
+      "id": "lupa",
+      "tier": "A",
+      "visible": 0.998,
+      "contrast": 1.34,
+      "edge": 1.75,
+      "lookAlikes": [
+        "carimbo"
+      ],
+      "clutter": 0.153
+    },
+    {
+      "id": "bussola",
+      "tier": "B",
+      "visible": 0.88,
+      "contrast": 1.06,
+      "edge": 1.97,
+      "lookAlikes": [
+        "lata-redonda",
+        "tampa-de-pote"
+      ],
+      "clutter": 0.209
+    },
+    {
+      "id": "relogio",
+      "tier": "C",
+      "visible": 0.859,
+      "contrast": 1.58,
+      "edge": 1.62,
+      "lookAlikes": [
+        "moedas",
+        "medalha"
+      ],
+      "clutter": 0.236
+    },
+    {
+      "id": "xicara",
+      "tier": "C",
+      "visible": 0.538,
+      "contrast": 1.52,
+      "edge": 1.75,
+      "lookAlikes": [
+        "acucareiro"
+      ],
+      "clutter": 0.191
+    },
+    {
+      "id": "pena",
+      "tier": "B",
+      "visible": 0.999,
+      "contrast": 1.87,
+      "edge": 2.93,
+      "lookAlikes": [],
+      "clutter": 0.126
+    },
+    {
+      "id": "borboleta",
+      "tier": "A",
+      "visible": 1,
+      "contrast": 2.81,
+      "edge": 1.33,
+      "lookAlikes": [
+        "folha-emoldurada"
+      ],
+      "clutter": 0.08
+    },
+    {
+      "id": "chapeu",
+      "tier": "B",
+      "visible": 1,
+      "contrast": 1.76,
+      "edge": 1.91,
+      "lookAlikes": [],
+      "clutter": 0.102
+    },
+    {
+      "id": "tesoura",
+      "tier": "C",
+      "visible": 0.624,
+      "contrast": 2.31,
+      "edge": 2.01,
+      "lookAlikes": [
+        "compasso-de-pontas"
+      ],
+      "clutter": 0.188
+    },
+    {
+      "id": "pinha",
+      "tier": "B",
+      "visible": 1,
+      "contrast": 1.14,
+      "edge": 1.51,
+      "lookAlikes": [
+        "abacaxi-de-madeira"
+      ],
+      "clutter": 0.135
+    },
+    {
+      "id": "barco",
+      "tier": "A",
+      "visible": 0.957,
+      "contrast": 3.06,
+      "edge": 1.93,
+      "lookAlikes": [],
+      "clutter": 0.181
+    },
+    {
+      "id": "lanterna",
+      "tier": "B",
+      "visible": 0.749,
+      "contrast": 2.49,
+      "edge": 1.54,
+      "lookAlikes": [
+        "chaleira"
+      ],
+      "clutter": 0.166
+    },
+    {
+      "id": "camera",
+      "tier": "C",
+      "visible": 0.836,
+      "contrast": 1.94,
+      "edge": 2.99,
+      "lookAlikes": [
+        "caixinha-de-musica"
+      ],
+      "clutter": 0.176
+    },
+    {
+      "id": "estatueta",
+      "tier": "C",
+      "visible": 0.753,
+      "contrast": 3.74,
+      "edge": 2.93,
+      "lookAlikes": [
+        "vaso-de-porcelana",
+        "rolo-de-papel"
+      ],
+      "clutter": 0.148
+    },
+    {
+      "id": "globo",
+      "tier": "A",
+      "visible": 0.997,
+      "contrast": 1.99,
+      "edge": 1.7,
+      "lookAlikes": [],
+      "clutter": 0.129
+    },
+    {
+      "id": "bolsa",
+      "tier": "B",
+      "visible": 0.99,
+      "contrast": 1.88,
+      "edge": 2.25,
+      "lookAlikes": [],
+      "clutter": 0.098
+    },
+    {
+      "id": "gaita",
+      "tier": "C",
+      "visible": 0.808,
+      "contrast": 1.63,
+      "edge": 1.65,
+      "lookAlikes": [
+        "caixa-de-fosforos",
+        "estojo-de-oculos"
+      ],
+      "clutter": 0.175
+    }
+  ]
+}
