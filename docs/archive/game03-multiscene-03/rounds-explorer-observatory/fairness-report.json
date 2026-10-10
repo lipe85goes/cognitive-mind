@@ -1,0 +1,1143 @@
+{
+  "mission": "GAME03-EXPERIENCE-02 (per room since GAME03-MULTISCENE-03)",
+  "scene": "explorer-observatory",
+  "generatedBy": "node tools/validation/hidden-objects-round-fairness.mjs",
+  "samplesPerDifficulty": 1000000,
+  "seeds": "Weyl sequence (step 0x9e3779b9) through the murmur3 finalizer; start 0x5eed0000 + difficulty index",
+  "kit": {
+    "base": "/assets/hidden-objects/explorer-observatory/v1",
+    "plateSha256": "dc4b59d646963acbac4c5be4e30e5434a5473f4c4a2b22d992469859be83cc09",
+    "auditRule": {
+      "visible": "share of the target's own pixels the finished plate shows (plate rendered with and without the target)",
+      "contrast": "F4 as written: mean-luminance ratio, visible target vs a 24 su ring, on the composed room",
+      "edge": "median luminance ratio across the visible silhouette's edge (each edge pixel vs the background within 3 su)"
+    }
+  },
+  "pool": {
+    "size": 18,
+    "tiers": {
+      "A": 6,
+      "B": 6,
+      "C": 6
+    },
+    "stations": {
+      "cupula": 6,
+      "bancada": 6,
+      "arquivo": 6
+    },
+    "grid": {
+      "cupula": {
+        "A": [
+          "coruja",
+          "pipa"
+        ],
+        "B": [
+          "luneta",
+          "pantufas"
+        ],
+        "C": [
+          "oculos",
+          "ratinho"
+        ]
+      },
+      "bancada": {
+        "A": [
+          "sistema-solar",
+          "vela"
+        ],
+        "B": [
+          "compasso",
+          "bule"
+        ],
+        "C": [
+          "sino",
+          "maca"
+        ]
+      },
+      "arquivo": {
+        "A": [
+          "violino",
+          "gramofone"
+        ],
+        "B": [
+          "microscopio",
+          "gato"
+        ],
+        "C": [
+          "balanca",
+          "leque"
+        ]
+      }
+    }
+  },
+  "difficulties": {
+    "easy": {
+      "preset": {
+        "count": 5,
+        "tiers": {
+          "A": 3,
+          "B": 2,
+          "C": 0
+        },
+        "listStyle": "picture",
+        "hintLadder": [
+          "station",
+          "area",
+          "reveal"
+        ]
+      },
+      "drawablePool": 12,
+      "stationSpread": {
+        "min": 1,
+        "max": 2
+      },
+      "validRounds": 156,
+      "drawn": 1000000,
+      "invalid": 0,
+      "reached": 156,
+      "chiSquareZ": -0.41,
+      "maxObjectZ": 1.25,
+      "objects": [
+        {
+          "id": "coruja",
+          "tier": "A",
+          "station": "cupula",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.5,
+          "measured": 0.5006,
+          "z": 1.13,
+          "firstLine": 0.1004,
+          "firstLineExact": 0.1,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "pipa",
+          "tier": "A",
+          "station": "cupula",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.5,
+          "measured": 0.5002,
+          "z": 0.38,
+          "firstLine": 0.0999,
+          "firstLineExact": 0.1,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "luneta",
+          "tier": "B",
+          "station": "cupula",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.3333,
+          "measured": 0.3334,
+          "z": 0.05,
+          "firstLine": 0.0669,
+          "firstLineExact": 0.0667,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "pantufas",
+          "tier": "B",
+          "station": "cupula",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.3333,
+          "measured": 0.3332,
+          "z": -0.31,
+          "firstLine": 0.0662,
+          "firstLineExact": 0.0667,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "oculos",
+          "tier": "C",
+          "station": "cupula",
+          "drawable": false,
+          "whyNot": "the difficulty draws no tier C",
+          "exact": 0,
+          "measured": 0,
+          "z": 0,
+          "firstLine": 0,
+          "firstLineExact": 0,
+          "exposureOverTierMean": null
+        },
+        {
+          "id": "ratinho",
+          "tier": "C",
+          "station": "cupula",
+          "drawable": false,
+          "whyNot": "the difficulty draws no tier C",
+          "exact": 0,
+          "measured": 0,
+          "z": 0,
+          "firstLine": 0,
+          "firstLineExact": 0,
+          "exposureOverTierMean": null
+        },
+        {
+          "id": "sistema-solar",
+          "tier": "A",
+          "station": "bancada",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.5,
+          "measured": 0.4994,
+          "z": -1.25,
+          "firstLine": 0.1002,
+          "firstLineExact": 0.1,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "vela",
+          "tier": "A",
+          "station": "bancada",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.5,
+          "measured": 0.4996,
+          "z": -0.8,
+          "firstLine": 0.1001,
+          "firstLineExact": 0.1,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "compasso",
+          "tier": "B",
+          "station": "bancada",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.3333,
+          "measured": 0.3336,
+          "z": 0.62,
+          "firstLine": 0.0666,
+          "firstLineExact": 0.0667,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "bule",
+          "tier": "B",
+          "station": "bancada",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.3333,
+          "measured": 0.3338,
+          "z": 0.99,
+          "firstLine": 0.0669,
+          "firstLineExact": 0.0667,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "sino",
+          "tier": "C",
+          "station": "bancada",
+          "drawable": false,
+          "whyNot": "the difficulty draws no tier C",
+          "exact": 0,
+          "measured": 0,
+          "z": 0,
+          "firstLine": 0,
+          "firstLineExact": 0,
+          "exposureOverTierMean": null
+        },
+        {
+          "id": "maca",
+          "tier": "C",
+          "station": "bancada",
+          "drawable": false,
+          "whyNot": "the difficulty draws no tier C",
+          "exact": 0,
+          "measured": 0,
+          "z": 0,
+          "firstLine": 0,
+          "firstLineExact": 0,
+          "exposureOverTierMean": null
+        },
+        {
+          "id": "violino",
+          "tier": "A",
+          "station": "arquivo",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.5,
+          "measured": 0.4997,
+          "z": -0.62,
+          "firstLine": 0.0996,
+          "firstLineExact": 0.1,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "gramofone",
+          "tier": "A",
+          "station": "arquivo",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.5,
+          "measured": 0.5006,
+          "z": 1.16,
+          "firstLine": 0.0999,
+          "firstLineExact": 0.1,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "microscopio",
+          "tier": "B",
+          "station": "arquivo",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.3333,
+          "measured": 0.3331,
+          "z": -0.44,
+          "firstLine": 0.0667,
+          "firstLineExact": 0.0667,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "gato",
+          "tier": "B",
+          "station": "arquivo",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.3333,
+          "measured": 0.3329,
+          "z": -0.91,
+          "firstLine": 0.0667,
+          "firstLineExact": 0.0667,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "balanca",
+          "tier": "C",
+          "station": "arquivo",
+          "drawable": false,
+          "whyNot": "the difficulty draws no tier C",
+          "exact": 0,
+          "measured": 0,
+          "z": 0,
+          "firstLine": 0,
+          "firstLineExact": 0,
+          "exposureOverTierMean": null
+        },
+        {
+          "id": "leque",
+          "tier": "C",
+          "station": "arquivo",
+          "drawable": false,
+          "whyNot": "the difficulty draws no tier C",
+          "exact": 0,
+          "measured": 0,
+          "z": 0,
+          "firstLine": 0,
+          "firstLineExact": 0,
+          "exposureOverTierMean": null
+        }
+      ],
+      "tiers": {
+        "mixPerRound": {
+          "A3 B2 C0": 1
+        },
+        "expectedShare": {
+          "A": 0.6,
+          "B": 0.4,
+          "C": 0
+        },
+        "byLine": [
+          {
+            "A": 0.6,
+            "B": 0.4,
+            "C": 0
+          },
+          {
+            "A": 0.5993,
+            "B": 0.4007,
+            "C": 0
+          },
+          {
+            "A": 0.6007,
+            "B": 0.3993,
+            "C": 0
+          },
+          {
+            "A": 0.5999,
+            "B": 0.4001,
+            "C": 0
+          },
+          {
+            "A": 0.6001,
+            "B": 0.3999,
+            "C": 0
+          }
+        ]
+      },
+      "stations": {
+        "patterns": {
+          "1-2-2": {
+            "exact": 0.3333,
+            "measured": 0.3327
+          },
+          "2-1-2": {
+            "exact": 0.3333,
+            "measured": 0.3336
+          },
+          "2-2-1": {
+            "exact": 0.3333,
+            "measured": 0.3337
+          }
+        },
+        "shareOfListed": {
+          "cupula": 0.3335,
+          "bancada": 0.3333,
+          "arquivo": 0.3333
+        },
+        "shareOfListedExact": {
+          "cupula": 0.3333,
+          "bancada": 0.3333,
+          "arquivo": 0.3333
+        },
+        "firstLine": {
+          "cupula": 0.3334,
+          "bancada": 0.3338,
+          "arquivo": 0.3328
+        }
+      },
+      "perceptualLoad": {
+        "exact": {
+          "visible": 0.926,
+          "edge": 2.631,
+          "lookAlikes": 0.433,
+          "belowEightyVisible": 0.667,
+          "belowEightyVisibleMax": 2
+        },
+        "measured": {
+          "visible": 0.926,
+          "edge": 2.631,
+          "lookAlikes": 0.433
+        },
+        "objectsBelow80PercentVisiblePerRound": {
+          "0": 0.4098,
+          "1": 0.514,
+          "2": 0.0762
+        }
+      }
+    },
+    "medium": {
+      "preset": {
+        "count": 6,
+        "tiers": {
+          "A": 1,
+          "B": 3,
+          "C": 2
+        },
+        "listStyle": "silhouette",
+        "hintLadder": [
+          "station",
+          "wide-area",
+          "direction"
+        ]
+      },
+      "drawablePool": 18,
+      "stationSpread": {
+        "min": 2,
+        "max": 2
+      },
+      "validRounds": 312,
+      "drawn": 1000000,
+      "invalid": 0,
+      "reached": 312,
+      "chiSquareZ": -0.02,
+      "maxObjectZ": 1.89,
+      "objects": [
+        {
+          "id": "coruja",
+          "tier": "A",
+          "station": "cupula",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.1667,
+          "measured": 0.1668,
+          "z": 0.36,
+          "firstLine": 0.0278,
+          "firstLineExact": 0.0278,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "pipa",
+          "tier": "A",
+          "station": "cupula",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.1667,
+          "measured": 0.167,
+          "z": 0.95,
+          "firstLine": 0.0278,
+          "firstLineExact": 0.0278,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "luneta",
+          "tier": "B",
+          "station": "cupula",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.5,
+          "measured": 0.4995,
+          "z": -0.99,
+          "firstLine": 0.0833,
+          "firstLineExact": 0.0833,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "pantufas",
+          "tier": "B",
+          "station": "cupula",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.5,
+          "measured": 0.4998,
+          "z": -0.34,
+          "firstLine": 0.0837,
+          "firstLineExact": 0.0833,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "oculos",
+          "tier": "C",
+          "station": "cupula",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.3333,
+          "measured": 0.3341,
+          "z": 1.56,
+          "firstLine": 0.0557,
+          "firstLineExact": 0.0556,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "ratinho",
+          "tier": "C",
+          "station": "cupula",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.3333,
+          "measured": 0.3328,
+          "z": -1.17,
+          "firstLine": 0.0552,
+          "firstLineExact": 0.0556,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "sistema-solar",
+          "tier": "A",
+          "station": "bancada",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.1667,
+          "measured": 0.1665,
+          "z": -0.51,
+          "firstLine": 0.0276,
+          "firstLineExact": 0.0278,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "vela",
+          "tier": "A",
+          "station": "bancada",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.1667,
+          "measured": 0.1669,
+          "z": 0.67,
+          "firstLine": 0.0278,
+          "firstLineExact": 0.0278,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "compasso",
+          "tier": "B",
+          "station": "bancada",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.5,
+          "measured": 0.4997,
+          "z": -0.51,
+          "firstLine": 0.0836,
+          "firstLineExact": 0.0833,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "bule",
+          "tier": "B",
+          "station": "bancada",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.5,
+          "measured": 0.5,
+          "z": 0.06,
+          "firstLine": 0.0836,
+          "firstLineExact": 0.0833,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "sino",
+          "tier": "C",
+          "station": "bancada",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.3333,
+          "measured": 0.3329,
+          "z": -0.9,
+          "firstLine": 0.0555,
+          "firstLineExact": 0.0556,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "maca",
+          "tier": "C",
+          "station": "bancada",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.3333,
+          "measured": 0.3339,
+          "z": 1.25,
+          "firstLine": 0.0554,
+          "firstLineExact": 0.0556,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "violino",
+          "tier": "A",
+          "station": "arquivo",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.1667,
+          "measured": 0.1665,
+          "z": -0.38,
+          "firstLine": 0.028,
+          "firstLineExact": 0.0278,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "gramofone",
+          "tier": "A",
+          "station": "arquivo",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.1667,
+          "measured": 0.1663,
+          "z": -1.09,
+          "firstLine": 0.0276,
+          "firstLineExact": 0.0278,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "microscopio",
+          "tier": "B",
+          "station": "arquivo",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.5,
+          "measured": 0.4999,
+          "z": -0.1,
+          "firstLine": 0.0831,
+          "firstLineExact": 0.0833,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "gato",
+          "tier": "B",
+          "station": "arquivo",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.5,
+          "measured": 0.5009,
+          "z": 1.89,
+          "firstLine": 0.0833,
+          "firstLineExact": 0.0833,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "balanca",
+          "tier": "C",
+          "station": "arquivo",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.3333,
+          "measured": 0.3329,
+          "z": -1.01,
+          "firstLine": 0.0555,
+          "firstLineExact": 0.0556,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "leque",
+          "tier": "C",
+          "station": "arquivo",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.3333,
+          "measured": 0.3335,
+          "z": 0.27,
+          "firstLine": 0.0555,
+          "firstLineExact": 0.0556,
+          "exposureOverTierMean": 1
+        }
+      ],
+      "tiers": {
+        "mixPerRound": {
+          "A1 B3 C2": 1
+        },
+        "expectedShare": {
+          "A": 0.1667,
+          "B": 0.5,
+          "C": 0.3333
+        },
+        "byLine": [
+          {
+            "A": 0.1666,
+            "B": 0.5005,
+            "C": 0.3328
+          },
+          {
+            "A": 0.1664,
+            "B": 0.5,
+            "C": 0.3337
+          },
+          {
+            "A": 0.1665,
+            "B": 0.4999,
+            "C": 0.3336
+          },
+          {
+            "A": 0.1668,
+            "B": 0.5011,
+            "C": 0.3321
+          },
+          {
+            "A": 0.1669,
+            "B": 0.4995,
+            "C": 0.3336
+          },
+          {
+            "A": 0.1668,
+            "B": 0.499,
+            "C": 0.3342
+          }
+        ]
+      },
+      "stations": {
+        "patterns": {
+          "2-2-2": {
+            "exact": 1,
+            "measured": 1
+          }
+        },
+        "shareOfListed": {
+          "cupula": 0.3333,
+          "bancada": 0.3333,
+          "arquivo": 0.3333
+        },
+        "shareOfListedExact": {
+          "cupula": 0.3333,
+          "bancada": 0.3333,
+          "arquivo": 0.3333
+        },
+        "firstLine": {
+          "cupula": 0.3335,
+          "bancada": 0.3334,
+          "arquivo": 0.3331
+        }
+      },
+      "perceptualLoad": {
+        "exact": {
+          "visible": 0.841,
+          "edge": 2.221,
+          "lookAlikes": 0.778,
+          "belowEightyVisible": 2,
+          "belowEightyVisibleMax": 4
+        },
+        "measured": {
+          "visible": 0.841,
+          "edge": 2.222,
+          "lookAlikes": 0.778
+        },
+        "objectsBelow80PercentVisiblePerRound": {
+          "0": 0.0577,
+          "1": 0.2309,
+          "2": 0.4168,
+          "3": 0.2435,
+          "4": 0.051
+        }
+      }
+    },
+    "hard": {
+      "preset": {
+        "count": 8,
+        "tiers": {
+          "A": 1,
+          "B": 3,
+          "C": 4
+        },
+        "listStyle": "clue",
+        "hintLadder": [
+          "station",
+          "context"
+        ]
+      },
+      "drawablePool": 18,
+      "stationSpread": {
+        "min": 2,
+        "max": 3
+      },
+      "validRounds": 768,
+      "drawn": 1000000,
+      "invalid": 0,
+      "reached": 768,
+      "chiSquareZ": -0.33,
+      "maxObjectZ": 2.12,
+      "objects": [
+        {
+          "id": "coruja",
+          "tier": "A",
+          "station": "cupula",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.1667,
+          "measured": 0.1662,
+          "z": -1.16,
+          "firstLine": 0.0208,
+          "firstLineExact": 0.0208,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "pipa",
+          "tier": "A",
+          "station": "cupula",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.1667,
+          "measured": 0.1668,
+          "z": 0.45,
+          "firstLine": 0.0209,
+          "firstLineExact": 0.0208,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "luneta",
+          "tier": "B",
+          "station": "cupula",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.5,
+          "measured": 0.5002,
+          "z": 0.43,
+          "firstLine": 0.0628,
+          "firstLineExact": 0.0625,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "pantufas",
+          "tier": "B",
+          "station": "cupula",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.5,
+          "measured": 0.5004,
+          "z": 0.8,
+          "firstLine": 0.0625,
+          "firstLineExact": 0.0625,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "oculos",
+          "tier": "C",
+          "station": "cupula",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.6667,
+          "measured": 0.6671,
+          "z": 0.93,
+          "firstLine": 0.0831,
+          "firstLineExact": 0.0833,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "ratinho",
+          "tier": "C",
+          "station": "cupula",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.6667,
+          "measured": 0.6665,
+          "z": -0.41,
+          "firstLine": 0.0833,
+          "firstLineExact": 0.0833,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "sistema-solar",
+          "tier": "A",
+          "station": "bancada",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.1667,
+          "measured": 0.1667,
+          "z": -0.01,
+          "firstLine": 0.0208,
+          "firstLineExact": 0.0208,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "vela",
+          "tier": "A",
+          "station": "bancada",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.1667,
+          "measured": 0.1671,
+          "z": 1.06,
+          "firstLine": 0.0209,
+          "firstLineExact": 0.0208,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "compasso",
+          "tier": "B",
+          "station": "bancada",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.5,
+          "measured": 0.5008,
+          "z": 1.64,
+          "firstLine": 0.0626,
+          "firstLineExact": 0.0625,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "bule",
+          "tier": "B",
+          "station": "bancada",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.5,
+          "measured": 0.4989,
+          "z": -2.12,
+          "firstLine": 0.062,
+          "firstLineExact": 0.0625,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "sino",
+          "tier": "C",
+          "station": "bancada",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.6667,
+          "measured": 0.6664,
+          "z": -0.53,
+          "firstLine": 0.0833,
+          "firstLineExact": 0.0833,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "maca",
+          "tier": "C",
+          "station": "bancada",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.6667,
+          "measured": 0.6671,
+          "z": 0.94,
+          "firstLine": 0.0833,
+          "firstLineExact": 0.0833,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "violino",
+          "tier": "A",
+          "station": "arquivo",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.1667,
+          "measured": 0.1664,
+          "z": -0.65,
+          "firstLine": 0.0209,
+          "firstLineExact": 0.0208,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "gramofone",
+          "tier": "A",
+          "station": "arquivo",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.1667,
+          "measured": 0.1668,
+          "z": 0.31,
+          "firstLine": 0.0209,
+          "firstLineExact": 0.0208,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "microscopio",
+          "tier": "B",
+          "station": "arquivo",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.5,
+          "measured": 0.4994,
+          "z": -1.26,
+          "firstLine": 0.0627,
+          "firstLineExact": 0.0625,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "gato",
+          "tier": "B",
+          "station": "arquivo",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.5,
+          "measured": 0.5003,
+          "z": 0.52,
+          "firstLine": 0.0625,
+          "firstLineExact": 0.0625,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "balanca",
+          "tier": "C",
+          "station": "arquivo",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.6667,
+          "measured": 0.667,
+          "z": 0.69,
+          "firstLine": 0.0838,
+          "firstLineExact": 0.0833,
+          "exposureOverTierMean": 1
+        },
+        {
+          "id": "leque",
+          "tier": "C",
+          "station": "arquivo",
+          "drawable": true,
+          "whyNot": null,
+          "exact": 0.6667,
+          "measured": 0.6659,
+          "z": -1.62,
+          "firstLine": 0.083,
+          "firstLineExact": 0.0833,
+          "exposureOverTierMean": 1
+        }
+      ],
+      "tiers": {
+        "mixPerRound": {
+          "A1 B3 C4": 1
+        },
+        "expectedShare": {
+          "A": 0.125,
+          "B": 0.375,
+          "C": 0.5
+        },
+        "byLine": [
+          {
+            "A": 0.1252,
+            "B": 0.375,
+            "C": 0.4997
+          },
+          {
+            "A": 0.1244,
+            "B": 0.3755,
+            "C": 0.5001
+          },
+          {
+            "A": 0.1252,
+            "B": 0.3758,
+            "C": 0.4991
+          },
+          {
+            "A": 0.1255,
+            "B": 0.3746,
+            "C": 0.4999
+          },
+          {
+            "A": 0.1253,
+            "B": 0.3748,
+            "C": 0.4999
+          },
+          {
+            "A": 0.1253,
+            "B": 0.3748,
+            "C": 0.5
+          },
+          {
+            "A": 0.1246,
+            "B": 0.3745,
+            "C": 0.5009
+          },
+          {
+            "A": 0.1245,
+            "B": 0.375,
+            "C": 0.5004
+          }
+        ]
+      },
+      "stations": {
+        "patterns": {
+          "2-3-3": {
+            "exact": 0.3333,
+            "measured": 0.3327
+          },
+          "3-2-3": {
+            "exact": 0.3333,
+            "measured": 0.333
+          },
+          "3-3-2": {
+            "exact": 0.3333,
+            "measured": 0.3343
+          }
+        },
+        "shareOfListed": {
+          "cupula": 0.3334,
+          "bancada": 0.3334,
+          "arquivo": 0.3332
+        },
+        "shareOfListedExact": {
+          "cupula": 0.3333,
+          "bancada": 0.3333,
+          "arquivo": 0.3333
+        },
+        "firstLine": {
+          "cupula": 0.3334,
+          "bancada": 0.3329,
+          "arquivo": 0.3337
+        }
+      },
+      "perceptualLoad": {
+        "exact": {
+          "visible": 0.825,
+          "edge": 2.093,
+          "lookAlikes": 0.833,
+          "belowEightyVisible": 3,
+          "belowEightyVisibleMax": 5
+        },
+        "measured": {
+          "visible": 0.825,
+          "edge": 2.093,
+          "lookAlikes": 0.833
+        },
+        "objectsBelow80PercentVisiblePerRound": {
+          "1": 0.0517,
+          "2": 0.2401,
+          "3": 0.4173,
+          "4": 0.2388,
+          "5": 0.0521
+        }
+      }
+    }
+  },
+  "seconds": 34.7,
+  "problems": [],
+  "verdict": "ROUND_FAIRNESS_OK"
+}

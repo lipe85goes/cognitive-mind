@@ -1065,8 +1065,20 @@ async function runChecks(tree) {
     }
     const previews = game.imageSrcs().filter((src) => scenes.some((s) => s.preview === src));
     game.unmount();
+    // and each room's art stays light: its layers, its list's pictures and its preview within the entry budget
+    const roomBytes = Object.fromEntries(
+      scenes.map((scene) => {
+        const files = [...scene.layers.map((l) => l.src), ...scene.pool.map((t) => scene.thumbnail(t.id)), scene.preview];
+        return [scene.id, files.reduce((sum, src) => sum + (tree.exists(`public${src}`) ? readBinary(tree, `public${src}`).length : Infinity), 0)];
+      }),
+    );
+    const overBudget = Object.entries(roomBytes).filter(([, bytes]) => bytes > ROOM_ENTRY_BUDGET_BYTES).map(([id]) => id);
     return {
-      pass: homeGame.length === 0 && homeNamesArt.length === 0 && assetImports.length === 0 && otherRoomsArt.length === 0 && same(sorted(previews), sorted(scenes.map((s) => s.preview))),
+      pass:
+        homeGame.length === 0 && homeNamesArt.length === 0 && assetImports.length === 0 && otherRoomsArt.length === 0 &&
+        same(sorted(previews), sorted(scenes.map((s) => s.preview))) && overBudget.length === 0,
+      roomArtKB: Object.fromEntries(Object.entries(roomBytes).map(([id, bytes]) => [id, Math.round(bytes / 102.4) / 10])),
+      overBudget,
       homeGameModules: homeGame,
       homeNamesArt,
       assetImports,
@@ -1277,7 +1289,7 @@ const MUTANTS = [
   },
   {
     name: "the Observatory's art is repainted without a new audit",
-    files: (worktree) => ({ [`docs/archive/hidden-objects/${OBSERVATORY_ID}/review/v1/fairness.json`]: [['"plateSha256": "', '"plateSha256": "0']] }),
+    files: { [`docs/archive/hidden-objects/${OBSERVATORY_ID}/review/v1/fairness.json`]: [['"plateSha256": "', '"plateSha256": "0']] },
     mustFail: ["M16"],
   },
 ];
