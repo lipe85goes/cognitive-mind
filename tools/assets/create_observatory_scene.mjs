@@ -1050,7 +1050,7 @@ function mouseHole(omit) {
   return `
   <path d="${hole(604, 668)}" fill="#0e0805"/>
   ${t(omit, "ratinho")}
-  <path d="M630 ${FLOOR_Y} L630 1136 C640 1128 662 1128 668 1150 L668 ${FLOOR_Y} Z" fill="#0e0805"/>
+  <path d="M616 ${FLOOR_Y} L616 1140 C626 1128 660 1126 668 1150 L668 ${FLOOR_Y} Z" fill="#0e0805"/>
   <path d="M600 ${FLOOR_Y} L600 1150 C600 1120 672 1120 672 1150 L672 ${FLOOR_Y}" stroke="#6a4428" stroke-width="4" fill="none"/>`;
 }
 
@@ -1311,7 +1311,7 @@ function curioCabinet(omit) {
   <ellipse cx="3290" cy="590" rx="30" ry="10" fill="#8a7a6a"/><path d="M3266 588 L3280 556 L3298 566 L3312 588 Z" fill="#6a8aa0" stroke="#3a4a5a" stroke-width="1.5"/>
   ${t(omit, "balanca")}
   ${jar(3126, 700, 30, 52, "#d8c890")}
-  ${jar(3250, 700, 30, 52, "#a0c0b0")}${jar(3288, 700, 36, 76, "#c9a35a")}
+  ${jar(3222, 700, 30, 56, "#a0c0b0")}${jar(3288, 700, 36, 76, "#c9a35a")}
   ${lookSvg("concha")}
   <path d="M3270 836 L3286 790 L3306 812 L3322 780 L3336 836 Z" fill="#9a8ab0" stroke="#5a4a6a" stroke-width="1.5"/>
   <circle cx="3140" cy="826" r="12" fill="#d6c8a8" stroke="#8a7a5a" stroke-width="1.2"/>

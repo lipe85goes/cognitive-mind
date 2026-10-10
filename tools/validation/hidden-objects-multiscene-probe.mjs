@@ -419,7 +419,7 @@ async function desktop() {
   await chooseRoom(session, OBSERVATORY);
   check("D08_THE_OBSERVATORYS_ART_IS_FETCHED_WHEN_CHOSEN", ROOM[OBSERVATORY].layers.every((l) => session.requests.includes(l.src)), { layers: ROOM[OBSERVATORY].layers.map((l) => l.src) });
   const levels = await page.evaluate(() => [...document.querySelectorAll(".hos-difficulty-option")].map((o) => o.textContent.replace(/\s+/g, " ").trim()));
-  check("D09_EASY_MEDIUM_HARD_UNCHANGED", levels.length === 3 && /^Fácil 5 objetos/.test(levels[0]) && /^Médio 6 objetos/.test(levels[1]) && /^Difícil 8 objetos/.test(levels[2]), { levels });
+  check("D09_EASY_MEDIUM_HARD_UNCHANGED", levels.length === 3 && /^Fácil\s*5 objetos/.test(levels[0]) && /^Médio\s*6 objetos/.test(levels[1]) && /^Difícil\s*8 objetos/.test(levels[2]), { levels });
   const stationLabels = await page.evaluate(() => [...document.querySelectorAll(".hos-station")].map((b) => b.textContent));
   check("D10_THE_OBSERVATORYS_STATIONS", same(stationLabels, ROOM[OBSERVATORY].stations.map((s) => s.label)), { stationLabels });
   await witness(page, "ms-desktop-setup-observatory", 300);

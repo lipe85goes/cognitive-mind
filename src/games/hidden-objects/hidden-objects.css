@@ -881,7 +881,7 @@
 /* —— GAME03-MULTISCENE-03: the rooms, side by side, each with its light preview —— */
 .hos-scenes {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
   gap: 0.6rem;
   margin: 0.2rem 0 0;
   padding: 0;
@@ -1309,6 +1309,46 @@
 }
 
 /* —— motion —— */
+/*
+ * GAME03-MULTISCENE-03: a short phone held upright keeps "Explorar" on screen
+ * with the rooms added to the setup — the lines the intro already said give way,
+ * the previews get shorter, the difficulty rows tighter.
+ */
+@media (max-height: 700px) and (orientation: portrait) {
+  .hos-setup {
+    gap: 0.5rem;
+    padding: 0.9rem;
+  }
+
+  .hos-setup .hos-kicker,
+  .hos-setup .hos-subtitle,
+  .hos-setup .hos-setup-copy,
+  .hos-setup .hos-controls-line {
+    display: none;
+  }
+
+  .hos-setup h2 {
+    font-size: 1.3rem;
+  }
+
+  .hos-setup .hos-scene-preview {
+    aspect-ratio: 2 / 1;
+  }
+
+  .hos-setup .hos-scene-text small {
+    display: none;
+  }
+
+  .hos-setup .hos-difficulty-option {
+    min-height: 48px;
+    padding: 0.4rem 0.75rem;
+  }
+
+  .hos-setup .hos-difficulty-option small {
+    font-size: 0.74rem;
+  }
+}
+
 /*
  * GAME03-MULTISCENE-03: a short landscape screen (a phone on its side) sets up
  * in two columns — the rooms on the left, the difficulty on the right — so

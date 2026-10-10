@@ -1,5 +1,6 @@
 /**
- * GAME03-EXPERIENCE-02 — round fairness report for the Estúdio das Descobertas.
+ * GAME03-EXPERIENCE-02 — round fairness report for the Estúdio das Descobertas; per room since
+ * GAME03-MULTISCENE-03 (--scene: explorer-studio, the default, or explorer-observatory).
  *
  * Runs the game's own round selection (`selectRoundTargets`, hidden-objects-rounds.ts, loaded from
  * source) the way the product does — one 32-bit seed per "Explorar" — over a fixed, reproducible stream
@@ -9,7 +10,7 @@
  *     probability that "every valid round equally likely" gives (enumerated), and its exposure against
  *     its tier's mean;
  *   - tiers: the mix of every drawn round, and the tier of each line of the list;
- *   - stations: how the rounds spread over Janela / Mesa / Estante, each station's share of the listed
+ *   - stations: how the rounds spread over the room's stations, each station's share of the listed
  *     objects, and which station the first line points to;
  *   - perceptual load: what the measured art audit (visible share, edge contrast, look-alikes) says each
  *     difficulty's lists ask of the eye.
@@ -19,8 +20,9 @@
  * written except the report itself (--out).
  *
  * Usage:
- *   node tools/validation/hidden-objects-round-fairness.mjs [--samples N] [--out DIR]
+ *   node tools/validation/hidden-objects-round-fairness.mjs [--scene ID] [--samples N] [--out DIR]
  *
+ *   --scene ID   the room (default explorer-studio)
  *   --samples N  seeds per difficulty (default 1000000)
  *   --out DIR    write fairness-report.json and fairness-report.md there
  *
@@ -39,6 +41,7 @@ const arg = (name, fallback) => {
   return i === -1 ? fallback : process.argv[i + 1];
 };
 const SAMPLES = Number(arg("--samples", "1000000"));
+const SCENE_ID = arg("--scene", "explorer-studio");
 const OUT = arg("--out", null);
 if (!Number.isInteger(SAMPLES) || SAMPLES < 1000) {
   console.error("usage: node tools/validation/hidden-objects-round-fairness.mjs [--samples N≥1000] [--out DIR]");
@@ -46,16 +49,23 @@ if (!Number.isInteger(SAMPLES) || SAMPLES < 1000) {
 }
 
 const graph = createModuleGraph({ mocks: {}, globals: {} });
-const SCENE = graph.require("src/games/hidden-objects/hidden-objects-scene.ts");
+const CONTRACT = graph.require("src/games/hidden-objects/hidden-objects-scene.ts");
+const ROOM = graph.require("src/games/hidden-objects/hidden-objects-scenes.ts").sceneById(SCENE_ID);
+if (!ROOM) {
+  console.error(`no room ${SCENE_ID} in the registry`);
+  process.exit(EXIT_USAGE);
+}
 const ROUNDS = graph.require("src/games/hidden-objects/hidden-objects-rounds.ts");
-const KIT = SCENE.SCENE_ASSET_BASE.split("/").pop();
-const AUDIT = JSON.parse(fs.readFileSync(`docs/archive/hidden-objects/explorer-studio/review/${KIT}/fairness.json`, "utf8"));
+const ASSET_BASE = ROOM.layers.find((layer) => layer.id === "plate").src.replace(/\/plate\.webp$/, "");
+const KIT = ASSET_BASE.split("/").pop();
+const AUDIT = JSON.parse(fs.readFileSync(`docs/archive/hidden-objects/${SCENE_ID}/review/${KIT}/fairness.json`, "utf8"));
 const MEASURED = Object.fromEntries(AUDIT.targets.map((row) => [row.id, row]));
 
 const DIFFICULTIES = ["easy", "medium", "hard"];
 const TIERS = ["A", "B", "C"];
-const STATIONS = SCENE.SCENE_STATIONS.map((s) => s.id);
-const POOL = SCENE.HIDDEN_OBJECTS;
+const STATIONS = ROOM.stations.map((s) => s.id);
+const STATION_LABELS = ROOM.stations.map((s) => s.label);
+const POOL = ROOM.pool;
 const BY_ID = Object.fromEntries(POOL.map((t) => [t.id, t]));
 
 /** Uniform 32-bit seeds, reproducible: a Weyl sequence through the murmur3 finalizer. */
@@ -80,11 +90,12 @@ const tierMix = (ids) => TIERS.map((tier) => `${tier}${ids.filter((id) => BY_ID[
 
 const problems = [];
 const report = {
-  mission: "GAME03-EXPERIENCE-02",
+  mission: "GAME03-EXPERIENCE-02 (per room since GAME03-MULTISCENE-03)",
+  scene: SCENE_ID,
   generatedBy: "node tools/validation/hidden-objects-round-fairness.mjs",
   samplesPerDifficulty: SAMPLES,
   seeds: "Weyl sequence (step 0x9e3779b9) through the murmur3 finalizer; start 0x5eed0000 + difficulty index",
-  kit: { base: SCENE.SCENE_ASSET_BASE, plateSha256: AUDIT.plateSha256, auditRule: AUDIT.rule },
+  kit: { base: ASSET_BASE, plateSha256: AUDIT.plateSha256, auditRule: AUDIT.rule },
   pool: {
     size: POOL.length,
     tiers: Object.fromEntries(TIERS.map((tier) => [tier, POOL.filter((t) => t.tier === tier).length])),
@@ -96,12 +107,12 @@ const report = {
 
 const started = Date.now();
 for (const [index, difficulty] of DIFFICULTIES.entries()) {
-  const preset = SCENE.DIFFICULTY_PRESETS[difficulty];
+  const preset = CONTRACT.DIFFICULTY_PRESETS[difficulty];
   const k = preset.count;
   const listable = POOL.filter((t) => ROUNDS.listableIn(t, preset));
   // what a round of this difficulty can ask for: its list style shows it and its tier is drawn
   const drawable = listable.filter((t) => preset.tiers[t.tier] > 0);
-  const valid = ROUNDS.validRounds(difficulty);
+  const valid = ROUNDS.validRounds(ROOM, difficulty);
   const roundIndex = new Map(valid.map((round, i) => [[...round].sort().join(), i]));
   const spread = ROUNDS.stationSpread(k, STATIONS.length);
 
@@ -127,7 +138,7 @@ for (const [index, difficulty] of DIFFICULTIES.entries()) {
   let invalid = 0;
   const loads = { visible: 0, edge: 0, lookAlikes: 0 };
   for (let n = 0; n < SAMPLES; n += 1) {
-    const list = ROUNDS.selectRoundTargets(difficulty, next());
+    const list = ROUNDS.selectRoundTargets(ROOM, difficulty, next());
     const key = [...list].sort().join();
     if (list.length !== k || new Set(list).size !== k || !roundIndex.has(key)) {
       invalid += 1;
@@ -266,7 +277,7 @@ report.verdict = problems.length ? "ROUND_FAIRNESS_FAILED" : "ROUND_FAIRNESS_OK"
 function markdown() {
   const name = { easy: "Fácil", medium: "Médio", hard: "Difícil" };
   const lines = [];
-  lines.push("# Estúdio das Descobertas — relatório de justiça das rodadas (GAME03-EXPERIENCE-02)");
+  lines.push(`# Estúdio das Descobertas · ${ROOM.name} — relatório de justiça das rodadas`);
   lines.push("");
   lines.push("Gerado por `node tools/validation/hidden-objects-round-fairness.mjs --out docs/archive/game03-experience-02`.");
   lines.push(`Cada dificuldade: ${SAMPLES.toLocaleString("pt-BR")} explorações simuladas com a seleção real do jogo`);
@@ -274,7 +285,7 @@ function markdown() {
   lines.push("\"Exato\" é a probabilidade enumerada (toda rodada válida igualmente provável); \"medido\" é o que as");
   lines.push(`sementes de fato sortearam. Kit de arte \`${KIT}\`, plate \`${AUDIT.plateSha256.slice(0, 12)}…\`. Veredito: **${report.verdict}**.`);
   lines.push("");
-  lines.push(`Pool: ${POOL.length} objetos · tiers ${TIERS.map((tier) => `${tier}${report.pool.tiers[tier]}`).join(" ")} · Janela ${report.pool.stations.janela}, Mesa ${report.pool.stations.mesa}, Estante ${report.pool.stations.estante}.`);
+  lines.push(`Pool: ${POOL.length} objetos · tiers ${TIERS.map((tier) => `${tier}${report.pool.tiers[tier]}`).join(" ")} · ${ROOM.stations.map((s) => `${s.label} ${report.pool.stations[s.id]}`).join(", ")}.`);
   lines.push("");
   lines.push("| Dificuldade | Lista | Objetos | Mistura de tiers | Pool sorteável | Rodadas válidas | Alcançadas | χ² (z) | maior \\|z\\| por objeto |");
   lines.push("| --- | --- | --- | --- | --- | --- | --- | --- | --- |");
@@ -299,7 +310,7 @@ function markdown() {
     lines.push(`Tiers por rodada: ${Object.entries(r.tiers.mixPerRound).map(([mix, share]) => `${mix} em ${pct(share)}`).join("; ")}.`);
     lines.push(`Tier da 1ª linha: ${TIERS.map((tier) => `${tier} ${pct(r.tiers.byLine[0][tier])} (esperado ${pct(r.tiers.expectedShare[tier])})`).join(" · ")}.`);
     lines.push("");
-    lines.push("Estações (Janela-Mesa-Estante por rodada; parte dos objetos listados; 1ª linha):");
+    lines.push(`Estações (${STATION_LABELS.join("-")} por rodada; parte dos objetos listados; 1ª linha):`);
     lines.push("");
     lines.push("| Padrão J-M-E | Exato | Medido |");
     lines.push("| --- | --- | --- |");
