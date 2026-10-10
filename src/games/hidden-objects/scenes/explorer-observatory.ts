@@ -122,7 +122,7 @@ export const HIDDEN_OBJECTS: readonly HiddenObjectDefinition[] = [
     clue: "Bichinho que adora queijo.",
     tier: "C",
     station: "cupula",
-    region: { kind: "rect", x: 466, y: 1124, w: 100, h: 54 },
+    region: { kind: "rect", x: 556, y: 1124, w: 100, h: 54 },
     hintRegion: "saindo de um buraco no rodapé",
     hintDirection: "embaixo, à esquerda do tablado, rente ao chão",
     hintContext: "espiando de um buraquinho na madeira da parede",
@@ -296,7 +296,7 @@ export const SCENE_LOOKALIKES: readonly SceneLookAlike[] = [
     label: "Escova de sapato",
     resembles: "ratinho",
     tellApart: "cerdas e um cabo de madeira, sem orelhas nem rabo",
-    region: { kind: "rect", x: 660, y: 1256, w: 78, h: 32 },
+    region: { kind: "rect", x: 700, y: 1256, w: 78, h: 32 },
   },
   {
     id: "esfera-armilar",
@@ -310,7 +310,7 @@ export const SCENE_LOOKALIKES: readonly SceneLookAlike[] = [
     label: "Pinça",
     resembles: "compasso",
     tellApart: "duas hastes presas na ponta de cima, sem dobradiça nem ponta de grafite",
-    region: { kind: "rect", x: 1452, y: 950, w: 84, h: 24 },
+    region: { kind: "rect", x: 1452, y: 936, w: 84, h: 24 },
   },
   {
     id: "regador",

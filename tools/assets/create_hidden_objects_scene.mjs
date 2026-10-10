@@ -9,7 +9,9 @@
  * (docs/archive/hidden-objects/explorer-studio/reference/), not the final art.
  *
  * Single source of truth: every target is painted exactly where
- * `src/games/hidden-objects/hidden-objects-scene.ts` puts its `region`, every
+ * `src/games/hidden-objects/scenes/explorer-studio.ts` puts its `region` (the
+ * room's data since GAME03-MULTISCENE-03; the shared contract — safe margins —
+ * stays in hidden-objects-scene.ts), every
  * look-alike exactly in its region, and the foreground layers only paint inside
  * that module's `opaque` rects — the module is transpiled and read below, so the
  * art cannot drift from the data the game hit-tests against.
@@ -35,7 +37,8 @@ import sharp from "sharp";
 import ts from "typescript";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
-const SCENE_MODULE = path.join(ROOT, "src/games/hidden-objects/hidden-objects-scene.ts");
+const CONTRACT_MODULE = path.join(ROOT, "src/games/hidden-objects/hidden-objects-scene.ts");
+const SCENE_MODULE = path.join(ROOT, "src/games/hidden-objects/scenes/explorer-studio.ts");
 const DIORAMA_OUT = path.join(ROOT, "public/illustrations/home/dioramas/discovery");
 
 const args = process.argv.slice(2);
@@ -45,13 +48,18 @@ const PREVIEW = args.find((arg) => arg.startsWith("--preview="))?.slice("--previ
 
 // --- the scene data the game reads -------------------------------------------------------------
 
-function loadScene() {
-  const js = ts.transpileModule(fs.readFileSync(SCENE_MODULE, "utf8"), {
+function loadModule(file) {
+  const js = ts.transpileModule(fs.readFileSync(file, "utf8"), {
     compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 },
   }).outputText;
   const mod = { exports: {} };
   vm.runInNewContext(js, { module: mod, exports: mod.exports, require: () => ({}) });
   return mod.exports;
+}
+
+/** The Estúdio's data under its names, with the contract's (the safe margins) beside it. */
+function loadScene() {
+  return { ...loadModule(CONTRACT_MODULE), ...loadModule(SCENE_MODULE) };
 }
 
 const SCENE = loadScene();

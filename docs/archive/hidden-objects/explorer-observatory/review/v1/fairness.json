@@ -1,0 +1,179 @@
+{
+  "kit": "/assets/hidden-objects/explorer-observatory/v1",
+  "plateSha256": "624822b5381b1a9bd41e9cf2061718f52b0102d75d2e62fef9d1a2002ce40674",
+  "rule": {
+    "visible": "share of the target's own pixels the finished plate shows (plate rendered with and without the target)",
+    "contrast": "F4 as written: mean-luminance ratio, visible target vs a 24 su ring, on the composed room",
+    "edge": "median luminance ratio across the visible silhouette's edge (each edge pixel vs the background within 3 su)"
+  },
+  "targets": [
+    {
+      "id": "coruja",
+      "tier": "A",
+      "visible": 1,
+      "contrast": 2.54,
+      "edge": 2.48,
+      "lookAlikes": []
+    },
+    {
+      "id": "pipa",
+      "tier": "A",
+      "visible": 1,
+      "contrast": 2.68,
+      "edge": 4.19,
+      "lookAlikes": []
+    },
+    {
+      "id": "luneta",
+      "tier": "B",
+      "visible": 0.774,
+      "contrast": 1.86,
+      "edge": 1.93,
+      "lookAlikes": [
+        "rolo-de-mapas"
+      ]
+    },
+    {
+      "id": "pantufas",
+      "tier": "B",
+      "visible": 0.887,
+      "contrast": 3.03,
+      "edge": 2.52,
+      "lookAlikes": []
+    },
+    {
+      "id": "oculos",
+      "tier": "C",
+      "visible": 0.869,
+      "contrast": 1.39,
+      "edge": 1.81,
+      "lookAlikes": [
+        "argolas"
+      ]
+    },
+    {
+      "id": "ratinho",
+      "tier": "C",
+      "visible": 0.895,
+      "contrast": 3.09,
+      "edge": 2.08,
+      "lookAlikes": [
+        "escova"
+      ]
+    },
+    {
+      "id": "sistema-solar",
+      "tier": "A",
+      "visible": 0.998,
+      "contrast": 2.71,
+      "edge": 2.92,
+      "lookAlikes": [
+        "esfera-armilar"
+      ]
+    },
+    {
+      "id": "vela",
+      "tier": "A",
+      "visible": 0.999,
+      "contrast": 2.04,
+      "edge": 2.02,
+      "lookAlikes": []
+    },
+    {
+      "id": "compasso",
+      "tier": "B",
+      "visible": 0.884,
+      "contrast": 2.1,
+      "edge": 2.68,
+      "lookAlikes": [
+        "pinca"
+      ]
+    },
+    {
+      "id": "bule",
+      "tier": "B",
+      "visible": 0.848,
+      "contrast": 2.58,
+      "edge": 1.96,
+      "lookAlikes": [
+        "regador"
+      ]
+    },
+    {
+      "id": "sino",
+      "tier": "C",
+      "visible": 0.598,
+      "contrast": 2.98,
+      "edge": 1.93,
+      "lookAlikes": [
+        "funil"
+      ]
+    },
+    {
+      "id": "maca",
+      "tier": "C",
+      "visible": 0.529,
+      "contrast": 1.04,
+      "edge": 1.45,
+      "lookAlikes": [
+        "novelo"
+      ]
+    },
+    {
+      "id": "violino",
+      "tier": "A",
+      "visible": 1,
+      "contrast": 2.44,
+      "edge": 3.31,
+      "lookAlikes": []
+    },
+    {
+      "id": "gramofone",
+      "tier": "A",
+      "visible": 0.931,
+      "contrast": 1.63,
+      "edge": 1.92,
+      "lookAlikes": []
+    },
+    {
+      "id": "microscopio",
+      "tier": "B",
+      "visible": 0.788,
+      "contrast": 1.61,
+      "edge": 1.44,
+      "lookAlikes": [
+        "luminaria"
+      ]
+    },
+    {
+      "id": "gato",
+      "tier": "B",
+      "visible": 0.819,
+      "contrast": 2.12,
+      "edge": 3.7,
+      "lookAlikes": [
+        "almofada"
+      ]
+    },
+    {
+      "id": "balanca",
+      "tier": "C",
+      "visible": 0.955,
+      "contrast": 1.7,
+      "edge": 1.86,
+      "lookAlikes": [
+        "mobile"
+      ]
+    },
+    {
+      "id": "leque",
+      "tier": "C",
+      "visible": 0.849,
+      "contrast": 1.5,
+      "edge": 1.54,
+      "lookAlikes": [
+        "concha"
+      ]
+    }
+  ]
+}
