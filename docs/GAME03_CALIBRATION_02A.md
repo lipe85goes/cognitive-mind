@@ -256,9 +256,9 @@ Os probes anteriores, com as verificações substituídas reescritas (§15): mul
 | readiness · watchdog · continuation · diagnostic boundary | 19/19 · 10/10 · 21/21 · MATCHES |
 | Circuito (`memory-circuit-lifecycle-tests`) | 13/13 |
 | Rota: terminal de resultado · ownership · coupling gate | 13/13 · 7/7 · 6/6 |
-| CORE `validation-hygiene-tests.mjs` | ver §19 (rodado no commit final) |
-| DEEP `final-acceptance.mjs` | ver §19 (rodado no commit final) |
-| dependências | `package.json` e `package-lock.json` idênticos à base |
+| CORE `validation-hygiene-tests.mjs` (em `0d9ae81`) | 15/15 validadores (`CORE_BATTERY_PASSED`); imutabilidade: nada criado, apagado ou alterado, `git status` idêntico (`VALIDATION_CHECK_IS_READ_ONLY`) |
+| DEEP `final-acceptance.mjs` (em `0d9ae81`) | estrutural 1080/1080, contínuo 270/270, recovery OK, sem exceções; evidência MATCHES |
+| dependências | `package.json` e `package-lock.json` idênticos à base; `npm audit` igual à base: 13 avisos (1 baixo, 2 moderados, 10 altos), 4 em produção (2 moderados, 2 altos) |
 
 ## 13. Bundle e assets
 
