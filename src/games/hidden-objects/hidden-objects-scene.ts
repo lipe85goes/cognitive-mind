@@ -14,8 +14,9 @@ import type { DifficultyLevel } from "@/types/game";
  * exactly where its `region` says) all read the same values.
  *
  * What is NOT per room: the difficulty contract (DIFFICULTY_PRESETS below — the
- * same 5/6/8, tier mixes, list styles, hint ladders and tolerances in every
- * room), the safe margins under the zoom buttons and the look-alike clearance.
+ * same 5/6/8, round rules and floors, list styles, clue levels, hint ladders and
+ * tolerances in every room), the safe margins under the zoom buttons and the
+ * look-alike clearance.
  */
 
 /**
@@ -52,31 +53,63 @@ export type SceneRegion =
   | { kind: "rect"; x: number; y: number; w: number; h: number }
   | { kind: "circle"; cx: number; cy: number; r: number };
 
+/**
+ * How far a clue sits from the object it describes (GAME03-CALIBRATION-02A):
+ *   direct      — names what the object is or does: the object is easy to infer;
+ *   associative — goes through its function, behaviour, material or a thing it
+ *                 belongs with: one association before the object is known;
+ *   indirect    — a situation or a consequence: one or two associations before
+ *                 the Explorador knows what to look for (never trivia).
+ * No level ever says the object's name, a look-alike's name or a colour.
+ */
+export type ClueLevel = "direct" | "associative" | "indirect";
+
+export interface ClueVariant {
+  level: ClueLevel;
+  /** One sentence, capitalised, ending in a full stop. */
+  text: string;
+}
+
+/**
+ * What the art kit's audit measured for an object, in the room as it ships
+ * (docs/archive/hidden-objects/<room>/review/<kit>/fairness.json — the round
+ * model reads these, and the calibration suite holds them to that file):
+ *   visible — share of its own pixels the finished plate shows;
+ *   edge    — median luminance ratio across its visible silhouette's edge;
+ *   clutter — share of busy pixels (strong edges) in the ring of room around it.
+ */
+export interface TargetMeasure {
+  visible: number;
+  edge: number;
+  clutter: number;
+}
+
 export interface HiddenObjectDefinition {
   id: TargetId;
-  /** The word on the list: a concrete noun, never a colour. Difícil shows it only once found. */
+  /** The word on the list: a concrete noun, never a colour. Clue lists show it only once found. */
   label: string;
   /** What assistive technology announces. */
   accessibleLabel: string;
   /**
-   * Difícil's list: what the object is for, never its name — the Explorador
-   * works out the idea, then looks for the thing. One object in the room fits it.
+   * The clue bank: several authored ways of telling the object without naming
+   * it, at least one per level. A round picks one per object from its seed
+   * (hidden-objects-clues.ts); the difficulty decides which level its list
+   * reads and which its "reclue" hint re-tells it at.
    */
-  clue: string;
+  clues: readonly ClueVariant[];
   tier: TargetTier;
   station: StationId;
   /** The tappable shape: the visible part of the object, in su. */
   region: SceneRegion;
+  /** The audit's measurements of this object in the shipped art (the round model's inputs). */
+  measured: TargetMeasure;
   /** Fácil's second hint, "Procure …": the spot itself. */
   hintRegion: string;
   /** Médio's last hint, "Olhe …": a direction inside the station, never the spot. */
   hintDirection: string;
   /** Difícil's last hint, "Está …": what the object is near, never where exactly. */
   hintContext: string;
-  /**
-   * The list styles that may present it (absent: all three). A framed picture's
-   * outline is a plain rectangle, so Médio's silhouette list never shows it.
-   */
+  /** The list styles that may present it (absent: every style). */
   listedAs?: readonly ListStyle[];
 }
 
@@ -105,32 +138,50 @@ export interface SceneLookAlike {
  */
 export const LOOKALIKE_CLEARANCE_SU = 32;
 
-/** How the list shows a pending object: picture + name → silhouette + name → what it is for. */
-export type ListStyle = "picture" | "silhouette" | "clue";
+/** How the list shows a pending object: picture + name, or one of its clues (the name only once found). */
+export type ListStyle = "picture" | "clue";
 
 /**
  * One press of Pista, in the order a difficulty climbs them:
  *   station   — names the station and takes the camera there (every difficulty);
  *   area      — a soft pool of light holding the object off-centre + the spot in words (Fácil);
- *   wide-area — a wider pool, no words for the spot (Médio);
+ *   reclue    — the same object told again, at an easier level of its clue bank (Médio);
  *   direction — a direction inside the station, in words only (Médio);
  *   context   — what the object is near, in words only (Difícil);
  *   reveal    — "Mostrar onde está": frames the object under a halo (Fácil only).
  */
-export type HintRung = "station" | "area" | "wide-area" | "direction" | "context" | "reveal";
+export type HintRung = "station" | "area" | "reclue" | "direction" | "context" | "reveal";
+
+/**
+ * Which objects a round of a difficulty may ask for (GAME03-CALIBRATION-02A):
+ * the tiers it may hold, and the floor the round's measured search profile
+ * (hidden-objects-difficulty.ts) must reach. A round that misses any of them is
+ * never drawn, whatever the seed.
+ */
+export interface RoundRule {
+  /** Fewest and most objects of each tier. */
+  tiers: Readonly<Record<TargetTier, readonly [number, number]>>;
+  /** Most objects found at a static glance (search load under POP_OUT_BELOW). */
+  maxPopOuts: number;
+  /** The floor of the round's mean search load. */
+  minSearch: number;
+  /** The floor of the round's look-alike pressure (painted look-alikes per listed object). */
+  minDecoys: number;
+}
 
 export interface DifficultyPreset {
   label: string;
   /** How many objects a round lists. */
   count: number;
-  /**
-   * The round's findability mix: exactly this many of each tier (they add up to
-   * `count`). Which A, B and C objects is drawn per round (hidden-objects-rounds.ts).
-   */
-  tiers: Readonly<Record<TargetTier, number>>;
+  /** What a round may ask for (which objects is drawn per round: hidden-objects-rounds.ts). */
+  round: RoundRule;
   listStyle: ListStyle;
+  /** A clue list: the level of each object's clue bank it reads (null for a picture list). */
+  listClue: ClueLevel | null;
   /** What each press of Pista adds, per object; the ladder stops at its last rung. */
   hintLadder: readonly HintRung[];
+  /** The level a "reclue" rung re-tells the object at (null when the ladder has none). */
+  reclue: ClueLevel | null;
   /** Radius of the area pool of light, in su (unused by a ladder without one). */
   hintRadius: number;
   /** Extra reach around a target's shape, in screen px, per pointer kind. */
@@ -138,43 +189,64 @@ export interface DifficultyPreset {
 }
 
 /**
- * GAME03-EXPERIENCE-02. Each difficulty changes what the Explorador is TOLD,
- * not only how much there is to find:
- *   Fácil   5 · 3A+2B · picture + name · station → spot + pool → "Mostrar onde está";
- *   Médio   6 · 1A+3B+2C · silhouette + name · station → wide pool → direction;
- *   Difícil 8 · 1A+3B+4C · what it is for (the name only once found) · station → context.
- * Médio and Difícil never point at the object; Difícil never lights anything.
- * The tolerances are the skeleton's: difficulty never comes from smaller targets.
- * The objects themselves are drawn per round from the pool (hidden-objects-rounds.ts):
- * the mix of tiers is fixed, which A, B and C is not.
- * GAME03-MULTISCENE-03: one contract for every room — a room brings its own
- * pool, never its own difficulty.
+ * The round floors (GAME03-CALIBRATION-02A), measured on the search-load ruler
+ * of hidden-objects-difficulty.ts and derived from what Difficulty V2's Difícil
+ * asked for — every V2 Difícil round of both rooms, on the art kits it was
+ * playtested on (tools/validation/hidden-objects-calibration.mjs recomputes
+ * them from that tree; the calibration suite holds these numbers to it):
+ *   easy   — its lower quartile: a new Fácil already searches like an old Difícil;
+ *   medium — its mean: a new Médio never asks less than an average old Difícil;
+ *   hard   — its maximum: every new Difícil is beyond anything the old one asked.
+ * ROUND_FLOORS reads the round's mean search load; DECOY_FLOORS its look-alike
+ * pressure (painted look-alikes per listed object), the same three statistics.
+ */
+export const ROUND_FLOORS: Readonly<Record<DifficultyLevel, number>> = { easy: 0.533, medium: 0.552, hard: 0.612 };
+export const DECOY_FLOORS: Readonly<Record<DifficultyLevel, number>> = { easy: 0.75, medium: 0.794, hard: 1.25 };
+
+/**
+ * GAME03-CALIBRATION-02A — Difficulty V3. Every difficulty is a real search;
+ * what climbs is how much the Explorador must work out before searching and how
+ * little the hints give back:
+ *   Fácil   5 · searches like the old Difícil · picture + name · station → spot + pool → "Mostrar onde está";
+ *   Médio   6 · above the old Difícil, no glance finds · an associative clue (the name only once found) ·
+ *           station → the same object told directly → direction;
+ *   Difícil 8 · beyond the old Difícil, no A, at least four C · an indirect clue · station → context.
+ * Médio and Difícil never point at the object or light the room; Difícil never
+ * names it before it is found. The tolerances are the skeleton's: difficulty never
+ * comes from smaller targets. One contract for every room — a room brings its own
+ * pool, measured, never its own difficulty.
  */
 export const DIFFICULTY_PRESETS: Readonly<Record<DifficultyLevel, DifficultyPreset>> = {
   easy: {
     label: "Fácil",
     count: 5,
-    tiers: { A: 3, B: 2, C: 0 },
+    round: { tiers: { A: [0, 1], B: [0, 5], C: [1, 5] }, maxPopOuts: 1, minSearch: ROUND_FLOORS.easy, minDecoys: DECOY_FLOORS.easy },
     listStyle: "picture",
+    listClue: null,
     hintLadder: ["station", "area", "reveal"],
+    reclue: null,
     hintRadius: 240,
     tolerancePx: { touch: 16, mouse: 8 },
   },
   medium: {
     label: "Médio",
     count: 6,
-    tiers: { A: 1, B: 3, C: 2 },
-    listStyle: "silhouette",
-    hintLadder: ["station", "wide-area", "direction"],
-    hintRadius: 400,
+    round: { tiers: { A: [0, 1], B: [0, 6], C: [2, 6] }, maxPopOuts: 0, minSearch: ROUND_FLOORS.medium, minDecoys: DECOY_FLOORS.medium },
+    listStyle: "clue",
+    listClue: "associative",
+    hintLadder: ["station", "reclue", "direction"],
+    reclue: "direct",
+    hintRadius: 0,
     tolerancePx: { touch: 12, mouse: 6 },
   },
   hard: {
     label: "Difícil",
     count: 8,
-    tiers: { A: 1, B: 3, C: 4 },
+    round: { tiers: { A: [0, 0], B: [0, 4], C: [4, 8] }, maxPopOuts: 0, minSearch: ROUND_FLOORS.hard, minDecoys: DECOY_FLOORS.hard },
     listStyle: "clue",
+    listClue: "indirect",
     hintLadder: ["station", "context"],
+    reclue: null,
     hintRadius: 0,
     tolerancePx: { touch: 10, mouse: 5 },
   },

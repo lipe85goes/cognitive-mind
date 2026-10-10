@@ -1,5 +1,6 @@
 import type { DifficultyLevel, GameResult } from "@/types/game";
 import type { Point, Rect } from "@/games/hidden-objects/hidden-objects-camera";
+import { clueAt, selectRoundClues, type RoundClues } from "@/games/hidden-objects/hidden-objects-clues";
 import { selectRoundTargets } from "@/games/hidden-objects/hidden-objects-rounds";
 import {
   DIFFICULTY_PRESETS,
@@ -20,6 +21,10 @@ import {
  * GAME03-MULTISCENE-03: the rules belong to no room. A session carries the room
  * it explores (`state.scene`); everything that reads a room's targets, stations
  * or size takes the scene first.
+ *
+ * GAME03-CALIBRATION-02A: a round is its list AND the clues it tells for each
+ * object, both drawn once from the round's seed when the exploration starts
+ * (`state.clues`) and kept until the session ends.
  */
 
 export const HIDDEN_OBJECTS_TITLE = "Estúdio das Descobertas";
@@ -124,6 +129,12 @@ export interface SessionState {
   targets: readonly TargetId[];
   /** The seed the list was drawn with: the same difficulty and seed always give the same list. */
   roundSeed: number | null;
+  /**
+   * Which clue of each listed object's bank the round tells (list and reclue),
+   * drawn with the list from the same seed; empty in setup. Nothing but a new
+   * exploration ever changes it.
+   */
+  clues: RoundClues;
   foundIds: readonly TargetId[];
   /** The object the hint ladder is climbing for, and how far it has climbed. */
   hintTarget: TargetId | null;
@@ -160,6 +171,7 @@ export function createSession(scene: SceneDefinition, difficulty: DifficultyLeve
     difficulty,
     targets: [],
     roundSeed: null,
+    clues: {},
     foundIds: [],
     hintTarget: null,
     hintStage: 0,
@@ -171,7 +183,7 @@ export function createSession(scene: SceneDefinition, difficulty: DifficultyLeve
   };
 }
 
-/** A round from the top. The list is not touched: start draws it, restart keeps it. */
+/** A round from the top. The list and its clues are not touched: start draws them, restart keeps them. */
 const freshRound = (state: SessionState): SessionState => ({
   ...state,
   status: "playing",
@@ -224,14 +236,16 @@ export function sessionReducer(state: SessionState, action: SessionAction): Sess
     case "start": {
       if (state.status !== "setup") return state;
       const roundSeed = action.seed >>> 0;
-      return freshRound({ ...state, targets: selectRoundTargets(state.scene, state.difficulty, roundSeed), roundSeed });
+      const targets = selectRoundTargets(state.scene, state.difficulty, roundSeed);
+      const clues = selectRoundClues(state.scene, state.difficulty, roundSeed, targets);
+      return freshRound({ ...state, targets, roundSeed, clues });
     }
 
     // Back to setup in the same room and difficulty: the round is dropped, a new "Explorar" draws a new one.
     case "change-scene":
       return state.status === "setup" ? state : setupIn(state, state.scene);
 
-    // "Recomeçar": the same list from the top. A new list is a new exploration (a new entry).
+    // "Recomeçar": the same list, told the same way, from the top. A new list is a new exploration (a new entry).
     case "restart":
       return state.status === "setup" ? state : freshRound(state);
 
@@ -318,9 +332,9 @@ export function revealsExactly(difficulty: DifficultyLevel): boolean {
 
 /**
  * The light a rung lays over the room, if any:
- *   area / wide-area — a soft pool that holds the whole object, centred off it;
+ *   area             — a soft pool that holds the whole object, centred off it;
  *   reveal           — a halo exactly on the object;
- *   every other rung — none (Difícil never lights anything).
+ *   every other rung — none (Médio and Difícil never light anything).
  */
 export function hintHalo(scene: SceneDefinition, id: TargetId, difficulty: DifficultyLevel, stage: HintStage): HintHalo | null {
   const rung = hintRung(difficulty, stage);
@@ -328,7 +342,7 @@ export function hintHalo(scene: SceneDefinition, id: TargetId, difficulty: Diffi
   const centre = regionCenter(region);
   const objectRadius = regionRadius(region);
   if (rung === "reveal") return { cx: centre.x, cy: centre.y, r: objectRadius + REVEAL_HALO_PADDING };
-  if (rung !== "area" && rung !== "wide-area") return null;
+  if (rung !== "area") return null;
   const r = Math.max(DIFFICULTY_PRESETS[difficulty].hintRadius, 1.8 * objectRadius);
   // Room for the object inside the pool, wherever the offset points.
   const offset = Math.min(HINT_OFFSET_SHARE * r, r - objectRadius);
@@ -348,8 +362,8 @@ export type HintCameraMove =
   | { kind: "frame"; bounds: Rect };
 
 /**
- * station → glide to the station; area / wide-area → bring the pool on screen
- * if it is not; reveal → frame the object. Direction and context leave the
+ * station → glide to the station; area → bring the pool on screen if it is
+ * not; reveal → frame the object. Reclue, direction and context leave the
  * camera where the Explorador put it.
  */
 export function hintCameraMove(scene: SceneDefinition, id: TargetId, difficulty: DifficultyLevel, stage: HintStage): HintCameraMove | null {
@@ -365,8 +379,12 @@ export function stationLabel(scene: SceneDefinition, id: StationId): string {
   return scene.stations.find((station) => station.id === id)?.label ?? id;
 }
 
-/** The hint line for a rung. Only "Mostrar onde está" names the object: Difícil never does. */
-export function hintMessage(scene: SceneDefinition, id: TargetId, difficulty: DifficultyLevel, stage: HintStage): string {
+/**
+ * The hint line for a rung. Only "Mostrar onde está" names the object (Fácil);
+ * a reclue tells it again at an easier level of its clue bank — the variant the
+ * round drew (`clues`), never its name.
+ */
+export function hintMessage(scene: SceneDefinition, id: TargetId, difficulty: DifficultyLevel, stage: HintStage, clues: RoundClues): string {
   const target = targetById(scene, id);
   const station = scene.stations.find((candidate) => candidate.id === target.station);
   switch (hintRung(difficulty, stage)) {
@@ -374,8 +392,8 @@ export function hintMessage(scene: SceneDefinition, id: TargetId, difficulty: Di
       return `Pista: procure ${station?.hintPhrase ?? "pela sala"}.`;
     case "area":
       return `Pista: procure ${target.hintRegion}.`;
-    case "wide-area":
-      return "Pista: o brilho marca a região — procure por ali.";
+    case "reclue":
+      return `Pista: em outras palavras — ${clueAt(target, clues[id]?.reclue ?? null)?.text ?? ""}`;
     case "direction":
       return `Pista: olhe ${target.hintDirection}.`;
     case "context":
@@ -403,13 +421,13 @@ export function hintButtonLabel(state: SessionState): string {
 export interface ListEntry {
   id: TargetId;
   found: boolean;
-  /** The line the list shows: the name, or — Difícil, not found yet — what the object is for. */
+  /** The line the list shows: the name, or — a clue list, not found yet — the clue the round tells. */
   text: string;
-  /** Difícil, once found: the clue it answered, kept under the name. */
+  /** A clue list, once found: the clue it answered, kept under the name. */
   answered: string | null;
-  /** The thumbnail's treatment; null = no image (Difícil before the find). */
-  art: "picture" | "silhouette" | null;
-  /** What the item's button says to assistive technology (never the name of an unfound Difícil object). */
+  /** The thumbnail; null = no image (a clue list before the find). */
+  art: "picture" | null;
+  /** What the item's button says to assistive technology (never the name of an object a clue list still hides). */
   accessibleText: string;
 }
 
@@ -417,29 +435,35 @@ export function listStyleFor(difficulty: DifficultyLevel): ListStyle {
   return DIFFICULTY_PRESETS[difficulty].listStyle;
 }
 
+/** The clue a clue list tells for an object this round ("" for a picture list). */
+export function listClueText(state: Pick<SessionState, "scene" | "clues">, id: TargetId): string {
+  return clueAt(targetById(state.scene, id), state.clues[id]?.list ?? null)?.text ?? "";
+}
+
 /** How the list shows one object right now. */
-export function listEntryFor(state: Pick<SessionState, "scene" | "difficulty" | "foundIds">, id: TargetId): ListEntry {
+export function listEntryFor(state: Pick<SessionState, "scene" | "difficulty" | "foundIds" | "clues">, id: TargetId): ListEntry {
   const target = targetById(state.scene, id);
   const found = state.foundIds.includes(id);
   const style = listStyleFor(state.difficulty);
+  const clue = style === "clue" ? listClueText(state, id) : null;
   if (found) {
     return {
       id,
       found,
       text: target.label,
-      answered: style === "clue" ? target.clue : null,
+      answered: clue,
       art: "picture",
       accessibleText: `${target.accessibleLabel}: encontrado`,
     };
   }
-  if (style === "clue") {
-    return { id, found, text: target.clue, answered: null, art: null, accessibleText: `${target.clue} Procurar.` };
+  if (clue !== null) {
+    return { id, found, text: clue, answered: null, art: null, accessibleText: `${clue} Procurar.` };
   }
-  return { id, found, text: target.label, answered: null, art: style, accessibleText: `${target.accessibleLabel}: procurar` };
+  return { id, found, text: target.label, answered: null, art: "picture", accessibleText: `${target.accessibleLabel}: procurar` };
 }
 
-/** How the Pista button refers to its subject: as the list does (Difícil: by its clue). */
-export function subjectText(state: Pick<SessionState, "scene" | "difficulty" | "foundIds">, id: TargetId): string {
+/** How the Pista button refers to its subject: as the list does (a clue list: by its clue). */
+export function subjectText(state: Pick<SessionState, "scene" | "difficulty" | "foundIds" | "clues">, id: TargetId): string {
   return listEntryFor(state, id).text;
 }
 
@@ -451,7 +475,7 @@ export function progressLabel(state: SessionState): string {
 
 /**
  * The short live-region line for what just happened (a free tap announces
- * nothing). A find names the object — in Difícil that is when the name is
+ * nothing). A find names the object — in a clue list that is when the name is
  * first said, with the clue it answered.
  */
 export function announcementFor(state: SessionState): string {
@@ -459,14 +483,14 @@ export function announcementFor(state: SessionState): string {
   if (!event) return "";
   if (event.kind === "found") {
     const target = targetById(state.scene, event.targetId);
-    const answered = listStyleFor(state.difficulty) === "clue" ? ` ${target.clue}` : "";
+    const answered = listStyleFor(state.difficulty) === "clue" ? ` ${listClueText(state, event.targetId)}` : "";
     const done = state.status === "completed";
     return done
       ? `Encontrou: ${target.label}.${answered} ${state.scene.copy.completeTitle}!`
       : `Encontrou: ${target.label}.${answered} ${progressLabel(state)}.`;
   }
   if (event.kind === "already") return `Você já encontrou: ${targetById(state.scene, event.targetId).label}.`;
-  if (event.kind === "hint") return hintMessage(state.scene, event.targetId, state.difficulty, event.stage);
+  if (event.kind === "hint") return hintMessage(state.scene, event.targetId, state.difficulty, event.stage, state.clues);
   return "";
 }
 

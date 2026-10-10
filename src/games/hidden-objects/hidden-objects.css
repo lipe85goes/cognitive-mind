@@ -575,19 +575,13 @@
   object-fit: contain;
 }
 
-/* Médio: the object's outline only, in warm cream — recognised by shape. */
-.hos-item-art[data-style="silhouette"] img {
-  filter: brightness(0) invert(0.92) sepia(0.35);
-  opacity: 0.62;
-}
-
 .hos-item-label {
   display: grid;
   grid-column: 2;
   gap: 0.1rem;
 }
 
-/* Difícil: the clue is the item until the object is found — read like a line from a notebook. */
+/* Médio and Difícil: the clue is the item until the object is found — read like a line from a notebook. */
 .hos-item[data-clue="true"]:not([data-found="true"]) .hos-item-label {
   font-family: Georgia, "Times New Roman", serif;
   font-size: 0.98rem;

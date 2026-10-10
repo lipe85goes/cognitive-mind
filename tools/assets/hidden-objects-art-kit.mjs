@@ -227,3 +227,55 @@ export async function writeReviewBoards({ room, composedPng, regionsPng, reviewD
     .webp({ quality: 84 })
     .toFile(path.join(reviewDir, "targets-zoom.webp"));
 }
+
+// --- what the round model reads (GAME03-CALIBRATION-02A) -----------------------------------------
+
+/**
+ * A room as it ships, composed at rest (every layer at its rect, no parallax
+ * offset): the raw RGBA of what the Explorador sees. `readFile(publicPath)`
+ * returns a layer's bytes (the working tree, or a commit's tree).
+ */
+export async function composeShipped(room, readFile) {
+  const inputs = room.layers.map((layer) => ({ input: readFile(`public${layer.src}`), left: layer.rect.x, top: layer.rect.y }));
+  return sharp({ create: { width: room.width, height: room.height, channels: 4, background: "#000000" } })
+    .composite(inputs)
+    .raw()
+    .toBuffer();
+}
+
+/** How busy a room is around a shape: the ring from CLUTTER_RING.inner to .outer su outside its box. */
+export const CLUTTER_RING = { inner: 16, outer: 120 };
+/** A pixel is busy when its Sobel luminance gradient (0–255 scale) exceeds this. */
+export const CLUTTER_EDGE = 40;
+
+/**
+ * Clutter around one object: the share of busy pixels (a strong local edge —
+ * Sobel on the luminance of the composed room) in the ring of room around its
+ * box. Edge density is the plainest measure of visual clutter there is: the
+ * more edges around an object, the more the eye has to sort through. Its own
+ * box (and CLUTTER_RING.inner su around it) is left out, so an object never
+ * makes itself look busy.
+ */
+export function measureClutter(composed, width, height, region) {
+  const b = boxOf(region);
+  const lum = (x, y) => {
+    const i = (y * width + x) * 4;
+    return 0.2126 * composed[i] + 0.7152 * composed[i + 1] + 0.0722 * composed[i + 2];
+  };
+  const x0 = Math.max(1, Math.floor(b.x - CLUTTER_RING.outer));
+  const x1 = Math.min(width - 1, Math.ceil(b.x + b.w + CLUTTER_RING.outer));
+  const y0 = Math.max(1, Math.floor(b.y - CLUTTER_RING.outer));
+  const y1 = Math.min(height - 1, Math.ceil(b.y + b.h + CLUTTER_RING.outer));
+  let ring = 0;
+  let busy = 0;
+  for (let y = y0; y < y1; y += 1) {
+    for (let x = x0; x < x1; x += 1) {
+      if (x >= b.x - CLUTTER_RING.inner && x < b.x + b.w + CLUTTER_RING.inner && y >= b.y - CLUTTER_RING.inner && y < b.y + b.h + CLUTTER_RING.inner) continue;
+      const gx = -lum(x - 1, y - 1) - 2 * lum(x - 1, y) - lum(x - 1, y + 1) + lum(x + 1, y - 1) + 2 * lum(x + 1, y) + lum(x + 1, y + 1);
+      const gy = -lum(x - 1, y - 1) - 2 * lum(x, y - 1) - lum(x + 1, y - 1) + lum(x - 1, y + 1) + 2 * lum(x, y + 1) + lum(x + 1, y + 1);
+      ring += 1;
+      if (Math.hypot(gx, gy) > CLUTTER_EDGE) busy += 1;
+    }
+  }
+  return Number((busy / Math.max(1, ring)).toFixed(3));
+}

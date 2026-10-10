@@ -36,8 +36,8 @@ export const COMPLETION_CARD_DELAY_MS = 700;
 
 const DIFFICULTY_NOTE: Record<DifficultyLevel, string> = {
   easy: "lista com imagens · a pista pode mostrar onde está",
-  medium: "lista com silhuetas · pistas mais vagas",
-  hard: "a lista descreve, não nomeia · a pista nunca revela",
+  medium: "a lista dá pistas, não nomes · a pista nunca revela",
+  hard: "pistas indiretas · objetos mais escondidos",
 };
 
 /**
@@ -96,7 +96,7 @@ export function HiddenObjectsGame({ onComplete, onExit, onEntryReady, onEntryErr
   const cardVisible = finished && cardRound === state.round && dismissedRound !== state.round;
   const subject = hintSubject(state);
   const hintText =
-    state.hintTarget && state.hintStage > 0 ? hintMessage(scene, state.hintTarget, state.difficulty, state.hintStage) : "";
+    state.hintTarget && state.hintStage > 0 ? hintMessage(scene, state.hintTarget, state.difficulty, state.hintStage, state.clues) : "";
   const hintedStation =
     state.hintTarget && state.hintStage >= 1 ? targetById(scene, state.hintTarget).station : null;
 
@@ -443,7 +443,7 @@ function SetupCard({
         <p className="hos-kicker">Preparar</p>
         <h2 id="hos-setup-title">{HIDDEN_OBJECTS_TITLE}</h2>
         <p className="hos-subtitle">{HIDDEN_OBJECTS_SUBTITLE}</p>
-        <p className="hos-setup-copy">Observe com calma. A cada visita, a sala pede outros objetos.</p>
+        <p className="hos-setup-copy">Observe com calma. A cada visita, a sala pede outros objetos e outras pistas.</p>
         <fieldset className="hos-scenes">
           <legend>Cena</legend>
           {SCENES.map((option) => (
