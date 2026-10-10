@@ -1,0 +1,2724 @@
+{
+  "base": "http://localhost:3100",
+  "buildId": "rgwkolxDzk0CjE9bL7k-H",
+  "scenarios": [
+    "desktop",
+    "hard",
+    "mobile",
+    "landscape",
+    "small",
+    "reduced-motion",
+    "legacy",
+    "rounds",
+    "reload-race",
+    "bundle"
+  ],
+  "results": [
+    {
+      "scenario": "desktop",
+      "id": "01_HOME_LOADS",
+      "pass": true,
+      "detail": {
+        "pips": [
+          "Selecionar Rota Estratégica",
+          "Selecionar Circuito de Memória",
+          "Selecionar Central de Comandos",
+          "Selecionar Estúdio das Descobertas",
+          "Selecionar Jardim de Sementes"
+        ]
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "02_STUDIO_IN_THE_TRAILS_SLOT",
+      "pass": true,
+      "detail": {
+        "order": [
+          "Selecionar Rota Estratégica",
+          "Selecionar Circuito de Memória",
+          "Selecionar Central de Comandos",
+          "Selecionar Estúdio das Descobertas",
+          "Selecionar Jardim de Sementes"
+        ]
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "03_04_OPENS_THROUGH_THE_TRANSITION",
+      "pass": true,
+      "detail": {
+        "transitionWorld": "Estúdio das Descobertas",
+        "readyAfterMs": 6877,
+        "phase": "revealing"
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "05_INTRO",
+      "pass": true,
+      "detail": {
+        "title": "Estúdio das Descobertas",
+        "steps": 3
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "06_READY_REPORTED_NOT_TIMED_OUT",
+      "pass": true,
+      "detail": {
+        "phase": "revealing",
+        "readyAfterMs": 6877
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "07_SETUP",
+      "pass": true,
+      "detail": {
+        "title": "Estúdio das Descobertas",
+        "levels": [
+          "Fácil",
+          "Médio",
+          "Difícil"
+        ],
+        "status": "setup"
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "08_CHOOSE_EASY",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "desktop",
+      "id": "09_EXPLORE_STARTS_PLAYING",
+      "pass": true,
+      "detail": {
+        "list": [
+          "estatueta",
+          "chave",
+          "borboleta",
+          "chapeu",
+          "lanterna"
+        ]
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "X05_EXPLORAR_DRAWS_THE_ROUND_ONCE",
+      "pass": true,
+      "detail": {
+        "drawsBeforeExplorar": 0,
+        "round": {
+          "seed": 101,
+          "ids": [
+            "estatueta",
+            "chave",
+            "borboleta",
+            "chapeu",
+            "lanterna"
+          ],
+          "draws": 1
+        },
+        "drawn": [
+          "estatueta",
+          "chave",
+          "borboleta",
+          "chapeu",
+          "lanterna"
+        ],
+        "spread": {
+          "janela": 1,
+          "mesa": 2,
+          "estante": 2
+        }
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "X00_FACIL_LIST_IS_PICTURE_AND_NAME",
+      "pass": true,
+      "detail": {
+        "easyEntries": [
+          {
+            "text": "Estatueta",
+            "aria": "Estatueta: procurar",
+            "art": "picture",
+            "found": false
+          },
+          {
+            "text": "Chave antiga",
+            "aria": "Chave antiga: procurar",
+            "art": "picture",
+            "found": false
+          },
+          {
+            "text": "Borboleta",
+            "aria": "Borboleta emoldurada: procurar",
+            "art": "picture",
+            "found": false
+          },
+          {
+            "text": "Chapéu",
+            "aria": "Chapéu de explorador: procurar",
+            "art": "picture",
+            "found": false
+          },
+          {
+            "text": "Lanterna",
+            "aria": "Lanterna: procurar",
+            "art": "picture",
+            "found": false
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "10_PAN_MOVES_THE_CAMERA",
+      "pass": true,
+      "detail": {
+        "before": {
+          "x": 1599.999620051407,
+          "y": 799.9995725578328
+        },
+        "after": {
+          "x": 2055.937931597855,
+          "y": 799.9995725578328
+        }
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "10_PAN_RENDERS_NO_REACT_PER_POINTERMOVE",
+      "pass": true,
+      "detail": {
+        "pointerMoves": 24,
+        "reactCommitsDuringDrag": 0,
+        "styleMutations": 24,
+        "longTasks": []
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "10_COMMIT_COUNTER_IS_LIVE",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "desktop",
+      "id": "11_WHEEL_ZOOMS_AT_THE_CURSOR",
+      "pass": true,
+      "detail": {
+        "scale": [
+          0.526387,
+          0.657983
+        ],
+        "drift": 0.1941477301151871
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "11_ZOOM_BUTTONS",
+      "pass": true,
+      "detail": {
+        "scales": [
+          0.657983,
+          0.822479,
+          0.657983
+        ]
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "12_MESA_STATION",
+      "pass": true,
+      "detail": {
+        "centre": {
+          "x": 1599.999620051407,
+          "y": 799.9995725578328
+        },
+        "cover": 0.526387
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "13_FREE_TAP_IS_FREE",
+      "pass": true,
+      "detail": {
+        "ripple": true,
+        "live": ""
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "14_TAP_FINDS_THE_TARGET",
+      "pass": true,
+      "detail": {
+        "id": "estatueta",
+        "comfortable": true,
+        "before": 0,
+        "after": 1,
+        "announced": "Encontrou: Estatueta. 1 de 5."
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "15_DRAG_FROM_A_TARGET_DOES_NOT_SELECT",
+      "pass": true,
+      "detail": {
+        "target": "chave",
+        "found": 1,
+        "moved": -120
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "16_HINT_1_NAMES_THE_ZONE",
+      "pass": true,
+      "detail": {
+        "subject": "Chave antiga",
+        "banner": "Pista: procure perto da janela.",
+        "hinted": "Janela",
+        "halo": false
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "17_HINT_2_LIGHTS_A_REGION",
+      "pass": true,
+      "detail": {
+        "banner": "Pista: procure sobre o baú.",
+        "halo": "hos-halo hos-halo-hint",
+        "button": "Mostrar onde está"
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "18_SHOW_WHERE_FRAMES_IT",
+      "pass": true,
+      "detail": {
+        "banner": "Aqui está: Chave antiga.",
+        "halo": "hos-halo hos-halo-reveal",
+        "viewCentre": {
+          "x": 518,
+          "y": 1263.1115
+        },
+        "object": {
+          "x": 518,
+          "y": 1274
+        }
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "18_REVEALED_OBJECT_IS_TAPPED_BY_THE_EXPLORADOR",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "desktop",
+      "id": "X30_THE_ROUND_HOLDS_THROUGH_THE_SESSION",
+      "pass": true,
+      "detail": {
+        "before": {
+          "seed": 101,
+          "ids": [
+            "estatueta",
+            "chave",
+            "borboleta",
+            "chapeu",
+            "lanterna"
+          ],
+          "draws": 1
+        },
+        "after": {
+          "seed": 101,
+          "ids": [
+            "estatueta",
+            "chave",
+            "borboleta",
+            "chapeu",
+            "lanterna"
+          ],
+          "draws": 1
+        },
+        "progress": [
+          {
+            "found": 2,
+            "total": 5
+          },
+          {
+            "found": 2,
+            "total": 5
+          }
+        ],
+        "visibility": {
+          "method": "visibilityState and visibilitychange on the page",
+          "seen": [
+            "hidden",
+            "visible"
+          ]
+        }
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "19_FIND_ALL",
+      "pass": true,
+      "detail": {
+        "rest": [
+          {
+            "id": "borboleta",
+            "comfortable": true,
+            "before": 2,
+            "after": 3
+          },
+          {
+            "id": "chapeu",
+            "comfortable": true,
+            "before": 3,
+            "after": 4
+          },
+          {
+            "id": "lanterna",
+            "comfortable": true,
+            "before": 4,
+            "after": 5
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "20_RESULT_SCREEN",
+      "pass": true,
+      "detail": {
+        "world": "Estúdio das Descobertas",
+        "title": "Estúdio explorado",
+        "summary": "Você encontrou todos os objetos do Estúdio.",
+        "scoreLabel": "Objetos encontrados",
+        "score": "5",
+        "details": {
+          "Modo": "Fácil"
+        }
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "20_ONE_RESULT_PER_SESSION",
+      "pass": true,
+      "detail": {
+        "before": 0,
+        "after": 1
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "20_RESULT_CONTRACT",
+      "pass": true,
+      "detail": {
+        "saved": {
+          "activityId": "hidden-objects",
+          "activityTitle": "Estúdio das Descobertas",
+          "gameId": "hidden-objects",
+          "score": 5,
+          "summary": "Você encontrou todos os objetos do Estúdio.",
+          "details": {
+            "difficulty": "easy",
+            "foundObjects": 5,
+            "totalObjects": 5,
+            "completed": true,
+            "sceneId": "explorer-studio",
+            "roundSeed": 101
+          },
+          "id": "hidden-objects-1791621484593",
+          "playedAt": "2026-10-10T08:38:04.593Z"
+        }
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "X04_RESULT_PRESENTATION",
+      "pass": true,
+      "detail": {
+        "world": "Estúdio das Descobertas",
+        "title": "Estúdio explorado",
+        "summary": "Você encontrou todos os objetos do Estúdio.",
+        "scoreLabel": "Objetos encontrados",
+        "score": "5",
+        "details": {
+          "Modo": "Fácil"
+        }
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "21_PLAY_AGAIN_IS_FRESH",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "desktop",
+      "id": "X06_PLAYING_AGAIN_DRAWS_A_NEW_ROUND",
+      "pass": true,
+      "detail": {
+        "round": {
+          "seed": 202,
+          "ids": [
+            "bussola",
+            "binoculo",
+            "chapeu",
+            "camera",
+            "chave",
+            "estatueta"
+          ],
+          "draws": 2
+        },
+        "drawn": [
+          "bussola",
+          "binoculo",
+          "chapeu",
+          "camera",
+          "chave",
+          "estatueta"
+        ],
+        "spread": {
+          "janela": 2,
+          "mesa": 2,
+          "estante": 2
+        }
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "X01_MEDIO_LIST_IS_SILHOUETTE_AND_NAME",
+      "pass": true,
+      "detail": {
+        "mediumEntries": [
+          {
+            "text": "Uma agulha que não costura, só orienta.",
+            "aria": "Uma agulha que não costura, só orienta. Procurar.",
+            "art": null,
+            "found": false
+          },
+          {
+            "text": "Aproxima o navio que ainda está no horizonte.",
+            "aria": "Aproxima o navio que ainda está no horizonte. Procurar.",
+            "art": null,
+            "found": false
+          },
+          {
+            "text": "Tira-se em sinal de respeito.",
+            "aria": "Tira-se em sinal de respeito. Procurar.",
+            "art": null,
+            "found": false
+          },
+          {
+            "text": "Diga xis para ela.",
+            "aria": "Diga xis para ela. Procurar.",
+            "art": null,
+            "found": false
+          },
+          {
+            "text": "Tem dentes, mas nunca mordeu ninguém.",
+            "aria": "Tem dentes, mas nunca mordeu ninguém. Procurar.",
+            "art": null,
+            "found": false
+          },
+          {
+            "text": "Uma pessoa que nunca se mexe nem pisca.",
+            "aria": "Uma pessoa que nunca se mexe nem pisca. Procurar.",
+            "art": null,
+            "found": false
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "X02_MEDIO_HINTS_NEVER_POINT",
+      "pass": true,
+      "detail": {
+        "mediumLadder": [
+          {
+            "banner": "Pista: procure na mesa.",
+            "halo": null,
+            "button": "Outra pista",
+            "hinted": "Mesa",
+            "centre": {
+              "x": 1599.999620051407,
+              "y": 799.9995725578328
+            }
+          },
+          {
+            "banner": "Pista: em outras palavras — Aponta sempre para o norte.",
+            "halo": null,
+            "button": "Outra pista",
+            "hinted": "Mesa",
+            "centre": {
+              "x": 1599.999620051407,
+              "y": 799.9995725578328
+            }
+          },
+          {
+            "banner": "Pista: olhe na frente da mesa, perto da beirada.",
+            "halo": null,
+            "button": "Rever pista",
+            "hinted": "Mesa",
+            "centre": {
+              "x": 1599.999620051407,
+              "y": 799.9995725578328
+            }
+          },
+          {
+            "banner": "Pista: olhe na frente da mesa, perto da beirada.",
+            "halo": null,
+            "button": "Rever pista",
+            "hinted": "Mesa",
+            "centre": {
+              "x": 1599.999620051407,
+              "y": 799.9995725578328
+            }
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "X03_MEDIO_DIRECTION_LEAVES_THE_CAMERA",
+      "pass": true,
+      "detail": {
+        "afterPool": {
+          "x": 1599.999620051407,
+          "y": 799.9995725578328
+        },
+        "afterDirection": {
+          "x": 1599.999620051407,
+          "y": 799.9995725578328
+        }
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "22_RESTART",
+      "pass": true,
+      "detail": {
+        "status": "playing",
+        "progress": {
+          "found": 0,
+          "total": 6
+        },
+        "centre": {
+          "x": 1599.999620051407,
+          "y": 799.9995725578328
+        },
+        "round": {
+          "seed": 202,
+          "ids": [
+            "bussola",
+            "binoculo",
+            "chapeu",
+            "camera",
+            "chave",
+            "estatueta"
+          ],
+          "draws": 2
+        }
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "X07_RECOMECAR_KEEPS_THE_ROUND",
+      "pass": true,
+      "detail": {
+        "before": {
+          "seed": 202,
+          "ids": [
+            "bussola",
+            "binoculo",
+            "chapeu",
+            "camera",
+            "chave",
+            "estatueta"
+          ],
+          "draws": 2
+        },
+        "after": {
+          "seed": 202,
+          "ids": [
+            "bussola",
+            "binoculo",
+            "chapeu",
+            "camera",
+            "chave",
+            "estatueta"
+          ],
+          "draws": 2
+        }
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "23_EXIT_SAVES_NOTHING",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "desktop",
+      "id": "24_BACK_HOME",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "desktop",
+      "id": "X31_A_NEW_ENTRY_DRAWS_A_NEW_ROUND",
+      "pass": true,
+      "detail": {
+        "first": {
+          "seed": 101,
+          "ids": [
+            "estatueta",
+            "chave",
+            "borboleta",
+            "chapeu",
+            "lanterna"
+          ],
+          "draws": 1
+        },
+        "again": {
+          "seed": 303,
+          "ids": [
+            "pinha",
+            "gaiola",
+            "barco",
+            "piao",
+            "estatueta"
+          ],
+          "draws": 3
+        },
+        "drawn": [
+          "pinha",
+          "gaiola",
+          "barco",
+          "piao",
+          "estatueta"
+        ]
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "X31_LEAVING_SAVES_NOTHING",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "desktop",
+      "id": "NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "desktop",
+      "id": "NO_RETIRED_GAME_REQUESTED",
+      "pass": true,
+      "detail": {
+        "offending": []
+      }
+    },
+    {
+      "scenario": "hard",
+      "id": "X16_DIFICIL_ROUND_IS_ITS_SEED",
+      "pass": true,
+      "detail": {
+        "round": {
+          "seed": 404,
+          "ids": [
+            "estatueta",
+            "chapeu",
+            "bussola",
+            "relogio",
+            "gaiola",
+            "binoculo",
+            "chave",
+            "gaita"
+          ],
+          "draws": 1
+        },
+        "drawn": [
+          "estatueta",
+          "chapeu",
+          "bussola",
+          "relogio",
+          "gaiola",
+          "binoculo",
+          "chave",
+          "gaita"
+        ],
+        "spread": {
+          "janela": 3,
+          "mesa": 3,
+          "estante": 2
+        }
+      }
+    },
+    {
+      "scenario": "hard",
+      "id": "X10_DIFICIL_LIST_IS_THE_CLUES",
+      "pass": true,
+      "detail": {
+        "entries": [
+          {
+            "text": "Num concurso, o vencedor leva uma parecida.",
+            "aria": "Num concurso, o vencedor leva uma parecida. Procurar.",
+            "art": null,
+            "found": false
+          },
+          {
+            "text": "Um mágico tiraria um coelho de um parecido.",
+            "aria": "Um mágico tiraria um coelho de um parecido. Procurar.",
+            "art": null,
+            "found": false
+          },
+          {
+            "text": "Um ímã escondido decide para onde ir.",
+            "aria": "Um ímã escondido decide para onde ir. Procurar.",
+            "art": null,
+            "found": false
+          },
+          {
+            "text": "Herança de família que se abre com um clique.",
+            "aria": "Herança de família que se abre com um clique. Procurar.",
+            "art": null,
+            "found": false
+          },
+          {
+            "text": "Ali dentro, alguém cantava todas as manhãs.",
+            "aria": "Ali dentro, alguém cantava todas as manhãs. Procurar.",
+            "art": null,
+            "found": false
+          },
+          {
+            "text": "Com ele, a ave no alto da árvore vira detalhe.",
+            "aria": "Com ele, a ave no alto da árvore vira detalhe. Procurar.",
+            "art": null,
+            "found": false
+          },
+          {
+            "text": "Sem ela, a porta fica fechada para sempre.",
+            "aria": "Sem ela, a porta fica fechada para sempre. Procurar.",
+            "art": null,
+            "found": false
+          },
+          {
+            "text": "Um blues solitário cabe na palma da mão.",
+            "aria": "Um blues solitário cabe na palma da mão. Procurar.",
+            "art": null,
+            "found": false
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "hard",
+      "id": "X11_DIFICIL_HINTS_NEVER_REVEAL",
+      "pass": true,
+      "detail": {
+        "problems": [],
+        "ladders": {
+          "estatueta": [
+            "Pista: procure na estante.",
+            "Pista: está entre lombadas de livros, perto do teto.",
+            "Pista: está entre lombadas de livros, perto do teto."
+          ],
+          "chapeu": [
+            "Pista: procure na mesa.",
+            "Pista: está pendurado num gancho de madeira, perto da estante.",
+            "Pista: está pendurado num gancho de madeira, perto da estante."
+          ],
+          "bussola": [
+            "Pista: procure na mesa.",
+            "Pista: está entre um livro aberto e um mapa.",
+            "Pista: está entre um livro aberto e um mapa."
+          ],
+          "relogio": [
+            "Pista: procure na mesa.",
+            "Pista: está junto de moedas, preso a uma corrente.",
+            "Pista: está junto de moedas, preso a uma corrente."
+          ],
+          "gaiola": [
+            "Pista: procure perto da janela.",
+            "Pista: está presa num gancho, perto de uma planta pendurada.",
+            "Pista: está presa num gancho, perto de uma planta pendurada."
+          ],
+          "binoculo": [
+            "Pista: procure perto da janela.",
+            "Pista: está onde a luz da tarde entra, entre vasos e pedrinhas.",
+            "Pista: está onde a luz da tarde entra, entre vasos e pedrinhas."
+          ],
+          "chave": [
+            "Pista: procure perto da janela.",
+            "Pista: está em cima de algo que guarda coisas fechadas.",
+            "Pista: está em cima de algo que guarda coisas fechadas."
+          ],
+          "gaita": [
+            "Pista: procure na estante.",
+            "Pista: está sobre livros empilhados, perto do chão.",
+            "Pista: está sobre livros empilhados, perto do chão."
+          ]
+        }
+      }
+    },
+    {
+      "scenario": "hard",
+      "id": "X12_A_FIND_SAYS_THE_NAME",
+      "pass": true,
+      "detail": {
+        "line": "Estatueta",
+        "answered": "Num concurso, o vencedor leva uma parecida.",
+        "tag": "Estatueta",
+        "live": "Encontrou: Estatueta. Num concurso, o vencedor leva uma parecida. 1 de 8.",
+        "label": "Estatueta"
+      }
+    },
+    {
+      "scenario": "hard",
+      "id": "X13_PAN_ZOOM_STATIONS_IN_DIFICIL",
+      "pass": true,
+      "detail": {
+        "panned": true,
+        "pannedPx": 200.00100000000003,
+        "zoomedIn": true,
+        "atShelf": true
+      }
+    },
+    {
+      "scenario": "hard",
+      "id": "X14_THE_LIST_FOLDS_TO_A_RAIL",
+      "pass": true,
+      "detail": {
+        "openWidth": 1128,
+        "railWidth": 1316
+      }
+    },
+    {
+      "scenario": "hard",
+      "id": "X15_DIFICIL_RESULT",
+      "pass": true,
+      "detail": {
+        "saved": {
+          "activityId": "hidden-objects",
+          "activityTitle": "Estúdio das Descobertas",
+          "gameId": "hidden-objects",
+          "score": 8,
+          "summary": "Você encontrou todos os objetos do Estúdio.",
+          "details": {
+            "difficulty": "hard",
+            "foundObjects": 8,
+            "totalObjects": 8,
+            "completed": true,
+            "sceneId": "explorer-studio",
+            "roundSeed": 404
+          },
+          "id": "hidden-objects-1791621540206",
+          "playedAt": "2026-10-10T08:39:00.206Z"
+        },
+        "modal": {
+          "world": "Estúdio das Descobertas",
+          "title": "Estúdio explorado",
+          "summary": "Você encontrou todos os objetos do Estúdio.",
+          "scoreLabel": "Objetos encontrados",
+          "score": "8",
+          "details": {
+            "Modo": "Difícil"
+          }
+        }
+      }
+    },
+    {
+      "scenario": "hard",
+      "id": "NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "mobile",
+      "id": "25_OPENS_ON_A_PHONE",
+      "pass": true,
+      "detail": {
+        "transitionWorld": "Estúdio das Descobertas",
+        "readyAfterMs": 2217,
+        "phase": "revealing"
+      }
+    },
+    {
+      "scenario": "mobile",
+      "id": "X17_THE_PHONE_ROUND_IS_ITS_SEED",
+      "pass": true,
+      "detail": {
+        "round": {
+          "seed": 505,
+          "ids": [
+            "bussola",
+            "lanterna",
+            "estatueta",
+            "gaiola",
+            "tesoura",
+            "binoculo",
+            "relogio",
+            "camera"
+          ],
+          "draws": 1
+        },
+        "drawn": [
+          "bussola",
+          "lanterna",
+          "estatueta",
+          "gaiola",
+          "tesoura",
+          "binoculo",
+          "relogio",
+          "camera"
+        ],
+        "spread": {
+          "janela": 2,
+          "mesa": 3,
+          "estante": 3
+        }
+      }
+    },
+    {
+      "scenario": "mobile",
+      "id": "26_TOUCH_DRAG_PANS",
+      "pass": true,
+      "detail": {
+        "before": {
+          "x": 1600.0014486140385,
+          "y": 800.000875204315
+        },
+        "afterDrag": {
+          "x": 1237.8479389843767,
+          "y": 800.000875204315
+        },
+        "dragCommits": 0
+      }
+    },
+    {
+      "scenario": "mobile",
+      "id": "27_PINCH_ZOOMS",
+      "pass": true,
+      "detail": {
+        "scale": [
+          0.414189,
+          1.13902
+        ]
+      }
+    },
+    {
+      "scenario": "mobile",
+      "id": "29_TRAY",
+      "pass": true,
+      "detail": {
+        "panelTop": 720.484375,
+        "sceneBottom": 720.484375,
+        "sceneHeightShare": 0.7851932760663507,
+        "chipsInOneRow": true,
+        "clueFontPx": 13.76,
+        "cluesFit": true,
+        "minTarget": 44
+      }
+    },
+    {
+      "scenario": "mobile",
+      "id": "X20_CLUES_READABLE_ON_A_PHONE",
+      "pass": true,
+      "detail": {
+        "clueFontPx": 13.76,
+        "cluesFit": true
+      }
+    },
+    {
+      "scenario": "mobile",
+      "id": "30_HINT_ON_A_PHONE",
+      "pass": true,
+      "detail": {
+        "banner": "Pista: procure na mesa.",
+        "halo": null,
+        "button": "Outra pista",
+        "hinted": "Mesa"
+      }
+    },
+    {
+      "scenario": "mobile",
+      "id": "28_TOUCH_TAP_FINDS",
+      "pass": true,
+      "detail": {
+        "id": "bussola",
+        "comfortable": true,
+        "before": 0,
+        "after": 1
+      }
+    },
+    {
+      "scenario": "mobile",
+      "id": "X21_TRAY_FOLDS_AND_THE_ROOM_GROWS",
+      "pass": true,
+      "detail": {
+        "openHeight": 662.703125,
+        "folded": {
+          "height": 722.421875,
+          "tray": "closed",
+          "overflow": 0
+        },
+        "unfolded": "open"
+      }
+    },
+    {
+      "scenario": "mobile",
+      "id": "31_COMPLETES_ON_A_PHONE",
+      "pass": true,
+      "detail": {
+        "saved": {
+          "activityId": "hidden-objects",
+          "activityTitle": "Estúdio das Descobertas",
+          "gameId": "hidden-objects",
+          "score": 8,
+          "summary": "Você encontrou todos os objetos do Estúdio.",
+          "details": {
+            "difficulty": "hard",
+            "foundObjects": 8,
+            "totalObjects": 8,
+            "completed": true,
+            "sceneId": "explorer-studio",
+            "roundSeed": 505
+          },
+          "id": "hidden-objects-1791621556498",
+          "playedAt": "2026-10-10T08:39:16.498Z"
+        }
+      }
+    },
+    {
+      "scenario": "mobile",
+      "id": "32_NO_HORIZONTAL_PAGE_OVERFLOW",
+      "pass": true,
+      "detail": {
+        "overflows": [
+          {
+            "step": "home",
+            "px": 0
+          },
+          {
+            "step": "playing",
+            "px": 0
+          },
+          {
+            "step": "found all",
+            "px": 0
+          },
+          {
+            "step": "result",
+            "px": 0
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "mobile",
+      "id": "NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "landscape",
+      "id": "L01_OPENS_SIDEWAYS_WITH_ITS_ROUND",
+      "pass": true,
+      "detail": {
+        "round": {
+          "seed": 606,
+          "ids": [
+            "chapeu",
+            "estatueta",
+            "piao",
+            "caracol",
+            "camera",
+            "pinha"
+          ],
+          "draws": 1
+        },
+        "drawn": [
+          "chapeu",
+          "estatueta",
+          "piao",
+          "caracol",
+          "camera",
+          "pinha"
+        ]
+      }
+    },
+    {
+      "scenario": "landscape",
+      "id": "L02_LANDSCAPE_LAYOUT",
+      "pass": true,
+      "detail": {
+        "panelBesideScene": true,
+        "sceneWidthShare": 0.706,
+        "sceneHeightShare": 0.864,
+        "items": 6,
+        "firstItemVisible": true,
+        "minTarget": 44
+      }
+    },
+    {
+      "scenario": "landscape",
+      "id": "L03_PINCH_AND_DRAG_SIDEWAYS",
+      "pass": true,
+      "detail": {
+        "scale": [
+          0.210625,
+          0.601786
+        ],
+        "movedPx": 120.00000000000004,
+        "roomToPanAtOpeningZoomPx": 39
+      }
+    },
+    {
+      "scenario": "landscape",
+      "id": "L04_HINT_SIDEWAYS",
+      "pass": true,
+      "detail": {
+        "banner": "Pista: procure na mesa.",
+        "halo": null,
+        "button": "Outra pista",
+        "hinted": "Mesa"
+      }
+    },
+    {
+      "scenario": "landscape",
+      "id": "L05_FINDS_SIDEWAYS",
+      "pass": true,
+      "detail": {
+        "finds": [
+          {
+            "id": "chapeu",
+            "comfortable": true,
+            "before": 0,
+            "after": 1
+          },
+          {
+            "id": "estatueta",
+            "comfortable": true,
+            "before": 1,
+            "after": 2
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "landscape",
+      "id": "L06_TURNING_THE_PHONE_KEEPS_THE_ROUND",
+      "pass": true,
+      "detail": {
+        "round": {
+          "seed": 606,
+          "ids": [
+            "chapeu",
+            "estatueta",
+            "piao",
+            "caracol",
+            "camera",
+            "pinha"
+          ],
+          "draws": 1
+        },
+        "upright": {
+          "round": {
+            "seed": 606,
+            "ids": [
+              "chapeu",
+              "estatueta",
+              "piao",
+              "caracol",
+              "camera",
+              "pinha"
+            ],
+            "draws": 1
+          },
+          "progress": {
+            "found": 2,
+            "total": 6
+          },
+          "overflow": 0
+        },
+        "back": {
+          "round": {
+            "seed": 606,
+            "ids": [
+              "chapeu",
+              "estatueta",
+              "piao",
+              "caracol",
+              "camera",
+              "pinha"
+            ],
+            "draws": 1
+          },
+          "progress": {
+            "found": 2,
+            "total": 6
+          },
+          "overflow": 0
+        }
+      }
+    },
+    {
+      "scenario": "landscape",
+      "id": "L07_COMPLETES_SIDEWAYS",
+      "pass": true,
+      "detail": {
+        "saved": {
+          "activityId": "hidden-objects",
+          "activityTitle": "Estúdio das Descobertas",
+          "gameId": "hidden-objects",
+          "score": 6,
+          "summary": "Você encontrou todos os objetos do Estúdio.",
+          "details": {
+            "difficulty": "medium",
+            "foundObjects": 6,
+            "totalObjects": 6,
+            "completed": true,
+            "sceneId": "explorer-studio",
+            "roundSeed": 606
+          },
+          "id": "hidden-objects-1791621571739",
+          "playedAt": "2026-10-10T08:39:31.739Z"
+        }
+      }
+    },
+    {
+      "scenario": "landscape",
+      "id": "L08_NO_HORIZONTAL_PAGE_OVERFLOW",
+      "pass": true,
+      "detail": {
+        "overflows": [
+          {
+            "step": "home",
+            "px": 0
+          },
+          {
+            "step": "playing",
+            "px": 0
+          },
+          {
+            "step": "found all",
+            "px": 0
+          },
+          {
+            "step": "result",
+            "px": 0
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "landscape",
+      "id": "NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "small",
+      "id": "SMALL_SETUP_REACHABLE",
+      "pass": true,
+      "detail": {
+        "explore": {
+          "x": 32.390625,
+          "y": 538.40625,
+          "width": 295.21875,
+          "height": 52
+        }
+      }
+    },
+    {
+      "scenario": "small",
+      "id": "SMALL_ROUND_IS_ITS_SEED",
+      "pass": true,
+      "detail": {
+        "round": {
+          "seed": 707,
+          "ids": [
+            "relogio",
+            "pinha",
+            "gaiola",
+            "camera",
+            "globo"
+          ],
+          "draws": 1
+        },
+        "drawn": [
+          "relogio",
+          "pinha",
+          "gaiola",
+          "camera",
+          "globo"
+        ]
+      }
+    },
+    {
+      "scenario": "small",
+      "id": "SMALL_SCENE_KEEPS_ITS_SPACE",
+      "pass": true,
+      "detail": {
+        "sceneShare": 0.7167236328125,
+        "overflow": 0
+      }
+    },
+    {
+      "scenario": "small",
+      "id": "SMALL_FIND",
+      "pass": true,
+      "detail": {
+        "id": "relogio",
+        "comfortable": true,
+        "before": 0,
+        "after": 1
+      }
+    },
+    {
+      "scenario": "small",
+      "id": "NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "reduced-motion",
+      "id": "RM_ROUND_IS_ITS_SEED",
+      "pass": true,
+      "detail": {
+        "round": {
+          "seed": 808,
+          "ids": [
+            "piao",
+            "tesoura",
+            "binoculo",
+            "pinha",
+            "globo"
+          ],
+          "draws": 1
+        },
+        "drawn": [
+          "piao",
+          "tesoura",
+          "binoculo",
+          "pinha",
+          "globo"
+        ]
+      }
+    },
+    {
+      "scenario": "reduced-motion",
+      "id": "RM_STATION_CUTS_INSTANTLY",
+      "pass": true,
+      "detail": {
+        "centre": {
+          "x": 2128.544207968662,
+          "y": 799.9995725578328
+        },
+        "expectedX": 2128.544967865848,
+        "movingMarks": 0
+      }
+    },
+    {
+      "scenario": "reduced-motion",
+      "id": "RM_HALO_WITHOUT_FADES",
+      "pass": true,
+      "detail": {
+        "halo": {
+          "animation": "hos-halo-life-still",
+          "timing": "steps(1)"
+        }
+      }
+    },
+    {
+      "scenario": "reduced-motion",
+      "id": "RM_NO_PARALLAX",
+      "pass": true,
+      "detail": {
+        "parallax": [
+          "translate3d(0px, 0px, 0px)",
+          "translate3d(0px, 0px, 0px)",
+          "translate3d(0px, 0px, 0px)"
+        ]
+      }
+    },
+    {
+      "scenario": "reduced-motion",
+      "id": "RM_FOUND_FEEDBACK_WITHOUT_MOTION",
+      "pass": true,
+      "detail": {
+        "ring": {
+          "animation": "hos-halo-life-still",
+          "timing": "steps(1)"
+        },
+        "tag": {
+          "animation": "hos-halo-life-still",
+          "timing": "steps(1)"
+        },
+        "glow": {
+          "animation": "none",
+          "timing": "ease"
+        }
+      }
+    },
+    {
+      "scenario": "reduced-motion",
+      "id": "NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "legacy",
+      "id": "33_LEGACY_RESULT_IS_READ_SAFELY",
+      "pass": true,
+      "detail": {
+        "selected": "Rota Estratégica",
+        "worlds": [
+          "Rota Estratégica",
+          "Circuito de Memória",
+          "Central de Comandos",
+          "Estúdio das Descobertas",
+          "Jardim de Sementes"
+        ],
+        "stage": true,
+        "commitsAtRead": 4
+      }
+    },
+    {
+      "scenario": "legacy",
+      "id": "34_NO_CRASH",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "legacy",
+      "id": "35_NOT_SHOWN_AS_THE_STUDIO",
+      "pass": true,
+      "detail": {
+        "selected": "Rota Estratégica",
+        "worlds": [
+          "Rota Estratégica",
+          "Circuito de Memória",
+          "Central de Comandos",
+          "Estúdio das Descobertas",
+          "Jardim de Sementes"
+        ],
+        "stage": true,
+        "commitsAtRead": 4
+      }
+    },
+    {
+      "scenario": "legacy",
+      "id": "LEGACY_ROUND_IS_ITS_SEED",
+      "pass": true,
+      "detail": {
+        "round": {
+          "seed": 909,
+          "ids": [
+            "pinha",
+            "caracol",
+            "pena",
+            "gaiola",
+            "lanterna"
+          ],
+          "draws": 1
+        },
+        "drawn": [
+          "pinha",
+          "caracol",
+          "pena",
+          "gaiola",
+          "lanterna"
+        ]
+      }
+    },
+    {
+      "scenario": "legacy",
+      "id": "35_OLD_RESULT_KEPT_NOT_CONVERTED",
+      "pass": true,
+      "detail": {
+        "stored": [
+          {
+            "gameId": "hidden-objects",
+            "score": 5
+          },
+          {
+            "gameId": "number-trail",
+            "score": 340
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "legacy",
+      "id": "35_RELOAD_FOLLOWS_THE_NEWEST_PLAYABLE_RESULT",
+      "pass": true,
+      "detail": {
+        "selected": "Estúdio das Descobertas",
+        "commits": 4,
+        "stored": [
+          "hidden-objects",
+          "number-trail"
+        ],
+        "commitLog": [
+          {
+            "commit": 1,
+            "selected": "Rota Estratégica"
+          },
+          {
+            "commit": 2,
+            "selected": "Estúdio das Descobertas"
+          },
+          {
+            "commit": 3,
+            "selected": "Estúdio das Descobertas"
+          },
+          {
+            "commit": 4,
+            "selected": "Estúdio das Descobertas"
+          }
+        ],
+        "commitsAtRead": 4
+      }
+    },
+    {
+      "scenario": "legacy",
+      "id": "NO_RETIRED_GAME_REQUESTED",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "legacy",
+      "id": "NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "rounds",
+      "id": "R01_EVERY_ENTRY_SHOWS_THE_ROUND_ITS_SEED_DRAWS",
+      "pass": true,
+      "detail": {
+        "problems": [],
+        "seen": [
+          {
+            "difficulty": "easy",
+            "seed": 1001,
+            "ids": [
+              "pinha",
+              "camera",
+              "lanterna",
+              "chave",
+              "borboleta"
+            ],
+            "draws": 1,
+            "spread": {
+              "janela": 1,
+              "mesa": 2,
+              "estante": 2
+            }
+          },
+          {
+            "difficulty": "easy",
+            "seed": 1002,
+            "ids": [
+              "estatueta",
+              "ampulheta",
+              "lanterna",
+              "piao",
+              "pinha"
+            ],
+            "draws": 2,
+            "spread": {
+              "janela": 2,
+              "mesa": 1,
+              "estante": 2
+            }
+          },
+          {
+            "difficulty": "easy",
+            "seed": 1003,
+            "ids": [
+              "piao",
+              "globo",
+              "pinha",
+              "camera",
+              "xicara"
+            ],
+            "draws": 3,
+            "spread": {
+              "janela": 1,
+              "mesa": 2,
+              "estante": 2
+            }
+          },
+          {
+            "difficulty": "medium",
+            "seed": 2001,
+            "ids": [
+              "chave",
+              "xicara",
+              "binoculo",
+              "barco",
+              "camera",
+              "bussola"
+            ],
+            "draws": 4,
+            "spread": {
+              "janela": 2,
+              "mesa": 2,
+              "estante": 2
+            }
+          },
+          {
+            "difficulty": "medium",
+            "seed": 2002,
+            "ids": [
+              "binoculo",
+              "pinha",
+              "xicara",
+              "gaiola",
+              "barco",
+              "estatueta"
+            ],
+            "draws": 5,
+            "spread": {
+              "janela": 2,
+              "mesa": 2,
+              "estante": 2
+            }
+          },
+          {
+            "difficulty": "medium",
+            "seed": 2003,
+            "ids": [
+              "relogio",
+              "bussola",
+              "camera",
+              "piao",
+              "binoculo",
+              "globo"
+            ],
+            "draws": 6,
+            "spread": {
+              "janela": 2,
+              "mesa": 2,
+              "estante": 2
+            }
+          },
+          {
+            "difficulty": "hard",
+            "seed": 3001,
+            "ids": [
+              "gaiola",
+              "bussola",
+              "caracol",
+              "gaita",
+              "lanterna",
+              "estatueta",
+              "chave",
+              "relogio"
+            ],
+            "draws": 7,
+            "spread": {
+              "janela": 3,
+              "mesa": 2,
+              "estante": 3
+            }
+          },
+          {
+            "difficulty": "hard",
+            "seed": 3002,
+            "ids": [
+              "lanterna",
+              "binoculo",
+              "relogio",
+              "chapeu",
+              "chave",
+              "piao",
+              "camera",
+              "estatueta"
+            ],
+            "draws": 8,
+            "spread": {
+              "janela": 3,
+              "mesa": 2,
+              "estante": 3
+            }
+          },
+          {
+            "difficulty": "hard",
+            "seed": 3003,
+            "ids": [
+              "estatueta",
+              "xicara",
+              "tesoura",
+              "caracol",
+              "binoculo",
+              "bussola",
+              "lanterna",
+              "chave"
+            ],
+            "draws": 9,
+            "spread": {
+              "janela": 3,
+              "mesa": 3,
+              "estante": 2
+            }
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "rounds",
+      "id": "R02_NEW_ENTRIES_ASK_FOR_OTHER_LISTS",
+      "pass": true,
+      "detail": {
+        "distinctListsPerDifficulty": {
+          "easy": 3,
+          "medium": 3,
+          "hard": 3
+        }
+      }
+    },
+    {
+      "scenario": "rounds",
+      "id": "R03_UNLISTED_POOL_OBJECTS_ARE_SCENERY",
+      "pass": true,
+      "detail": {
+        "id": "ampulheta",
+        "found": 0,
+        "marks": 0,
+        "live": ""
+      }
+    },
+    {
+      "scenario": "rounds",
+      "id": "NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "reload-race",
+      "id": "RR1_THE_SERVER_HTML_SELECTS_THE_DEFAULT_WORLD",
+      "pass": true,
+      "detail": {
+        "serverSelected": "Rota Estratégica"
+      }
+    },
+    {
+      "scenario": "reload-race",
+      "id": "RR2_THE_BASE_READ_CAN_LAND_BEFORE_HYDRATION",
+      "pass": true,
+      "detail": {
+        "raced": {
+          "cpuSlowdown": 50,
+          "baseRead": {
+            "selected": "Rota Estratégica",
+            "commits": 0,
+            "stored": [
+              "hidden-objects",
+              "number-trail"
+            ],
+            "commitLog": []
+          },
+          "hydratedRead": {
+            "selected": "Estúdio das Descobertas",
+            "commits": 4,
+            "stored": [
+              "hidden-objects",
+              "number-trail"
+            ],
+            "commitLog": [
+              {
+                "commit": 1,
+                "selected": "Rota Estratégica"
+              },
+              {
+                "commit": 2,
+                "selected": "Estúdio das Descobertas"
+              },
+              {
+                "commit": 3,
+                "selected": "Estúdio das Descobertas"
+              },
+              {
+                "commit": 4,
+                "selected": "Estúdio das Descobertas"
+              }
+            ],
+            "commitsAtRead": 4
+          }
+        },
+        "slowdowns": [
+          1,
+          20,
+          50
+        ]
+      }
+    },
+    {
+      "scenario": "reload-race",
+      "id": "RR3_THE_HYDRATED_HOME_SELECTS_THE_NEWEST_PLAYABLE_RESULT",
+      "pass": true,
+      "detail": {
+        "runs": [
+          {
+            "cpuSlowdown": 1,
+            "hydrated": "Estúdio das Descobertas",
+            "commitLog": [
+              {
+                "commit": 1,
+                "selected": "Rota Estratégica"
+              },
+              {
+                "commit": 2,
+                "selected": "Estúdio das Descobertas"
+              },
+              {
+                "commit": 3,
+                "selected": "Estúdio das Descobertas"
+              },
+              {
+                "commit": 4,
+                "selected": "Estúdio das Descobertas"
+              }
+            ]
+          },
+          {
+            "cpuSlowdown": 20,
+            "hydrated": "Estúdio das Descobertas",
+            "commitLog": [
+              {
+                "commit": 1,
+                "selected": "Rota Estratégica"
+              },
+              {
+                "commit": 2,
+                "selected": "Estúdio das Descobertas"
+              },
+              {
+                "commit": 3,
+                "selected": "Estúdio das Descobertas"
+              },
+              {
+                "commit": 4,
+                "selected": "Estúdio das Descobertas"
+              }
+            ]
+          },
+          {
+            "cpuSlowdown": 50,
+            "hydrated": "Estúdio das Descobertas",
+            "commitLog": [
+              {
+                "commit": 1,
+                "selected": "Rota Estratégica"
+              },
+              {
+                "commit": 2,
+                "selected": "Estúdio das Descobertas"
+              },
+              {
+                "commit": 3,
+                "selected": "Estúdio das Descobertas"
+              },
+              {
+                "commit": 4,
+                "selected": "Estúdio das Descobertas"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "reload-race",
+      "id": "NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "bundle",
+      "id": "BUNDLE_HOME_HAS_NO_STUDIO_CODE",
+      "pass": true,
+      "detail": {
+        "js": {
+          "files": 10,
+          "raw": 773682,
+          "gzip": 242771
+        },
+        "css": {
+          "files": 7,
+          "raw": 206074,
+          "gzip": 44515
+        }
+      }
+    },
+    {
+      "scenario": "bundle",
+      "id": "BUNDLE_STUDIO_IS_ITS_OWN_LAZY_SET",
+      "pass": true,
+      "detail": {
+        "files": [
+          "static/chunks/3nu2z_o6-em62.js",
+          "static/chunks/2tdm9vp51u_h1.js",
+          "static/chunks/23brj09b4bc34.css"
+        ]
+      }
+    },
+    {
+      "scenario": "bundle",
+      "id": "BUNDLE_STUDIO_SET_HAS_NO_BABYLON_ROUTE_OR_CIRCUIT",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "bundle",
+      "id": "BUNDLE_ROUTE_CIRCUIT_BABYLON_FREE_OF_THE_STUDIO",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "bundle",
+      "id": "BUNDLE_BABYLON_STILL_LAZY",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "bundle",
+      "id": "BUNDLE_NO_RETIRED_GAME_CHUNK",
+      "pass": true,
+      "detail": {}
+    }
+  ],
+  "metrics": {
+    "playtest": {
+      "hintPresses": {
+        "desktop easy": 3,
+        "desktop medium": 4,
+        "desktop hard": 24
+      },
+      "technicalMsToClosingCard": {
+        "desktop easy": 13579,
+        "desktop hard": 18310,
+        "phone hard": 8947,
+        "phone landscape medium": 6800
+      },
+      "visibleWithoutPan": {
+        "desktop easy": {
+          "visibleWithoutPan": 2,
+          "of": 5,
+          "ids": [
+            "borboleta",
+            "chapeu"
+          ]
+        },
+        "desktop medium": {
+          "visibleWithoutPan": 2,
+          "of": 6,
+          "ids": [
+            "bussola",
+            "chapeu"
+          ]
+        },
+        "desktop hard": {
+          "visibleWithoutPan": 4,
+          "of": 8,
+          "ids": [
+            "chapeu",
+            "bussola",
+            "relogio",
+            "gaiola"
+          ]
+        },
+        "phone hard": {
+          "visibleWithoutPan": 3,
+          "of": 8,
+          "ids": [
+            "bussola",
+            "tesoura",
+            "relogio"
+          ]
+        },
+        "phone landscape medium": {
+          "visibleWithoutPan": 6,
+          "of": 6,
+          "ids": [
+            "chapeu",
+            "estatueta",
+            "piao",
+            "caracol",
+            "camera",
+            "pinha"
+          ]
+        }
+      },
+      "phoneZoomFor44px": {
+        "ampulheta": {
+          "tier": "A",
+          "atCoverPx": 48,
+          "zoomFor44px": 1
+        },
+        "binoculo": {
+          "tier": "B",
+          "atCoverPx": 32,
+          "zoomFor44px": 1.36
+        },
+        "chave": {
+          "tier": "C",
+          "atCoverPx": 23,
+          "zoomFor44px": 1.9
+        },
+        "guarda-chuva": {
+          "tier": "A",
+          "atCoverPx": 26,
+          "zoomFor44px": 1.66
+        },
+        "gaiola": {
+          "tier": "C",
+          "atCoverPx": 31,
+          "zoomFor44px": 1.4
+        },
+        "caracol": {
+          "tier": "C",
+          "atCoverPx": 25,
+          "zoomFor44px": 1.77
+        },
+        "piao": {
+          "tier": "C",
+          "atCoverPx": 31,
+          "zoomFor44px": 1.44
+        },
+        "lupa": {
+          "tier": "A",
+          "atCoverPx": 76,
+          "zoomFor44px": 1
+        },
+        "bussola": {
+          "tier": "B",
+          "atCoverPx": 55,
+          "zoomFor44px": 1
+        },
+        "relogio": {
+          "tier": "C",
+          "atCoverPx": 40,
+          "zoomFor44px": 1.11
+        },
+        "xicara": {
+          "tier": "C",
+          "atCoverPx": 25,
+          "zoomFor44px": 1.77
+        },
+        "pena": {
+          "tier": "B",
+          "atCoverPx": 34,
+          "zoomFor44px": 1.3
+        },
+        "borboleta": {
+          "tier": "A",
+          "atCoverPx": 43,
+          "zoomFor44px": 1.02
+        },
+        "chapeu": {
+          "tier": "B",
+          "atCoverPx": 27,
+          "zoomFor44px": 1.61
+        },
+        "tesoura": {
+          "tier": "C",
+          "atCoverPx": 25,
+          "zoomFor44px": 1.77
+        },
+        "pinha": {
+          "tier": "B",
+          "atCoverPx": 25,
+          "zoomFor44px": 1.77
+        },
+        "barco": {
+          "tier": "A",
+          "atCoverPx": 89,
+          "zoomFor44px": 1
+        },
+        "lanterna": {
+          "tier": "B",
+          "atCoverPx": 52,
+          "zoomFor44px": 1
+        },
+        "camera": {
+          "tier": "C",
+          "atCoverPx": 49,
+          "zoomFor44px": 1
+        },
+        "estatueta": {
+          "tier": "C",
+          "atCoverPx": 35,
+          "zoomFor44px": 1.27
+        },
+        "globo": {
+          "tier": "A",
+          "atCoverPx": 79,
+          "zoomFor44px": 1
+        },
+        "bolsa": {
+          "tier": "B",
+          "atCoverPx": 40,
+          "zoomFor44px": 1.11
+        },
+        "gaita": {
+          "tier": "C",
+          "atCoverPx": 23,
+          "zoomFor44px": 1.9
+        }
+      }
+    },
+    "roundsOnScreen": {
+      "desktop easy": {
+        "seed": 101,
+        "ids": [
+          "estatueta",
+          "chave",
+          "borboleta",
+          "chapeu",
+          "lanterna"
+        ],
+        "draws": 1
+      },
+      "desktop medium": {
+        "seed": 202,
+        "ids": [
+          "bussola",
+          "binoculo",
+          "chapeu",
+          "camera",
+          "chave",
+          "estatueta"
+        ],
+        "draws": 2
+      },
+      "desktop easy, new entry": {
+        "seed": 303,
+        "ids": [
+          "pinha",
+          "gaiola",
+          "barco",
+          "piao",
+          "estatueta"
+        ],
+        "draws": 3
+      },
+      "desktop hard": {
+        "seed": 404,
+        "ids": [
+          "estatueta",
+          "chapeu",
+          "bussola",
+          "relogio",
+          "gaiola",
+          "binoculo",
+          "chave",
+          "gaita"
+        ],
+        "draws": 1
+      },
+      "phone hard": {
+        "seed": 505,
+        "ids": [
+          "bussola",
+          "lanterna",
+          "estatueta",
+          "gaiola",
+          "tesoura",
+          "binoculo",
+          "relogio",
+          "camera"
+        ],
+        "draws": 1
+      },
+      "phone landscape medium": {
+        "seed": 606,
+        "ids": [
+          "chapeu",
+          "estatueta",
+          "piao",
+          "caracol",
+          "camera",
+          "pinha"
+        ],
+        "draws": 1
+      },
+      "small phone easy": {
+        "seed": 707,
+        "ids": [
+          "relogio",
+          "pinha",
+          "gaiola",
+          "camera",
+          "globo"
+        ],
+        "draws": 1
+      },
+      "reduced motion easy": {
+        "seed": 808,
+        "ids": [
+          "piao",
+          "tesoura",
+          "binoculo",
+          "pinha",
+          "globo"
+        ],
+        "draws": 1
+      }
+    },
+    "entryToReadyMs": 6877,
+    "desktopDrag": {
+      "pointerMoves": 24,
+      "reactCommitsDuringDrag": 0,
+      "styleMutations": 24,
+      "longTasks": []
+    },
+    "resultDetailsShown": {
+      "Modo": "Fácil"
+    },
+    "mobileEntryToReadyMs": 2217,
+    "mobileDrag": {
+      "touchMoves": 16,
+      "reactCommitsDuringDrag": 0
+    },
+    "mobileTray": {
+      "panelTop": 720.484375,
+      "sceneBottom": 720.484375,
+      "sceneHeightShare": 0.7851932760663507,
+      "chipsInOneRow": true,
+      "clueFontPx": 13.76,
+      "cluesFit": true,
+      "minTarget": 44
+    },
+    "mobileFold": {
+      "openHeight": 662.703125,
+      "foldedHeight": 722.421875,
+      "share": 0.8559500888625592
+    },
+    "landscapeLayout": {
+      "panelBesideScene": true,
+      "sceneWidthShare": 0.706,
+      "sceneHeightShare": 0.864,
+      "items": 6,
+      "firstItemVisible": true,
+      "minTarget": 44
+    },
+    "rounds": [
+      {
+        "difficulty": "easy",
+        "seed": 1001,
+        "ids": [
+          "pinha",
+          "camera",
+          "lanterna",
+          "chave",
+          "borboleta"
+        ],
+        "draws": 1,
+        "spread": {
+          "janela": 1,
+          "mesa": 2,
+          "estante": 2
+        }
+      },
+      {
+        "difficulty": "easy",
+        "seed": 1002,
+        "ids": [
+          "estatueta",
+          "ampulheta",
+          "lanterna",
+          "piao",
+          "pinha"
+        ],
+        "draws": 2,
+        "spread": {
+          "janela": 2,
+          "mesa": 1,
+          "estante": 2
+        }
+      },
+      {
+        "difficulty": "easy",
+        "seed": 1003,
+        "ids": [
+          "piao",
+          "globo",
+          "pinha",
+          "camera",
+          "xicara"
+        ],
+        "draws": 3,
+        "spread": {
+          "janela": 1,
+          "mesa": 2,
+          "estante": 2
+        }
+      },
+      {
+        "difficulty": "medium",
+        "seed": 2001,
+        "ids": [
+          "chave",
+          "xicara",
+          "binoculo",
+          "barco",
+          "camera",
+          "bussola"
+        ],
+        "draws": 4,
+        "spread": {
+          "janela": 2,
+          "mesa": 2,
+          "estante": 2
+        }
+      },
+      {
+        "difficulty": "medium",
+        "seed": 2002,
+        "ids": [
+          "binoculo",
+          "pinha",
+          "xicara",
+          "gaiola",
+          "barco",
+          "estatueta"
+        ],
+        "draws": 5,
+        "spread": {
+          "janela": 2,
+          "mesa": 2,
+          "estante": 2
+        }
+      },
+      {
+        "difficulty": "medium",
+        "seed": 2003,
+        "ids": [
+          "relogio",
+          "bussola",
+          "camera",
+          "piao",
+          "binoculo",
+          "globo"
+        ],
+        "draws": 6,
+        "spread": {
+          "janela": 2,
+          "mesa": 2,
+          "estante": 2
+        }
+      },
+      {
+        "difficulty": "hard",
+        "seed": 3001,
+        "ids": [
+          "gaiola",
+          "bussola",
+          "caracol",
+          "gaita",
+          "lanterna",
+          "estatueta",
+          "chave",
+          "relogio"
+        ],
+        "draws": 7,
+        "spread": {
+          "janela": 3,
+          "mesa": 2,
+          "estante": 3
+        }
+      },
+      {
+        "difficulty": "hard",
+        "seed": 3002,
+        "ids": [
+          "lanterna",
+          "binoculo",
+          "relogio",
+          "chapeu",
+          "chave",
+          "piao",
+          "camera",
+          "estatueta"
+        ],
+        "draws": 8,
+        "spread": {
+          "janela": 3,
+          "mesa": 2,
+          "estante": 3
+        }
+      },
+      {
+        "difficulty": "hard",
+        "seed": 3003,
+        "ids": [
+          "estatueta",
+          "xicara",
+          "tesoura",
+          "caracol",
+          "binoculo",
+          "bussola",
+          "lanterna",
+          "chave"
+        ],
+        "draws": 9,
+        "spread": {
+          "janela": 3,
+          "mesa": 3,
+          "estante": 2
+        }
+      }
+    ],
+    "reloadRace": {
+      "serverSelected": "Rota Estratégica",
+      "runs": [
+        {
+          "cpuSlowdown": 1,
+          "baseRead": {
+            "selected": "Estúdio das Descobertas",
+            "commits": 4,
+            "stored": [
+              "hidden-objects",
+              "number-trail"
+            ],
+            "commitLog": [
+              {
+                "commit": 1,
+                "selected": "Rota Estratégica"
+              },
+              {
+                "commit": 2,
+                "selected": "Estúdio das Descobertas"
+              },
+              {
+                "commit": 3,
+                "selected": "Estúdio das Descobertas"
+              },
+              {
+                "commit": 4,
+                "selected": "Estúdio das Descobertas"
+              }
+            ]
+          },
+          "hydratedRead": {
+            "selected": "Estúdio das Descobertas",
+            "commits": 4,
+            "stored": [
+              "hidden-objects",
+              "number-trail"
+            ],
+            "commitLog": [
+              {
+                "commit": 1,
+                "selected": "Rota Estratégica"
+              },
+              {
+                "commit": 2,
+                "selected": "Estúdio das Descobertas"
+              },
+              {
+                "commit": 3,
+                "selected": "Estúdio das Descobertas"
+              },
+              {
+                "commit": 4,
+                "selected": "Estúdio das Descobertas"
+              }
+            ],
+            "commitsAtRead": 4
+          }
+        },
+        {
+          "cpuSlowdown": 20,
+          "baseRead": {
+            "selected": "Estúdio das Descobertas",
+            "commits": 4,
+            "stored": [
+              "hidden-objects",
+              "number-trail"
+            ],
+            "commitLog": [
+              {
+                "commit": 1,
+                "selected": "Rota Estratégica"
+              },
+              {
+                "commit": 2,
+                "selected": "Estúdio das Descobertas"
+              },
+              {
+                "commit": 3,
+                "selected": "Estúdio das Descobertas"
+              },
+              {
+                "commit": 4,
+                "selected": "Estúdio das Descobertas"
+              }
+            ]
+          },
+          "hydratedRead": {
+            "selected": "Estúdio das Descobertas",
+            "commits": 4,
+            "stored": [
+              "hidden-objects",
+              "number-trail"
+            ],
+            "commitLog": [
+              {
+                "commit": 1,
+                "selected": "Rota Estratégica"
+              },
+              {
+                "commit": 2,
+                "selected": "Estúdio das Descobertas"
+              },
+              {
+                "commit": 3,
+                "selected": "Estúdio das Descobertas"
+              },
+              {
+                "commit": 4,
+                "selected": "Estúdio das Descobertas"
+              }
+            ],
+            "commitsAtRead": 4
+          }
+        },
+        {
+          "cpuSlowdown": 50,
+          "baseRead": {
+            "selected": "Rota Estratégica",
+            "commits": 0,
+            "stored": [
+              "hidden-objects",
+              "number-trail"
+            ],
+            "commitLog": []
+          },
+          "hydratedRead": {
+            "selected": "Estúdio das Descobertas",
+            "commits": 4,
+            "stored": [
+              "hidden-objects",
+              "number-trail"
+            ],
+            "commitLog": [
+              {
+                "commit": 1,
+                "selected": "Rota Estratégica"
+              },
+              {
+                "commit": 2,
+                "selected": "Estúdio das Descobertas"
+              },
+              {
+                "commit": 3,
+                "selected": "Estúdio das Descobertas"
+              },
+              {
+                "commit": 4,
+                "selected": "Estúdio das Descobertas"
+              }
+            ],
+            "commitsAtRead": 4
+          }
+        }
+      ]
+    },
+    "bundle": {
+      "homeInitial": {
+        "js": {
+          "files": 10,
+          "raw": 773682,
+          "gzip": 242771
+        },
+        "css": {
+          "files": 7,
+          "raw": 206074,
+          "gzip": 44515
+        }
+      },
+      "studio": {
+        "js": {
+          "files": 2,
+          "raw": 82338,
+          "gzip": 25855
+        },
+        "css": {
+          "files": 1,
+          "raw": 21915,
+          "gzip": 5065
+        },
+        "files": [
+          "static/chunks/3nu2z_o6-em62.js",
+          "static/chunks/2tdm9vp51u_h1.js",
+          "static/chunks/23brj09b4bc34.css"
+        ]
+      },
+      "route": {
+        "js": {
+          "files": 3,
+          "raw": 55502,
+          "gzip": 18851
+        },
+        "css": {
+          "files": 1,
+          "raw": 9721,
+          "gzip": 2523
+        }
+      },
+      "circuit": {
+        "js": {
+          "files": 1,
+          "raw": 19502,
+          "gzip": 6549
+        },
+        "css": {
+          "files": 1,
+          "raw": 17603,
+          "gzip": 4162
+        }
+      },
+      "babylon": {
+        "js": {
+          "files": 36,
+          "raw": 8028358,
+          "gzip": 1767214
+        }
+      }
+    }
+  }
+}

@@ -94,7 +94,12 @@ commit `da551b17eddbf0a156228c7e2a5fc9ca178180c9` (2026-10-05).
   calm named feedback, foldable HUD, art kit v1) and the target pool V1: 18
   authored objects, of which each exploration asks for 5/6/8 drawn by a seed —
   technically validated, still waiting for the human playtest (Human Playtest
-  02, `GAME03_FUN_GATE`).
+  02, `GAME03_FUN_GATE`). GAME03-MULTISCENE-03 made it two rooms with one
+  engine (`docs/GAME03_MULTISCENE_03.md`); GAME03-CALIBRATION-02A
+  (`docs/GAME03_CALIBRATION_02A.md`) recalibrated both rooms to Difficulty V3 —
+  clue banks with seeded clues, measured round rules whose floors are derived
+  from the previous Difícil, art kits v2 — technically validated, waiting for
+  the human playtest; not locked.
 - Rota 2.0 is a later phase, explicitly separate from v1.
 
 ## Reproducing the project

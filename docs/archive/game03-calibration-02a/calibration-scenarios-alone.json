@@ -1,0 +1,369 @@
+{
+ "mission": "GAME03-CALIBRATION-02A",
+ "note": "each scenario of hidden-objects-calibration-probe.mjs run alone: its own process and browser",
+ "scenarios": {
+  "cal-desktop": {
+   "checks": 36,
+   "held": 36,
+   "results": [
+    {
+     "id": "STUDIO_EASY_ROUND_IS_THE_SEEDS",
+     "pass": true
+    },
+    {
+     "id": "STUDIO_EASY_LIST_BY_PICTURE_AND_NAME",
+     "pass": true
+    },
+    {
+     "id": "STUDIO_FACIL_LADDER_ENDS_IN_THE_REVEAL",
+     "pass": true
+    },
+    {
+     "id": "STUDIO_MEDIUM_ROUND_IS_THE_SEEDS",
+     "pass": true
+    },
+    {
+     "id": "STUDIO_MEDIUM_LIST_TELLS_THE_SEEDS_ASSOCIATIVE_CLUES",
+     "pass": true
+    },
+    {
+     "id": "STUDIO_MEDIUM_NO_PICTURE_NO_NAME_BEFORE_THE_FIND",
+     "pass": true
+    },
+    {
+     "id": "STUDIO_MEDIO_LADDER_STATION_RECLUE_DIRECTION",
+     "pass": true
+    },
+    {
+     "id": "STUDIO_MEDIO_NEVER_LIGHTS_NOR_FRAMES",
+     "pass": true
+    },
+    {
+     "id": "STUDIO_MEDIO_HINTS_NEVER_NAME_IT",
+     "pass": true
+    },
+    {
+     "id": "STUDIO_HARD_ROUND_IS_THE_SEEDS",
+     "pass": true
+    },
+    {
+     "id": "STUDIO_HARD_LIST_TELLS_THE_SEEDS_INDIRECT_CLUES",
+     "pass": true
+    },
+    {
+     "id": "STUDIO_HARD_NO_PICTURE_NO_NAME_BEFORE_THE_FIND",
+     "pass": true
+    },
+    {
+     "id": "STUDIO_DIFICIL_LADDER_STATION_CONTEXT",
+     "pass": true
+    },
+    {
+     "id": "STUDIO_DIFICIL_NEVER_LIGHTS_NOR_FRAMES",
+     "pass": true
+    },
+    {
+     "id": "STUDIO_DIFICIL_NAMES_NOTHING_BEFORE_THE_FIND",
+     "pass": true
+    },
+    {
+     "id": "STUDIO_THE_FIND_SAYS_THE_NAME",
+     "pass": true
+    },
+    {
+     "id": "STUDIO_DIFICIL_PLAYED_TO_THE_END",
+     "pass": true
+    },
+    {
+     "id": "STUDIO_NO_PAGE_ERRORS",
+     "pass": true
+    },
+    {
+     "id": "OBSERVATORY_EASY_ROUND_IS_THE_SEEDS",
+     "pass": true
+    },
+    {
+     "id": "OBSERVATORY_EASY_LIST_BY_PICTURE_AND_NAME",
+     "pass": true
+    },
+    {
+     "id": "OBSERVATORY_FACIL_LADDER_ENDS_IN_THE_REVEAL",
+     "pass": true
+    },
+    {
+     "id": "OBSERVATORY_MEDIUM_ROUND_IS_THE_SEEDS",
+     "pass": true
+    },
+    {
+     "id": "OBSERVATORY_MEDIUM_LIST_TELLS_THE_SEEDS_ASSOCIATIVE_CLUES",
+     "pass": true
+    },
+    {
+     "id": "OBSERVATORY_MEDIUM_NO_PICTURE_NO_NAME_BEFORE_THE_FIND",
+     "pass": true
+    },
+    {
+     "id": "OBSERVATORY_MEDIO_LADDER_STATION_RECLUE_DIRECTION",
+     "pass": true
+    },
+    {
+     "id": "OBSERVATORY_MEDIO_NEVER_LIGHTS_NOR_FRAMES",
+     "pass": true
+    },
+    {
+     "id": "OBSERVATORY_MEDIO_HINTS_NEVER_NAME_IT",
+     "pass": true
+    },
+    {
+     "id": "OBSERVATORY_HARD_ROUND_IS_THE_SEEDS",
+     "pass": true
+    },
+    {
+     "id": "OBSERVATORY_HARD_LIST_TELLS_THE_SEEDS_INDIRECT_CLUES",
+     "pass": true
+    },
+    {
+     "id": "OBSERVATORY_HARD_NO_PICTURE_NO_NAME_BEFORE_THE_FIND",
+     "pass": true
+    },
+    {
+     "id": "OBSERVATORY_DIFICIL_LADDER_STATION_CONTEXT",
+     "pass": true
+    },
+    {
+     "id": "OBSERVATORY_DIFICIL_NEVER_LIGHTS_NOR_FRAMES",
+     "pass": true
+    },
+    {
+     "id": "OBSERVATORY_DIFICIL_NAMES_NOTHING_BEFORE_THE_FIND",
+     "pass": true
+    },
+    {
+     "id": "OBSERVATORY_THE_FIND_SAYS_THE_NAME",
+     "pass": true
+    },
+    {
+     "id": "OBSERVATORY_DIFICIL_PLAYED_TO_THE_END",
+     "pass": true
+    },
+    {
+     "id": "OBSERVATORY_NO_PAGE_ERRORS",
+     "pass": true
+    }
+   ]
+  },
+  "cal-mobile": {
+   "checks": 24,
+   "held": 24,
+   "results": [
+    {
+     "id": "OBSERVATORY_HARD_ROUND_IS_THE_SEEDS",
+     "pass": true
+    },
+    {
+     "id": "OBSERVATORY_HARD_LIST_TELLS_THE_SEEDS_INDIRECT_CLUES",
+     "pass": true
+    },
+    {
+     "id": "OBSERVATORY_HARD_NO_PICTURE_NO_NAME_BEFORE_THE_FIND",
+     "pass": true
+    },
+    {
+     "id": "OBSERVATORY_CLUE_LINES_FIT_THE_PHONE",
+     "pass": true
+    },
+    {
+     "id": "OBSERVATORY_FOLDING_THE_TRAY_KEEPS_THE_CLUES",
+     "pass": true
+    },
+    {
+     "id": "OBSERVATORY_DRAG_AND_PINCH",
+     "pass": true
+    },
+    {
+     "id": "OBSERVATORY_DIFICIL_LADDER_STATION_CONTEXT",
+     "pass": true
+    },
+    {
+     "id": "OBSERVATORY_DIFICIL_NEVER_LIGHTS_NOR_FRAMES",
+     "pass": true
+    },
+    {
+     "id": "OBSERVATORY_DIFICIL_NAMES_NOTHING_BEFORE_THE_FIND",
+     "pass": true
+    },
+    {
+     "id": "OBSERVATORY_THE_FIND_SAYS_THE_NAME",
+     "pass": true
+    },
+    {
+     "id": "OBSERVATORY_CLUES_HOLD_AFTER_TOUCH",
+     "pass": true
+    },
+    {
+     "id": "OBSERVATORY_NO_HORIZONTAL_OVERFLOW",
+     "pass": true
+    },
+    {
+     "id": "OBSERVATORY_NO_PAGE_ERRORS",
+     "pass": true
+    },
+    {
+     "id": "STUDIO_MEDIUM_ROUND_IS_THE_SEEDS",
+     "pass": true
+    },
+    {
+     "id": "STUDIO_MEDIUM_LIST_TELLS_THE_SEEDS_ASSOCIATIVE_CLUES",
+     "pass": true
+    },
+    {
+     "id": "STUDIO_MEDIUM_NO_PICTURE_NO_NAME_BEFORE_THE_FIND",
+     "pass": true
+    },
+    {
+     "id": "STUDIO_CLUE_LINES_FIT_THE_PHONE",
+     "pass": true
+    },
+    {
+     "id": "STUDIO_MEDIO_LADDER_STATION_RECLUE_DIRECTION",
+     "pass": true
+    },
+    {
+     "id": "STUDIO_MEDIO_NEVER_LIGHTS_NOR_FRAMES",
+     "pass": true
+    },
+    {
+     "id": "STUDIO_MEDIO_HINTS_NEVER_NAME_IT",
+     "pass": true
+    },
+    {
+     "id": "STUDIO_RECLUE_BANNER_FITS_THE_PHONE",
+     "pass": true
+    },
+    {
+     "id": "STUDIO_TOUCH_FIND",
+     "pass": true
+    },
+    {
+     "id": "STUDIO_NO_HORIZONTAL_OVERFLOW",
+     "pass": true
+    },
+    {
+     "id": "STUDIO_NO_PAGE_ERRORS",
+     "pass": true
+    }
+   ]
+  },
+  "cal-landscape": {
+   "checks": 9,
+   "held": 9,
+   "results": [
+    {
+     "id": "EXPLORAR_IN_REACH",
+     "pass": true
+    },
+    {
+     "id": "STUDIO_HARD_ROUND_IS_THE_SEEDS",
+     "pass": true
+    },
+    {
+     "id": "STUDIO_HARD_LIST_TELLS_THE_SEEDS_INDIRECT_CLUES",
+     "pass": true
+    },
+    {
+     "id": "STUDIO_HARD_NO_PICTURE_NO_NAME_BEFORE_THE_FIND",
+     "pass": true
+    },
+    {
+     "id": "CLUE_LINES_FIT",
+     "pass": true
+    },
+    {
+     "id": "ROTATION_KEEPS_THE_ROUND_AND_ITS_CLUES",
+     "pass": true
+    },
+    {
+     "id": "TOUCH_FIND",
+     "pass": true
+    },
+    {
+     "id": "NO_HORIZONTAL_OVERFLOW",
+     "pass": true
+    },
+    {
+     "id": "NO_PAGE_ERRORS",
+     "pass": true
+    }
+   ]
+  },
+  "cal-reduced-motion": {
+   "checks": 9,
+   "held": 9,
+   "results": [
+    {
+     "id": "OBSERVATORY_MEDIUM_ROUND_IS_THE_SEEDS",
+     "pass": true
+    },
+    {
+     "id": "OBSERVATORY_MEDIUM_LIST_TELLS_THE_SEEDS_ASSOCIATIVE_CLUES",
+     "pass": true
+    },
+    {
+     "id": "OBSERVATORY_MEDIUM_NO_PICTURE_NO_NAME_BEFORE_THE_FIND",
+     "pass": true
+    },
+    {
+     "id": "STATIONS_CUT",
+     "pass": true
+    },
+    {
+     "id": "OBSERVATORY_MEDIO_LADDER_STATION_RECLUE_DIRECTION",
+     "pass": true
+    },
+    {
+     "id": "OBSERVATORY_MEDIO_NEVER_LIGHTS_NOR_FRAMES",
+     "pass": true
+    },
+    {
+     "id": "OBSERVATORY_MEDIO_HINTS_NEVER_NAME_IT",
+     "pass": true
+    },
+    {
+     "id": "CLUES_HOLD",
+     "pass": true
+    },
+    {
+     "id": "NO_PAGE_ERRORS",
+     "pass": true
+    }
+   ]
+  },
+  "cal-replay": {
+   "checks": 5,
+   "held": 5,
+   "results": [
+    {
+     "id": "A_PAIR_OF_SEEDS_EXISTS",
+     "pass": true
+    },
+    {
+     "id": "SAME_SEED_SAME_CLUES_ON_A_FRESH_VISIT",
+     "pass": true
+    },
+    {
+     "id": "ANOTHER_SEED_TELLS_AN_OBJECT_ANOTHER_WAY",
+     "pass": true
+    },
+    {
+     "id": "RECOMECAR_KEEPS_THE_CLUES",
+     "pass": true
+    },
+    {
+     "id": "NO_PAGE_ERRORS",
+     "pass": true
+    }
+   ]
+  }
+ },
+ "buildId": "rgwkolxDzk0CjE9bL7k-H"
+}

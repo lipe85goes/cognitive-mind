@@ -1,0 +1,1690 @@
+{
+  "mission": "GAME03-CALIBRATION-02A",
+  "generatedBy": "node tools/validation/hidden-objects-calibration.mjs",
+  "base": "3b122cf140303ebcec4f803f01a0a3205b7a57c6",
+  "reference": {
+    "ruler": {
+      "edge": {
+        "pops": 2.96,
+        "blends": 1.3
+      },
+      "clutter": {
+        "calm": 0.096,
+        "busy": 0.196
+      },
+      "side": {
+        "large": 188,
+        "small": 80
+      }
+    },
+    "popOut": 0.325,
+    "floors": {
+      "easy": 0.533,
+      "medium": 0.552,
+      "hard": 0.612
+    },
+    "decoyFloors": {
+      "easy": 0.75,
+      "medium": 0.794,
+      "hard": 1.25
+    },
+    "matchesTheProduct": true,
+    "v2": {
+      "easy": {
+        "perRoom": {
+          "explorer-studio": {
+            "rounds": 148,
+            "search": {
+              "n": 148,
+              "min": 0.252,
+              "p25": 0.298,
+              "mean": 0.316,
+              "p75": 0.338,
+              "max": 0.372,
+              "histogram": {
+                "0.25": 40,
+                "0.30": 85,
+                "0.35": 23
+              }
+            },
+            "decoys": {
+              "n": 148,
+              "min": 0,
+              "p25": 0.2,
+              "mean": 0.412,
+              "p75": 0.6,
+              "max": 0.8,
+              "histogram": {
+                "0.00": 5,
+                "0.20": 35,
+                "0.40": 62,
+                "0.55": 38,
+                "0.80": 8
+              }
+            }
+          },
+          "explorer-observatory": {
+            "rounds": 156,
+            "search": {
+              "n": 156,
+              "min": 0.213,
+              "p25": 0.262,
+              "mean": 0.283,
+              "p75": 0.302,
+              "max": 0.355,
+              "histogram": {
+                "0.20": 21,
+                "0.25": 94,
+                "0.30": 39,
+                "0.35": 2
+              }
+            },
+            "decoys": {
+              "n": 156,
+              "min": 0.2,
+              "p25": 0.4,
+              "mean": 0.433,
+              "p75": 0.6,
+              "max": 0.6,
+              "histogram": {
+                "0.20": 23,
+                "0.40": 84,
+                "0.55": 49
+              }
+            }
+          }
+        },
+        "pooled": {
+          "search": {
+            "n": 304,
+            "min": 0.213,
+            "p25": 0.274,
+            "mean": 0.299,
+            "p75": 0.321,
+            "max": 0.372,
+            "histogram": {
+              "0.20": 21,
+              "0.25": 134,
+              "0.30": 124,
+              "0.35": 25
+            }
+          },
+          "decoys": {
+            "n": 304,
+            "min": 0,
+            "p25": 0.4,
+            "mean": 0.423,
+            "p75": 0.6,
+            "max": 0.8,
+            "histogram": {
+              "0.00": 5,
+              "0.20": 58,
+              "0.40": 146,
+              "0.55": 87,
+              "0.80": 8
+            }
+          }
+        }
+      },
+      "medium": {
+        "perRoom": {
+          "explorer-studio": {
+            "rounds": 243,
+            "search": {
+              "n": 243,
+              "min": 0.391,
+              "p25": 0.46,
+              "mean": 0.485,
+              "p75": 0.509,
+              "max": 0.565,
+              "histogram": {
+                "0.35": 2,
+                "0.40": 40,
+                "0.45": 120,
+                "0.50": 72,
+                "0.55": 9
+              }
+            },
+            "decoys": {
+              "n": 243,
+              "min": 0.167,
+              "p25": 0.5,
+              "mean": 0.674,
+              "p75": 0.833,
+              "max": 1.333,
+              "histogram": {
+                "0.15": 7,
+                "0.30": 26,
+                "0.50": 53,
+                "0.65": 66,
+                "0.80": 54,
+                "1.00": 29,
+                "1.15": 7,
+                "1.30": 1
+              }
+            }
+          },
+          "explorer-observatory": {
+            "rounds": 312,
+            "search": {
+              "n": 312,
+              "min": 0.453,
+              "p25": 0.496,
+              "mean": 0.514,
+              "p75": 0.532,
+              "max": 0.577,
+              "histogram": {
+                "0.45": 97,
+                "0.50": 191,
+                "0.55": 24
+              }
+            },
+            "decoys": {
+              "n": 312,
+              "min": 0.667,
+              "p25": 0.667,
+              "mean": 0.778,
+              "p75": 0.833,
+              "max": 1,
+              "histogram": {
+                "0.65": 126,
+                "0.80": 164,
+                "1.00": 22
+              }
+            }
+          }
+        },
+        "pooled": {
+          "search": {
+            "n": 555,
+            "min": 0.391,
+            "p25": 0.481,
+            "mean": 0.501,
+            "p75": 0.526,
+            "max": 0.577,
+            "histogram": {
+              "0.35": 2,
+              "0.40": 40,
+              "0.45": 217,
+              "0.50": 263,
+              "0.55": 33
+            }
+          },
+          "decoys": {
+            "n": 555,
+            "min": 0.167,
+            "p25": 0.667,
+            "mean": 0.732,
+            "p75": 0.833,
+            "max": 1.333,
+            "histogram": {
+              "0.15": 7,
+              "0.30": 26,
+              "0.50": 53,
+              "0.65": 192,
+              "0.80": 218,
+              "1.00": 51,
+              "1.15": 7,
+              "1.30": 1
+            }
+          }
+        }
+      },
+      "hard": {
+        "perRoom": {
+          "explorer-studio": {
+            "rounds": 692,
+            "search": {
+              "n": 692,
+              "min": 0.474,
+              "p25": 0.518,
+              "mean": 0.535,
+              "p75": 0.552,
+              "max": 0.612,
+              "histogram": {
+                "0.45": 55,
+                "0.50": 443,
+                "0.55": 191,
+                "0.60": 3
+              }
+            },
+            "decoys": {
+              "n": 692,
+              "min": 0.375,
+              "p25": 0.625,
+              "mean": 0.751,
+              "p75": 0.875,
+              "max": 1.25,
+              "histogram": {
+                "0.35": 12,
+                "0.50": 74,
+                "0.60": 163,
+                "0.75": 200,
+                "0.85": 154,
+                "1.00": 70,
+                "1.10": 17,
+                "1.25": 2
+              }
+            }
+          },
+          "explorer-observatory": {
+            "rounds": 768,
+            "search": {
+              "n": 768,
+              "min": 0.516,
+              "p25": 0.554,
+              "mean": 0.568,
+              "p75": 0.581,
+              "max": 0.612,
+              "histogram": {
+                "0.50": 145,
+                "0.55": 594,
+                "0.60": 29
+              }
+            },
+            "decoys": {
+              "n": 768,
+              "min": 0.75,
+              "p25": 0.75,
+              "mean": 0.833,
+              "p75": 0.875,
+              "max": 1,
+              "histogram": {
+                "0.75": 312,
+                "0.85": 400,
+                "1.00": 56
+              }
+            }
+          }
+        },
+        "pooled": {
+          "search": {
+            "n": 1460,
+            "min": 0.474,
+            "p25": 0.533,
+            "mean": 0.552,
+            "p75": 0.572,
+            "max": 0.612,
+            "histogram": {
+              "0.45": 55,
+              "0.50": 588,
+              "0.55": 785,
+              "0.60": 32
+            }
+          },
+          "decoys": {
+            "n": 1460,
+            "min": 0.375,
+            "p25": 0.75,
+            "mean": 0.794,
+            "p75": 0.875,
+            "max": 1.25,
+            "histogram": {
+              "0.35": 12,
+              "0.50": 74,
+              "0.60": 163,
+              "0.75": 512,
+              "0.85": 554,
+              "1.00": 126,
+              "1.10": 17,
+              "1.25": 2
+            }
+          }
+        }
+      }
+    }
+  },
+  "rooms": {
+    "explorer-studio": {
+      "name": "Estúdio do Explorador",
+      "pool": 23,
+      "tiers": {
+        "A": 6,
+        "B": 7,
+        "C": 10
+      },
+      "lookAlikes": 22,
+      "loads": {
+        "ampulheta": 0.298,
+        "binoculo": 0.584,
+        "chave": 0.799,
+        "guarda-chuva": 0.275,
+        "gaiola": 0.607,
+        "caracol": 0.773,
+        "piao": 0.633,
+        "lupa": 0.263,
+        "bussola": 0.616,
+        "relogio": 0.842,
+        "xicara": 0.85,
+        "pena": 0.281,
+        "borboleta": 0.31,
+        "chapeu": 0.371,
+        "tesoura": 0.803,
+        "pinha": 0.538,
+        "barco": 0.22,
+        "lanterna": 0.529,
+        "camera": 0.574,
+        "estatueta": 0.679,
+        "globo": 0.156,
+        "bolsa": 0.316,
+        "gaita": 0.843
+      },
+      "parts": {
+        "ampulheta": {
+          "tier": 0,
+          "cover": 0.073,
+          "blend": 0.717,
+          "decoys": 0.5,
+          "clutter": 0.54,
+          "size": 0.255
+        },
+        "binoculo": {
+          "tier": 0.5,
+          "cover": 0.257,
+          "blend": 0.988,
+          "decoys": 0.5,
+          "clutter": 0.61,
+          "size": 0.733
+        },
+        "chave": {
+          "tier": 1,
+          "cover": 0.483,
+          "blend": 0.777,
+          "decoys": 1,
+          "clutter": 0.39,
+          "size": 0.945
+        },
+        "guarda-chuva": {
+          "tier": 0,
+          "cover": 0.058,
+          "blend": 0.916,
+          "decoys": 0,
+          "clutter": 0.4,
+          "size": 0.551
+        },
+        "gaiola": {
+          "tier": 1,
+          "cover": 0.11,
+          "blend": 0.861,
+          "decoys": 0.5,
+          "clutter": 0,
+          "size": 0.779
+        },
+        "caracol": {
+          "tier": 1,
+          "cover": 0.343,
+          "blend": 0.566,
+          "decoys": 0.5,
+          "clutter": 1,
+          "size": 1
+        },
+        "piao": {
+          "tier": 1,
+          "cover": 0.038,
+          "blend": 0.41,
+          "decoys": 0.5,
+          "clutter": 0.48,
+          "size": 1
+        },
+        "lupa": {
+          "tier": 0,
+          "cover": 0.003,
+          "blend": 0.729,
+          "decoys": 0.5,
+          "clutter": 0.57,
+          "size": 0.037
+        },
+        "bussola": {
+          "tier": 0.5,
+          "cover": 0.2,
+          "blend": 0.596,
+          "decoys": 1,
+          "clutter": 1,
+          "size": 0.519
+        },
+        "relogio": {
+          "tier": 1,
+          "cover": 0.235,
+          "blend": 0.807,
+          "decoys": 1,
+          "clutter": 1,
+          "size": 0.852
+        },
+        "xicara": {
+          "tier": 1,
+          "cover": 0.77,
+          "blend": 0.729,
+          "decoys": 0.5,
+          "clutter": 0.95,
+          "size": 1
+        },
+        "pena": {
+          "tier": 0.5,
+          "cover": 0.002,
+          "blend": 0.018,
+          "decoys": 0,
+          "clutter": 0.3,
+          "size": 0.648
+        },
+        "borboleta": {
+          "tier": 0,
+          "cover": 0,
+          "blend": 0.982,
+          "decoys": 0.5,
+          "clutter": 0,
+          "size": 0.689
+        },
+        "chapeu": {
+          "tier": 0.5,
+          "cover": 0,
+          "blend": 0.633,
+          "decoys": 0,
+          "clutter": 0.06,
+          "size": 0.903
+        },
+        "tesoura": {
+          "tier": 1,
+          "cover": 0.627,
+          "blend": 0.572,
+          "decoys": 0.5,
+          "clutter": 0.92,
+          "size": 1
+        },
+        "pinha": {
+          "tier": 0.5,
+          "cover": 0,
+          "blend": 0.873,
+          "decoys": 0.5,
+          "clutter": 0.39,
+          "size": 1
+        },
+        "barco": {
+          "tier": 0,
+          "cover": 0.072,
+          "blend": 0.62,
+          "decoys": 0,
+          "clutter": 0.85,
+          "size": 0
+        },
+        "lanterna": {
+          "tier": 0.5,
+          "cover": 0.418,
+          "blend": 0.855,
+          "decoys": 0.5,
+          "clutter": 0.7,
+          "size": 0.227
+        },
+        "camera": {
+          "tier": 1,
+          "cover": 0.273,
+          "blend": 0,
+          "decoys": 0.5,
+          "clutter": 0.8,
+          "size": 0.445
+        },
+        "estatueta": {
+          "tier": 1,
+          "cover": 0.412,
+          "blend": 0.018,
+          "decoys": 1,
+          "clutter": 0.52,
+          "size": 0.803
+        },
+        "globo": {
+          "tier": 0,
+          "cover": 0.005,
+          "blend": 0.759,
+          "decoys": 0,
+          "clutter": 0.33,
+          "size": 0
+        },
+        "bolsa": {
+          "tier": 0.5,
+          "cover": 0.017,
+          "blend": 0.428,
+          "decoys": 0,
+          "clutter": 0.02,
+          "size": 0.747
+        },
+        "gaita": {
+          "tier": 1,
+          "cover": 0.32,
+          "blend": 0.789,
+          "decoys": 1,
+          "clutter": 0.79,
+          "size": 1
+        }
+      },
+      "difficulties": {
+        "easy": {
+          "rule": {
+            "tiers": {
+              "A": [
+                0,
+                1
+              ],
+              "B": [
+                0,
+                5
+              ],
+              "C": [
+                1,
+                5
+              ]
+            },
+            "maxPopOuts": 1,
+            "minSearch": 0.533,
+            "maxSearch": 0.552,
+            "minDecoys": 0.75
+          },
+          "candidates": 14553,
+          "accepted": 414,
+          "rejectedRounds": 14139,
+          "rejectedBy": {
+            "tiers": 5895,
+            "glance finds": 8493,
+            "below the floor": 7601,
+            "at or above the next floor": 5813,
+            "look-alike pressure": 2818
+          },
+          "objectsReached": 23,
+          "candidateSearch": {
+            "n": 14553,
+            "min": 0.239,
+            "p25": 0.462,
+            "mean": 0.528,
+            "p75": 0.592,
+            "max": 0.821,
+            "histogram": {
+              "0.20": 7,
+              "0.25": 62,
+              "0.30": 342,
+              "0.35": 868,
+              "0.40": 1767,
+              "0.45": 2554,
+              "0.50": 3000,
+              "0.55": 2661,
+              "0.60": 1865,
+              "0.65": 983,
+              "0.70": 352,
+              "0.75": 88,
+              "0.80": 4
+            }
+          },
+          "search": {
+            "n": 414,
+            "min": 0.533,
+            "p25": 0.538,
+            "mean": 0.543,
+            "p75": 0.548,
+            "max": 0.552,
+            "histogram": {
+              "0.50": 356,
+              "0.55": 58
+            }
+          },
+          "decoys": {
+            "n": 414,
+            "min": 0.8,
+            "p25": 0.8,
+            "mean": 1.003,
+            "p75": 1.2,
+            "max": 1.4,
+            "histogram": {
+              "0.80": 124,
+              "1.00": 175,
+              "1.15": 100,
+              "1.35": 15
+            }
+          },
+          "places": {
+            "n": 414,
+            "min": 3,
+            "p25": 4,
+            "mean": 4.481,
+            "p75": 5,
+            "max": 5,
+            "histogram": {
+              "3.00": 28,
+              "4.00": 159,
+              "5.00": 227
+            }
+          },
+          "popOuts": {
+            "n": 414,
+            "min": 0,
+            "p25": 1,
+            "mean": 0.959,
+            "p75": 1,
+            "max": 1,
+            "histogram": {
+              "0.00": 17,
+              "1.00": 397
+            }
+          },
+          "semantic": 0,
+          "totalLoad": {
+            "n": 414,
+            "min": 2.666,
+            "p25": 2.692,
+            "mean": 2.715,
+            "p75": 2.738,
+            "max": 2.76,
+            "histogram": {
+              "2.65": 135,
+              "2.70": 221,
+              "2.75": 58
+            }
+          },
+          "exposure": {
+            "leastAsked": [
+              "xicara",
+              0.063
+            ],
+            "mostAsked": [
+              "chapeu",
+              0.435
+            ],
+            "sceneryHere": []
+          }
+        },
+        "medium": {
+          "rule": {
+            "tiers": {
+              "A": [
+                0,
+                1
+              ],
+              "B": [
+                0,
+                6
+              ],
+              "C": [
+                2,
+                6
+              ]
+            },
+            "maxPopOuts": 1,
+            "minSearch": 0.552,
+            "maxSearch": 0.612,
+            "minDecoys": 0.794
+          },
+          "candidates": 15876,
+          "accepted": 1693,
+          "rejectedRounds": 14183,
+          "rejectedBy": {
+            "tiers": 8484,
+            "glance finds": 11196,
+            "below the floor": 9741,
+            "look-alike pressure": 3503,
+            "at or above the next floor": 2532
+          },
+          "objectsReached": 23,
+          "candidateSearch": {
+            "n": 15876,
+            "min": 0.249,
+            "p25": 0.47,
+            "mean": 0.527,
+            "p75": 0.585,
+            "max": 0.798,
+            "histogram": {
+              "0.20": 1,
+              "0.25": 21,
+              "0.30": 206,
+              "0.35": 770,
+              "0.40": 1842,
+              "0.45": 3104,
+              "0.50": 3647,
+              "0.55": 3194,
+              "0.60": 1931,
+              "0.65": 876,
+              "0.70": 249,
+              "0.75": 35
+            }
+          },
+          "search": {
+            "n": 1693,
+            "min": 0.552,
+            "p25": 0.572,
+            "mean": 0.586,
+            "p75": 0.6,
+            "max": 0.612,
+            "histogram": {
+              "0.55": 1281,
+              "0.60": 412
+            }
+          },
+          "decoys": {
+            "n": 1693,
+            "min": 0.833,
+            "p25": 1,
+            "mean": 1.088,
+            "p75": 1.167,
+            "max": 1.5,
+            "histogram": {
+              "0.80": 264,
+              "1.00": 585,
+              "1.15": 567,
+              "1.30": 242,
+              "1.50": 35
+            }
+          },
+          "places": {
+            "n": 1693,
+            "min": 3,
+            "p25": 5,
+            "mean": 5.174,
+            "p75": 6,
+            "max": 6,
+            "histogram": {
+              "3.00": 36,
+              "4.00": 275,
+              "5.00": 740,
+              "6.00": 642
+            }
+          },
+          "popOuts": {
+            "n": 1693,
+            "min": 0,
+            "p25": 1,
+            "mean": 0.936,
+            "p75": 1,
+            "max": 1,
+            "histogram": {
+              "0.00": 109,
+              "1.00": 1584
+            }
+          },
+          "semantic": 2,
+          "totalLoad": {
+            "n": 1693,
+            "min": 7.312,
+            "p25": 7.433,
+            "mean": 7.513,
+            "p75": 7.598,
+            "max": 7.672,
+            "histogram": {
+              "7.30": 106,
+              "7.35": 168,
+              "7.40": 210,
+              "7.45": 261,
+              "7.50": 246,
+              "7.55": 290,
+              "7.60": 296,
+              "7.65": 116
+            }
+          },
+          "exposure": {
+            "leastAsked": [
+              "pena",
+              0.09
+            ],
+            "mostAsked": [
+              "lanterna",
+              0.449
+            ],
+            "sceneryHere": []
+          }
+        },
+        "hard": {
+          "rule": {
+            "tiers": {
+              "A": [
+                0,
+                0
+              ],
+              "B": [
+                0,
+                4
+              ],
+              "C": [
+                4,
+                8
+              ]
+            },
+            "maxPopOuts": 0,
+            "minSearch": 0.612,
+            "maxSearch": null,
+            "minDecoys": 1.25
+          },
+          "candidates": 9100,
+          "accepted": 1890,
+          "rejectedRounds": 7210,
+          "rejectedBy": {
+            "glance finds": 6500,
+            "tiers": 832,
+            "below the floor": 3443,
+            "look-alike pressure": 5622
+          },
+          "objectsReached": 15,
+          "candidateSearch": {
+            "n": 9100,
+            "min": 0.475,
+            "p25": 0.594,
+            "mean": 0.627,
+            "p75": 0.66,
+            "max": 0.778,
+            "histogram": {
+              "0.45": 23,
+              "0.50": 484,
+              "0.55": 2137,
+              "0.60": 3543,
+              "0.65": 2322,
+              "0.70": 571,
+              "0.75": 20
+            }
+          },
+          "search": {
+            "n": 1890,
+            "min": 0.612,
+            "p25": 0.658,
+            "mean": 0.681,
+            "p75": 0.703,
+            "max": 0.778,
+            "histogram": {
+              "0.60": 324,
+              "0.65": 1041,
+              "0.70": 505,
+              "0.75": 20
+            }
+          },
+          "decoys": {
+            "n": 1890,
+            "min": 1.25,
+            "p25": 1.25,
+            "mean": 1.353,
+            "p75": 1.375,
+            "max": 1.625,
+            "histogram": {
+              "1.25": 779,
+              "1.35": 723,
+              "1.50": 334,
+              "1.60": 54
+            }
+          },
+          "places": {
+            "n": 1890,
+            "min": 3,
+            "p25": 6,
+            "mean": 6.285,
+            "p75": 7,
+            "max": 8,
+            "histogram": {
+              "3.00": 1,
+              "4.00": 31,
+              "5.00": 287,
+              "6.00": 807,
+              "7.00": 638,
+              "8.00": 126
+            }
+          },
+          "popOuts": {
+            "n": 1890,
+            "min": 0,
+            "p25": 0,
+            "mean": 0,
+            "p75": 0,
+            "max": 0,
+            "histogram": {
+              "0.00": 1890
+            }
+          },
+          "semantic": 3,
+          "totalLoad": {
+            "n": 1890,
+            "min": 12.9,
+            "p25": 13.262,
+            "mean": 13.447,
+            "p75": 13.624,
+            "max": 14.221,
+            "histogram": {
+              "12.85": 1,
+              "12.90": 24,
+              "12.95": 37,
+              "13.00": 49,
+              "13.05": 56,
+              "13.10": 63,
+              "13.15": 94,
+              "13.20": 117,
+              "13.25": 119,
+              "13.30": 120,
+              "13.35": 120,
+              "13.40": 158,
+              "13.45": 155,
+              "13.50": 134,
+              "13.55": 118,
+              "13.60": 110,
+              "13.65": 103,
+              "13.70": 95,
+              "13.75": 70,
+              "13.80": 42,
+              "13.85": 34,
+              "13.90": 31,
+              "13.95": 20,
+              "14.00": 10,
+              "14.05": 4,
+              "14.10": 2,
+              "14.15": 3,
+              "14.20": 1
+            }
+          },
+          "exposure": {
+            "leastAsked": [
+              "chapeu",
+              0.305
+            ],
+            "mostAsked": [
+              "gaita",
+              0.701
+            ],
+            "sceneryHere": [
+              "ampulheta",
+              "guarda-chuva",
+              "lupa",
+              "pena",
+              "borboleta",
+              "barco",
+              "globo",
+              "bolsa"
+            ]
+          }
+        }
+      },
+      "clues": {
+        "total": 115,
+        "byLevel": {
+          "direct": 23,
+          "associative": 46,
+          "indirect": 46
+        },
+        "use": {
+          "medium": {
+            "objectsTold": 23,
+            "everyVariantTold": true
+          },
+          "hard": {
+            "objectsTold": 15,
+            "everyVariantTold": true
+          }
+        }
+      }
+    },
+    "explorer-observatory": {
+      "name": "Observatório do Explorador",
+      "pool": 23,
+      "tiers": {
+        "A": 6,
+        "B": 7,
+        "C": 10
+      },
+      "lookAlikes": 23,
+      "loads": {
+        "coruja": 0.3,
+        "pipa": 0.03,
+        "luneta": 0.691,
+        "pantufas": 0.471,
+        "oculos": 0.662,
+        "ratinho": 0.77,
+        "caneca": 0.764,
+        "ferradura": 0.429,
+        "sistema-solar": 0.13,
+        "vela": 0.229,
+        "compasso": 0.473,
+        "bule": 0.515,
+        "sino": 0.709,
+        "maca": 0.893,
+        "esquadro": 0.776,
+        "violino": 0.046,
+        "gramofone": 0.2,
+        "microscopio": 0.471,
+        "gato": 0.5,
+        "balanca": 0.718,
+        "leque": 0.798,
+        "cavalo-marinho": 0.686,
+        "cadeado": 0.813
+      },
+      "parts": {
+        "coruja": {
+          "tier": 0,
+          "cover": 0,
+          "blend": 0.289,
+          "decoys": 0.5,
+          "clutter": 0.65,
+          "size": 0.661
+        },
+        "pipa": {
+          "tier": 0,
+          "cover": 0,
+          "blend": 0,
+          "decoys": 0,
+          "clutter": 0,
+          "size": 0.211
+        },
+        "luneta": {
+          "tier": 0.5,
+          "cover": 0.383,
+          "blend": 0.633,
+          "decoys": 1,
+          "clutter": 1,
+          "size": 0.822
+        },
+        "pantufas": {
+          "tier": 0.5,
+          "cover": 0.188,
+          "blend": 0.265,
+          "decoys": 0.5,
+          "clutter": 0.41,
+          "size": 0.931
+        },
+        "oculos": {
+          "tier": 1,
+          "cover": 0.245,
+          "blend": 0.663,
+          "decoys": 0.5,
+          "clutter": 0.23,
+          "size": 0.994
+        },
+        "ratinho": {
+          "tier": 1,
+          "cover": 0.37,
+          "blend": 0.657,
+          "decoys": 1,
+          "clutter": 0.36,
+          "size": 1
+        },
+        "caneca": {
+          "tier": 1,
+          "cover": 0.18,
+          "blend": 0.777,
+          "decoys": 0.5,
+          "clutter": 0.89,
+          "size": 1
+        },
+        "ferradura": {
+          "tier": 0.5,
+          "cover": 0.002,
+          "blend": 0,
+          "decoys": 0,
+          "clutter": 1,
+          "size": 1
+        },
+        "sistema-solar": {
+          "tier": 0,
+          "cover": 0.003,
+          "blend": 0.024,
+          "decoys": 0.5,
+          "clutter": 0.38,
+          "size": 0
+        },
+        "vela": {
+          "tier": 0,
+          "cover": 0.002,
+          "blend": 0.566,
+          "decoys": 0,
+          "clutter": 0.2,
+          "size": 0.834
+        },
+        "compasso": {
+          "tier": 0.5,
+          "cover": 0.193,
+          "blend": 0.169,
+          "decoys": 0.5,
+          "clutter": 0.56,
+          "size": 0.886
+        },
+        "bule": {
+          "tier": 0.5,
+          "cover": 0.253,
+          "blend": 0.602,
+          "decoys": 0.5,
+          "clutter": 0.5,
+          "size": 0.752
+        },
+        "sino": {
+          "tier": 1,
+          "cover": 0.67,
+          "blend": 0.62,
+          "decoys": 0.5,
+          "clutter": 0.17,
+          "size": 1
+        },
+        "maca": {
+          "tier": 1,
+          "cover": 0.508,
+          "blend": 0.892,
+          "decoys": 1,
+          "clutter": 0.85,
+          "size": 1
+        },
+        "esquadro": {
+          "tier": 1,
+          "cover": 0.703,
+          "blend": 0.723,
+          "decoys": 1,
+          "clutter": 0.04,
+          "size": 0.963
+        },
+        "violino": {
+          "tier": 0,
+          "cover": 0,
+          "blend": 0,
+          "decoys": 0,
+          "clutter": 0,
+          "size": 0.324
+        },
+        "gramofone": {
+          "tier": 0,
+          "cover": 0.115,
+          "blend": 0.627,
+          "decoys": 0,
+          "clutter": 0.66,
+          "size": 0
+        },
+        "microscopio": {
+          "tier": 0.5,
+          "cover": 0.353,
+          "blend": 0.916,
+          "decoys": 0.5,
+          "clutter": 0.11,
+          "size": 0.416
+        },
+        "gato": {
+          "tier": 0.5,
+          "cover": 0.302,
+          "blend": 0,
+          "decoys": 0.5,
+          "clutter": 0.96,
+          "size": 0.739
+        },
+        "balanca": {
+          "tier": 1,
+          "cover": 0.193,
+          "blend": 0.807,
+          "decoys": 0.5,
+          "clutter": 0.69,
+          "size": 0.835
+        },
+        "leque": {
+          "tier": 1,
+          "cover": 0.222,
+          "blend": 0.886,
+          "decoys": 0.5,
+          "clutter": 1,
+          "size": 0.982
+        },
+        "cavalo-marinho": {
+          "tier": 1,
+          "cover": 0.052,
+          "blend": 0.934,
+          "decoys": 0.5,
+          "clutter": 0.32,
+          "size": 1
+        },
+        "cadeado": {
+          "tier": 1,
+          "cover": 0.053,
+          "blend": 0.639,
+          "decoys": 1,
+          "clutter": 1,
+          "size": 1
+        }
+      },
+      "difficulties": {
+        "easy": {
+          "rule": {
+            "tiers": {
+              "A": [
+                0,
+                1
+              ],
+              "B": [
+                0,
+                5
+              ],
+              "C": [
+                1,
+                5
+              ]
+            },
+            "maxPopOuts": 1,
+            "minSearch": 0.533,
+            "maxSearch": 0.552,
+            "minDecoys": 0.75
+          },
+          "candidates": 14896,
+          "accepted": 767,
+          "rejectedRounds": 14129,
+          "rejectedBy": {
+            "tiers": 6006,
+            "glance finds": 5881,
+            "below the floor": 7698,
+            "look-alike pressure": 1980,
+            "at or above the next floor": 6230
+          },
+          "objectsReached": 23,
+          "candidateSearch": {
+            "n": 14896,
+            "min": 0.127,
+            "p25": 0.452,
+            "mean": 0.525,
+            "p75": 0.601,
+            "max": 0.81,
+            "histogram": {
+              "0.10": 3,
+              "0.15": 16,
+              "0.20": 76,
+              "0.25": 222,
+              "0.30": 539,
+              "0.35": 1078,
+              "0.40": 1731,
+              "0.45": 2273,
+              "0.50": 2631,
+              "0.55": 2565,
+              "0.60": 1906,
+              "0.65": 1155,
+              "0.70": 551,
+              "0.75": 145,
+              "0.80": 5
+            }
+          },
+          "search": {
+            "n": 767,
+            "min": 0.533,
+            "p25": 0.537,
+            "mean": 0.543,
+            "p75": 0.548,
+            "max": 0.552,
+            "histogram": {
+              "0.50": 680,
+              "0.55": 87
+            }
+          },
+          "decoys": {
+            "n": 767,
+            "min": 0.8,
+            "p25": 1,
+            "mean": 1.024,
+            "p75": 1.2,
+            "max": 1.4,
+            "histogram": {
+              "0.80": 171,
+              "1.00": 356,
+              "1.15": 218,
+              "1.35": 22
+            }
+          },
+          "places": {
+            "n": 767,
+            "min": 3,
+            "p25": 4,
+            "mean": 4.112,
+            "p75": 5,
+            "max": 5,
+            "histogram": {
+              "3.00": 136,
+              "4.00": 409,
+              "5.00": 222
+            }
+          },
+          "popOuts": {
+            "n": 767,
+            "min": 0,
+            "p25": 1,
+            "mean": 0.947,
+            "p75": 1,
+            "max": 1,
+            "histogram": {
+              "0.00": 41,
+              "1.00": 726
+            }
+          },
+          "semantic": 0,
+          "totalLoad": {
+            "n": 767,
+            "min": 2.665,
+            "p25": 2.687,
+            "mean": 2.713,
+            "p75": 2.738,
+            "max": 2.76,
+            "histogram": {
+              "2.65": 288,
+              "2.70": 392,
+              "2.75": 87
+            }
+          },
+          "exposure": {
+            "leastAsked": [
+              "coruja",
+              0.14
+            ],
+            "mostAsked": [
+              "bule",
+              0.321
+            ],
+            "sceneryHere": []
+          }
+        },
+        "medium": {
+          "rule": {
+            "tiers": {
+              "A": [
+                0,
+                1
+              ],
+              "B": [
+                0,
+                6
+              ],
+              "C": [
+                2,
+                6
+              ]
+            },
+            "maxPopOuts": 1,
+            "minSearch": 0.552,
+            "maxSearch": 0.612,
+            "minDecoys": 0.794
+          },
+          "candidates": 16464,
+          "accepted": 2886,
+          "rejectedRounds": 13578,
+          "rejectedBy": {
+            "tiers": 8820,
+            "glance finds": 8364,
+            "below the floor": 9810,
+            "look-alike pressure": 2441,
+            "at or above the next floor": 3140
+          },
+          "objectsReached": 23,
+          "candidateSearch": {
+            "n": 16464,
+            "min": 0.156,
+            "p25": 0.459,
+            "mean": 0.525,
+            "p75": 0.594,
+            "max": 0.802,
+            "histogram": {
+              "0.15": 4,
+              "0.20": 33,
+              "0.25": 146,
+              "0.30": 463,
+              "0.35": 1062,
+              "0.40": 1934,
+              "0.45": 2809,
+              "0.50": 3230,
+              "0.55": 3006,
+              "0.60": 2153,
+              "0.65": 1136,
+              "0.70": 412,
+              "0.75": 75,
+              "0.80": 1
+            }
+          },
+          "search": {
+            "n": 2886,
+            "min": 0.552,
+            "p25": 0.568,
+            "mean": 0.583,
+            "p75": 0.598,
+            "max": 0.612,
+            "histogram": {
+              "0.55": 2278,
+              "0.60": 608
+            }
+          },
+          "decoys": {
+            "n": 2886,
+            "min": 0.833,
+            "p25": 1,
+            "mean": 1.11,
+            "p75": 1.167,
+            "max": 1.667,
+            "histogram": {
+              "0.80": 296,
+              "1.00": 959,
+              "1.15": 1117,
+              "1.30": 462,
+              "1.50": 51,
+              "1.65": 1
+            }
+          },
+          "places": {
+            "n": 2886,
+            "min": 3,
+            "p25": 4,
+            "mean": 4.677,
+            "p75": 5,
+            "max": 6,
+            "histogram": {
+              "3.00": 200,
+              "4.00": 972,
+              "5.00": 1275,
+              "6.00": 439
+            }
+          },
+          "popOuts": {
+            "n": 2886,
+            "min": 0,
+            "p25": 1,
+            "mean": 0.869,
+            "p75": 1,
+            "max": 1,
+            "histogram": {
+              "0.00": 379,
+              "1.00": 2507
+            }
+          },
+          "semantic": 2,
+          "totalLoad": {
+            "n": 2886,
+            "min": 7.312,
+            "p25": 7.406,
+            "mean": 7.496,
+            "p75": 7.586,
+            "max": 7.672,
+            "histogram": {
+              "7.30": 287,
+              "7.35": 389,
+              "7.40": 392,
+              "7.45": 398,
+              "7.50": 392,
+              "7.55": 420,
+              "7.60": 423,
+              "7.65": 185
+            }
+          },
+          "exposure": {
+            "leastAsked": [
+              "violino",
+              0.122
+            ],
+            "mostAsked": [
+              "sino",
+              0.338
+            ],
+            "sceneryHere": []
+          }
+        },
+        "hard": {
+          "rule": {
+            "tiers": {
+              "A": [
+                0,
+                0
+              ],
+              "B": [
+                0,
+                4
+              ],
+              "C": [
+                4,
+                8
+              ]
+            },
+            "maxPopOuts": 0,
+            "minSearch": 0.612,
+            "maxSearch": null,
+            "minDecoys": 1.25
+          },
+          "candidates": 10000,
+          "accepted": 5899,
+          "rejectedRounds": 4101,
+          "rejectedBy": {
+            "tiers": 1272,
+            "below the floor": 1415,
+            "look-alike pressure": 3590
+          },
+          "objectsReached": 17,
+          "candidateSearch": {
+            "n": 10000,
+            "min": 0.526,
+            "p25": 0.629,
+            "mean": 0.656,
+            "p75": 0.684,
+            "max": 0.78,
+            "histogram": {
+              "0.50": 26,
+              "0.55": 759,
+              "0.60": 3645,
+              "0.65": 4240,
+              "0.70": 1256,
+              "0.75": 74
+            }
+          },
+          "search": {
+            "n": 5899,
+            "min": 0.612,
+            "p25": 0.655,
+            "mean": 0.677,
+            "p75": 0.697,
+            "max": 0.78,
+            "histogram": {
+              "0.60": 1172,
+              "0.65": 3420,
+              "0.70": 1233,
+              "0.75": 74
+            }
+          },
+          "decoys": {
+            "n": 5899,
+            "min": 1.25,
+            "p25": 1.25,
+            "mean": 1.338,
+            "p75": 1.375,
+            "max": 1.625,
+            "histogram": {
+              "1.25": 2784,
+              "1.35": 2189,
+              "1.50": 821,
+              "1.60": 105
+            }
+          },
+          "places": {
+            "n": 5899,
+            "min": 3,
+            "p25": 5,
+            "mean": 5.34,
+            "p75": 6,
+            "max": 7,
+            "histogram": {
+              "3.00": 63,
+              "4.00": 763,
+              "5.00": 2527,
+              "6.00": 2196,
+              "7.00": 350
+            }
+          },
+          "popOuts": {
+            "n": 5899,
+            "min": 0,
+            "p25": 0,
+            "mean": 0,
+            "p75": 0,
+            "max": 0,
+            "histogram": {
+              "0.00": 5899
+            }
+          },
+          "semantic": 3,
+          "totalLoad": {
+            "n": 5899,
+            "min": 12.897,
+            "p25": 13.237,
+            "mean": 13.419,
+            "p75": 13.577,
+            "max": 14.24,
+            "histogram": {
+              "12.85": 2,
+              "12.90": 41,
+              "12.95": 87,
+              "13.00": 137,
+              "13.05": 218,
+              "13.10": 285,
+              "13.15": 402,
+              "13.20": 397,
+              "13.25": 466,
+              "13.30": 461,
+              "13.35": 437,
+              "13.40": 420,
+              "13.45": 439,
+              "13.50": 405,
+              "13.55": 395,
+              "13.60": 318,
+              "13.65": 212,
+              "13.70": 188,
+              "13.75": 167,
+              "13.80": 146,
+              "13.85": 105,
+              "13.90": 73,
+              "13.95": 24,
+              "14.00": 31,
+              "14.05": 13,
+              "14.10": 19,
+              "14.15": 7,
+              "14.20": 4
+            }
+          },
+          "exposure": {
+            "leastAsked": [
+              "ferradura",
+              0.248
+            ],
+            "mostAsked": [
+              "maca",
+              0.627
+            ],
+            "sceneryHere": [
+              "coruja",
+              "pipa",
+              "sistema-solar",
+              "vela",
+              "violino",
+              "gramofone"
+            ]
+          }
+        }
+      },
+      "clues": {
+        "total": 115,
+        "byLevel": {
+          "direct": 23,
+          "associative": 46,
+          "indirect": 46
+        },
+        "use": {
+          "medium": {
+            "objectsTold": 23,
+            "everyVariantTold": true
+          },
+          "hard": {
+            "objectsTold": 17,
+            "everyVariantTold": true
+          }
+        }
+      }
+    }
+  },
+  "problems": [],
+  "verdict": "CALIBRATION_REPORT_OK",
+  "seconds": 5
+}

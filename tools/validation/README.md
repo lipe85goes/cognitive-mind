@@ -192,6 +192,37 @@ the game's own `selectRoundTargets` over a fixed seed stream and writes the
 per-object frequencies, the tier and station distributions and the
 perceptual load of each difficulty (`docs/archive/game03-experience-02/`).
 
+**GAME03-CALIBRATION-02A — Difficulty V3 in both rooms.** The calibration suite,
+its report tool and its browser probe (with the multiscene suite and probe of
+GAME03-MULTISCENE-03, which share the harness):
+
+```bash
+node tools/validation/hidden-objects-calibration-tests.mjs                    # 28 checks ([calibration], [preserved]), ~15 s
+node tools/validation/hidden-objects-calibration-tests.mjs --counterfactuals  # base 3b122cf + 16 in-memory mutants
+node tools/validation/hidden-objects-calibration.mjs [--out DIR]              # the ruler, the derived floors, every round enumerated
+node tools/validation/hidden-objects-multiscene-tests.mjs [--counterfactuals] # rooms as data, one engine (base 58b5f08 + 18 mutants)
+node tools/validation/hidden-objects-round-fairness.mjs --scene ID [--out DIR]
+node tools/validation/hidden-objects-calibration-probe.mjs [--scenario NAME]  # Playwright, needs `next build && next start -p 3100`
+node tools/validation/hidden-objects-multiscene-probe.mjs [--scenario NAME]
+```
+
+The calibration suite checks the clue banks (every level, no name, no
+duplicate, each level's semantic contract), the seeded clues (same room,
+difficulty and seed → same clues; Recomeçar keeps them; nothing in a session
+changes them; a fresh exploration can tell an object another way), the round
+model (each difficulty's band of the search-load ruler, glance finds, tier
+bounds, look-alike floors; Médio above Fácil, Difícil above Médio; never the
+count alone), both rooms on the same rule, the floors derived from the base
+(`hidden-objects-calibration-lib.mjs` measures the base's art and rounds) and
+the measured inputs equal to the art audits — `[calibration]`, all failing on
+the base — and, `[preserved]`, the art's fairness floors, the hit areas, no
+exact reveal in Médio/Difícil, Difícil naming nothing before a find, old
+results, no timer/score/lives/ranking, replay variety, the shared platform,
+one engine, the rooms' places and the camera. Checks of the older suites and
+probes that Difficulty V3 superseded read each tree by its generation
+(`isCalibrated` in the harness), as earlier missions did for fixed lists and
+pools; `docs/GAME03_CALIBRATION_02A.md` §15 lists them.
+
 The first runs the real code from source: the pure scene/camera/gesture/model
 modules, the scene controller on a fake viewport under a virtual clock, the real
 `HiddenObjectsGame` with its real scene under a small React (every gesture is a
