@@ -6,8 +6,8 @@ with target pool v1`). Integração canônica: `v06-portal-requires-lights` — 
 merge nesta missão, sem PR**.
 
 **Veredito: `TECHNICAL_PASS_HUMAN_PLAYTEST_REQUIRED`.** O Game 03 virou um jogo de
-várias salas com um motor só: o Estúdio do Explorador (cena 01, igual byte a byte
-em comportamento à EXPERIENCE-02) e o **Observatório do Explorador** (cena 02, nova).
+várias salas com um motor só: o Estúdio do Explorador (cena 01, com comportamento
+idêntico ao da EXPERIENCE-02) e o **Observatório do Explorador** (cena 02, nova).
 Tudo o que uma máquina verifica passou — suites, contrafactuais, mutantes, auditoria
 de arte, justiça das rodadas, probes de browser no build de produção, regressões da
 plataforma, CORE e DEEP (§10). Se o Observatório é bonito, justo e calmo para
@@ -42,7 +42,8 @@ desbloqueio, campanha, estrelas, cronômetro, vidas, ranking ou placar.
 | `f95bbfe` | "Explorar" visível em celulares baixos; relatório de justiça por sala |
 | `db4251f` | orçamento de entrada por sala no M17; relatórios de rodada por sala |
 | `9de3b0b` | prévias pelo otimizador de imagem; parede do arquivo menos vazia; evidência |
-| (este doc) | registro da missão |
+| `4dc7da7` | registro da missão (este doc) e ARCHITECTURE.md |
+| (seguinte) | CORE/DEEP no registro; revisão do texto |
 
 O SHA final e o HEAD remoto estão no relatório de fechamento da sessão.
 
@@ -99,7 +100,7 @@ falha, e passa a prontidão ao shell como antes (`onEntryReady`/`onEntryError`).
   arte da intro); a arte em resolução cheia de uma sala só é pedida quando ela vai
   para a tela (M17, D03/D06/D08, Y02/Y03).
 - "Explorar" fica desabilitado ("Preparando a cena…") só enquanto a sala escolhida
-  carrega; se a arte essencial falhar: "Não foi possível abrir o Observatório do
+  carrega (ou se ela falhou); se a arte essencial falhar: "Não foi possível abrir o Observatório do
   Explorador agora." + "Tentar de novo" — e a outra sala continua jogável (M18).
 - "Trocar de cena" (no topo, só durante a rodada) volta ao preparar na mesma sala e
   dificuldade, sem salvar nada; escolher outra sala e "Explorar" começa uma
@@ -113,8 +114,8 @@ falha, e passa a prontidão ao shell como antes (`onEntryReady`/`onEntryError`).
 
 **Ideia:** o observatório de um explorador no fim da tarde. A cúpula está aberta, a
 lua aparece pela fresta e o planeta da tarde pela janela redonda. "Pensar em paz":
-azul de anoitecer, latão e madeira quentes, duas luzes acesas (o pendente e a
-vela), nada piscando. Densidade é proposital, não ruído: cada estação tem um
+azul de anoitecer, latão e madeira quentes, luzes quentes acesas (o pendente, a
+vela, a lanterna da direita), nada piscando. Densidade é proposital, não ruído: cada estação tem um
 assunto e os objetos estão onde fariam sentido.
 
 **Três regiões** (estações), pensadas para esta sala e não copiadas do Estúdio:
@@ -128,7 +129,7 @@ assunto e os objetos estão onde fariam sentido.
 **Profundidade 2.5D:** céu e colinas atrás (parallax 0,9) → placa → nervura mais
 próxima da cúpula em cima (1,04) → cortina e baús à esquerda, lanterna e samambaia à
 direita (1,05). As camadas da frente só pintam dentro dos seus retângulos opacos, e
-o M15 prova que nenhum desses retângulos, crescidos pelo maior deslocamento de
+o M16 prova que nenhum desses retângulos, crescidos pelo maior deslocamento de
 parallax + 24 su, cobre alvo ou sósia.
 
 **Pipeline:** SVG por script (`tools/assets/create_observatory_scene.mjs`, com o kit
@@ -143,7 +144,7 @@ põe as duas salas lado a lado; os quadros de revisão estão em
 alvos ampliados), os mesmos quatro do Estúdio.
 
 - Melhor que o Estúdio: luz (lua, vela, pendente com halo), leitura de profundidade
-  (dois planos de frente e o céu que desliza), variedade de materiais (latão, vidro,
+  (três camadas de frente e o céu que desliza), variedade de materiais (latão, vidro,
   porcelana, pelo, papel), regiões com assunto próprio, e uma paleta que separa as
   duas salas de longe.
 - Mais denso que o Estúdio? **Pouco.** Depois de comparar lado a lado, a parede do
@@ -219,11 +220,11 @@ O que foi consertado **na arte e na geometria, não nos limites**: contornos esc
 que derrubavam a borda (pipa 1,17, violino 1,19, pantufas 1,26) ganharam aro claro;
 as pantufas foram redesenhadas; os C, expostos demais, ganharam oclusões naturais; a
 geometria de toque de óculos/luneta/leque/maçã cresceu para o piso do celular
-deitado (44 px efetivos no zoom máximo, ≥ 32 px no enquadramento de abertura). Um
-teste de toque em sósia que eu mesmo tinha escrito mais estrito que o do Estúdio
-(0,21 px/su) foi alinhado ao padrão E16 (0,375 px/su), o mesmo do Estúdio.
+deitado (44 px efetivos no zoom máximo, ≥ 32 px no enquadramento de abertura). O
+teste de toque em sósia desta suite nasceu mais estrito que o do Estúdio (0,21 px/su)
+e foi alinhado ao padrão E16 (0,375 px/su) — a mesma régua para as duas salas.
 
-**Geometria** (M16, M15): margens seguras 256×160 su; ≥ 24 su entre alvos; ≥ 32 su
+**Geometria** (M16): margens seguras 256×160 su; ≥ 24 su entre alvos; ≥ 32 su
 entre alvo e sósia; frentes opacas longe de alvos e sósias; enquadramento da
 revelação livre do HUD em 6 viewports; tamanhos de toque acima.
 
@@ -232,8 +233,9 @@ dificuldade; `docs/archive/game03-multiscene-03/rounds-*`): todas as rodadas vá
 alcançadas; frequência por objeto sem desvio (χ² z ≤ 1,51 nas duas salas; |z| máximo
 por objeto 2,12 no Observatório, 2,51 no Estúdio); visibilidade média da lista
 Observatório 92,6 % / 84,1 % / 82,5 % (Estúdio 94,8 / 87,5 / 84,9); sósias por
-rodada Observatório 0,43 / 0,78 / 0,83 (Estúdio 0,41 / 0,67 / 0,75) — o Difícil do
-Observatório é um pouco mais "parecido", não menos visível.
+rodada Observatório 0,43 / 0,78 / 0,83 (Estúdio 0,41 / 0,67 / 0,75) — no Difícil o
+Observatório tem um pouco mais de sósias por rodada e a lista é um pouco menos
+visível (−2,4 pontos), dentro dos mesmos pisos.
 
 ## 9. Evidência no browser (relatório H)
 
@@ -277,8 +279,8 @@ Rodado no fechamento, sobre a árvore commitada:
 | `game-readiness-registry` · `game-entry-watchdog-registry` · `game-continuation-contract` · `production-diagnostic-boundary` | 19/19 · 10/10 · 21/21 · OK (evidência MATCHES) |
 | `memory-circuit-lifecycle-tests.mjs` (Circuito) | 13/13 |
 | `route-journey-terminal-tests.mjs` (tela de resultado real da Rota) · `route-journey-ownership-tests.mjs` · `route-validation-coupling-gate.mjs` | 13/13 · 7/7 · 6/6 |
-| CORE `validation-hygiene-tests.mjs` | REG_CORE |
-| DEEP `final-acceptance.mjs` | REG_DEEP |
+| CORE `validation-hygiene-tests.mjs` (em `4dc7da7`) | 15/15 validadores (`CORE_BATTERY_PASSED`); imutabilidade: 0 arquivos criados, apagados ou alterados, `git status` idêntico (`VALIDATION_CHECK_IS_READ_ONLY`) |
+| DEEP `final-acceptance.mjs` (em `4dc7da7`) | estrutural 1080/1080, contínuo 270/270, recovery OK, sem exceções; evidência MATCHES |
 | auditoria de dependências | `package.json` e `package-lock.json` idênticos à base; `npm audit` igual à base: 13 avisos (1 baixo, 2 moderados, 10 altos), 4 em produção (2 moderados, 2 altos) |
 
 ## 11. Desempenho, assets e bundle (relatório I)
@@ -293,7 +295,7 @@ de imagem pesadas pelo tamanho servido):
 | Home, arte pedida (com o Game 03 selecionado) | 46 arquivos · 528.352 B | 46 · 528.352 B | 0 — **a Home não pede arte de sala** (Y01) |
 | Game 03, conjunto lazy JS | 40.184 B · 13.465 gz | 55.599 B · 17.996 gz | +15,4 KB · **+4,5 KB gz** |
 | Game 03, CSS | 19.328 B · 4.709 gz | 22.010 B · 5.106 gz | +2,7 KB · +0,4 KB gz |
-| Entrada + preparar, arte | 6 pedidos · 332.000 B | 7 · 343.266 B | **+11,3 KB** (a prévia do Observatório; a do Estúdio reusa a variante da intro) |
+| Entrada + preparar, arte | 6 pedidos · 332.000 B | 7 · 343.266 B | **+11,3 KB** (a prévia do Observatório; a do Estúdio não gerou pedido novo — o browser reusou a variante da intro em cache) |
 | Rodada do Estúdio desde a entrada, arte | 11 · 366.270 B | 12 · 377.536 B | +11,3 KB (a mesma prévia) |
 | Observatório escolhido depois (Fácil) | — | 10 · 333.740 B, 0 JS | 5 camadas + 5 miniaturas, só quando escolhido |
 | Rota, conjunto lazy JS | 55.385 B | 55.502 B | +117 B: o ícone `DoorOpen` do lucide, agora usado também pelo Game 03, vira um módulo compartilhado dentro do chunk; nenhum código da Rota mudou |
@@ -382,7 +384,8 @@ script de arte, sua auditoria e uma linha no registro.
 
 **Nenhum.** Todas as mudanças de produto estão em `src/games/hidden-objects/`
 (contrato, registro, as duas salas, motor, React e CSS do Game 03) e
-`public/assets/hidden-objects/explorer-observatory/`. App Shell, GameScreen, a tela
+`public/assets/hidden-objects/explorer-observatory/`; de documentação, este registro,
+a seção do Game 03 em `docs/ARCHITECTURE.md` e a evidência em `docs/archive/`. App Shell, GameScreen, a tela
 de resultado compartilhada, o registro de jogos, a Home, `package.json` e
 `package-lock.json` estão byte a byte iguais a `58b5f08` (M19; a única diferença de
 bundle fora do Game 03 é o módulo do ícone no chunk da Rota, §11). Ferramentas:
