@@ -1349,6 +1349,50 @@ function globeStand() {
   <circle cx="3050" cy="1150" r="70" fill="none" stroke="url(#brass)" stroke-width="7"/>`;
 }
 
+function wallClock() {
+  // a brass clock on the archive's wall (scenery): ten to seven, the hour the dome opens
+  const cx = 2790;
+  const cy = 440;
+  const hand = (deg, length, width, color) => {
+    const a = ((deg - 90) * Math.PI) / 180;
+    return `<path d="M${cx} ${cy} L${n(cx + Math.cos(a) * length)} ${n(cy + Math.sin(a) * length)}" stroke="${color}" stroke-width="${width}" stroke-linecap="round"/>`;
+  };
+  const ticks = Array.from({ length: 12 }, (_, i) => {
+    const a = (i * 30 * Math.PI) / 180;
+    const inner = i % 3 === 0 ? 31 : 35;
+    return `<path d="M${n(cx + Math.sin(a) * inner)} ${n(cy - Math.cos(a) * inner)} L${n(cx + Math.sin(a) * 40)} ${n(cy - Math.cos(a) * 40)}" stroke="#4a3414" stroke-width="${i % 3 === 0 ? 3 : 2}"/>`;
+  }).join("");
+  return `
+  <circle cx="${cx + 5}" cy="${cy + 9}" r="56" fill="#000" opacity=".38" filter="url(#soft6)"/>
+  <path d="M${cx} ${cy - 54} L${cx} ${cy - 74}" stroke="#4a3414" stroke-width="2"/><circle cx="${cx}" cy="${cy - 76}" r="4" fill="url(#brassBall)"/>
+  <circle cx="${cx}" cy="${cy}" r="54" fill="url(#brass)" stroke="#4a3414" stroke-width="2"/>
+  <circle cx="${cx}" cy="${cy}" r="45" fill="url(#parchment)" stroke="#8a6a32" stroke-width="2"/>
+  ${ticks}
+  ${hand(205, 22, 5, "#2a1a0c")}
+  ${hand(300, 34, 3, "#2a1a0c")}
+  <circle cx="${cx}" cy="${cy}" r="4" fill="url(#brassBall)"/>`;
+}
+
+function readingStool() {
+  // a low stool by the cabinet with the big star atlases on it (scenery)
+  const x = 3110;
+  const seat = 1376;
+  const w = 150;
+  const foot = seat + 78;
+  return `
+  ${shadow(x + w / 2, foot + 2, 96, 12, 0.85)}
+  <path d="M${x + 34} ${seat + 12} L${x + 40} ${foot - 14} M${x + w - 34} ${seat + 12} L${x + w - 40} ${foot - 14}" stroke="url(#woodDark)" stroke-width="10" stroke-linecap="round"/>
+  <path d="M${x + 14} ${seat + 12} L${x + 6} ${foot} M${x + w - 14} ${seat + 12} L${x + w - 6} ${foot}" stroke="url(#woodV)" stroke-width="12" stroke-linecap="round"/>
+  <path d="M${x + 12} ${seat + 42} L${x + w - 12} ${seat + 42}" stroke="url(#woodH)" stroke-width="7"/>
+  <rect x="${x}" y="${seat}" width="${w}" height="18" rx="6" fill="url(#wood)" stroke="#2a170b" stroke-width="2"/>
+  ${bookStack(x + 12, seat, [
+    [128, 20, "#21324f"],
+    [116, 17, "#7a3024", 8],
+    [100, 15, "#4a6a3a", 4],
+  ])}
+  <path d="${starPath(x + 66, seat - 44, 5)}" fill="#e7cf98"/>`;
+}
+
 // --- the composed plate ----------------------------------------------------------------------------------
 
 function plateSvg({ omit = null, debug = false } = {}) {
@@ -1383,6 +1427,7 @@ function plateSvg({ omit = null, debug = false } = {}) {
   ${underDesk()}
   ${windsorChair()}
   ${moonChart()}
+  ${wallClock()}
   ${microTable(omit)}
   ${mobileFromCeiling()}
   ${violinNail(omit)}
@@ -1391,6 +1436,7 @@ function plateSvg({ omit = null, debug = false } = {}) {
   ${curioCabinet(omit)}
   ${globeStand()}
   ${arquivoFloor()}
+  ${readingStool()}
   ${debug ? debugOverlaySvg(ROOM, { x: DATA.SAFE_MARGIN_X, y: DATA.SAFE_MARGIN_Y }) : ""}
 </svg>`;
 }

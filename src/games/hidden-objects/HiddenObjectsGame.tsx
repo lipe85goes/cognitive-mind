@@ -456,7 +456,15 @@ function SetupCard({
                 onChange={() => onScene(option)}
               />
               <span className="hos-scene-preview" aria-hidden="true">
-                <Image src={option.preview} alt="" width={320} height={240} unoptimized loading="eager" draggable={false} />
+                <Image
+                  src={option.preview}
+                  alt=""
+                  width={320}
+                  height={240}
+                  sizes="(max-width: 599px) 45vw, 16rem"
+                  loading="eager"
+                  draggable={false}
+                />
               </span>
               <span className="hos-scene-text">
                 <strong>{option.name}</strong>

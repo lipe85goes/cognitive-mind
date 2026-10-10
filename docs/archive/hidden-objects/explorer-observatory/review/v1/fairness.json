@@ -1,6 +1,6 @@
 {
   "kit": "/assets/hidden-objects/explorer-observatory/v1",
-  "plateSha256": "dc4b59d646963acbac4c5be4e30e5434a5473f4c4a2b22d992469859be83cc09",
+  "plateSha256": "9a252cb9bb83610fdbe29b0a0f74f89d66995050f4590948e545a660c9ce4bd1",
   "rule": {
     "visible": "share of the target's own pixels the finished plate shows (plate rendered with and without the target)",
     "contrast": "F4 as written: mean-luminance ratio, visible target vs a 24 su ring, on the composed room",

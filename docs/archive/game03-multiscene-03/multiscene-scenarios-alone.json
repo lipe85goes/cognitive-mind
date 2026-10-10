@@ -1,0 +1,37 @@
+{
+ "mission": "GAME03-MULTISCENE-03",
+ "note": "each scenario run alone (--scenario NAME): its own process and browser",
+ "scenarios": {
+  "ms-desktop": {
+   "held": 25,
+   "of": 25,
+   "failing": []
+  },
+  "ms-mobile": {
+   "held": 12,
+   "of": 12,
+   "failing": []
+  },
+  "ms-landscape": {
+   "held": 8,
+   "of": 8,
+   "failing": []
+  },
+  "ms-reduced-motion": {
+   "held": 6,
+   "of": 6,
+   "failing": []
+  },
+  "ms-isolation": {
+   "held": 6,
+   "of": 6,
+   "failing": []
+  },
+  "ms-payload": {
+   "held": 4,
+   "of": 4,
+   "failing": []
+  }
+ },
+ "total": "61/61"
+}

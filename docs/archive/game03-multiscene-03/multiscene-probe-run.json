@@ -1,0 +1,1211 @@
+{
+  "base": "http://localhost:3100",
+  "buildId": "zU4MmnFamPqHbS1Bt8Sng",
+  "scenarios": [
+    "ms-desktop",
+    "ms-mobile",
+    "ms-landscape",
+    "ms-reduced-motion",
+    "ms-isolation",
+    "ms-payload"
+  ],
+  "results": [
+    {
+      "scenario": "ms-desktop",
+      "id": "D01_SETUP_OFFERS_BOTH_ROOMS_THE_STUDIO_CHOSEN",
+      "pass": true,
+      "detail": {
+        "options": [
+          {
+            "id": "explorer-studio",
+            "checked": true,
+            "name": "Estúdio do Explorador"
+          },
+          {
+            "id": "explorer-observatory",
+            "checked": false,
+            "name": "Observatório do Explorador"
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "ms-desktop",
+      "id": "D02_ONE_GAME03_ENTRY_ON_THE_HOME",
+      "pass": true,
+      "detail": {
+        "homeWorlds": [
+          "Selecionar Rota Estratégica",
+          "Selecionar Circuito de Memória",
+          "Selecionar Central de Comandos",
+          "Selecionar Estúdio das Descobertas",
+          "Selecionar Jardim de Sementes"
+        ]
+      }
+    },
+    {
+      "scenario": "ms-desktop",
+      "id": "D03_SETUP_FETCHES_ONLY_THE_OTHER_ROOMS_PREVIEW",
+      "pass": true,
+      "detail": {
+        "observatoryRequests": [
+          "/assets/hidden-objects/explorer-observatory/v1/hero.webp?w=384"
+        ]
+      }
+    },
+    {
+      "scenario": "ms-desktop",
+      "id": "D04_STUDIO_ROUND_IS_ITS_SEED",
+      "pass": true,
+      "detail": {
+        "round": {
+          "scene": "explorer-studio",
+          "seed": 7001,
+          "ids": [
+            "globo",
+            "bussola",
+            "barco",
+            "lupa",
+            "binoculo"
+          ],
+          "draws": 1
+        },
+        "drawn": [
+          "globo",
+          "bussola",
+          "barco",
+          "lupa",
+          "binoculo"
+        ]
+      }
+    },
+    {
+      "scenario": "ms-desktop",
+      "id": "D05_STUDIO_FIND",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "ms-desktop",
+      "id": "D06_NO_OBSERVATORY_ART_WHILE_PLAYING_THE_STUDIO",
+      "pass": true,
+      "detail": {
+        "requests": []
+      }
+    },
+    {
+      "scenario": "ms-desktop",
+      "id": "D07_TROCAR_DE_CENA_RETURNS_TO_SETUP_SAVING_NOTHING",
+      "pass": true,
+      "detail": {
+        "back": {
+          "status": "setup",
+          "scene": "explorer-studio",
+          "seed": null
+        }
+      }
+    },
+    {
+      "scenario": "ms-desktop",
+      "id": "D08_THE_OBSERVATORYS_ART_IS_FETCHED_WHEN_CHOSEN",
+      "pass": true,
+      "detail": {
+        "layers": [
+          "/assets/hidden-objects/explorer-observatory/v1/back.webp",
+          "/assets/hidden-objects/explorer-observatory/v1/plate.webp",
+          "/assets/hidden-objects/explorer-observatory/v1/front-top.webp",
+          "/assets/hidden-objects/explorer-observatory/v1/front.webp",
+          "/assets/hidden-objects/explorer-observatory/v1/front-right.webp"
+        ]
+      }
+    },
+    {
+      "scenario": "ms-desktop",
+      "id": "D09_EASY_MEDIUM_HARD_UNCHANGED",
+      "pass": true,
+      "detail": {
+        "levels": [
+          "Fácil5 objetos · lista com imagens · a pista pode mostrar onde está",
+          "Médio6 objetos · lista com silhuetas · pistas mais vagas",
+          "Difícil8 objetos · a lista descreve, não nomeia · a pista nunca revela"
+        ]
+      }
+    },
+    {
+      "scenario": "ms-desktop",
+      "id": "D10_THE_OBSERVATORYS_STATIONS",
+      "pass": true,
+      "detail": {
+        "stationLabels": [
+          "Cúpula",
+          "Bancada",
+          "Arquivo"
+        ]
+      }
+    },
+    {
+      "scenario": "ms-desktop",
+      "id": "D11_OBSERVATORY_ROUND_IS_ITS_SEED",
+      "pass": true,
+      "detail": {
+        "round": {
+          "scene": "explorer-observatory",
+          "seed": 7002,
+          "ids": [
+            "vela",
+            "microscopio",
+            "sistema-solar",
+            "pantufas",
+            "gramofone"
+          ],
+          "draws": 2
+        },
+        "drawn": [
+          "vela",
+          "microscopio",
+          "sistema-solar",
+          "pantufas",
+          "gramofone"
+        ]
+      }
+    },
+    {
+      "scenario": "ms-desktop",
+      "id": "D12_THE_HUD_NAMES_THE_ROOM",
+      "pass": true,
+      "detail": {
+        "title": "Observatório do Explorador · Fácil"
+      }
+    },
+    {
+      "scenario": "ms-desktop",
+      "id": "D13_PAN_MOVES_THE_ROOM",
+      "pass": true,
+      "detail": {
+        "before": -394.024,
+        "after": -134.024
+      }
+    },
+    {
+      "scenario": "ms-desktop",
+      "id": "D14_NO_REACT_COMMIT_PER_POINTERMOVE",
+      "pass": true,
+      "detail": {
+        "commitsDuring": 0,
+        "pointermoves": 24
+      }
+    },
+    {
+      "scenario": "ms-desktop",
+      "id": "D15_ZOOM_WHEEL_AND_PLUS",
+      "pass": true,
+      "detail": {
+        "scales": [
+          0.526387,
+          0.657983,
+          0.822479
+        ]
+      }
+    },
+    {
+      "scenario": "ms-desktop",
+      "id": "D16_STATIONS_CUPULA_BANCADA_ARQUIVO",
+      "pass": true,
+      "detail": {
+        "stationProblems": []
+      }
+    },
+    {
+      "scenario": "ms-desktop",
+      "id": "D17_HINT_LADDER_IN_THE_OBSERVATORY",
+      "pass": true,
+      "detail": {
+        "banners": [
+          "Pista: procure na bancada de trabalho.",
+          "Pista: procure na ponta esquerda da bancada.",
+          "Aqui está: Vela."
+        ]
+      }
+    },
+    {
+      "scenario": "ms-desktop",
+      "id": "D18_A_FIND_SAYS_ITS_NAME",
+      "pass": true,
+      "detail": {
+        "tag": "Vela"
+      }
+    },
+    {
+      "scenario": "ms-desktop",
+      "id": "D19_COMPLETION_AND_CLOSING_CARD",
+      "pass": true,
+      "detail": {
+        "missed": [],
+        "card": "Observatório explorado",
+        "modal": {
+          "world": "Estúdio das Descobertas",
+          "title": "Estúdio explorado",
+          "summary": "Você encontrou todos os objetos do Observatório."
+        }
+      }
+    },
+    {
+      "scenario": "ms-desktop",
+      "id": "D20_RESULT_RECORDS_ROOM_AND_ROUND",
+      "pass": true,
+      "detail": {
+        "saved": {
+          "activityId": "hidden-objects",
+          "activityTitle": "Estúdio das Descobertas",
+          "gameId": "hidden-objects",
+          "score": 5,
+          "summary": "Você encontrou todos os objetos do Observatório.",
+          "details": {
+            "difficulty": "easy",
+            "foundObjects": 5,
+            "totalObjects": 5,
+            "completed": true,
+            "sceneId": "explorer-observatory",
+            "roundSeed": 7002
+          },
+          "id": "hidden-objects-1791604298231",
+          "playedAt": "2026-10-10T03:51:38.231Z"
+        }
+      }
+    },
+    {
+      "scenario": "ms-desktop",
+      "id": "D21_RESULT_SCREEN_THROUGH_THE_SHARED_MODAL",
+      "pass": true,
+      "detail": {
+        "world": "Estúdio das Descobertas",
+        "title": "Estúdio explorado",
+        "summary": "Você encontrou todos os objetos do Observatório."
+      }
+    },
+    {
+      "scenario": "ms-desktop",
+      "id": "D22_PRACTICE_AGAIN_KEEPS_THE_ROOM",
+      "pass": true,
+      "detail": {
+        "again": [
+          {
+            "id": "explorer-studio",
+            "checked": false,
+            "name": "Estúdio do Explorador"
+          },
+          {
+            "id": "explorer-observatory",
+            "checked": true,
+            "name": "Observatório do Explorador"
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "ms-desktop",
+      "id": "D23_PRACTICE_AGAIN_DRAWS_A_NEW_ROUND",
+      "pass": true,
+      "detail": {
+        "second": {
+          "scene": "explorer-observatory",
+          "seed": 7003,
+          "ids": [
+            "compasso",
+            "violino",
+            "luneta",
+            "gramofone",
+            "coruja"
+          ],
+          "draws": 3
+        },
+        "first": [
+          "vela",
+          "microscopio",
+          "sistema-solar",
+          "pantufas",
+          "gramofone"
+        ]
+      }
+    },
+    {
+      "scenario": "ms-desktop",
+      "id": "D24_CHANGE_ROOM_IS_A_NEW_EXPLORATION_THERE",
+      "pass": true,
+      "detail": {
+        "studioAgain": {
+          "scene": "explorer-studio",
+          "seed": 7004,
+          "ids": [
+            "lanterna",
+            "lupa",
+            "bolsa",
+            "guarda-chuva",
+            "borboleta"
+          ],
+          "draws": 4
+        }
+      }
+    },
+    {
+      "scenario": "ms-desktop",
+      "id": "NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "ms-mobile",
+      "id": "P01_SETUP_FITS_WITHOUT_PAGE_OVERFLOW",
+      "pass": true,
+      "detail": {
+        "overflow": 0
+      }
+    },
+    {
+      "scenario": "ms-mobile",
+      "id": "P02_EXPLORAR_IN_REACH",
+      "pass": true,
+      "detail": {
+        "exploreBox": {
+          "x": 35.59375,
+          "y": 778.15625,
+          "width": 318.8125,
+          "height": 52
+        }
+      }
+    },
+    {
+      "scenario": "ms-mobile",
+      "id": "P03_ROUND_IS_ITS_SEED",
+      "pass": true,
+      "detail": {
+        "round": {
+          "scene": "explorer-observatory",
+          "seed": 7101,
+          "ids": [
+            "ratinho",
+            "balanca",
+            "bule",
+            "oculos",
+            "gato",
+            "sistema-solar",
+            "pantufas",
+            "sino"
+          ],
+          "draws": 1
+        },
+        "drawn": [
+          "ratinho",
+          "balanca",
+          "bule",
+          "oculos",
+          "gato",
+          "sistema-solar",
+          "pantufas",
+          "sino"
+        ]
+      }
+    },
+    {
+      "scenario": "ms-mobile",
+      "id": "P04_TOUCH_DRAG_PANS",
+      "pass": true,
+      "detail": {
+        "before": -558.825,
+        "after": -678.825
+      }
+    },
+    {
+      "scenario": "ms-mobile",
+      "id": "P05_PINCH_ZOOMS",
+      "pass": true,
+      "detail": {
+        "before": 0.414189,
+        "after": 1.25
+      }
+    },
+    {
+      "scenario": "ms-mobile",
+      "id": "P06_TRAY_LISTS_THE_CLUES",
+      "pass": true,
+      "detail": {
+        "items": 8,
+        "clues": [
+          "Bichinho que adora queijo.",
+          "Pesa as coisas em dois pratinhos.",
+          "Serve o chá quente nas xícaras.",
+          "Ajudam os olhos a ler de perto.",
+          "Dorme enrolado e ronrona.",
+          "Planetas que giram em volta do Sol.",
+          "Calçado macio para os pés descansarem.",
+          "Toca para chamar alguém."
+        ],
+        "listShown": true
+      }
+    },
+    {
+      "scenario": "ms-mobile",
+      "id": "P07_TRAY_FOLDS_AND_UNFOLDS",
+      "pass": true,
+      "detail": {
+        "hidden": true,
+        "tray": "closed"
+      }
+    },
+    {
+      "scenario": "ms-mobile",
+      "id": "P08_HARD_HINTS_STOP_AT_CONTEXT",
+      "pass": true,
+      "detail": {
+        "banner": "Pista: está espiando de um buraquinho na madeira da parede."
+      }
+    },
+    {
+      "scenario": "ms-mobile",
+      "id": "P09_FOUND_FEEDBACK",
+      "pass": true,
+      "detail": {
+        "tag": "Ratinho",
+        "seal": true
+      }
+    },
+    {
+      "scenario": "ms-mobile",
+      "id": "P10_COMPLETION_AND_RESULT",
+      "pass": true,
+      "detail": {
+        "finished": {
+          "missed": [],
+          "card": "Observatório explorado",
+          "modal": {
+            "world": "Estúdio das Descobertas",
+            "title": "Estúdio explorado",
+            "summary": "Você encontrou todos os objetos do Observatório."
+          }
+        },
+        "saved": {
+          "difficulty": "hard",
+          "foundObjects": 8,
+          "totalObjects": 8,
+          "completed": true,
+          "sceneId": "explorer-observatory",
+          "roundSeed": 7101
+        }
+      }
+    },
+    {
+      "scenario": "ms-mobile",
+      "id": "P11_NO_HORIZONTAL_OVERFLOW",
+      "pass": true,
+      "detail": {
+        "overflow": 0
+      }
+    },
+    {
+      "scenario": "ms-mobile",
+      "id": "NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "ms-landscape",
+      "id": "L01_EXPLORAR_IN_REACH_WITHOUT_SCROLLING",
+      "pass": true,
+      "detail": {
+        "exploreBox": {
+          "x": 57.59375,
+          "y": 326.21875,
+          "width": 728.8125,
+          "height": 46
+        }
+      }
+    },
+    {
+      "scenario": "ms-landscape",
+      "id": "L02_ROUND_IS_ITS_SEED",
+      "pass": true,
+      "detail": {
+        "round": {
+          "scene": "explorer-observatory",
+          "seed": 7201,
+          "ids": [
+            "luneta",
+            "vela",
+            "pantufas",
+            "leque",
+            "compasso",
+            "balanca"
+          ],
+          "draws": 1
+        },
+        "drawn": [
+          "luneta",
+          "vela",
+          "pantufas",
+          "leque",
+          "compasso",
+          "balanca"
+        ]
+      }
+    },
+    {
+      "scenario": "ms-landscape",
+      "id": "L03_REGION_NAVIGATION",
+      "pass": true,
+      "detail": {
+        "visited": [
+          1415,
+          1820,
+          2185
+        ]
+      }
+    },
+    {
+      "scenario": "ms-landscape",
+      "id": "L04_PINCH_AND_DRAG",
+      "pass": true,
+      "detail": {
+        "scales": [
+          0.210625,
+          0.716125
+        ],
+        "tx": [
+          -1266.85,
+          -1166.85
+        ]
+      }
+    },
+    {
+      "scenario": "ms-landscape",
+      "id": "L05_ROTATION_KEEPS_THE_ROUND",
+      "pass": true,
+      "detail": {
+        "mid": {
+          "round": {
+            "scene": "explorer-observatory",
+            "seed": 7201,
+            "ids": [
+              "luneta",
+              "vela",
+              "pantufas",
+              "leque",
+              "compasso",
+              "balanca"
+            ],
+            "draws": 1
+          },
+          "progress": {
+            "found": 1,
+            "total": 6
+          }
+        },
+        "upright": {
+          "round": {
+            "scene": "explorer-observatory",
+            "seed": 7201,
+            "ids": [
+              "luneta",
+              "vela",
+              "pantufas",
+              "leque",
+              "compasso",
+              "balanca"
+            ],
+            "draws": 1
+          },
+          "progress": {
+            "found": 1,
+            "total": 6
+          }
+        },
+        "backAgain": {
+          "round": {
+            "scene": "explorer-observatory",
+            "seed": 7201,
+            "ids": [
+              "luneta",
+              "vela",
+              "pantufas",
+              "leque",
+              "compasso",
+              "balanca"
+            ],
+            "draws": 1
+          },
+          "progress": {
+            "found": 1,
+            "total": 6
+          }
+        }
+      }
+    },
+    {
+      "scenario": "ms-landscape",
+      "id": "L06_RESULT",
+      "pass": true,
+      "detail": {
+        "saved": {
+          "difficulty": "medium",
+          "foundObjects": 6,
+          "totalObjects": 6,
+          "completed": true,
+          "sceneId": "explorer-observatory",
+          "roundSeed": 7201
+        }
+      }
+    },
+    {
+      "scenario": "ms-landscape",
+      "id": "L07_NO_HORIZONTAL_OVERFLOW",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "ms-landscape",
+      "id": "NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "ms-reduced-motion",
+      "id": "R01_ROUND_IS_ITS_SEED",
+      "pass": true,
+      "detail": {
+        "round": {
+          "scene": "explorer-observatory",
+          "seed": 7301,
+          "ids": [
+            "pantufas",
+            "coruja",
+            "vela",
+            "compasso",
+            "violino"
+          ],
+          "draws": 1
+        }
+      }
+    },
+    {
+      "scenario": "ms-reduced-motion",
+      "id": "R02_STATION_CUTS_INSTANTLY",
+      "pass": true,
+      "detail": {
+        "centre": {
+          "x": 2528.5426881742897,
+          "y": 799.9995725578328
+        },
+        "expectedX": 2528.544967865848,
+        "movingMarks": 0
+      }
+    },
+    {
+      "scenario": "ms-reduced-motion",
+      "id": "R03_HALO_WITHOUT_FADES",
+      "pass": true,
+      "detail": {
+        "halo": {
+          "animation": "hos-halo-life-still",
+          "timing": "steps(1)"
+        }
+      }
+    },
+    {
+      "scenario": "ms-reduced-motion",
+      "id": "R04_NO_PARALLAX_ON_ANY_DRIFTING_LAYER",
+      "pass": true,
+      "detail": {
+        "drifting": [
+          "back",
+          "front-top",
+          "front",
+          "front-right"
+        ],
+        "parallax": [
+          "translate3d(0px, 0px, 0px)",
+          "translate3d(0px, 0px, 0px)",
+          "translate3d(0px, 0px, 0px)",
+          "translate3d(0px, 0px, 0px)"
+        ]
+      }
+    },
+    {
+      "scenario": "ms-reduced-motion",
+      "id": "R05_FOUND_FEEDBACK_WITHOUT_MOTION",
+      "pass": true,
+      "detail": {
+        "ring": {
+          "animation": "hos-halo-life-still",
+          "timing": "steps(1)"
+        },
+        "tag": {
+          "animation": "hos-halo-life-still",
+          "timing": "steps(1)"
+        },
+        "glow": {
+          "animation": "none",
+          "timing": "ease"
+        }
+      }
+    },
+    {
+      "scenario": "ms-reduced-motion",
+      "id": "NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "ms-isolation",
+      "id": "I01_THE_SEED_IN_THE_STUDIO",
+      "pass": true,
+      "detail": {
+        "studio": {
+          "scene": "explorer-studio",
+          "seed": 7401,
+          "ids": [
+            "pena",
+            "bussola",
+            "ampulheta",
+            "camera",
+            "estatueta",
+            "binoculo"
+          ],
+          "draws": 1
+        },
+        "drawn": [
+          "pena",
+          "bussola",
+          "ampulheta",
+          "camera",
+          "estatueta",
+          "binoculo"
+        ]
+      }
+    },
+    {
+      "scenario": "ms-isolation",
+      "id": "I02_REENTRY_LEAKS_NOTHING",
+      "pass": true,
+      "detail": {
+        "shell": {
+          "status": "setup",
+          "scene": "explorer-studio",
+          "seed": null
+        },
+        "items": 0,
+        "found": 0
+      }
+    },
+    {
+      "scenario": "ms-isolation",
+      "id": "I03_THE_SAME_SEED_IN_THE_OBSERVATORY",
+      "pass": true,
+      "detail": {
+        "observatory": {
+          "scene": "explorer-observatory",
+          "seed": 7401,
+          "ids": [
+            "bule",
+            "compasso",
+            "coruja",
+            "balanca",
+            "leque",
+            "luneta"
+          ],
+          "draws": 2
+        },
+        "drawn": [
+          "bule",
+          "compasso",
+          "coruja",
+          "balanca",
+          "leque",
+          "luneta"
+        ]
+      }
+    },
+    {
+      "scenario": "ms-isolation",
+      "id": "I04_NO_OBJECT_OF_THE_OTHER_ROOM",
+      "pass": true,
+      "detail": {
+        "observatory": [
+          "bule",
+          "compasso",
+          "coruja",
+          "balanca",
+          "leque",
+          "luneta"
+        ],
+        "studio": [
+          "pena",
+          "bussola",
+          "ampulheta",
+          "camera",
+          "estatueta",
+          "binoculo"
+        ]
+      }
+    },
+    {
+      "scenario": "ms-isolation",
+      "id": "I05_NOTHING_SAVED",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "ms-isolation",
+      "id": "NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "ms-payload",
+      "id": "Y01_THE_HOME_FETCHES_NO_GAME03_ROOM_ART",
+      "pass": true,
+      "detail": {
+        "homeGame03": []
+      }
+    },
+    {
+      "scenario": "ms-payload",
+      "id": "Y02_SETUP_FETCHES_ONE_ROOM_AND_THE_OTHERS_PREVIEW",
+      "pass": true,
+      "detail": {
+        "setupArt": [
+          "/assets/hidden-objects/explorer-studio/v1/hero.webp?w=1080",
+          "/assets/hidden-objects/explorer-studio/v1/hero.webp?w=640",
+          "/assets/hidden-objects/explorer-studio/v1/back.webp",
+          "/assets/hidden-objects/explorer-studio/v1/plate.webp",
+          "/assets/hidden-objects/explorer-studio/v1/front.webp",
+          "/assets/hidden-objects/explorer-studio/v1/front-right.webp",
+          "/assets/hidden-objects/explorer-observatory/v1/hero.webp?w=384"
+        ]
+      }
+    },
+    {
+      "scenario": "ms-payload",
+      "id": "Y03_THE_OBSERVATORYS_PAYLOAD_ARRIVES_WITH_IT",
+      "pass": true,
+      "detail": {
+        "observatory": {
+          "js": {
+            "files": 0,
+            "raw": 0,
+            "gzip": 0
+          },
+          "css": {
+            "files": 0,
+            "raw": 0,
+            "gzip": 0
+          },
+          "art": {
+            "files": 10,
+            "raw": 333740,
+            "gzip": 333740
+          },
+          "artFiles": [
+            "/assets/hidden-objects/explorer-observatory/v1/back.webp",
+            "/assets/hidden-objects/explorer-observatory/v1/plate.webp",
+            "/assets/hidden-objects/explorer-observatory/v1/front-top.webp",
+            "/assets/hidden-objects/explorer-observatory/v1/front.webp",
+            "/assets/hidden-objects/explorer-observatory/v1/front-right.webp",
+            "/assets/hidden-objects/explorer-observatory/v1/thumbs/pipa.webp",
+            "/assets/hidden-objects/explorer-observatory/v1/thumbs/violino.webp",
+            "/assets/hidden-objects/explorer-observatory/v1/thumbs/vela.webp",
+            "/assets/hidden-objects/explorer-observatory/v1/thumbs/bule.webp",
+            "/assets/hidden-objects/explorer-observatory/v1/thumbs/pantufas.webp"
+          ]
+        }
+      }
+    },
+    {
+      "scenario": "ms-payload",
+      "id": "NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    }
+  ],
+  "metrics": {
+    "rounds": {
+      "desktop studio easy": {
+        "scene": "explorer-studio",
+        "seed": 7001,
+        "ids": [
+          "globo",
+          "bussola",
+          "barco",
+          "lupa",
+          "binoculo"
+        ],
+        "draws": 1
+      },
+      "desktop observatory easy": {
+        "scene": "explorer-observatory",
+        "seed": 7002,
+        "ids": [
+          "vela",
+          "microscopio",
+          "sistema-solar",
+          "pantufas",
+          "gramofone"
+        ],
+        "draws": 2
+      },
+      "mobile observatory hard": {
+        "scene": "explorer-observatory",
+        "seed": 7101,
+        "ids": [
+          "ratinho",
+          "balanca",
+          "bule",
+          "oculos",
+          "gato",
+          "sistema-solar",
+          "pantufas",
+          "sino"
+        ],
+        "draws": 1
+      },
+      "landscape observatory medium": {
+        "scene": "explorer-observatory",
+        "seed": 7201,
+        "ids": [
+          "luneta",
+          "vela",
+          "pantufas",
+          "leque",
+          "compasso",
+          "balanca"
+        ],
+        "draws": 1
+      }
+    },
+    "payload": {
+      "homeInitial": {
+        "js": {
+          "files": 9,
+          "raw": 661088,
+          "gzip": 203253
+        },
+        "css": {
+          "files": 7,
+          "raw": 206074,
+          "gzip": 44515
+        },
+        "art": {
+          "files": 39,
+          "raw": 454096,
+          "gzip": 454096
+        },
+        "artFiles": [
+          "/illustrations/home/explorer-marker.webp?w=96",
+          "/illustrations/home/dioramas/route-world/route-base.webp?w=828",
+          "/illustrations/home/dioramas/route-world/route-structure.webp?w=828",
+          "/illustrations/home/home-background-desktop.webp",
+          "/illustrations/home/world-glow.webp",
+          "/illustrations/home/dioramas/route-world/route-shadow.webp?w=828",
+          "/illustrations/home/dioramas/route-world/route-terrain.webp?w=828",
+          "/illustrations/home/dioramas/route-world/route-props.webp?w=828",
+          "/illustrations/home/dioramas/route-world/route-characters.webp?w=828",
+          "/illustrations/home/dioramas/route-world/route-energy.webp?w=828",
+          "/illustrations/home/dioramas/route-world/route-front.webp?w=828",
+          "/illustrations/home/dioramas/circuit-world/circuit-shadow.webp?w=640",
+          "/illustrations/home/dioramas/circuit-world/circuit-base.webp?w=640",
+          "/illustrations/home/dioramas/circuit-world/circuit-terrain.webp?w=640",
+          "/illustrations/home/dioramas/circuit-world/circuit-structure.webp?w=640",
+          "/illustrations/home/dioramas/circuit-world/circuit-props.webp?w=640",
+          "/illustrations/home/dioramas/circuit-world/circuit-energy.webp?w=640",
+          "/illustrations/home/dioramas/circuit-world/circuit-front.webp?w=640",
+          "/illustrations/home/dioramas/panel/panel-contact-shadow.webp?w=640",
+          "/illustrations/home/dioramas/panel/panel-base.webp?w=640",
+          "/illustrations/home/dioramas/panel/panel-back.webp?w=640",
+          "/illustrations/home/dioramas/panel/panel-main.webp?w=640",
+          "/illustrations/home/dioramas/panel/panel-detail.webp?w=640",
+          "/illustrations/home/dioramas/panel/panel-energy.webp?w=640",
+          "/illustrations/home/dioramas/panel/panel-front.webp?w=640",
+          "/illustrations/home/dioramas/discovery/discovery-contact-shadow.webp?w=640",
+          "/illustrations/home/dioramas/discovery/discovery-base.webp?w=640",
+          "/illustrations/home/dioramas/discovery/discovery-back.webp?w=640",
+          "/illustrations/home/dioramas/discovery/discovery-main.webp?w=640",
+          "/illustrations/home/dioramas/discovery/discovery-detail.webp?w=640",
+          "/illustrations/home/dioramas/discovery/discovery-energy.webp?w=640",
+          "/illustrations/home/dioramas/discovery/discovery-front.webp?w=640",
+          "/illustrations/home/dioramas/garden/garden-contact-shadow.webp?w=640",
+          "/illustrations/home/dioramas/garden/garden-base.webp?w=640",
+          "/illustrations/home/dioramas/garden/garden-back.webp?w=640",
+          "/illustrations/home/dioramas/garden/garden-main.webp?w=640",
+          "/illustrations/home/dioramas/garden/garden-detail.webp?w=640",
+          "/illustrations/home/dioramas/garden/garden-energy.webp?w=640",
+          "/illustrations/home/dioramas/garden/garden-front.webp?w=640"
+        ]
+      },
+      "homeIncludingGame03Selection": {
+        "js": {
+          "files": 9,
+          "raw": 661088,
+          "gzip": 203253
+        },
+        "css": {
+          "files": 7,
+          "raw": 206074,
+          "gzip": 44515
+        },
+        "art": {
+          "files": 46,
+          "raw": 528352,
+          "gzip": 528352
+        },
+        "artFiles": [
+          "/illustrations/home/explorer-marker.webp?w=96",
+          "/illustrations/home/dioramas/route-world/route-base.webp?w=828",
+          "/illustrations/home/dioramas/route-world/route-structure.webp?w=828",
+          "/illustrations/home/home-background-desktop.webp",
+          "/illustrations/home/world-glow.webp",
+          "/illustrations/home/dioramas/route-world/route-shadow.webp?w=828",
+          "/illustrations/home/dioramas/route-world/route-terrain.webp?w=828",
+          "/illustrations/home/dioramas/route-world/route-props.webp?w=828",
+          "/illustrations/home/dioramas/route-world/route-characters.webp?w=828",
+          "/illustrations/home/dioramas/route-world/route-energy.webp?w=828",
+          "/illustrations/home/dioramas/route-world/route-front.webp?w=828",
+          "/illustrations/home/dioramas/circuit-world/circuit-shadow.webp?w=640",
+          "/illustrations/home/dioramas/circuit-world/circuit-base.webp?w=640",
+          "/illustrations/home/dioramas/circuit-world/circuit-terrain.webp?w=640",
+          "/illustrations/home/dioramas/circuit-world/circuit-structure.webp?w=640",
+          "/illustrations/home/dioramas/circuit-world/circuit-props.webp?w=640",
+          "/illustrations/home/dioramas/circuit-world/circuit-energy.webp?w=640",
+          "/illustrations/home/dioramas/circuit-world/circuit-front.webp?w=640",
+          "/illustrations/home/dioramas/panel/panel-contact-shadow.webp?w=640",
+          "/illustrations/home/dioramas/panel/panel-base.webp?w=640",
+          "/illustrations/home/dioramas/panel/panel-back.webp?w=640",
+          "/illustrations/home/dioramas/panel/panel-main.webp?w=640",
+          "/illustrations/home/dioramas/panel/panel-detail.webp?w=640",
+          "/illustrations/home/dioramas/panel/panel-energy.webp?w=640",
+          "/illustrations/home/dioramas/panel/panel-front.webp?w=640",
+          "/illustrations/home/dioramas/discovery/discovery-contact-shadow.webp?w=640",
+          "/illustrations/home/dioramas/discovery/discovery-base.webp?w=640",
+          "/illustrations/home/dioramas/discovery/discovery-back.webp?w=640",
+          "/illustrations/home/dioramas/discovery/discovery-main.webp?w=640",
+          "/illustrations/home/dioramas/discovery/discovery-detail.webp?w=640",
+          "/illustrations/home/dioramas/discovery/discovery-energy.webp?w=640",
+          "/illustrations/home/dioramas/discovery/discovery-front.webp?w=640",
+          "/illustrations/home/dioramas/garden/garden-contact-shadow.webp?w=640",
+          "/illustrations/home/dioramas/garden/garden-base.webp?w=640",
+          "/illustrations/home/dioramas/garden/garden-back.webp?w=640",
+          "/illustrations/home/dioramas/garden/garden-main.webp?w=640",
+          "/illustrations/home/dioramas/garden/garden-detail.webp?w=640",
+          "/illustrations/home/dioramas/garden/garden-energy.webp?w=640",
+          "/illustrations/home/dioramas/garden/garden-front.webp?w=640",
+          "/illustrations/home/dioramas/discovery/discovery-contact-shadow.webp?w=750",
+          "/illustrations/home/dioramas/discovery/discovery-base.webp?w=750",
+          "/illustrations/home/dioramas/discovery/discovery-back.webp?w=750",
+          "/illustrations/home/dioramas/discovery/discovery-main.webp?w=750",
+          "/illustrations/home/dioramas/discovery/discovery-detail.webp?w=750",
+          "/illustrations/home/dioramas/discovery/discovery-energy.webp?w=750",
+          "/illustrations/home/dioramas/discovery/discovery-front.webp?w=750"
+        ]
+      },
+      "game03EntryAndSetup": {
+        "js": {
+          "files": 2,
+          "raw": 55599,
+          "gzip": 17996
+        },
+        "css": {
+          "files": 1,
+          "raw": 22010,
+          "gzip": 5106
+        },
+        "art": {
+          "files": 7,
+          "raw": 343266,
+          "gzip": 343266
+        },
+        "artFiles": [
+          "/assets/hidden-objects/explorer-studio/v1/hero.webp?w=1080",
+          "/assets/hidden-objects/explorer-studio/v1/hero.webp?w=640",
+          "/assets/hidden-objects/explorer-studio/v1/back.webp",
+          "/assets/hidden-objects/explorer-studio/v1/plate.webp",
+          "/assets/hidden-objects/explorer-studio/v1/front.webp",
+          "/assets/hidden-objects/explorer-studio/v1/front-right.webp",
+          "/assets/hidden-objects/explorer-observatory/v1/hero.webp?w=384"
+        ]
+      },
+      "studioRoundSinceEntry": {
+        "js": {
+          "files": 2,
+          "raw": 55599,
+          "gzip": 17996
+        },
+        "css": {
+          "files": 1,
+          "raw": 22010,
+          "gzip": 5106
+        },
+        "art": {
+          "files": 12,
+          "raw": 377536,
+          "gzip": 377536
+        },
+        "artFiles": [
+          "/assets/hidden-objects/explorer-studio/v1/hero.webp?w=1080",
+          "/assets/hidden-objects/explorer-studio/v1/hero.webp?w=640",
+          "/assets/hidden-objects/explorer-studio/v1/back.webp",
+          "/assets/hidden-objects/explorer-studio/v1/plate.webp",
+          "/assets/hidden-objects/explorer-studio/v1/front.webp",
+          "/assets/hidden-objects/explorer-studio/v1/front-right.webp",
+          "/assets/hidden-objects/explorer-observatory/v1/hero.webp?w=384",
+          "/assets/hidden-objects/explorer-studio/v1/thumbs/lanterna.webp",
+          "/assets/hidden-objects/explorer-studio/v1/thumbs/lupa.webp",
+          "/assets/hidden-objects/explorer-studio/v1/thumbs/globo.webp",
+          "/assets/hidden-objects/explorer-studio/v1/thumbs/guarda-chuva.webp",
+          "/assets/hidden-objects/explorer-studio/v1/thumbs/bussola.webp"
+        ]
+      },
+      "observatoryChosenLater": {
+        "js": {
+          "files": 0,
+          "raw": 0,
+          "gzip": 0
+        },
+        "css": {
+          "files": 0,
+          "raw": 0,
+          "gzip": 0
+        },
+        "art": {
+          "files": 10,
+          "raw": 333740,
+          "gzip": 333740
+        },
+        "artFiles": [
+          "/assets/hidden-objects/explorer-observatory/v1/back.webp",
+          "/assets/hidden-objects/explorer-observatory/v1/plate.webp",
+          "/assets/hidden-objects/explorer-observatory/v1/front-top.webp",
+          "/assets/hidden-objects/explorer-observatory/v1/front.webp",
+          "/assets/hidden-objects/explorer-observatory/v1/front-right.webp",
+          "/assets/hidden-objects/explorer-observatory/v1/thumbs/pipa.webp",
+          "/assets/hidden-objects/explorer-observatory/v1/thumbs/violino.webp",
+          "/assets/hidden-objects/explorer-observatory/v1/thumbs/vela.webp",
+          "/assets/hidden-objects/explorer-observatory/v1/thumbs/bule.webp",
+          "/assets/hidden-objects/explorer-observatory/v1/thumbs/pantufas.webp"
+        ]
+      }
+    },
+    "performance": {
+      "desktopDragCommits": 0,
+      "mobileDragCommits": 0
+    }
+  }
+}

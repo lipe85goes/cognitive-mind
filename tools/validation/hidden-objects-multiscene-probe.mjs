@@ -180,15 +180,30 @@ async function openSession({ width, height, touch = false, reducedMotion = "no-p
   await context.addInitScript(installObservers);
   await context.addInitScript(plantSeeds, seeds);
   const page = await context.newPage();
-  const session = { context, page, errors: [], requests: [], touch, cdp: null };
+  const session = { context, page, errors: [], requests: [], optimized: new Map(), pending: [], touch, cdp: null };
   page.on("pageerror", (error) => session.errors.push(`pageerror: ${error.message}`));
   page.on("console", (message) => {
     if (message.type() === "error") session.errors.push(`console: ${message.text()}`);
   });
-  page.on("request", (request) => session.requests.push(new URL(request.url()).pathname));
+  page.on("request", (request) => session.requests.push(requestKey(request.url())));
+  // the image optimiser's answers are weighed as served (their size is not a file on disk)
+  page.on("response", (response) => {
+    if (new URL(response.url()).pathname !== "/_next/image") return;
+    const key = requestKey(response.url());
+    session.pending.push(response.body().then((body) => session.optimized.set(key, body.length), () => {}));
+  });
   if (touch) session.cdp = await context.newCDPSession(page);
   return session;
 }
+
+/** A request as recorded: its path, or — through the image optimiser — the picture it asks for and the width. */
+function requestKey(href) {
+  const url = new URL(href);
+  if (url.pathname !== "/_next/image") return url.pathname;
+  return `${url.searchParams.get("url")}?w=${url.searchParams.get("w")}`;
+}
+/** The picture a recorded request is for (an optimised request names its source). */
+const assetOf = (key) => key.split("?")[0];
 
 async function witness(page, name, settleMs = 0) {
   if (!OUT) return;
@@ -397,8 +412,9 @@ async function desktop() {
     { homeWorlds },
   );
   await witness(page, "ms-desktop-setup");
-  const observatoryArt = (requests) => requests.filter((url) => url.startsWith("/assets/hidden-objects/explorer-observatory/") && !url.endsWith("/hero.webp"));
-  check("D03_SETUP_FETCHES_ONLY_THE_OTHER_ROOMS_PREVIEW", observatoryArt(session.requests).length === 0 && session.requests.includes(ROOM[OBSERVATORY].preview), {
+  const observatoryArt = (requests) =>
+    requests.map(assetOf).filter((url) => url.startsWith("/assets/hidden-objects/explorer-observatory/") && url !== ROOM[OBSERVATORY].preview);
+  check("D03_SETUP_FETCHES_ONLY_THE_OTHER_ROOMS_PREVIEW", observatoryArt(session.requests).length === 0 && session.requests.some((url) => assetOf(url) === ROOM[OBSERVATORY].preview), {
     observatoryRequests: session.requests.filter((url) => url.includes("explorer-observatory")),
   });
 
@@ -452,6 +468,7 @@ async function desktop() {
   await settle(page);
   const plussed = await camera(page);
   check("D15_ZOOM_WHEEL_AND_PLUS", wheeled.s > cam.s && plussed.s > wheeled.s, { scales: [cam.s, wheeled.s, plussed.s] });
+  await witness(page, "ms-desktop-zoomed", 300);
   // the three stations take the camera to their centre
   const stationProblems = [];
   for (const station of ROOM[OBSERVATORY].stations) {
@@ -480,6 +497,7 @@ async function desktop() {
     banners[0] === `Pista: procure ${station.hintPhrase}.` && banners[1] === `Pista: procure ${target(OBSERVATORY, subject).hintRegion}.` && banners[2] === `Aqui está: ${target(OBSERVATORY, subject).label}.`,
     { banners },
   );
+  await witness(page, "ms-desktop-hint-shown", 300);
   const found = await find(session, OBSERVATORY, subject);
   const tag = await page.locator(".hos-found-tag").textContent().catch(() => null);
   check("D18_A_FIND_SAYS_ITS_NAME", found && tag === target(OBSERVATORY, subject).label, { tag });
@@ -544,6 +562,7 @@ async function mobile() {
   await settle(page);
   const pinched = await camera(page);
   check("P05_PINCH_ZOOMS", pinched.s > cam.s * 1.3, { before: cam.s, after: pinched.s });
+  await witness(page, "ms-mobile-pinch", 300);
   const tray = await page.evaluate(() => ({
     items: document.querySelectorAll(".hos-item").length,
     clues: [...document.querySelectorAll(".hos-item .hos-item-label")].map((l) => l.textContent),
@@ -611,9 +630,11 @@ async function landscape() {
   await page.setViewportSize({ width: 390, height: 844 });
   await settle(page);
   const upright = { round: await roundOnScreen(page), progress: await progress(page) };
+  await witness(page, "ms-landscape-turned-upright", 300);
   await page.setViewportSize({ width: 844, height: 390 });
   await settle(page);
   const backAgain = { round: await roundOnScreen(page), progress: await progress(page) };
+  await witness(page, "ms-landscape-back-again", 300);
   check(
     "L05_ROTATION_KEEPS_THE_ROUND",
     [upright, backAgain].every((s) => same(s.round, mid.round) && s.progress.found === mid.progress.found) && mid.progress.found === 1,
@@ -662,6 +683,7 @@ async function reducedMotion() {
     return element ? { animation: getComputedStyle(element).animationName, timing: getComputedStyle(element).animationTimingFunction } : null;
   });
   check("R03_HALO_WITHOUT_FADES", halo?.animation === "hos-halo-life-still" && /steps/.test(halo.timing), { halo });
+  await witness(page, "ms-reduced-motion-halo");
   const drifting = ROOM[OBSERVATORY].layers.filter((l) => l.parallax !== 1).map((l) => l.id);
   const parallax = await page.evaluate((ids) => ids.map((id) => document.querySelector(`.hos-layer-${id}`)?.style.transform ?? null), drifting);
   check("R04_NO_PARALLAX_ON_ANY_DRIFTING_LAYER", parallax.length === 4 && parallax.every((t) => /translate3d\(0px, 0px, 0px\)/.test(t ?? "")), { drifting, parallax });
@@ -704,6 +726,7 @@ async function isolation() {
   check("I03_THE_SAME_SEED_IN_THE_OBSERVATORY", isDrawn(observatory, OBSERVATORY, "medium", seeds[1]) && seeds[0] === seeds[1], { observatory, drawn: drawn(OBSERVATORY, "medium", seeds[1]) });
   check("I04_NO_OBJECT_OF_THE_OTHER_ROOM", !observatory.ids.some((id) => ROOM[STUDIO].pool.some((t) => t.id === id)) && (await progress(page)).found === 0, { observatory: observatory.ids, studio: studio.ids });
   check("I05_NOTHING_SAVED", (await storedResults(page)).length === 0);
+  await witness(page, "ms-isolation-observatory", 300);
   check("NO_PAGE_ERRORS", session.errors.length === 0, { errors: session.errors });
   await session.context.close();
 }
@@ -718,15 +741,16 @@ function servedBytes(url) {
   const buffer = fs.readFileSync(file);
   return { raw: buffer.length, gzip: /\.(js|css)$/.test(clean) ? zlib.gzipSync(buffer, { level: 9 }).length : buffer.length };
 }
-function tally(urls) {
+function tally(urls, session) {
   const groups = { js: [], css: [], art: [] };
   for (const url of [...new Set(urls)]) {
     if (/\.js$/.test(url)) groups.js.push(url);
     else if (/\.css$/.test(url)) groups.css.push(url);
-    else if (/\.(webp|png|jpe?g|svg)$/.test(url)) groups.art.push(url);
+    else if (/\.(webp|png|jpe?g|svg)$/.test(assetOf(url))) groups.art.push(url);
   }
+  const optimised = (url) => (session.optimized.has(url) ? { raw: session.optimized.get(url), gzip: session.optimized.get(url) } : null);
   const sum = (list) => list.reduce((acc, url) => {
-    const bytes = servedBytes(url);
+    const bytes = url.includes("?w=") ? optimised(url) : servedBytes(url);
     return bytes ? { files: acc.files + 1, raw: acc.raw + bytes.raw, gzip: acc.gzip + bytes.gzip } : acc;
   }, { files: 0, raw: 0, gzip: 0 });
   return { js: sum(groups.js), css: sum(groups.css), art: sum(groups.art), artFiles: groups.art };
@@ -764,12 +788,13 @@ async function payload() {
     await page.waitForLoadState("networkidle");
     observatory = session.requests.slice(before);
   }
+  await Promise.all(session.pending);
   metrics.payload = {
-    homeInitial: tally(home),
-    homeIncludingGame03Selection: tally(homeAll),
-    game03EntryAndSetup: tally(setup),
-    studioRoundSinceEntry: tally(studioRound),
-    observatoryChosenLater: tally(observatory),
+    homeInitial: tally(home, session),
+    homeIncludingGame03Selection: tally(homeAll, session),
+    game03EntryAndSetup: tally(setup, session),
+    studioRoundSinceEntry: tally(studioRound, session),
+    observatoryChosenLater: tally(observatory, session),
   };
   const homeGame03 = homeAll.filter((url) => url.startsWith("/assets/hidden-objects/"));
   check("Y01_THE_HOME_FETCHES_NO_GAME03_ROOM_ART", homeGame03.length === 0, { homeGame03 });
@@ -778,7 +803,7 @@ async function payload() {
   const obsPrefix = "/assets/hidden-objects/explorer-observatory/";
   check(
     "Y02_SETUP_FETCHES_ONE_ROOM_AND_THE_OTHERS_PREVIEW",
-    !hasRooms || (setupArt.some((url) => url.startsWith(studioPrefix)) && setupArt.filter((url) => url.startsWith(obsPrefix)).every((url) => url === ROOM[OBSERVATORY].preview)),
+    !hasRooms || (setupArt.some((url) => url.startsWith(studioPrefix)) && setupArt.map(assetOf).filter((url) => url.startsWith(obsPrefix)).every((url) => url === ROOM[OBSERVATORY].preview)),
     { setupArt },
   );
   check(

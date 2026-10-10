@@ -4,7 +4,7 @@ Gerado por `node tools/validation/hidden-objects-round-fairness.mjs --out docs/a
 Cada dificuldade: 1.000.000 explorações simuladas com a seleção real do jogo
 (`selectRoundTargets`), uma semente de 32 bits por exploração (sequência fixa, reproduzível).
 "Exato" é a probabilidade enumerada (toda rodada válida igualmente provável); "medido" é o que as
-sementes de fato sortearam. Kit de arte `v1`, plate `dc4b59d64696…`. Veredito: **ROUND_FAIRNESS_OK**.
+sementes de fato sortearam. Kit de arte `v1`, plate `9a252cb9bb83…`. Veredito: **ROUND_FAIRNESS_OK**.
 
 Pool: 18 objetos · tiers A6 B6 C6 · Cúpula 6, Bancada 6, Arquivo 6.
 

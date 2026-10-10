@@ -1,0 +1,538 @@
+{
+ "mission": "GAME03-MULTISCENE-03",
+ "compared": {
+  "base": "58b5f08 (GAME03-EXPERIENCE-02 final)",
+  "now": "feat/game03-multiscene-03 working tree"
+ },
+ "method": {
+  "bundle": "hidden-objects-browser-probe.mjs --scenario bundle: each build read from its own .next (Home HTML scripts, then the lazy sets that reach each game); gzip level 9",
+  "payload": "hidden-objects-multiscene-probe.mjs --scenario ms-payload against each build: what the browser requested at each step; files weighed as served (image-optimiser answers by their response size)"
+ },
+ "bundle": {
+  "base": {
+   "homeInitial": {
+    "js": {
+     "files": 10,
+     "raw": 773682,
+     "gzip": 242772
+    },
+    "css": {
+     "files": 7,
+     "raw": 206074,
+     "gzip": 44515
+    }
+   },
+   "studio": {
+    "js": {
+     "files": 2,
+     "raw": 40184,
+     "gzip": 13465
+    },
+    "css": {
+     "files": 1,
+     "raw": 19328,
+     "gzip": 4709
+    }
+   },
+   "route": {
+    "js": {
+     "files": 3,
+     "raw": 55385,
+     "gzip": 18820
+    },
+    "css": {
+     "files": 1,
+     "raw": 9721,
+     "gzip": 2523
+    }
+   },
+   "circuit": {
+    "js": {
+     "files": 1,
+     "raw": 19502,
+     "gzip": 6549
+    },
+    "css": {
+     "files": 1,
+     "raw": 17603,
+     "gzip": 4162
+    }
+   },
+   "babylon": {
+    "js": {
+     "files": 36,
+     "raw": 8028358,
+     "gzip": 1767214
+    }
+   }
+  },
+  "now": {
+   "homeInitial": {
+    "js": {
+     "files": 10,
+     "raw": 773682,
+     "gzip": 242773
+    },
+    "css": {
+     "files": 7,
+     "raw": 206074,
+     "gzip": 44515
+    }
+   },
+   "studio": {
+    "js": {
+     "files": 2,
+     "raw": 55599,
+     "gzip": 17996
+    },
+    "css": {
+     "files": 1,
+     "raw": 22010,
+     "gzip": 5106
+    }
+   },
+   "route": {
+    "js": {
+     "files": 3,
+     "raw": 55502,
+     "gzip": 18851
+    },
+    "css": {
+     "files": 1,
+     "raw": 9721,
+     "gzip": 2523
+    }
+   },
+   "circuit": {
+    "js": {
+     "files": 1,
+     "raw": 19502,
+     "gzip": 6549
+    },
+    "css": {
+     "files": 1,
+     "raw": 17603,
+     "gzip": 4162
+    }
+   },
+   "babylon": {
+    "js": {
+     "files": 36,
+     "raw": 8028358,
+     "gzip": 1767214
+    }
+   }
+  }
+ },
+ "payload": {
+  "base": {
+   "homeInitial": {
+    "js": {
+     "files": 9,
+     "raw": 661088,
+     "gzip": 203252
+    },
+    "css": {
+     "files": 7,
+     "raw": 206074,
+     "gzip": 44515
+    },
+    "art": {
+     "files": 39,
+     "raw": 454096,
+     "gzip": 454096
+    },
+    "artFiles": [
+     "/illustrations/home/explorer-marker.webp?w=96",
+     "/illustrations/home/dioramas/route-world/route-base.webp?w=828",
+     "/illustrations/home/dioramas/route-world/route-structure.webp?w=828",
+     "/illustrations/home/home-background-desktop.webp",
+     "/illustrations/home/world-glow.webp",
+     "/illustrations/home/dioramas/route-world/route-shadow.webp?w=828",
+     "/illustrations/home/dioramas/route-world/route-terrain.webp?w=828",
+     "/illustrations/home/dioramas/route-world/route-props.webp?w=828",
+     "/illustrations/home/dioramas/route-world/route-characters.webp?w=828",
+     "/illustrations/home/dioramas/route-world/route-energy.webp?w=828",
+     "/illustrations/home/dioramas/route-world/route-front.webp?w=828",
+     "/illustrations/home/dioramas/circuit-world/circuit-shadow.webp?w=640",
+     "/illustrations/home/dioramas/circuit-world/circuit-base.webp?w=640",
+     "/illustrations/home/dioramas/circuit-world/circuit-terrain.webp?w=640",
+     "/illustrations/home/dioramas/circuit-world/circuit-structure.webp?w=640",
+     "/illustrations/home/dioramas/circuit-world/circuit-props.webp?w=640",
+     "/illustrations/home/dioramas/circuit-world/circuit-energy.webp?w=640",
+     "/illustrations/home/dioramas/circuit-world/circuit-front.webp?w=640",
+     "/illustrations/home/dioramas/panel/panel-contact-shadow.webp?w=640",
+     "/illustrations/home/dioramas/panel/panel-base.webp?w=640",
+     "/illustrations/home/dioramas/panel/panel-back.webp?w=640",
+     "/illustrations/home/dioramas/panel/panel-main.webp?w=640",
+     "/illustrations/home/dioramas/panel/panel-detail.webp?w=640",
+     "/illustrations/home/dioramas/panel/panel-energy.webp?w=640",
+     "/illustrations/home/dioramas/panel/panel-front.webp?w=640",
+     "/illustrations/home/dioramas/discovery/discovery-contact-shadow.webp?w=640",
+     "/illustrations/home/dioramas/discovery/discovery-base.webp?w=640",
+     "/illustrations/home/dioramas/discovery/discovery-back.webp?w=640",
+     "/illustrations/home/dioramas/discovery/discovery-main.webp?w=640",
+     "/illustrations/home/dioramas/discovery/discovery-detail.webp?w=640",
+     "/illustrations/home/dioramas/discovery/discovery-energy.webp?w=640",
+     "/illustrations/home/dioramas/discovery/discovery-front.webp?w=640",
+     "/illustrations/home/dioramas/garden/garden-contact-shadow.webp?w=640",
+     "/illustrations/home/dioramas/garden/garden-base.webp?w=640",
+     "/illustrations/home/dioramas/garden/garden-back.webp?w=640",
+     "/illustrations/home/dioramas/garden/garden-main.webp?w=640",
+     "/illustrations/home/dioramas/garden/garden-detail.webp?w=640",
+     "/illustrations/home/dioramas/garden/garden-energy.webp?w=640",
+     "/illustrations/home/dioramas/garden/garden-front.webp?w=640"
+    ]
+   },
+   "homeIncludingGame03Selection": {
+    "js": {
+     "files": 9,
+     "raw": 661088,
+     "gzip": 203252
+    },
+    "css": {
+     "files": 7,
+     "raw": 206074,
+     "gzip": 44515
+    },
+    "art": {
+     "files": 46,
+     "raw": 528352,
+     "gzip": 528352
+    },
+    "artFiles": [
+     "/illustrations/home/explorer-marker.webp?w=96",
+     "/illustrations/home/dioramas/route-world/route-base.webp?w=828",
+     "/illustrations/home/dioramas/route-world/route-structure.webp?w=828",
+     "/illustrations/home/home-background-desktop.webp",
+     "/illustrations/home/world-glow.webp",
+     "/illustrations/home/dioramas/route-world/route-shadow.webp?w=828",
+     "/illustrations/home/dioramas/route-world/route-terrain.webp?w=828",
+     "/illustrations/home/dioramas/route-world/route-props.webp?w=828",
+     "/illustrations/home/dioramas/route-world/route-characters.webp?w=828",
+     "/illustrations/home/dioramas/route-world/route-energy.webp?w=828",
+     "/illustrations/home/dioramas/route-world/route-front.webp?w=828",
+     "/illustrations/home/dioramas/circuit-world/circuit-shadow.webp?w=640",
+     "/illustrations/home/dioramas/circuit-world/circuit-base.webp?w=640",
+     "/illustrations/home/dioramas/circuit-world/circuit-terrain.webp?w=640",
+     "/illustrations/home/dioramas/circuit-world/circuit-structure.webp?w=640",
+     "/illustrations/home/dioramas/circuit-world/circuit-props.webp?w=640",
+     "/illustrations/home/dioramas/circuit-world/circuit-energy.webp?w=640",
+     "/illustrations/home/dioramas/circuit-world/circuit-front.webp?w=640",
+     "/illustrations/home/dioramas/panel/panel-contact-shadow.webp?w=640",
+     "/illustrations/home/dioramas/panel/panel-base.webp?w=640",
+     "/illustrations/home/dioramas/panel/panel-back.webp?w=640",
+     "/illustrations/home/dioramas/panel/panel-main.webp?w=640",
+     "/illustrations/home/dioramas/panel/panel-detail.webp?w=640",
+     "/illustrations/home/dioramas/panel/panel-energy.webp?w=640",
+     "/illustrations/home/dioramas/panel/panel-front.webp?w=640",
+     "/illustrations/home/dioramas/discovery/discovery-contact-shadow.webp?w=640",
+     "/illustrations/home/dioramas/discovery/discovery-base.webp?w=640",
+     "/illustrations/home/dioramas/discovery/discovery-back.webp?w=640",
+     "/illustrations/home/dioramas/discovery/discovery-main.webp?w=640",
+     "/illustrations/home/dioramas/discovery/discovery-detail.webp?w=640",
+     "/illustrations/home/dioramas/discovery/discovery-energy.webp?w=640",
+     "/illustrations/home/dioramas/discovery/discovery-front.webp?w=640",
+     "/illustrations/home/dioramas/garden/garden-contact-shadow.webp?w=640",
+     "/illustrations/home/dioramas/garden/garden-base.webp?w=640",
+     "/illustrations/home/dioramas/garden/garden-back.webp?w=640",
+     "/illustrations/home/dioramas/garden/garden-main.webp?w=640",
+     "/illustrations/home/dioramas/garden/garden-detail.webp?w=640",
+     "/illustrations/home/dioramas/garden/garden-energy.webp?w=640",
+     "/illustrations/home/dioramas/garden/garden-front.webp?w=640",
+     "/illustrations/home/dioramas/discovery/discovery-contact-shadow.webp?w=750",
+     "/illustrations/home/dioramas/discovery/discovery-base.webp?w=750",
+     "/illustrations/home/dioramas/discovery/discovery-back.webp?w=750",
+     "/illustrations/home/dioramas/discovery/discovery-main.webp?w=750",
+     "/illustrations/home/dioramas/discovery/discovery-detail.webp?w=750",
+     "/illustrations/home/dioramas/discovery/discovery-energy.webp?w=750",
+     "/illustrations/home/dioramas/discovery/discovery-front.webp?w=750"
+    ]
+   },
+   "game03EntryAndSetup": {
+    "js": {
+     "files": 2,
+     "raw": 40184,
+     "gzip": 13465
+    },
+    "css": {
+     "files": 1,
+     "raw": 19328,
+     "gzip": 4709
+    },
+    "art": {
+     "files": 6,
+     "raw": 332000,
+     "gzip": 332000
+    },
+    "artFiles": [
+     "/assets/hidden-objects/explorer-studio/v1/hero.webp?w=1080",
+     "/assets/hidden-objects/explorer-studio/v1/hero.webp?w=640",
+     "/assets/hidden-objects/explorer-studio/v1/back.webp",
+     "/assets/hidden-objects/explorer-studio/v1/plate.webp",
+     "/assets/hidden-objects/explorer-studio/v1/front.webp",
+     "/assets/hidden-objects/explorer-studio/v1/front-right.webp"
+    ]
+   },
+   "studioRoundSinceEntry": {
+    "js": {
+     "files": 2,
+     "raw": 40184,
+     "gzip": 13465
+    },
+    "css": {
+     "files": 1,
+     "raw": 19328,
+     "gzip": 4709
+    },
+    "art": {
+     "files": 11,
+     "raw": 366270,
+     "gzip": 366270
+    },
+    "artFiles": [
+     "/assets/hidden-objects/explorer-studio/v1/hero.webp?w=1080",
+     "/assets/hidden-objects/explorer-studio/v1/hero.webp?w=640",
+     "/assets/hidden-objects/explorer-studio/v1/back.webp",
+     "/assets/hidden-objects/explorer-studio/v1/plate.webp",
+     "/assets/hidden-objects/explorer-studio/v1/front.webp",
+     "/assets/hidden-objects/explorer-studio/v1/front-right.webp",
+     "/assets/hidden-objects/explorer-studio/v1/thumbs/lanterna.webp",
+     "/assets/hidden-objects/explorer-studio/v1/thumbs/lupa.webp",
+     "/assets/hidden-objects/explorer-studio/v1/thumbs/globo.webp",
+     "/assets/hidden-objects/explorer-studio/v1/thumbs/guarda-chuva.webp",
+     "/assets/hidden-objects/explorer-studio/v1/thumbs/bussola.webp"
+    ]
+   },
+   "observatoryChosenLater": {
+    "js": {
+     "files": 0,
+     "raw": 0,
+     "gzip": 0
+    },
+    "css": {
+     "files": 0,
+     "raw": 0,
+     "gzip": 0
+    },
+    "art": {
+     "files": 0,
+     "raw": 0,
+     "gzip": 0
+    },
+    "artFiles": []
+   }
+  },
+  "now": {
+   "homeInitial": {
+    "js": {
+     "files": 9,
+     "raw": 661088,
+     "gzip": 203253
+    },
+    "css": {
+     "files": 7,
+     "raw": 206074,
+     "gzip": 44515
+    },
+    "art": {
+     "files": 39,
+     "raw": 454096,
+     "gzip": 454096
+    },
+    "artFiles": [
+     "/illustrations/home/explorer-marker.webp?w=96",
+     "/illustrations/home/dioramas/route-world/route-base.webp?w=828",
+     "/illustrations/home/dioramas/route-world/route-structure.webp?w=828",
+     "/illustrations/home/home-background-desktop.webp",
+     "/illustrations/home/world-glow.webp",
+     "/illustrations/home/dioramas/route-world/route-shadow.webp?w=828",
+     "/illustrations/home/dioramas/route-world/route-terrain.webp?w=828",
+     "/illustrations/home/dioramas/route-world/route-props.webp?w=828",
+     "/illustrations/home/dioramas/route-world/route-characters.webp?w=828",
+     "/illustrations/home/dioramas/route-world/route-energy.webp?w=828",
+     "/illustrations/home/dioramas/route-world/route-front.webp?w=828",
+     "/illustrations/home/dioramas/circuit-world/circuit-shadow.webp?w=640",
+     "/illustrations/home/dioramas/circuit-world/circuit-base.webp?w=640",
+     "/illustrations/home/dioramas/circuit-world/circuit-terrain.webp?w=640",
+     "/illustrations/home/dioramas/circuit-world/circuit-structure.webp?w=640",
+     "/illustrations/home/dioramas/circuit-world/circuit-props.webp?w=640",
+     "/illustrations/home/dioramas/circuit-world/circuit-energy.webp?w=640",
+     "/illustrations/home/dioramas/circuit-world/circuit-front.webp?w=640",
+     "/illustrations/home/dioramas/panel/panel-contact-shadow.webp?w=640",
+     "/illustrations/home/dioramas/panel/panel-base.webp?w=640",
+     "/illustrations/home/dioramas/panel/panel-back.webp?w=640",
+     "/illustrations/home/dioramas/panel/panel-main.webp?w=640",
+     "/illustrations/home/dioramas/panel/panel-detail.webp?w=640",
+     "/illustrations/home/dioramas/panel/panel-energy.webp?w=640",
+     "/illustrations/home/dioramas/panel/panel-front.webp?w=640",
+     "/illustrations/home/dioramas/discovery/discovery-contact-shadow.webp?w=640",
+     "/illustrations/home/dioramas/discovery/discovery-base.webp?w=640",
+     "/illustrations/home/dioramas/discovery/discovery-back.webp?w=640",
+     "/illustrations/home/dioramas/discovery/discovery-main.webp?w=640",
+     "/illustrations/home/dioramas/discovery/discovery-detail.webp?w=640",
+     "/illustrations/home/dioramas/discovery/discovery-energy.webp?w=640",
+     "/illustrations/home/dioramas/discovery/discovery-front.webp?w=640",
+     "/illustrations/home/dioramas/garden/garden-contact-shadow.webp?w=640",
+     "/illustrations/home/dioramas/garden/garden-base.webp?w=640",
+     "/illustrations/home/dioramas/garden/garden-back.webp?w=640",
+     "/illustrations/home/dioramas/garden/garden-main.webp?w=640",
+     "/illustrations/home/dioramas/garden/garden-detail.webp?w=640",
+     "/illustrations/home/dioramas/garden/garden-energy.webp?w=640",
+     "/illustrations/home/dioramas/garden/garden-front.webp?w=640"
+    ]
+   },
+   "homeIncludingGame03Selection": {
+    "js": {
+     "files": 9,
+     "raw": 661088,
+     "gzip": 203253
+    },
+    "css": {
+     "files": 7,
+     "raw": 206074,
+     "gzip": 44515
+    },
+    "art": {
+     "files": 46,
+     "raw": 528352,
+     "gzip": 528352
+    },
+    "artFiles": [
+     "/illustrations/home/explorer-marker.webp?w=96",
+     "/illustrations/home/dioramas/route-world/route-base.webp?w=828",
+     "/illustrations/home/dioramas/route-world/route-structure.webp?w=828",
+     "/illustrations/home/home-background-desktop.webp",
+     "/illustrations/home/world-glow.webp",
+     "/illustrations/home/dioramas/route-world/route-shadow.webp?w=828",
+     "/illustrations/home/dioramas/route-world/route-terrain.webp?w=828",
+     "/illustrations/home/dioramas/route-world/route-props.webp?w=828",
+     "/illustrations/home/dioramas/route-world/route-characters.webp?w=828",
+     "/illustrations/home/dioramas/route-world/route-energy.webp?w=828",
+     "/illustrations/home/dioramas/route-world/route-front.webp?w=828",
+     "/illustrations/home/dioramas/circuit-world/circuit-shadow.webp?w=640",
+     "/illustrations/home/dioramas/circuit-world/circuit-base.webp?w=640",
+     "/illustrations/home/dioramas/circuit-world/circuit-terrain.webp?w=640",
+     "/illustrations/home/dioramas/circuit-world/circuit-structure.webp?w=640",
+     "/illustrations/home/dioramas/circuit-world/circuit-props.webp?w=640",
+     "/illustrations/home/dioramas/circuit-world/circuit-energy.webp?w=640",
+     "/illustrations/home/dioramas/circuit-world/circuit-front.webp?w=640",
+     "/illustrations/home/dioramas/panel/panel-contact-shadow.webp?w=640",
+     "/illustrations/home/dioramas/panel/panel-base.webp?w=640",
+     "/illustrations/home/dioramas/panel/panel-back.webp?w=640",
+     "/illustrations/home/dioramas/panel/panel-main.webp?w=640",
+     "/illustrations/home/dioramas/panel/panel-detail.webp?w=640",
+     "/illustrations/home/dioramas/panel/panel-energy.webp?w=640",
+     "/illustrations/home/dioramas/panel/panel-front.webp?w=640",
+     "/illustrations/home/dioramas/discovery/discovery-contact-shadow.webp?w=640",
+     "/illustrations/home/dioramas/discovery/discovery-base.webp?w=640",
+     "/illustrations/home/dioramas/discovery/discovery-back.webp?w=640",
+     "/illustrations/home/dioramas/discovery/discovery-main.webp?w=640",
+     "/illustrations/home/dioramas/discovery/discovery-detail.webp?w=640",
+     "/illustrations/home/dioramas/discovery/discovery-energy.webp?w=640",
+     "/illustrations/home/dioramas/discovery/discovery-front.webp?w=640",
+     "/illustrations/home/dioramas/garden/garden-contact-shadow.webp?w=640",
+     "/illustrations/home/dioramas/garden/garden-base.webp?w=640",
+     "/illustrations/home/dioramas/garden/garden-back.webp?w=640",
+     "/illustrations/home/dioramas/garden/garden-main.webp?w=640",
+     "/illustrations/home/dioramas/garden/garden-detail.webp?w=640",
+     "/illustrations/home/dioramas/garden/garden-energy.webp?w=640",
+     "/illustrations/home/dioramas/garden/garden-front.webp?w=640",
+     "/illustrations/home/dioramas/discovery/discovery-contact-shadow.webp?w=750",
+     "/illustrations/home/dioramas/discovery/discovery-base.webp?w=750",
+     "/illustrations/home/dioramas/discovery/discovery-back.webp?w=750",
+     "/illustrations/home/dioramas/discovery/discovery-main.webp?w=750",
+     "/illustrations/home/dioramas/discovery/discovery-detail.webp?w=750",
+     "/illustrations/home/dioramas/discovery/discovery-energy.webp?w=750",
+     "/illustrations/home/dioramas/discovery/discovery-front.webp?w=750"
+    ]
+   },
+   "game03EntryAndSetup": {
+    "js": {
+     "files": 2,
+     "raw": 55599,
+     "gzip": 17996
+    },
+    "css": {
+     "files": 1,
+     "raw": 22010,
+     "gzip": 5106
+    },
+    "art": {
+     "files": 7,
+     "raw": 343266,
+     "gzip": 343266
+    },
+    "artFiles": [
+     "/assets/hidden-objects/explorer-studio/v1/hero.webp?w=1080",
+     "/assets/hidden-objects/explorer-studio/v1/hero.webp?w=640",
+     "/assets/hidden-objects/explorer-studio/v1/back.webp",
+     "/assets/hidden-objects/explorer-studio/v1/plate.webp",
+     "/assets/hidden-objects/explorer-studio/v1/front.webp",
+     "/assets/hidden-objects/explorer-studio/v1/front-right.webp",
+     "/assets/hidden-objects/explorer-observatory/v1/hero.webp?w=384"
+    ]
+   },
+   "studioRoundSinceEntry": {
+    "js": {
+     "files": 2,
+     "raw": 55599,
+     "gzip": 17996
+    },
+    "css": {
+     "files": 1,
+     "raw": 22010,
+     "gzip": 5106
+    },
+    "art": {
+     "files": 12,
+     "raw": 377536,
+     "gzip": 377536
+    },
+    "artFiles": [
+     "/assets/hidden-objects/explorer-studio/v1/hero.webp?w=1080",
+     "/assets/hidden-objects/explorer-studio/v1/hero.webp?w=640",
+     "/assets/hidden-objects/explorer-studio/v1/back.webp",
+     "/assets/hidden-objects/explorer-studio/v1/plate.webp",
+     "/assets/hidden-objects/explorer-studio/v1/front.webp",
+     "/assets/hidden-objects/explorer-studio/v1/front-right.webp",
+     "/assets/hidden-objects/explorer-observatory/v1/hero.webp?w=384",
+     "/assets/hidden-objects/explorer-studio/v1/thumbs/lanterna.webp",
+     "/assets/hidden-objects/explorer-studio/v1/thumbs/lupa.webp",
+     "/assets/hidden-objects/explorer-studio/v1/thumbs/globo.webp",
+     "/assets/hidden-objects/explorer-studio/v1/thumbs/guarda-chuva.webp",
+     "/assets/hidden-objects/explorer-studio/v1/thumbs/bussola.webp"
+    ]
+   },
+   "observatoryChosenLater": {
+    "js": {
+     "files": 0,
+     "raw": 0,
+     "gzip": 0
+    },
+    "css": {
+     "files": 0,
+     "raw": 0,
+     "gzip": 0
+    },
+    "art": {
+     "files": 10,
+     "raw": 333740,
+     "gzip": 333740
+    },
+    "artFiles": [
+     "/assets/hidden-objects/explorer-observatory/v1/back.webp",
+     "/assets/hidden-objects/explorer-observatory/v1/plate.webp",
+     "/assets/hidden-objects/explorer-observatory/v1/front-top.webp",
+     "/assets/hidden-objects/explorer-observatory/v1/front.webp",
+     "/assets/hidden-objects/explorer-observatory/v1/front-right.webp",
+     "/assets/hidden-objects/explorer-observatory/v1/thumbs/pipa.webp",
+     "/assets/hidden-objects/explorer-observatory/v1/thumbs/violino.webp",
+     "/assets/hidden-objects/explorer-observatory/v1/thumbs/vela.webp",
+     "/assets/hidden-objects/explorer-observatory/v1/thumbs/bule.webp",
+     "/assets/hidden-objects/explorer-observatory/v1/thumbs/pantufas.webp"
+    ]
+   }
+  }
+ }
+}
