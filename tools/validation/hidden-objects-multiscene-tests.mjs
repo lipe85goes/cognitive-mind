@@ -36,6 +36,8 @@
  * called, how its hints read), the hit testing of those objects, the intro
  * hero byte for byte — and leaves the rounds, the sessions' lists and the
  * art kit to Difficulty V3's own contract (hidden-objects-calibration-tests.mjs).
+ * Four mutants edit the code where the calibration put it (the rounds'
+ * enumeration, Médio's tier bounds, the Observatory's audit of kit v2).
  *
  * Usage:
  *   node tools/validation/hidden-objects-multiscene-tests.mjs                  # the working tree
@@ -1359,7 +1361,8 @@ const MUTANTS = [
   },
   {
     name: "region balancing is ignored",
-    files: { [FILES.rounds]: [["        return held >= spread.min && held <= spread.max;", "        return held >= 0;"]] },
+    // GAME03-CALIBRATION-02A: the enumeration takes each station's share as subsets of its size
+    files: { [FILES.rounds]: [["    for (let k = spread.min; k <= spread.max; k += 1) subsets.push(...combinations(here, k));", "    for (let k = 0; k <= spread.max + 1; k += 1) subsets.push(...combinations(here, k));"]] },
     mustFail: ["M15"],
   },
   {
@@ -1377,19 +1380,22 @@ const MUTANTS = [
     files: {
       [FILES.rounds]: [
         ["  const spread = stationSpread(preset.count, source.stations.length);", "  const spread = stationSpread(preset.count, 3);"],
-        ["      source.stations.every((station) => {", '      [{ id: "janela" }, { id: "mesa" }, { id: "estante" }].every((station) => {'],
+        // GAME03-CALIBRATION-02A: the enumeration walks the stations here
+        ["  const perStation = source.stations.map((station) => {", '  const perStation = [{ id: "janela" }, { id: "mesa" }, { id: "estante" }].map((station) => {'],
       ],
     },
     mustFail: ["M15", "M03"],
   },
   {
     name: "Médio's difficulty is recalibrated",
-    files: { [FILES.scene]: [["    tiers: { A: 1, B: 3, C: 2 },", "    tiers: { A: 0, B: 3, C: 3 },"]] },
+    // GAME03-CALIBRATION-02A: Difficulty V3's Médio states its tiers as bounds in its round rule
+    files: { [FILES.scene]: [["round: { tiers: { A: [0, 1], B: [0, 6], C: [2, 6] }", "round: { tiers: { A: [0, 1], B: [0, 6], C: [1, 6] }"]] },
     mustFail: ["M20"],
   },
   {
     name: "the Observatory's art is repainted without a new audit",
-    files: { [`docs/archive/hidden-objects/${OBSERVATORY_ID}/review/v1/fairness.json`]: [['"plateSha256": "', '"plateSha256": "0']] },
+    // GAME03-CALIBRATION-02A: the Observatory ships art kit v2, audited in its own folder
+    files: { [`docs/archive/hidden-objects/${OBSERVATORY_ID}/review/v2/fairness.json`]: [['"plateSha256": "', '"plateSha256": "0']] },
     mustFail: ["M16"],
   },
 ];

@@ -26,6 +26,13 @@
  *   --samples N  seeds per difficulty (default 1000000)
  *   --out DIR    write fairness-report.json and fairness-report.md there
  *
+ * GAME03-CALIBRATION-02A (Difficulty V3): a difficulty's rounds are what its measured round rule
+ * accepts, so a round's tiers sit within bounds instead of one mix, and the rule — not the tier —
+ * decides how often an object is asked. On such a tree ("calibrated": the preset has a round rule)
+ * an object can be drawn when some valid round lists it; the expected tier of a line is the valid
+ * rounds' own tier share; and exposure is the object's share of the rounds (every one asked in at
+ * least 1 round in 20, none in more than 3 in 4) instead of a multiple of its tier's mean.
+ *
  * Exit: 0 every invariant held · 1 an invariant failed · 3 usage error.
  */
 import fs from "node:fs";
@@ -88,6 +95,12 @@ const zOf = (observed, p, n) => (p <= 0 || p >= 1 ? (observed === p ? 0 : Infini
 const stationPattern = (ids) => STATIONS.map((s) => ids.filter((id) => BY_ID[id].station === s).length).join("-");
 const tierMix = (ids) => TIERS.map((tier) => `${tier}${ids.filter((id) => BY_ID[id].tier === tier).length}`).join(" ");
 
+/** Calibrated trees: no object a difficulty can list is asked in fewer than 1 in 20 of its rounds, or more than 3 in 4. */
+const EXPOSURE = { floor: 0.05, ceiling: 0.75 };
+const bounds = (preset) => preset.round?.tiers ?? null;
+const tierLabel = (preset) =>
+  TIERS.map((tier) => (bounds(preset) ? `${tier}${bounds(preset)[tier][0]}–${bounds(preset)[tier][1]}` : `${tier}${preset.tiers[tier]}`)).join(" ");
+
 const problems = [];
 const report = {
   mission: "GAME03-EXPERIENCE-02 (per room since GAME03-MULTISCENE-03)",
@@ -110,9 +123,12 @@ for (const [index, difficulty] of DIFFICULTIES.entries()) {
   const preset = CONTRACT.DIFFICULTY_PRESETS[difficulty];
   const k = preset.count;
   const listable = POOL.filter((t) => ROUNDS.listableIn(t, preset));
-  // what a round of this difficulty can ask for: its list style shows it and its tier is drawn
-  const drawable = listable.filter((t) => preset.tiers[t.tier] > 0);
   const valid = ROUNDS.validRounds(ROOM, difficulty);
+  const calibrated = bounds(preset) !== null;
+  // what a round of this difficulty can ask for: its list style shows it and its tier is drawn (calibrated: some
+  // valid round — the measured round rule — lists it)
+  const inSomeRound = new Set(valid.flat());
+  const drawable = listable.filter((t) => (calibrated ? inSomeRound.has(t.id) : preset.tiers[t.tier] > 0));
   const roundIndex = new Map(valid.map((round, i) => [[...round].sort().join(), i]));
   const spread = ROUNDS.stationSpread(k, STATIONS.length);
 
@@ -166,25 +182,33 @@ for (const [index, difficulty] of DIFFICULTIES.entries()) {
   // per object
   const objects = POOL.map((t) => {
     const canList = drawable.includes(t);
-    const tierMean = preset.tiers[t.tier] / drawable.filter((o) => o.tier === t.tier).length;
+    const tierMean = calibrated ? null : preset.tiers[t.tier] / drawable.filter((o) => o.tier === t.tier).length;
     const frequency = listed[t.id] / drawn;
     return {
       id: t.id,
       tier: t.tier,
       station: t.station,
       drawable: canList,
-      whyNot: canList ? null : !preset.tiers[t.tier] ? `the difficulty draws no tier ${t.tier}` : `the ${preset.listStyle} list cannot show it`,
+      whyNot: canList
+        ? null
+        : !listable.includes(t)
+          ? `the ${preset.listStyle} list cannot show it`
+          : calibrated
+            ? "no round its rule accepts lists it"
+            : `the difficulty draws no tier ${t.tier}`,
       exact: round4(exact[t.id]),
       measured: round4(frequency),
       z: Number(zOf(frequency, exact[t.id], drawn).toFixed(2)),
       firstLine: round4(firstLine[t.id] / drawn),
       firstLineExact: round4(exact[t.id] / k),
-      exposureOverTierMean: canList && preset.tiers[t.tier] ? round3(exact[t.id] / tierMean) : null,
+      exposureOverTierMean: !calibrated && canList && preset.tiers[t.tier] ? round3(exact[t.id] / tierMean) : null,
     };
   });
 
   // tiers and stations, line by line
-  const tierShareExpected = Object.fromEntries(TIERS.map((tier) => [tier, preset.tiers[tier] / k]));
+  const tierShareExpected = Object.fromEntries(
+    TIERS.map((tier) => [tier, calibrated ? valid.reduce((sum, round) => sum + round.filter((id) => BY_ID[id].tier === tier).length, 0) / valid.length / k : preset.tiers[tier] / k]),
+  );
   const tierByLine = tierAtLine.map((counts) => Object.fromEntries(TIERS.map((tier) => [tier, round4(counts[tier] / drawn)])));
   const stationExpected = Object.fromEntries(STATIONS.map((s) => [s, round4(valid.reduce((sum, round) => sum + round.filter((id) => BY_ID[id].station === s).length, 0) / valid.length / k)]));
   const stationByLine = stationAtLine.map((counts) => Object.fromEntries(STATIONS.map((s) => [s, round4(counts[s] / drawn)])));
@@ -206,7 +230,17 @@ for (const [index, difficulty] of DIFFICULTIES.entries()) {
     if (!o.drawable && o.measured > 0) problems.push(`${difficulty}: ${o.id} is listed although ${o.whyNot}`);
     if (o.exposureOverTierMean !== null && (o.exposureOverTierMean < 0.5 || o.exposureOverTierMean > 2)) problems.push(`${difficulty}: ${o.id} exposure ${o.exposureOverTierMean}× its tier's mean`);
   }
-  if (Object.keys(mixes).length !== 1 || Object.keys(mixes)[0] !== tierMix(valid[0])) problems.push(`${difficulty}: tier mixes ${JSON.stringify(mixes)}`);
+  if (calibrated) {
+    const outside = valid.filter((round) => TIERS.some((tier) => {
+      const n = round.filter((id) => BY_ID[id].tier === tier).length;
+      return n < bounds(preset)[tier][0] || n > bounds(preset)[tier][1];
+    }));
+    if (outside.length) problems.push(`${difficulty}: ${outside.length} rounds with tiers outside ${tierLabel(preset)}`);
+    for (const o of objects) {
+      if (o.drawable && o.exact < EXPOSURE.floor) problems.push(`${difficulty}: ${o.id} asked in ${pct(o.exact)} of the rounds`);
+      if (o.exact > EXPOSURE.ceiling) problems.push(`${difficulty}: ${o.id} asked in ${pct(o.exact)} of the rounds`);
+    }
+  } else if (Object.keys(mixes).length !== 1 || Object.keys(mixes)[0] !== tierMix(valid[0])) problems.push(`${difficulty}: tier mixes ${JSON.stringify(mixes)}`);
   if (!patternsSeen.every(allowedPattern)) problems.push(`${difficulty}: a station pattern outside ⌊k/3⌋..⌈k/3⌉: ${patternsSeen.join(", ")}`);
   for (const [line, shares] of tierByLine.entries()) {
     for (const tier of TIERS) {
@@ -231,7 +265,8 @@ for (const [index, difficulty] of DIFFICULTIES.entries()) {
   };
 
   report.difficulties[difficulty] = {
-    preset: { count: k, tiers: preset.tiers, listStyle: preset.listStyle, hintLadder: preset.hintLadder ?? null },
+    preset: { count: k, tiers: preset.tiers ?? null, tierBounds: bounds(preset), listStyle: preset.listStyle, listClue: preset.listClue ?? null, hintLadder: preset.hintLadder ?? null },
+    tierLabel: tierLabel(preset),
     drawablePool: drawable.length,
     stationSpread: spread,
     validRounds: valid.length,
@@ -291,7 +326,7 @@ function markdown() {
   lines.push("| --- | --- | --- | --- | --- | --- | --- | --- | --- |");
   for (const d of DIFFICULTIES) {
     const r = report.difficulties[d];
-    lines.push(`| ${name[d]} | ${r.preset.listStyle} | ${r.preset.count} | ${TIERS.map((tier) => `${tier}${r.preset.tiers[tier]}`).join(" ")} | ${r.drawablePool} | ${r.validRounds} | ${r.reached} | ${r.chiSquareZ} | ${r.maxObjectZ} |`);
+    lines.push(`| ${name[d]} | ${r.preset.listStyle}${r.preset.listClue ? ` (${r.preset.listClue})` : ""} | ${r.preset.count} | ${r.tierLabel} | ${r.drawablePool} | ${r.validRounds} | ${r.reached} | ${r.chiSquareZ} | ${r.maxObjectZ} |`);
   }
   for (const d of DIFFICULTIES) {
     const r = report.difficulties[d];

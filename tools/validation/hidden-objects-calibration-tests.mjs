@@ -24,7 +24,10 @@
  * exact reveal in Médio/Difícil, Difícil never naming an object early, old
  * results, no timer/score/lives/ranking, replays that do not ask for the same
  * objects every time, the shared platform, one engine, the rooms' places, the
- * camera — and hold on both.
+ * camera — and hold on both. C05 and C07 (Recomeçar keeps the clues; nothing
+ * in a session changes them) are [preserved]: the base's one static clue never
+ * changed either, and the seeded clues must keep that true — their mutants
+ * (clues drawn again on every render) show they are not vacuous.
  *
  * Usage:
  *   node tools/validation/hidden-objects-calibration-tests.mjs                  # the working tree
@@ -554,7 +557,7 @@ async function runChecks(tree) {
     return { pass: unstable.length === 0 && Object.values(onScreen).every(Boolean), rounds: draws, unstable: unstable.slice(0, 4), listOnScreenIsTheSeedsClues: onScreen };
   });
 
-  await check("C05", "calibration", "RESTART_PRESERVES_THE_CLUES", async () => {
+  await check("C05", "preserved", "RESTART_PRESERVES_THE_CLUES", async () => {
     const { byId, model } = engine(tree);
     const facts = {};
     for (const id of SCENE_IDS) {
@@ -652,7 +655,7 @@ async function runChecks(tree) {
     return { pass: problems.length === 0 && onScreen, coverage, twoEntries: pair, problems };
   });
 
-  await check("C07", "calibration", "NO_CLUE_CHANGES_DURING_THE_SESSION", async () => {
+  await check("C07", "preserved", "NO_CLUE_CHANGES_DURING_THE_SESSION", async () => {
     const problems = [];
     const runs = {};
     for (const id of SCENE_IDS) {

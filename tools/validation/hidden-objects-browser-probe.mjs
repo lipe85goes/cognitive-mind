@@ -15,6 +15,9 @@
  *                  (station, pool, "Mostrar onde está") → find all → result (one, the new
  *                  presentation) → play again → Médio: silhouettes, a ladder that never points
  *                  (station, wide pool, direction) → finds → restart → exit → Home
+ *                  (GAME03-CALIBRATION-02A: on a calibrated build Médio lists the associative clues its
+ *                  seed draws and its second rung is the reclue, lighting nothing — X01, X02; the clue
+ *                  lines of Difícil are the seed's — X10, X12, R01)
  *   hard           1440×900, mouse: Difícil — the list is the clues; station → context → the
  *                  top, never a halo or a glide to the object; a find says the name (list, tag,
  *                  live region); pan, zoom, stations; the objectives fold; all eight → result
@@ -131,6 +134,19 @@ const ROUNDS = SOURCE.require("src/games/hidden-objects/hidden-objects-rounds.ts
 const STUDIO_ROOM = SOURCE.require("src/games/hidden-objects/scenes/explorer-studio.ts").EXPLORER_STUDIO;
 /** The list a difficulty and seed draw in the Estúdio, in the order shown. */
 const drawn = (difficulty, seed) => ROUNDS.selectRoundTargets(STUDIO_ROOM, difficulty, seed);
+/**
+ * GAME03-CALIBRATION-02A: a round tells, for each object, the variant of its
+ * clue bank the seed draws (the list's, and Médio's reclue) — before it, the
+ * object's one clue, and Médio listed silhouettes with names.
+ */
+const CLUES_FILE = "src/games/hidden-objects/hidden-objects-clues.ts";
+const CLUES = fs.existsSync(CLUES_FILE) ? SOURCE.require(CLUES_FILE) : null;
+const CALIBRATED = CLUES !== null;
+function toldClue(difficulty, seed, id, purpose = "list") {
+  if (!CALIBRATED) return purpose === "list" ? TARGET[id].clue : null;
+  const choice = CLUES.selectRoundClues(STUDIO_ROOM, difficulty, seed, drawn(difficulty, seed))[id];
+  return CLUES.clueAt(STUDIO_ROOM.pool.find((t) => t.id === id), choice[purpose])?.text ?? null;
+}
 /** Each scenario's seeds, one per "Explorar", in order. */
 const SEEDS = {
   desktop: [101, 202, 303], // Fácil · Médio after "Praticar outra vez" · Fácil again, a new entry from the Home
@@ -882,9 +898,12 @@ async function desktop() {
   metrics.roundsOnScreen["desktop medium"] = medium;
   metrics.playtest.visibleWithoutPan["desktop medium"] = await onScreenCount(page, mediumIds);
   const mediumEntries = await listEntries(page);
+  // calibrated (Difficulty V3): Médio lists the associative clue its seed draws, no picture; before, silhouettes and names
   check(
     "X01_MEDIO_LIST_IS_SILHOUETTE_AND_NAME",
-    same(mediumEntries.map((e) => e.text), mediumIds.map((id) => TARGET[id].label)) && mediumEntries.every((e) => e.art === "silhouette"),
+    CALIBRATED
+      ? same(mediumEntries.map((e) => e.text), mediumIds.map((id) => toldClue("medium", SEEDS.desktop[1], id))) && mediumEntries.every((e) => e.art === null)
+      : same(mediumEntries.map((e) => e.text), mediumIds.map((id) => TARGET[id].label)) && mediumEntries.every((e) => e.art === "silhouette"),
     { mediumEntries },
   );
   await witness(page, "e03-medium-playing");
@@ -905,7 +924,10 @@ async function desktop() {
   check(
     "X02_MEDIO_HINTS_NEVER_POINT",
     /^Pista: procure/.test(mediumLadder[0].banner) && mediumLadder[0].hinted === STATION[mediumSubject.station].label &&
-      /hos-halo-hint/.test(mediumLadder[1].halo ?? "") &&
+      // calibrated: the second rung tells it again in plainer words (the seed's direct variant), lighting nothing
+      (CALIBRATED
+        ? mediumLadder[1].halo === null && mediumLadder[1].banner === `Pista: em outras palavras — ${toldClue("medium", SEEDS.desktop[1], mediumIds[0], "reclue")}`
+        : /hos-halo-hint/.test(mediumLadder[1].halo ?? "")) &&
       mediumLadder[2].halo === null && mediumLadder[2].banner === `Pista: olhe ${mediumSubject.hintDirection}.` &&
       mediumLadder[3].button === "Rever pista" && neverPoints,
     { mediumLadder },
@@ -1186,7 +1208,7 @@ async function hard() {
   const names = hardIds.map((id) => TARGET[id].label);
   check(
     "X10_DIFICIL_LIST_IS_THE_CLUES",
-    same(entries.map((e) => e.text), hardIds.map((id) => TARGET[id].clue)) && entries.every((e) => e.art === null) &&
+    same(entries.map((e) => e.text), hardIds.map((id) => toldClue("hard", SEEDS.hard[0], id))) && entries.every((e) => e.art === null) &&
       !entries.some((e) => names.some((name) => norm(`${e.text} ${e.aria}`).includes(norm(name)))),
     { entries },
   );
@@ -1237,7 +1259,7 @@ async function hard() {
   }, TARGET[first].label);
   check(
     "X12_A_FIND_SAYS_THE_NAME",
-    revealed.line === TARGET[first].label && revealed.answered === TARGET[first].clue && revealed.tag === TARGET[first].label && revealed.live.includes(TARGET[first].label),
+    revealed.line === TARGET[first].label && revealed.answered === toldClue("hard", SEEDS.hard[0], first) && revealed.tag === TARGET[first].label && revealed.live.includes(TARGET[first].label),
     revealed,
   );
   await witness(page, "e07-hard-semantic-found", 150);
@@ -1471,7 +1493,8 @@ async function rounds() {
   await page.goto(`${BASE}/`, { waitUntil: "networkidle" });
   await hydrated(page);
   const LEVEL = { easy: "Fácil", medium: "Médio", hard: "Difícil" };
-  const STYLE = { easy: "picture", medium: "silhouette", hard: null };
+  // calibrated (Difficulty V3): Médio lists clues, no picture
+  const STYLE = { easy: "picture", medium: CALIBRATED ? null : "silhouette", hard: null };
   const seen = [];
   const problems = [];
   let scenery = null;

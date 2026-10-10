@@ -128,6 +128,10 @@ for (const scene of REGISTRY.SCENES) {
     if (valid.length !== accepted.length) problems.push(`${scene.id}/${d}: the product accepts ${valid.length} rounds, the report ${accepted.length}`);
     if (accepted.length === 0) problems.push(`${scene.id}/${d}: no round meets the rule`);
     const all = candidates.map((ids) => DIFFICULTY.roundProfile(scene, d, ids));
+    // how often a replay asks for each object: its share of the valid rounds (every one equally likely)
+    const share = new Map();
+    for (const ids of valid) for (const id of ids) share.set(id, (share.get(id) ?? 0) + 1 / valid.length);
+    const shares = [...share].sort((a, b) => a[1] - b[1]);
     byDifficulty[d] = {
       rule: { ...rule, maxSearch: Number.isFinite(rule.maxSearch) ? rule.maxSearch : null },
       candidates: candidates.length,
@@ -142,6 +146,11 @@ for (const scene of REGISTRY.SCENES) {
       popOuts: distribution(accepted.map((p) => p.popOuts)),
       semantic: accepted[0]?.semantic ?? null,
       totalLoad: distribution(accepted.map((p) => p.count * (p.search + p.semantic / 3))),
+      exposure: {
+        leastAsked: shares.length ? [shares[0][0], round3(shares[0][1])] : null,
+        mostAsked: shares.length ? [shares.at(-1)[0], round3(shares.at(-1)[1])] : null,
+        sceneryHere: scene.pool.filter((t) => !share.has(t.id)).map((t) => t.id),
+      },
     };
   }
   // clues: which variants a stream of seeds tells, per level
@@ -199,6 +208,14 @@ const report = {
 
 function markdown() {
   const name = { easy: "Fácil", medium: "Médio", hard: "Difícil" };
+  const reason = {
+    tiers: "tiers fora dos limites",
+    "glance finds": "achados de relance demais",
+    "below the floor": "abaixo do piso",
+    "at or above the next floor": "no piso seguinte ou acima",
+    "look-alike pressure": "poucas sósias",
+  };
+  const pct = (pair) => (pair ? `${pair[0]} ${(pair[1] * 100).toFixed(1)}%` : "—");
   const L = [];
   L.push("# Game 03 · Difficulty V3 — relatório de calibração");
   L.push("");
@@ -217,7 +234,7 @@ function markdown() {
   L.push("");
   L.push("| V2 (base) | Fácil | Médio | Difícil |");
   L.push("| --- | --- | --- | --- |");
-  for (const key of ["min", "mean", "max"]) L.push(`| busca ${key} | ${DIFFICULTIES.map((d) => v2[d].pooled.search[key]).join(" | ")} |`);
+  for (const [key, label] of [["min", "mín."], ["mean", "média"], ["max", "máx."]]) L.push(`| busca ${label} | ${DIFFICULTIES.map((d) => v2[d].pooled.search[key]).join(" | ")} |`);
   L.push(`| sósias/objeto (média) | ${DIFFICULTIES.map((d) => v2[d].pooled.decoys.mean).join(" | ")} |`);
   for (const room of Object.values(rooms)) {
     L.push("");
@@ -234,7 +251,11 @@ function markdown() {
     L.push("");
     for (const d of DIFFICULTIES) {
       const r = room.difficulties[d];
-      L.push(`- ${name[d]}: rejeitadas por ${Object.entries(r.rejectedBy).map(([why, n]) => `${why} ${n}`).join(", ") || "—"}. Busca das candidatas: ${r.candidateSearch.min}–${r.candidateSearch.max} (média ${r.candidateSearch.mean}). Histograma das aceitas: ${Object.entries(r.search.histogram).map(([bin, n]) => `${bin}: ${n}`).join(", ")}.`);
+      L.push(
+        `- ${name[d]}: rejeitadas por ${Object.entries(r.rejectedBy).map(([why, n]) => `${reason[why] ?? why} ${n}`).join(", ") || "—"} (uma rodada pode falhar em mais de um critério). ` +
+          `Busca das candidatas: ${r.candidateSearch.min}–${r.candidateSearch.max} (média ${r.candidateSearch.mean}). Histograma das aceitas: ${Object.entries(r.search.histogram).map(([bin, n]) => `${bin}: ${n}`).join(", ")}. ` +
+          `Objeto mais pedido: ${pct(r.exposure.mostAsked)} das rodadas; menos pedido: ${pct(r.exposure.leastAsked)}; só cenário aqui: ${r.exposure.sceneryHere.join(", ") || "nenhum"}.`,
+      );
     }
     L.push("");
     L.push(`Carga de busca por objeto: ${Object.entries(room.loads).map(([o, v]) => `${o} ${v}`).join(" · ")}.`);

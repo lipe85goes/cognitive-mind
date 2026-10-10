@@ -13,6 +13,11 @@
  * results, the Estúdio at every difficulty, phones) stay in
  * hidden-objects-browser-probe.mjs; this layer covers the rooms.
  *
+ * GAME03-CALIBRATION-02A: a clue list tells the variant of each object's clue
+ * bank its round's seed draws, so P06 holds the tray to that (read from source,
+ * hidden-objects-clues.ts). Difficulty V3's own browser checks are in
+ * hidden-objects-calibration-probe.mjs.
+ *
  * Scenarios (all by default; pick with --scenario a,b):
  *   ms-desktop        1440×900, mouse: Game 03 from the Home → setup offers both rooms (the Estúdio
  *                     chosen) → a seeded Estúdio round → "Trocar de cena" (nothing saved) → the
@@ -84,12 +89,21 @@ const { chromium } = await (async () => {
 const SOURCE = createModuleGraph({ mocks: {}, globals: {} });
 const REGISTRY = SOURCE.require("src/games/hidden-objects/hidden-objects-scenes.ts");
 const ROUNDS = SOURCE.require("src/games/hidden-objects/hidden-objects-rounds.ts");
+/** GAME03-CALIBRATION-02A: a round tells the clue its seed draws from each object's bank (before it, the one clue). */
+const CLUES_FILE = "src/games/hidden-objects/hidden-objects-clues.ts";
+const CLUES = fs.existsSync(CLUES_FILE) ? SOURCE.require(CLUES_FILE) : null;
 const ROOM = Object.fromEntries(REGISTRY.SCENES.map((scene) => [scene.id, scene]));
 const STUDIO = "explorer-studio";
 const OBSERVATORY = "explorer-observatory";
 const STORAGE_KEY = /const STORAGE_KEY = "([^"]+)"/.exec(fs.readFileSync("src/engine/storage.ts", "utf8"))[1];
 const drawn = (roomId, difficulty, seed) => ROUNDS.selectRoundTargets(ROOM[roomId], difficulty, seed);
 const target = (roomId, id) => ROOM[roomId].pool.find((t) => t.id === id);
+/** The line a clue list shows for `id` in the round (room, difficulty, seed). */
+function listedClue(roomId, difficulty, seed, id) {
+  if (!CLUES) return target(roomId, id).clue;
+  const ids = drawn(roomId, difficulty, seed);
+  return CLUES.clueAt(target(roomId, id), CLUES.selectRoundClues(ROOM[roomId], difficulty, seed, ids)[id].list)?.text ?? null;
+}
 const centreOf = (region) => (region.kind === "rect" ? { x: region.x + region.w / 2, y: region.y + region.h / 2 } : { x: region.cx, y: region.cy });
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 const sorted = (list) => [...list].sort();
@@ -568,7 +582,7 @@ async function mobile() {
     clues: [...document.querySelectorAll(".hos-item .hos-item-label")].map((l) => l.textContent),
     listShown: !document.querySelector(".hos-list")?.hidden,
   }));
-  check("P06_TRAY_LISTS_THE_CLUES", tray.items === 8 && tray.listShown && tray.clues.every((c, i) => c === target(OBSERVATORY, round.ids[i]).clue), tray);
+  check("P06_TRAY_LISTS_THE_CLUES", tray.items === 8 && tray.listShown && tray.clues.every((c, i) => c === listedClue(OBSERVATORY, "hard", seeds[0], round.ids[i])), tray);
   await press(session, page.locator(".hos-tray-toggle"));
   const folded = await page.evaluate(() => ({ hidden: document.querySelector(".hos-list")?.hidden, tray: document.querySelector(".hos-shell")?.dataset.tray }));
   await press(session, page.locator(".hos-tray-toggle"));
