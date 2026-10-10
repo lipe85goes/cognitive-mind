@@ -1309,6 +1309,69 @@
 }
 
 /* —— motion —— */
+/*
+ * GAME03-MULTISCENE-03: a short landscape screen (a phone on its side) sets up
+ * in two columns — the rooms on the left, the difficulty on the right — so
+ * "Explorar" stays within reach without scrolling the card.
+ */
+@media (max-height: 520px) and (orientation: landscape) {
+  .hos-setup {
+    width: min(48rem, 100%);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: 1rem;
+    row-gap: 0.45rem;
+    padding: 0.9rem 1.1rem;
+  }
+
+  .hos-setup > :not(.hos-scenes, .hos-difficulty) {
+    grid-column: 1 / -1;
+  }
+
+  .hos-setup .hos-kicker,
+  .hos-setup .hos-subtitle,
+  .hos-setup .hos-setup-copy,
+  .hos-setup .hos-controls-line {
+    display: none;
+  }
+
+  .hos-setup h2 {
+    font-size: 1.3rem;
+  }
+
+  .hos-setup .hos-scenes {
+    grid-template-columns: minmax(0, 1fr);
+    align-content: start;
+  }
+
+  .hos-scene-option {
+    grid-template-columns: 5.5rem minmax(0, 1fr);
+    align-items: center;
+    padding: 0.35rem;
+  }
+
+  .hos-scene-option input {
+    top: 0.6rem;
+    left: 0.6rem;
+  }
+
+  .hos-scene-text small {
+    display: none;
+  }
+
+  .hos-setup .hos-difficulty-option {
+    min-height: 44px;
+    padding: 0.35rem 0.7rem;
+  }
+
+  .hos-setup .hos-difficulty-option small {
+    font-size: 0.72rem;
+  }
+
+  .hos-setup .hos-primary {
+    min-height: 46px;
+  }
+}
+
 @keyframes hos-breath {
   0% {
     opacity: 0;

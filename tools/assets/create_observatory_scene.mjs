@@ -171,7 +171,7 @@ const DEFS = `
     <stop offset="0" stop-color="#f0b850"/><stop offset="1" stop-color="#b9792a"/>
   </linearGradient>
   <linearGradient id="appleRed" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#ff7a5c"/><stop offset=".45" stop-color="#d42f2b"/><stop offset="1" stop-color="#7a1514"/>
+    <stop offset="0" stop-color="#ff8a66"/><stop offset=".45" stop-color="#e2392f"/><stop offset="1" stop-color="#9a1e18"/>
   </linearGradient>
   <linearGradient id="porcelain" x1="0" y1="0" x2="1" y2="0">
     <stop offset="0" stop-color="#b8b4a8"/><stop offset=".35" stop-color="#fdfaf2"/><stop offset=".7" stop-color="#e6e0d0"/><stop offset="1" stop-color="#9c978a"/>
@@ -444,7 +444,7 @@ const ART = {
     nominal: { w: 64, h: 62 },
     body: `
       ${shadow(32, 60, 24, 4)}
-      <path d="M32 18 C24 10 8 12 6 30 C4 46 16 60 26 60 C29 60 30 58 32 58 C34 58 35 60 38 60 C48 60 60 46 58 30 C56 12 40 10 32 18 Z" fill="url(#appleRed)" stroke="#5a0e0e" stroke-width="1.6"/>
+      <path d="M32 18 C24 10 8 12 6 30 C4 46 16 60 26 60 C29 60 30 58 32 58 C34 58 35 60 38 60 C48 60 60 46 58 30 C56 12 40 10 32 18 Z" fill="url(#appleRed)" stroke="#ffb09a" stroke-width="2"/>
       <path d="M32 18 C33 12 34 8 36 4" stroke="#4a2c12" stroke-width="3" fill="none" stroke-linecap="round"/>
       <path d="M36 8 C44 0 54 2 56 8 C48 12 40 12 36 8 Z" fill="#4c9a3a" stroke="#285a1c" stroke-width="1"/>
       <ellipse cx="18" cy="28" rx="6" ry="9" fill="#fff" opacity=".45" transform="rotate(-20 18 28)"/>`,
@@ -1183,11 +1183,11 @@ function deskItems(omit) {
   <path d="M1726 950 L1820 944" stroke="#8a6a3c" stroke-width="1"/>
   ${t(omit, "maca")}
   <g>
-    ${shadow(1768, 960, 26, 4)}
-    <path d="M1746 962 L1790 962 L1786 928 L1750 928 Z" fill="#20283a" stroke="#0e121c" stroke-width="1.5"/>
-    <rect x="1757" y="919" width="22" height="10" rx="2" fill="#141a28"/>
-    <path d="M1752 930 L1756 960" stroke="#9aa6c0" stroke-width="2" opacity=".6"/>
-    <path d="M1772 920 L1800 870" stroke="#f4ead2" stroke-width="3"/>
+    ${shadow(1750, 962, 28, 4)}
+    <path d="M1726 964 L1774 964 L1770 926 L1730 926 Z" fill="#20283a" stroke="#0e121c" stroke-width="1.5"/>
+    <rect x="1739" y="916" width="24" height="11" rx="2" fill="#141a28"/>
+    <path d="M1732 928 L1736 962" stroke="#9aa6c0" stroke-width="2" opacity=".6"/>
+    <path d="M1754 918 L1778 862" stroke="#f4ead2" stroke-width="3"/>
   </g>
   <rect x="1828" y="946" width="166" height="12" rx="4" fill="url(#brassH)" stroke="#5e3f14" stroke-width="1.2"/>
   ${t(omit, "bule")}

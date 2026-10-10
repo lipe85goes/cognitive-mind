@@ -105,13 +105,18 @@ const { chromium } = await (async () => {
 
 // --- the scene data the game uses (read from source, never restated here) -------------------------
 
+// GAME03-MULTISCENE-03: this probe plays the Estúdio; its data lives in scenes/explorer-studio.ts, the
+// contract (difficulty presets) in hidden-objects-scene.ts — read both, the Estúdio's names over the contract's
 const SCENE = (() => {
-  const js = ts.transpileModule(fs.readFileSync("src/games/hidden-objects/hidden-objects-scene.ts", "utf8"), {
-    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 },
-  }).outputText;
-  const mod = { exports: {} };
-  vm.runInNewContext(js, { module: mod, exports: mod.exports, require: () => ({}) });
-  return mod.exports;
+  const load = (file) => {
+    const js = ts.transpileModule(fs.readFileSync(file, "utf8"), {
+      compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 },
+    }).outputText;
+    const mod = { exports: {} };
+    vm.runInNewContext(js, { module: mod, exports: mod.exports, require: () => ({}) });
+    return mod.exports;
+  };
+  return { ...load("src/games/hidden-objects/hidden-objects-scene.ts"), ...load("src/games/hidden-objects/scenes/explorer-studio.ts") };
 })();
 const TARGET = Object.fromEntries(SCENE.HIDDEN_OBJECTS.map((t) => [t.id, t]));
 const STATION = Object.fromEntries(SCENE.SCENE_STATIONS.map((s) => [s.id, s]));
@@ -121,9 +126,11 @@ const STORAGE_KEY = /const STORAGE_KEY = "([^"]+)"/.exec(fs.readFileSync("src/en
 
 // --- rounds: the selection itself, from source; the seeds each scenario plants ---------------------------
 
-const ROUNDS = createModuleGraph({ mocks: {}, globals: {} }).require("src/games/hidden-objects/hidden-objects-rounds.ts");
-/** The list a difficulty and seed draw, in the order shown. */
-const drawn = (difficulty, seed) => ROUNDS.selectRoundTargets(difficulty, seed);
+const SOURCE = createModuleGraph({ mocks: {}, globals: {} });
+const ROUNDS = SOURCE.require("src/games/hidden-objects/hidden-objects-rounds.ts");
+const STUDIO_ROOM = SOURCE.require("src/games/hidden-objects/scenes/explorer-studio.ts").EXPLORER_STUDIO;
+/** The list a difficulty and seed draw in the Estúdio, in the order shown. */
+const drawn = (difficulty, seed) => ROUNDS.selectRoundTargets(STUDIO_ROOM, difficulty, seed);
 /** Each scenario's seeds, one per "Explorar", in order. */
 const SEEDS = {
   desktop: [101, 202, 303], // Fácil · Médio after "Praticar outra vez" · Fácil again, a new entry from the Home

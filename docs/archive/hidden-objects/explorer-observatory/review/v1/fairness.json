@@ -1,6 +1,6 @@
 {
   "kit": "/assets/hidden-objects/explorer-observatory/v1",
-  "plateSha256": "624822b5381b1a9bd41e9cf2061718f52b0102d75d2e62fef9d1a2002ce40674",
+  "plateSha256": "88c4bfb2aa2ffef62081e547c72e281e4a308b50965572c6cc5133b7f959b90a",
   "rule": {
     "visible": "share of the target's own pixels the finished plate shows (plate rendered with and without the target)",
     "contrast": "F4 as written: mean-luminance ratio, visible target vs a 24 su ring, on the composed room",
@@ -26,9 +26,9 @@
     {
       "id": "luneta",
       "tier": "B",
-      "visible": 0.774,
-      "contrast": 1.86,
-      "edge": 1.93,
+      "visible": 0.77,
+      "contrast": 1.89,
+      "edge": 1.91,
       "lookAlikes": [
         "rolo-de-mapas"
       ]
@@ -44,9 +44,9 @@
     {
       "id": "oculos",
       "tier": "C",
-      "visible": 0.869,
-      "contrast": 1.39,
-      "edge": 1.81,
+      "visible": 0.853,
+      "contrast": 1.48,
+      "edge": 1.86,
       "lookAlikes": [
         "argolas"
       ]
@@ -112,9 +112,9 @@
     {
       "id": "maca",
       "tier": "C",
-      "visible": 0.529,
-      "contrast": 1.04,
-      "edge": 1.45,
+      "visible": 0.695,
+      "contrast": 1.27,
+      "edge": 1.48,
       "lookAlikes": [
         "novelo"
       ]
@@ -168,9 +168,9 @@
     {
       "id": "leque",
       "tier": "C",
-      "visible": 0.849,
+      "visible": 0.867,
       "contrast": 1.5,
-      "edge": 1.54,
+      "edge": 1.49,
       "lookAlikes": [
         "concha"
       ]
