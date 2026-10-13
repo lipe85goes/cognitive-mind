@@ -469,7 +469,7 @@ async function runChecks(tree) {
     for (let i = 0; i < 3; i += 1) s = R(s, { type: "hint" });
     const halo = model.hintHalo(s.hintTarget, "easy", s.hintStage);
     // GAME03-INTERACTIONS-04 (restated): an object kept behind a shut piece is shown by its piece (revealOf)
-    const c = revealOf(model, s.hintTarget).centre;
+    const c = revealOf(model, s.hintTarget, s).centre;
     const pure = s.hintStage === 3 && halo && Math.hypot(halo.cx - c.x, halo.cy - c.y) < EPS;
     const studio = openStudio(tree);
     studio.start("easy");

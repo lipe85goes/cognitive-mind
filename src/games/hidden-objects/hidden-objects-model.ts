@@ -10,7 +10,8 @@ import {
   pieceState,
   type InteractionState,
 } from "@/games/hidden-objects/hidden-objects-interactions";
-import { selectRoundTargets } from "@/games/hidden-objects/hidden-objects-rounds";
+import { homeLayout, placedScene, type RoomLayout } from "@/games/hidden-objects/hidden-objects-layout";
+import { selectRound } from "@/games/hidden-objects/hidden-objects-rounds";
 import {
   DIFFICULTY_PRESETS,
   type HiddenObjectDefinition,
@@ -44,6 +45,14 @@ import {
  * to its next state; an object kept behind a piece can be neither seen nor
  * found until the piece exposes it. Nothing else — camera, hints, renders,
  * finds — ever moves a piece.
+ *
+ * GAME03-REPLAYABILITY-05: the room's movable things sit where the round's
+ * layout puts them (`state.layout`, drawn with the list from the same seed —
+ * hidden-objects-rounds.ts, selectRound). Everything that reads where an
+ * object is — the tap, the hints, the round model — reads `roomOf(state)`: the
+ * room as this exploration plays it (hidden-objects-layout.ts, placedScene).
+ * "Recomeçar" keeps the layout; a new exploration draws a new one; setup shows
+ * the room's home layout.
  */
 
 export const HIDDEN_OBJECTS_TITLE = "Estúdio das Descobertas";
@@ -87,6 +96,11 @@ export function distanceToRegion(point: Point, region: SceneRegion): number {
   const dx = Math.max(region.x - point.x, 0, point.x - (region.x + region.w));
   const dy = Math.max(region.y - point.y, 0, point.y - (region.y + region.h));
   return Math.hypot(dx, dy);
+}
+
+/** The room as this session plays it: every movable thing where the round's layout puts it (GAME03-REPLAYABILITY-05). */
+export function roomOf(state: Pick<SessionState, "scene" | "layout">): SceneDefinition {
+  return placedScene(state.scene, state.layout);
 }
 
 /** Whether an object can be seen and found with the room's pieces where they are (GAME03-INTERACTIONS-04). */
@@ -156,6 +170,13 @@ export interface SessionState {
   /** The seed the list was drawn with: the same difficulty and seed always give the same list. */
   roundSeed: number | null;
   /**
+   * Where the room's movable things sit (GAME03-REPLAYABILITY-05): drawn with
+   * the list from the round's seed; the home layout in setup. Nothing but a
+   * new exploration ever changes it — not "Recomeçar", the camera, a hint, a
+   * piece or a find.
+   */
+  layout: RoomLayout;
+  /**
    * Which clue of each listed object's bank the round tells (list and reclue),
    * drawn with the list from the same seed; empty in setup. Nothing but a new
    * exploration ever changes it.
@@ -205,6 +226,7 @@ export function createSession(scene: SceneDefinition, difficulty: DifficultyLeve
     difficulty,
     targets: [],
     roundSeed: null,
+    layout: homeLayout(scene),
     clues: {},
     foundIds: [],
     interactions: initialInteractions(scene),
@@ -282,9 +304,9 @@ export function sessionReducer(state: SessionState, action: SessionAction): Sess
     case "start": {
       if (state.status !== "setup") return state;
       const roundSeed = action.seed >>> 0;
-      const targets = selectRoundTargets(state.scene, state.difficulty, roundSeed);
+      const { targets, layout } = selectRound(state.scene, state.difficulty, roundSeed);
       const clues = selectRoundClues(state.scene, state.difficulty, roundSeed, targets);
-      return freshRound({ ...state, targets, roundSeed, clues });
+      return freshRound({ ...state, targets, roundSeed, layout, clues });
     }
 
     // Back to setup in the same room and difficulty: the round is dropped, a new "Explorar" draws a new one.
@@ -301,7 +323,7 @@ export function sessionReducer(state: SessionState, action: SessionAction): Sess
       const tolerance = tolerancePxFor(state.difficulty, action.pointerType);
       // Only listed objects in view are candidates: one still kept behind a shut piece is not there to be found.
       const reachable = listed.filter((id) => isExposed(state.scene, state.interactions, id));
-      const hit = hitTest(state.scene, action.point, reachable, action.scale, tolerance);
+      const hit = hitTest(roomOf(state), action.point, reachable, action.scale, tolerance);
       if (hit === null) {
         // Not an object: a room piece under the tap opens, shuts or moves (GAME03-INTERACTIONS-04).
         const piece = interactableAt(state.scene, state.interactions, action.point, action.scale, tolerance);
@@ -595,7 +617,7 @@ export function announcementFor(state: SessionState): string {
       : `Encontrou: ${target.label}.${answered} ${progressLabel(state)}.`;
   }
   if (event.kind === "already") return `Você já encontrou: ${targetById(state.scene, event.targetId).label}.`;
-  if (event.kind === "hint") return hintMessage(state.scene, event.targetId, state.difficulty, event.stage, state.clues, state.interactions);
+  if (event.kind === "hint") return hintMessage(roomOf(state), event.targetId, state.difficulty, event.stage, state.clues, state.interactions);
   if (event.kind === "interact") return pieceState(state.scene, state.interactions, event.interactableId).announce;
   return "";
 }

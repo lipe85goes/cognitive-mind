@@ -850,7 +850,7 @@ async function runChecks(tree) {
     const start = startSession(model, "easy", listSeed(tree, "easy"));
     const missed = model.sessionReducer(start, { type: "tap", point: { x: 5, y: 5 }, scale: 1, pointerType: "mouse" });
     const missRecordsNothing = missed.lastEvent?.kind === "miss" && missed.foundIds.length === 0 && same(sorted(Object.keys(missed)), sorted(Object.keys(start)));
-    const hit = model.sessionReducer(start, tapOn(model, "lupa"));
+    const hit = model.sessionReducer(start, tapOn(model, "lupa", "mouse", start));
     return {
       pass: failures.length === 0 && same(between, ["barco", "camera"]) && tolerancesOk && missRecordsNothing && same(hit.foundIds, ["lupa"]),
       failures,
@@ -1069,7 +1069,7 @@ async function runChecks(tree) {
     const climbs = same(ladder, ["lupa:1", "lupa:2", "lupa:3", "lupa:3"]) && s.hintSeq === 4 && s.foundIds.length === 0;
     s = R(R(s, { type: "focus-target", targetId: "binoculo" }), { type: "hint" });
     const perObject = s.hintTarget === "binoculo" && s.hintStage === 1;
-    const afterFind = R(s, tapOn(model, "binoculo"));
+    const afterFind = R(s, tapOn(model, "binoculo", "mouse", s));
     const findClears = afterFind.hintTarget === null && afterFind.hintStage === 0 && same(afterFind.foundIds, ["binoculo"]);
     // the halo, rung by rung of each difficulty's ladder (GAME03-EXPERIENCE-02): a pool of light
     // ("area"/"wide-area") holds the whole object without centring on it; "reveal" sits on it;
@@ -1094,7 +1094,7 @@ async function runChecks(tree) {
             if (!holds || !offCentre) haloProblems.push(`${d}/${id}: ${rung}`);
           } else if (rung === "reveal") {
             // GAME03-INTERACTIONS-04 (restated): an object kept behind a shut piece is shown by its piece (revealOf)
-            const at = revealOf(model, id).centre;
+            const at = revealOf(model, id, s).centre;
             const ringsIt = t.gate ? Boolean(halo) : halo && halo.r > model.regionRadius(t.region);
             if (!(halo && Math.hypot(halo.cx - at.x, halo.cy - at.y) < EPS && ringsIt)) haloProblems.push(`${d}/${id}: reveal`);
           } else if (halo !== null) {

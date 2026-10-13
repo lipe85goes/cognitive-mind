@@ -1337,25 +1337,37 @@ export const gestureRunner = (g) => (events, cameraMoving = false) => {
   return { state, effects, captures, taps: effects.filter((effect) => effect.kind === "tap") };
 };
 export const sample = (kind, id, x, y, t, pointerType = "touch", button = 0) => [kind, { id, x, y, t, pointerType, button }];
-export const tapOn = (model, id, pointerType = "mouse") => ({ type: "tap", point: model.regionCenter(model.targetById(id).region), scale: 1, pointerType });
+/**
+ * GAME03-REPLAYABILITY-05: an object as a session plays it — where the round's
+ * layout put it (`roomOf(state)`); on trees before layouts, or without a
+ * session, the object as the room defines it (its one place).
+ */
+export function placedTarget(model, state, id) {
+  if (state?.layout && typeof model.roomOf === "function") return model.roomOf(state).pool.find((target) => target.id === id);
+  return model.targetById(id);
+}
+/** A tap at the centre of an object — where `state`'s layout put it when a session is given (GAME03-REPLAYABILITY-05). */
+export const tapOn = (model, id, pointerType = "mouse", state = null) => ({ type: "tap", point: model.regionCenter(placedTarget(model, state, id).region), scale: 1, pointerType });
 /**
  * GAME03-INTERACTIONS-04: the Explorador's find through the reducer — an object
  * kept behind a room piece is found once its piece is opened (one "interact"),
  * then tapped; on trees before the pieces it is the plain tap.
+ * GAME03-REPLAYABILITY-05: the tap goes where the session's layout put it.
  */
 export function findIn(model, state, id, pointerType = "mouse") {
   const R = model.sessionReducer;
   const gate = model.targetById(id).gate;
   const shut = gate && state.interactions && model.isExposed && !model.isExposed(state.interactions, id);
-  return R(shut ? R(state, { type: "interact", interactableId: gate }) : state, tapOn(model, id, pointerType));
+  return R(shut ? R(state, { type: "interact", interactableId: gate }) : state, tapOn(model, id, pointerType, state));
 }
 /**
  * GAME03-INTERACTIONS-04: where Fácil's "Mostrar onde está" points for an object
  * on a fresh session — the object itself, or (kept behind a shut piece) that
  * piece; with the banner it says. Trees before the pieces: always the object.
+ * GAME03-REPLAYABILITY-05: the object where `state`'s layout put it, when given.
  */
-export function revealOf(model, id) {
-  const target = model.targetById(id);
+export function revealOf(model, id, state = null) {
+  const target = placedTarget(model, state, id);
   const piece = model.revealedPiece ? model.revealedPiece(id, "easy", 3) : null;
   if (!piece) return { bounds: model.regionBounds(target.region), centre: model.regionCenter(target.region), banner: `Aqui está: ${target.label}.` };
   const hit = piece.states.find((state) => state.id === piece.initial).hit;

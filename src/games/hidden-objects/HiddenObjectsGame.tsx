@@ -19,6 +19,7 @@ import {
   hintRung,
   hintSubject,
   listEntryFor,
+  roomOf,
   sessionReducer,
   subjectText,
   targetById,
@@ -29,7 +30,15 @@ import {
   type InteractableId,
   type SceneDefinition,
 } from "@/games/hidden-objects/hidden-objects-scene";
-import { SCENES, forgetScene, rememberScene, rememberedScene } from "@/games/hidden-objects/hidden-objects-scenes";
+import { explorationSeed } from "@/games/hidden-objects/hidden-objects-rounds";
+import {
+  SCENES,
+  forgetScene,
+  lastLayoutOf,
+  rememberLayout,
+  rememberScene,
+  rememberedScene,
+} from "@/games/hidden-objects/hidden-objects-scenes";
 import { HiddenObjectsScene, type SceneFeedback, type SceneLoadState } from "@/games/hidden-objects/HiddenObjectsScene";
 import "@/games/hidden-objects/hidden-objects.css";
 
@@ -90,6 +99,8 @@ export function HiddenObjectsGame({ onComplete, onExit, onEntryReady, onEntryErr
   const trayId = useId();
 
   const scene = state.scene;
+  /** The room as this exploration plays it: every movable thing where the round's layout puts it. */
+  const room = roomOf(state);
   const sceneLoad = load.sceneId === scene.id ? load.state : "loading";
   const listed = state.targets;
   const preset = DIFFICULTY_PRESETS[state.difficulty];
@@ -101,10 +112,10 @@ export function HiddenObjectsGame({ onComplete, onExit, onEntryReady, onEntryErr
   const subject = hintSubject(state);
   const hintText =
     state.hintTarget && state.hintStage > 0
-      ? hintMessage(scene, state.hintTarget, state.difficulty, state.hintStage, state.clues, state.interactions)
+      ? hintMessage(room, state.hintTarget, state.difficulty, state.hintStage, state.clues, state.interactions)
       : "";
   const hintedStation =
-    state.hintTarget && state.hintStage >= 1 ? targetById(scene, state.hintTarget).station : null;
+    state.hintTarget && state.hintStage >= 1 ? targetById(room, state.hintTarget).station : null;
 
   const handleTap = useCallback((tap: SceneTap) => {
     dispatch({ type: "tap", point: tap.point, scale: tap.scale, pointerType: tap.pointerType });
@@ -129,9 +140,16 @@ export function HiddenObjectsGame({ onComplete, onExit, onEntryReady, onEntryErr
 
   const retryScene = () => setLoad((current) => ({ sceneId: scene.id, attempt: current.attempt + 1, state: "loading" }));
 
+  /**
+   * A new exploration: a fresh seed — another one while it would put the room
+   * back exactly as this visit last left it (GAME03-REPLAYABILITY-05) — and
+   * the round it draws.
+   */
   const explore = () => {
     rememberScene(scene);
-    dispatch({ type: "start", seed: freshRoundSeed() });
+    const { seed, signature } = explorationSeed(scene, state.difficulty, lastLayoutOf(scene), freshRoundSeed);
+    rememberLayout(scene, signature);
+    dispatch({ type: "start", seed });
   };
 
   // Every start and restart: the camera goes back to where the room opens.
@@ -149,13 +167,13 @@ export function HiddenObjectsGame({ onComplete, onExit, onEntryReady, onEntryErr
     const event = state.lastEvent;
     const controller = controllerRef.current;
     if (!controller || event?.kind !== "hint") return;
-    const move = hintCameraMove(state.scene, event.targetId, state.difficulty, event.stage, state.interactions);
+    const move = hintCameraMove(roomOf(state), event.targetId, state.difficulty, event.stage, state.interactions);
     if (move?.kind === "station") controller.goToStation(move.station);
     if (move?.kind === "circle") controller.showCircle(move.center, move.radius);
     if (move?.kind === "frame") controller.reveal(move.bounds);
     // the pieces are read when the hint is asked for, not followed afterwards: opening one never moves the camera
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.eventSeq, state.lastEvent, state.difficulty, state.scene]);
+  }, [state.eventSeq, state.lastEvent, state.difficulty, state.scene, state.layout]);
 
   // The closing card follows the last find after a short pause (cleared on restart/unmount).
   useEffect(() => {
@@ -179,7 +197,7 @@ export function HiddenObjectsGame({ onComplete, onExit, onEntryReady, onEntryErr
   const feedback = useMemo<SceneFeedback>(() => {
     const event = state.lastEvent;
     const seq = state.eventSeq;
-    const halo = state.hintTarget ? hintHalo(state.scene, state.hintTarget, state.difficulty, state.hintStage, state.interactions) : null;
+    const halo = state.hintTarget ? hintHalo(roomOf(state), state.hintTarget, state.difficulty, state.hintStage, state.interactions) : null;
     const reveal = state.hintTarget ? hintRung(state.difficulty, state.hintStage) === "reveal" : false;
     return {
       found: state.foundIds,
@@ -199,6 +217,7 @@ export function HiddenObjectsGame({ onComplete, onExit, onEntryReady, onEntryErr
     state.hintSeq,
     state.difficulty,
     state.scene,
+    state.layout,
     state.interactions,
     playing,
     pieceFocus,
@@ -222,6 +241,7 @@ export function HiddenObjectsGame({ onComplete, onExit, onEntryReady, onEntryErr
       data-tray={trayShown ? "open" : "closed"}
       data-scene={scene.id}
       data-round-seed={state.roundSeed ?? undefined}
+      data-layout={state.layout.signature}
     >
       <header className="hos-topbar">
         <button type="button" className="hos-chip-button" onClick={onExit} aria-label="Voltar à jornada">
@@ -267,6 +287,7 @@ export function HiddenObjectsGame({ onComplete, onExit, onEntryReady, onEntryErr
             viewportRef={viewportRef}
             feedback={feedback}
             interactions={state.interactions}
+            layout={state.layout}
             view={view}
             interactive={state.status !== "setup"}
             instructionsId={instructionsId}

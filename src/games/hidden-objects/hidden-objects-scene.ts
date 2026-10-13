@@ -118,6 +118,14 @@ export interface HiddenObjectDefinition {
    * there never finds it and nothing announces it. Absent: in view from the start.
    */
   gate?: InteractableId;
+  /**
+   * GAME03-REPLAYABILITY-05: the authored slots it may sit on, the first one
+   * where `region` says (its home). Each exploration's layout picks one of
+   * them from the round's seed; the object then is where that slot puts it —
+   * hit testing, hints and the round model all read the placement, never the
+   * home. One placement: the object never moves (a large anchor of the room).
+   */
+  placements?: readonly Placement[];
 }
 
 
@@ -214,6 +222,126 @@ export interface SceneLookAlike {
   /** What a careful look sees that the target does not have (or the other way round). */
   tellApart: string;
   region: SceneRegion;
+  /** GAME03-REPLAYABILITY-05: the authored slots it may sit on, the first where `region` says. */
+  placements?: readonly Placement[];
+}
+
+// --- the room's layout from one exploration to the next (GAME03-REPLAYABILITY-05) ------------------
+
+/** A slot's id, unique within its room. */
+export type SlotId = string;
+
+/**
+ * Which point of an occupant's box sits on a slot's anchor:
+ *   bottom — the middle of its lower edge (it stands or lies on a surface);
+ *   top    — the middle of its upper edge (it hangs from a hook or a rod);
+ *   center — its centre (it is fixed to a wall).
+ */
+export type SlotAlign = "bottom" | "top" | "center";
+
+/** The hint words for whatever sits on a slot — they name the place and fixed things only, never an object that moves. */
+export interface SlotHints {
+  /** Fácil's second hint, "Procure …": the spot itself. */
+  region: string;
+  /** Médio's last hint, "Olhe …": a direction inside the station, never the spot. */
+  direction: string;
+  /** Difícil's last hint, "Está …": what the spot is near, never where exactly. */
+  context: string;
+}
+
+/**
+ * A known-good place in the room for a movable thing (GAME03-REPLAYABILITY-05):
+ * a point on a shelf, a sill, a table, the floor, a hook, the inside of a
+ * drawer. Authored, never computed: an occupant's box is its own size, put so
+ * that `align` meets `at`. The art kit paints every occupant a slot may take
+ * exactly there, lit by the room's light and tucked under what the room paints
+ * in front of that spot; its audit measures each such placement.
+ */
+export interface SceneSlot {
+  id: SlotId;
+  /** The station it belongs to: an object's slots are all in its own station. */
+  station: StationId;
+  /** The surface it is on ("peitoril", "prateleira-2"…): words for people and reports; the engine reads none of them. */
+  surface: string;
+  /** The anchor, in su. */
+  at: { x: number; y: number };
+  align: SlotAlign;
+  /** The room piece it is inside or behind: only an object kept by that piece may take it. */
+  gate?: InteractableId;
+  /** Required on every slot a pool object may take. */
+  hints?: SlotHints;
+}
+
+/** One way a movable thing may sit: on a slot, maybe mirrored, at a findability class of its own there. */
+export interface Placement {
+  slot: SlotId;
+  /** Mirrored left to right (an authored variant: a hat that faces the other way). */
+  flip?: boolean;
+  /** A pool object's findability class on this slot (absent: the object's own `tier`). */
+  tier?: TargetTier;
+}
+
+/**
+ * A thing of the room that is no object and no look-alike — a pot, a jar, a
+ * box, a letter — that moves between authored slots too, so that what changes
+ * from one exploration to the next never tells which objects are asked for.
+ * Inert: a tap on it is a free tap.
+ */
+export interface SceneProp {
+  id: string;
+  /** What it is, for people and reports. */
+  label: string;
+  /** Where it is painted on its first placement (its home), in su. */
+  box: { x: number; y: number; w: number; h: number };
+  placements: readonly Placement[];
+}
+
+/**
+ * Where one placement's picture is: a rectangle of the room's sprite atlas
+ * (`sx`, `sy`, `w`, `h`, in px of the atlas) painted at (`x`, `y`) su of the
+ * room. Written by the art kit (tools/assets/), never by hand.
+ */
+export interface PlacementSprite {
+  sx: number;
+  sy: number;
+  w: number;
+  h: number;
+  x: number;
+  y: number;
+}
+
+/**
+ * What the art kit's audit measured for a pool object on one slot
+ * (GAME03-REPLAYABILITY-05): `visible` and `edge` as `TargetMeasure`, and the
+ * room around it as counts, so the clutter of any layout is exact arithmetic —
+ * `busy` busy pixels of its `ring` with nothing else that moves in the room,
+ * plus `near[k]` for each other placement `k` ("thing@slot") whose picture
+ * reaches that ring when it is in the layout.
+ */
+export interface PlacementMeasure {
+  visible: number;
+  edge: number;
+  ring: number;
+  busy: number;
+  near: Readonly<Record<string, number>>;
+}
+
+/**
+ * A placement's picture and (pool objects only) its audit, keyed "thing@slot".
+ * A thing with a single placement never moves: it is painted into the plate
+ * (`baked`) and has no picture of its own.
+ */
+export interface PlacementArt {
+  sprite?: PlacementSprite;
+  baked?: boolean;
+  measured?: PlacementMeasure;
+}
+
+/** The room's sprite atlas: every placement's picture in one file, fetched with the room. */
+export interface SceneAtlas {
+  src: string;
+  width: number;
+  height: number;
 }
 
 /**
@@ -419,6 +547,17 @@ export interface SceneDefinition {
    * is fetched with the room's, never before.
    */
   interactables: readonly SceneInteractable[];
+  /**
+   * GAME03-REPLAYABILITY-05: the room's authored slots, the things that move
+   * between them and nothing else (pots, jars, boxes — `props`), and the
+   * pictures of every placement (`atlas`, `placementArt`). The plate paints the
+   * room without any of them; each exploration's layout says where each is.
+   */
+  slots: readonly SceneSlot[];
+  props: readonly SceneProp[];
+  /** Absent only in a room where nothing moves. */
+  atlas?: SceneAtlas;
+  placementArt: Readonly<Record<string, PlacementArt>>;
   /** Back to front; every layer is essential (the room is ready once all have painted). */
   layers: readonly SceneLayer[];
   /** The list's picture of a pool object. */

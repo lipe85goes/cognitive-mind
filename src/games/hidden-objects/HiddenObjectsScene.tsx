@@ -10,6 +10,7 @@ import {
   type SceneTap,
 } from "@/games/hidden-objects/hidden-objects-controller";
 import { pieceState, poseTransform, type InteractionState } from "@/games/hidden-objects/hidden-objects-interactions";
+import { layoutSprites, placedScene, type RoomLayout } from "@/games/hidden-objects/hidden-objects-layout";
 import {
   regionBounds,
   targetById,
@@ -49,6 +50,8 @@ interface HiddenObjectsSceneProps {
   feedback: SceneFeedback;
   /** Where the room's pieces are (GAME03-INTERACTIONS-04): their art takes the pose of their state. */
   interactions: InteractionState;
+  /** Where the room's movable things sit this exploration (GAME03-REPLAYABILITY-05): each is painted on its slot. */
+  layout: RoomLayout;
   view: CameraView | null;
   interactive: boolean;
   instructionsId: string;
@@ -141,6 +144,7 @@ export function HiddenObjectsScene({
   viewportRef,
   feedback,
   interactions,
+  layout,
   view,
   interactive,
   instructionsId,
@@ -154,9 +158,15 @@ export function HiddenObjectsScene({
   const layerRefs = useRef<Partial<Record<string, HTMLImageElement | null>>>({});
   const callbacks = useRef({ onTap, onSettle });
   // A room's layers are fixed for the life of this mount (the game remounts the scene for another room).
-  // Its pieces are essential too: without its door, a room would show what the door keeps.
+  // Its pieces are essential too: without its door, a room would show what the door keeps. So is the
+  // atlas of its movable things (GAME03-REPLAYABILITY-05): the plate paints the room without them.
   const [readiness] = useState(
-    () => new SceneReadiness([...scene.layers.map((layer) => layer.id), ...scene.interactables.map((piece) => `piece:${piece.id}`)]),
+    () =>
+      new SceneReadiness([
+        ...scene.layers.map((layer) => layer.id),
+        ...scene.interactables.map((piece) => `piece:${piece.id}`),
+        ...(scene.atlas ? ["atlas"] : []),
+      ]),
   );
   const [room] = useState(() => scene);
 
@@ -246,8 +256,9 @@ export function HiddenObjectsScene({
               onError={() => readiness.layerFailed(layer.src)}
             />
           ))}
+          <SceneThings scene={room} layout={layout} onLoaded={handleLoaded} onFailed={(src) => readiness.layerFailed(src)} />
           <ScenePieces scene={room} interactions={interactions} onLoaded={handleLoaded} onFailed={(src) => readiness.layerFailed(src)} />
-          <SceneFeedbackLayer scene={room} feedback={feedback} interactions={interactions} />
+          <SceneFeedbackLayer scene={placedScene(room, layout)} feedback={feedback} interactions={interactions} />
         </div>
       </div>
       {/* A lens vignette fixed to the view, not the room: depth without touching the room's coordinates. */}
@@ -284,6 +295,73 @@ export function HiddenObjectsScene({
           <LocateFixed size={21} aria-hidden="true" />
         </button>
       </div>
+    </div>
+  );
+}
+
+/**
+ * The room's movable things (GAME03-REPLAYABILITY-05), on the plate's plane:
+ * just above it and under the room's pieces (what a drawer keeps is under the
+ * drawer's front), each a rectangle of the room's one sprite atlas painted at
+ * its placement. They are pictures, never controls: no focus, no events — the
+ * viewport hit-tests the layout's geometry. A new layout re-renders them once;
+ * the camera never does.
+ */
+function SceneThings({
+  scene,
+  layout,
+  onLoaded,
+  onFailed,
+}: {
+  scene: SceneDefinition;
+  layout: RoomLayout;
+  onLoaded: (id: string, src: string, image: HTMLImageElement) => void;
+  onFailed: (src: string) => void;
+}) {
+  if (!scene.atlas) return null;
+  const plate = Math.max(0, scene.layers.findIndex((layer) => layer.id === "plate"));
+  const atlas = scene.atlas;
+  return (
+    <div
+      className="hos-things"
+      aria-hidden="true"
+      data-layout={layout.signature}
+      style={
+        {
+          zIndex: plate,
+          "--hos-atlas": `url(${atlas.src})`,
+          "--hos-atlas-size": `${atlas.width}px ${atlas.height}px`,
+        } as CSSProperties
+      }
+    >
+      {/* the atlas itself, once: the room is ready only when it has decoded */}
+      <Image
+        src={atlas.src}
+        alt=""
+        width={atlas.width}
+        height={atlas.height}
+        unoptimized
+        loading="eager"
+        draggable={false}
+        className="hos-atlas"
+        onLoad={(event) => onLoaded("atlas", atlas.src, event.currentTarget)}
+        onError={() => onFailed(atlas.src)}
+      />
+      {layoutSprites(scene, layout).map((sprite) => (
+        <span
+          key={sprite.thing}
+          className="hos-thing"
+          data-thing={sprite.thing}
+          data-slot={sprite.slot}
+          style={{
+            left: sprite.sprite.x,
+            top: sprite.sprite.y,
+            width: sprite.sprite.w,
+            height: sprite.sprite.h,
+            backgroundPosition: `${-sprite.sprite.sx}px ${-sprite.sprite.sy}px`,
+          }}
+        />
+      ))}
     </div>
   );
 }

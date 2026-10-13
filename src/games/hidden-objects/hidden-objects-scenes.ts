@@ -39,3 +39,20 @@ export function rememberScene(scene: SceneDefinition): void {
 export function forgetScene(scene: SceneDefinition): void {
   if (lastExplored === scene) lastExplored = DEFAULT_SCENE;
 }
+
+/**
+ * GAME03-REPLAYABILITY-05: the layout each room was last explored in during
+ * this visit (its signature), in memory only — nothing is saved. A new
+ * exploration that would put the room back exactly as it was draws another
+ * seed (hidden-objects-rounds.ts, explorationSeed); the seed it keeps is the
+ * whole of its round.
+ */
+const lastLayouts = new Map<string, string>();
+
+export function lastLayoutOf(scene: SceneDefinition): string | null {
+  return lastLayouts.get(scene.id) ?? null;
+}
+
+export function rememberLayout(scene: SceneDefinition, signature: string): void {
+  if (SCENES.includes(scene)) lastLayouts.set(scene.id, signature);
+}

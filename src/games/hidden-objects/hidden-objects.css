@@ -182,6 +182,34 @@
 }
 
 /*
+ * GAME03-REPLAYABILITY-05 — the room's movable things, on the plate's plane:
+ * each one a rectangle of the room's sprite atlas at its placement. Pictures,
+ * not controls: nothing here takes a pointer, a focus or a transition.
+ */
+.hos-things {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.hos-thing {
+  position: absolute;
+  background-image: var(--hos-atlas);
+  background-size: var(--hos-atlas-size);
+  background-repeat: no-repeat;
+  pointer-events: none;
+}
+
+/* The atlas is fetched and decoded once for every thing; it is never shown itself. */
+.hos-atlas {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/*
  * GAME03-INTERACTIONS-04 — the room's movable pieces, on the plate's plane.
  * A state change is one transform the CSS eases (the length is the piece's
  * own, --hos-piece-ms); nothing animates per frame in script, and with reduced

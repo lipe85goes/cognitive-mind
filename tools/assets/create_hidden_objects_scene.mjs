@@ -45,8 +45,28 @@ import vm from "node:vm";
 import { fileURLToPath } from "node:url";
 import sharp from "sharp";
 import ts from "typescript";
-import { composeShipped, measureClutter } from "./hidden-objects-art-kit.mjs";
-import { overlayPieces, piecesOverlaySvg, piecesSvg, renderPieces, visibleWithPieces } from "./hidden-objects-pieces.mjs";
+import { piecesOverlaySvg, renderPieces } from "./hidden-objects-pieces.mjs";
+import {
+  allOpen,
+  atlasPng,
+  auditPlacements,
+  artModule,
+  boxOnSlot,
+  chunkText,
+  composeLayout,
+  lightRaw,
+  mirrored,
+  oneOpen,
+  packAtlas,
+  placementKey,
+  renderPlacements,
+  roomPlacements,
+  roomSvg,
+  roomThings,
+  slotOf,
+  writeIfChanged,
+} from "./hidden-objects-sprites.mjs";
+import { createModuleGraph, openSourceTree } from "../validation/route-module-loader.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const CONTRACT_MODULE = path.join(ROOT, "src/games/hidden-objects/hidden-objects-scene.ts");
@@ -466,9 +486,6 @@ function targetSvg(id, box = boxOf(TARGETS[id].region)) {
   const art = ART[id];
   return fit(art.body, art.nominal, box);
 }
-
-/** A pool object in its place — or nothing, when the audit renders the room without it. */
-const paint = (id, omit) => (omit === id ? "" : targetSvg(id));
 
 /** The magnifier's handle reaches past its lens circle: it is painted in the lens's frame. */
 function lupaHandleSvg(box) {
@@ -1069,47 +1086,10 @@ function trunkLetter() {
     <circle cx="651" cy="1298" r="5" fill="#8f2c22"/></g>`;
 }
 
-function sillItems() {
-  const y = WINDOW.bottom;
-  return `
-    ${plant(352, y, 0.78)}
-    <g>${shadow(745, y + 2, 30, 6)}<ellipse cx="732" cy="${y - 10}" rx="17" ry="11" fill="#968e82"/><ellipse cx="756" cy="${y - 7}" rx="13" ry="9" fill="#b2a99b"/><ellipse cx="742" cy="${y - 20}" rx="10" ry="8" fill="#7f776c"/></g>
-    <g>${shadow(806, y + 2, 26, 5)}<path d="M782 ${y} C782 ${y - 22} 830 ${y - 22} 830 ${y} Z" fill="url(#brassDim)" stroke="#4a3216" stroke-width="1.2"/><ellipse cx="806" cy="${y - 11}" rx="24" ry="4" fill="#6e4b1c"/></g>
-    <g>${shadow(872, y + 2, 18, 5)}<path d="M862 ${y} V${y - 46} C862 ${y - 60} 884 ${y - 60} 884 ${y - 46} V${y} Z" fill="#76a39b" opacity=".85" stroke="#2f4a46" stroke-width="1.6"/><rect x="867" y="${y - 70}" width="12" height="14" fill="#8a5a32"/></g>
-    ${shadow(653, y + 2, 34, 6)}
-    ${lookSvg("tinteiros")}
-    ${shadow(932, y + 2, 22, 5)}
-    ${lookSvg("vaso-torneado")}`;
-}
-
 /** A small pot that hides the right end of the binoculars (tier B: partly occluded). */
 function sillPotOverBinoculars() {
   const b = boxOf(TARGETS.binoculo.region);
   return plant(b.x + b.w - 4, WINDOW.bottom, 0.66, { leaves: "url(#leafDark)" });
-}
-
-function wallFrames(omit = null) {
-  return `
-    ${frame(1196, 330, 280, 236, PAINTING_LAKE)}
-    ${frame(1560, 300, 330, 230, PAINTING_MAP)}
-    ${frameShadow(1950, 590, 116, 140)}${lookSvg("folha-emoldurada")}
-    ${frameShadow(1932, 318, 104, 124)}${paint("borboleta", omit)}
-    <rect x="1180" y="700" width="300" height="16" rx="3" fill="url(#woodV)" stroke="#2b170b" stroke-width="1.6" filter="url(#grainH)"/>
-    ${occlusion(1180, 714, 300, 14, 0.5)}
-    <path d="M1200 716 l16 22 h4 v-22 Z M1440 716 l16 22 h4 v-22 Z" fill="#4a2a16"/>
-    <g>
-      ${shadow(1218, 698, 26, 4, 0.7)}${lookSvg("acucareiro")}
-      ${shadow(1306, 698, 30, 4, 0.8)}${paint("pinha", omit)}
-      <path d="M1344 700 V668 C1344 658 1366 658 1366 668 V700 Z" fill="#b1cbc1" opacity=".8" stroke="#5f7a74" stroke-width="1.6"/><rect x="1348" y="654" width="14" height="9" fill="#8a5a32"/>
-      ${bookStack(1370, 700, [[106, 16, "#7a3024"], [96, 14, "#2d4a68", 6], [88, 13, "#9c7230", 3]])}
-      ${shadow(1408, 656, 18, 3, 0.7)}${lookSvg("abacaxi-de-madeira")}
-    </g>`;
-}
-
-function globe(omit = null) {
-  return `
-    ${shadow(2200, 1420, 116, 18)}
-    ${paint("globo", omit)}`;
 }
 
 function table() {
@@ -1122,83 +1102,6 @@ function table() {
     <ellipse cx="1600" cy="1080" rx="510" ry="150" fill="url(#wood)" stroke="#2b170b" stroke-width="2.4" filter="url(#grainH)"/>
     <ellipse cx="1520" cy="1040" rx="380" ry="90" fill="#ffffff" opacity=".045"/>
     <path d="M1110 1080 C1150 1150 1400 1200 1700 1196" stroke="#d29a62" stroke-width="3" fill="none" opacity=".32"/>`;
-}
-
-function tableItems(omit = null) {
-  const map = `
-    <g>
-      <path d="M1486 990 L1984 972 L2006 1170 L1500 1196 Z" fill="#1a0e06" opacity=".3" transform="translate(6 8)" filter="url(#blur3)"/>
-      <path d="M1486 990 L1984 972 L2006 1170 L1500 1196 Z" fill="url(#parchment)" stroke="#9c7a48" stroke-width="1.6"/>
-      <path d="M1540 1020 C1580 1000 1640 1006 1660 1030 C1680 1056 1640 1076 1600 1070 C1560 1064 1520 1048 1540 1020 Z" fill="#d3b97f" stroke="#8a6a3c" stroke-width="1.4"/>
-      <path d="M1860 1060 C1900 1030 1960 1046 1966 1086 C1970 1120 1930 1140 1896 1128 C1866 1118 1846 1086 1860 1060 Z" fill="#d3b97f" stroke="#8a6a3c" stroke-width="1.4"/>
-      <path d="M1650 1110 C1680 1100 1720 1120 1712 1144 C1704 1166 1660 1160 1650 1140 Z" fill="#d3b97f" stroke="#8a6a3c" stroke-width="1.4"/>
-      <path d="M1640 1050 C1700 1080 1800 1060 1870 1080" stroke="#a0442c" stroke-width="2.2" stroke-dasharray="8 6" fill="none"/>
-      <path d="M1500 1010 L1990 994 M1504 1060 L1994 1044 M1506 1110 L1998 1094 M1508 1160 L2002 1144 M1600 990 L1612 1190 M1740 984 L1752 1184 M1880 978 L1892 1178" stroke="#a88b5c" stroke-width="1" opacity=".42"/>
-    </g>`;
-  // The open book lies over the compass's upper-left rim (tier B) and the watch's
-  // bow (tier C): both keep their dial and needle/hands in view.
-  const openBook = `
-    <g transform="translate(0 -20)">
-      <path d="M1186 1030 L1520 1030 L1530 1170 L1192 1176 Z" fill="#1a0e06" opacity=".32" transform="translate(6 10)" filter="url(#blur3)"/>
-      <path d="M1180 1150 C1240 1132 1300 1136 1356 1152 C1412 1136 1470 1132 1530 1150 L1526 1166 C1470 1150 1412 1154 1356 1168 C1300 1154 1240 1150 1184 1166 Z" fill="#652a1e" stroke="#3a140e" stroke-width="1.3"/>
-      <path d="M1186 1022 C1240 1000 1300 1004 1352 1018 L1356 1150 C1304 1134 1240 1132 1190 1154 Z" fill="url(#page)" stroke="#8a6a3c" stroke-width="1.5"/>
-      <path d="M1352 1018 C1404 1002 1466 1002 1522 1024 L1526 1154 C1470 1134 1406 1134 1356 1150 Z" fill="url(#pageR)" stroke="#8a6a3c" stroke-width="1.5"/>
-      <path d="M1340 1022 C1346 1060 1348 1110 1352 1148 L1362 1148 C1358 1110 1358 1060 1356 1022 Z" fill="#000" opacity=".1"/>
-      <g stroke="#8a7a62" stroke-width="1.2" opacity=".42">
-        <path d="M1206 1040 C1250 1026 1300 1028 1336 1036 M1206 1054 C1250 1040 1300 1042 1336 1050 M1206 1068 C1250 1054 1300 1056 1336 1064 M1206 1082 C1250 1068 1300 1070 1336 1078 M1206 1096 C1250 1082 1300 1084 1336 1092 M1206 1110 C1250 1096 1300 1098 1336 1106"/>
-        <path d="M1372 1036 C1410 1026 1460 1026 1504 1040 M1372 1050 C1410 1040 1460 1040 1504 1054 M1372 1064 C1410 1054 1460 1054 1504 1068"/>
-      </g>
-      <path d="M1400 1086 C1424 1072 1462 1078 1484 1098 C1462 1116 1424 1118 1400 1106 Z" fill="#7a965a" opacity=".42"/>
-      <path d="M1442 1080 V1116" stroke="#5b6b3a" stroke-width="1.4" opacity=".6"/>
-    </g>`;
-  const watchChain = (() => {
-    const c = TARGETS.relogio.region;
-    let links = "";
-    // From under the book, past the watch's left side, sagging along the table.
-    for (let i = 0; i < 11; i += 1) {
-      const x = c.cx - 34 - i * 12;
-      const y = c.cy - 34 + i * 4 + Math.sin(i / 3) * 6;
-      links += `<ellipse cx="${n(x)}" cy="${n(y)}" rx="6" ry="4" fill="none" stroke="url(#brassDim)" stroke-width="2.4" transform="rotate(${i % 2 ? 20 : -20} ${n(x)} ${n(y)})"/>`;
-    }
-    return links;
-  })();
-  const relogio = boxOf(TARGETS.relogio.region);
-  // A note slid under the open book covers the watch case's lower right (tier C — the dial stays in view).
-  const note = `<g transform="rotate(8 ${relogio.x + relogio.w} ${relogio.y + relogio.h})">
-      ${shadow(relogio.x + relogio.w - 6, relogio.y + relogio.h - 6, 30, 5, 0.6)}
-      <path d="M${relogio.x + relogio.w * 0.66} ${relogio.y + relogio.h * 0.72} L${relogio.x + relogio.w + 22} ${relogio.y + relogio.h * 0.66} L${relogio.x + relogio.w + 26} ${relogio.y + relogio.h + 6} L${relogio.x + relogio.w * 0.62} ${relogio.y + relogio.h + 10} Z" fill="url(#page)" stroke="#8a6a3c" stroke-width="1.2"/>
-      <path d="M${relogio.x + relogio.w * 0.72} ${relogio.y + relogio.h * 0.84} H${relogio.x + relogio.w + 14} M${relogio.x + relogio.w * 0.72} ${relogio.y + relogio.h * 0.94} H${relogio.x + relogio.w + 10}" stroke="#8a7a62" stroke-width="1.2" opacity=".5"/>
-    </g>`;
-  return `
-    ${bookStack(1150, 1046, [[150, 22, "#2d4a68"], [140, 20, "#7a3024", 6], [128, 18, "#4a6a3a", 10]])}
-    ${shadow(1430, 1002, 54, 10)}
-    ${paint("xicara", omit)}
-    ${shadow(1560, 996, 46, 6, 0.6)}
-    ${paint("tesoura", omit)}
-    ${map}
-    ${shadow(1540, 1180, 62, 10, 0.8)}
-    ${paint("bussola", omit)}
-    ${watchChain}
-    ${shadow(1330, 1206, 44, 8, 0.8)}
-    ${paint("relogio", omit)}
-    ${openBook}
-    ${note}
-    ${shadow(1426, 1206, 18, 4, 0.7)}
-    ${lookSvg("moedas")}
-    ${shadow(1664, 1176, 22, 4, 0.5)}
-    ${lookSvg("compasso-de-pontas")}
-    ${shadow(1200, 984, 24, 4, 0.7)}
-    ${lookSvg("medalha")}
-    ${shadow(1660, 1224, 22, 5, 0.7)}
-    ${lookSvg("lata-redonda")}
-    ${openBox(omit)}
-    ${shadow(2020, 1068, 36, 8)}
-    ${paint("pena", omit)}
-    ${shadow(1923, 1086, 24, 5, 0.7)}
-    ${lookSvg("carimbo")}
-    <g>${shadow(1215, 1004, 60, 8)}
-      <rect x="1160" y="986" width="110" height="14" rx="7" fill="url(#parchment)" stroke="#8a6a3c" stroke-width="1.3" transform="rotate(-4 1215 993)"/>
-      <rect x="1204" y="984" width="9" height="18" fill="#94482a" transform="rotate(-4 1215 993)"/></g>`;
 }
 
 function lupaOnMap() {
@@ -1241,73 +1144,6 @@ function bookcase() {
     </g>
     <rect x="${left - 20}" y="124" width="${right - left + 40}" height="36" rx="4" fill="none" stroke="#1c0f07" stroke-width="1.6"/>`;
   return svg;
-}
-
-function bookcaseItems(omit = null) {
-  const { s1, s2, s3, s4, s5 } = SHELVES;
-  const est = boxOf(TARGETS.estatueta.region);
-  const cam = boxOf(TARGETS.camera.region);
-  const lan = boxOf(TARGETS.lanterna.region);
-  const runA = bookRun(2300, s1, 8, 11, { minH: 130, maxH: 190 });
-  const runB = bookRun(est.x + est.w + 12, s1, 4, 23, { minH: 120, maxH: 170 });
-  const runB2 = bookRun(2884, s1, 3, 29, { minH: 120, maxH: 160 });
-  const runC = bookRun(2440, s2, 9, 37, { minH: 140, maxH: 200 });
-  const runD = bookRun(2670, s3, 7, 51, { minH: 150, maxH: 200 });
-  const runE = bookRun(2300, s4, 7, 67, { minH: 140, maxH: 200 });
-  const runF = bookRun(lan.x + lan.w + 16, s4, 4, 79, { minH: 150, maxH: 195 });
-  return `
-    ${runA.svg}
-    ${shadow(2553, s1 - 2, 18, 4, 0.8)}
-    ${lookSvg("rolo-de-papel")}
-    ${shadow(est.x + est.w / 2, s1 - 2, est.w * 0.6, 6, 0.8)}
-    ${paint("estatueta", omit)}
-    ${book(est.x - 12, s1 - 132, 28, 132, "#5a3b5c", { tilt: 16 })}
-    ${runB.svg}
-    ${shadow(2854, s1 - 2, 22, 4, 0.8)}
-    ${lookSvg("vaso-de-porcelana")}
-    ${runB2.svg}
-    ${trailingPlant(2994, s1, 0.8)}
-    ${bookStack(2292, s2, [[132, 22, "#7a3024"], [124, 20, "#365169", 4], [118, 18, "#9c7230", 8], [110, 18, "#4a6a3a", 6]])}
-    ${shadow(2355, 522, 56, 6, 0.8)}
-    ${lookSvg("caixinha-de-musica")}
-    ${runC.svg}
-    ${bookRun(cam.x - 2, s2, 6, 43, { minH: 150, maxH: 178, minW: 24, maxW: 32, gap: 1, colors: ["#c9b48a", "#d8c69e", "#bfa678", "#d1bd92"] }).svg}
-    ${occlusion(cam.x, s2 - 24, cam.w, 22, 0.4)}
-    ${shadow(cam.x + cam.w / 2, s2 - 2, cam.w * 0.55, 7, 0.9)}
-    ${paint("camera", omit)}
-    ${book(cam.x + cam.w - 18, s2 - 168, 30, 168, "#2f5d58", { tilt: -16 })}
-    <g>${shadow(2930, s2 - 2, 30, 6)}<path d="M2906 ${s2} V${s2 - 66} C2906 ${s2 - 80} 2954 ${s2 - 80} 2954 ${s2 - 66} V${s2} Z" fill="#b9cec7" opacity=".78" stroke="#5f7a74" stroke-width="1.6"/><rect x="2912" y="${s2 - 90}" width="36" height="14" rx="3" fill="#8a5a32"/>
-      <g fill="#a0442c" opacity=".65"><circle cx="2920" cy="${s2 - 26}" r="7"/><circle cx="2936" cy="${s2 - 18}" r="7"/><circle cx="2930" cy="${s2 - 38}" r="6"/></g></g>
-    ${bookRun(2970, s2, 3, 91, { minH: 140, maxH: 180 }).svg}
-    ${shadow(2505, s3 - 2, 150, 9, 0.9)}
-    ${paint("barco", omit)}
-    ${runD.svg}
-    ${book(runD.end + 6, s3 - 160, 32, 160, "#5a3b5c", { tilt: 16 })}
-    <g>${shadow(2985, s3 - 2, 72, 8)}<rect x="2930" y="${s3 - 74}" width="112" height="72" rx="5" fill="url(#woodDark)" stroke="#1c0f07" stroke-width="1.6" filter="url(#grainH)"/><rect x="2926" y="${s3 - 82}" width="120" height="12" rx="3" fill="#6b4024" stroke="#1c0f07" stroke-width="1.3"/><circle cx="2986" cy="${s3 - 38}" r="6" fill="url(#brassDim)"/></g>
-    ${runE.svg}
-    <g>${shadow(2575, s4 - 2, 72, 8)}<rect x="2512" y="${s4 - 96}" width="126" height="94" rx="5" fill="url(#wood)" stroke="#1c0f07" stroke-width="1.6" filter="url(#grainH)"/>
-      <path d="M2512 ${s4 - 70} H2638" stroke="#2b170b" stroke-width="1.6"/><rect x="2566" y="${s4 - 64}" width="18" height="16" rx="2" fill="url(#brassDim)"/></g>
-    ${shadow(2702, s4 - 2, 36, 6)}
-    ${lookSvg("chaleira")}
-    ${shadow(lan.x + lan.w / 2, s4 - 2, lan.w * 0.5, 7, 0.9)}
-    ${paint("lanterna", omit)}
-    ${bookStack(lan.x - 6, s4, [[96, 22, "#2d4a68"], [88, 20, "#7a3024", 4], [80, 18, "#6d5a3a", 10]])}
-    ${runF.svg}
-    <g>${shadow(2420, s5 - 2, 124, 9)}
-      <path d="M2306 ${s5} L2318 ${s5 - 120} H2436 L2448 ${s5} Z" fill="#a17c4a" stroke="#4a3013" stroke-width="1.6" filter="url(#grainH)"/>
-      <g stroke="#6e5230" stroke-width="3" opacity=".7"><path d="M2312 ${s5 - 30} H2442 M2314 ${s5 - 60} H2440 M2316 ${s5 - 90} H2438"/></g>
-      <path d="M2456 ${s5} L2466 ${s5 - 96} H2560 L2570 ${s5} Z" fill="#b18c56" stroke="#4a3013" stroke-width="1.6" filter="url(#grainH)"/>
-      <g stroke="#6e5230" stroke-width="3" opacity=".7"><path d="M2462 ${s5 - 30} H2566 M2464 ${s5 - 60} H2564"/></g></g>
-    ${bookStack(2590, s5, [[170, 24, "#2f5d58"], [160, 22, "#86582b", 6], [150, 22, "#5a3b5c", 10], [140, 20, "#7a3024", 14]])}
-    ${shadow(2656, 1150, 52, 5, 0.8)}
-    ${paint("gaita", omit)}
-    <g transform="rotate(-9 2620 1140)">${bookStack(2552, 1152, [[92, 17, "#6d5a3a"]])}</g>
-    ${shadow(2506, 1142, 30, 4, 0.8)}
-    ${lookSvg("caixa-de-fosforos")}
-    <g>${shadow(2920, s5 - 2, 124, 9)}
-      ${[0, 1, 2].map((i) => `<rect x="${2806 + i * 6}" y="${s5 - 44 - i * 30}" width="${226 - i * 12}" height="26" rx="13" fill="url(#parchment)" stroke="#8a6a3c" stroke-width="1.3"/><ellipse cx="${3030 - i * 6}" cy="${s5 - 31 - i * 30}" rx="8" ry="13" fill="#d3b97f" stroke="#8a6a3c" stroke-width="1.3"/>`).join("")}
-      ${shadow(2856, 1132, 34, 4, 0.7)}${lookSvg("estojo-de-oculos")}</g>
-    ${trailingPlant(2330, 134, 0.95)}`;
 }
 
 function floorAndRug() {
@@ -1367,19 +1203,6 @@ function floorAndRug() {
       <path d="M${rug({ u: 0, v: 0.2 })} H${rug({ u: 1, v: 0.2 }).split(" ")[0]}" stroke="#cf9f55" stroke-width="2" stroke-dasharray="10 12" opacity=".45"/>
     </g>
     ${fringe}`;
-}
-
-/** Wall decor between the frames and the bookcase: an explorer's hat and satchel on a peg rail (both in the pool). */
-function pegRail(omit = null) {
-  return `
-    <rect x="2070" y="430" width="170" height="20" rx="4" fill="url(#woodDark)" stroke="#1c0f07" stroke-width="1.6"/>
-    ${[2100, 2160, 2215].map((x) => `<rect x="${x - 5}" y="440" width="10" height="26" rx="4" fill="#4a2a16"/>`).join("")}
-    <ellipse cx="2134" cy="490" rx="62" ry="12" fill="#000" opacity=".16" filter="url(#blur8)"/>
-    ${paint("chapeu", omit)}
-    <path d="M2216 456 C2196 520 2196 560 2204 600" stroke="#5a3418" stroke-width="5" fill="none"/>
-    <path d="M2216 456 C2236 520 2236 560 2228 600" stroke="#5a3418" stroke-width="5" fill="none"/>
-    <path d="M2176 612 H2268 L2262 716 C2236 728 2206 728 2182 716 Z" fill="#000" opacity=".17" filter="url(#blur8)"/>
-    ${paint("bolsa", omit)}`;
 }
 
 /** Floor clutter that makes the room feel lived in (no target shares a category with it). */
@@ -1606,19 +1429,6 @@ function sillTendril() {
     <ellipse cx="${x0 + 1}" cy="1082" rx="12" ry="6.5" fill="url(#leafDark)" transform="rotate(-36 ${x0 + 1} 1082)"/>`;
 }
 
-/** The birdcage's soft shadow on the wall (the light comes from the window, on its left), then the cage. */
-function birdcage(omit) {
-  return `<rect x="974" y="512" width="72" height="84" rx="22" fill="#0a0603" opacity=".24" filter="url(#blur8)"/>
-    ${paint("gaiola", omit)}`;
-}
-
-/** The umbrella's shade on the wainscot and its contact on the floor, then the umbrella. */
-function cornerUmbrella(omit) {
-  return `<path d="M1024 944 L1054 944 L1052 1184 L1038 1184 Z" fill="#0a0603" opacity=".28" filter="url(#blur8)"/>
-    ${shadow(1022, 1186, 26, 6, 0.85)}
-    ${paint("guarda-chuva", omit)}`;
-}
-
 // --- GAME03-INTERACTIONS-04: what the room's pieces keep, and the pieces (kit v3) -----------------------
 //
 // Three pieces open or move: the side table's drawer under the hourglass, the
@@ -1679,48 +1489,6 @@ Object.assign(ART, {
   },
 });
 
-/** The side table's drawer pulled out: its box, what it keeps, a folded note over the whistle's round end. */
-function sideTableDrawer(omit) {
-  return `
-    <rect x="728" y="1214" width="144" height="54" rx="3" fill="#1d0f06"/>
-    <path d="M734 1219 H866 L870 1267 H730 Z" fill="url(#woodDark)" filter="url(#grainH)"/>
-    <path d="M728 1214 H872 L866 1220 H734 Z" fill="#3a2010"/>
-    ${t2(omit, "apito")}
-    <g transform="rotate(-6 838 1240)">
-      <path d="M822 1222 L864 1219 L868 1258 L826 1262 Z" fill="url(#page)" stroke="#8a6a3c" stroke-width="1.2"/>
-      <path d="M829 1234 H860 M830 1244 H856 M831 1252 H850" stroke="#8a7a62" stroke-width="1.1" opacity=".5"/>
-    </g>`;
-}
-/** A target in its place, or nothing (the audit's "omit"); for the kit-v3 paint, which calls it by name. */
-function t2(omit, id) {
-  return omit === id ? "" : targetSvg(id);
-}
-
-/** The little box on the map, open: its front, the velvet inside, the necklace, a silk corner over its left. */
-function openBox(omit) {
-  return `
-    <g>${shadow(1950, 1216, 74, 11)}
-      <rect x="1890" y="1150" width="120" height="58" rx="6" fill="url(#woodDark)" stroke="#1c0f07" stroke-width="1.6" filter="url(#grainH)"/>
-      <path d="M1890 1150 L1900 1130 H2000 L2010 1150 Z" fill="#3a1220" stroke="#1c0f07" stroke-width="1.4"/>
-      <path d="M1898 1146 L1904 1134 H1996 L2002 1146 Z" fill="url(#velvet)"/>
-      <rect x="1890" y="1150" width="120" height="4" fill="#8a5a32" opacity=".7"/></g>
-    ${t2(omit, "colar")}
-    <path d="M1898 1150 L1904 1131 L1942 1133 L1950 1152 L1930 1166 L1904 1164 Z" fill="#d9c8e8" stroke="#8a7a98" stroke-width="1.1" opacity=".95"/>
-    <path d="M1906 1144 L1926 1146" stroke="#ffffff" stroke-width="1.4" opacity=".5"/>`;
-}
-
-/** Where the basket of maps stood: the canteen on the floor, a rolled map lying against its lower left. */
-function basketCorner(omit) {
-  return `
-    ${shadow(2374, 1420, 52, 7, 0.85)}
-    ${t2(omit, "cantil")}
-    <g transform="rotate(-8 2340 1404)">
-      <rect x="2300" y="1394" width="74" height="20" rx="10" fill="url(#parchment)" stroke="#8a6a3c" stroke-width="1.3"/>
-      <ellipse cx="2372" cy="1404" rx="5" ry="10" fill="#e3cb96" stroke="#8a6a3c" stroke-width="1.2"/>
-      <rect x="2326" y="1394" width="7" height="20" fill="#94482a"/>
-    </g>`;
-}
-
 /** The pieces, painted in room coordinates where they sit at rest. */
 const PIECE_ART = {
   // the drawer's front, under the side table's top: a knob, a seam of shadow above
@@ -1751,63 +1519,452 @@ const PIECE_ART = {
     <path d="M2318 1336 C2318 1318 2338 1318 2338 1336 M2408 1336 C2408 1318 2428 1318 2428 1336" stroke="#4a3013" stroke-width="3" fill="none"/>`,
 };
 
-function plateSvg({ debug = false, omit = null } = {}) {
-  const ampBox = boxOf(TARGETS.ampulheta.region);
-  const t = (id, svg) => (omit === id ? "" : svg);
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
-  <defs>${DEFS}
+// --- GAME03-REPLAYABILITY-05 (kit v4): what moves, and the room in paint order ------------------------
+//
+// Every pool object, look-alike and prop is painted by THING_PAINT, at home, in
+// room coordinates: `under` (its contact shadow, what it casts on the wall, a
+// chain it hangs from) and `object` (the thing itself — the audit's own
+// pixels). The art kit moves both onto any of its slots (thingArt) and lights
+// the result where it sits (hidden-objects-sprites.mjs). The plate is
+// plateChunks(): the room back to front with a marker per slot where a thing
+// on that slot is painted — so what the room paints after the marker (the
+// strap over the key, the open book over the compass's rim) stays in front of
+// whatever sits there. The shipped plate paints every marker empty.
+
+const mark = (slot) => ({ slot });
+const BOX = (id) => boxOf((TARGETS[id] ?? LOOKS[id]).region);
+const AMP = BOX("ampulheta");
+const EST = BOX("estatueta");
+const CAM = BOX("camera");
+const LAN = BOX("lanterna");
+const REL = BOX("relogio");
+const GAIOLA = BOX("gaiola");
+
+/** The table's map: a parchment with routes and islands (fixed). */
+const TABLE_MAP = `
+    <g>
+      <path d="M1486 990 L1984 972 L2006 1170 L1500 1196 Z" fill="#1a0e06" opacity=".3" transform="translate(6 8)" filter="url(#blur3)"/>
+      <path d="M1486 990 L1984 972 L2006 1170 L1500 1196 Z" fill="url(#parchment)" stroke="#9c7a48" stroke-width="1.6"/>
+      <path d="M1540 1020 C1580 1000 1640 1006 1660 1030 C1680 1056 1640 1076 1600 1070 C1560 1064 1520 1048 1540 1020 Z" fill="#d3b97f" stroke="#8a6a3c" stroke-width="1.4"/>
+      <path d="M1860 1060 C1900 1030 1960 1046 1966 1086 C1970 1120 1930 1140 1896 1128 C1866 1118 1846 1086 1860 1060 Z" fill="#d3b97f" stroke="#8a6a3c" stroke-width="1.4"/>
+      <path d="M1650 1110 C1680 1100 1720 1120 1712 1144 C1704 1166 1660 1160 1650 1140 Z" fill="#d3b97f" stroke="#8a6a3c" stroke-width="1.4"/>
+      <path d="M1640 1050 C1700 1080 1800 1060 1870 1080" stroke="#a0442c" stroke-width="2.2" stroke-dasharray="8 6" fill="none"/>
+      <path d="M1500 1010 L1990 994 M1504 1060 L1994 1044 M1506 1110 L1998 1094 M1508 1160 L2002 1144 M1600 990 L1612 1190 M1740 984 L1752 1184 M1880 978 L1892 1178" stroke="#a88b5c" stroke-width="1" opacity=".42"/>
+    </g>`;
+
+/** The open book: it lies over the compass's upper-left rim and the watch's bow, when they are home (fixed). */
+const OPEN_BOOK = `
+    <g transform="translate(0 -20)">
+      <path d="M1186 1030 L1520 1030 L1530 1170 L1192 1176 Z" fill="#1a0e06" opacity=".32" transform="translate(6 10)" filter="url(#blur3)"/>
+      <path d="M1180 1150 C1240 1132 1300 1136 1356 1152 C1412 1136 1470 1132 1530 1150 L1526 1166 C1470 1150 1412 1154 1356 1168 C1300 1154 1240 1150 1184 1166 Z" fill="#652a1e" stroke="#3a140e" stroke-width="1.3"/>
+      <path d="M1186 1022 C1240 1000 1300 1004 1352 1018 L1356 1150 C1304 1134 1240 1132 1190 1154 Z" fill="url(#page)" stroke="#8a6a3c" stroke-width="1.5"/>
+      <path d="M1352 1018 C1404 1002 1466 1002 1522 1024 L1526 1154 C1470 1134 1406 1134 1356 1150 Z" fill="url(#pageR)" stroke="#8a6a3c" stroke-width="1.5"/>
+      <path d="M1340 1022 C1346 1060 1348 1110 1352 1148 L1362 1148 C1358 1110 1358 1060 1356 1022 Z" fill="#000" opacity=".1"/>
+      <g stroke="#8a7a62" stroke-width="1.2" opacity=".42">
+        <path d="M1206 1040 C1250 1026 1300 1028 1336 1036 M1206 1054 C1250 1040 1300 1042 1336 1050 M1206 1068 C1250 1054 1300 1056 1336 1064 M1206 1082 C1250 1068 1300 1070 1336 1078 M1206 1096 C1250 1082 1300 1084 1336 1092 M1206 1110 C1250 1096 1300 1098 1336 1106"/>
+        <path d="M1372 1036 C1410 1026 1460 1026 1504 1040 M1372 1050 C1410 1040 1460 1040 1504 1054 M1372 1064 C1410 1054 1460 1054 1504 1068"/>
+      </g>
+      <path d="M1400 1086 C1424 1072 1462 1078 1484 1098 C1462 1116 1424 1118 1400 1106 Z" fill="#7a965a" opacity=".42"/>
+      <path d="M1442 1080 V1116" stroke="#5b6b3a" stroke-width="1.4" opacity=".6"/>
+    </g>`;
+
+/** A note slid under the open book, by the watch's home (fixed: it covers the watch case's lower right when the watch is there). */
+const BOOK_NOTE = `<g transform="rotate(8 ${REL.x + REL.w} ${REL.y + REL.h})">
+      ${shadow(REL.x + REL.w - 6, REL.y + REL.h - 6, 30, 5, 0.6)}
+      <path d="M${REL.x + REL.w * 0.66} ${REL.y + REL.h * 0.72} L${REL.x + REL.w + 22} ${REL.y + REL.h * 0.66} L${REL.x + REL.w + 26} ${REL.y + REL.h + 6} L${REL.x + REL.w * 0.62} ${REL.y + REL.h + 10} Z" fill="url(#page)" stroke="#8a6a3c" stroke-width="1.2"/>
+      <path d="M${REL.x + REL.w * 0.72} ${REL.y + REL.h * 0.84} H${REL.x + REL.w + 14} M${REL.x + REL.w * 0.72} ${REL.y + REL.h * 0.94} H${REL.x + REL.w + 10}" stroke="#8a7a62" stroke-width="1.2" opacity=".5"/>
+    </g>`;
+
+/** The pocket watch's chain, sagging to its left along whatever it lies on (it travels with the watch). */
+function watchChain() {
+  const c = TARGETS.relogio.region;
+  let links = "";
+  for (let i = 0; i < 11; i += 1) {
+    const x = c.cx - 34 - i * 12;
+    const y = c.cy - 34 + i * 4 + Math.sin(i / 3) * 6;
+    links += `<ellipse cx="${n(x)}" cy="${n(y)}" rx="6" ry="4" fill="none" stroke="url(#brassDim)" stroke-width="2.4" transform="rotate(${i % 2 ? 20 : -20} ${n(x)} ${n(y)})"/>`;
+  }
+  return links;
+}
+
+/** The birdcage's wall bracket: it stays on the wall whatever hangs from it (fixed). */
+const GAIOLA_BRACKET = `<g transform="translate(${GAIOLA.x} ${GAIOLA.y})">
+      <rect x="70" y="0" width="6" height="13" rx="1.5" fill="#2a221a"/>
+      <path d="M72 5 H48 C42 5 38 7 38 12" stroke="#2a221a" stroke-width="3.6" fill="none" stroke-linecap="round"/>
+    </g>`;
+/** The birdcage without its bracket (the sprite): everything of its art but the first two marks. */
+const GAIOLA_CAGE = (() => {
+  const body = ART.gaiola.body.replace(/^\s*<rect x="70" y="0"[^>]*\/>\s*<path d="M72 5 H48[^>]*\/>/, "");
+  if (body === ART.gaiola.body) throw new Error("gaiola: the bracket was not found in its art");
+  return fit(body, ART.gaiola.nominal, GAIOLA);
+})();
+
+const sill = WINDOW.bottom;
+const S = SHELVES;
+
+/** Each thing's own paint, at home (room coordinates). */
+const THING_PAINT = {
+  // --- pool -----------------------------------------------------------------------------------------
+  ampulheta: { under: () => shadow(AMP.x + AMP.w / 2, AMP.y + AMP.h - 2, AMP.w * 0.58, 8, 0.9), object: () => targetSvg("ampulheta") },
+  binoculo: { object: () => targetSvg("binoculo") },
+  chave: { object: () => targetSvg("chave") },
+  "guarda-chuva": {
+    under: () => `<path d="M1024 944 L1054 944 L1052 1184 L1038 1184 Z" fill="#0a0603" opacity=".28" filter="url(#blur8)"/>${shadow(1022, 1186, 26, 6, 0.85)}`,
+    object: () => targetSvg("guarda-chuva"),
+  },
+  gaiola: { under: () => `<rect x="974" y="512" width="72" height="84" rx="22" fill="#0a0603" opacity=".24" filter="url(#blur8)"/>`, object: () => GAIOLA_CAGE },
+  caracol: { object: () => targetSvg("caracol") },
+  piao: { under: () => shadow(740, 1398, 30, 5, 0.8), object: () => targetSvg("piao") },
+  lupa: {
+    under: () => {
+      const box = boxOf(TARGETS.lupa.region);
+      return `${shadow(box.x + box.w * 0.62, box.y + box.h * 0.7, box.w * 0.6, box.h * 0.2, 0.9)}${lupaHandleSvg(box)}`;
+    },
+    object: () => fit(`${ART.lupa.clip}${ART.lupa.body}`, ART.lupa.nominal, boxOf(TARGETS.lupa.region)),
+    margin: 160,
+  },
+  bussola: { under: () => shadow(1540, 1180, 62, 10, 0.8), object: () => targetSvg("bussola") },
+  relogio: { under: () => `${watchChain()}${shadow(1330, 1206, 44, 8, 0.8)}`, object: () => targetSvg("relogio"), margin: 170 },
+  xicara: { under: () => shadow(1430, 1002, 54, 10), object: () => targetSvg("xicara") },
+  pena: { under: () => shadow(2020, 1068, 36, 8), object: () => targetSvg("pena") },
+  borboleta: { under: () => frameShadow(1932, 318, 104, 124), object: () => targetSvg("borboleta") },
+  chapeu: { under: () => `<ellipse cx="2134" cy="490" rx="62" ry="12" fill="#000" opacity=".16" filter="url(#blur8)"/>`, object: () => targetSvg("chapeu") },
+  tesoura: { under: () => shadow(1560, 996, 46, 6, 0.6), object: () => targetSvg("tesoura") },
+  pinha: { under: () => shadow(1306, 698, 30, 4, 0.8), object: () => targetSvg("pinha") },
+  barco: { under: () => shadow(2505, S.s3 - 2, 150, 9, 0.9), object: () => targetSvg("barco"), margin: 160 },
+  lanterna: {
+    // its warm halo travels with it (it is no longer in the room's light pass)
+    under: () => `<circle cx="${LAN.x + 63}" cy="${LAN.y + 118}" r="92" fill="url(#lanternHalo)"/>${shadow(LAN.x + LAN.w / 2, S.s4 - 2, LAN.w * 0.5, 7, 0.9)}`,
+    object: () => targetSvg("lanterna"),
+    margin: 60,
+  },
+  camera: { under: () => `${occlusion(CAM.x, S.s2 - 24, CAM.w, 22, 0.4)}${shadow(CAM.x + CAM.w / 2, S.s2 - 2, CAM.w * 0.55, 7, 0.9)}`, object: () => targetSvg("camera") },
+  estatueta: { under: () => shadow(EST.x + EST.w / 2, S.s1 - 2, EST.w * 0.6, 6, 0.8), object: () => targetSvg("estatueta") },
+  globo: { under: () => shadow(2200, 1420, 116, 18), object: () => targetSvg("globo"), margin: 460 },
+  bolsa: {
+    under: () => `<path d="M2216 456 C2196 520 2196 560 2204 600" stroke="#5a3418" stroke-width="5" fill="none"/>
+    <path d="M2216 456 C2236 520 2236 560 2228 600" stroke="#5a3418" stroke-width="5" fill="none"/>
+    <path d="M2176 612 H2268 L2262 716 C2236 728 2206 728 2182 716 Z" fill="#000" opacity=".17" filter="url(#blur8)"/>`,
+    object: () => targetSvg("bolsa"),
+    margin: 160,
+  },
+  gaita: { under: () => shadow(2656, 1150, 52, 5, 0.8), object: () => targetSvg("gaita") },
+  apito: { object: () => targetSvg("apito") },
+  colar: { object: () => targetSvg("colar") },
+  cantil: { under: () => shadow(2374, 1420, 52, 7, 0.85), object: () => targetSvg("cantil") },
+  // --- look-alikes ------------------------------------------------------------------------------------
+  "vaso-torneado": { under: () => shadow(932, sill + 2, 22, 5), object: () => lookSvg("vaso-torneado") },
+  tinteiros: { under: () => shadow(653, sill + 2, 34, 6), object: () => lookSvg("tinteiros") },
+  "alca-do-bau": { object: () => lookSvg("alca-do-bau") },
+  fivela: { object: () => lookSvg("fivela") },
+  carimbo: { under: () => shadow(1923, 1086, 24, 5, 0.7), object: () => lookSvg("carimbo") },
+  "lata-redonda": { under: () => shadow(1660, 1224, 22, 5, 0.7), object: () => lookSvg("lata-redonda") },
+  moedas: { under: () => shadow(1426, 1206, 18, 4, 0.7), object: () => lookSvg("moedas") },
+  chaleira: { under: () => shadow(2702, S.s4 - 2, 36, 6), object: () => lookSvg("chaleira") },
+  "caixinha-de-musica": { under: () => shadow(2355, 522, 56, 6, 0.8), object: () => lookSvg("caixinha-de-musica") },
+  "vaso-de-porcelana": { under: () => shadow(2854, S.s1 - 2, 22, 4, 0.8), object: () => lookSvg("vaso-de-porcelana") },
+  "rolo-de-papel": { under: () => shadow(2553, S.s1 - 2, 18, 4, 0.8), object: () => lookSvg("rolo-de-papel") },
+  "cesta-de-arame": { object: () => lookSvg("cesta-de-arame") },
+  "roseta-entalhada": { object: () => lookSvg("roseta-entalhada") },
+  "peao-de-xadrez": { under: () => shadow(846, 1424, 18, 4, 0.7), object: () => lookSvg("peao-de-xadrez") },
+  medalha: { under: () => shadow(1200, 984, 24, 4, 0.7), object: () => lookSvg("medalha") },
+  acucareiro: { under: () => shadow(1218, 698, 26, 4, 0.7), object: () => lookSvg("acucareiro") },
+  "tampa-de-pote": { under: () => shadow(1208, 1326, 30, 6, 0.6), object: () => lookSvg("tampa-de-pote") },
+  "compasso-de-pontas": { under: () => shadow(1664, 1176, 22, 4, 0.5), object: () => lookSvg("compasso-de-pontas") },
+  "abacaxi-de-madeira": { under: () => shadow(1408, 656, 18, 3, 0.7), object: () => lookSvg("abacaxi-de-madeira") },
+  "folha-emoldurada": { under: () => frameShadow(1950, 590, 116, 140), object: () => lookSvg("folha-emoldurada") },
+  "caixa-de-fosforos": { under: () => shadow(2506, 1142, 30, 4, 0.8), object: () => lookSvg("caixa-de-fosforos") },
+  "estojo-de-oculos": { under: () => shadow(2856, 1132, 34, 4, 0.7), object: () => lookSvg("estojo-de-oculos") },
+  apontador: { under: () => shadow(925, 1410, 30, 4, 0.7), object: () => lookSvg("apontador") },
+  abaco: { under: () => shadow(1284, 1402, 34, 5, 0.7), object: () => lookSvg("abaco") },
+  pandeiro: { under: () => shadow(2736, 1404, 34, 5, 0.7), object: () => lookSvg("pandeiro") },
+  // --- props (the room's own things, now free to move) --------------------------------------------------
+  pedrinhas: {
+    under: () => shadow(745, sill + 2, 30, 6),
+    object: () => `<ellipse cx="732" cy="${sill - 10}" rx="17" ry="11" fill="#968e82"/><ellipse cx="756" cy="${sill - 7}" rx="13" ry="9" fill="#b2a99b"/><ellipse cx="742" cy="${sill - 20}" rx="10" ry="8" fill="#7f776c"/>`,
+  },
+  "tigela-de-latao": {
+    under: () => shadow(806, sill + 2, 26, 5),
+    object: () => `<path d="M782 ${sill} C782 ${sill - 22} 830 ${sill - 22} 830 ${sill} Z" fill="url(#brassDim)" stroke="#4a3216" stroke-width="1.2"/><ellipse cx="806" cy="${sill - 11}" rx="24" ry="4" fill="#6e4b1c"/>`,
+  },
+  garrafinha: {
+    under: () => shadow(872, sill + 2, 18, 5),
+    object: () => `<path d="M862 ${sill} V${sill - 46} C862 ${sill - 60} 884 ${sill - 60} 884 ${sill - 46} V${sill} Z" fill="#76a39b" opacity=".85" stroke="#2f4a46" stroke-width="1.6"/><rect x="867" y="${sill - 70}" width="12" height="14" fill="#8a5a32"/>`,
+  },
+  "pote-de-frutinhas": {
+    under: () => shadow(2930, S.s2 - 2, 30, 6),
+    object: () => `<path d="M2906 ${S.s2} V${S.s2 - 66} C2906 ${S.s2 - 80} 2954 ${S.s2 - 80} 2954 ${S.s2 - 66} V${S.s2} Z" fill="#b9cec7" opacity=".78" stroke="#5f7a74" stroke-width="1.6"/><rect x="2912" y="${S.s2 - 90}" width="36" height="14" rx="3" fill="#8a5a32"/>
+      <g fill="#a0442c" opacity=".65"><circle cx="2920" cy="${S.s2 - 26}" r="7"/><circle cx="2936" cy="${S.s2 - 18}" r="7"/><circle cx="2930" cy="${S.s2 - 38}" r="6"/></g>`,
+  },
+  "caixa-escura": {
+    under: () => shadow(2985, S.s3 - 2, 72, 8),
+    object: () => `<rect x="2930" y="${S.s3 - 74}" width="112" height="72" rx="5" fill="url(#woodDark)" stroke="#1c0f07" stroke-width="1.6" filter="url(#grainH)"/><rect x="2926" y="${S.s3 - 82}" width="120" height="12" rx="3" fill="#6b4024" stroke="#1c0f07" stroke-width="1.3"/><circle cx="2986" cy="${S.s3 - 38}" r="6" fill="url(#brassDim)"/>`,
+  },
+  "caixa-clara": {
+    under: () => shadow(2575, S.s4 - 2, 72, 8),
+    object: () => `<rect x="2512" y="${S.s4 - 96}" width="126" height="94" rx="5" fill="url(#wood)" stroke="#1c0f07" stroke-width="1.6" filter="url(#grainH)"/>
+      <path d="M2512 ${S.s4 - 70} H2638" stroke="#2b170b" stroke-width="1.6"/><rect x="2566" y="${S.s4 - 64}" width="18" height="16" rx="2" fill="url(#brassDim)"/>`,
+  },
+};
+
+const THINGS = roomThings(ROOM);
+
+/**
+ * A thing's paint on one of its slots: its home paint moved with its box,
+ * mirrored when the placement says so. What hangs from the curtain rod gets a
+ * chain to the rod (and casts nothing on a wall it is not against).
+ */
+function thingArt(thing, box, placement, slot) {
+  const paint = THING_PAINT[thing.id];
+  if (!paint) throw new Error(`no paint for ${thing.id}`);
+  const dx = n(box.x - thing.home.x);
+  const dy = n(box.y - thing.home.y);
+  const move = (svg) => (dx || dy ? `<g transform="translate(${dx} ${dy})">${svg}</g>` : svg);
+  const flip = (svg) => (placement.flip ? mirrored(svg, box) : svg);
+  let under = move(paint.under?.() ?? "");
+  if (slot.surface === "varao") {
+    // hanging from the rod: a short chain from the rod to the thing's top, and no wall behind it to shade
+    const top = thing.id === "gaiola" ? box.y + 11 : box.y + 1;
+    under = `<path d="M${n(box.x + box.w / 2)} 164 V${n(top)}" stroke="#3a2a14" stroke-width="2" stroke-dasharray="3 2"/>`;
+  }
+  return { under: flip(under), object: flip(move(paint.object())), margin: paint.margin ?? 48 };
+}
+
+/** The bookcase's books, boxes and crates, with its slots (fixed paint; every thing on it is a sprite). */
+function bookcaseChunks() {
+  const { s1, s2, s3, s4, s5 } = SHELVES;
+  const runA = bookRun(2300, s1, 8, 11, { minH: 130, maxH: 190 });
+  const runB = bookRun(EST.x + EST.w + 12, s1, 4, 23, { minH: 120, maxH: 170 });
+  const runB2 = bookRun(2884, s1, 3, 29, { minH: 120, maxH: 160 });
+  const runC = bookRun(2440, s2, 9, 37, { minH: 140, maxH: 200 });
+  const runD = bookRun(2670, s3, 7, 51, { minH: 150, maxH: 200 });
+  const runE = bookRun(2300, s4, 7, 67, { minH: 140, maxH: 200 });
+  const runF = bookRun(LAN.x + LAN.w + 16, s4, 4, 79, { minH: 150, maxH: 195 });
+  return [
+    runA.svg,
+    mark("s1-a"),
+    mark("s1-rolo"),
+    mark("s1-estatueta"),
+    book(EST.x - 12, s1 - 132, 28, 132, "#5a3b5c", { tilt: 16 }),
+    runB.svg,
+    mark("s1-b"),
+    mark("s1-vaso"),
+    runB2.svg,
+    trailingPlant(2994, s1, 0.8),
+    bookStack(2292, s2, [[132, 22, "#7a3024"], [124, 20, "#365169", 4], [118, 18, "#9c7230", 8], [110, 18, "#4a6a3a", 6]]),
+    mark("s2-pilha"),
+    runC.svg,
+    mark("s2-a"),
+    bookRun(CAM.x - 2, s2, 6, 43, { minH: 150, maxH: 178, minW: 24, maxW: 32, gap: 1, colors: ["#c9b48a", "#d8c69e", "#bfa678", "#d1bd92"] }).svg,
+    mark("s2-camera"),
+    book(CAM.x + CAM.w - 18, s2 - 168, 30, 168, "#2f5d58", { tilt: -16 }),
+    mark("s2-pote"),
+    bookRun(2970, s2, 3, 91, { minH: 140, maxH: 180 }).svg,
+    mark("s3-barco"),
+    runD.svg,
+    book(runD.end + 6, s3 - 160, 32, 160, "#5a3b5c", { tilt: 16 }),
+    mark("s3-a"),
+    mark("s3-caixa"),
+    runE.svg,
+    mark("s4-a"),
+    // two books laid flat in front of the slot: whatever stands there is tucked behind them
+    bookStack(2348, s4, [[96, 18, "#4f2d24"], [84, 15, "#365169", 6]]),
+    mark("s4-caixa"),
+    mark("s4-chaleira"),
+    mark("s4-lanterna"),
+    bookStack(LAN.x - 6, s4, [[96, 22, "#2d4a68"], [88, 20, "#7a3024", 4], [80, 18, "#6d5a3a", 10]]),
+    runF.svg,
+    mark("s4-b"),
+    `<g>${shadow(2420, s5 - 2, 124, 9)}
+      <path d="M2306 ${s5} L2318 ${s5 - 120} H2436 L2448 ${s5} Z" fill="#a17c4a" stroke="#4a3013" stroke-width="1.6" filter="url(#grainH)"/>
+      <g stroke="#6e5230" stroke-width="3" opacity=".7"><path d="M2312 ${s5 - 30} H2442 M2314 ${s5 - 60} H2440 M2316 ${s5 - 90} H2438"/></g>
+      <path d="M2456 ${s5} L2466 ${s5 - 96} H2560 L2570 ${s5} Z" fill="#b18c56" stroke="#4a3013" stroke-width="1.6" filter="url(#grainH)"/>
+      <g stroke="#6e5230" stroke-width="3" opacity=".7"><path d="M2462 ${s5 - 30} H2566 M2464 ${s5 - 60} H2564"/></g></g>`,
+    mark("s5-a"),
+    bookStack(2590, s5, [[170, 24, "#2f5d58"], [160, 22, "#86582b", 6], [150, 22, "#5a3b5c", 10], [140, 20, "#7a3024", 14]]),
+    mark("s5-livros"),
+    `<g transform="rotate(-9 2620 1140)">${bookStack(2552, 1152, [[92, 17, "#6d5a3a"]])}</g>`,
+    mark("s5-caixote"),
+    `<g>${shadow(2920, s5 - 2, 124, 9)}
+      ${[0, 1, 2].map((i) => `<rect x="${2806 + i * 6}" y="${s5 - 44 - i * 30}" width="${226 - i * 12}" height="26" rx="13" fill="url(#parchment)" stroke="#8a6a3c" stroke-width="1.3"/><ellipse cx="${3030 - i * 6}" cy="${s5 - 31 - i * 30}" rx="8" ry="13" fill="#d3b97f" stroke="#8a6a3c" stroke-width="1.3"/>`).join("")}</g>`,
+    mark("s5-rolos"),
+    mark("s5-b"),
+    trailingPlant(2330, 134, 0.95),
+  ];
+}
+
+/** The room, back to front, with a marker for every slot (the shipped plate paints none of them). */
+function plateChunks() {
+  return [
+    wall(),
+    windowSvg(),
+    curtain(),
+    mark("varao-a"),
+    mark("varao-b"),
+    GAIOLA_BRACKET,
+    mark("suporte"),
+    mark("parede-direita"),
+    // the wall over the table: frames, then the wall shelf
+    frame(1196, 330, 280, 236, PAINTING_LAKE),
+    frame(1560, 300, 330, 230, PAINTING_MAP),
+    mark("quadro-baixo"),
+    mark("quadro-alto"),
+    mark("parede-mesa"),
+    `<rect x="1180" y="700" width="300" height="16" rx="3" fill="url(#woodV)" stroke="#2b170b" stroke-width="1.6" filter="url(#grainH)"/>
+    ${occlusion(1180, 714, 300, 14, 0.5)}
+    <path d="M1200 716 l16 22 h4 v-22 Z M1440 716 l16 22 h4 v-22 Z" fill="#4a2a16"/>`,
+    mark("prateleira-1"),
+    mark("prateleira-2"),
+    `<path d="M1344 700 V668 C1344 658 1366 658 1366 668 V700 Z" fill="#b1cbc1" opacity=".8" stroke="#5f7a74" stroke-width="1.6"/><rect x="1348" y="654" width="14" height="9" fill="#8a5a32"/>`,
+    bookStack(1370, 700, [[106, 16, "#7a3024"], [96, 14, "#2d4a68", 6], [88, 13, "#9c7230", 3]]),
+    mark("prateleira-livros"),
+    floorAndRug(),
+    // the peg rail by the bookcase
+    `<rect x="2070" y="430" width="170" height="20" rx="4" fill="url(#woodDark)" stroke="#1c0f07" stroke-width="1.6"/>
+    ${[2100, 2160, 2215].map((x) => `<rect x="${x - 5}" y="440" width="10" height="26" rx="4" fill="#4a2a16"/>`).join("")}`,
+    mark("cabide"),
+    mark("gancho"),
+    bookcase(),
+    ...bookcaseChunks(),
+    mark("globo"),
+    // the sill
+    plant(352, sill, 0.78),
+    mark("peitoril-3"),
+    mark("peitoril-4"),
+    mark("peitoril-5"),
+    mark("peitoril-2"),
+    mark("peitoril-6"),
+    mark("peitoril-34"),
+    mark("canto"),
+    mark("peitoril-1"),
+    sillPotOverBinoculars(),
+    mark("roseta"),
+    mark("lambri-a"),
+    sillTendril(),
+    mark("lambri-b"),
+    mark("tapete-a"),
+    mark("tapete-b"),
+    trunk(),
+    mark("bau"),
+    trunkStraps(),
+    mark("alca"),
+    mark("fivela"),
+    trunkLetter(),
+    mark("chao-bau-a"),
+    mark("chao-bau-b"),
+    floorDecor(),
+    // behind the basket of maps (the basket is a piece of its own)
+    mark("cesto-a"),
+    mark("cesto-b"),
+    `<g transform="rotate(-8 2340 1404)">
+      <rect x="2300" y="1394" width="74" height="20" rx="10" fill="url(#parchment)" stroke="#8a6a3c" stroke-width="1.3"/>
+      <ellipse cx="2372" cy="1404" rx="5" ry="10" fill="#e3cb96" stroke="#8a6a3c" stroke-width="1.2"/>
+      <rect x="2326" y="1394" width="7" height="20" fill="#94482a"/>
+    </g>`,
+    mark("chao-estante"),
+    mark("chao-estante-b"),
+    armchair(),
+    mark("poltrona"),
+    mark("poltrona-assento"),
+    sideTable(),
+    mark("mesinha-b"),
+    // the side table's drawer, pulled out (its front is a piece of its own)
+    `<rect x="728" y="1214" width="144" height="54" rx="3" fill="#1d0f06"/>
+    <path d="M734 1219 H866 L870 1267 H730 Z" fill="url(#woodDark)" filter="url(#grainH)"/>
+    <path d="M728 1214 H872 L866 1220 H734 Z" fill="#3a2010"/>`,
+    mark("gaveta-a"),
+    mark("gaveta-b"),
+    `<g transform="rotate(-6 838 1240)">
+      <path d="M822 1222 L864 1219 L868 1258 L826 1262 Z" fill="url(#page)" stroke="#8a6a3c" stroke-width="1.2"/>
+      <path d="M829 1234 H860 M830 1244 H856 M831 1252 H850" stroke="#8a7a62" stroke-width="1.1" opacity=".5"/>
+    </g>`,
+    mark("tapete-c"),
+    mark("tapete-d"),
+    bookStack(830, 1172, [[66, 14, "#2f5d58"], [58, 12, "#94482a", 4]]),
+    mark("mesinha"),
+    table(),
+    mark("tapete-mesa-c"),
+    mark("chao-mesa"),
+    mark("tapete-mesa-a"),
+    mark("tapete-mesa-b"),
+    mark("tapete-mesa-d"),
+    mark("chao-mesa-e"),
+    // the table top
+    bookStack(1150, 1046, [[150, 22, "#2d4a68"], [140, 20, "#7a3024", 6], [128, 18, "#4a6a3a", 10]]),
+    mark("atras-livro"),
+    mark("mapa-fundo"),
+    TABLE_MAP,
+    mark("mapa-borda"),
+    mark("livro-borda"),
+    OPEN_BOOK,
+    BOOK_NOTE,
+    mark("livro-pagina"),
+    mark("livro"),
+    mark("livro-esq"),
+    mark("mesa-frente-b"),
+    mark("mapa-baixo"),
+    mark("pilha-livros"),
+    mark("mesa-frente-a"),
+    // the little box on the map, open (its lid is a piece of its own)
+    `<g>${shadow(1950, 1216, 74, 11)}
+      <rect x="1890" y="1150" width="120" height="58" rx="6" fill="url(#woodDark)" stroke="#1c0f07" stroke-width="1.6" filter="url(#grainH)"/>
+      <path d="M1890 1150 L1900 1130 H2000 L2010 1150 Z" fill="#3a1220" stroke="#1c0f07" stroke-width="1.4"/>
+      <path d="M1898 1146 L1904 1134 H1996 L2002 1146 Z" fill="url(#velvet)"/>
+      <rect x="1890" y="1150" width="120" height="4" fill="#8a5a32" opacity=".7"/></g>`,
+    mark("caixinha-a"),
+    mark("caixinha-b"),
+    `<path d="M1898 1150 L1904 1131 L1942 1133 L1950 1152 L1930 1166 L1904 1164 Z" fill="#d9c8e8" stroke="#8a7a98" stroke-width="1.1" opacity=".95"/>
+    <path d="M1906 1144 L1926 1146" stroke="#ffffff" stroke-width="1.4" opacity=".5"/>`,
+    mark("frasco"),
+    mark("mapa-dir-fundo"),
+    mark("mapa-direita"),
+    mark("sob-rolo"),
+    `<g>${shadow(1215, 1004, 60, 8)}
+      <rect x="1160" y="986" width="110" height="14" rx="7" fill="url(#parchment)" stroke="#8a6a3c" stroke-width="1.3" transform="rotate(-4 1215 993)"/>
+      <rect x="1204" y="984" width="9" height="18" fill="#94482a" transform="rotate(-4 1215 993)"/></g>`,
+    mark("mapa"),
+  ];
+}
+
+/** The things with a single placement: they never move, so the plate paints them (baked) and the atlas has none of them. */
+const BAKED = THINGS.filter((thing) => thing.placements.length === 1);
+const BAKED_KEYS = new Set(BAKED.map((thing) => placementKey(thing.id, thing.placements[0].slot)));
+/** What the plate paints at a baked thing's slot marker. */
+function bakedFill(slotId) {
+  const thing = BAKED.find((t) => t.placements[0].slot === slotId);
+  if (!thing) return "";
+  const slot = slotOf(ROOM, slotId);
+  const paint = thingArt(thing, boxOnSlot(thing.home, slot), thing.placements[0], slot);
+  return `${paint.under}${paint.object}`;
+}
+
+/** The plate's albedo SVG: the baked things and every other marker empty, or the things of `layout` (thing id → slot id) on their slots. */
+function plateSvg({ debug = false, layout = null } = {}) {
+  const byslot = new Map();
+  for (const thing of BAKED) byslot.set(thing.placements[0].slot, bakedFill(thing.placements[0].slot));
+  if (layout) {
+    for (const thing of THINGS) {
+      const placement = thing.placements.find((p) => p.slot === layout[thing.id]) ?? thing.placements[0];
+      const slot = slotOf(ROOM, placement.slot);
+      const paint = thingArt(thing, boxOnSlot(thing.home, slot), placement, slot);
+      byslot.set(slot.id, `${paint.under}${paint.object}`);
+    }
+  }
+  const body = chunkText(plateChunks(), (slot) => byslot.get(slot) ?? "");
+  return roomSvg({ width: W, height: H, defs: `${DEFS}${PLATE_DEFS}`, body: `${body}${debug ? debugOverlay() : ""}` });
+}
+
+/** The plate's own gradients (the wall's light) and the lantern's halo. */
+const PLATE_DEFS = `
     <linearGradient id="wallLight" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0" stop-color="#d9a35c" stop-opacity=".4"/><stop offset=".3" stop-color="#b98a4e" stop-opacity=".2"/><stop offset=".6" stop-color="#2c4a46" stop-opacity="0"/><stop offset="1" stop-color="#0d1a18" stop-opacity=".2"/>
     </linearGradient>
-  </defs>
-  ${wall()}
-  ${windowSvg()}
-  ${curtain()}
-  <path d="M926 164 V222" stroke="#3a2a14" stroke-width="2" stroke-dasharray="3 2"/>
-  ${lookSvg("cesta-de-arame")}
-  ${birdcage(omit)}
-  ${wallFrames(omit)}
-  ${floorAndRug()}
-  ${pegRail(omit)}
-  ${bookcase()}
-  ${bookcaseItems(omit)}
-  ${globe(omit)}
-  ${sillItems()}
-  ${cornerUmbrella(omit)}
-  ${t("binoculo", targetSvg("binoculo"))}
-  ${sillPotOverBinoculars()}
-  ${lookSvg("roseta-entalhada")}
-  ${t("caracol", targetSvg("caracol"))}
-  ${sillTendril()}
-  ${shadow(740, 1398, 30, 5, 0.8)}
-  ${t("piao", targetSvg("piao"))}
-  ${shadow(846, 1424, 18, 4, 0.7)}
-  ${lookSvg("peao-de-xadrez")}
-  ${trunk()}
-  ${t("chave", targetSvg("chave"))}
-  ${trunkStraps()}
-  ${lookSvg("alca-do-bau")}
-  ${lookSvg("fivela")}
-  ${trunkLetter()}
-  ${floorDecor()}
-  ${basketCorner(omit)}
-  ${shadow(2736, 1404, 34, 5, 0.7)}${lookSvg("pandeiro")}
-  ${armchair()}
-  ${sideTable()}
-  ${sideTableDrawer(omit)}
-  ${shadow(925, 1410, 30, 4, 0.7)}${lookSvg("apontador")}
-  ${bookStack(830, 1172, [[66, 14, "#2f5d58"], [58, 12, "#94482a", 4]])}
-  ${shadow(ampBox.x + ampBox.w / 2, ampBox.y + ampBox.h - 2, ampBox.w * 0.58, 8, 0.9)}
-  ${t("ampulheta", targetSvg("ampulheta"))}
-  ${table()}
-  ${shadow(1284, 1402, 34, 5, 0.7)}${lookSvg("abaco")}
-  ${shadow(1208, 1326, 30, 6, 0.6)}
-  ${lookSvg("tampa-de-pote")}
-  ${tableItems(omit)}
-  ${t("lupa", lupaOnMap())}
-  ${debug ? debugOverlay() : ""}
-</svg>`;
-}
+    <radialGradient id="lanternHalo" cx=".5" cy=".5" r=".5">
+      <stop offset="0" stop-color="#ffd79a" stop-opacity=".34"/><stop offset=".55" stop-color="#ffc070" stop-opacity=".12"/><stop offset="1" stop-color="#ffc070" stop-opacity="0"/>
+    </radialGradient>`;
+
+/** The home layout: every thing on its first slot. */
+const HOME_LAYOUT = Object.fromEntries(THINGS.map((thing) => [thing.id, thing.placements[0].slot]));
 
 // --- light: what the window's golden hour does to the room ---------------------------------------------
 
@@ -1834,7 +1991,6 @@ function lightSvg() {
   // the mullion and the two transoms of the window, as shadows inside the patch
   const mullions = [line(at(0.5, 0), at(0.5, 1)), line(at(0, 0.38), at(1, 0.38)), line(at(0, 0.78), at(1, 0.78))].join(" ");
   const patch = `M${n(at(0, 0).x)} ${n(at(0, 0).y)} L${n(at(1, 0).x)} ${n(at(1, 0).y)} L${n(at(1, 1).x)} ${n(at(1, 1).y)} L${n(at(0, 1).x)} ${n(at(0, 1).y)} Z`;
-  const lan = boxOf(TARGETS.lanterna.region);
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${W / 2}" height="${H / 2}" viewBox="0 0 ${W} ${H}">
   <defs>
     <linearGradient id="ambient" x1="0" y1="0" x2="1" y2="0">
@@ -1883,13 +2039,15 @@ function lightSvg() {
     <rect x="${CASE.left + 34}" y="160" width="${CASE.right - CASE.left - 68}" height="56"/>
     <rect x="${CASE.left - 20}" y="1250" width="${CASE.right - CASE.left + 40}" height="60"/>
   </g>
-  <ellipse cx="${lan.x + 63}" cy="${lan.y + 118}" rx="150" ry="130" fill="url(#pool)" opacity=".38"/>
 </svg>`;
 }
 
-/** Bloom, screened over the lit plate: the window's glow, sunbeams in the air, the patch's warmth, a small lantern glow. */
+/**
+ * Bloom, screened over the lit plate: the window's glow, sunbeams in the air,
+ * the patch's warmth. GAME03-REPLAYABILITY-05: the lantern's small glow is no
+ * longer the room's — its halo is painted with it and moves where it goes.
+ */
 function glowSvg() {
-  const lan = boxOf(TARGETS.lanterna.region);
   const { top, bottom } = SUN_PATCH;
   const beam = (x0, x1, x2, x3, o) => `<path d="M${x0} 420 L${x1} 420 L${x3} 1600 L${x2} 1600 Z" fill="#ffd394" opacity="${o}"/>`;
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${W / 2}" height="${H / 2}" viewBox="0 0 ${W} ${H}">
@@ -1914,7 +2072,6 @@ function glowSvg() {
     ${beam(640, 760, 1290, 1520, 0.11)}
     ${beam(800, 880, 1640, 1790, 0.08)}
   </g>
-  <circle cx="${lan.x + 63}" cy="${lan.y + 118}" r="90" fill="url(#g)" opacity=".38"/>
 </svg>`;
 }
 
@@ -2126,13 +2283,10 @@ async function grainLayer(width, height, sigma = 6) {
  * The plate as it ships: albedo × light (multiply), + bloom (screen), + grain
  * (soft light). The albedo's alpha (the window opening) is kept as painted.
  */
-async function composePlate(albedoPng) {
+async function composePlate(albedoPng, { light, glow, grain }) {
   const { data: rgba, info } = await sharp(albedoPng).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
   const alpha = Buffer.alloc(info.width * info.height);
   for (let i = 0; i < alpha.length; i += 1) alpha[i] = rgba[i * 4 + 3];
-  const light = await render(lightSvg()).resize(W, H).removeAlpha().png().toBuffer();
-  const glow = await render(glowSvg()).resize(W, H).removeAlpha().png().toBuffer();
-  const grain = await grainLayer(W, H);
   const rgb = await sharp(albedoPng)
     .flatten({ background: "#000000" })
     .composite([
@@ -2165,118 +2319,6 @@ function luminance(r, g, b) {
 }
 
 /**
- * Fairness audit (Discovery §9 F1/F4, measured on the art itself):
- *   visible  — share of the target's own pixels the finished plate still shows
- *              (rendered with and without it: what changed is what is seen);
- *   contrast — F4 as written: mean luminance of what is seen against a 24 su
- *              ring around it, on the composed room (light pass included). It
- *              under-reads objects with both darker and lighter parts than
- *              their surroundings (a dark binocular with bright lenses);
- *   edge     — what actually separates a shape from its ground: the median
- *              luminance ratio across the visible silhouette's edge (each edge
- *              pixel against the background pixels within 3 su outside it).
- */
-async function audit(composedRest, composedOpen) {
-  const rows = [];
-  const withRaw = await render(plateSvg()).ensureAlpha().raw().toBuffer();
-  for (const target of SCENE.HIDDEN_OBJECTS) {
-    // an object kept behind a piece is measured as it is found: its piece open (GAME03-INTERACTIONS-04)
-    const composedRgba = target.gate ? composedOpen : composedRest;
-    const b = boxOf(target.region);
-    const pad = 40;
-    const area = { left: Math.max(0, b.x - pad), top: Math.max(0, b.y - pad) };
-    area.width = Math.min(W - area.left, b.w + 2 * pad);
-    area.height = Math.min(H - area.top, b.h + 2 * pad);
-    const withoutRaw = await render(plateSvg({ omit: target.id })).ensureAlpha().raw().toBuffer();
-    const aloneSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}"><defs>${DEFS}</defs>${
-      target.id === "lupa" ? fit(`${ART.lupa.clip}${ART.lupa.body}`, ART.lupa.nominal, b) : targetSvg(target.id)
-    }</svg>`;
-    const aloneRaw = await render(aloneSvg).ensureAlpha().raw().toBuffer();
-    let own = 0;
-    let seen = 0;
-    let lumIn = 0;
-    let lumRing = 0;
-    let ring = 0;
-    for (let y = area.top; y < area.top + area.height; y += 1) {
-      for (let x = area.left; x < area.left + area.width; x += 1) {
-        const i = (y * W + x) * 4;
-        const mine = aloneRaw[i + 3] > 128;
-        const changed =
-          Math.abs(withRaw[i] - withoutRaw[i]) + Math.abs(withRaw[i + 1] - withoutRaw[i + 1]) + Math.abs(withRaw[i + 2] - withoutRaw[i + 2]) > 24;
-        const l = luminance(composedRgba[i], composedRgba[i + 1], composedRgba[i + 2]);
-        if (mine) {
-          own += 1;
-          if (changed) {
-            seen += 1;
-            lumIn += l;
-          }
-        } else {
-          const inRing = x >= b.x - 24 && x < b.x + b.w + 24 && y >= b.y - 24 && y < b.y + b.h + 24;
-          if (inRing && !changed) {
-            ring += 1;
-            lumRing += l;
-          }
-        }
-      }
-    }
-    const li = seen ? lumIn / seen : 0;
-    const lr = ring ? lumRing / ring : 0;
-    // the silhouette's edge: visible target pixels with background within 2 su
-    const isMine = (x, y) => aloneRaw[(y * W + x) * 4 + 3] > 128;
-    const isSeen = (x, y) => {
-      const i = (y * W + x) * 4;
-      return isMine(x, y) && Math.abs(withRaw[i] - withoutRaw[i]) + Math.abs(withRaw[i + 1] - withoutRaw[i + 1]) + Math.abs(withRaw[i + 2] - withoutRaw[i + 2]) > 24;
-    };
-    const lumAt = (x, y) => {
-      const i = (y * W + x) * 4;
-      return luminance(composedRgba[i], composedRgba[i + 1], composedRgba[i + 2]);
-    };
-    const ratios = [];
-    for (let y = area.top + 3; y < area.top + area.height - 3; y += 1) {
-      for (let x = area.left + 3; x < area.left + area.width - 3; x += 1) {
-        if (!isSeen(x, y)) continue;
-        let outside = 0;
-        let sum = 0;
-        for (let dy = -3; dy <= 3; dy += 1) {
-          for (let dx = -3; dx <= 3; dx += 1) {
-            if (dx * dx + dy * dy > 9 || isMine(x + dx, y + dy)) continue;
-            outside += 1;
-            sum += lumAt(x + dx, y + dy);
-          }
-        }
-        if (!outside) continue;
-        const a = lumAt(x, y);
-        const b2 = sum / outside;
-        ratios.push((Math.max(a, b2) + 0.05) / (Math.min(a, b2) + 0.05));
-      }
-    }
-    ratios.sort((p, q) => p - q);
-    rows.push({
-      id: target.id,
-      tier: target.tier,
-      visible: Number((seen / Math.max(1, own)).toFixed(3)),
-      contrast: Number(((Math.max(li, lr) + 0.05) / (Math.min(li, lr) + 0.05)).toFixed(2)),
-      edge: Number((ratios[Math.floor(ratios.length / 2)] ?? 1).toFixed(2)),
-      lookAlikes: SCENE.SCENE_LOOKALIKES.filter((l) => l.resembles === target.id).map((l) => l.id),
-    });
-    // GAME03-INTERACTIONS-04: what the room shows of it with every piece shut, and with every piece open
-    const visibleWith = (states) =>
-      visibleWithPieces({
-        width: W,
-        height: H,
-        plate: ({ omit }) => plateSvg({ omit }),
-        alone: () => aloneSvg,
-        pieces: piecesSvg(ROOM, PIECE_ART, states),
-        target,
-      });
-    rows.at(-1).visibleAtRest = await visibleWith("rest");
-    rows.at(-1).visibleOpen = await visibleWith("open");
-    if (target.gate) rows.at(-1).gate = target.gate;
-  }
-  return rows;
-}
-
-/**
  * GAME03-INTERACTIONS-04's review board: for each piece, the room around it at
  * rest, open, and open with the object it keeps outlined (the hit areas of
  * both states drawn: orange at rest, dashed blue open).
@@ -2305,6 +2347,58 @@ async function writePieceBoard(restPng, openPng, reviewDir) {
     .toFile(path.join(reviewDir, "pieces.webp"));
 }
 
+/** The layout engine and the room as the game loads them (the art kit uses the game's own clash rule). */
+function loadEngine() {
+  const graph = createModuleGraph({ tree: openSourceTree({ root: ROOT }), mocks: {}, globals: {} });
+  return {
+    layout: graph.require("src/games/hidden-objects/hidden-objects-layout.ts"),
+    scene: graph.require("src/games/hidden-objects/scenes/explorer-studio.ts").EXPLORER_STUDIO,
+  };
+}
+
+/**
+ * GAME03-REPLAYABILITY-05's review board: every placement of every pool object
+ * at the desktop's maximum zoom, one row per object (home first), the object's
+ * box outlined, its tier and its audit under it.
+ */
+async function writePlacementBoard(reviewDir, readShipped, rects, measures) {
+  const side = 300;
+  const tile = 250;
+  const rows = [];
+  for (const target of SCENE.HIDDEN_OBJECTS) {
+    const thing = THINGS.find((t) => t.id === target.id);
+    if (!thing) continue;
+    rows.push({ target, thing });
+  }
+  const columns = Math.max(...rows.map((r) => r.thing.placements.length));
+  const inputs = [];
+  for (const [row, { target, thing }] of rows.entries()) {
+    for (const [col, placement] of thing.placements.entries()) {
+      const slot = slotOf(ROOM, placement.slot);
+      const box = boxOnSlot(thing.home, slot);
+      // the room around it with only this thing among the things that move (its own piece open)
+      const states = thing.gate ? oneOpen(ROOM, thing.gate) : "rest";
+      const { png } = await composeLayout(ROOM, readShipped, ROOM_ATLAS_SRC, rects, [placementKey(thing.id, placement.slot)], states);
+      const left = Math.round(Math.min(W - side, Math.max(0, box.x + box.w / 2 - side / 2)));
+      const top = Math.round(Math.min(H - side, Math.max(0, box.y + box.h / 2 - side / 2)));
+      const m = measures.get(placementKey(thing.id, placement.slot));
+      const tier = placement.tier ?? target.tier;
+      const label = `${target.id}@${placement.slot} ${tier} v${Math.round(m.visible * 100)} e${m.edge}`;
+      const overlay = `<svg xmlns="http://www.w3.org/2000/svg" width="${side}" height="${side}"><rect x="${n(box.x - left)}" y="${n(box.y - top)}" width="${box.w}" height="${box.h}" fill="none" stroke="#ff6b6b" stroke-width="2" stroke-dasharray="6 4"/><rect x="0" y="${side - 26}" width="${side}" height="26" fill="#000" opacity=".7"/><text x="6" y="${side - 8}" font-family="sans-serif" font-size="15" fill="#fff">${label}</text></svg>`;
+      const marked = await sharp(png).extract({ left, top, width: side, height: side }).composite([{ input: Buffer.from(overlay) }]).png().toBuffer();
+      const cell = await sharp(marked).resize(tile, tile).png().toBuffer();
+      inputs.push({ input: cell, left: col * (tile + 4), top: row * (tile + 4) });
+    }
+  }
+  await sharp({ create: { width: columns * (tile + 4) - 4, height: rows.length * (tile + 4) - 4, channels: 3, background: "#111111" } })
+    .composite(inputs)
+    .webp({ quality: 82 })
+    .toFile(path.join(reviewDir, "placements.webp"));
+}
+
+const ROOM_ATLAS_SRC = `${SCENE.SCENE_ASSET_BASE}/atlas.webp`;
+const ART_MODULE = path.join(ROOT, "src/games/hidden-objects/scenes/explorer-studio.art.ts");
+
 async function main() {
   const preview = PREVIEW ? path.resolve(PREVIEW) : null;
   const reviewDir = preview ?? REVIEW;
@@ -2315,69 +2409,180 @@ async function main() {
     await pipeline.webp(options).toFile(file);
     report.push([path.relative(ROOT, file), fs.statSync(file).size]);
   };
+  const log = (line) => console.log(line);
+
+  // the room's light, kept apart so the plate and every thing are lit by the same pixels
+  const lightPng = await render(lightSvg()).resize(W, H).removeAlpha().png().toBuffer();
+  const glowPng = await render(glowSvg()).resize(W, H).removeAlpha().png().toBuffer();
+  const grainPng = await grainLayer(W, H);
+  const lighting = await lightRaw({ width: W, height: H, light: lightPng, glow: glowPng, grain: grainPng });
+  const compose = (albedoPng) => composePlate(albedoPng, { light: lightPng, glow: glowPng, grain: grainPng });
 
   const back = await render(backSvg()).png().toBuffer();
   const albedo = await render(plateSvg()).png().toBuffer();
-  const plate = await composePlate(albedo);
+  const plate = await compose(albedo);
   const front = await composeFront(frontSvg());
   const frontRight = await composeFront(frontRightSvg());
   // GAME03-INTERACTIONS-04: each piece lit by the plate's own light, cut to its rect
-  const pieces = await renderPieces({ room: ROOM, art: PIECE_ART, defs: DEFS, light: composePlate });
+  const pieces = await renderPieces({ room: ROOM, art: PIECE_ART, defs: DEFS, light: compose });
 
-  // The composed room, as the Explorador sees it (parallax offsets 0): the pieces on the plate's plane, at rest or open.
-  const composeWith = async (states) => {
-    const under = await sharp({ create: { width: W, height: H, channels: 4, background: "#000000" } })
-      .composite([
-        { input: back, left: LAYER.back.rect.x, top: LAYER.back.rect.y },
-        { input: plate, left: 0, top: 0 },
-      ])
-      .png()
-      .toBuffer();
-    return sharp(await overlayPieces(under, ROOM, pieces, states))
-      .composite([
-        { input: front, left: LAYER.front.rect.x, top: LAYER.front.rect.y },
-        { input: frontRight, left: LAYER["front-right"].rect.x, top: LAYER["front-right"].rect.y },
-      ])
-      .png()
-      .toBuffer();
+  // GAME03-REPLAYABILITY-05: every placement of every thing that moves, lit where it sits
+  log(`rendering ${roomPlacements(ROOM).length} placements…`);
+  const pictures = await renderPlacements({ room: ROOM, chunks: plateChunks(), defs: `${DEFS}${PLATE_DEFS}`, art: thingArt, lighting, fixed: bakedFill, log });
+  const packed = packAtlas(pictures, { width: 1024, skip: BAKED_KEYS });
+  const atlas = await atlasPng(pictures, packed);
+
+  const losslessImages = new Map([
+    [LAYER.back.src, back],
+    [LAYER.plate.src, plate],
+    [LAYER.front.src, front],
+    [LAYER["front-right"].src, frontRight],
+    ...ROOM.interactables.map((piece) => [piece.src, pieces[piece.id]]),
+  ]);
+  const readLossless = async (src) => {
+    const image = losslessImages.get(src);
+    if (!image) throw new Error(`no lossless image for ${src}`);
+    return image;
   };
-  const composedPng = await composeWith("rest");
-  const composedOpenPng = await composeWith("open");
 
-  if (!preview) {
-    await write(sharp(back), path.join(OUT, "back.webp"), { quality: 80, effort: 6 });
-    await write(sharp(plate), path.join(OUT, "plate.webp"), { quality: 80, alphaQuality: 90, effort: 6, smartSubsample: true });
-    await write(sharp(front), path.join(OUT, "front.webp"), { quality: 80, alphaQuality: 90, effort: 6 });
-    await write(sharp(frontRight), path.join(OUT, "front-right.webp"), { quality: 80, alphaQuality: 90, effort: 6 });
-    fs.mkdirSync(path.join(OUT, "pieces"), { recursive: true });
-    for (const piece of ROOM.interactables) {
-      await write(sharp(pieces[piece.id]), path.join(ROOT, "public", piece.src), { quality: 84, alphaQuality: 92, effort: 6 });
-    }
-    // Kit v2 writes no hero: the intro and the selector keep kit v1's (the platform's world visuals name it).
-    for (const id of Object.keys(ART)) {
-      await write(render(thumbSvg(id)), path.join(OUT, "thumbs", `${id}.webp`), { quality: 82, alphaQuality: 90, effort: 6 });
-    }
+  if (preview) {
+    console.log(`preview: ${pictures.size} placements, atlas ${packed.width}×${packed.height}`);
+    await sharp(atlas).toFile(path.join(reviewDir, "atlas.png"));
+    await sharp(plate).toFile(path.join(reviewDir, "plate.png"));
+    return;
   }
 
-  if (HOME && !preview) {
+  await write(sharp(back), path.join(OUT, "back.webp"), { quality: 80, effort: 6 });
+  await write(sharp(plate), path.join(OUT, "plate.webp"), { quality: 76, alphaQuality: 90, effort: 6, smartSubsample: true });
+  await write(sharp(front), path.join(OUT, "front.webp"), { quality: 80, alphaQuality: 90, effort: 6 });
+  await write(sharp(frontRight), path.join(OUT, "front-right.webp"), { quality: 80, alphaQuality: 90, effort: 6 });
+  await write(sharp(atlas), path.join(ROOT, "public", ROOM_ATLAS_SRC), { quality: 74, alphaQuality: 74, effort: 6, smartSubsample: true });
+  fs.mkdirSync(path.join(OUT, "pieces"), { recursive: true });
+  for (const piece of ROOM.interactables) {
+    await write(sharp(pieces[piece.id]), path.join(ROOT, "public", piece.src), { quality: 84, alphaQuality: 92, effort: 6 });
+  }
+  // the list's pictures are the objects themselves, wherever they sit
+  for (const id of Object.keys(ART)) {
+    await write(render(thumbSvg(id)), path.join(OUT, "thumbs", `${id}.webp`), { quality: 82, alphaQuality: 90, effort: 6 });
+  }
+
+  if (HOME) {
     fs.mkdirSync(DIORAMA_OUT, { recursive: true });
     for (const [pass, svg] of Object.entries(dioramaPasses())) {
       await write(render(svg), path.join(DIORAMA_OUT, `discovery-${pass}.webp`), { quality: pass === "contact-shadow" ? 68 : 82, alphaQuality: 94, effort: 6 });
     }
   }
 
-  // Review boards (archive only, never runtime).
-  await sharp(composedPng).resize(1600, 800).webp({ quality: 86 }).toFile(path.join(reviewDir, "scene.webp"));
-  await sharp(composedOpenPng).resize(1600, 800).webp({ quality: 86 }).toFile(path.join(reviewDir, "scene-open.webp"));
-  await writePieceBoard(composedPng, composedOpenPng, reviewDir);
-  const debugAlbedo = await render(plateSvg({ debug: true }).replace(/<\/svg>\s*$/, `${piecesOverlaySvg(ROOM)}</svg>`)).png().toBuffer();
+  // the audit: every pool object on every slot it may take, measured as the game composes it
+  const readShipped = async (src) => fs.readFileSync(path.join(ROOT, "public", src));
+  const engine = loadEngine();
+  const rects = new Map([...packed.rects].map(([key, r]) => [key, { ...r, x: pictures.get(key).bounds.x, y: pictures.get(key).bounds.y }]));
+  const baked = BAKED_KEYS;
+  log("auditing placements…");
+  const measures = await auditPlacements({
+    room: ROOM,
+    pictures,
+    readLossless,
+    readShipped,
+    atlasSrc: ROOM_ATLAS_SRC,
+    rects,
+    clash: (a, b) => engine.layout.placementsClash(engine.scene, a, b),
+    baked,
+    log,
+  });
+
+  // the art module the game reads
+  const entries = [...pictures.values()]
+    .sort((a, b) => (a.key < b.key ? -1 : 1))
+    .map((p) => {
+      const r = rects.get(p.key);
+      const m = measures.get(p.key);
+      return [p.key, { sprite: r ? { sx: r.sx, sy: r.sy, w: r.w, h: r.h, x: r.x, y: r.y } : undefined, measured: m ? { visible: m.visible, edge: m.edge, ring: m.ring, busy: m.busy, near: m.near } : undefined }];
+    });
+  const atlasMeta = await sharp(path.join(ROOT, "public", ROOM_ATLAS_SRC)).metadata();
+  writeIfChanged(
+    ART_MODULE,
+    artModule({
+      atlasName: "STUDIO_ATLAS",
+      artName: "STUDIO_PLACEMENT_ART",
+      atlas: { src: ROOM_ATLAS_SRC, width: atlasMeta.width, height: atlasMeta.height },
+      entries,
+      header: [
+        "Estúdio do Explorador — the pictures of the things that move, and their audit (GAME03-REPLAYABILITY-05).",
+        "",
+        "Written by tools/assets/create_hidden_objects_scene.mjs: never edit by hand. Each placement",
+        "(\"thing@slot\") is a rectangle of the room's sprite atlas painted at (x, y) su; a pool object's",
+        "`measured` is what the art kit's audit measured for it on that slot (hidden-objects-scene.ts,",
+        "PlacementMeasure; hidden-objects-layout.ts, measureIn).",
+      ],
+    }),
+  );
+
+  // the home layout's numbers (each object where it has always been, its neighbours where they have always been)
+  const homeKeys = new Set(THINGS.map((t) => placementKey(t.id, t.placements[0].slot)));
+  const homeRows = SCENE.HIDDEN_OBJECTS.map((target) => {
+    const key = placementKey(target.id, THINGS.find((t) => t.id === target.id).placements[0].slot);
+    const m = measures.get(key);
+    let busy = m.busy;
+    for (const [other, delta] of Object.entries(m.near)) if (homeKeys.has(other)) busy += delta;
+    return {
+      id: target.id,
+      tier: target.tier,
+      visible: m.visible,
+      contrast: m.contrast,
+      edge: m.edge,
+      lookAlikes: SCENE.SCENE_LOOKALIKES.filter((l) => l.resembles === target.id).map((l) => l.id),
+      visibleAtRest: m.visibleAtRest,
+      visibleOpen: m.visibleOpen,
+      ...(target.gate ? { gate: target.gate } : {}),
+      clutter: Number((busy / Math.max(1, m.ring)).toFixed(3)),
+    };
+  });
+  const placementRows = [...measures.entries()].map(([key, m]) => {
+    const [id, slot] = key.split("@");
+    const target = TARGETS[id];
+    const placement = THINGS.find((t) => t.id === id).placements.find((p) => p.slot === slot);
+    return { key, id, slot, tier: placement.tier ?? target.tier, visible: m.visible, visibleAtRest: m.visibleAtRest, visibleOpen: m.visibleOpen, contrast: m.contrast, edge: m.edge, ring: m.ring, busy: m.busy, near: Object.keys(m.near).length };
+  });
+  for (const row of homeRows) console.log(`${row.id.padEnd(12)} ${row.tier}  visible ${(row.visible * 100).toFixed(0).padStart(3)}%  contrast ${row.contrast.toFixed(2).padStart(5)}:1  edge ${row.edge.toFixed(2).padStart(5)}:1  clutter ${row.clutter}`);
+  const sha = (file) => createHash("sha256").update(fs.readFileSync(file)).digest("hex");
+  fs.writeFileSync(
+    path.join(reviewDir, "fairness.json"),
+    `${JSON.stringify(
+      {
+        kit: SCENE.SCENE_ASSET_BASE,
+        plateSha256: sha(path.join(OUT, "plate.webp")),
+        atlasSha256: sha(path.join(ROOT, "public", ROOM_ATLAS_SRC)),
+        rule: {
+          visible: "share of the target's own pixels the room shows on its slot (the plate's albedo with and without it, under what the room paints in front of the slot)",
+          contrast: "F4 as written: mean-luminance ratio, visible target vs a 24 su ring, on the composed room",
+          edge: "median luminance ratio across the visible silhouette's edge (each edge pixel vs the background within 3 su), on the composed room with no other thing that moves",
+          clutter: "share of busy pixels (Sobel luminance gradient > 40) in the ring 16–120 su around the object's box, on the shipped layers composed at rest: `busy` with nothing else that moves, plus each neighbouring placement's `near` count when it is in the layout",
+          pieces: "the room's pieces are composed on the plate's plane at rest; an object kept behind a piece (gate) is measured with that piece open; visibleAtRest / visibleOpen: its visible share with every piece shut / open",
+          layout: "GAME03-REPLAYABILITY-05: `targets` are the objects in the home layout (every thing on its first slot); `placements` are every pool object on every slot it may take",
+        },
+        targets: homeRows,
+        placements: placementRows,
+      },
+      null,
+      2,
+    )}\n`,
+  );
+
+  // review boards (archive only, never runtime): the home layout
+  const homeLayoutKeys = [...homeKeys];
+  const composedHome = await composeLayout(ROOM, readShipped, ROOM_ATLAS_SRC, rects, homeLayoutKeys, "rest");
+  const composedOpen = await composeLayout(ROOM, readShipped, ROOM_ATLAS_SRC, rects, homeLayoutKeys, allOpen(ROOM));
+  await sharp(composedHome.png).resize(1600, 800).webp({ quality: 86 }).toFile(path.join(reviewDir, "scene.webp"));
+  await sharp(composedOpen.png).resize(1600, 800).webp({ quality: 86 }).toFile(path.join(reviewDir, "scene-open.webp"));
+  await sharp(composedHome.png).resize(1600, 800).grayscale().webp({ quality: 86 }).toFile(path.join(reviewDir, "scene-grayscale.webp"));
+  await writePieceBoard(composedHome.png, composedOpen.png, reviewDir);
+  const debugAlbedo = await render(plateSvg({ debug: true, layout: HOME_LAYOUT }).replace(/<\/svg>\s*$/, `${piecesOverlaySvg(ROOM)}</svg>`)).png().toBuffer();
   const regions = await sharp({ create: { width: W, height: H, channels: 4, background: "#000000" } })
     .composite([{ input: back, left: LAYER.back.rect.x, top: LAYER.back.rect.y }, { input: debugAlbedo, left: 0, top: 0 }])
     .png()
     .toBuffer();
   await sharp(regions).resize(1600, 800).webp({ quality: 86 }).toFile(path.join(reviewDir, "regions.webp"));
-  await sharp(composedPng).resize(1600, 800).grayscale().webp({ quality: 86 }).toFile(path.join(reviewDir, "scene-grayscale.webp"));
-  // Each pool object at the desktop's maximum zoom (1.25 px/su): what "aproximar" shows (F7).
   const tiles = [];
   const columns = 6;
   const rows = Math.ceil(SCENE.HIDDEN_OBJECTS.length / columns);
@@ -2386,57 +2591,14 @@ async function main() {
     const side = 340;
     const left = Math.round(Math.min(W - side, Math.max(0, b.x + b.w / 2 - side / 2)));
     const top = Math.round(Math.min(H - side, Math.max(0, b.y + b.h / 2 - side / 2)));
-    const tile = await sharp(composedPng).extract({ left, top, width: side, height: side }).resize(425, 425).png().toBuffer();
+    const tile = await sharp(composedHome.png).extract({ left, top, width: side, height: side }).resize(425, 425).png().toBuffer();
     tiles.push({ input: tile, left: (i % columns) * 430, top: Math.floor(i / columns) * 430 });
   }
   await sharp({ create: { width: columns * 430 - 5, height: rows * 430 - 5, channels: 3, background: "#111111" } })
     .composite(tiles)
     .webp({ quality: 84 })
     .toFile(path.join(reviewDir, "targets-zoom.webp"));
-  if (preview) await sharp(composedPng).toFile(path.join(reviewDir, "scene-full.png"));
-
-  if (AUDIT) {
-    const { data } = await sharp(composedPng).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
-    const { data: dataOpen } = await sharp(composedOpenPng).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
-    const rows = await audit(data, dataOpen);
-    // GAME03-CALIBRATION-02A: how busy the room is around each object, on the layers as they ship
-    if (!preview) {
-      const read = (publicPath) => fs.readFileSync(path.join(ROOT, publicPath));
-      const shipped = await composeShipped(ROOM, read);
-      // an object kept behind a piece: the room around it with its own piece open (it is searched for once in view)
-      const opened = {};
-      for (const row of rows) {
-        const gate = TARGETS[row.id].gate;
-        if (gate && !opened[gate]) opened[gate] = await composeShipped(ROOM, read, { open: [gate] });
-        row.clutter = measureClutter(gate ? opened[gate] : shipped, W, H, TARGETS[row.id].region);
-      }
-    }
-    for (const row of rows) console.log(`${row.id.padEnd(12)} ${row.tier}  visible ${(row.visible * 100).toFixed(0).padStart(3)}%  contrast ${row.contrast.toFixed(2).padStart(5)}:1  edge ${row.edge.toFixed(2).padStart(5)}:1  clutter ${row.clutter ?? "—"}  look-alikes ${row.lookAlikes.join(", ") || "—"}`);
-    const file = path.join(reviewDir, "fairness.json");
-    // the shipped plate the numbers describe: a later art change without --audit is a stale record
-    const platePath = path.join(OUT, "plate.webp");
-    const plateSha256 = !preview && fs.existsSync(platePath) ? createHash("sha256").update(fs.readFileSync(platePath)).digest("hex") : null;
-    fs.writeFileSync(
-      file,
-      `${JSON.stringify(
-        {
-          kit: SCENE.SCENE_ASSET_BASE,
-          plateSha256,
-          rule: {
-            visible: "share of the target's own pixels the finished plate shows (plate rendered with and without the target)",
-            contrast: "F4 as written: mean-luminance ratio, visible target vs a 24 su ring, on the composed room",
-            edge: "median luminance ratio across the visible silhouette's edge (each edge pixel vs the background within 3 su)",
-            clutter: "share of busy pixels (Sobel luminance gradient > 40) in the ring 16–120 su around the object's box, on the shipped layers composed at rest",
-            pieces:
-              "GAME03-INTERACTIONS-04: the room's pieces are composed on the plate's plane at rest; an object kept behind a piece (gate) is measured with that piece open (contrast, edge, clutter); visibleAtRest / visibleOpen: its visible share with every piece shut / open",
-          },
-          targets: rows,
-        },
-        null,
-        2,
-      )}\n`,
-    );
-  }
+  await writePlacementBoard(reviewDir, readShipped, rects, measures);
 
   let total = 0;
   for (const [file, size] of report) {
