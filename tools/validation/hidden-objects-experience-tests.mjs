@@ -112,7 +112,6 @@ import {
   sourceFiles,
   startSession,
   staticGraph,
-  tapOn,
   v3RoundKeeper,
   webpSize,
   findIn,

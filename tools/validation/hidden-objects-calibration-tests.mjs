@@ -1420,7 +1420,9 @@ const MUTANTS = [
   {
     name: "a target's fairness drops under the floor",
     files: (worktree) => {
-      const file = `docs/archive/hidden-objects/${STUDIO_ID}/review/v2/fairness.json`;
+      // the audit of the kit the Estúdio ships (v2 GAME03-CALIBRATION-02A, v3 GAME03-INTERACTIONS-04)
+      const kit = /SCENE_ASSET_BASE = "[^"]*\/(v\d+)"/.exec(worktree.read(FILES.studioScene))[1];
+      const file = `docs/archive/hidden-objects/${STUDIO_ID}/review/${kit}/fairness.json`;
       const audit = JSON.parse(worktree.read(file));
       const row = audit.targets.find((r) => r.id === "gaita");
       return { [file]: [[`"id": "gaita",\n      "tier": "C",\n      "visible": ${row.visible},\n      "contrast": ${row.contrast},\n      "edge": ${row.edge},`, `"id": "gaita",\n      "tier": "C",\n      "visible": ${row.visible},\n      "contrast": ${row.contrast},\n      "edge": 1.21,`]] };

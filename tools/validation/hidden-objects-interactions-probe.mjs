@@ -89,14 +89,6 @@ const LEVEL = { easy: "Fácil", medium: "Médio", hard: "Difícil" };
 const STORAGE_KEY = /const STORAGE_KEY = "([^"]+)"/.exec(fs.readFileSync("src/engine/storage.ts", "utf8"))[1];
 const target = (roomId, id) => ROOM[roomId].pool.find((t) => t.id === id);
 const drawn = (roomId, difficulty, seed) => ROUNDS.selectRoundTargets(ROOM[roomId], difficulty, seed);
-/** What a round of (room, difficulty, seed) tells: each object's list line and its reclue (null where none). */
-function told(roomId, difficulty, seed) {
-  const ids = drawn(roomId, difficulty, seed);
-  const choice = CLUES.selectRoundClues(ROOM[roomId], difficulty, seed, ids);
-  const text = (id, index) => CLUES.clueAt(target(roomId, id), index)?.text ?? null;
-  return { ids, list: ids.map((id) => text(id, choice[id].list)), reclue: Object.fromEntries(ids.map((id) => [id, text(id, choice[id].reclue)])) };
-}
-const levelOf = (roomId, id, text) => target(roomId, id).clues.find((c) => c.text === text)?.level ?? null;
 const centreOf = (region) => (region.kind === "rect" ? { x: region.x + region.w / 2, y: region.y + region.h / 2 } : { x: region.cx, y: region.cy });
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 const fold = (text) => (text ?? "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
@@ -275,8 +267,6 @@ const progress = (page) =>
     return bar ? { found: Number(bar.getAttribute("aria-valuenow")), total: Number(bar.getAttribute("aria-valuemax")) } : null;
   });
 const storedResults = (page) => page.evaluate((key) => JSON.parse(window.localStorage.getItem(key) ?? "[]"), STORAGE_KEY);
-/** The list's own box: on a phone a strip of cards that scrolls sideways inside it. */
-const listBox = (page) => page.evaluate(() => document.querySelector(".hos-list")?.getBoundingClientRect().toJSON() ?? null);
 const overflow = (page) => page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
 async function comfortable(page, cam, point) {
   const zoom = await page.evaluate(() => document.querySelector(".hos-zoom")?.getBoundingClientRect().toJSON());

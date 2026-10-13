@@ -1,0 +1,46 @@
+{
+  "mission": "GAME03-INTERACTIONS-04",
+  "method": "each scenario alone: its own node process and browser, production build",
+  "scenarios": {
+    "int-desktop-observatory": {
+      "held": 7,
+      "total": 7,
+      "failing": []
+    },
+    "int-desktop-studio": {
+      "held": 10,
+      "total": 10,
+      "failing": []
+    },
+    "int-easy-help": {
+      "held": 4,
+      "total": 4,
+      "failing": []
+    },
+    "int-keyboard": {
+      "held": 4,
+      "total": 4,
+      "failing": []
+    },
+    "int-mobile-landscape": {
+      "held": 5,
+      "total": 5,
+      "failing": []
+    },
+    "int-mobile-portrait": {
+      "held": 6,
+      "total": 6,
+      "failing": []
+    },
+    "int-reduced-motion": {
+      "held": 2,
+      "total": 2,
+      "failing": []
+    },
+    "int-round-isolation": {
+      "held": 4,
+      "total": 4,
+      "failing": []
+    }
+  }
+}

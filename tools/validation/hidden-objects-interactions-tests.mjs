@@ -778,6 +778,7 @@ async function runChecks(tree) {
     const played = {};
     for (const id of SCENE_IDS) {
       const scene = room(tree, id);
+      if (gatedOf(scene).length === 0 || piecesOf(scene).length === 0) problems.push(`${id}: nothing is kept behind a piece`);
       for (const t of gatedOf(scene)) {
         const seed = seedWhere(tree, scene, "medium", listing(t.id));
         if (seed === null) {
@@ -805,6 +806,7 @@ async function runChecks(tree) {
     const problems = [];
     for (const id of SCENE_IDS) {
       const scene = room(tree, id);
+      if (gatedOf(scene).length === 0 || piecesOf(scene).length === 0) problems.push(`${id}: nothing is kept behind a piece`);
       for (const t of gatedOf(scene)) {
         const seed = seedWhere(tree, scene, "hard", notListing(t.id));
         const game = await startIn(tree, id, "hard", seed);
@@ -984,6 +986,7 @@ async function runChecks(tree) {
     const shown = {};
     for (const id of SCENE_IDS) {
       const scene = room(tree, id);
+      if (gatedOf(scene).length === 0 || piecesOf(scene).length === 0) problems.push(`${id}: nothing is kept behind a piece`);
       for (const t of gatedOf(scene)) {
         const piece = piecesOf(scene).find((p) => p.id === t.gate);
         const seed = seedWhere(tree, scene, "easy", listing(t.id));
@@ -1023,6 +1026,7 @@ async function runChecks(tree) {
     for (const id of SCENE_IDS) {
       const scene = room(tree, id);
       const { model } = engine(tree);
+      if (gatedOf(scene).length === 0 || piecesOf(scene).length === 0) problems.push(`${id}: nothing is kept behind a piece`);
       for (const t of gatedOf(scene)) {
         const piece = piecesOf(scene).find((p) => p.id === t.gate);
         // the rules, for every rung and both piece states

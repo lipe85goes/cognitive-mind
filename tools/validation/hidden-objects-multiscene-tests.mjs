@@ -1409,8 +1409,8 @@ const MUTANTS = [
   },
   {
     name: "the Observatory's art is repainted without a new audit",
-    // GAME03-CALIBRATION-02A: the Observatory ships art kit v2, audited in its own folder
-    files: { [`docs/archive/hidden-objects/${OBSERVATORY_ID}/review/v2/fairness.json`]: [['"plateSha256": "', '"plateSha256": "0']] },
+    // GAME03-CALIBRATION-02A: the Observatory ships art kit v2, audited in its own folder (GAME03-INTERACTIONS-04: kit v3)
+    files: { [`docs/archive/hidden-objects/${OBSERVATORY_ID}/review/v3/fairness.json`]: [['"plateSha256": "', '"plateSha256": "0']] },
     mustFail: ["M16"],
   },
 ];

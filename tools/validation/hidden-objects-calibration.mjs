@@ -80,6 +80,8 @@ function rejections(rule, profile) {
   if (profile.search < rule.minSearch) why.push("below the floor");
   if (profile.search >= rule.maxSearch) why.push("at or above the next floor");
   if (profile.decoys < rule.minDecoys) why.push("look-alike pressure");
+  // GAME03-INTERACTIONS-04: how many listed objects the round keeps behind the room's pieces
+  if (rule.gated && (profile.gated < rule.gated[0] || profile.gated > rule.gated[1])) why.push("interaction depth");
   return [...new Set(why)];
 }
 
@@ -144,6 +146,9 @@ for (const scene of REGISTRY.SCENES) {
       decoys: distribution(accepted.map((p) => p.decoys)),
       places: distribution(accepted.map((p) => p.places)),
       popOuts: distribution(accepted.map((p) => p.popOuts)),
+      // GAME03-INTERACTIONS-04: objects kept behind a piece per round (a count of actions, not a load)
+      gated: distribution(accepted.map((p) => p.gated ?? 0)),
+      gatedRounds: accepted.reduce((acc, p) => ({ ...acc, [p.gated ?? 0]: (acc[p.gated ?? 0] ?? 0) + 1 }), {}),
       semantic: accepted[0]?.semantic ?? null,
       totalLoad: distribution(accepted.map((p) => p.count * (p.search + p.semantic / 3))),
       exposure: {
@@ -214,6 +219,7 @@ function markdown() {
     "below the floor": "abaixo do piso",
     "at or above the next floor": "no piso seguinte ou acima",
     "look-alike pressure": "poucas sósias",
+    "interaction depth": "objetos atrás de peças fora dos limites",
   };
   const pct = (pair) => (pair ? `${pair[0]} ${(pair[1] * 100).toFixed(1)}%` : "—");
   const L = [];
@@ -242,11 +248,11 @@ function markdown() {
     L.push("");
     L.push(`Pool ${room.pool} (A${room.tiers.A} B${room.tiers.B} C${room.tiers.C}) · ${room.lookAlikes} sósias · ${room.clues.total} pistas (diretas ${room.clues.byLevel.direct}, associativas ${room.clues.byLevel.associative}, indiretas ${room.clues.byLevel.indirect}).`);
     L.push("");
-    L.push("| | Candidatas | Aceitas | Rejeitadas | Objetos alcançados | Busca min · média · max | Sósias/objeto (média) | Lugares (média) | Relance (média) |");
-    L.push("| --- | --- | --- | --- | --- | --- | --- | --- | --- |");
+    L.push("| | Candidatas | Aceitas | Rejeitadas | Objetos alcançados | Busca min · média · max | Sósias/objeto (média) | Lugares (média) | Relance (média) | Atrás de peças (média · rodadas por contagem) |");
+    L.push("| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |");
     for (const d of DIFFICULTIES) {
       const r = room.difficulties[d];
-      L.push(`| ${name[d]} | ${r.candidates} | ${r.accepted} | ${r.rejectedRounds} | ${r.objectsReached} | ${r.search.min} · ${r.search.mean} · ${r.search.max} | ${r.decoys.mean} | ${r.places.mean} | ${r.popOuts.mean} |`);
+      L.push(`| ${name[d]} | ${r.candidates} | ${r.accepted} | ${r.rejectedRounds} | ${r.objectsReached} | ${r.search.min} · ${r.search.mean} · ${r.search.max} | ${r.decoys.mean} | ${r.places.mean} | ${r.popOuts.mean} | ${r.gated.mean} · ${Object.entries(r.gatedRounds).map(([k, n]) => `${k}: ${n}`).join(", ")} |`);
     }
     L.push("");
     for (const d of DIFFICULTIES) {
