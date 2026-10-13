@@ -1,0 +1,1558 @@
+{
+  "base": "http://localhost:3100",
+  "buildId": "q4VM2KXUHIQEMLYfroRPc",
+  "scenarios": [
+    "cal-desktop",
+    "cal-mobile",
+    "cal-landscape",
+    "cal-reduced-motion",
+    "cal-replay"
+  ],
+  "results": [
+    {
+      "scenario": "cal-desktop",
+      "id": "STUDIO_EASY_ROUND_IS_THE_SEEDS",
+      "pass": true,
+      "detail": {
+        "round": {
+          "scene": "explorer-studio",
+          "seed": 8001,
+          "ids": [
+            "gaiola",
+            "bussola",
+            "binoculo",
+            "camera",
+            "pena"
+          ]
+        },
+        "drawn": [
+          "gaiola",
+          "bussola",
+          "binoculo",
+          "camera",
+          "pena"
+        ]
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "STUDIO_EASY_LIST_BY_PICTURE_AND_NAME",
+      "pass": true,
+      "detail": {
+        "lines": [
+          "Gaiola",
+          "Bússola",
+          "Binóculo",
+          "Câmera",
+          "Pena"
+        ]
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "STUDIO_FACIL_LADDER_ENDS_IN_THE_REVEAL",
+      "pass": true,
+      "detail": {
+        "banners": [
+          "Pista: procure perto da janela.",
+          "Pista: procure pendurada na parede, à direita da janela.",
+          "Aqui está: Gaiola."
+        ],
+        "halos": [
+          null,
+          "hos-halo-hint",
+          "hos-halo-reveal"
+        ]
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "STUDIO_MEDIUM_ROUND_IS_THE_SEEDS",
+      "pass": true,
+      "detail": {
+        "round": {
+          "scene": "explorer-studio",
+          "seed": 8002,
+          "ids": [
+            "gaiola",
+            "camera",
+            "barco",
+            "apito",
+            "pinha",
+            "tesoura"
+          ]
+        },
+        "drawn": [
+          "gaiola",
+          "camera",
+          "barco",
+          "apito",
+          "pinha",
+          "tesoura"
+        ]
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "STUDIO_MEDIUM_LIST_TELLS_THE_SEEDS_ASSOCIATIVE_CLUES",
+      "pass": true,
+      "detail": {
+        "shown": [
+          "Tem um poleiro, um bebedouro e uma portinha.",
+          "Diga xis para ela.",
+          "Tem velas, mas nunca acendeu nenhuma.",
+          "Vai no pescoço de quem vigia a piscina.",
+          "Cai das árvores de Natal de verdade.",
+          "Dois anéis para os dedos e um bico afiado."
+        ],
+        "want": [
+          "Tem um poleiro, um bebedouro e uma portinha.",
+          "Diga xis para ela.",
+          "Tem velas, mas nunca acendeu nenhuma.",
+          "Vai no pescoço de quem vigia a piscina.",
+          "Cai das árvores de Natal de verdade.",
+          "Dois anéis para os dedos e um bico afiado."
+        ],
+        "levels": [
+          "associative",
+          "associative",
+          "associative",
+          "associative",
+          "associative",
+          "associative"
+        ]
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "STUDIO_MEDIUM_NO_PICTURE_NO_NAME_BEFORE_THE_FIND",
+      "pass": true,
+      "detail": {
+        "named": [],
+        "pictures": []
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "STUDIO_MEDIO_LADDER_STATION_RECLUE_DIRECTION",
+      "pass": true,
+      "detail": {
+        "banners": [
+          "Pista: procure perto da janela.",
+          "Pista: em outras palavras — Casinha com grades para um passarinho.",
+          "Pista: olhe no alto, entre a janela e os quadros.",
+          "Pista: olhe no alto, entre a janela e os quadros."
+        ],
+        "reclue": "Casinha com grades para um passarinho."
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "STUDIO_MEDIO_NEVER_LIGHTS_NOR_FRAMES",
+      "pass": true,
+      "detail": {
+        "halos": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "buttons": [
+          "Outra pistaTem um poleiro, um bebedouro e uma portinha.",
+          "Outra pistaTem um poleiro, um bebedouro e uma portinha.",
+          "Rever pistaTem um poleiro, um bebedouro e uma portinha.",
+          "Rever pistaTem um poleiro, um bebedouro e uma portinha."
+        ]
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "STUDIO_MEDIO_HINTS_NEVER_NAME_IT",
+      "pass": true,
+      "detail": {
+        "banners": [
+          "Pista: procure perto da janela.",
+          "Pista: em outras palavras — Casinha com grades para um passarinho.",
+          "Pista: olhe no alto, entre a janela e os quadros.",
+          "Pista: olhe no alto, entre a janela e os quadros."
+        ]
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "STUDIO_HARD_ROUND_IS_THE_SEEDS",
+      "pass": true,
+      "detail": {
+        "round": {
+          "scene": "explorer-studio",
+          "seed": 8003,
+          "ids": [
+            "lanterna",
+            "chave",
+            "gaita",
+            "bussola",
+            "camera",
+            "colar",
+            "pinha",
+            "binoculo"
+          ]
+        },
+        "drawn": [
+          "lanterna",
+          "chave",
+          "gaita",
+          "bussola",
+          "camera",
+          "colar",
+          "pinha",
+          "binoculo"
+        ]
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "STUDIO_HARD_LIST_TELLS_THE_SEEDS_INDIRECT_CLUES",
+      "pass": true,
+      "detail": {
+        "shown": [
+          "Numa noite sem lua, guiaria seus passos.",
+          "Quem a perde fica do lado de fora de casa.",
+          "Some na mão do músico, mas a canção aparece.",
+          "Um ímã escondido decide para onde ir.",
+          "O que ela via só aparecia depois de revelado.",
+          "Se o fecho abre, as pérolas fogem pelo chão.",
+          "A semente da festa junina cresce dentro dela.",
+          "Com ele, a ave no alto da árvore vira detalhe."
+        ],
+        "want": [
+          "Numa noite sem lua, guiaria seus passos.",
+          "Quem a perde fica do lado de fora de casa.",
+          "Some na mão do músico, mas a canção aparece.",
+          "Um ímã escondido decide para onde ir.",
+          "O que ela via só aparecia depois de revelado.",
+          "Se o fecho abre, as pérolas fogem pelo chão.",
+          "A semente da festa junina cresce dentro dela.",
+          "Com ele, a ave no alto da árvore vira detalhe."
+        ],
+        "levels": [
+          "indirect",
+          "indirect",
+          "indirect",
+          "indirect",
+          "indirect",
+          "indirect",
+          "indirect",
+          "indirect"
+        ]
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "STUDIO_HARD_NO_PICTURE_NO_NAME_BEFORE_THE_FIND",
+      "pass": true,
+      "detail": {
+        "named": [],
+        "pictures": []
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "STUDIO_DIFICIL_LADDER_STATION_CONTEXT",
+      "pass": true,
+      "detail": {
+        "banners": [
+          "Pista: procure na estante.",
+          "Pista: está numa prateleira baixa, cercada de livros.",
+          "Pista: está numa prateleira baixa, cercada de livros."
+        ]
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "STUDIO_DIFICIL_NEVER_LIGHTS_NOR_FRAMES",
+      "pass": true,
+      "detail": {
+        "halos": [
+          null,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "STUDIO_DIFICIL_NAMES_NOTHING_BEFORE_THE_FIND",
+      "pass": true,
+      "detail": {
+        "said": []
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "STUDIO_THE_FIND_SAYS_THE_NAME",
+      "pass": true,
+      "detail": {
+        "line": {
+          "id": "lanterna",
+          "found": true,
+          "text": "Lanterna",
+          "answered": "Numa noite sem lua, guiaria seus passos.",
+          "aria": "Lanterna: encontrado",
+          "picture": true,
+          "fits": true,
+          "right": 1422.421875
+        },
+        "live": "Encontrou: Lanterna. Numa noite sem lua, guiaria seus passos. 1 de 8."
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "STUDIO_DIFICIL_PLAYED_TO_THE_END",
+      "pass": true,
+      "detail": {
+        "finished": {
+          "missed": []
+        },
+        "saved": {
+          "difficulty": "hard",
+          "foundObjects": 8,
+          "totalObjects": 8,
+          "completed": true,
+          "sceneId": "explorer-studio",
+          "roundSeed": 8003
+        }
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "STUDIO_NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "OBSERVATORY_EASY_ROUND_IS_THE_SEEDS",
+      "pass": true,
+      "detail": {
+        "round": {
+          "scene": "explorer-observatory",
+          "seed": 8011,
+          "ids": [
+            "cavalo-marinho",
+            "compasso",
+            "bule",
+            "coruja",
+            "tambor"
+          ]
+        },
+        "drawn": [
+          "cavalo-marinho",
+          "compasso",
+          "bule",
+          "coruja",
+          "tambor"
+        ]
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "OBSERVATORY_EASY_LIST_BY_PICTURE_AND_NAME",
+      "pass": true,
+      "detail": {
+        "lines": [
+          "Cavalo-marinho",
+          "Compasso",
+          "Bule",
+          "Coruja",
+          "Tambor"
+        ]
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "OBSERVATORY_FACIL_LADDER_ENDS_IN_THE_REVEAL",
+      "pass": true,
+      "detail": {
+        "banners": [
+          "Pista: procure no arquivo de mapas e curiosidades.",
+          "Pista: procure no armário de vidro, na prateleira de baixo.",
+          "Aqui está: Cavalo-marinho."
+        ],
+        "halos": [
+          null,
+          "hos-halo-hint",
+          "hos-halo-reveal"
+        ]
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "OBSERVATORY_MEDIUM_ROUND_IS_THE_SEEDS",
+      "pass": true,
+      "detail": {
+        "round": {
+          "scene": "explorer-observatory",
+          "seed": 8012,
+          "ids": [
+            "compasso",
+            "vela",
+            "oculos",
+            "luneta",
+            "cadeado",
+            "tambor"
+          ]
+        },
+        "drawn": [
+          "compasso",
+          "vela",
+          "oculos",
+          "luneta",
+          "cadeado",
+          "tambor"
+        ]
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "OBSERVATORY_MEDIUM_LIST_TELLS_THE_SEEDS_ASSOCIATIVE_CLUES",
+      "pass": true,
+      "detail": {
+        "shown": [
+          "Ponta seca de um lado, grafite do outro.",
+          "Num bolo de aniversário, a gente sopra.",
+          "Ficam na ponta do nariz da vovó.",
+          "O pirata a abria no convés.",
+          "Os namorados o prendem nas grades das pontes.",
+          "Marca o ritmo da banda que passa na rua."
+        ],
+        "want": [
+          "Ponta seca de um lado, grafite do outro.",
+          "Num bolo de aniversário, a gente sopra.",
+          "Ficam na ponta do nariz da vovó.",
+          "O pirata a abria no convés.",
+          "Os namorados o prendem nas grades das pontes.",
+          "Marca o ritmo da banda que passa na rua."
+        ],
+        "levels": [
+          "associative",
+          "associative",
+          "associative",
+          "associative",
+          "associative",
+          "associative"
+        ]
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "OBSERVATORY_MEDIUM_NO_PICTURE_NO_NAME_BEFORE_THE_FIND",
+      "pass": true,
+      "detail": {
+        "named": [],
+        "pictures": []
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "OBSERVATORY_MEDIO_LADDER_STATION_RECLUE_DIRECTION",
+      "pass": true,
+      "detail": {
+        "banners": [
+          "Pista: procure na bancada de trabalho.",
+          "Pista: em outras palavras — Abre as pernas para desenhar círculos.",
+          "Pista: olhe na prancheta inclinada, no meio.",
+          "Pista: olhe na prancheta inclinada, no meio."
+        ],
+        "reclue": "Abre as pernas para desenhar círculos."
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "OBSERVATORY_MEDIO_NEVER_LIGHTS_NOR_FRAMES",
+      "pass": true,
+      "detail": {
+        "halos": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "buttons": [
+          "Outra pistaPonta seca de um lado, grafite do outro.",
+          "Outra pistaPonta seca de um lado, grafite do outro.",
+          "Rever pistaPonta seca de um lado, grafite do outro.",
+          "Rever pistaPonta seca de um lado, grafite do outro."
+        ]
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "OBSERVATORY_MEDIO_HINTS_NEVER_NAME_IT",
+      "pass": true,
+      "detail": {
+        "banners": [
+          "Pista: procure na bancada de trabalho.",
+          "Pista: em outras palavras — Abre as pernas para desenhar círculos.",
+          "Pista: olhe na prancheta inclinada, no meio.",
+          "Pista: olhe na prancheta inclinada, no meio."
+        ]
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "OBSERVATORY_HARD_ROUND_IS_THE_SEEDS",
+      "pass": true,
+      "detail": {
+        "round": {
+          "scene": "explorer-observatory",
+          "seed": 8013,
+          "ids": [
+            "gato",
+            "balanca",
+            "luneta",
+            "pantufas",
+            "compasso",
+            "sino",
+            "maca",
+            "foguete"
+          ]
+        },
+        "drawn": [
+          "gato",
+          "balanca",
+          "luneta",
+          "pantufas",
+          "compasso",
+          "sino",
+          "maca",
+          "foguete"
+        ]
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "OBSERVATORY_HARD_LIST_TELLS_THE_SEEDS_INDIRECT_CLUES",
+      "pass": true,
+      "detail": {
+        "shown": [
+          "Uma caixa de papelão vazia é o castelo dele.",
+          "Algodão contra pedras? Ela tomba para um lado.",
+          "Um olho fechado, o outro bem distante.",
+          "Chão gelado de manhã? Elas resolvem.",
+          "Sem ele, a lua do caderno sairia torta.",
+          "Na escola antiga, avisava que o recreio acabou.",
+          "A bruxa ofereceu uma envenenada à princesa.",
+          "Lançado do quintal, some entre as nuvens."
+        ],
+        "want": [
+          "Uma caixa de papelão vazia é o castelo dele.",
+          "Algodão contra pedras? Ela tomba para um lado.",
+          "Um olho fechado, o outro bem distante.",
+          "Chão gelado de manhã? Elas resolvem.",
+          "Sem ele, a lua do caderno sairia torta.",
+          "Na escola antiga, avisava que o recreio acabou.",
+          "A bruxa ofereceu uma envenenada à princesa.",
+          "Lançado do quintal, some entre as nuvens."
+        ],
+        "levels": [
+          "indirect",
+          "indirect",
+          "indirect",
+          "indirect",
+          "indirect",
+          "indirect",
+          "indirect",
+          "indirect"
+        ]
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "OBSERVATORY_HARD_NO_PICTURE_NO_NAME_BEFORE_THE_FIND",
+      "pass": true,
+      "detail": {
+        "named": [],
+        "pictures": []
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "OBSERVATORY_DIFICIL_LADDER_STATION_CONTEXT",
+      "pass": true,
+      "detail": {
+        "banners": [
+          "Pista: procure no arquivo de mapas e curiosidades.",
+          "Pista: está enrolado em cima de um móvel, entre pastas.",
+          "Pista: está enrolado em cima de um móvel, entre pastas."
+        ]
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "OBSERVATORY_DIFICIL_NEVER_LIGHTS_NOR_FRAMES",
+      "pass": true,
+      "detail": {
+        "halos": [
+          null,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "OBSERVATORY_DIFICIL_NAMES_NOTHING_BEFORE_THE_FIND",
+      "pass": true,
+      "detail": {
+        "said": []
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "OBSERVATORY_THE_FIND_SAYS_THE_NAME",
+      "pass": true,
+      "detail": {
+        "line": {
+          "id": "gato",
+          "found": true,
+          "text": "Gato",
+          "answered": "Uma caixa de papelão vazia é o castelo dele.",
+          "aria": "Gato dormindo: encontrado",
+          "picture": true,
+          "fits": true,
+          "right": 1422.421875
+        },
+        "live": "Encontrou: Gato. Uma caixa de papelão vazia é o castelo dele. 1 de 8."
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "OBSERVATORY_DIFICIL_PLAYED_TO_THE_END",
+      "pass": true,
+      "detail": {
+        "finished": {
+          "missed": []
+        },
+        "saved": {
+          "difficulty": "hard",
+          "foundObjects": 8,
+          "totalObjects": 8,
+          "completed": true,
+          "sceneId": "explorer-observatory",
+          "roundSeed": 8013
+        }
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "OBSERVATORY_NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "OBSERVATORY_HARD_ROUND_IS_THE_SEEDS",
+      "pass": true,
+      "detail": {
+        "round": {
+          "scene": "explorer-observatory",
+          "seed": 8101,
+          "ids": [
+            "oculos",
+            "caneca",
+            "microscopio",
+            "cavalo-marinho",
+            "ioio",
+            "sino",
+            "luneta",
+            "maca"
+          ]
+        },
+        "drawn": [
+          "oculos",
+          "caneca",
+          "microscopio",
+          "cavalo-marinho",
+          "ioio",
+          "sino",
+          "luneta",
+          "maca"
+        ]
+      }
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "OBSERVATORY_HARD_LIST_TELLS_THE_SEEDS_INDIRECT_CLUES",
+      "pass": true,
+      "detail": {
+        "shown": [
+          "Sem eles, as letras do jornal ficam embaçadas.",
+          "No meio da vigília, o astrônomo agradece a ela.",
+          "Os micróbios não escapam dele.",
+          "Vive entre corais e se esconde mudando de cor.",
+          "No recreio, faz o truque do cachorrinho.",
+          "Na escola antiga, avisava que o recreio acabou.",
+          "Um olho fechado, o outro bem distante.",
+          "Lanche de mão que estala na primeira mordida."
+        ],
+        "want": [
+          "Sem eles, as letras do jornal ficam embaçadas.",
+          "No meio da vigília, o astrônomo agradece a ela.",
+          "Os micróbios não escapam dele.",
+          "Vive entre corais e se esconde mudando de cor.",
+          "No recreio, faz o truque do cachorrinho.",
+          "Na escola antiga, avisava que o recreio acabou.",
+          "Um olho fechado, o outro bem distante.",
+          "Lanche de mão que estala na primeira mordida."
+        ],
+        "levels": [
+          "indirect",
+          "indirect",
+          "indirect",
+          "indirect",
+          "indirect",
+          "indirect",
+          "indirect",
+          "indirect"
+        ]
+      }
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "OBSERVATORY_HARD_NO_PICTURE_NO_NAME_BEFORE_THE_FIND",
+      "pass": true,
+      "detail": {
+        "named": [],
+        "pictures": []
+      }
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "OBSERVATORY_CLUE_LINES_FIT_THE_PHONE",
+      "pass": true,
+      "detail": {
+        "strip": {
+          "x": 11.1875,
+          "y": 730.28125,
+          "width": 367.625,
+          "height": 50.78125,
+          "top": 730.28125,
+          "right": 378.8125,
+          "bottom": 781.0625,
+          "left": 11.1875
+        },
+        "lines": [
+          {
+            "id": "oculos",
+            "fits": true
+          },
+          {
+            "id": "caneca",
+            "fits": true
+          },
+          {
+            "id": "microscopio",
+            "fits": true
+          },
+          {
+            "id": "cavalo-marinho",
+            "fits": true
+          },
+          {
+            "id": "ioio",
+            "fits": true
+          },
+          {
+            "id": "sino",
+            "fits": true
+          },
+          {
+            "id": "luneta",
+            "fits": true
+          },
+          {
+            "id": "maca",
+            "fits": true
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "OBSERVATORY_FOLDING_THE_TRAY_KEEPS_THE_CLUES",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "OBSERVATORY_DRAG_AND_PINCH",
+      "pass": true,
+      "detail": {
+        "before": {
+          "tx": -558.825,
+          "ty": 0,
+          "s": 0.414189,
+          "left": 0,
+          "top": 57.78125,
+          "width": 390,
+          "height": 722.421875
+        },
+        "after": {
+          "tx": -2412.22,
+          "ty": -638.803,
+          "s": 1.25,
+          "left": 0,
+          "top": 57.78125,
+          "width": 390,
+          "height": 722.421875
+        }
+      }
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "OBSERVATORY_DIFICIL_LADDER_STATION_CONTEXT",
+      "pass": true,
+      "detail": {
+        "banners": [
+          "Pista: procure sob a cúpula, perto do telescópio.",
+          "Pista: está em cima de uma caixa de madeira, perto de argolas soltas.",
+          "Pista: está em cima de uma caixa de madeira, perto de argolas soltas."
+        ]
+      }
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "OBSERVATORY_DIFICIL_NEVER_LIGHTS_NOR_FRAMES",
+      "pass": true,
+      "detail": {
+        "halos": [
+          null,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "OBSERVATORY_DIFICIL_NAMES_NOTHING_BEFORE_THE_FIND",
+      "pass": true,
+      "detail": {
+        "said": []
+      }
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "OBSERVATORY_THE_FIND_SAYS_THE_NAME",
+      "pass": true,
+      "detail": {
+        "line": {
+          "id": "oculos",
+          "found": true,
+          "text": "Óculos",
+          "answered": "Sem eles, as letras do jornal ficam embaçadas.",
+          "aria": "Óculos de leitura: encontrado",
+          "picture": true,
+          "fits": true,
+          "right": 147.9375
+        },
+        "live": "Encontrou: Óculos. Sem eles, as letras do jornal ficam embaçadas. 1 de 8."
+      }
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "OBSERVATORY_CLUES_HOLD_AFTER_TOUCH",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "OBSERVATORY_NO_HORIZONTAL_OVERFLOW",
+      "pass": true,
+      "detail": {
+        "overflow": 0
+      }
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "OBSERVATORY_NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "STUDIO_MEDIUM_ROUND_IS_THE_SEEDS",
+      "pass": true,
+      "detail": {
+        "round": {
+          "scene": "explorer-studio",
+          "seed": 8102,
+          "ids": [
+            "chapeu",
+            "apito",
+            "pinha",
+            "gaiola",
+            "gaita",
+            "cantil"
+          ]
+        },
+        "drawn": [
+          "chapeu",
+          "apito",
+          "pinha",
+          "gaiola",
+          "gaita",
+          "cantil"
+        ]
+      }
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "STUDIO_MEDIUM_LIST_TELLS_THE_SEEDS_ASSOCIATIVE_CLUES",
+      "pass": true,
+      "detail": {
+        "shown": [
+          "Aba larga contra o sol da expedição.",
+          "O juiz o usa para parar o jogo.",
+          "Cai das árvores de Natal de verdade.",
+          "Pendurada, ainda espera um canário.",
+          "O caubói a tocava em volta da fogueira.",
+          "Garrafinha de metal com capa de feltro."
+        ],
+        "want": [
+          "Aba larga contra o sol da expedição.",
+          "O juiz o usa para parar o jogo.",
+          "Cai das árvores de Natal de verdade.",
+          "Pendurada, ainda espera um canário.",
+          "O caubói a tocava em volta da fogueira.",
+          "Garrafinha de metal com capa de feltro."
+        ],
+        "levels": [
+          "associative",
+          "associative",
+          "associative",
+          "associative",
+          "associative",
+          "associative"
+        ]
+      }
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "STUDIO_MEDIUM_NO_PICTURE_NO_NAME_BEFORE_THE_FIND",
+      "pass": true,
+      "detail": {
+        "named": [],
+        "pictures": []
+      }
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "STUDIO_CLUE_LINES_FIT_THE_PHONE",
+      "pass": true,
+      "detail": {
+        "strip": {
+          "x": 11.1875,
+          "y": 730.28125,
+          "width": 367.625,
+          "height": 50.78125,
+          "top": 730.28125,
+          "right": 378.8125,
+          "bottom": 781.0625,
+          "left": 11.1875
+        },
+        "lines": [
+          {
+            "id": "chapeu",
+            "fits": true
+          },
+          {
+            "id": "apito",
+            "fits": true
+          },
+          {
+            "id": "pinha",
+            "fits": true
+          },
+          {
+            "id": "gaiola",
+            "fits": true
+          },
+          {
+            "id": "gaita",
+            "fits": true
+          },
+          {
+            "id": "cantil",
+            "fits": true
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "STUDIO_MEDIO_LADDER_STATION_RECLUE_DIRECTION",
+      "pass": true,
+      "detail": {
+        "banners": [
+          "Pista: procure na mesa.",
+          "Pista: em outras palavras — Vai na cabeça de quem viaja.",
+          "Pista: olhe na parede, logo antes da estante.",
+          "Pista: olhe na parede, logo antes da estante."
+        ],
+        "reclue": "Vai na cabeça de quem viaja."
+      }
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "STUDIO_MEDIO_NEVER_LIGHTS_NOR_FRAMES",
+      "pass": true,
+      "detail": {
+        "halos": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "buttons": [
+          "Outra pistaAba larga contra o sol da expedição.",
+          "Outra pistaAba larga contra o sol da expedição.",
+          "Rever pistaAba larga contra o sol da expedição.",
+          "Rever pistaAba larga contra o sol da expedição."
+        ]
+      }
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "STUDIO_MEDIO_HINTS_NEVER_NAME_IT",
+      "pass": true,
+      "detail": {
+        "banners": [
+          "Pista: procure na mesa.",
+          "Pista: em outras palavras — Vai na cabeça de quem viaja.",
+          "Pista: olhe na parede, logo antes da estante.",
+          "Pista: olhe na parede, logo antes da estante."
+        ]
+      }
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "STUDIO_RECLUE_BANNER_FITS_THE_PHONE",
+      "pass": true,
+      "detail": {
+        "banner": {
+          "x": 16,
+          "y": 70.578125,
+          "width": 358,
+          "height": 61.1875,
+          "top": 70.578125,
+          "right": 374,
+          "bottom": 131.765625,
+          "left": 16
+        }
+      }
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "STUDIO_TOUCH_FIND",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "STUDIO_NO_HORIZONTAL_OVERFLOW",
+      "pass": true,
+      "detail": {
+        "overflow": 0
+      }
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "STUDIO_NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "cal-landscape",
+      "id": "EXPLORAR_IN_REACH",
+      "pass": true,
+      "detail": {
+        "exploreBox": {
+          "x": 57.59375,
+          "y": 326.21875,
+          "width": 728.8125,
+          "height": 46
+        }
+      }
+    },
+    {
+      "scenario": "cal-landscape",
+      "id": "STUDIO_HARD_ROUND_IS_THE_SEEDS",
+      "pass": true,
+      "detail": {
+        "round": {
+          "scene": "explorer-studio",
+          "seed": 8201,
+          "ids": [
+            "tesoura",
+            "xicara",
+            "chave",
+            "gaita",
+            "binoculo",
+            "camera",
+            "cantil",
+            "caracol"
+          ]
+        },
+        "drawn": [
+          "tesoura",
+          "xicara",
+          "chave",
+          "gaita",
+          "binoculo",
+          "camera",
+          "cantil",
+          "caracol"
+        ]
+      }
+    },
+    {
+      "scenario": "cal-landscape",
+      "id": "STUDIO_HARD_LIST_TELLS_THE_SEEDS_INDIRECT_CLUES",
+      "pass": true,
+      "detail": {
+        "shown": [
+          "O barbeiro a faz cantar perto da orelha.",
+          "Mindinho levantado, ela vai até os lábios.",
+          "Sem ela, a porta fica fechada para sempre.",
+          "Some na mão do músico, mas a canção aparece.",
+          "Com ele, a ave no alto da árvore vira detalhe.",
+          "Os álbuns de família começam com ela.",
+          "Escoteiro que se preze não sai sem ele cheio.",
+          "Depois do temporal, aparece no muro sem pressa."
+        ],
+        "want": [
+          "O barbeiro a faz cantar perto da orelha.",
+          "Mindinho levantado, ela vai até os lábios.",
+          "Sem ela, a porta fica fechada para sempre.",
+          "Some na mão do músico, mas a canção aparece.",
+          "Com ele, a ave no alto da árvore vira detalhe.",
+          "Os álbuns de família começam com ela.",
+          "Escoteiro que se preze não sai sem ele cheio.",
+          "Depois do temporal, aparece no muro sem pressa."
+        ],
+        "levels": [
+          "indirect",
+          "indirect",
+          "indirect",
+          "indirect",
+          "indirect",
+          "indirect",
+          "indirect",
+          "indirect"
+        ]
+      }
+    },
+    {
+      "scenario": "cal-landscape",
+      "id": "STUDIO_HARD_NO_PICTURE_NO_NAME_BEFORE_THE_FIND",
+      "pass": true,
+      "detail": {
+        "named": [],
+        "pictures": []
+      }
+    },
+    {
+      "scenario": "cal-landscape",
+      "id": "CLUE_LINES_FIT",
+      "pass": true,
+      "detail": {
+        "strip": {
+          "x": 608.1875,
+          "y": 114.984375,
+          "width": 224.625,
+          "height": 158.890625,
+          "top": 114.984375,
+          "right": 832.8125,
+          "bottom": 273.875,
+          "left": 608.1875
+        },
+        "lines": [
+          {
+            "id": "tesoura",
+            "fits": true
+          },
+          {
+            "id": "xicara",
+            "fits": true
+          },
+          {
+            "id": "chave",
+            "fits": true
+          },
+          {
+            "id": "gaita",
+            "fits": true
+          },
+          {
+            "id": "binoculo",
+            "fits": true
+          },
+          {
+            "id": "camera",
+            "fits": true
+          },
+          {
+            "id": "cantil",
+            "fits": true
+          },
+          {
+            "id": "caracol",
+            "fits": true
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "cal-landscape",
+      "id": "ROTATION_KEEPS_THE_ROUND_AND_ITS_CLUES",
+      "pass": true,
+      "detail": {
+        "upright": [
+          "O barbeiro a faz cantar perto da orelha.",
+          "Mindinho levantado, ela vai até os lábios.",
+          "Sem ela, a porta fica fechada para sempre.",
+          "Some na mão do músico, mas a canção aparece.",
+          "Com ele, a ave no alto da árvore vira detalhe.",
+          "Os álbuns de família começam com ela.",
+          "Escoteiro que se preze não sai sem ele cheio.",
+          "Depois do temporal, aparece no muro sem pressa."
+        ]
+      }
+    },
+    {
+      "scenario": "cal-landscape",
+      "id": "TOUCH_FIND",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "cal-landscape",
+      "id": "NO_HORIZONTAL_OVERFLOW",
+      "pass": true,
+      "detail": {
+        "overflow": 0
+      }
+    },
+    {
+      "scenario": "cal-landscape",
+      "id": "NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "cal-reduced-motion",
+      "id": "OBSERVATORY_MEDIUM_ROUND_IS_THE_SEEDS",
+      "pass": true,
+      "detail": {
+        "round": {
+          "scene": "explorer-observatory",
+          "seed": 8301,
+          "ids": [
+            "coruja",
+            "foguete",
+            "compasso",
+            "microscopio",
+            "ioio",
+            "leque"
+          ]
+        },
+        "drawn": [
+          "coruja",
+          "foguete",
+          "compasso",
+          "microscopio",
+          "ioio",
+          "leque"
+        ]
+      }
+    },
+    {
+      "scenario": "cal-reduced-motion",
+      "id": "OBSERVATORY_MEDIUM_LIST_TELLS_THE_SEEDS_ASSOCIATIVE_CLUES",
+      "pass": true,
+      "detail": {
+        "shown": [
+          "Gira a cabeça quase para trás.",
+          "Tem bico pontudo e aletas para subir ao céu.",
+          "Ponta seca de um lado, grafite do outro.",
+          "O cientista encosta o olho e gira o foco.",
+          "Dois discos unidos por um eixo e uma linha.",
+          "Varetas e papel dobrado em sanfona."
+        ],
+        "want": [
+          "Gira a cabeça quase para trás.",
+          "Tem bico pontudo e aletas para subir ao céu.",
+          "Ponta seca de um lado, grafite do outro.",
+          "O cientista encosta o olho e gira o foco.",
+          "Dois discos unidos por um eixo e uma linha.",
+          "Varetas e papel dobrado em sanfona."
+        ],
+        "levels": [
+          "associative",
+          "associative",
+          "associative",
+          "associative",
+          "associative",
+          "associative"
+        ]
+      }
+    },
+    {
+      "scenario": "cal-reduced-motion",
+      "id": "OBSERVATORY_MEDIUM_NO_PICTURE_NO_NAME_BEFORE_THE_FIND",
+      "pass": true,
+      "detail": {
+        "named": [],
+        "pictures": []
+      }
+    },
+    {
+      "scenario": "cal-reduced-motion",
+      "id": "STATIONS_CUT",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "cal-reduced-motion",
+      "id": "OBSERVATORY_MEDIO_LADDER_STATION_RECLUE_DIRECTION",
+      "pass": true,
+      "detail": {
+        "banners": [
+          "Pista: procure sob a cúpula, perto do telescópio.",
+          "Pista: em outras palavras — Ave que enxerga bem no escuro.",
+          "Pista: olhe no alto, à esquerda do telescópio.",
+          "Pista: olhe no alto, à esquerda do telescópio."
+        ],
+        "reclue": "Ave que enxerga bem no escuro."
+      }
+    },
+    {
+      "scenario": "cal-reduced-motion",
+      "id": "OBSERVATORY_MEDIO_NEVER_LIGHTS_NOR_FRAMES",
+      "pass": true,
+      "detail": {
+        "halos": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "buttons": [
+          "Outra pistaGira a cabeça quase para trás.",
+          "Outra pistaGira a cabeça quase para trás.",
+          "Rever pistaGira a cabeça quase para trás.",
+          "Rever pistaGira a cabeça quase para trás."
+        ]
+      }
+    },
+    {
+      "scenario": "cal-reduced-motion",
+      "id": "OBSERVATORY_MEDIO_HINTS_NEVER_NAME_IT",
+      "pass": true,
+      "detail": {
+        "banners": [
+          "Pista: procure sob a cúpula, perto do telescópio.",
+          "Pista: em outras palavras — Ave que enxerga bem no escuro.",
+          "Pista: olhe no alto, à esquerda do telescópio.",
+          "Pista: olhe no alto, à esquerda do telescópio."
+        ]
+      }
+    },
+    {
+      "scenario": "cal-reduced-motion",
+      "id": "CLUES_HOLD",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "cal-reduced-motion",
+      "id": "NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "cal-replay",
+      "id": "A_PAIR_OF_SEEDS_EXISTS",
+      "pass": true,
+      "detail": {
+        "pair": {
+          "seeds": [
+            8401,
+            8402
+          ],
+          "object": "bussola"
+        }
+      }
+    },
+    {
+      "scenario": "cal-replay",
+      "id": "SAME_SEED_SAME_CLUES_ON_A_FRESH_VISIT",
+      "pass": true,
+      "detail": {
+        "first": [
+          "Ali dentro, alguém cantava todas as manhãs.",
+          "Perdido na mata, você a consultaria primeiro.",
+          "Herança de família que se abre com um clique.",
+          "O que ela via só aparecia depois de revelado.",
+          "Num dia de sol forte na trilha, protege a nuca.",
+          "Um blues solitário cabe na palma da mão.",
+          "Perdido na trilha, você chamaria ajuda com ele.",
+          "Leva o dia todo para atravessar o jardim."
+        ],
+        "second": [
+          "Ali dentro, alguém cantava todas as manhãs.",
+          "Perdido na mata, você a consultaria primeiro.",
+          "Herança de família que se abre com um clique.",
+          "O que ela via só aparecia depois de revelado.",
+          "Num dia de sol forte na trilha, protege a nuca.",
+          "Um blues solitário cabe na palma da mão.",
+          "Perdido na trilha, você chamaria ajuda com ele.",
+          "Leva o dia todo para atravessar o jardim."
+        ]
+      }
+    },
+    {
+      "scenario": "cal-replay",
+      "id": "ANOTHER_SEED_TELLS_AN_OBJECT_ANOTHER_WAY",
+      "pass": true,
+      "detail": {
+        "object": "bussola",
+        "before": "Perdido na mata, você a consultaria primeiro.",
+        "now": "Um ímã escondido decide para onde ir."
+      }
+    },
+    {
+      "scenario": "cal-replay",
+      "id": "RECOMECAR_KEEPS_THE_CLUES",
+      "pass": true,
+      "detail": {
+        "before": [
+          "O juiz o usa para parar o jogo.",
+          "Diga xis para ela.",
+          "Garrafinha de metal com capa de feltro.",
+          "Cai das árvores de Natal de verdade.",
+          "Dava-se corda nele todo dia para não parar.",
+          "Fechado num canto, espera o tempo virar."
+        ],
+        "after": [
+          "O juiz o usa para parar o jogo.",
+          "Diga xis para ela.",
+          "Garrafinha de metal com capa de feltro.",
+          "Cai das árvores de Natal de verdade.",
+          "Dava-se corda nele todo dia para não parar.",
+          "Fechado num canto, espera o tempo virar."
+        ],
+        "reclue": "Pista: em outras palavras — Captura uma cena com um clique.",
+        "reclueAgain": "Pista: em outras palavras — Captura uma cena com um clique."
+      }
+    },
+    {
+      "scenario": "cal-replay",
+      "id": "NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    }
+  ],
+  "metrics": {
+    "rounds": {
+      "desktop explorer-studio easy": {
+        "scene": "explorer-studio",
+        "seed": 8001,
+        "ids": [
+          "gaiola",
+          "bussola",
+          "binoculo",
+          "camera",
+          "pena"
+        ]
+      },
+      "desktop explorer-studio medium": {
+        "scene": "explorer-studio",
+        "seed": 8002,
+        "ids": [
+          "gaiola",
+          "camera",
+          "barco",
+          "apito",
+          "pinha",
+          "tesoura"
+        ]
+      },
+      "desktop explorer-studio hard": {
+        "scene": "explorer-studio",
+        "seed": 8003,
+        "ids": [
+          "lanterna",
+          "chave",
+          "gaita",
+          "bussola",
+          "camera",
+          "colar",
+          "pinha",
+          "binoculo"
+        ]
+      },
+      "desktop explorer-observatory easy": {
+        "scene": "explorer-observatory",
+        "seed": 8011,
+        "ids": [
+          "cavalo-marinho",
+          "compasso",
+          "bule",
+          "coruja",
+          "tambor"
+        ]
+      },
+      "desktop explorer-observatory medium": {
+        "scene": "explorer-observatory",
+        "seed": 8012,
+        "ids": [
+          "compasso",
+          "vela",
+          "oculos",
+          "luneta",
+          "cadeado",
+          "tambor"
+        ]
+      },
+      "desktop explorer-observatory hard": {
+        "scene": "explorer-observatory",
+        "seed": 8013,
+        "ids": [
+          "gato",
+          "balanca",
+          "luneta",
+          "pantufas",
+          "compasso",
+          "sino",
+          "maca",
+          "foguete"
+        ]
+      }
+    }
+  }
+}

@@ -80,7 +80,6 @@ const { chromium } = await (async () => {
 const SOURCE = createModuleGraph({ mocks: {}, globals: {} });
 const REGISTRY = SOURCE.require("src/games/hidden-objects/hidden-objects-scenes.ts");
 const ROUNDS = SOURCE.require("src/games/hidden-objects/hidden-objects-rounds.ts");
-const CLUES = SOURCE.require("src/games/hidden-objects/hidden-objects-clues.ts");
 const CONTRACT = SOURCE.require("src/games/hidden-objects/hidden-objects-scene.ts");
 const ROOM = Object.fromEntries(REGISTRY.SCENES.map((scene) => [scene.id, scene]));
 const STUDIO = "explorer-studio";

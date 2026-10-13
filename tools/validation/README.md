@@ -223,6 +223,38 @@ probes that Difficulty V3 superseded read each tree by its generation
 (`isCalibrated` in the harness), as earlier missions did for fixed lists and
 pools; `docs/GAME03_CALIBRATION_02A.md` §15 lists them.
 
+**GAME03-INTERACTIONS-04 — room pieces in both rooms.** The interactions suite
+and its browser probe (sharing the harness with the suites above):
+
+```bash
+node tools/validation/hidden-objects-interactions-tests.mjs                    # 28 checks ([interactions], [preserved]), ~75 s
+node tools/validation/hidden-objects-interactions-tests.mjs --counterfactuals  # base ede2cb1 + 18 in-memory mutants
+node tools/validation/hidden-objects-interactions-probe.mjs [--scenario NAME] [--out DIR] [--json FILE]
+```
+
+The suite checks the pieces as scene data (2–4 per room, every archetype from
+the room's own data, no room name in the engine), the reveal gates (a kept
+object is neither found nor announced while its piece is shut, and is the same
+object, place and seed once it opens; non-listed objects stay inert), the
+interaction depth in the round rule (`GATED_BOUNDS`: Fácil 0–1, Médio 1–2,
+Difícil 1–3, counted apart from the search load, never a glance find; Fácil <
+Médio < Difícil), the hints (Fácil's last step points at the piece without
+opening it; Médio no exact reveal; Difícil no highlight, no opening, no
+naming), the lifecycle (pieces start shut and only the player moves them;
+Recomeçar keeps the round and shuts them; Jogar de novo draws a new seed with
+shut pieces; a change of room starts fresh), accessibility (native buttons
+with `aria-expanded`, touch floors, calm announcements), reduced motion, the
+art's fairness shut and open against the same floors, and, `[preserved]`, the
+camera/gesture/controller files byte-identical to the base, the result and the
+platform. `--counterfactuals` requires the base (`ede2cb1`) to fail every
+`[interactions]` check and hold every `[preserved]` one, and each mutant to
+fail the checks it names. The probe drives the production build: desktop
+Estúdio and Observatório, phone portrait and landscape, reduced motion,
+keyboard only, Fácil's help and round isolation, counting React commits during
+drags (0) and per piece toggle (1). Checks of the older suites and probes that
+the pieces superseded read each tree by its generation (`isInteractive` in the
+harness); `docs/GAME03_INTERACTIONS_04.md` §15 lists them.
+
 The first runs the real code from source: the pure scene/camera/gesture/model
 modules, the scene controller on a fake viewport under a virtual clock, the real
 `HiddenObjectsGame` with its real scene under a small React (every gesture is a

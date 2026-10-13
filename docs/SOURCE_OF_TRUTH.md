@@ -99,7 +99,13 @@ commit `da551b17eddbf0a156228c7e2a5fc9ca178180c9` (2026-10-05).
   (`docs/GAME03_CALIBRATION_02A.md`) recalibrated both rooms to Difficulty V3 —
   clue banks with seeded clues, measured round rules whose floors are derived
   from the previous Difícil, art kits v2 — technically validated, waiting for
-  the human playtest; not locked.
+  the human playtest; not locked. GAME03-INTERACTIONS-04
+  (`docs/GAME03_INTERACTIONS_04.md`) added room pieces to both rooms (drawers,
+  a small door, a curtain, a box lid, a basket — authored states, no physics,
+  one tap or a native button), objects kept behind them that cannot be found
+  or announced while covered, interaction depth counted in the round rule
+  apart from the search load, and art kits v3 — technically validated, waiting
+  for the human playtest; not locked.
 - Rota 2.0 is a later phase, explicitly separate from v1.
 
 ## Reproducing the project

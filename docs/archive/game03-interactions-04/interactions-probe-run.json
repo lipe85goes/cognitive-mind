@@ -1,6 +1,6 @@
 {
   "base": "http://localhost:3100",
-  "buildId": "oES_8diRIceLvvIbdTBxI",
+  "buildId": "q4VM2KXUHIQEMLYfroRPc",
   "scenarios": [
     "int-desktop-studio",
     "int-desktop-observatory",
@@ -259,7 +259,7 @@
             "state": "fechada",
             "open": false,
             "transform": "translate(0px, 0px) rotate(0deg) scale(1, 1)",
-            "computed": "matrix(0.557166, 0, 0, 1, 0, 0)",
+            "computed": "matrix(0.498899, 0, 0, 1, 0, 0)",
             "transition": "0.52s, 0.52s",
             "expanded": "false",
             "label": "Cortina embaixo da mesinha do microscópio"
@@ -347,7 +347,7 @@
           "state": "afastado",
           "open": true,
           "transform": "translate(178px, 0px) rotate(3deg) scale(1, 1)",
-          "computed": "matrix(0.999904, 0.0138571, -0.0138571, 0.999904, 47.1093, 0)",
+          "computed": "matrix(0.999827, 0.0186034, -0.0186034, 0.999827, 63.2469, 0)",
           "transition": "0.46s, 0.46s",
           "expanded": "true",
           "label": "Cesto de mapas no pé da estante"
@@ -424,7 +424,7 @@
           "state": "aberta",
           "open": true,
           "transform": "translate(0px, 0px) rotate(0deg) scale(0.27, 1)",
-          "computed": "matrix(0.713, 0, 0, 1, 0, 0)",
+          "computed": "matrix(0.771291, 0, 0, 1, 0, 0)",
           "transition": "0.52s, 0.52s",
           "expanded": "true",
           "label": "Cortina embaixo da mesinha do microscópio"
@@ -577,7 +577,7 @@
           "state": "aberta",
           "open": true,
           "transform": "translate(0px, 56px) rotate(0deg) scale(1, 1)",
-          "computed": "matrix(1, 0, 0, 1, 0, 18.0063)",
+          "computed": "matrix(1, 0, 0, 1, 0, 54.5508)",
           "transition": "0.38s, 0.38s",
           "expanded": "true",
           "label": "Gaveta da mesinha da janela"
@@ -587,7 +587,7 @@
           "state": "fechada",
           "open": false,
           "transform": "translate(0px, 0px) rotate(0deg) scale(1, 1)",
-          "computed": "matrix(1, 0, 0, 1, 0, 11.3602)",
+          "computed": "matrix(1, 0, 0, 1, 0, 36.993)",
           "transition": "0.38s, 0.38s",
           "expanded": "false",
           "label": "Gaveta da mesinha da janela"

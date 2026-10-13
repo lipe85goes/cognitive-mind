@@ -1297,7 +1297,7 @@ const MUTANTS = [
     name: "the Observatory accidentally uses the Studio's pool",
     files: {
       [FILES.observatoryScene]: [
-        ['import type { HiddenObjectDefinition', 'import { HIDDEN_OBJECTS as STUDIO_POOL } from "@/games/hidden-objects/scenes/explorer-studio";\nimport type { HiddenObjectDefinition'],
+        ['import type {', 'import { HIDDEN_OBJECTS as STUDIO_POOL } from "@/games/hidden-objects/scenes/explorer-studio";\nimport type {'],
         ["  pool: HIDDEN_OBJECTS,\n", "  pool: STUDIO_POOL,\n"],
       ],
     },

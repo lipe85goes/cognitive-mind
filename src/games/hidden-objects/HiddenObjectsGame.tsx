@@ -554,8 +554,7 @@ function SetupCard({
             </label>
           ))}
         </fieldset>
-        <p className="hos-controls-line">Arraste para explorar · pince, use a roda ou + e − para aproximar</p>
-        <p className="hos-controls-line">Gavetas, portas, tampas e cortinas da sala se abrem com um toque</p>
+        <p className="hos-controls-line">Arraste para explorar · pince ou use + e − · gavetas e portas se abrem com um toque</p>
         <button type="button" className="hos-primary" onClick={onStart} disabled={failed || preparing}>
           <Search size={20} aria-hidden="true" />
           {preparing ? "Preparando a cena…" : "Explorar"}
