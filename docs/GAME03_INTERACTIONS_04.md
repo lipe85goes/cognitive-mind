@@ -47,7 +47,7 @@ pistas e errar toques não muda o resultado (I25).
 - Verificado antes de editar: branch `feat/game03-interactions-04`, `HEAD` =
   `ede2cb1…`, árvore limpa; a branch já existia no remoto.
 - Commits de checkpoint empurrados durante o trabalho (`3e6daae`, `b7aaba1`, `153df77`,
-  `38369e2`) e os commits finais desta missão. Nenhum merge.
+  `38369e2`, `d934cf9`) e o commit final desta missão. Nenhum merge, nenhum PR.
 
 ## 3. Arquitetura
 
@@ -343,13 +343,13 @@ cada suite continuam de pé (§16).
 | justiça das rodadas, duas salas (1 000 000 de sementes por dificuldade) | `ROUND_FAIRNESS_OK` × 2 — toda rodada alcançada, χ² uniforme (\|z\| ≤ 2,27), nenhum objeto fora da probabilidade exata (\|z\| ≤ 2,65) |
 | relatório de calibração | `CALIBRATION_REPORT_OK`; constantes = derivadas |
 | probe **interactions** | **42/42**, e cada cenário sozinho, processo e browser próprios: 42/42 |
-| probes antigos | calibração 83/83 · multiscene 61/61 · Estúdio ⟨STUDIO_PROBE⟩ |
+| probes antigos | calibração 83/83 · multiscene 61/61 · Estúdio 104/104 (todos no build final) |
 | `gameplay-platform-lock-v1.mjs` · `--counterfactuals` | 18/18 · `LOCK_GATE_COUNTERFACTUALS_HOLD` |
 | readiness · watchdog · continuation · diagnostic boundary | 19/19 · 10/10 · 21/21 · MATCHES |
 | Circuito (`memory-circuit-lifecycle-tests`) | 13/13 |
 | Rota: terminal de resultado · ownership · coupling gate | 13/13 · 7/7 · 6/6 |
-| CORE `validation-hygiene-tests.mjs` | ⟨CORE⟩ |
-| DEEP `final-acceptance.mjs` | ⟨DEEP⟩ |
+| CORE `validation-hygiene-tests.mjs` | 15/15 validadores (`CORE_BATTERY_PASSED`); imutabilidade: nada criado, apagado ou alterado (`VALIDATION_CHECK_IS_READ_ONLY`, evidência MATCHES) |
+| DEEP `final-acceptance.mjs` | estrutural 1080/1080, contínuo 270/270, recovery OK, sem exceções; 5 evidências MATCHES |
 | dependências | `package.json` e `package-lock.json` idênticos à base; nenhuma dependência nova; `npm audit` 13 avisos (1 baixo, 2 moderados, 10 altos, 0 críticos) — idêntico à base `ede2cb1`, mesmo `package-lock.json` |
 
 A multiscene `ms-mobile` pegou uma regressão real durante a missão: a frase nova do
