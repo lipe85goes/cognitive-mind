@@ -88,6 +88,7 @@ import {
   staticGraph,
   v3RoundKeeper,
   webpSize,
+  isInteractive,
 } from "./hidden-objects-harness.mjs";
 
 const args = process.argv.slice(2);
@@ -290,7 +291,8 @@ function openGame(tree, { viewport = DESKTOP, reducedMotion = false, seeds = [],
     },
     /** Load + decode every layer on the page (the room on screen), then let the readiness frames pass. */
     async decode() {
-      for (const entry of harness.hosts((e) => e.type === IMAGE && cls("hos-layer")(e))) entry.props.onLoad?.({ currentTarget: entry.node, target: entry.node });
+      // GAME03-INTERACTIONS-04: a room's movable pieces are essential art too (none before it)
+      for (const entry of harness.hosts((e) => e.type === IMAGE && (cls("hos-layer")(e) || cls("hos-piece")(e)))) entry.props.onLoad?.({ currentTarget: entry.node, target: entry.node });
       await drain();
       harness.flush();
       flushFrames(4);
@@ -433,7 +435,9 @@ function studioBeyondTheCalibration(tree, mine, base) {
     return !now || !same(asBefore(now), asBefore(t));
   }).map((t) => t.id);
   const lookAlikesMoved = base.scene.SCENE_LOOKALIKES.filter((l) => !same(mine.scene.SCENE_LOOKALIKES.find((candidate) => candidate.id === l.id), l)).map((l) => l.id);
-  const thumbsDiffer = base.scene.HIDDEN_OBJECTS.filter((t) => mine.scene.thumbnailSrc(t.id) !== base.scene.thumbnailSrc(t.id).replace("/v1/", "/v2/")).map((t) => t.id);
+  // the kit folder moves with each art kit (v2 GAME03-CALIBRATION-02A, v3 GAME03-INTERACTIONS-04): the same pictures under it
+  const kit = isInteractive(tree) ? "/v3/" : "/v2/";
+  const thumbsDiffer = base.scene.HIDDEN_OBJECTS.filter((t) => mine.scene.thumbnailSrc(t.id) !== base.scene.thumbnailSrc(t.id).replace("/v1/", kit)).map((t) => t.id);
   const cameraSame = JSON.stringify(cameraSweep(mine.camera)) === cached(BASE_TREE, "ms-sweep", () => JSON.stringify(cameraSweep(base.camera)));
   const controllerSame = [false, true].every((reducedMotion) =>
     sameControllerRecord(controllerRecord(tree, { reducedMotion }), cached(BASE_TREE, `ms-controller:${reducedMotion}`, () => controllerRecord(BASE_TREE, { reducedMotion }))),

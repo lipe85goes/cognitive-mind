@@ -523,7 +523,7 @@ export const HIDDEN_OBJECTS: readonly HiddenObjectDefinition[] = [
       { level: "direct", text: "Brinquedo que imita uma nave rumo à Lua." },
       { level: "associative", text: "Tem bico pontudo e aletas para subir ao céu." },
       { level: "associative", text: "Leva astronautas para fora da Terra." },
-      { level: "indirect", text: "Um menino sonha pilotá-lo até as estrelas." },
+      { level: "indirect", text: "Um menino sonha pilotá-lo pelo espaço afora." },
       { level: "indirect", text: "Lançado do quintal, some entre as nuvens." },
     ],
     tier: "C",
@@ -552,7 +552,7 @@ export const HIDDEN_OBJECTS: readonly HiddenObjectDefinition[] = [
     measured: { visible: 0.767, edge: 3.91, clutter: 0.177 },
     hintRegion: "embaixo da bancada, do lado direito",
     hintDirection: "embaixo do tampo, à direita, guardado",
-    hintContext: "guardado bem embaixo dos planetas de latão",
+    hintContext: "guardado bem embaixo dos planetas de latão, longe da vista",
     gate: "gaveta-da-bancada",
   },
   {
@@ -742,15 +742,15 @@ export const SCENE_LOOKALIKES: readonly SceneLookAlike[] = [
   },
   // GAME03-INTERACTIONS-04: one look-alike for each object kept behind a piece, out in the room
   {
-    id: "chapeu-de-festa",
-    label: "Chapéu de festa",
+    id: "chapeu-de-mago",
+    label: "Chapéu de mago",
     resembles: "foguete",
-    tellApart: "um cone de papel com elástico, sem janelinha e sem aletas",
+    tellApart: "um cone de papel de fantasia, com elástico, sem janelinha e sem aletas",
     region: { kind: "rect", x: 470, y: 1232, w: 40, h: 52 },
   },
   {
     id: "carretel",
-    label: "Carretel de linha",
+    label: "Carretel",
     resembles: "ioio",
     tellApart: "um cilindro de madeira cheio de linha enrolada, que não sobe nem desce",
     region: { kind: "rect", x: 1880, y: 1196, w: 40, h: 40 },

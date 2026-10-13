@@ -194,6 +194,11 @@
 }
 
 .hos-piece {
+  position: absolute;
+  max-width: none;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
   touch-action: none;
   transition:
     transform var(--hos-piece-ms, 400ms) cubic-bezier(0.3, 0.7, 0.3, 1),

@@ -545,6 +545,12 @@ async function desktopStudio() {
   check("ROUND_LISTS_A_KEPT_OBJECT", round.seed === seed && same(round.ids, drawn(STUDIO, "easy", seed)) && round.ids.includes(kept.id), { round, kept: kept.id });
   check("EVERY_PIECE_STARTS_SHUT", await allShut(page, STUDIO), { pieces: await piecesOnScreen(page, STUDIO) });
   await witness(page, "studio-default", 300);
+  // one step of a piece, there and back: what an interaction costs React (and proof the counter counts)
+  const other = piecesOf(STUDIO).find((p) => p.id !== kept.gate);
+  const there = await tapPiece(session, STUDIO, other.id);
+  const back = await tapPiece(session, STUDIO, other.id);
+  metrics.interactionCommits = [there.commits, back.commits];
+  check("ANOTHER_PIECE_STEPS_THERE_AND_BACK", there.after.open && !back.after.open && there.cameraStill && back.cameraStill, { there: there.after.state, back: back.after.state, commits: metrics.interactionCommits });
   // the camera as always: a drag pans, the wheel zooms; nothing opens
   const cam0 = await camera(page);
   const centre = { x: cam0.left + cam0.width / 2, y: cam0.top + cam0.height / 2 };
@@ -557,7 +563,8 @@ async function desktopStudio() {
   await settle(page);
   metrics.studioDragCommits = dragCommits;
   check("PAN_AND_ZOOM_MOVE_NO_PIECE", !sameCamera(cam0, await camera(page)) && (await allShut(page, STUDIO)), { dragCommits });
-  check("A_DRAG_IS_NOT_A_RENDER_LOOP", dragCommits <= 3, { dragCommits, pointerMoves: 24 });
+  // the counter is alive (a piece's step committed) and a whole drag commits at most a few times (settles, never per move)
+  check("A_DRAG_IS_NOT_A_RENDER_LOOP", dragCommits <= 3 && there.commits >= 1, { dragCommits, pointerMoves: 24, interactionCommits: metrics.interactionCommits });
   // shut: the object is not there to be found
   const throughTheDrawer = await tapObject(session, STUDIO, kept.id);
   const afterTap = await pieceOnScreen(page, kept.gate);
@@ -565,7 +572,6 @@ async function desktopStudio() {
   // that very tap reached the piece (the object's spot is the piece's): it is open now, or open it
   const opened = afterTap.open ? { after: afterTap, cameraStill: true, commits: null } : await tapPiece(session, STUDIO, kept.gate);
   check("A_TAP_OPENS_THE_PIECE", opened.after.open && opened.after.expanded === "true" && opened.cameraStill, opened);
-  metrics.interactionCommits = opened.commits;
   await witness(page, "studio-open", 700);
   const found = await tapObject(session, STUDIO, kept.id);
   check("OPEN_PIECE_EXPOSES_THE_OBJECT", found && (await lineFound(page, kept.id)), { kept: kept.id });
@@ -623,9 +629,18 @@ async function desktopObservatory() {
   const hardKept = kept.find((t) => hard.ids.includes(t.id));
   await focusLine(session, hardKept.id);
   const hardLadder = [await hint(session), await hint(session), await hint(session)];
-  const pieceWords = [piece(OBSERVATORY, hardKept.gate).label, piece(OBSERVATORY, hardKept.gate).accessibleLabel].join(" ");
-  const namesPiece = (text) => fold(pieceWords).split(/[^a-z]+/).filter((w) => w.length >= 4).some((w) => fold(text).includes(w));
-  check("DIFICIL_NEVER_POINTS_AT_THE_PIECE", hardLadder.every((h) => !h.halo && !namesPiece(h.banner ?? "") && !namesAny(OBSERVATORY, [hardKept.id], h.banner ?? "")) && (await allShut(page, OBSERVATORY)) && !framesObject(hardLadder[2].camera, OBSERVATORY, hardKept.id), { banners: hardLadder.map((h) => h.banner), kept: hardKept.id });
+  // the piece's own name (its station is every difficulty's first rung: the room's place, not the piece)
+  const stationWords = new Set(ROOM[OBSERVATORY].stations.flatMap((s) => fold(`${s.label} ${s.hintPhrase}`).split(/[^a-z]+/)));
+  const pieceWords = fold(piece(OBSERVATORY, hardKept.gate).label).split(/[^a-z]+/).filter((w) => w.length >= 4 && !stationWords.has(w));
+  const namesPiece = (text) => pieceWords.some((w) => fold(text).includes(w));
+  const hardFacts = {
+    noLight: hardLadder.every((h) => !h.halo),
+    neverNamesThePiece: hardLadder.every((h) => !namesPiece(h.banner ?? "")),
+    neverNamesTheObject: hardLadder.every((h) => namesAny(OBSERVATORY, [hardKept.id], h.banner ?? "").length === 0),
+    nothingOpened: await allShut(page, OBSERVATORY),
+    neverFramed: !framesObject(hardLadder[2].camera, OBSERVATORY, hardKept.id),
+  };
+  check("DIFICIL_NEVER_POINTS_AT_THE_PIECE", Object.values(hardFacts).every(Boolean), { ...hardFacts, banners: hardLadder.map((h) => h.banner), kept: hardKept.id });
   await witness(page, "observatory-hard-hint", 300);
   const { missed } = await finishRound(session, OBSERVATORY);
   const stored = (await storedResults(page))[0];

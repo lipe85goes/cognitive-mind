@@ -670,8 +670,8 @@ Object.assign(LOOK_ART, {
 
 // GAME03-INTERACTIONS-04: one look-alike for each object a piece keeps, out in the room
 Object.assign(LOOK_ART, {
-  // on the rug by the side table: closed, metal, oblong — no mouthpiece, no ring
-  canivete: {
+  // on the rug by the side table: a metal pencil sharpener — no mouthpiece, no ring
+  apontador: {
     nominal: { w: 58, h: 22 },
     body: `
       <path d="M4 6 H46 C52 6 56 9 56 12 C56 15 52 18 46 18 H4 C2 18 1 16 1 12 C1 8 2 6 4 6 Z" fill="url(#silver)" stroke="#4e4c46" stroke-width="1.4"/>
@@ -1626,7 +1626,7 @@ function cornerUmbrella(omit) {
 // the bookcase. The plate paints what each keeps (in place, as if the piece
 // were open); the piece is painted apart (PIECE_ART), shipped as its own
 // picture and posed by the game. Each object is partly tucked under something
-// of its compartment (tier C, the identifying part in view once it is open).
+// of its compartment (tier C, or B where only a corner is covered — the identifying part in view once it is open).
 
 /** A strand of beads along a polyline: `points` [[x, y]…], a bead every `step` su. */
 function beads(points, { step = 7.2, r = 3.6, fill = "url(#ivory)", stroke = "#8a7a58" } = {}) {
@@ -1646,24 +1646,25 @@ function beads(points, { step = 7.2, r = 3.6, fill = "url(#ivory)", stroke = "#8
 Object.assign(ART, {
   // In the side table's drawer, lying on its side; a folded note over its round end (tier C).
   apito: {
-    nominal: { w: 100, h: 34 },
+    nominal: { w: 104, h: 54 },
     body: `
-      <path d="M30 5 H76 C90 5 98 12 98 19 C98 27 90 32 76 32 H42 C36 32 32 28 30 24 Z" fill="url(#silver)" stroke="#4e4c46" stroke-width="1.6"/>
-      <path d="M36 9 H74 C84 9 90 13 92 18" stroke="#ffffff" stroke-width="2.4" fill="none" opacity=".55"/>
-      <rect x="6" y="10" width="28" height="12" rx="3" fill="url(#silver)" stroke="#4e4c46" stroke-width="1.4"/>
-      <rect x="42" y="7" width="15" height="6" rx="2" fill="#24201c"/>
-      <circle cx="78" cy="19" r="8" fill="none" stroke="#3a3832" stroke-width="1.2" opacity=".55"/>
-      <circle cx="12" cy="27" r="5" fill="none" stroke="url(#brassDim)" stroke-width="2.6"/>`,
+      <path d="M32 6 H78 C93 6 102 15 102 24 C102 34 93 42 78 42 H44 C38 42 34 37 32 31 Z" fill="url(#silver)" stroke="#4e4c46" stroke-width="1.8"/>
+      <path d="M38 11 H76 C87 11 94 16 96 23" stroke="#ffffff" stroke-width="2.6" fill="none" opacity=".55"/>
+      <rect x="6" y="13" width="30" height="15" rx="3" fill="url(#silver)" stroke="#4e4c46" stroke-width="1.5"/>
+      <rect x="44" y="9" width="17" height="7" rx="2" fill="#24201c"/>
+      <circle cx="80" cy="24" r="10" fill="none" stroke="#3a3832" stroke-width="1.3" opacity=".55"/>
+      <circle cx="13" cy="36" r="6" fill="none" stroke="url(#brassDim)" stroke-width="2.8"/>
+      <path d="M10 42 C8 48 18 52 30 50 C44 48 52 52 60 52" stroke="#9a3a2a" stroke-width="3" fill="none" stroke-linecap="round"/>`,
   },
   // In the little box on the map: a loop inside, a strand over the front rim; a silk corner over its left side (tier C).
   colar: {
-    nominal: { w: 96, h: 36 },
+    nominal: { w: 96, h: 54 },
     body: `
-      ${beads([[10, 12], [24, 5], [48, 3], [72, 5], [86, 11], [80, 17], [60, 18]])}
-      ${beads([[60, 18], [62, 26], [52, 32], [40, 32], [30, 26], [28, 18]], { r: 3.8 })}
-      <circle cx="45" cy="33" r="5.2" fill="url(#brass)" stroke="#6a4a1c" stroke-width="1"/>`,
+      ${beads([[10, 14], [24, 7], [48, 5], [72, 7], [86, 13], [80, 20], [62, 22]])}
+      ${beads([[62, 22], [66, 34], [60, 44], [48, 48], [36, 44], [30, 34], [28, 22]], { r: 4 })}
+      <circle cx="48" cy="49" r="5.4" fill="url(#brass)" stroke="#6a4a1c" stroke-width="1"/>`,
   },
-  // At the foot of the bookcase, behind the basket of maps; a rolled map lies against its lower left (tier C).
+  // At the foot of the bookcase, behind the basket of maps; a rolled map lies against its lower left (tier B).
   cantil: {
     nominal: { w: 88, h: 80 },
     body: `
@@ -1681,13 +1682,13 @@ Object.assign(ART, {
 /** The side table's drawer pulled out: its box, what it keeps, a folded note over the whistle's round end. */
 function sideTableDrawer(omit) {
   return `
-    <rect x="728" y="1214" width="144" height="42" rx="3" fill="#1d0f06"/>
-    <path d="M734 1219 H866 L870 1255 H730 Z" fill="url(#woodDark)" filter="url(#grainH)"/>
+    <rect x="728" y="1214" width="144" height="54" rx="3" fill="#1d0f06"/>
+    <path d="M734 1219 H866 L870 1267 H730 Z" fill="url(#woodDark)" filter="url(#grainH)"/>
     <path d="M728 1214 H872 L866 1220 H734 Z" fill="#3a2010"/>
     ${t2(omit, "apito")}
-    <g transform="rotate(-6 838 1236)">
-      <path d="M824 1222 L862 1220 L866 1248 L826 1251 Z" fill="url(#page)" stroke="#8a6a3c" stroke-width="1.2"/>
-      <path d="M830 1232 H858 M831 1240 H852" stroke="#8a7a62" stroke-width="1.1" opacity=".5"/>
+    <g transform="rotate(-6 838 1240)">
+      <path d="M822 1222 L864 1219 L868 1258 L826 1262 Z" fill="url(#page)" stroke="#8a6a3c" stroke-width="1.2"/>
+      <path d="M829 1234 H860 M830 1244 H856 M831 1252 H850" stroke="#8a7a62" stroke-width="1.1" opacity=".5"/>
     </g>`;
 }
 /** A target in its place, or nothing (the audit's "omit"); for the kit-v3 paint, which calls it by name. */
@@ -1700,11 +1701,11 @@ function openBox(omit) {
   return `
     <g>${shadow(1950, 1216, 74, 11)}
       <rect x="1890" y="1150" width="120" height="58" rx="6" fill="url(#woodDark)" stroke="#1c0f07" stroke-width="1.6" filter="url(#grainH)"/>
-      <path d="M1890 1150 L1900 1134 H2000 L2010 1150 Z" fill="#3a1220" stroke="#1c0f07" stroke-width="1.4"/>
-      <path d="M1898 1146 L1904 1138 H1996 L2002 1146 Z" fill="url(#velvet)"/>
+      <path d="M1890 1150 L1900 1130 H2000 L2010 1150 Z" fill="#3a1220" stroke="#1c0f07" stroke-width="1.4"/>
+      <path d="M1898 1146 L1904 1134 H1996 L2002 1146 Z" fill="url(#velvet)"/>
       <rect x="1890" y="1150" width="120" height="4" fill="#8a5a32" opacity=".7"/></g>
     ${t2(omit, "colar")}
-    <path d="M1898 1150 L1904 1135 L1942 1137 L1950 1152 L1930 1162 L1904 1160 Z" fill="#d9c8e8" stroke="#8a7a98" stroke-width="1.1" opacity=".95"/>
+    <path d="M1898 1150 L1904 1131 L1942 1133 L1950 1152 L1930 1166 L1904 1164 Z" fill="#d9c8e8" stroke="#8a7a98" stroke-width="1.1" opacity=".95"/>
     <path d="M1906 1144 L1926 1146" stroke="#ffffff" stroke-width="1.4" opacity=".5"/>`;
 }
 
@@ -1724,19 +1725,19 @@ function basketCorner(omit) {
 const PIECE_ART = {
   // the drawer's front, under the side table's top: a knob, a seam of shadow above
   "gaveta-da-mesinha": () => `
-    <rect x="726" y="1213" width="148" height="44" rx="5" fill="url(#woodH)" stroke="#2b170b" stroke-width="1.8" filter="url(#grainH)"/>
-    <rect x="732" y="1219" width="136" height="32" rx="3" fill="none" stroke="#3a2010" stroke-width="1.6" opacity=".7"/>
+    <rect x="726" y="1213" width="148" height="56" rx="5" fill="url(#woodH)" stroke="#2b170b" stroke-width="1.8" filter="url(#grainH)"/>
+    <rect x="732" y="1219" width="136" height="44" rx="3" fill="none" stroke="#3a2010" stroke-width="1.6" opacity=".7"/>
     <rect x="726" y="1213" width="148" height="5" rx="2" fill="#1a0e06" opacity=".5"/>
-    <ellipse cx="800" cy="1236" rx="9" ry="8" fill="url(#brass)" stroke="#5e3f14" stroke-width="1.3"/>
-    <ellipse cx="797" cy="1233" rx="3" ry="2.4" fill="#fff3c8" opacity=".7"/>`,
+    <ellipse cx="800" cy="1241" rx="10" ry="9" fill="url(#brass)" stroke="#5e3f14" stroke-width="1.3"/>
+    <ellipse cx="797" cy="1238" rx="3.4" ry="2.6" fill="#fff3c8" opacity=".7"/>`,
   // the box's lid with its deep skirt and a brass clasp
   "caixinha-da-mesa": () => `
-    <path d="M1886 1150 L1898 1130 H2006 L2014 1150 Z" fill="#6b4024" stroke="#1c0f07" stroke-width="1.6"/>
-    <path d="M1900 1136 H2002" stroke="#c78a52" stroke-width="2" opacity=".5"/>
-    <rect x="1886" y="1150" width="128" height="22" rx="3" fill="url(#woodDark)" stroke="#1c0f07" stroke-width="1.6" filter="url(#grainH)"/>
-    <rect x="1886" y="1167" width="128" height="3" fill="url(#brassDim)"/>
-    <rect x="1940" y="1156" width="20" height="16" rx="2" fill="url(#brass)" stroke="#5e3f14" stroke-width="1"/>
-    <circle cx="1950" cy="1166" r="2.4" fill="#2a1a0c"/>`,
+    <path d="M1886 1146 L1898 1126 H2006 L2014 1146 Z" fill="#6b4024" stroke="#1c0f07" stroke-width="1.6"/>
+    <path d="M1900 1132 H2002" stroke="#c78a52" stroke-width="2" opacity=".5"/>
+    <rect x="1886" y="1146" width="128" height="38" rx="3" fill="url(#woodDark)" stroke="#1c0f07" stroke-width="1.6" filter="url(#grainH)"/>
+    <rect x="1886" y="1179" width="128" height="3" fill="url(#brassDim)"/>
+    <rect x="1940" y="1160" width="20" height="17" rx="2" fill="url(#brass)" stroke="#5e3f14" stroke-width="1"/>
+    <circle cx="1950" cy="1171" r="2.4" fill="#2a1a0c"/>`,
   // the basket of rolled maps (the kit's own, now a piece of its own) with its shadow
   "cesto-de-mapas": () => `
     ${shadow(2372, 1432, 86, 13)}
@@ -1794,7 +1795,7 @@ function plateSvg({ debug = false, omit = null } = {}) {
   ${armchair()}
   ${sideTable()}
   ${sideTableDrawer(omit)}
-  ${shadow(925, 1410, 30, 4, 0.7)}${lookSvg("canivete")}
+  ${shadow(925, 1410, 30, 4, 0.7)}${lookSvg("apontador")}
   ${bookStack(830, 1172, [[66, 14, "#2f5d58"], [58, 12, "#94482a", 4]])}
   ${shadow(ampBox.x + ampBox.w / 2, ampBox.y + ampBox.h - 2, ampBox.w * 0.58, 8, 0.9)}
   ${t("ampulheta", targetSvg("ampulheta"))}

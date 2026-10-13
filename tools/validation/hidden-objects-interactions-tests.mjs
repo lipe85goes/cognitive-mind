@@ -270,7 +270,8 @@ function openGame(tree, { viewport = DESKTOP, reducedMotion = false, seeds = [] 
       game.settle();
     },
     async decode() {
-      for (const entry of harness.hosts((e) => e.type === IMAGE && cls("hos-layer")(e))) entry.props.onLoad?.({ currentTarget: entry.node, target: entry.node });
+      // GAME03-INTERACTIONS-04: a room's movable pieces are essential art too (none before it)
+      for (const entry of harness.hosts((e) => e.type === IMAGE && (cls("hos-layer")(e) || cls("hos-piece")(e)))) entry.props.onLoad?.({ currentTarget: entry.node, target: entry.node });
       await drain();
       harness.flush();
       flushFrames(4);
@@ -1074,7 +1075,7 @@ async function runChecks(tree) {
       for (const t of gatedOf(scene)) {
         const piece = piecesOf(scene).find((p) => p.id === t.gate);
         const stationWords = new Set(scene.stations.flatMap((s) => [...words(s.label), ...words(s.hintPhrase)]));
-        const pieceWords = new Set([...words(piece.label), ...words(piece.accessibleLabel)].filter((w) => !stationWords.has(w)));
+        const pieceWords = new Set(words(piece.label).filter((w) => !stationWords.has(w)));
         const named = words(t.hintContext).filter((w) => pieceWords.has(w));
         if (named.length) problems.push(`${scene.id}/${t.id}: its Difícil context names ${named.join(",")}`);
       }

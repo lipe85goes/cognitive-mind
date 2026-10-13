@@ -845,8 +845,8 @@ Object.assign(LOOK_ART, {
 
 // GAME03-INTERACTIONS-04: one look-alike for each object a piece keeps, out in the room
 Object.assign(LOOK_ART, {
-  // on the floor by the trunk: a paper cone with an elastic
-  "chapeu-de-festa": {
+  // on the floor by the trunk: a dress-up paper cone with an elastic
+  "chapeu-de-mago": {
     nominal: { w: 40, h: 52 },
     body: `
       <path d="M20 2 L37 48 C30 51 10 51 3 48 Z" fill="#e8dcc0" stroke="#7a6a4c" stroke-width="1.4"/>
@@ -1774,7 +1774,7 @@ function plateSvg({ omit = null, debug = false } = {}) {
   ${eyepieceBox(omit)}
   ${chairAndBlanket(omit)}
   ${cupulaFloor()}
-  ${shadow(490, 1286, 22, 4, 0.7)}${lookSvg("chapeu-de-festa")}
+  ${shadow(490, 1286, 22, 4, 0.7)}${lookSvg("chapeu-de-mago")}
   <rect x="2222" y="362" width="84" height="84" fill="#000" opacity=".3" filter="url(#soft6)"/>
   ${t(omit, "esquadro")}
   ${wallCharts()}

@@ -115,6 +115,9 @@ import {
   tapOn,
   v3RoundKeeper,
   webpSize,
+  findIn,
+  isInteractive,
+  revealOf,
 } from "./hidden-objects-harness.mjs";
 
 const args = process.argv.slice(2);
@@ -139,6 +142,8 @@ const SCENE_ID = "explorer-studio";
 const KIT_BASE = "/assets/hidden-objects/explorer-studio/v1";
 /** GAME03-CALIBRATION-02A's art kit: v1 keeps only the hero the platform shows as the Estúdio's intro. */
 const KIT_V2 = "/assets/hidden-objects/explorer-studio/v2";
+/** GAME03-INTERACTIONS-04's kit: v2's room with the pieces that open or move and what they keep. */
+const KIT_V3 = "/assets/hidden-objects/explorer-studio/v3";
 const V0_FOLDER = "public/assets/hidden-objects/explorer-studio/v0";
 const HOME_MAQUETTE = "public/illustrations/home/dioramas/discovery";
 const ART_SCRIPT = "tools/assets/create_hidden_objects_scene.mjs";
@@ -196,6 +201,8 @@ const SKELETON_TEN = ["ampulheta", "binoculo", "chave", "lupa", "bussola", "relo
 const POOL_TIERS = { A: 6, B: 6, C: 6 };
 /** GAME03-CALIBRATION-02A tucked five more objects into the Estúdio: one B, four C. */
 const POOL_TIERS_CALIBRATED = { A: 6, B: 7, C: 10 };
+/** GAME03-INTERACTIONS-04: three more, kept behind the room's pieces (the canteen B, the whistle and the necklace C). */
+const POOL_TIERS_INTERACTIVE = { A: 6, B: 8, C: 12 };
 /** Look-alikes per target, by tier. */
 const LOOKALIKE_LIMIT = { A: 1, B: 2, C: 3 };
 /** The measured audit's floors (Discovery F1 visibility; an edge no object may fall under). */
@@ -260,7 +267,7 @@ function playThrough(model, scene, difficulty, { hints = 0, freeTaps = 0, seed =
   for (const id of listed) {
     s = R(s, { type: "focus-target", targetId: id });
     for (let i = 0; i < hints; i += 1) s = R(s, { type: "hint" });
-    s = R(s, tapOn(model, id));
+    s = findIn(model, s, id);
   }
   return s;
 }
@@ -462,7 +469,8 @@ async function runChecks(tree) {
     let s = startSession(model, "easy", 1);
     for (let i = 0; i < 3; i += 1) s = R(s, { type: "hint" });
     const halo = model.hintHalo(s.hintTarget, "easy", s.hintStage);
-    const c = model.regionCenter(model.targetById(s.hintTarget).region);
+    // GAME03-INTERACTIONS-04 (restated): an object kept behind a shut piece is shown by its piece (revealOf)
+    const c = revealOf(model, s.hintTarget).centre;
     const pure = s.hintStage === 3 && halo && Math.hypot(halo.cx - c.x, halo.cy - c.y) < EPS;
     const studio = openStudio(tree);
     studio.start("easy");
@@ -472,10 +480,11 @@ async function runChecks(tree) {
       studio.clickHint();
       studio.settle();
     }
+    const shown = revealOf(model, subject.id);
     const game = {
-      banner: studio.banner() === `Aqui está: ${subject.label}.`,
+      banner: studio.banner() === shown.banner,
       revealHalo: studio.halo()?.kind === "reveal",
-      framed: nearCamera(studio.camera(), cam.revealCamera(model.regionBounds(subject.region), studio.size())),
+      framed: nearCamera(studio.camera(), cam.revealCamera(shown.bounds, studio.size())),
     };
     studio.unmount();
     return { pass: Boolean(pure) && Object.values(game).every(Boolean), pure: Boolean(pure), ...game };
@@ -1088,8 +1097,8 @@ async function runChecks(tree) {
     const homeMaquette = folderDiff(tree, BASE_TREE, HOME_MAQUETTE);
     const calibrated = isCalibrated(tree);
     const facts = {
-      // a calibrated tree ships kit v2; kit v1 then serves only the hero the platform's intro shows
-      kitV1: scene.SCENE_ASSET_BASE === (calibrated ? KIT_V2 : KIT_BASE),
+      // a calibrated tree ships kit v2 (an interactive tree, GAME03-INTERACTIONS-04: kit v3); kit v1 then serves only the hero the platform's intro shows
+      kitV1: scene.SCENE_ASSET_BASE === (isInteractive(tree) ? KIT_V3 : calibrated ? KIT_V2 : KIT_BASE),
       v0NoLongerServed: listFiles(tree, V0_FOLDER).length === 0,
       layersAsDeclared: layers.every((layer) => layer.size && layer.size.width === layer.declared.w && layer.size.height === layer.declared.h),
       thumbsPresent: thumbs.every((thumb) => thumb.size && thumb.size.width === thumb.size.height && thumb.size.width >= 64),
@@ -1213,7 +1222,7 @@ async function runChecks(tree) {
     const facts = {
       atLeastTwiceTheLargestRound: pool.length >= 2 * largest,
       regionsAreLiterals: literalRegions === regions,
-      balancedTiers: same(tiers, isCalibrated(tree) ? POOL_TIERS_CALIBRATED : POOL_TIERS),
+      balancedTiers: same(tiers, isInteractive(tree) ? POOL_TIERS_INTERACTIVE : isCalibrated(tree) ? POOL_TIERS_CALIBRATED : POOL_TIERS),
       everyStationHoldsEveryTier: Object.values(grid).every((row) => Object.values(row).every((n) => n >= 1)),
     };
     return { pass: Object.values(facts).every(Boolean), ...facts, pool: pool.length, largestRound: largest, literalRegions, tiers, stationsByTier: grid };
@@ -1314,11 +1323,13 @@ async function runChecks(tree) {
   await check("P05", "pool", "SEEDS_REACH_EVERY_ROUND_WITHOUT_BIAS", () => {
     const { scene, rounds } = pureModules(tree);
     if (!rounds) throw new Error("no round selection on this tree: the lists are fixed");
-    const SAMPLES = 30000;
     const report = {};
     const problems = [];
     for (const d of DIFFICULTIES) {
       const valid = rounds.validRounds(d);
+      // GAME03-INTERACTIONS-04 (restated): enough draws to reach every round — at least 12 per round (a round is then
+      // missed with probability e^-12), never fewer than the 30 000 the check always drew
+      const SAMPLES = Math.max(30000, 12 * valid.length);
       const index = new Map(valid.map((round, i) => [[...round].sort().join(), i]));
       const roundHits = new Array(valid.length).fill(0);
       const itemHits = new Map();
@@ -1396,6 +1407,7 @@ async function runChecks(tree) {
       if (deviation > 0.015) problems.push(`${d}: an object's frequency is off by ${deviation.toFixed(3)}`);
       if (Object.values(firstShare).some((share) => share < 0.15)) problems.push(`${d}: the list's first line favours a station`);
       report[d] = {
+        samples: SAMPLES,
         validRounds: valid.length,
         reached,
         chiSquareZ: Number(z.toFixed(2)),
@@ -1405,7 +1417,7 @@ async function runChecks(tree) {
         firstLineStation: firstShare,
       };
     }
-    return { pass: problems.length === 0, samplesPerDifficulty: SAMPLES, report, problems: problems.slice(0, 8) };
+    return { pass: problems.length === 0, samplesPerDifficulty: Object.fromEntries(DIFFICULTIES.map((d) => [d, report[d]?.samples])), report, problems: problems.slice(0, 8) };
   });
 
   await check("P06", "pool", "THE_ROUND_HOLDS_THROUGH_EVERYTHING_THE_SESSION_DOES", () => {
@@ -1481,7 +1493,7 @@ async function runChecks(tree) {
     const seed = 424242;
     let s = startSession(model, "hard", seed);
     const drawn = [...s.targets];
-    s = model.sessionReducer(s, tapOn(model, drawn[0]));
+    s = findIn(model, s, drawn[0]);
     const restarted = model.sessionReducer(s, { type: "restart" });
     const reducer = same(restarted.targets, drawn) && restarted.roundSeed === seed && restarted.foundIds.length === 0 && restarted.status === "playing";
     const studio = openStudio(tree, { seeds: [seed] });

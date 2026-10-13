@@ -322,7 +322,7 @@ function ScenePieces({
               unoptimized
               loading="eager"
               draggable={false}
-              className="hos-layer hos-piece"
+              className="hos-piece"
               data-piece={piece.id}
               data-kind={piece.kind}
               data-state={state.id}

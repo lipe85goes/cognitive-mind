@@ -125,6 +125,9 @@ import {
   VIEWPORTS,
   DESKTOP,
   REFERENCE_PHONE,
+  findIn,
+  isInteractive,
+  revealOf,
 } from "./hidden-objects-harness.mjs";
 
 const args = process.argv.slice(2);
@@ -205,7 +208,18 @@ const SESSION_LISTS = {
   medium: ["pinha", "gaiola", "ampulheta", "camera", "estatueta", "bussola"],
   hard: ["gaita", "piao", "lanterna", "gaiola", "relogio", "xicara", "bussola", "binoculo"],
 };
-const listSeed = (tree, difficulty) => seedDrawing(tree, difficulty, SESSION_LISTS[difficulty]);
+/**
+ * GAME03-INTERACTIONS-04 (restated): Médio and Difícil rounds now keep one to two / one to three objects behind
+ * the room's pieces, so the lists above are no longer rounds there; an interactive tree plays the nearest
+ * rounds — the Pinha (Médio) and the Pião (Difícil) swapped for a kept object of the same station.
+ */
+const SESSION_LISTS_INTERACTIVE = {
+  easy: SESSION_LISTS.easy,
+  medium: ["colar", "gaiola", "ampulheta", "camera", "estatueta", "bussola"],
+  hard: ["gaita", "cantil", "lanterna", "gaiola", "relogio", "xicara", "bussola", "binoculo"],
+};
+const sessionList = (tree, difficulty) => (isInteractive(tree) ? SESSION_LISTS_INTERACTIVE : SESSION_LISTS)[difficulty];
+const listSeed = (tree, difficulty) => seedDrawing(tree, difficulty, sessionList(tree, difficulty));
 /** The real game, ready to draw the session list for `difficulty` on its first "Explorar". */
 const openListStudio = (tree, difficulty, options = {}) => openStudio(tree, { ...options, seeds: [listSeed(tree, difficulty)] });
 
@@ -858,7 +872,9 @@ async function runChecks(tree) {
     const malformed = pool
       .filter(
         (t) =>
-          !same(sorted(Object.keys(t).filter((key) => key !== "listedAs")), TARGET_FIELDS) || !t.label || !normalizeText(t.accessibleLabel).includes(normalizeText(t.label)) ||
+          // GAME03-INTERACTIONS-04 (restated): an object may name the room piece it is kept behind (`gate`), and only one the room has
+          !same(sorted(Object.keys(t).filter((key) => key !== "listedAs" && key !== "gate")), TARGET_FIELDS) || !t.label || !normalizeText(t.accessibleLabel).includes(normalizeText(t.label)) ||
+          (t.gate !== undefined && !(scene.SCENE_INTERACTABLES ?? []).some((piece) => piece.id === t.gate)) ||
           !["A", "B", "C"].includes(t.tier) || !scene.SCENE_STATIONS.some((station) => station.id === t.station) || !t.hintRegion || !regionValid(t.region) ||
           ![t.hintDirection, t.hintContext].every((line) => typeof line === "string" && line.trim().length > 0) ||
           !(Array.isArray(t.clues) && t.clues.length > 0 && t.clues.every((clue) => typeof clue.text === "string" && clue.text.trim().length > 0)) ||
@@ -925,7 +941,8 @@ async function runChecks(tree) {
     // then grew the pool to six of each tier. GAME03-CALIBRATION-02A tucked five more objects into the room (one B,
     // four C) and gave each difficulty tier bounds instead of one mix: its measured round rule picks the rounds, so
     // Fácil may list one A and needs a C, Médio needs two C, and Difícil lists no A and at least four C.
-    const expected = { pool: { A: 6, B: 7, C: 10 }, easy: { A: [0, 1], B: [0, 5], C: [1, 5] }, medium: { A: [0, 1], B: [0, 6], C: [2, 6] }, hard: { A: [0, 0], B: [0, 4], C: [4, 8] } };
+    // GAME03-INTERACTIONS-04 (restated): three objects kept behind the room's pieces (one B, two C)
+    const expected = { pool: isInteractive(tree) ? { A: 6, B: 8, C: 12 } : { A: 6, B: 7, C: 10 }, easy: { A: [0, 1], B: [0, 5], C: [1, 5] }, medium: { A: [0, 1], B: [0, 6], C: [2, 6] }, hard: { A: [0, 0], B: [0, 4], C: [4, 8] } };
     const mixes = (d) => [...new Set(possibleRounds(tree, d).map((round) => JSON.stringify(count(round))))].map((mix) => JSON.parse(mix));
     const outside = DIFFICULTIES.flatMap((d) =>
       mixes(d)
@@ -1076,7 +1093,10 @@ async function runChecks(tree) {
             const offCentre = halo && Math.hypot(halo.cx - c.x, halo.cy - c.y) > 1;
             if (!holds || !offCentre) haloProblems.push(`${d}/${id}: ${rung}`);
           } else if (rung === "reveal") {
-            if (!(halo && Math.hypot(halo.cx - c.x, halo.cy - c.y) < EPS && halo.r > model.regionRadius(t.region))) haloProblems.push(`${d}/${id}: reveal`);
+            // GAME03-INTERACTIONS-04 (restated): an object kept behind a shut piece is shown by its piece (revealOf)
+            const at = revealOf(model, id).centre;
+            const ringsIt = t.gate ? Boolean(halo) : halo && halo.r > model.regionRadius(t.region);
+            if (!(halo && Math.hypot(halo.cx - at.x, halo.cy - at.y) < EPS && ringsIt)) haloProblems.push(`${d}/${id}: reveal`);
           } else if (halo !== null) {
             haloProblems.push(`${d}/${id}: ${rung} lights`);
           }
@@ -1137,7 +1157,7 @@ async function runChecks(tree) {
     const R = model.sessionReducer;
     let s = startSession(model, "medium", listSeed(tree, "medium"));
     const drawn = model.pendingTargets(s);
-    for (const id of ["ampulheta", "bussola"]) s = R(s, tapOn(model, id));
+    for (const id of ["ampulheta", "bussola"]) s = findIn(model, s, id);
     s = R(R(s, { type: "hint" }), { type: "focus-target", targetId: "camera" });
     const restarted = R(s, { type: "restart" });
     const reducer = {
@@ -1188,7 +1208,7 @@ async function runChecks(tree) {
     let s = startSession(model, "easy", listSeed(tree, "easy"));
     const statuses = [];
     for (const id of model.pendingTargets(s)) {
-      s = R(s, tapOn(model, id));
+      s = findIn(model, s, id);
       statuses.push(s.status);
     }
     const reducer = {
@@ -1239,10 +1259,10 @@ async function runChecks(tree) {
       let s = startSession(model, d, listSeed(tree, d));
       s = R(R(s, { type: "hint" }), { type: "hint" });
       s = R(s, { type: "tap", point: { x: 3, y: 3 }, scale: 1, pointerType: "touch" });
-      for (const id of model.pendingTargets(s)) s = R(s, tapOn(model, id));
+      for (const id of model.pendingTargets(s)) s = findIn(model, s, id);
       results[d] = model.buildHiddenObjectsResult(s);
     }
-    const wrongShape = DIFFICULTIES.filter((d) => !same(results[d], resultFor(d, SESSION_LISTS[d].length, listSeed(tree, d))));
+    const wrongShape = DIFFICULTIES.filter((d) => !same(results[d], resultFor(d, sessionList(tree, d).length, listSeed(tree, d))));
     const forbiddenKeys = Object.values(results).flatMap((r) => Object.keys(r).concat(Object.keys(r.details))).filter((key) => /time|elapsed|error|miss|hint|star|rank|streak|lives|continuation/i.test(key));
     const shell = Object.values(results).every((r) => t.rewards.isSuccessfulResult(r) && t.rewards.getRewardCopy(r).title === "Estúdio explorado");
     const labelled = ["difficulty", "foundObjects", "totalObjects", "completed"].every((key) => typeof t.labels.DETAIL_LABELS[key] === "string");

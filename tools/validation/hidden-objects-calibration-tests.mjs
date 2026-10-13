@@ -275,7 +275,8 @@ function openGame(tree, { viewport = DESKTOP, reducedMotion = false, seeds = [] 
       game.settle();
     },
     async decode() {
-      for (const entry of harness.hosts((e) => e.type === IMAGE && cls("hos-layer")(e))) entry.props.onLoad?.({ currentTarget: entry.node, target: entry.node });
+      // GAME03-INTERACTIONS-04: a room's movable pieces are essential art too (none before it)
+      for (const entry of harness.hosts((e) => e.type === IMAGE && (cls("hos-layer")(e) || cls("hos-piece")(e)))) entry.props.onLoad?.({ currentTarget: entry.node, target: entry.node });
       await drain();
       harness.flush();
       flushFrames(4);

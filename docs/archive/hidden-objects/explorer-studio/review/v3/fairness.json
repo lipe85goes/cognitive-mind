@@ -1,6 +1,6 @@
 {
   "kit": "/assets/hidden-objects/explorer-studio/v3",
-  "plateSha256": "985a50b82bb8d0a75e0a4858d3d3218e0c1a4058047b168a0ba022f814201fc4",
+  "plateSha256": "58d6403dd026322c14df091d119cd79abbdffe32932b9e543df44cbf601301b1",
   "rule": {
     "visible": "share of the target's own pixels the finished plate shows (plate rendered with and without the target)",
     "contrast": "F4 as written: mean-luminance ratio, visible target vs a 24 su ring, on the composed room",
@@ -20,7 +20,7 @@
       ],
       "visibleAtRest": 0.956,
       "visibleOpen": 0.956,
-      "clutter": 0.158
+      "clutter": 0.16
     },
     {
       "id": "binoculo",
@@ -47,7 +47,7 @@
       ],
       "visibleAtRest": 0.71,
       "visibleOpen": 0.71,
-      "clutter": 0.134
+      "clutter": 0.135
     },
     {
       "id": "guarda-chuva",
@@ -84,7 +84,7 @@
       ],
       "visibleAtRest": 0.794,
       "visibleOpen": 0.794,
-      "clutter": 0.206
+      "clutter": 0.205
     },
     {
       "id": "piao",
@@ -124,7 +124,7 @@
       ],
       "visibleAtRest": 0.88,
       "visibleOpen": 0.88,
-      "clutter": 0.208
+      "clutter": 0.21
     },
     {
       "id": "relogio",
@@ -304,34 +304,34 @@
     {
       "id": "apito",
       "tier": "C",
-      "visible": 0.755,
-      "contrast": 2.42,
-      "edge": 1.96,
+      "visible": 0.742,
+      "contrast": 2.09,
+      "edge": 1.79,
       "lookAlikes": [
-        "canivete"
+        "apontador"
       ],
       "visibleAtRest": 0,
-      "visibleOpen": 0.755,
+      "visibleOpen": 0.742,
       "gate": "gaveta-da-mesinha",
-      "clutter": 0.214
+      "clutter": 0.208
     },
     {
       "id": "colar",
       "tier": "C",
-      "visible": 0.814,
-      "contrast": 2.33,
-      "edge": 2.64,
+      "visible": 0.779,
+      "contrast": 2.54,
+      "edge": 3.16,
       "lookAlikes": [
         "abaco"
       ],
       "visibleAtRest": 0,
-      "visibleOpen": 0.814,
+      "visibleOpen": 0.779,
       "gate": "caixinha-da-mesa",
-      "clutter": 0.162
+      "clutter": 0.168
     },
     {
       "id": "cantil",
-      "tier": "C",
+      "tier": "B",
       "visible": 0.846,
       "contrast": 2.39,
       "edge": 2.47,

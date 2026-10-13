@@ -1338,6 +1338,29 @@ export const gestureRunner = (g) => (events, cameraMoving = false) => {
 };
 export const sample = (kind, id, x, y, t, pointerType = "touch", button = 0) => [kind, { id, x, y, t, pointerType, button }];
 export const tapOn = (model, id, pointerType = "mouse") => ({ type: "tap", point: model.regionCenter(model.targetById(id).region), scale: 1, pointerType });
+/**
+ * GAME03-INTERACTIONS-04: the Explorador's find through the reducer — an object
+ * kept behind a room piece is found once its piece is opened (one "interact"),
+ * then tapped; on trees before the pieces it is the plain tap.
+ */
+export function findIn(model, state, id, pointerType = "mouse") {
+  const R = model.sessionReducer;
+  const gate = model.targetById(id).gate;
+  const shut = gate && state.interactions && model.isExposed && !model.isExposed(state.interactions, id);
+  return R(shut ? R(state, { type: "interact", interactableId: gate }) : state, tapOn(model, id, pointerType));
+}
+/**
+ * GAME03-INTERACTIONS-04: where Fácil's "Mostrar onde está" points for an object
+ * on a fresh session — the object itself, or (kept behind a shut piece) that
+ * piece; with the banner it says. Trees before the pieces: always the object.
+ */
+export function revealOf(model, id) {
+  const target = model.targetById(id);
+  const piece = model.revealedPiece ? model.revealedPiece(id, "easy", 3) : null;
+  if (!piece) return { bounds: model.regionBounds(target.region), centre: model.regionCenter(target.region), banner: `Aqui está: ${target.label}.` };
+  const hit = piece.states.find((state) => state.id === piece.initial).hit;
+  return { bounds: { ...hit }, centre: { x: hit.x + hit.w / 2, y: hit.y + hit.h / 2 }, banner: `Aqui está guardado: ${target.label} — ${piece.hintAction}.` };
+}
 
 export function regionGap(model, a, b) {
   if (a.kind === "circle") return model.distanceToRegion({ x: a.cx, y: a.cy }, b) - a.r;

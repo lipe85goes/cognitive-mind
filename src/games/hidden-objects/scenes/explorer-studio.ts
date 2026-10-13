@@ -69,7 +69,7 @@ export const SCENE_STATIONS: readonly SceneStation[] = [
  * objects the room hides in plain materials — a snail on the wainscot, a spinning
  * top on the rug's edge, scissors under the map, a pine cone on the wall shelf, a
  * harmonica on the book pile (twenty-three: A6 · B7 · C10). GAME03-INTERACTIONS-04
- * added three kept behind pieces of the room (twenty-six: A6 · B7 · C13). Positions are
+ * added three kept behind pieces of the room (twenty-six: A6 · B8 · C12). Positions are
  * authored, never drawn at random: only which of them a round lists is.
  */
 export const HIDDEN_OBJECTS: readonly HiddenObjectDefinition[] = [
@@ -87,7 +87,7 @@ export const HIDDEN_OBJECTS: readonly HiddenObjectDefinition[] = [
     tier: "A",
     station: "janela",
     region: { kind: "rect", x: 742, y: 952, w: 116, h: 222 },
-    measured: { visible: 0.956, edge: 1.77, clutter: 0.158 },
+    measured: { visible: 0.956, edge: 1.77, clutter: 0.16 },
     hintRegion: "na mesinha junto à janela",
     hintDirection: "mais abaixo, ao lado da poltrona",
     hintContext: "perto de onde alguém se senta para ler",
@@ -125,7 +125,7 @@ export const HIDDEN_OBJECTS: readonly HiddenObjectDefinition[] = [
     tier: "C",
     station: "janela",
     region: { kind: "rect", x: 452, y: 1246, w: 132, h: 56 },
-    measured: { visible: 0.71, edge: 1.67, clutter: 0.134 },
+    measured: { visible: 0.71, edge: 1.67, clutter: 0.135 },
     hintRegion: "sobre o baú",
     hintDirection: "mais embaixo, perto do chão",
     hintContext: "em cima de algo que guarda coisas fechadas",
@@ -182,7 +182,7 @@ export const HIDDEN_OBJECTS: readonly HiddenObjectDefinition[] = [
     tier: "C",
     station: "janela",
     region: { kind: "rect", x: 598, y: 1052, w: 88, h: 60 },
-    measured: { visible: 0.794, edge: 2.02, clutter: 0.206 },
+    measured: { visible: 0.794, edge: 2.02, clutter: 0.205 },
     hintRegion: "no lambri, logo abaixo do peitoril",
     hintDirection: "embaixo da janela, perto das plantas do peitoril",
     hintContext: "subindo devagar pela madeira da parede",
@@ -239,7 +239,7 @@ export const HIDDEN_OBJECTS: readonly HiddenObjectDefinition[] = [
     tier: "B",
     station: "mesa",
     region: { kind: "circle", cx: 1540, cy: 1160, r: 66 },
-    measured: { visible: 0.88, edge: 1.97, clutter: 0.208 },
+    measured: { visible: 0.88, edge: 1.97, clutter: 0.21 },
     hintRegion: "na borda do mapa",
     hintDirection: "na frente da mesa, perto da beirada",
     hintContext: "entre um livro aberto e um mapa",
@@ -524,8 +524,8 @@ export const HIDDEN_OBJECTS: readonly HiddenObjectDefinition[] = [
     ],
     tier: "C",
     station: "janela",
-    region: { kind: "rect", x: 750, y: 1220, w: 100, h: 34 },
-    measured: { visible: 0.755, edge: 1.96, clutter: 0.214 },
+    region: { kind: "rect", x: 748, y: 1214, w: 104, h: 54 },
+    measured: { visible: 0.742, edge: 1.79, clutter: 0.208 },
     hintRegion: "na mesinha junto à janela, embaixo da ampulheta",
     hintDirection: "embaixo da ampulheta, guardado longe da vista",
     hintContext: "guardado bem perto de onde a areia escorre",
@@ -544,8 +544,8 @@ export const HIDDEN_OBJECTS: readonly HiddenObjectDefinition[] = [
     ],
     tier: "C",
     station: "mesa",
-    region: { kind: "rect", x: 1902, y: 1132, w: 96, h: 36 },
-    measured: { visible: 0.814, edge: 2.64, clutter: 0.162 },
+    region: { kind: "rect", x: 1902, y: 1128, w: 96, h: 54 },
+    measured: { visible: 0.779, edge: 3.16, clutter: 0.168 },
     hintRegion: "na ponta direita da mesa, perto do frasco de tinta",
     hintDirection: "na beirada direita da mesa, guardado dentro de algo",
     hintContext: "guardado onde os tesouros pequenos dormem, perto da pena",
@@ -562,7 +562,7 @@ export const HIDDEN_OBJECTS: readonly HiddenObjectDefinition[] = [
       { level: "indirect", text: "No meio da caminhada, a sede vai embora." },
       { level: "indirect", text: "Escoteiro que se preze não sai sem ele cheio." },
     ],
-    tier: "C",
+    tier: "B",
     station: "estante",
     region: { kind: "rect", x: 2330, y: 1336, w: 88, h: 80 },
     measured: { visible: 0.846, edge: 2.47, clutter: 0.082 },
@@ -731,10 +731,10 @@ export const SCENE_LOOKALIKES: readonly SceneLookAlike[] = [
   },
   // GAME03-INTERACTIONS-04: one look-alike for each object kept behind a piece, out in the room
   {
-    id: "canivete",
-    label: "Canivete",
+    id: "apontador",
+    label: "Apontador",
     resembles: "apito",
-    tellApart: "um cabo de metal fechado, sem bocal e sem argola de sopro",
+    tellApart: "um apontador de lápis, de lâmina e furo, sem bocal e sem argola",
     region: { kind: "rect", x: 896, y: 1388, w: 58, h: 22 },
   },
   {
@@ -774,11 +774,11 @@ export const SCENE_INTERACTABLES: readonly SceneInteractable[] = [
     accessibleLabel: "Gaveta da mesinha da janela",
     station: "janela",
     src: `${SCENE_ASSET_BASE}/pieces/gaveta-da-mesinha.webp`,
-    rect: { x: 724, y: 1212, w: 152, h: 46 },
+    rect: { x: 724, y: 1212, w: 152, h: 57 },
     origin: { x: 76, y: 0 },
     states: [
-      { id: "fechada", pose: {}, hit: { x: 724, y: 1212, w: 152, h: 46 }, open: false, announce: "A gaveta da mesinha está fechada." },
-      { id: "aberta", pose: { y: 46, scaleX: 1.06, scaleY: 1.06 }, hit: { x: 716, y: 1257, w: 168, h: 54 }, open: true, announce: "A gaveta da mesinha está aberta." },
+      { id: "fechada", pose: {}, hit: { x: 724, y: 1212, w: 152, h: 57 }, open: false, announce: "A gaveta da mesinha está fechada." },
+      { id: "aberta", pose: { y: 56 }, hit: { x: 718, y: 1268, w: 164, h: 57 }, open: true, announce: "A gaveta da mesinha está aberta." },
     ],
     initial: "fechada",
     motionMs: 380,
@@ -791,11 +791,11 @@ export const SCENE_INTERACTABLES: readonly SceneInteractable[] = [
     accessibleLabel: "Tampa da caixinha de madeira sobre a mesa",
     station: "mesa",
     src: `${SCENE_ASSET_BASE}/pieces/caixinha-da-mesa.webp`,
-    rect: { x: 1884, y: 1126, w: 132, h: 46 },
+    rect: { x: 1884, y: 1124, w: 132, h: 62 },
     origin: { x: 66, y: 0 },
     states: [
-      { id: "fechada", pose: {}, hit: { x: 1884, y: 1126, w: 132, h: 46 }, open: false, announce: "A caixinha de madeira está fechada." },
-      { id: "aberta", pose: { scaleY: -0.5, shade: 0.78 }, hit: { x: 1884, y: 1098, w: 132, h: 30 }, open: true, announce: "A tampa da caixinha de madeira está levantada." },
+      { id: "fechada", pose: {}, hit: { x: 1884, y: 1124, w: 132, h: 62 }, open: false, announce: "A caixinha de madeira está fechada." },
+      { id: "aberta", pose: { scaleY: -0.45, shade: 0.78 }, hit: { x: 1884, y: 1094, w: 132, h: 32 }, open: true, announce: "A tampa da caixinha de madeira está levantada." },
     ],
     initial: "fechada",
     motionMs: 420,
