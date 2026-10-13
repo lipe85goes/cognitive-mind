@@ -389,8 +389,41 @@ async function bringIntoView(session, roomId, id) {
   }
   return point;
 }
+/**
+ * GAME03-INTERACTIONS-04 (restated find): an object kept behind a room piece is
+ * found the way the Explorador finds it — its piece opened first, with a tap
+ * where the piece is (its station, then a drag if it is not comfortably on screen).
+ */
+async function openPieceFor(session, pieces, gate, stationLabel) {
+  const { page } = session;
+  if (!gate) return;
+  const shown = await page.evaluate((id) => document.querySelector(`.hos-piece[data-piece="${id}"]`)?.dataset ?? null, gate);
+  if (!shown || shown.open === "true") return;
+  const piece = pieces.find((p) => p.id === gate);
+  const { hit } = piece.states.find((s) => s.id === shown.state);
+  const spot = { x: hit.x + hit.w / 2, y: hit.y + hit.h / 2 };
+  await press(session, page.locator(".hos-station", { hasText: stationLabel }).first());
+  await settle(page);
+  let cam = await camera(page);
+  let point = toScreen(cam, spot);
+  if (!(await comfortable(page, cam, point))) {
+    const centre = { x: cam.left + cam.width / 2, y: cam.top + cam.height / 2 };
+    await drag(session, centre, { x: centre.x + (centre.x - point.x), y: centre.y + (centre.y - point.y) });
+    await settle(page);
+    cam = await camera(page);
+    point = toScreen(cam, spot);
+  }
+  await tapAt(session, point);
+  await page.waitForFunction((id) => document.querySelector(`.hos-piece[data-piece="${id}"]`)?.dataset.open === "true", gate, { timeout: 4000 }).catch(() => {});
+  await settle(page);
+}
+
 async function find(session, roomId, id) {
   const before = await progress(session.page);
+  {
+    const t = target(roomId, id);
+    await openPieceFor(session, ROOM[roomId].interactables ?? [], t.gate, ROOM[roomId].stations.find((s) => s.id === t.station).label);
+  }
   await hideList(session);
   const point = await bringIntoView(session, roomId, id);
   await tapAt(session, point);

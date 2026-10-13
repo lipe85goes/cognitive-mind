@@ -56,6 +56,7 @@ import {
   seeded,
   writeReviewBoards,
 } from "./hidden-objects-art-kit.mjs";
+import { overlayPieces, piecesOverlaySvg, piecesSvg, renderPieces, visibleWithPieces } from "./hidden-objects-pieces.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const args = process.argv.slice(2);
@@ -1418,7 +1419,8 @@ function microTable(omit) {
   ${shadow((x0 + x1) / 2, FLOOR_Y + 30, (x1 - x0) / 2 + 20, 12, 0.8)}
   ${[x0 + 20, x1 - 20].map((x) => `<rect x="${x - 7}" y="${top + 20}" width="14" height="${FLOOR_Y + 30 - top - 20}" fill="url(#woodH)"/>`).join("")}
   <rect x="${x0 + 14}" y="1110" width="${x1 - x0 - 28}" height="10" fill="url(#woodV)"/>
-  ${bookStack(x0 + 30, 1110, [[110, 20, "#2f5d58"], [100, 18, "#94482a", 6]])}
+  ${microTableShelf(omit)}
+  ${bookStack(x0 + 146, 1110, [[86, 20, "#2f5d58"], [78, 18, "#94482a", 6]])}
   <rect x="${x0}" y="${top}" width="${x1 - x0}" height="18" rx="3" fill="url(#woodLight)" stroke="#2a170b" stroke-width="1.5"/>
   <rect x="${x0 + 6}" y="${top + 18}" width="${x1 - x0 - 12}" height="22" fill="url(#walnut)"/>
   ${lookSvg("luminaria")}
@@ -1591,6 +1593,128 @@ function readingStool() {
 
 // --- the composed plate ----------------------------------------------------------------------------------
 
+// --- GAME03-INTERACTIONS-04: what the room's pieces keep, and the pieces (kit v3) -----------------------
+//
+// Three pieces open or move: a little door in the panelling beside the
+// telescope, the deep drawer of a pedestal under the bench's right end and a
+// short curtain hung under the microscope's table. The plate paints what each
+// keeps (in place, as if the piece were open); the piece is painted apart
+// (PIECE_ART), shipped as its own picture and posed by the game. Each object
+// is partly tucked under something of its compartment (tier C).
+
+Object.assign(ART, {
+  // On the cubby's shelf, standing; a knitted cloth over the shelf's edge hides its left fin (tier C).
+  foguete: {
+    nominal: { w: 84, h: 136 },
+    body: `
+      <path d="M42 4 C58 18 64 42 64 70 L64 104 H20 L20 70 C20 42 26 18 42 4 Z" fill="#ece0c4" stroke="#7a6a4c" stroke-width="1.8"/>
+      <path d="M42 4 C52 13 57 24 60 34 H24 C27 24 32 13 42 4 Z" fill="#b8342a" stroke="#6a1a14" stroke-width="1.4"/>
+      <path d="M30 40 C28 56 28 80 30 98" stroke="#ffffff" stroke-width="4" fill="none" opacity=".5"/>
+      <circle cx="42" cy="58" r="11" fill="#2a5a8a" stroke="url(#brass)" stroke-width="3.4"/>
+      <circle cx="38" cy="54" r="3.4" fill="#d8ecff" opacity=".8"/>
+      <rect x="20" y="82" width="44" height="6" fill="#b8342a"/>
+      <path d="M20 84 L4 112 L6 126 L20 110 Z M64 84 L80 112 L78 126 L64 110 Z" fill="#b8342a" stroke="#6a1a14" stroke-width="1.4"/>
+      <path d="M32 104 L36 120 H48 L52 104 Z" fill="url(#steel)" stroke="#3a3a3a" stroke-width="1.2"/>`,
+  },
+  // In the pedestal's deep drawer, lying flat with its string looped; a folded star chart over its right edge (tier C).
+  ioio: {
+    nominal: { w: 84, h: 62 },
+    body: `
+      <circle cx="32" cy="31" r="28" fill="#c0482c" stroke="#5e1e10" stroke-width="2"/>
+      <circle cx="32" cy="31" r="19" fill="none" stroke="#f0c070" stroke-width="3.2"/>
+      <circle cx="32" cy="31" r="7" fill="#7a2a16" stroke="#3a120a" stroke-width="1.4"/>
+      <path d="M18 14 C24 9 34 8 40 10" stroke="#ffd8b0" stroke-width="3" fill="none" opacity=".55"/>
+      <path d="M38 31 C54 30 62 40 70 46 C76 52 80 56 76 60 C70 62 64 56 70 50" stroke="#efe6d0" stroke-width="2.4" fill="none"/>`,
+  },
+  // On the lower shelf under the microscope's table; a drumstick across its front (tier C).
+  tambor: {
+    nominal: { w: 80, h: 86 },
+    body: `
+      <path d="M6 22 V70 C6 80 74 80 74 70 V22 Z" fill="#b8342a" stroke="#5e1a12" stroke-width="1.8"/>
+      <path d="M6 30 L18 66 L30 30 L42 66 L54 30 L66 66 L74 40" stroke="#f2e6c8" stroke-width="2.6" fill="none"/>
+      <path d="M6 26 C6 36 74 36 74 26" stroke="url(#brass)" stroke-width="5" fill="none"/>
+      <path d="M6 66 C6 76 74 76 74 66" stroke="url(#brass)" stroke-width="5" fill="none"/>
+      <ellipse cx="40" cy="22" rx="34" ry="10" fill="#efe2c2" stroke="url(#brass)" stroke-width="4"/>
+      <ellipse cx="32" cy="20" rx="14" ry="3.6" fill="#ffffff" opacity=".45"/>`,
+  },
+});
+
+/** The cubby behind the panelling's little door: dark inside, a shelf, the rocket, a knitted cloth over the shelf's edge. */
+function wainscotCubby(omit) {
+  return `
+    <rect x="646" y="930" width="132" height="176" rx="3" fill="#120a05"/>
+    <rect x="652" y="936" width="120" height="146" fill="url(#walnut)" opacity=".55"/>
+    <rect x="646" y="930" width="132" height="10" fill="#000" opacity=".5"/>
+    <rect x="648" y="1080" width="128" height="10" fill="url(#woodLight)" stroke="#2a170b" stroke-width="1.4"/>
+    ${t(omit, "foguete")}
+    <path d="M650 1078 H700 C704 1090 702 1104 696 1106 C686 1100 670 1104 656 1106 C652 1098 650 1090 650 1078 Z" fill="#5a7a8a" stroke="#2a3a44" stroke-width="1.4"/>
+    <path d="M654 1084 H698 M656 1092 H698 M658 1100 H694" stroke="#a8c4cc" stroke-width="1.6" stroke-dasharray="3 3" opacity=".7"/>`;
+}
+
+/** A pedestal of two drawers under the bench's right end; the top one pulled out (its piece is the front). */
+function deskPedestal(omit) {
+  return `
+    ${shadow(2145, 1254, 112, 8, 0.85)}
+    <rect x="2044" y="1050" width="200" height="200" fill="url(#walnut)" stroke="#2a170b" stroke-width="2"/>
+    <rect x="2044" y="1050" width="200" height="6" fill="#000" opacity=".35"/>
+    <rect x="2058" y="1064" width="174" height="74" fill="#140b05"/>
+    <path d="M2064 1070 H2226 L2230 1136 H2060 Z" fill="url(#woodDark)"/>
+    ${t(omit, "ioio")}
+    <g transform="rotate(-10 2196 1100)">
+      <rect x="2104" y="1118" width="92" height="7" rx="3" fill="#d8b04a" stroke="#6a4a14" stroke-width="1"/>
+      <path d="M2196 1118 L2208 1121.5 L2196 1125 Z" fill="#2a1a0c"/>
+    </g>
+    <path d="M2168 1078 L2224 1072 L2228 1124 L2172 1130 Z" fill="url(#page)" stroke="#8a6a3c" stroke-width="1.2"/>
+    <g fill="#5a6a8a" opacity=".7"><circle cx="2190" cy="1092" r="2"/><circle cx="2204" cy="1100" r="2"/><circle cx="2186" cy="1110" r="2"/><circle cx="2212" cy="1088" r="1.6"/></g>
+    <path d="M2190 1092 L2204 1100 L2186 1110" stroke="#5a6a8a" stroke-width="1" fill="none" opacity=".6"/>
+    <rect x="2058" y="1152" width="174" height="86" rx="3" fill="#4a2c18" stroke="#2a170b" stroke-width="2"/>
+    <rect x="2131" y="1190" width="28" height="9" rx="3" fill="url(#brass)"/>`;
+}
+
+/** The lower shelf under the microscope's table, behind the curtain: the drum and a drumstick across it; the curtain's rod. */
+function microTableShelf(omit) {
+  const { x0 } = MICRO_TABLE;
+  return `
+    ${t(omit, "tambor")}
+    <g transform="rotate(-24 2496 1084)"><rect x="2450" y="1080" width="94" height="6" rx="3" fill="#e6d2a4" stroke="#7a5a2c" stroke-width="1"/><circle cx="2448" cy="1083" r="5" fill="#f2e6c8" stroke="#7a5a2c" stroke-width="1"/></g>
+    <rect x="${x0 + 2}" y="938" width="150" height="5" rx="2" fill="url(#brassH)"/>
+    <circle cx="${x0 + 152}" cy="940.5" r="5" fill="url(#brass)"/>`;
+}
+
+/** The pieces, painted in room coordinates where they sit at rest. */
+const PIECE_ART = {
+  // a little door in the panelling: the panel's own wood and bevel, two hinges on the right, a brass knob
+  "portinhola-do-lambri": () => `
+    <rect x="641" y="925" width="142" height="186" rx="4" fill="#4a2c18" stroke="#2a170b" stroke-width="3"/>
+    <rect x="652" y="937" width="120" height="162" rx="3" fill="#3d2414" stroke="#2a170b" stroke-width="2"/>
+    <rect x="656" y="941" width="112" height="5" fill="#7a5232" opacity=".45"/>
+    <path d="M641 1108 H783" stroke="#000" stroke-width="3" opacity=".35"/>
+    <rect x="775" y="950" width="9" height="18" rx="2" fill="url(#brassV)"/><rect x="775" y="1066" width="9" height="18" rx="2" fill="url(#brassV)"/>
+    <circle cx="660" cy="1018" r="7" fill="url(#brass)" stroke="#5e3f14" stroke-width="1.2"/><circle cx="658" cy="1016" r="2" fill="#fff3c8" opacity=".7"/>`,
+  // the pedestal's top drawer: a deep front, a brass cup pull and a card holder
+  "gaveta-da-bancada": () => `
+    <rect x="2055" y="1061" width="180" height="80" rx="3" fill="url(#woodH)" stroke="#2a170b" stroke-width="2"/>
+    <rect x="2063" y="1069" width="164" height="64" rx="2" fill="none" stroke="#2a170b" stroke-width="1.6" opacity=".6"/>
+    <path d="M2129 1100 C2129 1114 2161 1114 2161 1100 Z" fill="url(#brass)" stroke="#5e3f14" stroke-width="1.2"/>
+    <rect x="2133" y="1076" width="24" height="14" rx="1.5" fill="url(#brass)" stroke="#5e3f14" stroke-width="1"/>
+    <rect x="2136" y="1079" width="18" height="8" fill="#f0e2c0"/>`,
+  // a short curtain on rings under the table: pleated, a fringed hem
+  "cortina-da-mesinha": () => {
+    let pleats = "";
+    for (let x = 2414; x < 2542; x += 16) {
+      pleats += `<rect x="${x}" y="946" width="8" height="226" fill="#7a3440"/><rect x="${x + 8}" y="946" width="8" height="226" fill="#5a2230"/>`;
+      pleats += `<path d="M${x + 4} 948 V1170" stroke="#9a4a56" stroke-width="2" opacity=".5"/>`;
+    }
+    let rings = "";
+    for (let x = 2418; x < 2542; x += 16) rings += `<circle cx="${x}" cy="943" r="4.4" fill="none" stroke="url(#brass)" stroke-width="2.4"/>`;
+    let fringe = "";
+    for (let x = 2416; x < 2542; x += 6) fringe += `<path d="M${x} 1170 V1177" stroke="#d6ac5c" stroke-width="2"/>`;
+    return `<rect x="2413" y="945" width="130" height="227" fill="#6a2a36"/>${pleats}
+      <rect x="2413" y="1164" width="130" height="7" fill="url(#brassH)"/>${fringe}${rings}
+      <path d="M2413 946 V1172" stroke="#3a1018" stroke-width="2"/><path d="M2543 946 V1172" stroke="#3a1018" stroke-width="2"/>`;
+  },
+};
+
 function plateSvg({ omit = null, debug = false } = {}) {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
   <defs>${DEFS}
@@ -1611,6 +1735,7 @@ function plateSvg({ omit = null, debug = false } = {}) {
   ${t(omit, "pipa")}
   ${sideTable(omit)}
   ${mouseHole(omit)}
+  ${wainscotCubby(omit)}
   ${platform()}
   ${telescope()}
   ${eyepieceBox(omit)}
@@ -1629,6 +1754,7 @@ function plateSvg({ omit = null, debug = false } = {}) {
   ${drawingBoard(omit)}
   ${deskTop()}
   ${deskItems(omit)}
+  ${deskPedestal(omit)}
   ${underDesk()}
   ${windsorChair()}
   ${moonChart()}
@@ -1870,6 +1996,36 @@ async function composeFront(svg, { brightness = 0.72, blur = 1.2 } = {}) {
   return sharp(png).modulate({ brightness, saturation: 0.9 }).blur(blur).png().toBuffer();
 }
 
+/**
+ * GAME03-INTERACTIONS-04's review board: for each piece, the room around it at
+ * rest, open, and open with the object it keeps outlined (the hit areas of
+ * both states drawn: orange at rest, dashed blue open).
+ */
+async function writePieceBoard(restPng, openPng, reviewDir) {
+  const tiles = [];
+  const side = 420;
+  for (const [row, piece] of ROOM.interactables.entries()) {
+    const kept = ROOM.pool.find((target) => target.gate === piece.id);
+    const cx = piece.rect.x + piece.rect.w / 2;
+    const cy = piece.rect.y + piece.rect.h / 2;
+    const left = Math.round(Math.min(W - side, Math.max(0, cx - side / 2)));
+    const top = Math.round(Math.min(H - side, Math.max(0, cy - side / 2)));
+    const k = kept ? boxOf(kept.region) : null;
+    const outline = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">${piecesOverlaySvg({ interactables: [piece] })}${
+      k ? `<rect x="${k.x}" y="${k.y}" width="${k.w}" height="${k.h}" fill="none" stroke="#ff6b6b" stroke-width="4"/>` : ""
+    }</svg>`;
+    const marked = await sharp(openPng).composite([{ input: Buffer.from(outline) }]).png().toBuffer();
+    for (const [col, png] of [restPng, openPng, marked].entries()) {
+      const tile = await sharp(png).extract({ left, top, width: side, height: side }).resize(400, 400).png().toBuffer();
+      tiles.push({ input: tile, left: col * 405, top: row * 405 });
+    }
+  }
+  await sharp({ create: { width: 3 * 405 - 5, height: ROOM.interactables.length * 405 - 5, channels: 3, background: "#111111" } })
+    .composite(tiles)
+    .webp({ quality: 86 })
+    .toFile(path.join(reviewDir, "pieces.webp"));
+}
+
 async function main() {
   const preview = PREVIEW ? path.resolve(PREVIEW) : null;
   const reviewDir = preview ?? REVIEW;
@@ -1889,18 +2045,30 @@ async function main() {
   const front = await composeFront(frontLeftSvg());
   const frontRight = await composeFront(frontRightSvg(), { brightness: 0.85, blur: 1 });
 
-  // the composed room as the Explorador sees it at rest (parallax offsets 0), layers back to front
+  // GAME03-INTERACTIONS-04: each piece lit by the plate's own light, cut to its rect
+  const pieces = await renderPieces({ room: ROOM, art: PIECE_ART, defs: DEFS, light: composePlate });
+
+  // the composed room as the Explorador sees it (parallax offsets 0), layers back to front, the pieces on the plate's plane
   const at = (id) => LAYER[id].rect;
-  const composedPng = await sharp({ create: { width: W, height: H, channels: 4, background: "#000000" } })
-    .composite([
-      { input: back, left: at("back").x, top: at("back").y },
-      { input: plate, left: 0, top: 0 },
-      { input: frontTop, left: at("front-top").x, top: at("front-top").y },
-      { input: front, left: at("front").x, top: at("front").y },
-      { input: frontRight, left: at("front-right").x, top: at("front-right").y },
-    ])
-    .png()
-    .toBuffer();
+  const composeWith = async (states) => {
+    const under = await sharp({ create: { width: W, height: H, channels: 4, background: "#000000" } })
+      .composite([
+        { input: back, left: at("back").x, top: at("back").y },
+        { input: plate, left: 0, top: 0 },
+      ])
+      .png()
+      .toBuffer();
+    return sharp(await overlayPieces(under, ROOM, pieces, states))
+      .composite([
+        { input: frontTop, left: at("front-top").x, top: at("front-top").y },
+        { input: front, left: at("front").x, top: at("front").y },
+        { input: frontRight, left: at("front-right").x, top: at("front-right").y },
+      ])
+      .png()
+      .toBuffer();
+  };
+  const composedPng = await composeWith("rest");
+  const composedOpenPng = await composeWith("open");
 
   if (!preview) {
     await write(sharp(back), path.join(OUT, "back.webp"), { quality: 82, effort: 6 });
@@ -1908,6 +2076,10 @@ async function main() {
     await write(sharp(frontTop), path.join(OUT, "front-top.webp"), { quality: 80, alphaQuality: 90, effort: 6 });
     await write(sharp(front), path.join(OUT, "front.webp"), { quality: 80, alphaQuality: 90, effort: 6 });
     await write(sharp(frontRight), path.join(OUT, "front-right.webp"), { quality: 80, alphaQuality: 90, effort: 6 });
+    fs.mkdirSync(path.join(OUT, "pieces"), { recursive: true });
+    for (const piece of ROOM.interactables) {
+      await write(sharp(pieces[piece.id]), path.join(ROOT, "public", piece.src), { quality: 84, alphaQuality: 92, effort: 6 });
+    }
     // the selector's preview (and the room's intro art): a 4:3 view of the telescope, the bench and the window
     await write(sharp(composedPng).extract({ left: 420, top: 150, width: 1880, height: 1410 }).resize(960, 720), path.join(OUT, "hero.webp"), {
       quality: 76,
@@ -1919,24 +2091,47 @@ async function main() {
   }
 
   const regionsPng = await sharp({ create: { width: W, height: H, channels: 4, background: "#000000" } })
-    .composite([{ input: back, left: at("back").x, top: at("back").y }, { input: await render(plateSvg({ debug: true })).png().toBuffer(), left: 0, top: 0 }])
+    .composite([
+      { input: back, left: at("back").x, top: at("back").y },
+      { input: await render(plateSvg({ debug: true }).replace(/<\/svg>\s*$/, `${piecesOverlaySvg(ROOM)}</svg>`)).png().toBuffer(), left: 0, top: 0 },
+    ])
     .png()
     .toBuffer();
   await writeReviewBoards({ room: ROOM, composedPng, regionsPng, reviewDir });
+  await sharp(composedOpenPng).resize(1800, 800).webp({ quality: 86 }).toFile(path.join(reviewDir, "scene-open.webp"));
+  await writePieceBoard(composedPng, composedOpenPng, reviewDir);
   if (preview) await sharp(composedPng).toFile(path.join(reviewDir, "scene-full.png"));
 
   if (AUDIT) {
     const { data } = await sharp(composedPng).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+    const { data: dataOpen } = await sharp(composedOpenPng).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+    const alone = (target) => `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}"><defs>${DEFS}</defs>${targetSvg(target.id)}</svg>`;
     const rows = await auditRoom({
       room: ROOM,
       plate: ({ omit }) => plateSvg({ omit }),
-      alone: (target) => `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}"><defs>${DEFS}</defs>${targetSvg(target.id)}</svg>`,
-      composed: data,
+      alone,
+      // an object kept behind a piece is measured as it is found: its piece open (GAME03-INTERACTIONS-04)
+      composed: (target) => (target.gate ? dataOpen : data),
     });
+    // GAME03-INTERACTIONS-04: what the room shows of each object with every piece shut, and with every piece open
+    for (const row of rows) {
+      const target = TARGETS[row.id];
+      for (const [key, states] of [["visibleAtRest", "rest"], ["visibleOpen", "open"]]) {
+        row[key] = await visibleWithPieces({ width: W, height: H, plate: ({ omit }) => plateSvg({ omit }), alone, pieces: piecesSvg(ROOM, PIECE_ART, states), target });
+      }
+      if (target.gate) row.gate = target.gate;
+    }
     // GAME03-CALIBRATION-02A: how busy the room is around each object, on the layers as they ship
     if (!preview) {
-      const shipped = await composeShipped(ROOM, (publicPath) => fs.readFileSync(path.join(ROOT, publicPath)));
-      for (const row of rows) row.clutter = measureClutter(shipped, W, H, TARGETS[row.id].region);
+      const read = (publicPath) => fs.readFileSync(path.join(ROOT, publicPath));
+      const shipped = await composeShipped(ROOM, read);
+      // an object kept behind a piece: the room around it with its own piece open
+      const opened = {};
+      for (const row of rows) {
+        const gate = TARGETS[row.id].gate;
+        if (gate && !opened[gate]) opened[gate] = await composeShipped(ROOM, read, { open: [gate] });
+        row.clutter = measureClutter(gate ? opened[gate] : shipped, W, H, TARGETS[row.id].region);
+      }
     }
     for (const row of rows) console.log(`${row.id.padEnd(14)} ${row.tier}  visible ${(row.visible * 100).toFixed(0).padStart(3)}%  contrast ${row.contrast.toFixed(2).padStart(5)}:1  edge ${row.edge.toFixed(2).padStart(5)}:1  clutter ${row.clutter ?? "—"}  look-alikes ${row.lookAlikes.join(", ") || "—"}`);
     const platePath = path.join(OUT, "plate.webp");
@@ -1952,6 +2147,8 @@ async function main() {
             contrast: "F4 as written: mean-luminance ratio, visible target vs a 24 su ring, on the composed room",
             edge: "median luminance ratio across the visible silhouette's edge (each edge pixel vs the background within 3 su)",
             clutter: "share of busy pixels (Sobel luminance gradient > 40) in the ring 16–120 su around the object's box, on the shipped layers composed at rest",
+            pieces:
+              "GAME03-INTERACTIONS-04: the room's pieces are composed on the plate's plane at rest; an object kept behind a piece (gate) is measured with that piece open (contrast, edge, clutter); visibleAtRest / visibleOpen: its visible share with every piece shut / open",
           },
           targets: rows,
         },

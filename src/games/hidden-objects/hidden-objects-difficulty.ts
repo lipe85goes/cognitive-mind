@@ -107,6 +107,15 @@ export function searchLoad(scene: Pick<SceneDefinition, "lookAlikes">, target: H
 /** How many associations a clue level asks for before the Explorador knows what to look for (a picture: none). */
 export const CLUE_STEPS: Readonly<Record<ClueLevel, number>> = { direct: 1, associative: 2, indirect: 3 };
 
+/**
+ * How many authored actions stand between the room at rest and an object
+ * (GAME03-INTERACTIONS-04): 0 in view from the start, 1 kept behind a piece.
+ * A count, not a weight: it never enters the search load.
+ */
+export function interactionDepth(target: Pick<HiddenObjectDefinition, "gate">): number {
+  return target.gate ? 1 : 0;
+}
+
 /** The three heights a room is read at: a round that asks for all of them makes the Explorador look up and down too. */
 export const HEIGHT_BANDS: readonly number[] = [600, 1000];
 
@@ -123,6 +132,13 @@ export interface RoundProfile {
   places: number;
   /** Associations the list asks for per object before searching (0 for a picture list). */
   semantic: number;
+  /**
+   * GAME03-INTERACTIONS-04: listed objects kept behind a room piece — each one
+   * authored action (open, lift, slide, move) before it can be seen at all.
+   */
+  gated: number;
+  /** Distinct room pieces the list needs opened or moved: the round's interaction depth. */
+  actions: number;
 }
 
 const byIdIndex = new WeakMap<SceneDefinition, Map<TargetId, HiddenObjectDefinition>>();
@@ -160,15 +176,22 @@ export function roundProfile(scene: SceneDefinition, difficulty: DifficultyLevel
   return {
     count: ids.length,
     search: loads.reduce((sum, load) => sum + load, 0) / Math.max(1, ids.length),
-    popOuts: loads.filter((load) => load < POP_OUT_BELOW).length,
+    // an object kept behind a piece is never a glance find: at rest nothing of it is in view
+    popOuts: loads.filter((load, i) => load < POP_OUT_BELOW && interactionDepth(targets[i]) === 0).length,
     tiers,
     decoys: ids.reduce((sum, id) => sum + decoysOf(scene, id), 0) / Math.max(1, ids.length),
     places: new Set(targets.map((target) => `${target.station}:${heightBand(target.region)}`)).size,
     semantic: level ? CLUE_STEPS[level] : 0,
+    gated: targets.filter((target) => interactionDepth(target) > 0).length,
+    actions: new Set(targets.flatMap((target) => (target.gate ? [target.gate] : []))).size,
   };
 }
 
-/** Whether a round's profile meets a difficulty's rule. Nothing in it grows with the number of objects. */
+/**
+ * Whether a round's profile meets a difficulty's rule. Nothing in it grows with
+ * the number of objects but the gated count, which is a count of actions by
+ * design (GAME03-INTERACTIONS-04): one more shut drawer is one more thing to do.
+ */
 export function meetsRule(rule: RoundRule, profile: RoundProfile): boolean {
   const tiersFit = (Object.keys(rule.tiers) as TargetTier[]).every(
     (tier) => profile.tiers[tier] >= rule.tiers[tier][0] && profile.tiers[tier] <= rule.tiers[tier][1],
@@ -178,6 +201,8 @@ export function meetsRule(rule: RoundRule, profile: RoundProfile): boolean {
     profile.popOuts <= rule.maxPopOuts &&
     profile.search >= rule.minSearch &&
     profile.search < rule.maxSearch &&
-    profile.decoys >= rule.minDecoys
+    profile.decoys >= rule.minDecoys &&
+    profile.gated >= rule.gated[0] &&
+    profile.gated <= rule.gated[1]
   );
 }

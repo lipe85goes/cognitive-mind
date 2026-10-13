@@ -5,6 +5,7 @@ import { useCallback, useEffect, useId, useMemo, useReducer, useRef, useState, t
 import { ArrowLeft, Check, DoorOpen, Lightbulb, ListChecks, RotateCcw, Search } from "lucide-react";
 import type { DifficultyLevel, GameComponentProps } from "@/types/game";
 import type { CameraView, HiddenObjectsSceneController, SceneTap } from "@/games/hidden-objects/hidden-objects-controller";
+import { pieceState } from "@/games/hidden-objects/hidden-objects-interactions";
 import {
   HIDDEN_OBJECTS_SUBTITLE,
   HIDDEN_OBJECTS_TITLE,
@@ -25,6 +26,7 @@ import {
 import {
   DIFFICULTY_ORDER,
   DIFFICULTY_PRESETS,
+  type InteractableId,
   type SceneDefinition,
 } from "@/games/hidden-objects/hidden-objects-scene";
 import { SCENES, forgetScene, rememberScene, rememberedScene } from "@/games/hidden-objects/hidden-objects-scenes";
@@ -78,6 +80,8 @@ export function HiddenObjectsGame({ onComplete, onExit, onEntryReady, onEntryErr
   }));
   /** Once a room has painted, the entry is behind us: a room chosen later is waited for by the setup card. */
   const [painted, setPainted] = useState(false);
+  /** The room piece whose keyboard button has focus (outlined in the room); never part of the session. */
+  const [pieceFocus, setPieceFocus] = useState<InteractableId | null>(null);
   const controllerRef = useRef<HiddenObjectsSceneController | null>(null);
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const concludeRef = useRef<HTMLButtonElement>(null);
@@ -96,7 +100,9 @@ export function HiddenObjectsGame({ onComplete, onExit, onEntryReady, onEntryErr
   const cardVisible = finished && cardRound === state.round && dismissedRound !== state.round;
   const subject = hintSubject(state);
   const hintText =
-    state.hintTarget && state.hintStage > 0 ? hintMessage(scene, state.hintTarget, state.difficulty, state.hintStage, state.clues) : "";
+    state.hintTarget && state.hintStage > 0
+      ? hintMessage(scene, state.hintTarget, state.difficulty, state.hintStage, state.clues, state.interactions)
+      : "";
   const hintedStation =
     state.hintTarget && state.hintStage >= 1 ? targetById(scene, state.hintTarget).station : null;
 
@@ -143,10 +149,12 @@ export function HiddenObjectsGame({ onComplete, onExit, onEntryReady, onEntryErr
     const event = state.lastEvent;
     const controller = controllerRef.current;
     if (!controller || event?.kind !== "hint") return;
-    const move = hintCameraMove(state.scene, event.targetId, state.difficulty, event.stage);
+    const move = hintCameraMove(state.scene, event.targetId, state.difficulty, event.stage, state.interactions);
     if (move?.kind === "station") controller.goToStation(move.station);
     if (move?.kind === "circle") controller.showCircle(move.center, move.radius);
     if (move?.kind === "frame") controller.reveal(move.bounds);
+    // the pieces are read when the hint is asked for, not followed afterwards: opening one never moves the camera
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.eventSeq, state.lastEvent, state.difficulty, state.scene]);
 
   // The closing card follows the last find after a short pause (cleared on restart/unmount).
@@ -171,7 +179,7 @@ export function HiddenObjectsGame({ onComplete, onExit, onEntryReady, onEntryErr
   const feedback = useMemo<SceneFeedback>(() => {
     const event = state.lastEvent;
     const seq = state.eventSeq;
-    const halo = state.hintTarget ? hintHalo(state.scene, state.hintTarget, state.difficulty, state.hintStage) : null;
+    const halo = state.hintTarget ? hintHalo(state.scene, state.hintTarget, state.difficulty, state.hintStage, state.interactions) : null;
     const reveal = state.hintTarget ? hintRung(state.difficulty, state.hintStage) === "reveal" : false;
     return {
       found: state.foundIds,
@@ -180,8 +188,28 @@ export function HiddenObjectsGame({ onComplete, onExit, onEntryReady, onEntryErr
       again: event?.kind === "already" ? { id: event.targetId, seq } : null,
       ripple: event?.kind === "miss" ? { x: event.point.x, y: event.point.y, seq } : null,
       halo: halo ? { ...halo, kind: reveal ? "reveal" : "hint", seq: state.hintSeq } : null,
+      pieceFocus: playing ? pieceFocus : null,
     };
-  }, [state.lastEvent, state.eventSeq, state.foundIds, state.hintTarget, state.hintStage, state.hintSeq, state.difficulty, state.scene]);
+  }, [
+    state.lastEvent,
+    state.eventSeq,
+    state.foundIds,
+    state.hintTarget,
+    state.hintStage,
+    state.hintSeq,
+    state.difficulty,
+    state.scene,
+    state.interactions,
+    playing,
+    pieceFocus,
+  ]);
+
+  /** A piece's button got focus: outline the piece and bring it into view if it is not (the camera, never the piece, moves). */
+  const focusPiece = (id: InteractableId) => {
+    setPieceFocus(id);
+    const { hit } = pieceState(scene, state.interactions, id);
+    controllerRef.current?.showCircle({ x: hit.x + hit.w / 2, y: hit.y + hit.h / 2 }, Math.hypot(hit.w, hit.h) / 2 + 40);
+  };
 
   const announcement = announcementFor(state);
   const trayShown = trayOpen || state.status === "setup";
@@ -238,6 +266,7 @@ export function HiddenObjectsGame({ onComplete, onExit, onEntryReady, onEntryErr
             controllerRef={controllerRef}
             viewportRef={viewportRef}
             feedback={feedback}
+            interactions={state.interactions}
             view={view}
             interactive={state.status !== "setup"}
             instructionsId={instructionsId}
@@ -247,6 +276,29 @@ export function HiddenObjectsGame({ onComplete, onExit, onEntryReady, onEntryErr
             onError={onEntryError}
             onLoad={handleLoad}
           />
+          {/* GAME03-INTERACTIONS-04: the room's pieces for the keyboard and screen readers — the same step a tap takes */}
+          <div className="hos-piece-keys" role="group" aria-label="Na sala: o que abre ou se move">
+            {scene.interactables.map((piece) => {
+              const pieceNow = pieceState(scene, state.interactions, piece.id);
+              return (
+                <button
+                  key={piece.id}
+                  type="button"
+                  className="hos-piece-key"
+                  data-piece={piece.id}
+                  aria-label={piece.accessibleLabel}
+                  aria-expanded={pieceNow.open}
+                  disabled={!playing}
+                  onFocus={() => focusPiece(piece.id)}
+                  onBlur={() => setPieceFocus((current) => (current === piece.id ? null : current))}
+                  onClick={() => dispatch({ type: "interact", interactableId: piece.id })}
+                >
+                  {piece.label}
+                  <small>{pieceNow.announce}</small>
+                </button>
+              );
+            })}
+          </div>
           {hintText && (
             <p className="hos-hint-banner" key={`hint-${state.hintSeq}`}>
               <Lightbulb size={18} aria-hidden="true" />
@@ -373,7 +425,8 @@ export function HiddenObjectsGame({ onComplete, onExit, onEntryReady, onEntryErr
       <p id={instructionsId} className="hos-sr-only">
         Arraste para explorar a sala; aproxime com dois dedos, com a roda do mouse ou com os botões mais e menos.
         No teclado: setas movem, mais e menos aproximam, {stationKeysLine(scene)}, 0 recentra e Enter toca no
-        centro da mira.
+        centro da mira. Algumas coisas da sala abrem ou se movem com um toque; com Tab, a lista &quot;Na sala&quot; leva a
+        cada uma delas.
       </p>
       <p className="hos-sr-only" aria-live="polite" key={`live-${state.eventSeq}`}>
         {announcement}
@@ -502,6 +555,7 @@ function SetupCard({
           ))}
         </fieldset>
         <p className="hos-controls-line">Arraste para explorar · pince, use a roda ou + e − para aproximar</p>
+        <p className="hos-controls-line">Gavetas, portas, tampas e cortinas da sala se abrem com um toque</p>
         <button type="button" className="hos-primary" onClick={onStart} disabled={failed || preparing}>
           <Search size={20} aria-hidden="true" />
           {preparing ? "Preparando a cena…" : "Explorar"}

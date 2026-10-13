@@ -815,6 +815,12 @@ export const isMultiscene = (tree) => tree.exists(FILES.scenes);
  * Difficulty V3's measured round rule accepts.
  */
 export const isCalibrated = (tree) => tree.exists(FILES.clues);
+/**
+ * Whether the tree is GAME03-INTERACTIONS-04's or later: rooms have movable
+ * pieces (drawers, doors, curtains, lids, things pushed aside), some objects are
+ * kept behind them, and a round's rule bounds how many it lists (rule.gated).
+ */
+export const isInteractive = (tree) => tree.exists(`${DIR}hidden-objects-interactions.ts`);
 /** The module holding the Estúdio's data on this tree (its literal regions, its look-alikes). */
 export const studioSceneFile = (tree) => (isMultiscene(tree) ? FILES.studioScene : FILES.scene);
 
@@ -889,12 +895,15 @@ export function v3RoundKeeper(tree) {
       let load = 0;
       let glances = 0;
       let decoys = 0;
+      // GAME03-INTERACTIONS-04: objects kept behind a room piece — never a glance find (nothing of them shows at rest), bounded by rule.gated
+      let gated = 0;
       for (const id of ids) {
         const target = scene.pool.find((t) => t.id === id);
         tiers[target.tier] += 1;
         const own = difficulty.loadOf(scene, id);
         load += own;
-        if (own < difficulty.POP_OUT_BELOW) glances += 1;
+        if (target.gate) gated += 1;
+        else if (own < difficulty.POP_OUT_BELOW) glances += 1;
         decoys += scene.lookAlikes.filter((l) => l.resembles === id).length;
       }
       const mean = load / ids.length;
@@ -903,7 +912,8 @@ export function v3RoundKeeper(tree) {
         glances <= rule.maxPopOuts &&
         mean >= rule.minSearch &&
         mean < rule.maxSearch &&
-        decoys / ids.length >= rule.minDecoys
+        decoys / ids.length >= rule.minDecoys &&
+        (!rule.gated || (gated >= rule.gated[0] && gated <= rule.gated[1]))
       );
     };
   });
@@ -1207,6 +1217,8 @@ export function openStudio(tree, { viewport = DESKTOP, reducedMotion = false, se
         const entry = studio.layer(id);
         entry.props.onLoad({ currentTarget: entry.node, target: entry.node });
       }
+      // GAME03-INTERACTIONS-04: the room's movable pieces are essential art too (absent before it)
+      for (const entry of harness.hosts((e) => e.type === IMAGE && cls("hos-piece")(e))) entry.props.onLoad({ currentTarget: entry.node, target: entry.node });
       await drain();
       harness.flush();
     },
@@ -1270,7 +1282,23 @@ export function openStudio(tree, { viewport = DESKTOP, reducedMotion = false, se
       studio.viewport.dispatch("wheel", { deltaY, deltaMode: 0, ctrlKey: false, clientX: point.x, clientY: point.y });
       harness.flush();
     },
+    /**
+     * GAME03-INTERACTIONS-04: open (or move) a room piece the way the Explorador
+     * does — a tap where it is now — unless it already exposes what it keeps.
+     */
+    openPiece(pieceId) {
+      const image = harness.hosts((e) => e.type === IMAGE && cls("hos-piece")(e) && e.props["data-piece"] === pieceId)[0];
+      if (!image || image.props["data-open"] === "true") return;
+      const piece = room.interactables.find((candidate) => candidate.id === pieceId);
+      const { hit } = piece.states.find((state) => state.id === image.props["data-state"]);
+      studio.goTo(piece.station);
+      studio.tapAt(studio.client({ x: hit.x + hit.w / 2, y: hit.y + hit.h / 2 }));
+      studio.settle();
+    },
+    /** The Explorador's find: its piece opened first when it is kept behind one (trees before GAME03-INTERACTIONS-04 have none). */
     find(id) {
+      const gate = model.targetById(id).gate;
+      if (gate) studio.openPiece(gate);
       studio.goTo(model.targetById(id).station);
       studio.tapAt(studio.targetClient(id));
       studio.settle();

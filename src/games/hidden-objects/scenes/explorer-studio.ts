@@ -1,4 +1,12 @@
-import type { HiddenObjectDefinition, SceneDefinition, SceneLayer, SceneLookAlike, SceneStation, TargetId } from "@/games/hidden-objects/hidden-objects-scene";
+import type {
+  HiddenObjectDefinition,
+  SceneDefinition,
+  SceneInteractable,
+  SceneLayer,
+  SceneLookAlike,
+  SceneStation,
+  TargetId,
+} from "@/games/hidden-objects/hidden-objects-scene";
 
 /**
  * Estúdio do Explorador — Game 03's first room (GAME03-SKELETON-01, GAME03-EXPERIENCE-02),
@@ -9,6 +17,13 @@ import type { HiddenObjectDefinition, SceneDefinition, SceneLayer, SceneLookAlik
  * audit's measurements of it (`measured`, from the kit's fairness.json).
  * tools/assets/create_hidden_objects_scene.mjs paints every target exactly where
  * its `region` says, and reads this module to do it.
+ *
+ * GAME03-INTERACTIONS-04 (art kit v3): three pieces of the room open or move —
+ * the side table's drawer under the hourglass (Janela), the lid of the little
+ * wooden box on the map (Mesa) and the basket of rolled maps at the foot of the
+ * bookcase, which can be pushed aside (Estante) — and each keeps one object
+ * the room did not have before (a whistle, a bead necklace, a canteen). Nothing
+ * that was already in the room moved.
  */
 
 /** Which room a session explored (the result records it; results saved before it existed are all this room). */
@@ -53,7 +68,8 @@ export const SCENE_STATIONS: readonly SceneStation[] = [
  * gaiola), so every station holds every tier. GAME03-CALIBRATION-02A added five
  * objects the room hides in plain materials — a snail on the wainscot, a spinning
  * top on the rug's edge, scissors under the map, a pine cone on the wall shelf, a
- * harmonica on the book pile (twenty-three: A6 · B7 · C10). Positions are
+ * harmonica on the book pile (twenty-three: A6 · B7 · C10). GAME03-INTERACTIONS-04
+ * added three kept behind pieces of the room (twenty-six: A6 · B7 · C13). Positions are
  * authored, never drawn at random: only which of them a round lists is.
  */
 export const HIDDEN_OBJECTS: readonly HiddenObjectDefinition[] = [
@@ -494,6 +510,67 @@ export const HIDDEN_OBJECTS: readonly HiddenObjectDefinition[] = [
     hintDirection: "embaixo, na parte de baixo da estante, no meio",
     hintContext: "sobre livros empilhados, perto do chão",
   },
+  // --- GAME03-INTERACTIONS-04: kept behind a piece of the room (art kit v3) -----------------------
+  {
+    id: "apito",
+    label: "Apito",
+    accessibleLabel: "Apito de metal",
+    clues: [
+      { level: "direct", text: "Solta um som agudo quando alguém sopra." },
+      { level: "associative", text: "O juiz o usa para parar o jogo." },
+      { level: "associative", text: "Vai pendurado no pescoço do salva-vidas." },
+      { level: "indirect", text: "Perdido na trilha, você chamaria ajuda com ele." },
+      { level: "indirect", text: "Um sopro forte e o cachorro vem correndo." },
+    ],
+    tier: "C",
+    station: "janela",
+    region: { kind: "rect", x: 750, y: 1220, w: 100, h: 34 },
+    measured: { visible: 1, edge: 2, clutter: 0.15 },
+    hintRegion: "na mesinha junto à janela, embaixo da ampulheta",
+    hintDirection: "embaixo da ampulheta, guardado longe da vista",
+    hintContext: "guardado bem perto de onde a areia escorre",
+    gate: "gaveta-da-mesinha",
+  },
+  {
+    id: "colar",
+    label: "Colar",
+    accessibleLabel: "Colar de contas",
+    clues: [
+      { level: "direct", text: "Um fio de contas que se usa no pescoço." },
+      { level: "associative", text: "Cada bolinha passa pelo mesmo fio." },
+      { level: "associative", text: "Enfeita o decote numa festa de gala." },
+      { level: "indirect", text: "A vovó só o tira nos dias especiais." },
+      { level: "indirect", text: "Se o fecho abre, as pérolas fogem pelo chão." },
+    ],
+    tier: "C",
+    station: "mesa",
+    region: { kind: "rect", x: 1902, y: 1132, w: 96, h: 36 },
+    measured: { visible: 1, edge: 2, clutter: 0.15 },
+    hintRegion: "na ponta direita da mesa, perto do frasco de tinta",
+    hintDirection: "na beirada direita da mesa, guardado dentro de algo",
+    hintContext: "guardado onde os tesouros pequenos dormem, perto da pena",
+    gate: "caixinha-da-mesa",
+  },
+  {
+    id: "cantil",
+    label: "Cantil",
+    accessibleLabel: "Cantil de explorador",
+    clues: [
+      { level: "direct", text: "Leva água para beber durante a viagem." },
+      { level: "associative", text: "Vai na cintura de quem atravessa o deserto." },
+      { level: "associative", text: "Garrafinha de metal com capa de feltro." },
+      { level: "indirect", text: "No meio da caminhada, a sede vai embora." },
+      { level: "indirect", text: "Escoteiro que se preze não sai sem ele cheio." },
+    ],
+    tier: "C",
+    station: "estante",
+    region: { kind: "rect", x: 2330, y: 1336, w: 88, h: 80 },
+    measured: { visible: 1, edge: 2, clutter: 0.15 },
+    hintRegion: "no chão, no pé da estante, junto ao globo",
+    hintDirection: "embaixo, no chão perto da estante, atrás de alguma coisa",
+    hintContext: "escondido atrás de papéis enrolados, no chão",
+    gate: "cesto-de-mapas",
+  },
 ];
 
 /** The room's look-alikes (the rules are the contract's: hidden-objects-scene.ts). */
@@ -656,10 +733,70 @@ export const SCENE_LOOKALIKES: readonly SceneLookAlike[] = [
 
 /**
  * Versioned folder: a new art kit is a new folder, never an overwrite (v0 was the
- * skeleton's, v1 EXPERIENCE-02's; v2 is GAME03-CALIBRATION-02A's — five new
- * objects tucked into the room and eleven more look-alikes).
+ * skeleton's, v1 EXPERIENCE-02's, v2 GAME03-CALIBRATION-02A's; v3 is
+ * GAME03-INTERACTIONS-04's — the three pieces that open or move, what they keep,
+ * and the room underneath them).
  */
-export const SCENE_ASSET_BASE = "/assets/hidden-objects/explorer-studio/v2";
+export const SCENE_ASSET_BASE = "/assets/hidden-objects/explorer-studio/v3";
+
+/**
+ * GAME03-INTERACTIONS-04: what opens or moves in the Estúdio. Each piece's art
+ * is painted at `rect` over the plate (which paints what it keeps underneath);
+ * `hit` is where a tap reaches it in each state.
+ */
+export const SCENE_INTERACTABLES: readonly SceneInteractable[] = [
+  {
+    id: "gaveta-da-mesinha",
+    kind: "drawer",
+    label: "Gaveta da mesinha",
+    accessibleLabel: "Gaveta da mesinha da janela",
+    station: "janela",
+    src: `${SCENE_ASSET_BASE}/pieces/gaveta-da-mesinha.webp`,
+    rect: { x: 724, y: 1212, w: 152, h: 46 },
+    origin: { x: 76, y: 0 },
+    states: [
+      { id: "fechada", pose: {}, hit: { x: 724, y: 1212, w: 152, h: 46 }, open: false, announce: "A gaveta da mesinha está fechada." },
+      { id: "aberta", pose: { y: 46, scaleX: 1.06, scaleY: 1.06 }, hit: { x: 716, y: 1257, w: 168, h: 54 }, open: true, announce: "A gaveta da mesinha está aberta." },
+    ],
+    initial: "fechada",
+    motionMs: 380,
+    hintAction: "abra a gaveta da mesinha",
+  },
+  {
+    id: "caixinha-da-mesa",
+    kind: "lid",
+    label: "Caixinha de madeira",
+    accessibleLabel: "Tampa da caixinha de madeira sobre a mesa",
+    station: "mesa",
+    src: `${SCENE_ASSET_BASE}/pieces/caixinha-da-mesa.webp`,
+    rect: { x: 1884, y: 1126, w: 132, h: 46 },
+    origin: { x: 66, y: 0 },
+    states: [
+      { id: "fechada", pose: {}, hit: { x: 1884, y: 1126, w: 132, h: 46 }, open: false, announce: "A caixinha de madeira está fechada." },
+      { id: "aberta", pose: { scaleY: -0.5, shade: 0.78 }, hit: { x: 1884, y: 1098, w: 132, h: 30 }, open: true, announce: "A tampa da caixinha de madeira está levantada." },
+    ],
+    initial: "fechada",
+    motionMs: 420,
+    hintAction: "levante a tampa da caixinha de madeira",
+  },
+  {
+    id: "cesto-de-mapas",
+    kind: "prop",
+    label: "Cesto de mapas",
+    accessibleLabel: "Cesto de mapas enrolados no pé da estante",
+    station: "estante",
+    src: `${SCENE_ASSET_BASE}/pieces/cesto-de-mapas.webp`,
+    rect: { x: 2286, y: 1214, w: 174, h: 232 },
+    origin: { x: 87, y: 232 },
+    states: [
+      { id: "no-lugar", pose: {}, hit: { x: 2296, y: 1216, w: 156, h: 222 }, open: false, announce: "O cesto de mapas está no lugar." },
+      { id: "afastado", pose: { x: 178, rotate: 3 }, hit: { x: 2470, y: 1212, w: 172, h: 230 }, open: true, announce: "O cesto de mapas foi afastado para o lado." },
+    ],
+    initial: "no-lugar",
+    motionMs: 460,
+    hintAction: "afaste o cesto de mapas",
+  },
+];
 
 export const SCENE_LAYERS: readonly SceneLayer[] = [
   {
@@ -721,6 +858,7 @@ export const EXPLORER_STUDIO: SceneDefinition = {
   initialStation: "mesa",
   pool: HIDDEN_OBJECTS,
   lookAlikes: SCENE_LOOKALIKES,
+  interactables: SCENE_INTERACTABLES,
   layers: SCENE_LAYERS,
   thumbnail: thumbnailSrc,
   backdrop: "#120c08",

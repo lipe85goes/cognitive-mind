@@ -1,12 +1,23 @@
 import type { DifficultyLevel, GameResult } from "@/types/game";
 import type { Point, Rect } from "@/games/hidden-objects/hidden-objects-camera";
 import { clueAt, selectRoundClues, type RoundClues } from "@/games/hidden-objects/hidden-objects-clues";
+import {
+  gateIsOpen,
+  initialInteractions,
+  interactableAt,
+  interactableById,
+  nextPieceState,
+  pieceState,
+  type InteractionState,
+} from "@/games/hidden-objects/hidden-objects-interactions";
 import { selectRoundTargets } from "@/games/hidden-objects/hidden-objects-rounds";
 import {
   DIFFICULTY_PRESETS,
   type HiddenObjectDefinition,
   type HintRung,
+  type InteractableId,
   type ListStyle,
+  type SceneInteractable,
   type SceneDefinition,
   type SceneRegion,
   type StationId,
@@ -25,6 +36,14 @@ import {
  * GAME03-CALIBRATION-02A: a round is its list AND the clues it tells for each
  * object, both drawn once from the round's seed when the exploration starts
  * (`state.clues`) and kept until the session ends.
+ *
+ * GAME03-INTERACTIONS-04: the room has pieces that open or move (drawers,
+ * doors, curtains, lids, things pushed aside — scene data). Where each one is
+ * belongs to the exploration (`state.interactions`): every start and every
+ * "Recomeçar" puts them back as the room is authored; a tap on a piece steps it
+ * to its next state; an object kept behind a piece can be neither seen nor
+ * found until the piece exposes it. Nothing else — camera, hints, renders,
+ * finds — ever moves a piece.
  */
 
 export const HIDDEN_OBJECTS_TITLE = "Estúdio das Descobertas";
@@ -68,6 +87,11 @@ export function distanceToRegion(point: Point, region: SceneRegion): number {
   const dx = Math.max(region.x - point.x, 0, point.x - (region.x + region.w));
   const dy = Math.max(region.y - point.y, 0, point.y - (region.y + region.h));
   return Math.hypot(dx, dy);
+}
+
+/** Whether an object can be seen and found with the room's pieces where they are (GAME03-INTERACTIONS-04). */
+export function isExposed(scene: SceneDefinition, interactions: InteractionState, id: TargetId): boolean {
+  return gateIsOpen(scene, interactions, targetById(scene, id).gate);
 }
 
 /** Touch and pen get the larger reach; the mouse is precise. */
@@ -114,7 +138,9 @@ export type SessionEvent =
   | { kind: "found"; targetId: TargetId }
   | { kind: "already"; targetId: TargetId }
   | { kind: "miss"; point: Point }
-  | { kind: "hint"; targetId: TargetId; stage: HintStage };
+  | { kind: "hint"; targetId: TargetId; stage: HintStage }
+  /** A room piece moved to `state` (GAME03-INTERACTIONS-04). */
+  | { kind: "interact"; interactableId: InteractableId; state: string };
 
 export interface SessionState {
   /** The room this session explores: chosen in setup, fixed from "Explorar" on. */
@@ -136,6 +162,12 @@ export interface SessionState {
    */
   clues: RoundClues;
   foundIds: readonly TargetId[];
+  /**
+   * Where each of the room's pieces is (GAME03-INTERACTIONS-04): as authored at
+   * every start and every restart, then only what the Explorador's own taps and
+   * buttons did. Nothing of it outlives the exploration.
+   */
+  interactions: InteractionState;
   /** The object the hint ladder is climbing for, and how far it has climbed. */
   hintTarget: TargetId | null;
   hintStage: HintStage;
@@ -160,6 +192,8 @@ export type SessionAction =
   | { type: "tap"; point: Point; scale: number; pointerType: string }
   | { type: "focus-target"; targetId: TargetId }
   | { type: "hint" }
+  /** A room piece's button (the keyboard's way to the same step a tap takes). */
+  | { type: "interact"; interactableId: InteractableId }
   | { type: "restart" }
   /** "Trocar de cena": leave this exploration (nothing is recorded) and choose again, in setup. */
   | { type: "change-scene" };
@@ -173,6 +207,7 @@ export function createSession(scene: SceneDefinition, difficulty: DifficultyLeve
     roundSeed: null,
     clues: {},
     foundIds: [],
+    interactions: initialInteractions(scene),
     hintTarget: null,
     hintStage: 0,
     hintSeq: 0,
@@ -183,11 +218,15 @@ export function createSession(scene: SceneDefinition, difficulty: DifficultyLeve
   };
 }
 
-/** A round from the top. The list and its clues are not touched: start draws them, restart keeps them. */
+/**
+ * A round from the top. The list and its clues are not touched: start draws
+ * them, restart keeps them. The room's pieces go back to where it is authored.
+ */
 const freshRound = (state: SessionState): SessionState => ({
   ...state,
   status: "playing",
   foundIds: [],
+  interactions: initialInteractions(state.scene),
   hintTarget: null,
   hintStage: 0,
   focusedTarget: null,
@@ -212,6 +251,13 @@ const emit = (state: SessionState, event: SessionEvent): SessionState => ({
   lastEvent: event,
   eventSeq: state.eventSeq + 1,
 });
+
+/** A piece one step on (only while playing); the event tells the view and the live region. */
+function interact(state: SessionState, id: InteractableId): SessionState {
+  const piece = interactableById(state.scene, id);
+  const next = nextPieceState(piece, pieceState(state.scene, state.interactions, id).id);
+  return emit({ ...state, interactions: { ...state.interactions, [id]: next } }, { kind: "interact", interactableId: id, state: next });
+}
 
 export function pendingTargets(state: SessionState): TargetId[] {
   return state.targets.filter((id) => !state.foundIds.includes(id));
@@ -252,9 +298,17 @@ export function sessionReducer(state: SessionState, action: SessionAction): Sess
     case "tap": {
       if (state.status !== "playing") return state;
       const listed = state.targets;
-      const hit = hitTest(state.scene, action.point, listed, action.scale, tolerancePxFor(state.difficulty, action.pointerType));
-      // A free tap costs nothing: no counter, no penalty, nothing recorded.
-      if (hit === null) return emit(state, { kind: "miss", point: action.point });
+      const tolerance = tolerancePxFor(state.difficulty, action.pointerType);
+      // Only listed objects in view are candidates: one still kept behind a shut piece is not there to be found.
+      const reachable = listed.filter((id) => isExposed(state.scene, state.interactions, id));
+      const hit = hitTest(state.scene, action.point, reachable, action.scale, tolerance);
+      if (hit === null) {
+        // Not an object: a room piece under the tap opens, shuts or moves (GAME03-INTERACTIONS-04).
+        const piece = interactableAt(state.scene, state.interactions, action.point, action.scale, tolerance);
+        if (piece !== null) return interact(state, piece);
+        // A free tap costs nothing: no counter, no penalty, nothing recorded.
+        return emit(state, { kind: "miss", point: action.point });
+      }
       if (state.foundIds.includes(hit)) return emit(state, { kind: "already", targetId: hit });
       const foundIds = [...state.foundIds, hit];
       const clearsHint = state.hintTarget === hit;
@@ -270,6 +324,11 @@ export function sessionReducer(state: SessionState, action: SessionAction): Sess
         { kind: "found", targetId: hit },
       );
     }
+
+    case "interact":
+      return state.status === "playing" && state.scene.interactables.some((piece) => piece.id === action.interactableId)
+        ? interact(state, action.interactableId)
+        : state;
 
     case "focus-target": {
       if (state.status !== "playing" || !pendingTargets(state).includes(action.targetId)) return state;
@@ -336,8 +395,37 @@ export function revealsExactly(difficulty: DifficultyLevel): boolean {
  *   reveal           — a halo exactly on the object;
  *   every other rung — none (Médio and Difícil never light anything).
  */
-export function hintHalo(scene: SceneDefinition, id: TargetId, difficulty: DifficultyLevel, stage: HintStage): HintHalo | null {
+/**
+ * GAME03-INTERACTIONS-04: the piece a "reveal" rung points at instead of the
+ * object — the one the object is kept behind, while it is still shut. Fácil
+ * shows where the object is kept and lets the Explorador open it; nothing ever
+ * shows an object through a shut piece, and no rung ever moves a piece.
+ */
+export function revealedPiece(
+  scene: SceneDefinition,
+  id: TargetId,
+  difficulty: DifficultyLevel,
+  stage: HintStage,
+  interactions: InteractionState = initialInteractions(scene),
+): SceneInteractable | null {
+  const gate = targetById(scene, id).gate;
+  if (hintRung(difficulty, stage) !== "reveal" || !gate || pieceState(scene, interactions, gate).open) return null;
+  return interactableById(scene, gate);
+}
+
+export function hintHalo(
+  scene: SceneDefinition,
+  id: TargetId,
+  difficulty: DifficultyLevel,
+  stage: HintStage,
+  interactions: InteractionState = initialInteractions(scene),
+): HintHalo | null {
   const rung = hintRung(difficulty, stage);
+  const piece = revealedPiece(scene, id, difficulty, stage, interactions);
+  if (piece) {
+    const { hit } = pieceState(scene, interactions, piece.id);
+    return { cx: hit.x + hit.w / 2, cy: hit.y + hit.h / 2, r: Math.hypot(hit.w, hit.h) / 2 + REVEAL_HALO_PADDING };
+  }
   const { region } = targetById(scene, id);
   const centre = regionCenter(region);
   const objectRadius = regionRadius(region);
@@ -366,10 +454,18 @@ export type HintCameraMove =
  * not; reveal → frame the object. Reclue, direction and context leave the
  * camera where the Explorador put it.
  */
-export function hintCameraMove(scene: SceneDefinition, id: TargetId, difficulty: DifficultyLevel, stage: HintStage): HintCameraMove | null {
+export function hintCameraMove(
+  scene: SceneDefinition,
+  id: TargetId,
+  difficulty: DifficultyLevel,
+  stage: HintStage,
+  interactions: InteractionState = initialInteractions(scene),
+): HintCameraMove | null {
   const rung = hintRung(difficulty, stage);
   const target = targetById(scene, id);
   if (rung === "station") return { kind: "station", station: target.station };
+  const piece = revealedPiece(scene, id, difficulty, stage, interactions);
+  if (piece) return { kind: "frame", bounds: { ...pieceState(scene, interactions, piece.id).hit } };
   if (rung === "reveal") return { kind: "frame", bounds: regionBounds(target.region) };
   const halo = hintHalo(scene, id, difficulty, stage);
   return halo ? { kind: "circle", center: { x: halo.cx, y: halo.cy }, radius: halo.r } : null;
@@ -384,8 +480,17 @@ export function stationLabel(scene: SceneDefinition, id: StationId): string {
  * a reclue tells it again at an easier level of its clue bank — the variant the
  * round drew (`clues`), never its name.
  */
-export function hintMessage(scene: SceneDefinition, id: TargetId, difficulty: DifficultyLevel, stage: HintStage, clues: RoundClues): string {
+export function hintMessage(
+  scene: SceneDefinition,
+  id: TargetId,
+  difficulty: DifficultyLevel,
+  stage: HintStage,
+  clues: RoundClues,
+  interactions: InteractionState = initialInteractions(scene),
+): string {
   const target = targetById(scene, id);
+  const piece = revealedPiece(scene, id, difficulty, stage, interactions);
+  if (piece) return `Aqui está guardado: ${target.label} — ${piece.hintAction}.`;
   const station = scene.stations.find((candidate) => candidate.id === target.station);
   switch (hintRung(difficulty, stage)) {
     case "station":
@@ -490,7 +595,8 @@ export function announcementFor(state: SessionState): string {
       : `Encontrou: ${target.label}.${answered} ${progressLabel(state)}.`;
   }
   if (event.kind === "already") return `Você já encontrou: ${targetById(state.scene, event.targetId).label}.`;
-  if (event.kind === "hint") return hintMessage(state.scene, event.targetId, state.difficulty, event.stage, state.clues);
+  if (event.kind === "hint") return hintMessage(state.scene, event.targetId, state.difficulty, event.stage, state.clues, state.interactions);
+  if (event.kind === "interact") return pieceState(state.scene, state.interactions, event.interactableId).announce;
   return "";
 }
 

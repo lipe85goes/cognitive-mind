@@ -46,6 +46,7 @@ import { fileURLToPath } from "node:url";
 import sharp from "sharp";
 import ts from "typescript";
 import { composeShipped, measureClutter } from "./hidden-objects-art-kit.mjs";
+import { overlayPieces, piecesOverlaySvg, piecesSvg, renderPieces, visibleWithPieces } from "./hidden-objects-pieces.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const CONTRACT_MODULE = path.join(ROOT, "src/games/hidden-objects/hidden-objects-scene.ts");
@@ -79,6 +80,8 @@ const H = SCENE.SCENE_HEIGHT;
 const TARGETS = Object.fromEntries(SCENE.HIDDEN_OBJECTS.map((t) => [t.id, t]));
 const LOOKS = Object.fromEntries(SCENE.SCENE_LOOKALIKES.map((l) => [l.id, l]));
 const LAYER = Object.fromEntries(SCENE.SCENE_LAYERS.map((l) => [l.id, l]));
+/** GAME03-INTERACTIONS-04: the room as the art kit's shared helpers read it (its pieces included). */
+const ROOM = SCENE.EXPLORER_STUDIO;
 const OUT = path.join(ROOT, "public", SCENE.SCENE_ASSET_BASE);
 /** Each kit's review boards sit beside the earlier kits', never over them (v0's are the skeleton's record). */
 const REVIEW = path.join(ROOT, "docs/archive/hidden-objects/explorer-studio/review", path.basename(SCENE.SCENE_ASSET_BASE));
@@ -1158,10 +1161,7 @@ function tableItems(omit = null) {
     ${lookSvg("medalha")}
     ${shadow(1660, 1224, 22, 5, 0.7)}
     ${lookSvg("lata-redonda")}
-    <g>${shadow(1950, 1216, 74, 11)}
-      <rect x="1890" y="1150" width="120" height="58" rx="6" fill="url(#woodDark)" stroke="#1c0f07" stroke-width="1.6" filter="url(#grainH)"/>
-      <path d="M1886 1150 L1900 1132 H2004 L2014 1150 Z" fill="#6b4024" stroke="#1c0f07" stroke-width="1.6"/>
-      <rect x="1940" y="1168" width="18" height="14" rx="2" fill="url(#brassDim)"/></g>
+    ${openBox(omit)}
     ${shadow(2020, 1068, 36, 8)}
     ${paint("pena", omit)}
     ${shadow(1923, 1086, 24, 5, 0.7)}
@@ -1355,15 +1355,6 @@ function pegRail(omit = null) {
 /** Floor clutter that makes the room feel lived in (no target shares a category with it). */
 function floorDecor() {
   return `
-    <g>${shadow(2372, 1432, 86, 13)}
-      ${[0, 1, 2].map((i) => {
-        const x = 2328 + i * 36;
-        const top = 1238 - (i % 2) * 18;
-        return `<g transform="rotate(${-10 + i * 10} ${x + 12} 1330)"><rect x="${x}" y="${top}" width="26" height="${1336 - top}" rx="6" fill="url(#parchment)" stroke="#8a6a3c" stroke-width="1.3"/><ellipse cx="${x + 13}" cy="${top + 2}" rx="13" ry="6" fill="#e3cb96" stroke="#8a6a3c" stroke-width="1.3"/><rect x="${x}" y="${top + 34}" width="26" height="7" fill="#94482a"/></g>`;
-      }).join("")}
-      <path d="M2306 1330 H2440 L2426 1424 H2320 Z" fill="#b18c56" stroke="#4a3013" stroke-width="1.6" filter="url(#grainH)"/>
-      <g stroke="#6e5230" stroke-width="3" opacity=".7"><path d="M2310 1360 H2436 M2314 1390 H2432"/></g>
-    </g>
     <g>
       <path d="M1090 118 V250" stroke="#3a2414" stroke-width="3"/>
       <path d="M1040 250 H1140 L1126 300 H1054 Z" fill="#a17c4a" stroke="#4a3013" stroke-width="1.6"/>
@@ -1598,6 +1589,137 @@ function cornerUmbrella(omit) {
     ${paint("guarda-chuva", omit)}`;
 }
 
+// --- GAME03-INTERACTIONS-04: what the room's pieces keep, and the pieces (kit v3) -----------------------
+//
+// Three pieces open or move: the side table's drawer under the hourglass, the
+// lid of the little box on the map and the basket of rolled maps at the foot of
+// the bookcase. The plate paints what each keeps (in place, as if the piece
+// were open); the piece is painted apart (PIECE_ART), shipped as its own
+// picture and posed by the game. Each object is partly tucked under something
+// of its compartment (tier C, the identifying part in view once it is open).
+
+/** A strand of beads along a polyline: `points` [[x, y]…], a bead every `step` su. */
+function beads(points, { step = 7.2, r = 3.6, fill = "url(#ivory)", stroke = "#8a7a58" } = {}) {
+  let out = "";
+  for (let i = 0; i < points.length - 1; i += 1) {
+    const [x0, y0] = points[i];
+    const [x1, y1] = points[i + 1];
+    const count = Math.max(1, Math.round(Math.hypot(x1 - x0, y1 - y0) / step));
+    for (let k = 0; k < count; k += 1) {
+      const t = k / count;
+      out += `<circle cx="${n(x0 + (x1 - x0) * t)}" cy="${n(y0 + (y1 - y0) * t)}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width=".9"/>`;
+    }
+  }
+  return out;
+}
+
+Object.assign(ART, {
+  // In the side table's drawer, lying on its side; a folded note over its round end (tier C).
+  apito: {
+    nominal: { w: 100, h: 34 },
+    body: `
+      <path d="M30 5 H76 C90 5 98 12 98 19 C98 27 90 32 76 32 H42 C36 32 32 28 30 24 Z" fill="url(#silver)" stroke="#4e4c46" stroke-width="1.6"/>
+      <path d="M36 9 H74 C84 9 90 13 92 18" stroke="#ffffff" stroke-width="2.4" fill="none" opacity=".55"/>
+      <rect x="6" y="10" width="28" height="12" rx="3" fill="url(#silver)" stroke="#4e4c46" stroke-width="1.4"/>
+      <rect x="42" y="7" width="15" height="6" rx="2" fill="#24201c"/>
+      <circle cx="78" cy="19" r="8" fill="none" stroke="#3a3832" stroke-width="1.2" opacity=".55"/>
+      <circle cx="12" cy="27" r="5" fill="none" stroke="url(#brassDim)" stroke-width="2.6"/>`,
+  },
+  // In the little box on the map: a loop inside, a strand over the front rim; a silk corner over its left side (tier C).
+  colar: {
+    nominal: { w: 96, h: 36 },
+    body: `
+      ${beads([[10, 12], [24, 5], [48, 3], [72, 5], [86, 11], [80, 17], [60, 18]])}
+      ${beads([[60, 18], [62, 26], [52, 32], [40, 32], [30, 26], [28, 18]], { r: 3.8 })}
+      <circle cx="45" cy="33" r="5.2" fill="url(#brass)" stroke="#6a4a1c" stroke-width="1"/>`,
+  },
+  // At the foot of the bookcase, behind the basket of maps; a rolled map lies against its lower left (tier C).
+  cantil: {
+    nominal: { w: 88, h: 80 },
+    body: `
+      <path d="M8 22 C2 30 2 44 6 50" stroke="#5a3a1c" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <rect x="37" y="2" width="14" height="10" rx="2" fill="url(#iron)" stroke="#2a2622" stroke-width="1.2"/>
+      <rect x="40" y="10" width="8" height="8" fill="#8a8a82"/>
+      <circle cx="44" cy="48" r="31" fill="#6f7a4c" stroke="#3a4226" stroke-width="2"/>
+      <circle cx="44" cy="48" r="25" fill="none" stroke="#c8c09a" stroke-width="1.6" stroke-dasharray="4 4" opacity=".7"/>
+      <path d="M22 34 C30 24 52 22 62 30" stroke="#a9b480" stroke-width="3" fill="none" opacity=".55"/>
+      <path d="M13 44 H75" stroke="#5a3a1c" stroke-width="6"/>
+      <rect x="40" y="40" width="9" height="9" rx="1.5" fill="url(#brassDim)"/>`,
+  },
+});
+
+/** The side table's drawer pulled out: its box, what it keeps, a folded note over the whistle's round end. */
+function sideTableDrawer(omit) {
+  return `
+    <rect x="728" y="1214" width="144" height="42" rx="3" fill="#1d0f06"/>
+    <path d="M734 1219 H866 L870 1255 H730 Z" fill="url(#woodDark)" filter="url(#grainH)"/>
+    <path d="M728 1214 H872 L866 1220 H734 Z" fill="#3a2010"/>
+    ${t2(omit, "apito")}
+    <g transform="rotate(-6 838 1236)">
+      <path d="M824 1222 L862 1220 L866 1248 L826 1251 Z" fill="url(#page)" stroke="#8a6a3c" stroke-width="1.2"/>
+      <path d="M830 1232 H858 M831 1240 H852" stroke="#8a7a62" stroke-width="1.1" opacity=".5"/>
+    </g>`;
+}
+/** A target in its place, or nothing (the audit's "omit"); for the kit-v3 paint, which calls it by name. */
+function t2(omit, id) {
+  return omit === id ? "" : targetSvg(id);
+}
+
+/** The little box on the map, open: its front, the velvet inside, the necklace, a silk corner over its left. */
+function openBox(omit) {
+  return `
+    <g>${shadow(1950, 1216, 74, 11)}
+      <rect x="1890" y="1150" width="120" height="58" rx="6" fill="url(#woodDark)" stroke="#1c0f07" stroke-width="1.6" filter="url(#grainH)"/>
+      <path d="M1890 1150 L1900 1134 H2000 L2010 1150 Z" fill="#3a1220" stroke="#1c0f07" stroke-width="1.4"/>
+      <path d="M1898 1146 L1904 1138 H1996 L2002 1146 Z" fill="url(#velvet)"/>
+      <rect x="1890" y="1150" width="120" height="4" fill="#8a5a32" opacity=".7"/></g>
+    ${t2(omit, "colar")}
+    <path d="M1898 1148 L1904 1136 L1930 1138 L1936 1150 L1918 1158 Z" fill="#d9c8e8" stroke="#8a7a98" stroke-width="1.1" opacity=".95"/>
+    <path d="M1906 1144 L1926 1146" stroke="#ffffff" stroke-width="1.4" opacity=".5"/>`;
+}
+
+/** Where the basket of maps stood: the canteen on the floor, a rolled map lying against its lower left. */
+function basketCorner(omit) {
+  return `
+    ${shadow(2374, 1420, 52, 7, 0.85)}
+    ${t2(omit, "cantil")}
+    <g transform="rotate(-8 2340 1404)">
+      <rect x="2300" y="1394" width="74" height="20" rx="10" fill="url(#parchment)" stroke="#8a6a3c" stroke-width="1.3"/>
+      <ellipse cx="2372" cy="1404" rx="5" ry="10" fill="#e3cb96" stroke="#8a6a3c" stroke-width="1.2"/>
+      <rect x="2326" y="1394" width="7" height="20" fill="#94482a"/>
+    </g>`;
+}
+
+/** The pieces, painted in room coordinates where they sit at rest. */
+const PIECE_ART = {
+  // the drawer's front, under the side table's top: a knob, a seam of shadow above
+  "gaveta-da-mesinha": () => `
+    <rect x="726" y="1213" width="148" height="44" rx="5" fill="url(#woodH)" stroke="#2b170b" stroke-width="1.8" filter="url(#grainH)"/>
+    <rect x="732" y="1219" width="136" height="32" rx="3" fill="none" stroke="#3a2010" stroke-width="1.6" opacity=".7"/>
+    <rect x="726" y="1213" width="148" height="5" rx="2" fill="#1a0e06" opacity=".5"/>
+    <ellipse cx="800" cy="1236" rx="9" ry="8" fill="url(#brass)" stroke="#5e3f14" stroke-width="1.3"/>
+    <ellipse cx="797" cy="1233" rx="3" ry="2.4" fill="#fff3c8" opacity=".7"/>`,
+  // the box's lid with its deep skirt and a brass clasp
+  "caixinha-da-mesa": () => `
+    <path d="M1886 1150 L1898 1130 H2006 L2014 1150 Z" fill="#6b4024" stroke="#1c0f07" stroke-width="1.6"/>
+    <path d="M1900 1136 H2002" stroke="#c78a52" stroke-width="2" opacity=".5"/>
+    <rect x="1886" y="1150" width="128" height="22" rx="3" fill="url(#woodDark)" stroke="#1c0f07" stroke-width="1.6" filter="url(#grainH)"/>
+    <rect x="1886" y="1167" width="128" height="3" fill="url(#brassDim)"/>
+    <rect x="1940" y="1156" width="20" height="16" rx="2" fill="url(#brass)" stroke="#5e3f14" stroke-width="1"/>
+    <circle cx="1950" cy="1166" r="2.4" fill="#2a1a0c"/>`,
+  // the basket of rolled maps (the kit's own, now a piece of its own) with its shadow
+  "cesto-de-mapas": () => `
+    ${shadow(2372, 1432, 86, 13)}
+    ${[0, 1, 2].map((i) => {
+      const x = 2328 + i * 36;
+      const top = 1238 - (i % 2) * 18;
+      return `<g transform="rotate(${-10 + i * 10} ${x + 12} 1330)"><rect x="${x}" y="${top}" width="26" height="${1336 - top}" rx="6" fill="url(#parchment)" stroke="#8a6a3c" stroke-width="1.3"/><ellipse cx="${x + 13}" cy="${top + 2}" rx="13" ry="6" fill="#e3cb96" stroke="#8a6a3c" stroke-width="1.3"/><rect x="${x}" y="${top + 34}" width="26" height="7" fill="#94482a"/></g>`;
+    }).join("")}
+    <path d="M2306 1330 H2440 L2426 1424 H2320 Z" fill="#b18c56" stroke="#4a3013" stroke-width="1.6" filter="url(#grainH)"/>
+    <g stroke="#6e5230" stroke-width="3" opacity=".7"><path d="M2310 1360 H2436 M2314 1390 H2432"/></g>
+    <path d="M2318 1336 C2318 1318 2338 1318 2338 1336 M2408 1336 C2408 1318 2428 1318 2428 1336" stroke="#4a3013" stroke-width="3" fill="none"/>`,
+};
+
 function plateSvg({ debug = false, omit = null } = {}) {
   const ampBox = boxOf(TARGETS.ampulheta.region);
   const t = (id, svg) => (omit === id ? "" : svg);
@@ -1637,8 +1759,10 @@ function plateSvg({ debug = false, omit = null } = {}) {
   ${lookSvg("fivela")}
   ${trunkLetter()}
   ${floorDecor()}
+  ${basketCorner(omit)}
   ${armchair()}
   ${sideTable()}
+  ${sideTableDrawer(omit)}
   ${bookStack(830, 1172, [[66, 14, "#2f5d58"], [58, 12, "#94482a", 4]])}
   ${shadow(ampBox.x + ampBox.w / 2, ampBox.y + ampBox.h - 2, ampBox.w * 0.58, 8, 0.9)}
   ${t("ampulheta", targetSvg("ampulheta"))}
@@ -2018,10 +2142,12 @@ function luminance(r, g, b) {
  *              luminance ratio across the visible silhouette's edge (each edge
  *              pixel against the background pixels within 3 su outside it).
  */
-async function audit(composedRgba) {
+async function audit(composedRest, composedOpen) {
   const rows = [];
   const withRaw = await render(plateSvg()).ensureAlpha().raw().toBuffer();
   for (const target of SCENE.HIDDEN_OBJECTS) {
+    // an object kept behind a piece is measured as it is found: its piece open (GAME03-INTERACTIONS-04)
+    const composedRgba = target.gate ? composedOpen : composedRest;
     const b = boxOf(target.region);
     const pad = 40;
     const area = { left: Math.max(0, b.x - pad), top: Math.max(0, b.y - pad) };
@@ -2099,8 +2225,50 @@ async function audit(composedRgba) {
       edge: Number((ratios[Math.floor(ratios.length / 2)] ?? 1).toFixed(2)),
       lookAlikes: SCENE.SCENE_LOOKALIKES.filter((l) => l.resembles === target.id).map((l) => l.id),
     });
+    // GAME03-INTERACTIONS-04: what the room shows of it with every piece shut, and with every piece open
+    const visibleWith = (states) =>
+      visibleWithPieces({
+        width: W,
+        height: H,
+        plate: ({ omit }) => plateSvg({ omit }),
+        alone: () => aloneSvg,
+        pieces: piecesSvg(ROOM, PIECE_ART, states),
+        target,
+      });
+    rows.at(-1).visibleAtRest = await visibleWith("rest");
+    rows.at(-1).visibleOpen = await visibleWith("open");
+    if (target.gate) rows.at(-1).gate = target.gate;
   }
   return rows;
+}
+
+/**
+ * GAME03-INTERACTIONS-04's review board: for each piece, the room around it at
+ * rest, open, and open with the object it keeps outlined (the hit areas of
+ * both states drawn: orange at rest, dashed blue open).
+ */
+async function writePieceBoard(restPng, openPng, reviewDir) {
+  const tiles = [];
+  const side = 420;
+  for (const [row, piece] of ROOM.interactables.entries()) {
+    const kept = SCENE.HIDDEN_OBJECTS.find((t) => t.gate === piece.id);
+    const cx = piece.rect.x + piece.rect.w / 2;
+    const cy = piece.rect.y + piece.rect.h / 2;
+    const left = Math.round(Math.min(W - side, Math.max(0, cx - side / 2)));
+    const top = Math.round(Math.min(H - side, Math.max(0, cy - side / 2)));
+    const outline = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">${piecesOverlaySvg({ interactables: [piece] })}${
+      kept ? `<rect x="${boxOf(kept.region).x}" y="${boxOf(kept.region).y}" width="${boxOf(kept.region).w}" height="${boxOf(kept.region).h}" fill="none" stroke="#ff6b6b" stroke-width="4"/>` : ""
+    }</svg>`;
+    const marked = await sharp(openPng).composite([{ input: Buffer.from(outline) }]).png().toBuffer();
+    for (const [col, png] of [restPng, openPng, marked].entries()) {
+      const tile = await sharp(png).extract({ left, top, width: side, height: side }).resize(400, 400).png().toBuffer();
+      tiles.push({ input: tile, left: col * 405, top: row * 405 });
+    }
+  }
+  await sharp({ create: { width: 3 * 405 - 5, height: ROOM.interactables.length * 405 - 5, channels: 3, background: "#111111" } })
+    .composite(tiles)
+    .webp({ quality: 86 })
+    .toFile(path.join(reviewDir, "pieces.webp"));
 }
 
 async function main() {
@@ -2119,23 +2287,38 @@ async function main() {
   const plate = await composePlate(albedo);
   const front = await composeFront(frontSvg());
   const frontRight = await composeFront(frontRightSvg());
+  // GAME03-INTERACTIONS-04: each piece lit by the plate's own light, cut to its rect
+  const pieces = await renderPieces({ room: ROOM, art: PIECE_ART, defs: DEFS, light: composePlate });
 
-  // The composed room, as the Explorador sees it at rest (parallax offsets 0).
-  const composedPng = await sharp({ create: { width: W, height: H, channels: 4, background: "#000000" } })
-    .composite([
-      { input: back, left: LAYER.back.rect.x, top: LAYER.back.rect.y },
-      { input: plate, left: 0, top: 0 },
-      { input: front, left: LAYER.front.rect.x, top: LAYER.front.rect.y },
-      { input: frontRight, left: LAYER["front-right"].rect.x, top: LAYER["front-right"].rect.y },
-    ])
-    .png()
-    .toBuffer();
+  // The composed room, as the Explorador sees it (parallax offsets 0): the pieces on the plate's plane, at rest or open.
+  const composeWith = async (states) => {
+    const under = await sharp({ create: { width: W, height: H, channels: 4, background: "#000000" } })
+      .composite([
+        { input: back, left: LAYER.back.rect.x, top: LAYER.back.rect.y },
+        { input: plate, left: 0, top: 0 },
+      ])
+      .png()
+      .toBuffer();
+    return sharp(await overlayPieces(under, ROOM, pieces, states))
+      .composite([
+        { input: front, left: LAYER.front.rect.x, top: LAYER.front.rect.y },
+        { input: frontRight, left: LAYER["front-right"].rect.x, top: LAYER["front-right"].rect.y },
+      ])
+      .png()
+      .toBuffer();
+  };
+  const composedPng = await composeWith("rest");
+  const composedOpenPng = await composeWith("open");
 
   if (!preview) {
     await write(sharp(back), path.join(OUT, "back.webp"), { quality: 80, effort: 6 });
     await write(sharp(plate), path.join(OUT, "plate.webp"), { quality: 80, alphaQuality: 90, effort: 6, smartSubsample: true });
     await write(sharp(front), path.join(OUT, "front.webp"), { quality: 80, alphaQuality: 90, effort: 6 });
     await write(sharp(frontRight), path.join(OUT, "front-right.webp"), { quality: 80, alphaQuality: 90, effort: 6 });
+    fs.mkdirSync(path.join(OUT, "pieces"), { recursive: true });
+    for (const piece of ROOM.interactables) {
+      await write(sharp(pieces[piece.id]), path.join(ROOT, "public", piece.src), { quality: 84, alphaQuality: 92, effort: 6 });
+    }
     // Kit v2 writes no hero: the intro and the selector keep kit v1's (the platform's world visuals name it).
     for (const id of Object.keys(ART)) {
       await write(render(thumbSvg(id)), path.join(OUT, "thumbs", `${id}.webp`), { quality: 82, alphaQuality: 90, effort: 6 });
@@ -2151,7 +2334,9 @@ async function main() {
 
   // Review boards (archive only, never runtime).
   await sharp(composedPng).resize(1600, 800).webp({ quality: 86 }).toFile(path.join(reviewDir, "scene.webp"));
-  const debugAlbedo = await render(plateSvg({ debug: true })).png().toBuffer();
+  await sharp(composedOpenPng).resize(1600, 800).webp({ quality: 86 }).toFile(path.join(reviewDir, "scene-open.webp"));
+  await writePieceBoard(composedPng, composedOpenPng, reviewDir);
+  const debugAlbedo = await render(plateSvg({ debug: true }).replace(/<\/svg>\s*$/, `${piecesOverlaySvg(ROOM)}</svg>`)).png().toBuffer();
   const regions = await sharp({ create: { width: W, height: H, channels: 4, background: "#000000" } })
     .composite([{ input: back, left: LAYER.back.rect.x, top: LAYER.back.rect.y }, { input: debugAlbedo, left: 0, top: 0 }])
     .png()
@@ -2178,14 +2363,19 @@ async function main() {
 
   if (AUDIT) {
     const { data } = await sharp(composedPng).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
-    const rows = await audit(data);
+    const { data: dataOpen } = await sharp(composedOpenPng).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+    const rows = await audit(data, dataOpen);
     // GAME03-CALIBRATION-02A: how busy the room is around each object, on the layers as they ship
     if (!preview) {
-      const shipped = await composeShipped(
-        { width: W, height: H, layers: SCENE.SCENE_LAYERS },
-        (publicPath) => fs.readFileSync(path.join(ROOT, publicPath)),
-      );
-      for (const row of rows) row.clutter = measureClutter(shipped, W, H, TARGETS[row.id].region);
+      const read = (publicPath) => fs.readFileSync(path.join(ROOT, publicPath));
+      const shipped = await composeShipped(ROOM, read);
+      // an object kept behind a piece: the room around it with its own piece open (it is searched for once in view)
+      const opened = {};
+      for (const row of rows) {
+        const gate = TARGETS[row.id].gate;
+        if (gate && !opened[gate]) opened[gate] = await composeShipped(ROOM, read, { open: [gate] });
+        row.clutter = measureClutter(gate ? opened[gate] : shipped, W, H, TARGETS[row.id].region);
+      }
     }
     for (const row of rows) console.log(`${row.id.padEnd(12)} ${row.tier}  visible ${(row.visible * 100).toFixed(0).padStart(3)}%  contrast ${row.contrast.toFixed(2).padStart(5)}:1  edge ${row.edge.toFixed(2).padStart(5)}:1  clutter ${row.clutter ?? "—"}  look-alikes ${row.lookAlikes.join(", ") || "—"}`);
     const file = path.join(reviewDir, "fairness.json");
@@ -2203,6 +2393,8 @@ async function main() {
             contrast: "F4 as written: mean-luminance ratio, visible target vs a 24 su ring, on the composed room",
             edge: "median luminance ratio across the visible silhouette's edge (each edge pixel vs the background within 3 su)",
             clutter: "share of busy pixels (Sobel luminance gradient > 40) in the ring 16–120 su around the object's box, on the shipped layers composed at rest",
+            pieces:
+              "GAME03-INTERACTIONS-04: the room's pieces are composed on the plate's plane at rest; an object kept behind a piece (gate) is measured with that piece open (contrast, edge, clutter); visibleAtRest / visibleOpen: its visible share with every piece shut / open",
           },
           targets: rows,
         },

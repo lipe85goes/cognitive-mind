@@ -9,12 +9,13 @@ import {
   type CameraView,
   type SceneTap,
 } from "@/games/hidden-objects/hidden-objects-controller";
+import { pieceState, poseTransform, type InteractionState } from "@/games/hidden-objects/hidden-objects-interactions";
 import {
   regionBounds,
   targetById,
   type HintHalo,
 } from "@/games/hidden-objects/hidden-objects-model";
-import type { SceneDefinition, TargetId } from "@/games/hidden-objects/hidden-objects-scene";
+import type { InteractableId, SceneDefinition, TargetId } from "@/games/hidden-objects/hidden-objects-scene";
 
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 
@@ -33,6 +34,8 @@ export interface SceneFeedback {
   ripple: { x: number; y: number; seq: number } | null;
   /** Hint 2 pool of light, or the "Mostrar onde está" halo. */
   halo: (HintHalo & { kind: "hint" | "reveal"; seq: number }) | null;
+  /** The room piece whose keyboard button has focus: outlined where it is, so a keyboard user sees what Enter moves. */
+  pieceFocus: InteractableId | null;
 }
 
 /** How the room's essential art is doing: painted, still on its way, or unable to load. */
@@ -44,6 +47,8 @@ interface HiddenObjectsSceneProps {
   controllerRef: MutableRefObject<HiddenObjectsSceneController | null>;
   viewportRef: MutableRefObject<HTMLDivElement | null>;
   feedback: SceneFeedback;
+  /** Where the room's pieces are (GAME03-INTERACTIONS-04): their art takes the pose of their state. */
+  interactions: InteractionState;
   view: CameraView | null;
   interactive: boolean;
   instructionsId: string;
@@ -135,6 +140,7 @@ export function HiddenObjectsScene({
   controllerRef,
   viewportRef,
   feedback,
+  interactions,
   view,
   interactive,
   instructionsId,
@@ -148,7 +154,10 @@ export function HiddenObjectsScene({
   const layerRefs = useRef<Partial<Record<string, HTMLImageElement | null>>>({});
   const callbacks = useRef({ onTap, onSettle });
   // A room's layers are fixed for the life of this mount (the game remounts the scene for another room).
-  const [readiness] = useState(() => new SceneReadiness(scene.layers.map((layer) => layer.id)));
+  // Its pieces are essential too: without its door, a room would show what the door keeps.
+  const [readiness] = useState(
+    () => new SceneReadiness([...scene.layers.map((layer) => layer.id), ...scene.interactables.map((piece) => `piece:${piece.id}`)]),
+  );
   const [room] = useState(() => scene);
 
   useEffect(() => {
@@ -237,7 +246,8 @@ export function HiddenObjectsScene({
               onError={() => readiness.layerFailed(layer.src)}
             />
           ))}
-          <SceneFeedbackLayer scene={room} feedback={feedback} />
+          <ScenePieces scene={room} interactions={interactions} onLoaded={handleLoaded} onFailed={(src) => readiness.layerFailed(src)} />
+          <SceneFeedbackLayer scene={room} feedback={feedback} interactions={interactions} />
         </div>
       </div>
       {/* A lens vignette fixed to the view, not the room: depth without touching the room's coordinates. */}
@@ -278,11 +288,93 @@ export function HiddenObjectsScene({
   );
 }
 
+/**
+ * The room's movable pieces (GAME03-INTERACTIONS-04), on the plate's own plane:
+ * just above it in the stack and under the foreground layers, so they pan and
+ * zoom with the room and never with React. A state change writes one CSS
+ * transform (eased by CSS, at once with reduced motion); the camera never
+ * touches them. The hotspots only give a mouse the hand cursor over a piece:
+ * the tap itself goes through the viewport's gesture recogniser like any other.
+ */
+function ScenePieces({
+  scene,
+  interactions,
+  onLoaded,
+  onFailed,
+}: {
+  scene: SceneDefinition;
+  interactions: InteractionState;
+  onLoaded: (id: string, src: string, image: HTMLImageElement) => void;
+  onFailed: (src: string) => void;
+}) {
+  const plate = Math.max(0, scene.layers.findIndex((layer) => layer.id === "plate"));
+  return (
+    <div className="hos-pieces" aria-hidden="true" style={{ zIndex: plate }}>
+      {scene.interactables.map((piece) => {
+        const state = pieceState(scene, interactions, piece.id);
+        return (
+          <span key={piece.id} className="hos-piece-slot">
+            <Image
+              src={piece.src}
+              alt=""
+              width={piece.rect.w}
+              height={piece.rect.h}
+              unoptimized
+              loading="eager"
+              draggable={false}
+              className="hos-layer hos-piece"
+              data-piece={piece.id}
+              data-kind={piece.kind}
+              data-state={state.id}
+              data-open={state.open ? "true" : "false"}
+              style={
+                {
+                  left: piece.rect.x,
+                  top: piece.rect.y,
+                  width: piece.rect.w,
+                  height: piece.rect.h,
+                  transformOrigin: `${piece.origin.x}px ${piece.origin.y}px`,
+                  transform: poseTransform(state.pose),
+                  filter: state.pose.shade !== undefined ? `brightness(${state.pose.shade})` : undefined,
+                  "--hos-piece-ms": `${piece.motionMs}ms`,
+                } as CSSProperties
+              }
+              onLoad={(event) => onLoaded(`piece:${piece.id}`, piece.src, event.currentTarget)}
+              onError={() => onFailed(piece.src)}
+            />
+            <span
+              className="hos-piece-hotspot"
+              data-piece={piece.id}
+              style={{ left: state.hit.x, top: state.hit.y, width: state.hit.w, height: state.hit.h }}
+            />
+          </span>
+        );
+      })}
+    </div>
+  );
+}
+
 /** Everything here is pointer-events: none — the viewport hit-tests geometry, not DOM. */
-function SceneFeedbackLayer({ scene, feedback }: { scene: SceneDefinition; feedback: SceneFeedback }) {
+function SceneFeedbackLayer({
+  scene,
+  feedback,
+  interactions,
+}: {
+  scene: SceneDefinition;
+  feedback: SceneFeedback;
+  interactions: InteractionState;
+}) {
+  const focused = feedback.pieceFocus ? pieceState(scene, interactions, feedback.pieceFocus).hit : null;
   return (
     // above every layer of the room, whatever its depth
     <div className="hos-fx" aria-hidden="true" style={{ zIndex: scene.layers.length }}>
+      {focused && (
+        <span
+          className="hos-piece-focus"
+          data-piece={feedback.pieceFocus ?? undefined}
+          style={{ left: focused.x, top: focused.y, width: focused.w, height: focused.h }}
+        />
+      )}
       {feedback.halo && (
         <span
           key={`halo-${feedback.halo.seq}`}

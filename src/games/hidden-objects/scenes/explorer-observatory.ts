@@ -1,4 +1,12 @@
-import type { HiddenObjectDefinition, SceneDefinition, SceneLayer, SceneLookAlike, SceneStation, TargetId } from "@/games/hidden-objects/hidden-objects-scene";
+import type {
+  HiddenObjectDefinition,
+  SceneDefinition,
+  SceneInteractable,
+  SceneLayer,
+  SceneLookAlike,
+  SceneStation,
+  TargetId,
+} from "@/games/hidden-objects/hidden-objects-scene";
 
 /**
  * Observatório do Explorador — Game 03's second room (GAME03-MULTISCENE-03), as data.
@@ -12,6 +20,12 @@ import type { HiddenObjectDefinition, SceneDefinition, SceneLayer, SceneLookAlik
  *
  * GAME03-CALIBRATION-02A: art kit v2 (five more objects, eight more look-alikes);
  * every object carries a clue bank and the audit's measurements of it (`measured`).
+ *
+ * GAME03-INTERACTIONS-04 (art kit v3): three pieces of the room open or move — a
+ * little door in the panelling beside the telescope (Cúpula), the deep drawer of
+ * a pedestal under the bench's right end (Bancada) and the short curtain under
+ * the microscope's table (Arquivo) — and each keeps one object the room did not
+ * have before (a toy rocket, a yo-yo, a toy drum). Nothing already there moved.
  *
  * 3600×1600 su. tools/assets/create_observatory_scene.mjs paints every target
  * exactly where its `region` says, every look-alike in its own, and keeps the
@@ -49,7 +63,8 @@ export const SCENE_STATIONS: readonly SceneStation[] = [
 ];
 
 /**
- * Twenty-three objects (A6 · B7 · C10; GAME03-MULTISCENE-03's eighteen, six of
+ * Twenty-six objects (GAME03-INTERACTIONS-04 added three kept behind pieces of
+ * the room: A6 · B7 · C13). Before them, twenty-three (A6 · B7 · C10; GAME03-MULTISCENE-03's eighteen, six of
  * each tier, two of each tier in every station, and the five GAME03-CALIBRATION-02A
  * tucked into the room — a mug, a horseshoe, a set square, a seahorse, a padlock):
  * A in plain sight, B partly covered or beside one look-alike, C tucked into
@@ -499,6 +514,67 @@ export const HIDDEN_OBJECTS: readonly HiddenObjectDefinition[] = [
     hintDirection: "no Arquivo, na frente do móvel de gavetas, embaixo",
     hintContext: "entre puxadores de latão iguaizinhos",
   },
+  // --- GAME03-INTERACTIONS-04: kept behind a piece of the room (art kit v3) -----------------------
+  {
+    id: "foguete",
+    label: "Foguete",
+    accessibleLabel: "Foguete de brinquedo",
+    clues: [
+      { level: "direct", text: "Brinquedo que imita uma nave rumo à Lua." },
+      { level: "associative", text: "Tem bico pontudo e aletas para subir ao céu." },
+      { level: "associative", text: "Leva astronautas para fora da Terra." },
+      { level: "indirect", text: "Um menino sonha pilotá-lo até as estrelas." },
+      { level: "indirect", text: "Lançado do quintal, some entre as nuvens." },
+    ],
+    tier: "C",
+    station: "cupula",
+    region: { kind: "rect", x: 668, y: 944, w: 84, h: 136 },
+    measured: { visible: 1, edge: 2, clutter: 0.15 },
+    hintRegion: "no lambri, à esquerda do telescópio",
+    hintDirection: "no lambri, logo à esquerda do telescópio, guardado",
+    hintContext: "guardado na parede de madeira, pertinho do grande tubo branco",
+    gate: "portinhola-do-lambri",
+  },
+  {
+    id: "ioio",
+    label: "Ioiô",
+    accessibleLabel: "Ioiô de madeira",
+    clues: [
+      { level: "direct", text: "Sobe e desce preso a um barbante." },
+      { level: "associative", text: "Dois discos unidos por um eixo e uma linha." },
+      { level: "associative", text: "Gira na ponta do dedo de quem tem jeito." },
+      { level: "indirect", text: "No recreio, faz o truque do cachorrinho." },
+      { level: "indirect", text: "Vai e volta sem nunca sair da mão." },
+    ],
+    tier: "C",
+    station: "bancada",
+    region: { kind: "rect", x: 2096, y: 1068, w: 84, h: 62 },
+    measured: { visible: 1, edge: 2, clutter: 0.15 },
+    hintRegion: "embaixo da bancada, do lado direito",
+    hintDirection: "embaixo do tampo, à direita, guardado",
+    hintContext: "guardado bem embaixo dos planetas de latão",
+    gate: "gaveta-da-bancada",
+  },
+  {
+    id: "tambor",
+    label: "Tambor",
+    accessibleLabel: "Tambor de brinquedo",
+    clues: [
+      { level: "direct", text: "Faz bum quando se bate com as baquetas." },
+      { level: "associative", text: "Marca o ritmo da banda que passa na rua." },
+      { level: "associative", text: "Tem pele esticada e um aro em volta." },
+      { level: "indirect", text: "No desfile, abre o caminho da fanfarra." },
+      { level: "indirect", text: "O soldadinho de chumbo marcha com ele." },
+    ],
+    tier: "C",
+    station: "arquivo",
+    region: { kind: "rect", x: 2456, y: 1022, w: 80, h: 86 },
+    measured: { visible: 1, edge: 2, clutter: 0.15 },
+    hintRegion: "embaixo da mesinha do microscópio",
+    hintDirection: "embaixo da mesinha à esquerda do arquivo, atrás de um pano",
+    hintContext: "escondido sob um pano, pertinho das lentes que aumentam o pequeno",
+    gate: "cortina-da-mesinha",
+  },
 ];
 
 /** The room's look-alikes (the rules are the contract's: hidden-objects-scene.ts). */
@@ -667,11 +743,70 @@ export const SCENE_LOOKALIKES: readonly SceneLookAlike[] = [
 ];
 
 /**
- * Versioned folder: a new art kit is a new folder, never an overwrite (v2 is
- * GAME03-CALIBRATION-02A's: five more objects tucked into the room, eight more
- * look-alikes).
+ * Versioned folder: a new art kit is a new folder, never an overwrite (v2 was
+ * GAME03-CALIBRATION-02A's; v3 is GAME03-INTERACTIONS-04's — the three pieces
+ * that open or move, what they keep, and the room underneath them).
  */
-export const SCENE_ASSET_BASE = "/assets/hidden-objects/explorer-observatory/v2";
+export const SCENE_ASSET_BASE = "/assets/hidden-objects/explorer-observatory/v3";
+
+/**
+ * GAME03-INTERACTIONS-04: what opens or moves in the Observatório. Each piece's
+ * art is painted at `rect` over the plate (which paints what it keeps
+ * underneath); `hit` is where a tap reaches it in each state.
+ */
+export const SCENE_INTERACTABLES: readonly SceneInteractable[] = [
+  {
+    id: "portinhola-do-lambri",
+    kind: "door",
+    label: "Portinhola do lambri",
+    accessibleLabel: "Portinhola no lambri, ao lado do telescópio",
+    station: "cupula",
+    src: `${SCENE_ASSET_BASE}/pieces/portinhola-do-lambri.webp`,
+    rect: { x: 640, y: 924, w: 144, h: 188 },
+    origin: { x: 144, y: 94 },
+    states: [
+      { id: "fechada", pose: {}, hit: { x: 640, y: 924, w: 144, h: 188 }, open: false, announce: "A portinhola do lambri está fechada." },
+      { id: "aberta", pose: { scaleX: -0.28, shade: 0.62 }, hit: { x: 780, y: 920, w: 50, h: 196 }, open: true, announce: "A portinhola do lambri está aberta." },
+    ],
+    initial: "fechada",
+    motionMs: 480,
+    hintAction: "abra a portinhola do lambri",
+  },
+  {
+    id: "gaveta-da-bancada",
+    kind: "drawer",
+    label: "Gaveta da bancada",
+    accessibleLabel: "Gaveta funda embaixo da bancada",
+    station: "bancada",
+    src: `${SCENE_ASSET_BASE}/pieces/gaveta-da-bancada.webp`,
+    rect: { x: 2054, y: 1060, w: 182, h: 82 },
+    origin: { x: 91, y: 0 },
+    states: [
+      { id: "fechada", pose: {}, hit: { x: 2054, y: 1060, w: 182, h: 82 }, open: false, announce: "A gaveta da bancada está fechada." },
+      { id: "aberta", pose: { y: 76, scaleX: 1.05, scaleY: 1.05 }, hit: { x: 2046, y: 1134, w: 198, h: 92 }, open: true, announce: "A gaveta da bancada está aberta." },
+    ],
+    initial: "fechada",
+    motionMs: 380,
+    hintAction: "abra a gaveta funda da bancada",
+  },
+  {
+    id: "cortina-da-mesinha",
+    kind: "curtain",
+    label: "Cortina da mesinha",
+    accessibleLabel: "Cortina embaixo da mesinha do microscópio",
+    station: "arquivo",
+    src: `${SCENE_ASSET_BASE}/pieces/cortina-da-mesinha.webp`,
+    rect: { x: 2412, y: 938, w: 132, h: 240 },
+    origin: { x: 0, y: 0 },
+    states: [
+      { id: "fechada", pose: {}, hit: { x: 2412, y: 938, w: 132, h: 240 }, open: false, announce: "A cortina da mesinha está fechada." },
+      { id: "aberta", pose: { scaleX: 0.27 }, hit: { x: 2408, y: 938, w: 44, h: 240 }, open: true, announce: "A cortina da mesinha está aberta." },
+    ],
+    initial: "fechada",
+    motionMs: 520,
+    hintAction: "afaste a cortina da mesinha do microscópio",
+  },
+];
 
 export const SCENE_LAYERS: readonly SceneLayer[] = [
   {
@@ -740,6 +875,7 @@ export const EXPLORER_OBSERVATORY: SceneDefinition = {
   initialStation: "bancada",
   pool: HIDDEN_OBJECTS,
   lookAlikes: SCENE_LOOKALIKES,
+  interactables: SCENE_INTERACTABLES,
   layers: SCENE_LAYERS,
   thumbnail: thumbnailSrc,
   backdrop: "#0c0d16",

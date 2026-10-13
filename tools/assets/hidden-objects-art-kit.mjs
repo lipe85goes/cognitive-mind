@@ -13,6 +13,7 @@ import path from "node:path";
 import vm from "node:vm";
 import sharp from "sharp";
 import ts from "typescript";
+import { overlayPieces } from "./hidden-objects-pieces.mjs";
 
 /** A scene module (type-only imports) evaluated on its own. */
 function loadModule(file) {
@@ -103,7 +104,8 @@ export function luminance(r, g, b) {
  *
  * `room`: { width, height, pool, lookAlikes }; `plate({ omit })` the albedo SVG;
  * `alone(target)` an SVG of the target alone in its place; `composed` the
- * composed room's raw RGBA.
+ * composed room's raw RGBA (or, GAME03-INTERACTIONS-04, a function of the
+ * target returning it).
  */
 export async function auditRoom({ room, plate, alone, composed }) {
   const W = room.width;
@@ -121,9 +123,11 @@ export async function auditRoom({ room, plate, alone, composed }) {
     const at = (x, y) => (y * W + x) * 4;
     const changedAt = (i) =>
       Math.abs(withRaw[i] - withoutRaw[i]) + Math.abs(withRaw[i + 1] - withoutRaw[i + 1]) + Math.abs(withRaw[i + 2] - withoutRaw[i + 2]) > 24;
+    // GAME03-INTERACTIONS-04: `composed` may depend on the object (one kept behind a piece is measured with it open)
+    const shown = typeof composed === "function" ? composed(target) : composed;
     const lumAt = (x, y) => {
       const i = at(x, y);
-      return luminance(composed[i], composed[i + 1], composed[i + 2]);
+      return luminance(shown[i], shown[i + 1], shown[i + 2]);
     };
     const isMine = (x, y) => aloneRaw[at(x, y) + 3] > 128;
     const isSeen = (x, y) => isMine(x, y) && changedAt(at(x, y));
@@ -234,13 +238,29 @@ export async function writeReviewBoards({ room, composedPng, regionsPng, reviewD
  * A room as it ships, composed at rest (every layer at its rect, no parallax
  * offset): the raw RGBA of what the Explorador sees. `readFile(publicPath)`
  * returns a layer's bytes (the working tree, or a commit's tree).
+ *
+ * GAME03-INTERACTIONS-04: a room's movable pieces sit on the plate's plane,
+ * above it and under the foreground layers, each in its authored starting
+ * state — or, for the pieces `open` names, in their first state that exposes
+ * what they keep (an object behind a piece is measured as it looks once found).
  */
-export async function composeShipped(room, readFile) {
-  const inputs = room.layers.map((layer) => ({ input: readFile(`public${layer.src}`), left: layer.rect.x, top: layer.rect.y }));
-  return sharp({ create: { width: room.width, height: room.height, channels: 4, background: "#000000" } })
-    .composite(inputs)
-    .raw()
+export async function composeShipped(room, readFile, { open = [] } = {}) {
+  const pieces = room.interactables ?? [];
+  const plateIndex = room.layers.findIndex((layer) => layer.id === "plate");
+  const below = room.layers.slice(0, pieces.length ? plateIndex + 1 : room.layers.length);
+  const above = pieces.length ? room.layers.slice(plateIndex + 1) : [];
+  const layerInputs = (layers) => layers.map((layer) => ({ input: readFile(`public${layer.src}`), left: layer.rect.x, top: layer.rect.y }));
+  let png = await sharp({ create: { width: room.width, height: room.height, channels: 4, background: "#000000" } })
+    .composite(layerInputs(below))
+    .png()
     .toBuffer();
+  if (pieces.length) {
+    const images = Object.fromEntries(pieces.map((piece) => [piece.id, readFile(`public${piece.src}`)]));
+    const states = Object.fromEntries(pieces.map((piece) => [piece.id, open.includes(piece.id) ? (piece.states.find((s) => s.open) ?? piece.states[0]).id : piece.initial]));
+    png = await overlayPieces(png, room, images, states);
+    if (above.length) png = await sharp(png).composite(layerInputs(above)).png().toBuffer();
+  }
+  return sharp(png).raw().toBuffer();
 }
 
 /** How busy a room is around a shape: the ring from CLUTTER_RING.inner to .outer su outside its box. */

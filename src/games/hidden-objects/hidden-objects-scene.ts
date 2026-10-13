@@ -111,8 +111,93 @@ export interface HiddenObjectDefinition {
   hintContext: string;
   /** The list styles that may present it (absent: every style). */
   listedAs?: readonly ListStyle[];
+  /**
+   * GAME03-INTERACTIONS-04: the room piece it is kept behind or inside (a
+   * `SceneInteractable` id). While that piece is in a state that does not
+   * expose it, the object is scenery the Explorador cannot see or reach: a tap
+   * there never finds it and nothing announces it. Absent: in view from the start.
+   */
+  gate?: InteractableId;
 }
 
+
+// --- room pieces the Explorador can move (GAME03-INTERACTIONS-04) ----------------------------------
+
+/** A movable piece's id, unique within its room. */
+export type InteractableId = string;
+
+/**
+ * What kind of thing a piece is — it decides nothing in the engine (every kind
+ * is the same finite-state machine); it names the gesture the art draws and the
+ * words the room uses:
+ *   drawer  — slides out of a piece of furniture;
+ *   door    — swings on a hinge;
+ *   curtain — fabric gathered aside on a rod;
+ *   lid     — lifts on its hinge;
+ *   prop    — an ordinary object pushed aside, to an authored spot (no physics).
+ */
+export type InteractableKind = "drawer" | "door" | "curtain" | "lid" | "prop";
+
+/**
+ * How a piece's art sits in one state, relative to where it is painted (CSS
+ * order: translate, then rotate, then scale, around the piece's `origin`).
+ * Authored poses only: nothing is simulated, nothing is dragged freely.
+ */
+export interface InteractablePose {
+  /** Shift, in su. */
+  x?: number;
+  y?: number;
+  /** Turn, in degrees, clockwise. */
+  rotate?: number;
+  /** Stretch; a negative value turns the piece over (a door swung past its frame, a lid flipped back). */
+  scaleX?: number;
+  scaleY?: number;
+  /** Brightness of the piece in this pose (1 = as painted): a door turned away from the light. */
+  shade?: number;
+}
+
+export interface InteractableState {
+  /** Unique within its piece ("fechada", "aberta"…). */
+  id: string;
+  pose: InteractablePose;
+  /** Where a tap reaches the piece in this state, in su: at least every pixel its art covers here. */
+  hit: { x: number; y: number; w: number; h: number };
+  /** Whether this state exposes what the piece keeps (its objects can be seen and found). */
+  open: boolean;
+  /** The calm line a screen reader hears when the piece reaches this state: "A gaveta está aberta." */
+  announce: string;
+}
+
+/**
+ * A piece of the room the Explorador can open or move — a drawer, a door, a
+ * curtain, a lid, a thing pushed aside. Scene data, like everything a room is:
+ * its art is one picture painted at `rect` on the room's own plane (it pans and
+ * zooms with the plate), what it keeps is painted on the plate underneath, and
+ * a tap or its button steps it through `states` — the last steps back to the
+ * first. Every exploration starts each piece in `initial`.
+ */
+export interface SceneInteractable {
+  id: InteractableId;
+  kind: InteractableKind;
+  /** The piece in a few words ("Gaveta da mesinha"): the keyboard list and Fácil's last hint say it. */
+  label: string;
+  /** What assistive technology announces for its button. */
+  accessibleLabel: string;
+  station: StationId;
+  /** The piece's art (a transparent picture), painted at `rect` like a layer. */
+  src: string;
+  rect: { x: number; y: number; w: number; h: number };
+  /** The hinge, rod or pivot every pose turns and stretches around, in su from the rect's top-left. */
+  origin: { x: number; y: number };
+  /** In the order a tap steps through them. */
+  states: readonly InteractableState[];
+  /** The state every exploration (and every "Recomeçar") starts it in. */
+  initial: string;
+  /** How long its move takes on screen, in ms (with reduced motion it changes at once). */
+  motionMs: number;
+  /** Fácil's last rung when the asked object is inside and it is still shut: "abra a gaveta da mesinha". */
+  hintAction: string;
+}
 
 /**
  * A look-alike: an ordinary thing of the room painted near a target because it
@@ -172,6 +257,13 @@ export interface RoundRule {
   maxSearch: number;
   /** The floor of the round's look-alike pressure (painted look-alikes per listed object). */
   minDecoys: number;
+  /**
+   * GAME03-INTERACTIONS-04: fewest and most listed objects kept behind a room
+   * piece (each asks one authored action — open, lift, slide or move — before
+   * it can be seen). Interaction depth is counted, never folded into the
+   * search load: the load measures the object as it looks once in view.
+   */
+  gated: readonly [number, number];
 }
 
 export interface DifficultyPreset {
@@ -209,6 +301,16 @@ export const ROUND_FLOORS: Readonly<Record<DifficultyLevel, number>> = { easy: 0
 export const DECOY_FLOORS: Readonly<Record<DifficultyLevel, number>> = { easy: 0.75, medium: 0.794, hard: 1.25 };
 
 /**
+ * GAME03-INTERACTIONS-04 — how many listed objects a round may keep behind a
+ * room piece (RoundRule.gated): Fácil at most one (the room teaches that it
+ * opens, never several shut things at once); Médio one or two; Difícil one to
+ * three — the environment is always part of the search, never all of it. The
+ * bounds were fixed after enumerating every round both rooms allow
+ * (docs/GAME03_INTERACTIONS_04.md §7).
+ */
+export const GATED_BOUNDS: Readonly<Record<DifficultyLevel, readonly [number, number]>> = { easy: [0, 1], medium: [1, 2], hard: [1, 3] };
+
+/**
  * GAME03-CALIBRATION-02A — Difficulty V3. Every difficulty is a real search;
  * what climbs is how much the Explorador must work out before searching and how
  * little the hints give back:
@@ -225,7 +327,7 @@ export const DIFFICULTY_PRESETS: Readonly<Record<DifficultyLevel, DifficultyPres
   easy: {
     label: "Fácil",
     count: 5,
-    round: { tiers: { A: [0, 1], B: [0, 5], C: [1, 5] }, maxPopOuts: 1, minSearch: ROUND_FLOORS.easy, maxSearch: ROUND_FLOORS.medium, minDecoys: DECOY_FLOORS.easy },
+    round: { tiers: { A: [0, 1], B: [0, 5], C: [1, 5] }, maxPopOuts: 1, minSearch: ROUND_FLOORS.easy, maxSearch: ROUND_FLOORS.medium, minDecoys: DECOY_FLOORS.easy, gated: GATED_BOUNDS.easy },
     listStyle: "picture",
     listClue: null,
     hintLadder: ["station", "area", "reveal"],
@@ -236,7 +338,7 @@ export const DIFFICULTY_PRESETS: Readonly<Record<DifficultyLevel, DifficultyPres
   medium: {
     label: "Médio",
     count: 6,
-    round: { tiers: { A: [0, 1], B: [0, 6], C: [2, 6] }, maxPopOuts: 1, minSearch: ROUND_FLOORS.medium, maxSearch: ROUND_FLOORS.hard, minDecoys: DECOY_FLOORS.medium },
+    round: { tiers: { A: [0, 1], B: [0, 6], C: [2, 6] }, maxPopOuts: 1, minSearch: ROUND_FLOORS.medium, maxSearch: ROUND_FLOORS.hard, minDecoys: DECOY_FLOORS.medium, gated: GATED_BOUNDS.medium },
     listStyle: "clue",
     listClue: "associative",
     hintLadder: ["station", "reclue", "direction"],
@@ -247,7 +349,7 @@ export const DIFFICULTY_PRESETS: Readonly<Record<DifficultyLevel, DifficultyPres
   hard: {
     label: "Difícil",
     count: 8,
-    round: { tiers: { A: [0, 0], B: [0, 4], C: [4, 8] }, maxPopOuts: 0, minSearch: ROUND_FLOORS.hard, maxSearch: Infinity, minDecoys: DECOY_FLOORS.hard },
+    round: { tiers: { A: [0, 0], B: [0, 4], C: [4, 8] }, maxPopOuts: 0, minSearch: ROUND_FLOORS.hard, maxSearch: Infinity, minDecoys: DECOY_FLOORS.hard, gated: GATED_BOUNDS.hard },
     listStyle: "clue",
     listClue: "indirect",
     hintLadder: ["station", "context"],
@@ -311,6 +413,12 @@ export interface SceneDefinition {
    */
   pool: readonly HiddenObjectDefinition[];
   lookAlikes: readonly SceneLookAlike[];
+  /**
+   * GAME03-INTERACTIONS-04: the pieces of the room that open or move (2–4 a
+   * room), painted above the plate and under the foreground layers. Their art
+   * is fetched with the room's, never before.
+   */
+  interactables: readonly SceneInteractable[];
   /** Back to front; every layer is essential (the room is ready once all have painted). */
   layers: readonly SceneLayer[];
   /** The list's picture of a pool object. */

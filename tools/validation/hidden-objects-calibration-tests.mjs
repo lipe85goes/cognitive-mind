@@ -308,6 +308,17 @@ function openGame(tree, { viewport = DESKTOP, reducedMotion = false, seeds = [] 
     },
     find(id) {
       const target = model.targetById(game.scene(), id);
+      // GAME03-INTERACTIONS-04: an object kept behind a room piece is found the way the Explorador finds it — the piece opened first
+      if (target.gate) {
+        const image = harness.hosts((e) => e.type === IMAGE && cls("hos-piece")(e) && e.props["data-piece"] === target.gate)[0];
+        if (image && image.props["data-open"] !== "true") {
+          const piece = game.scene().interactables.find((candidate) => candidate.id === target.gate);
+          const { hit } = piece.states.find((state) => state.id === image.props["data-state"]);
+          game.goTo(piece.station);
+          game.tapScene({ x: hit.x + hit.w / 2, y: hit.y + hit.h / 2 });
+          game.settle();
+        }
+      }
       game.goTo(target.station);
       game.tapScene(model.regionCenter(target.region));
       game.settle();
@@ -1175,13 +1186,17 @@ async function runChecks(tree) {
         continue;
       }
       const rows = Object.fromEntries(audit.targets.map((row) => [row.id, row]));
-      const composed = await composeShipped(scene, (publicPath) => readBinary(tree, publicPath));
+      const read = (publicPath) => readBinary(tree, publicPath);
+      const composed = await composeShipped(scene, read);
+      // GAME03-INTERACTIONS-04 (restated): an object kept behind a room piece is measured with that piece open
+      const opened = {};
+      for (const t of scene.pool.filter((x) => x.gate)) opened[t.gate] ??= await composeShipped(scene, read, { open: [t.gate] });
       for (const t of scene.pool) {
         const row = rows[t.id];
         const measured = t.measured ?? {};
         if (!row) problems.push(`${scene.id}/${t.id}: not in the audit`);
         else if (measured.visible !== row.visible || measured.edge !== row.edge || measured.clutter !== row.clutter) problems.push(`${scene.id}/${t.id}: measured ${JSON.stringify(measured)} is not the audit's`);
-        const now = measureClutter(composed, scene.width, scene.height, t.region);
+        const now = measureClutter(t.gate ? opened[t.gate] : composed, scene.width, scene.height, t.region);
         if (measured.clutter !== now) problems.push(`${scene.id}/${t.id}: clutter ${measured.clutter} recorded, ${now} on the shipped art`);
       }
     }
