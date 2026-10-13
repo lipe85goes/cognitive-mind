@@ -843,6 +843,37 @@ Object.assign(LOOK_ART, {
   },
 });
 
+// GAME03-INTERACTIONS-04: one look-alike for each object a piece keeps, out in the room
+Object.assign(LOOK_ART, {
+  // on the floor by the trunk: a paper cone with an elastic
+  "chapeu-de-festa": {
+    nominal: { w: 40, h: 52 },
+    body: `
+      <path d="M20 2 L37 48 C30 51 10 51 3 48 Z" fill="#e8dcc0" stroke="#7a6a4c" stroke-width="1.4"/>
+      <path d="M12 26 L28 24 M8 38 L32 36" stroke="#b8342a" stroke-width="3"/>
+      <circle cx="20" cy="3" r="3.4" fill="#d6ac5c"/>
+      <path d="M4 48 C10 52 30 52 36 48" stroke="#f2e6c8" stroke-width="1.2" fill="none"/>`,
+  },
+  // under the bench: a spool of thread
+  carretel: {
+    nominal: { w: 40, h: 40 },
+    body: `
+      <rect x="4" y="2" width="32" height="7" rx="2" fill="url(#woodLight)" stroke="#5a3a1c" stroke-width="1.2"/>
+      <rect x="8" y="9" width="24" height="22" fill="#e8a83a" stroke="#7a4a10" stroke-width="1.2"/>
+      <path d="M8 13 H32 M8 17 H32 M8 21 H32 M8 25 H32" stroke="#f8d07a" stroke-width="1.2"/>
+      <rect x="4" y="31" width="32" height="7" rx="2" fill="url(#woodLight)" stroke="#5a3a1c" stroke-width="1.2"/>`,
+  },
+  // on the floor by the map cabinet: a round tin with a plain lid
+  "lata-de-biscoitos": {
+    nominal: { w: 62, h: 52 },
+    body: `
+      <path d="M3 14 V40 C3 48 59 48 59 40 V14 Z" fill="#a8342a" stroke="#4e1a12" stroke-width="1.6"/>
+      <ellipse cx="31" cy="14" rx="28" ry="8" fill="#c8b48a" stroke="#6a5a3a" stroke-width="1.6"/>
+      <ellipse cx="31" cy="13" rx="18" ry="4" fill="#e6d6b0" opacity=".7"/>
+      <path d="M3 30 C3 37 59 37 59 30" stroke="#e8c070" stroke-width="2" fill="none"/>`,
+  },
+});
+
 function lookSvg(id) {
   const art = LOOK_ART[id];
   return fit(art.body, art.nominal, box(id));
@@ -1620,10 +1651,10 @@ Object.assign(ART, {
   ioio: {
     nominal: { w: 84, h: 62 },
     body: `
-      <circle cx="32" cy="31" r="28" fill="#c0482c" stroke="#5e1e10" stroke-width="2"/>
-      <circle cx="32" cy="31" r="19" fill="none" stroke="#f0c070" stroke-width="3.2"/>
-      <circle cx="32" cy="31" r="7" fill="#7a2a16" stroke="#3a120a" stroke-width="1.4"/>
-      <path d="M18 14 C24 9 34 8 40 10" stroke="#ffd8b0" stroke-width="3" fill="none" opacity=".55"/>
+      <circle cx="32" cy="31" r="28" fill="#f4b63c" stroke="#fff0c0" stroke-width="2.4"/>
+      <circle cx="32" cy="31" r="19" fill="none" stroke="#c0482c" stroke-width="4"/>
+      <circle cx="32" cy="31" r="7" fill="#fff0c8" stroke="#7a4a10" stroke-width="1.4"/>
+      <path d="M18 14 C24 9 34 8 40 10" stroke="#ffffff" stroke-width="3" fill="none" opacity=".6"/>
       <path d="M38 31 C54 30 62 40 70 46 C76 52 80 56 76 60 C70 62 64 56 70 50" stroke="#efe6d0" stroke-width="2.4" fill="none"/>`,
   },
   // On the lower shelf under the microscope's table; a drumstick across its front (tier C).
@@ -1647,8 +1678,8 @@ function wainscotCubby(omit) {
     <rect x="646" y="930" width="132" height="10" fill="#000" opacity=".5"/>
     <rect x="648" y="1080" width="128" height="10" fill="url(#woodLight)" stroke="#2a170b" stroke-width="1.4"/>
     ${t(omit, "foguete")}
-    <path d="M650 1078 H700 C704 1090 702 1104 696 1106 C686 1100 670 1104 656 1106 C652 1098 650 1090 650 1078 Z" fill="#5a7a8a" stroke="#2a3a44" stroke-width="1.4"/>
-    <path d="M654 1084 H698 M656 1092 H698 M658 1100 H694" stroke="#a8c4cc" stroke-width="1.6" stroke-dasharray="3 3" opacity=".7"/>`;
+    <path d="M650 1034 C668 1028 700 1030 722 1040 C730 1060 728 1086 722 1104 C700 1098 672 1104 656 1106 C650 1082 648 1056 650 1034 Z" fill="#5a7a8a" stroke="#2a3a44" stroke-width="1.4"/>
+    <path d="M654 1046 C672 1040 700 1042 718 1050 M654 1060 C674 1054 700 1056 720 1064 M654 1074 C674 1068 700 1070 720 1078 M656 1088 C676 1082 700 1084 718 1092" stroke="#a8c4cc" stroke-width="1.6" stroke-dasharray="3 3" fill="none" opacity=".7"/>`;
 }
 
 /** A pedestal of two drawers under the bench's right end; the top one pulled out (its piece is the front). */
@@ -1664,9 +1695,9 @@ function deskPedestal(omit) {
       <rect x="2104" y="1118" width="92" height="7" rx="3" fill="#d8b04a" stroke="#6a4a14" stroke-width="1"/>
       <path d="M2196 1118 L2208 1121.5 L2196 1125 Z" fill="#2a1a0c"/>
     </g>
-    <path d="M2168 1078 L2224 1072 L2228 1124 L2172 1130 Z" fill="url(#page)" stroke="#8a6a3c" stroke-width="1.2"/>
-    <g fill="#5a6a8a" opacity=".7"><circle cx="2190" cy="1092" r="2"/><circle cx="2204" cy="1100" r="2"/><circle cx="2186" cy="1110" r="2"/><circle cx="2212" cy="1088" r="1.6"/></g>
-    <path d="M2190 1092 L2204 1100 L2186 1110" stroke="#5a6a8a" stroke-width="1" fill="none" opacity=".6"/>
+    <path d="M2140 1076 L2224 1068 L2230 1126 L2146 1134 Z" fill="url(#page)" stroke="#8a6a3c" stroke-width="1.2"/>
+    <g fill="#5a6a8a" opacity=".7"><circle cx="2170" cy="1092" r="2"/><circle cx="2196" cy="1100" r="2"/><circle cx="2178" cy="1116" r="2"/><circle cx="2212" cy="1086" r="1.6"/></g>
+    <path d="M2170 1092 L2196 1100 L2178 1116 L2212 1086" stroke="#5a6a8a" stroke-width="1" fill="none" opacity=".6"/>
     <rect x="2058" y="1152" width="174" height="86" rx="3" fill="#4a2c18" stroke="#2a170b" stroke-width="2"/>
     <rect x="2131" y="1190" width="28" height="9" rx="3" fill="url(#brass)"/>`;
 }
@@ -1676,6 +1707,8 @@ function microTableShelf(omit) {
   const { x0 } = MICRO_TABLE;
   return `
     ${t(omit, "tambor")}
+    <path d="M2454 1064 C2470 1058 2490 1062 2504 1072 C2508 1088 2506 1100 2502 1110 H2452 C2448 1094 2450 1078 2454 1064 Z" fill="#3e5a4a" stroke="#1e2e24" stroke-width="1.4"/>
+    <path d="M2458 1076 C2472 1070 2490 1074 2502 1082 M2456 1092 C2472 1086 2490 1090 2502 1098" stroke="#7a9a84" stroke-width="1.4" fill="none" opacity=".6"/>
     <g transform="rotate(-24 2496 1084)"><rect x="2450" y="1080" width="94" height="6" rx="3" fill="#e6d2a4" stroke="#7a5a2c" stroke-width="1"/><circle cx="2448" cy="1083" r="5" fill="#f2e6c8" stroke="#7a5a2c" stroke-width="1"/></g>
     <rect x="${x0 + 2}" y="938" width="150" height="5" rx="2" fill="url(#brassH)"/>
     <circle cx="${x0 + 152}" cy="940.5" r="5" fill="url(#brass)"/>`;
@@ -1741,6 +1774,7 @@ function plateSvg({ omit = null, debug = false } = {}) {
   ${eyepieceBox(omit)}
   ${chairAndBlanket(omit)}
   ${cupulaFloor()}
+  ${shadow(490, 1286, 22, 4, 0.7)}${lookSvg("chapeu-de-festa")}
   <rect x="2222" y="362" width="84" height="84" fill="#000" opacity=".3" filter="url(#soft6)"/>
   ${t(omit, "esquadro")}
   ${wallCharts()}
@@ -1756,6 +1790,7 @@ function plateSvg({ omit = null, debug = false } = {}) {
   ${deskItems(omit)}
   ${deskPedestal(omit)}
   ${underDesk()}
+  ${shadow(1900, 1238, 24, 4, 0.7)}${lookSvg("carretel")}
   ${windsorChair()}
   ${moonChart()}
   ${wallClock()}
@@ -1766,6 +1801,7 @@ function plateSvg({ omit = null, debug = false } = {}) {
   ${mapCabinet(omit)}
   ${curioCabinet(omit)}
   ${globeStand()}
+  ${shadow(2891, 1340, 34, 5, 0.75)}${lookSvg("lata-de-biscoitos")}
   ${arquivoFloor()}
   ${readingStool()}
   ${debug ? debugOverlaySvg(ROOM, { x: DATA.SAFE_MARGIN_X, y: DATA.SAFE_MARGIN_Y }) : ""}

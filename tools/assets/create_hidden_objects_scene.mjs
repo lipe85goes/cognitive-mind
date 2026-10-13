@@ -668,6 +668,36 @@ Object.assign(LOOK_ART, {
   },
 });
 
+// GAME03-INTERACTIONS-04: one look-alike for each object a piece keeps, out in the room
+Object.assign(LOOK_ART, {
+  // on the rug by the side table: closed, metal, oblong — no mouthpiece, no ring
+  canivete: {
+    nominal: { w: 58, h: 22 },
+    body: `
+      <path d="M4 6 H46 C52 6 56 9 56 12 C56 15 52 18 46 18 H4 C2 18 1 16 1 12 C1 8 2 6 4 6 Z" fill="url(#silver)" stroke="#4e4c46" stroke-width="1.4"/>
+      <path d="M8 9 H44" stroke="#ffffff" stroke-width="1.6" opacity=".5"/>
+      <circle cx="9" cy="12" r="2" fill="#4e4c46"/><circle cx="48" cy="12" r="2" fill="#4e4c46"/>`,
+  },
+  // on the rug under the table: beads on rods in a wooden frame
+  abaco: {
+    nominal: { w: 64, h: 46 },
+    body: `
+      <rect x="3" y="3" width="58" height="40" rx="3" fill="none" stroke="url(#woodH)" stroke-width="5"/>
+      ${[13, 23, 33].map((y, row) => `<path d="M6 ${y} H58" stroke="#8a6a3c" stroke-width="1.4"/>${[0, 1, 2, 3, 4].map((i) => `<circle cx="${10 + i * 7 + row * 3}" cy="${y}" r="3.4" fill="url(#ivory)" stroke="#8a7a58" stroke-width=".8"/>`).join("")}`).join("")}`,
+  },
+  // leaning at the foot of the bookcase: a round frame with jingles
+  pandeiro: {
+    nominal: { w: 72, h: 72 },
+    body: `
+      <circle cx="36" cy="36" r="33" fill="#d8c9a4" stroke="url(#woodH)" stroke-width="7"/>
+      <circle cx="36" cy="36" r="26" fill="none" stroke="#b49a6a" stroke-width="1.2" opacity=".6"/>
+      ${[0, 1, 2, 3, 4].map((i) => {
+        const a = (i / 5) * 2 * Math.PI;
+        return `<ellipse cx="${n(36 + 33 * Math.cos(a))}" cy="${n(36 + 33 * Math.sin(a))}" rx="5" ry="3.4" fill="url(#brass)" stroke="#6a4a1c" stroke-width=".8"/>`;
+      }).join("")}`,
+  },
+});
+
 function lookSvg(id) {
   const art = LOOK_ART[id];
   if (!art) throw new Error(`no art for look-alike ${id}`);
@@ -1640,9 +1670,9 @@ Object.assign(ART, {
       <path d="M8 22 C2 30 2 44 6 50" stroke="#5a3a1c" stroke-width="5" fill="none" stroke-linecap="round"/>
       <rect x="37" y="2" width="14" height="10" rx="2" fill="url(#iron)" stroke="#2a2622" stroke-width="1.2"/>
       <rect x="40" y="10" width="8" height="8" fill="#8a8a82"/>
-      <circle cx="44" cy="48" r="31" fill="#6f7a4c" stroke="#3a4226" stroke-width="2"/>
-      <circle cx="44" cy="48" r="25" fill="none" stroke="#c8c09a" stroke-width="1.6" stroke-dasharray="4 4" opacity=".7"/>
-      <path d="M22 34 C30 24 52 22 62 30" stroke="#a9b480" stroke-width="3" fill="none" opacity=".55"/>
+      <circle cx="44" cy="48" r="31" fill="#cdb878" stroke="#f4e6b8" stroke-width="2.4"/>
+      <circle cx="44" cy="48" r="25" fill="none" stroke="#6a5a2a" stroke-width="1.6" stroke-dasharray="4 4" opacity=".8"/>
+      <path d="M22 34 C30 24 52 22 62 30" stroke="#fff6d8" stroke-width="3" fill="none" opacity=".6"/>
       <path d="M13 44 H75" stroke="#5a3a1c" stroke-width="6"/>
       <rect x="40" y="40" width="9" height="9" rx="1.5" fill="url(#brassDim)"/>`,
   },
@@ -1674,7 +1704,7 @@ function openBox(omit) {
       <path d="M1898 1146 L1904 1138 H1996 L2002 1146 Z" fill="url(#velvet)"/>
       <rect x="1890" y="1150" width="120" height="4" fill="#8a5a32" opacity=".7"/></g>
     ${t2(omit, "colar")}
-    <path d="M1898 1148 L1904 1136 L1930 1138 L1936 1150 L1918 1158 Z" fill="#d9c8e8" stroke="#8a7a98" stroke-width="1.1" opacity=".95"/>
+    <path d="M1898 1150 L1904 1135 L1942 1137 L1950 1152 L1930 1162 L1904 1160 Z" fill="#d9c8e8" stroke="#8a7a98" stroke-width="1.1" opacity=".95"/>
     <path d="M1906 1144 L1926 1146" stroke="#ffffff" stroke-width="1.4" opacity=".5"/>`;
 }
 
@@ -1760,13 +1790,16 @@ function plateSvg({ debug = false, omit = null } = {}) {
   ${trunkLetter()}
   ${floorDecor()}
   ${basketCorner(omit)}
+  ${shadow(2736, 1404, 34, 5, 0.7)}${lookSvg("pandeiro")}
   ${armchair()}
   ${sideTable()}
   ${sideTableDrawer(omit)}
+  ${shadow(925, 1410, 30, 4, 0.7)}${lookSvg("canivete")}
   ${bookStack(830, 1172, [[66, 14, "#2f5d58"], [58, 12, "#94482a", 4]])}
   ${shadow(ampBox.x + ampBox.w / 2, ampBox.y + ampBox.h - 2, ampBox.w * 0.58, 8, 0.9)}
   ${t("ampulheta", targetSvg("ampulheta"))}
   ${table()}
+  ${shadow(1284, 1402, 34, 5, 0.7)}${lookSvg("abaco")}
   ${shadow(1208, 1326, 30, 6, 0.6)}
   ${lookSvg("tampa-de-pote")}
   ${tableItems(omit)}

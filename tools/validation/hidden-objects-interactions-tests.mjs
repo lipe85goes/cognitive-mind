@@ -788,8 +788,8 @@ async function runChecks(tree) {
         for (const other of piecesOf(scene).filter((p) => p.id !== t.gate)) game.tapPiece(other.id);
         game.tapObject(t.id);
         if (game.found().includes(t.id)) problems.push(`${id}: opening other pieces exposed ${t.id}`);
-        // its own piece open: the same tap finds it, same object, same place
-        game.tapPiece(t.gate);
+        // its own piece open (that very tap, landing on the shut piece, may have opened it): the same tap finds it, same object, same place
+        if (!game.pieces()[t.gate].open) game.tapPiece(t.gate);
         game.tapObject(t.id);
         if (!game.found().includes(t.id)) problems.push(`${id}: ${t.id} not found with ${t.gate} open`);
         if (!normalizeText(game.live()).includes(normalizeText(t.label))) problems.push(`${id}: the find of ${t.id} is not announced`);
@@ -924,8 +924,10 @@ async function runChecks(tree) {
         game.frames(30);
       });
       step("zoom buttons", () => {
-        game.click((e) => e.props["aria-label"] === "Aproximar");
-        game.click((e) => e.props["aria-label"] === "Afastar");
+        for (const label of ["Afastar", "Aproximar", "Aproximar", "Afastar"]) {
+          const button = game.button((e) => e.props["aria-label"] === label);
+          if (button && !button.props.disabled) game.click((e) => e.props["aria-label"] === label);
+        }
         game.settle();
       });
       step("wheel", () => game.wheel(game.centre(), -240));
@@ -1035,7 +1037,9 @@ async function runChecks(tree) {
         const seed = seedWhere(tree, scene, difficulty, listing(t.id));
         const game = await startIn(tree, id, difficulty, seed);
         game.focus(t.id);
-        const pieceWords = new Set([...words(piece.label), ...words(piece.accessibleLabel)]);
+        // the piece's own name (its station is every difficulty's first rung: the room's place, not the piece)
+        const stationWords = new Set(scene.stations.flatMap((s) => [...words(s.label), ...words(s.hintPhrase)]));
+        const pieceWords = new Set(words(piece.label).filter((w) => !stationWords.has(w)));
         for (let press = 1; press <= 4; press += 1) {
           const before = game.camera();
           game.hint();
@@ -1069,7 +1073,8 @@ async function runChecks(tree) {
     for (const scene of engine(tree).scenes) {
       for (const t of gatedOf(scene)) {
         const piece = piecesOf(scene).find((p) => p.id === t.gate);
-        const pieceWords = new Set([...words(piece.label), ...words(piece.accessibleLabel)]);
+        const stationWords = new Set(scene.stations.flatMap((s) => [...words(s.label), ...words(s.hintPhrase)]));
+        const pieceWords = new Set([...words(piece.label), ...words(piece.accessibleLabel)].filter((w) => !stationWords.has(w)));
         const named = words(t.hintContext).filter((w) => pieceWords.has(w));
         if (named.length) problems.push(`${scene.id}/${t.id}: its Difícil context names ${named.join(",")}`);
       }
