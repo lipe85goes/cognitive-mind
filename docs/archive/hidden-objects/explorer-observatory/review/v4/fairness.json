@@ -1,7 +1,7 @@
 {
   "kit": "/assets/hidden-objects/explorer-observatory/v4",
   "plateSha256": "7e1a3158d1e84ec538945a36fc6c7a018b09d0285b66c3799e91c49fdccd4e58",
-  "atlasSha256": "e89988d20b90b79b39f98b584e588b97fa3828f57e9a37dd2b3c07e7c22d3052",
+  "atlasSha256": "afd8fe801db368e3aff2c2987d970b471b4c8f4d04128c7ca5531167542122c7",
   "rule": {
     "visible": "share of the target's own pixels the room shows on its slot (the plate's albedo with and without it, under what the room paints in front of the slot)",
     "contrast": "F4 as written: mean-luminance ratio, visible target vs a 24 su ring, on the composed room",
@@ -87,7 +87,7 @@
       ],
       "visibleAtRest": 0.778,
       "visibleOpen": 0.778,
-      "clutter": 0.159
+      "clutter": 0.16
     },
     {
       "id": "caneca",
@@ -188,7 +188,7 @@
       ],
       "visibleAtRest": 0.695,
       "visibleOpen": 0.695,
-      "clutter": 0.181
+      "clutter": 0.18
     },
     {
       "id": "esquadro",
@@ -289,7 +289,7 @@
       ],
       "visibleAtRest": 0.968,
       "visibleOpen": 0.968,
-      "clutter": 0.134
+      "clutter": 0.135
     },
     {
       "id": "cadeado",
@@ -402,7 +402,7 @@
       "contrast": 3.05,
       "edge": 4.97,
       "ring": 128128,
-      "busy": 9744,
+      "busy": 9743,
       "near": 3
     },
     {
@@ -550,13 +550,13 @@
       "id": "ratinho",
       "slot": "bau-cupula",
       "tier": "C",
-      "visible": 0.433,
-      "visibleAtRest": 0.433,
-      "visibleOpen": 0.433,
-      "contrast": 1.88,
-      "edge": 1.74,
+      "visible": 0.658,
+      "visibleAtRest": 0.658,
+      "visibleOpen": 0.658,
+      "contrast": 2.01,
+      "edge": 1.48,
       "ring": 88608,
-      "busy": 6808,
+      "busy": 6383,
       "near": 9
     },
     {

@@ -144,6 +144,69 @@ export function folderDiff(tree, base, folder) {
     .filter((file) => !mine.includes(file) || !theirs.includes(file) || fileContent(tree, file) !== fileContent(base, file));
 }
 
+/**
+ * GAME03-FINAL-POLISH-LOCK-06: the titles Game 03's results have carried on the
+ * shared result screen — "Estúdio explorado" until the lock candidate, then
+ * "Exploração concluída", which also fits the Observatório (the summary under
+ * it names the room). A check that held the title to the first now holds it to
+ * one of these: still Game 03's own copy, never the default and never the
+ * retired Trilha's.
+ */
+export const GAME03_RESULT_TITLES = Object.freeze(["Estúdio explorado", "Exploração concluída"]);
+
+/**
+ * The per-game tables of the shared platform where Game 03 owns an entry
+ * (`"hidden-objects": { … }`). GAME03-FINAL-POLISH-LOCK-06 changed Game 03's own
+ * copy there (the result title, the intro's room line); everything else in
+ * these files must still be byte for byte the base's.
+ */
+export const GAME03_OWN_ENTRY_FILES = Object.freeze(["src/engine/rewards.ts", "src/data/game-intros.ts"]);
+
+/** A file's text with Game 03's own entry (`"hidden-objects": { … }`, braces matched) cut out; null if it has none. */
+export function withoutGame03Entry(text) {
+  const start = text.indexOf('"hidden-objects": {');
+  if (start === -1 || text.indexOf('"hidden-objects": {', start + 1) !== -1) return null;
+  let depth = 0;
+  for (let i = text.indexOf("{", start); i < text.length; i += 1) {
+    if (text[i] === "{") depth += 1;
+    if (text[i] === "}" && --depth === 0) return text.slice(0, start) + text.slice(i + 1);
+  }
+  return null;
+}
+
+/** folderDiff outside Game 03, where a change confined to Game 03's own entry of a per-game table does not count. */
+export function changedOutsideGame03(tree, base, dir) {
+  return folderDiff(tree, base, "src")
+    .filter((file) => !file.startsWith(dir))
+    .filter((file) => {
+      if (!GAME03_OWN_ENTRY_FILES.includes(file) || !tree.exists(file) || !base.exists(file)) return true;
+      const mine = withoutGame03Entry(tree.read(file));
+      return mine === null || mine !== withoutGame03Entry(base.read(file));
+    });
+}
+
+/**
+ * GAME03-FINAL-POLISH-LOCK-06: the clue texts the lock candidate rewrote, each
+ * from → to (an object can move now, so no clue may point at a place; plus two
+ * fixes of Portuguese). A check that holds an object's clue bank to an earlier
+ * base reads these as the text they replaced — no other clue may change.
+ */
+export const GAME03_LOCK06_CLUE_EDITS = Object.freeze([
+  { room: "explorer-studio", id: "guarda-chuva", from: "Fechado num canto, espera o tempo virar.", to: "Fechado, fica esperando o tempo virar." },
+  { room: "explorer-studio", id: "tesoura", from: "Sem ela, o recorte do mapa sairia rasgado.", to: "Na aula de artes, faz o recorte sem rasgar." },
+  { room: "explorer-studio", id: "globo", from: "Na aula de geografia, todos giravam ele.", to: "Na aula de geografia, todos queriam girá-lo." },
+  { room: "explorer-observatory", id: "ferradura", from: "Atrás da porta, promete afastar o azar.", to: "Pendurada na entrada, promete afastar o azar." },
+  { room: "explorer-observatory", id: "foguete", from: "Um menino sonha pilotá-lo pelo espaço afora.", to: "Um menino sonha em pilotá-lo pelo espaço afora." },
+]);
+
+/** An object's clue bank as it read before GAME03-FINAL-POLISH-LOCK-06's rewrites (unchanged elsewhere). */
+export function cluesBeforeLock06(room, target) {
+  return (target.clues ?? []).map((clue) => {
+    const edit = GAME03_LOCK06_CLUE_EDITS.find((e) => e.room === room && e.id === target.id && e.to === clue.text);
+    return edit ? { ...clue, text: edit.from } : clue;
+  });
+}
+
 /** Width/height from a WebP header (VP8X, lossy VP8 or lossless VP8L). */
 export function webpSize(buffer) {
   if (!buffer || buffer.length < 30 || buffer.toString("ascii", 0, 4) !== "RIFF" || buffer.toString("ascii", 8, 12) !== "WEBP") return null;

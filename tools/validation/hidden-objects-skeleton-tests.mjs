@@ -128,6 +128,7 @@ import {
   findIn,
   isInteractive,
   revealOf,
+  GAME03_RESULT_TITLES,
 } from "./hidden-objects-harness.mjs";
 
 const args = process.argv.slice(2);
@@ -261,7 +262,7 @@ async function runChecks(tree) {
     return {
       pass:
         missingFrom.length === 0 && activity?.id === STUDIO && activity?.status === "available" &&
-        Object.values(names).every((value) => value === TITLE) && rewardTitle === "Estúdio explorado",
+        Object.values(names).every((value) => value === TITLE) && GAME03_RESULT_TITLES.includes(rewardTitle), // GAME03-FINAL-POLISH-LOCK-06 (restated)
       missingFrom,
       names,
       activityStatus: activity?.status ?? null,
@@ -458,7 +459,7 @@ async function runChecks(tree) {
       keptAfterANewSave: after.length === 2 && after[0].gameId === STUDIO && JSON.stringify(after[1]) === JSON.stringify(LEGACY_RESULT),
       foreignKeyKept: env.store.get(FOREIGN_KEY) === FOREIGN_VALUE,
       cannotBeOpened: !(RETIRED in t.registry) && !(RETIRED in t.contracts) && !t.activities.some((a) => a.gameId === RETIRED || a.id === RETIRED),
-      lookupNotTheStudio: meta.name !== TITLE && meta.world !== t.worlds.GAME_WORLDS[STUDIO].world && reward.title !== "Estúdio explorado",
+      lookupNotTheStudio: meta.name !== TITLE && meta.world !== t.worlds.GAME_WORLDS[STUDIO].world && !GAME03_RESULT_TITLES.includes(reward.title), // GAME03-FINAL-POLISH-LOCK-06 (restated)
     };
     return {
       pass: Object.values(homeFacts).every(Boolean) && Object.values(storeFacts).every(Boolean),
@@ -1267,7 +1268,8 @@ async function runChecks(tree) {
     }
     const wrongShape = DIFFICULTIES.filter((d) => !same(results[d], resultFor(d, sessionList(tree, d).length, listSeed(tree, d))));
     const forbiddenKeys = Object.values(results).flatMap((r) => Object.keys(r).concat(Object.keys(r.details))).filter((key) => /time|elapsed|error|miss|hint|star|rank|streak|lives|continuation/i.test(key));
-    const shell = Object.values(results).every((r) => t.rewards.isSuccessfulResult(r) && t.rewards.getRewardCopy(r).title === "Estúdio explorado");
+    // GAME03-FINAL-POLISH-LOCK-06 (restated): Game 03's own result title, "Estúdio explorado" or "Exploração concluída" (harness)
+    const shell = Object.values(results).every((r) => t.rewards.isSuccessfulResult(r) && GAME03_RESULT_TITLES.includes(t.rewards.getRewardCopy(r).title));
     const labelled = ["difficulty", "foundObjects", "totalObjects", "completed"].every((key) => typeof t.labels.DETAIL_LABELS[key] === "string");
     const env = createEnvironment();
     const storage = createModuleGraph({ tree, mocks: {}, globals: env.globals }).require(FILES.storage);

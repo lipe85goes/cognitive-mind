@@ -118,6 +118,7 @@ import {
   isInteractive,
   revealOf,
   boundToScene,
+  GAME03_RESULT_TITLES,
 } from "./hidden-objects-harness.mjs";
 
 const args = process.argv.slice(2);
@@ -1042,7 +1043,7 @@ async function runChecks(tree) {
     const t = platformTables(tree);
     const copy = t.rewards.getRewardCopy(legacy);
     return {
-      pass: same(readBack, [legacy]) && after.length === 2 && after[0].gameId === STUDIO && same(after[1], legacy) && copy.title !== "Estúdio explorado",
+      pass: same(readBack, [legacy]) && after.length === 2 && after[0].gameId === STUDIO && same(after[1], legacy) && !GAME03_RESULT_TITLES.includes(copy.title), // GAME03-FINAL-POLISH-LOCK-06 (restated)
       storedAfterSave: after.map((r) => r.gameId),
       legacyTitle: copy.title,
     };

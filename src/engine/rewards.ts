@@ -82,7 +82,8 @@ const WORLD_REWARD_COPY: Record<GameResult["gameId"], WorldRewardCopy> = {
     registeredLine: "A central foi registrada na sua jornada.",
   },
   "hidden-objects": {
-    successTitle: "Estúdio explorado",
+    // the game has more than one room: the title names the exploration, the summary (the game's own) names the room
+    successTitle: "Exploração concluída",
     successSubtitle: "Você praticou atenção e observação.",
     attemptSubtitle: "Você praticou atenção e observação.",
     registeredLine: "A exploração foi registrada na sua jornada.",

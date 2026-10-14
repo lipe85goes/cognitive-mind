@@ -152,7 +152,7 @@ export const HIDDEN_OBJECTS: readonly HiddenObjectDefinition[] = [
     accessibleLabel: "Guarda-chuva",
     clues: [
       { level: "direct", text: "Abre-se para proteger da água do céu." },
-      { level: "associative", text: "Fechado num canto, espera o tempo virar." },
+      { level: "associative", text: "Fechado, fica esperando o tempo virar." },
       { level: "associative", text: "Tem varetas, pano esticado e um cabo curvo." },
       { level: "indirect", text: "Nuvens carregadas? Melhor levá-lo ao sair." },
       { level: "indirect", text: "Numa garoa fina, salva o penteado." },
@@ -374,7 +374,7 @@ export const HIDDEN_OBJECTS: readonly HiddenObjectDefinition[] = [
       { level: "direct", text: "Corta com duas lâminas que se cruzam." },
       { level: "associative", text: "Dois anéis para os dedos e um bico afiado." },
       { level: "associative", text: "Faz pedaços de fita em festa de inauguração." },
-      { level: "indirect", text: "Sem ela, o recorte do mapa sairia rasgado." },
+      { level: "indirect", text: "Na aula de artes, faz o recorte sem rasgar." },
       { level: "indirect", text: "O barbeiro a faz cantar perto da orelha." },
     ],
     tier: "C",
@@ -493,7 +493,7 @@ export const HIDDEN_OBJECTS: readonly HiddenObjectDefinition[] = [
     clues: [
       { level: "direct", text: "Mostra o mundo inteiro numa bola." },
       { level: "associative", text: "Gira num eixo inclinado, com mares e países." },
-      { level: "associative", text: "Na aula de geografia, todos giravam ele." },
+      { level: "associative", text: "Na aula de geografia, todos queriam girá-lo." },
       { level: "indirect", text: "Gire e aponte: lá será a próxima viagem." },
       { level: "indirect", text: "Onde fica o Brasil? Ele responde sem tela." },
     ],

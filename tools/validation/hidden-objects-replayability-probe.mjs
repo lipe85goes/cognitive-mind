@@ -307,6 +307,29 @@ async function roomPixels(page) {
   const png = await page.screenshot({ clip: { x: box.x, y: box.y, width: box.width, height: box.height } });
   return { png, sha: createHash("sha256").update(png).digest("hex") };
 }
+/**
+ * GAME03-FINAL-POLISH-LOCK-06 (restated): two screenshots compared as decoded
+ * pixels, not as hashes. The GPU rasterises the Observatory's parallax sky
+ * (back.webp, behind the dome and the round window) with a few levels of noise
+ * from one fresh page to the next — measured up to 6 of 255, only there — so a
+ * byte hash of a correct replay failed about one run in three. A different
+ * composition differs by far more: a moved thing is tens of levels on thousands
+ * of pixels.
+ */
+const RASTER_NOISE = 8;
+async function pixelDiff(a, b) {
+  const sharp = (await import("sharp")).default;
+  const [x, y] = await Promise.all([a.png, b.png].map((png) => sharp(png).removeAlpha().raw().toBuffer({ resolveWithObject: true })));
+  if (x.info.width !== y.info.width || x.info.height !== y.info.height) return { maxDelta: 255, changedShare: 1 };
+  let maxDelta = 0;
+  let changed = 0;
+  for (let i = 0; i < x.data.length; i += 3) {
+    const d = Math.max(Math.abs(x.data[i] - y.data[i]), Math.abs(x.data[i + 1] - y.data[i + 1]), Math.abs(x.data[i + 2] - y.data[i + 2]));
+    if (d > maxDelta) maxDelta = d;
+    if (d > 3 * RASTER_NOISE) changed += 1;
+  }
+  return { maxDelta, changedShare: Number((changed / (x.data.length / 3)).toFixed(4)) };
+}
 
 // --- input -------------------------------------------------------------------------------------------------
 
@@ -662,13 +685,15 @@ async function replay() {
   const one = await visit(seed);
   const two = await visit(seed);
   const three = await visit(other);
+  const again = await pixelDiff(one.pixels, two.pixels);
   check(
     "THE_SAME_SEED_PAINTS_THE_SAME_ROOM",
-    one.shown.signature === two.shown.signature && same(authored(one.shown.things), authored(two.shown.things)) && one.pixels.sha === two.pixels.sha,
-    { signature: one.shown.signature, pixels: [one.pixels.sha.slice(0, 12), two.pixels.sha.slice(0, 12)] },
+    one.shown.signature === two.shown.signature && same(authored(one.shown.things), authored(two.shown.things)) && again.maxDelta <= RASTER_NOISE,
+    { signature: one.shown.signature, pixels: [one.pixels.sha.slice(0, 12), two.pixels.sha.slice(0, 12)], ...again },
   );
   const share = thingsMoved(OBSERVATORY, composed(OBSERVATORY, "medium", seed), composed(OBSERVATORY, "medium", other));
-  check("ANOTHER_SEED_PAINTS_ANOTHER_ROOM", three.shown.signature !== one.shown.signature && three.pixels.sha !== one.pixels.sha && share >= 0.3, { other, moved: share });
+  const apart = await pixelDiff(one.pixels, three.pixels);
+  check("ANOTHER_SEED_PAINTS_ANOTHER_ROOM", three.shown.signature !== one.shown.signature && apart.maxDelta > 3 * RASTER_NOISE && apart.changedShare >= 0.005 && share >= 0.3, { other, moved: share, ...apart });
   if (OUT) {
     fs.mkdirSync(OUT, { recursive: true });
     const sharp = (await import("sharp")).default;

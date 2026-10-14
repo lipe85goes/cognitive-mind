@@ -58,7 +58,6 @@ import {
   createEnvironment,
   createReact,
   drain,
-  folderDiff,
   hudRects,
   intersects,
   lcg,
@@ -71,6 +70,8 @@ import {
   same,
   sorted,
   v3RoundKeeper,
+  GAME03_RESULT_TITLES,
+  changedOutsideGame03,
 } from "./hidden-objects-harness.mjs";
 import { createHash } from "node:crypto";
 
@@ -1154,8 +1155,8 @@ async function runChecks(tree) {
       readBackAsSaved: same(readBack, OLD_RESULTS),
       keptAfterANewSave: after[0]?.id === saved.id && same(after.slice(1), OLD_RESULTS),
       oldGame03ResultsShowTheirMode: OLD_RESULTS.slice(0, 3).every((r) => same(shown(r), [{ key: "difficulty", label: "Modo", value: { easy: "Fácil", medium: "Médio", hard: "Difícil" }[r.details.difficulty] }])),
-      oldGame03ResultsKeepTheirTitle: OLD_RESULTS.slice(0, 3).every((r) => t.rewards.getRewardCopy(r).title === "Estúdio explorado"),
-      theTrilhaResultStillReads: Array.isArray(shown(OLD_RESULTS[3])) && t.rewards.getRewardCopy(OLD_RESULTS[3]).title !== "Estúdio explorado",
+      oldGame03ResultsKeepTheirTitle: OLD_RESULTS.slice(0, 3).every((r) => GAME03_RESULT_TITLES.includes(t.rewards.getRewardCopy(r).title)), // GAME03-FINAL-POLISH-LOCK-06 (restated)
+      theTrilhaResultStillReads: Array.isArray(shown(OLD_RESULTS[3])) && !GAME03_RESULT_TITLES.includes(t.rewards.getRewardCopy(OLD_RESULTS[3]).title), // GAME03-FINAL-POLISH-LOCK-06 (restated)
       aNewResultHasTheSameShape: same(sorted(Object.keys(result.details)), RESULT_DETAIL_KEYS) && result.gameId === GAME && result.score === result.details.foundObjects,
     };
     return { pass: Object.values(facts).every(Boolean), ...facts, newDetails: result.details };
@@ -1313,7 +1314,9 @@ async function runChecks(tree) {
   // --- preserved: the rest of the game as MULTISCENE-03 left it -------------------------------------------
 
   await check("P01", "preserved", "THE_SHARED_PLATFORM_IS_UNTOUCHED", () => {
-    const changed = folderDiff(tree, BASE_TREE, "src").filter((file) => !file.startsWith(DIR));
+    // GAME03-FINAL-POLISH-LOCK-06 (restated): a change confined to Game 03's own entry of a per-game table (its result
+    // title, its intro) is Game 03's; the rest of those files, and every other file outside Game 03, byte for byte
+    const changed = changedOutsideGame03(tree, BASE_TREE, DIR);
     const fields = ["dependencies", "devDependencies", "peerDependencies", "optionalDependencies"];
     const mine = JSON.parse(tree.read("package.json"));
     const base = JSON.parse(BASE_TREE.read("package.json"));

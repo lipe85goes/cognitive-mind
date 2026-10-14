@@ -902,7 +902,8 @@ async function desktop() {
   const modal = await resultScreen(page);
   const stored = await storedResults(page);
   const saved = stored[0];
-  check("20_RESULT_SCREEN", modal.world === "Estúdio das Descobertas" && modal.title === "Estúdio explorado" && modal.summary === "Você encontrou todos os objetos do Estúdio.", modal);
+  // GAME03-FINAL-POLISH-LOCK-06 (restated): the title names the exploration ("Estúdio explorado" also titled the Observatório's); the summary names the room
+  check("20_RESULT_SCREEN", modal.world === "Estúdio das Descobertas" && modal.title === "Exploração concluída" && modal.summary === "Você encontrou todos os objetos do Estúdio.", modal);
   check("20_ONE_RESULT_PER_SESSION", stored.length === resultsBefore + 1, { before: resultsBefore, after: stored.length });
   check(
     "20_RESULT_CONTRACT",

@@ -64,6 +64,8 @@ import {
   same,
   sorted,
   staticGraph,
+  GAME03_RESULT_TITLES,
+  cluesBeforeLock06,
 } from "./hidden-objects-harness.mjs";
 
 const args = process.argv.slice(2);
@@ -1350,7 +1352,7 @@ async function runChecks(tree) {
       readBackAsSaved: same(readBack, OLD_RESULTS),
       keptAfterANewSave: after[0]?.id === saved.id && same(after.slice(1), OLD_RESULTS),
       oldResultsShowTheirMode: OLD_RESULTS.slice(0, 3).every((r) => same(shown(r), [{ key: "difficulty", label: "Modo", value: { easy: "Fácil", medium: "Médio", hard: "Difícil" }[r.details.difficulty] }])),
-      oldResultsKeepTheirTitle: OLD_RESULTS.slice(0, 3).every((r) => t.rewards.getRewardCopy(r).title === "Estúdio explorado"),
+      oldResultsKeepTheirTitle: OLD_RESULTS.slice(0, 3).every((r) => GAME03_RESULT_TITLES.includes(t.rewards.getRewardCopy(r).title)), // GAME03-FINAL-POLISH-LOCK-06 (restated)
       theTrilhaResultStillReads: Array.isArray(shown(OLD_RESULTS[3])),
       aNewResultHasTheSameShape: same(sorted(Object.keys(result.details)), RESULT_DETAIL_KEYS) && result.score === result.details.foundObjects && result.details.completed === true,
     };
@@ -1370,7 +1372,9 @@ async function runChecks(tree) {
         const now = a.pool.find((x) => x.id === t.id);
         if (!now) problems.push(`${id}/${t.id}: gone`);
         else {
-          for (const field of ["label", "accessibleLabel", "tier", "station", "region", "clues", "hintRegion", "hintDirection", "hintContext"]) if (!same(now[field], t[field])) problems.push(`${id}/${t.id}: ${field} changed`);
+          for (const field of ["label", "accessibleLabel", "tier", "station", "region", "hintRegion", "hintDirection", "hintContext"]) if (!same(now[field], t[field])) problems.push(`${id}/${t.id}: ${field} changed`);
+          // GAME03-FINAL-POLISH-LOCK-06 (restated): the clue bank is the base's, but for the lock candidate's listed rewrites
+          if (!same(cluesBeforeLock06(id, now), t.clues)) problems.push(`${id}/${t.id}: clues changed`);
           if (now.gate) problems.push(`${id}/${t.id}: now kept behind ${now.gate}`);
         }
       }

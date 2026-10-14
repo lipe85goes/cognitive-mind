@@ -52,10 +52,10 @@ const INTRO_COPY: Record<
   "hidden-objects": {
     originalName: "Explore e encontre",
     description:
-      "Explore o estúdio do explorador, aproxime a cena e encontre os objetos da sua lista.",
+      "Explore uma das salas do explorador, aproxime a cena e encontre os objetos da sua lista.",
     reassurance: "Sem cronômetro: observe com calma. Há mais do que parece.",
     steps: [
-      "Escolha a dificuldade e entre no estúdio.",
+      "Escolha a sala e a dificuldade.",
       "Arraste para explorar e aproxime para olhar de perto.",
       "Toque em cada objeto da lista quando o encontrar.",
     ],

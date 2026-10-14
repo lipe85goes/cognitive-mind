@@ -89,6 +89,8 @@ import {
   v3RoundKeeper,
   webpSize,
   isInteractive,
+  GAME03_RESULT_TITLES,
+  changedOutsideGame03,
 } from "./hidden-objects-harness.mjs";
 
 const args = process.argv.slice(2);
@@ -956,9 +958,9 @@ async function runChecks(tree) {
     const facts = {
       savedAndReadBack: stored[0]?.id === saved.id && same({ ...stored[0], id: undefined, playedAt: undefined }, results[`${OBSERVATORY_ID}/medium`].result),
       oldResultsKept: same(stored.slice(1), [OLD_STUDIO_RESULT, LEGACY_TRILHA_RESULT]),
-      oldStudioResultShown: same(shown(OLD_STUDIO_RESULT), [{ key: "difficulty", label: "Modo", value: "Médio" }]) && t.rewards.getRewardCopy(OLD_STUDIO_RESULT).title === "Estúdio explorado",
+      oldStudioResultShown: same(shown(OLD_STUDIO_RESULT), [{ key: "difficulty", label: "Modo", value: "Médio" }]) && GAME03_RESULT_TITLES.includes(t.rewards.getRewardCopy(OLD_STUDIO_RESULT).title), // GAME03-FINAL-POLISH-LOCK-06 (restated)
       observatoryResultShown: same(shown(saved), [{ key: "difficulty", label: "Modo", value: "Médio" }]) && t.rewards.isSuccessfulResult(saved),
-      legacyStillReadable: t.rewards.getRewardCopy(LEGACY_TRILHA_RESULT).title !== "Estúdio explorado" && Array.isArray(shown(LEGACY_TRILHA_RESULT)),
+      legacyStillReadable: !GAME03_RESULT_TITLES.includes(t.rewards.getRewardCopy(LEGACY_TRILHA_RESULT).title) && /* GAME03-FINAL-POLISH-LOCK-06 (restated) */ Array.isArray(shown(LEGACY_TRILHA_RESULT)),
       modalNamesNoRoom: !/explorer-|Observat|sceneId/.test(codeOnly(tree.read(FILES.rewardModal))) && !/explorer-|Observat/.test(codeOnly(tree.read(FILES.rewards))),
     };
     return { pass: problems.length === 0 && Object.values(facts).every(Boolean), problems, ...facts, observatoryResult: results[`${OBSERVATORY_ID}/medium`].result };
@@ -1275,7 +1277,9 @@ async function runChecks(tree) {
   await check("M19", "preserved", "THE_SHARED_PLATFORM_IS_UNTOUCHED", () => {
     // everything outside Game 03's own folder: the shell, GameScreen, the registry, the entry contract, results,
     // storage, the Home, the Rota, the Circuito, the legacy games, the types — byte for byte
-    const changed = folderDiff(tree, BASE_TREE, "src").filter((file) => !file.startsWith(DIR));
+    // GAME03-FINAL-POLISH-LOCK-06 (restated): a change confined to Game 03's own entry of a per-game table (its result
+    // title, its intro) is Game 03's; the rest of those files, and every other file outside Game 03, byte for byte
+    const changed = changedOutsideGame03(tree, BASE_TREE, DIR);
     const fields = ["dependencies", "devDependencies", "peerDependencies", "optionalDependencies"];
     const mine = JSON.parse(tree.read("package.json"));
     const base = JSON.parse(BASE_TREE.read("package.json"));
