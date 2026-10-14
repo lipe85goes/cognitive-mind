@@ -33,6 +33,24 @@
  * rounds' own tier share; and exposure is the object's share of the rounds (every one asked in at
  * least 1 round in 20, none in more than 3 in 4) instead of a multiple of its tier's mean.
  *
+ * GAME03-REPLAYABILITY-05 (restated). Old truth: one room per scene, so every seed drew uniformly among
+ * that room's valid rounds, enumerated once. New truth: a seed first composes the room's layout (where
+ * each thing stands this exploration), then draws its list uniformly among the valid rounds of the room
+ * as that layout places it — each object measured, tiered and hinted where it stands. Why: the rounds
+ * are the room's as played, and the room now changes between explorations. New invariants:
+ *   1. the room as painted (every thing on its first slot — the composer's fallback): the product's own
+ *      selection with every other placement set aside reaches every valid round, χ²-uniform, every object
+ *      at its exact probability, line by line — every check of before, at full strength (--samples);
+ *   2. the room as each exploration plays it (the real selectRound, --layout-samples seeds): every list is
+ *      a valid round of its own layout (the rule applied apart), no line favours a tier or a station, every
+ *      object the room as painted can ask is still asked in 1 round in 20 to 3 in 4, and the difficulties
+ *      still climb in what they ask of the eye;
+ *   3. exactly, on --exact-seeds of those seeds: each layout's valid rounds enumerated, the drawn round is
+ *      uniform among them (randomised rank, KS and χ²) and every object is listed as often as the exact
+ *      per-layout probabilities say (|z| ≤ 5).
+ * Counterfactual: a draw that favours some rounds fails (1) at home and (3) in every layout; a list valid
+ * only in the room as painted fails (2) and (3).
+ *
  * Exit: 0 every invariant held · 1 an invariant failed · 3 usage error.
  */
 import fs from "node:fs";
@@ -48,6 +66,8 @@ const arg = (name, fallback) => {
   return i === -1 ? fallback : process.argv[i + 1];
 };
 const SAMPLES = Number(arg("--samples", "1000000"));
+const LAYOUT_SAMPLES = Number(arg("--layout-samples", "30000"));
+const EXACT_SEEDS = Number(arg("--exact-seeds", "500"));
 const SCENE_ID = arg("--scene", "explorer-studio");
 const OUT = arg("--out", null);
 if (!Number.isInteger(SAMPLES) || SAMPLES < 1000) {
@@ -63,6 +83,17 @@ if (!ROOM) {
   process.exit(EXIT_USAGE);
 }
 const ROUNDS = graph.require("src/games/hidden-objects/hidden-objects-rounds.ts");
+const DIFFICULTY = graph.require("src/games/hidden-objects/hidden-objects-difficulty.ts");
+// GAME03-REPLAYABILITY-05: the room's layouts (absent before them)
+const LAYOUTS = fs.existsSync("src/games/hidden-objects/hidden-objects-layout.ts") ? graph.require("src/games/hidden-objects/hidden-objects-layout.ts") : null;
+/** The room as painted: every thing kept to its first placement, so every seed composes the home layout. */
+const homeOnly = (room) => {
+  const first = (thing) => (thing.placements ? { ...thing, placements: thing.placements.slice(0, 1) } : thing);
+  return { ...room, pool: room.pool.map(first), lookAlikes: room.lookAlikes.map(first), props: room.props?.map(first) };
+};
+/** What the seeds of the fixed-room report draw from (the room as painted), and that room as the game reads it. */
+const FIXED = LAYOUTS ? homeOnly(ROOM) : ROOM;
+const FIXED_PLAYED = LAYOUTS ? LAYOUTS.placedScene(FIXED, LAYOUTS.homeLayout(FIXED)) : ROOM;
 const ASSET_BASE = ROOM.layers.find((layer) => layer.id === "plate").src.replace(/\/plate\.webp$/, "");
 const KIT = ASSET_BASE.split("/").pop();
 const AUDIT = JSON.parse(fs.readFileSync(`docs/archive/hidden-objects/${SCENE_ID}/review/${KIT}/fairness.json`, "utf8"));
@@ -103,7 +134,10 @@ const tierLabel = (preset) =>
 
 const problems = [];
 const report = {
-  mission: "GAME03-EXPERIENCE-02 (per room since GAME03-MULTISCENE-03)",
+  mission: "GAME03-EXPERIENCE-02 (per room since GAME03-MULTISCENE-03; per layout since GAME03-REPLAYABILITY-05)",
+  fixedRoom: LAYOUTS ? "the room as painted: every thing on its first slot (selectRound with every other placement set aside)" : "the room",
+  layoutSamplesPerDifficulty: LAYOUTS ? LAYOUT_SAMPLES : null,
+  exactSeedsPerDifficulty: LAYOUTS ? EXACT_SEEDS : null,
   scene: SCENE_ID,
   generatedBy: "node tools/validation/hidden-objects-round-fairness.mjs",
   samplesPerDifficulty: SAMPLES,
@@ -123,7 +157,7 @@ for (const [index, difficulty] of DIFFICULTIES.entries()) {
   const preset = CONTRACT.DIFFICULTY_PRESETS[difficulty];
   const k = preset.count;
   const listable = POOL.filter((t) => ROUNDS.listableIn(t, preset));
-  const valid = ROUNDS.validRounds(ROOM, difficulty);
+  const valid = ROUNDS.validRounds(FIXED_PLAYED, difficulty);
   const calibrated = bounds(preset) !== null;
   // what a round of this difficulty can ask for: its list style shows it and its tier is drawn (calibrated: some
   // valid round — the measured round rule — lists it)
@@ -154,7 +188,7 @@ for (const [index, difficulty] of DIFFICULTIES.entries()) {
   let invalid = 0;
   const loads = { visible: 0, edge: 0, lookAlikes: 0 };
   for (let n = 0; n < SAMPLES; n += 1) {
-    const list = ROUNDS.selectRoundTargets(ROOM, difficulty, next());
+    const list = ROUNDS.selectRoundTargets(FIXED, difficulty, next());
     const key = [...list].sort().join();
     if (list.length !== k || new Set(list).size !== k || !roundIndex.has(key)) {
       invalid += 1;
@@ -298,6 +332,162 @@ for (const [index, difficulty] of DIFFICULTIES.entries()) {
     },
   };
 }
+// --- GAME03-REPLAYABILITY-05: the room as each exploration plays it ----------------------------------
+
+/** Uniform values in [0, 1), reproducible (the seed stream scaled). */
+const unitStream = (start) => {
+  const next = seedStream(start);
+  return () => next() / 4294967296;
+};
+/** Kolmogorov–Smirnov distance of a sample from Uniform(0, 1), scaled by √n. */
+function ksUniform(values) {
+  const sorted = [...values].sort((a, b) => a - b);
+  const n = sorted.length;
+  let d = 0;
+  for (const [i, v] of sorted.entries()) d = Math.max(d, (i + 1) / n - v, v - i / n);
+  return d * Math.sqrt(n);
+}
+
+if (LAYOUTS) {
+  report.layouts = {};
+  for (const [index, difficulty] of DIFFICULTIES.entries()) {
+    const preset = CONTRACT.DIFFICULTY_PRESETS[difficulty];
+    const rule = preset.round;
+    const k = preset.count;
+    const spread = ROUNDS.stationSpread(k, STATIONS.length);
+    const allowedPattern = (pattern) => pattern.split("-").map(Number).every((n) => n >= spread.min && n <= spread.max);
+    const next = seedStream(0x1a700000 + index);
+    const extra = unitStream(0x1a7e0000 + index);
+    const listed = Object.fromEntries(POOL.map((t) => [t.id, 0]));
+    const firstLine = Object.fromEntries(POOL.map((t) => [t.id, 0]));
+    const tierAtLine = Array.from({ length: k }, () => Object.fromEntries(TIERS.map((tier) => [tier, 0])));
+    const stationAtLine = Array.from({ length: k }, () => Object.fromEntries(STATIONS.map((st) => [st, 0])));
+    const loads = { visible: 0, edge: 0, lookAlikes: 0 };
+    const layouts = new Set();
+    const invalid = [];
+    let fallbacks = 0;
+    // exact, on the first EXACT_SEEDS seeds: each layout's valid rounds enumerated
+    const ranks = [];
+    const expected = Object.fromEntries(POOL.map((t) => [t.id, 0]));
+    const variance = Object.fromEntries(POOL.map((t) => [t.id, 0]));
+    const observed = Object.fromEntries(POOL.map((t) => [t.id, 0]));
+    const exactLoad = { visible: 0, edge: 0 };
+    const roundsPerLayout = [];
+    let notEnumerated = 0;
+    for (let n = 0; n < LAYOUT_SAMPLES; n += 1) {
+      const draw = ROUNDS.selectRound(ROOM, difficulty, next());
+      const placed = LAYOUTS.placedScene(ROOM, draw.layout);
+      const byId = Object.fromEntries(placed.pool.map((t) => [t.id, t]));
+      const list = draw.targets;
+      layouts.add(draw.layout.signature);
+      fallbacks += draw.fallback ? 1 : 0;
+      const pattern = STATIONS.map((st) => list.filter((id) => byId[id]?.station === st).length).join("-");
+      const valid =
+        list.length === k &&
+        new Set(list).size === k &&
+        list.every((id) => byId[id] && ROUNDS.listableIn(byId[id], preset)) &&
+        allowedPattern(pattern) &&
+        DIFFICULTY.meetsRule(rule, DIFFICULTY.roundProfile(placed, difficulty, list));
+      if (!valid) {
+        invalid.push(draw.layout.signature);
+        continue;
+      }
+      for (const [line, id] of list.entries()) {
+        listed[id] += 1;
+        tierAtLine[line][byId[id].tier] += 1;
+        stationAtLine[line][byId[id].station] += 1;
+      }
+      firstLine[list[0]] += 1;
+      loads.visible += mean(list.map((id) => byId[id].measured.visible));
+      loads.edge += mean(list.map((id) => byId[id].measured.edge));
+      loads.lookAlikes += mean(list.map((id) => MEASURED[id].lookAlikes.length));
+      if (n < EXACT_SEEDS) {
+        const rounds = ROUNDS.validRounds(placed, difficulty);
+        const keys = rounds.map((round) => [...round].sort().join());
+        const rank = keys.indexOf([...list].sort().join());
+        if (rank < 0) {
+          notEnumerated += 1;
+          continue;
+        }
+        roundsPerLayout.push(rounds.length);
+        ranks.push((rank + extra()) / rounds.length);
+        const share = Object.fromEntries(POOL.map((t) => [t.id, 0]));
+        for (const round of rounds) for (const id of round) share[id] += 1 / rounds.length;
+        for (const t of POOL) {
+          expected[t.id] += share[t.id];
+          variance[t.id] += share[t.id] * (1 - share[t.id]);
+        }
+        for (const id of list) observed[id] += 1;
+        exactLoad.visible += mean(rounds.map((round) => mean(round.map((id) => byId[id].measured.visible))));
+        exactLoad.edge += mean(rounds.map((round) => mean(round.map((id) => byId[id].measured.edge))));
+      }
+    }
+    const drawn = LAYOUT_SAMPLES - invalid.length;
+    const exactN = ranks.length;
+    const overallTier = Object.fromEntries(TIERS.map((tier) => [tier, tierAtLine.reduce((sum, counts) => sum + counts[tier], 0) / (drawn * k)]));
+    const overallStation = Object.fromEntries(STATIONS.map((st) => [st, stationAtLine.reduce((sum, counts) => sum + counts[st], 0) / (drawn * k)]));
+    const homeDrawable = new Set(report.difficulties[difficulty].objects.filter((o) => o.drawable).map((o) => o.id));
+    const bins = new Array(10).fill(0);
+    for (const u of ranks) bins[Math.min(9, Math.floor(u * 10))] += 1;
+    const chi = bins.reduce((sum, b) => sum + (b - exactN / 10) ** 2 / (exactN / 10), 0);
+    const chiZ = (chi - 9) / Math.sqrt(18);
+    const ks = ksUniform(ranks);
+    const objects = POOL.map((t) => {
+      const sd = Math.sqrt(variance[t.id]) / exactN;
+      const exp = expected[t.id] / exactN;
+      const obs = observed[t.id] / exactN;
+      return {
+        id: t.id,
+        askedAtHome: homeDrawable.has(t.id),
+        measured: round4(listed[t.id] / drawn),
+        firstLine: round4(firstLine[t.id] / drawn),
+        exactInLayouts: round4(exp),
+        observedInLayouts: round4(obs),
+        z: sd > 0 ? Number(((obs - exp) / sd).toFixed(2)) : obs === exp ? 0 : Infinity,
+      };
+    });
+    if (invalid.length) problems.push(`${difficulty}: ${invalid.length} lists are not valid rounds of their own layout (first ${invalid[0]})`);
+    if (notEnumerated) problems.push(`${difficulty}: ${notEnumerated} lists missing from their layout's enumerated rounds`);
+    if (Math.abs(chiZ) > 4) problems.push(`${difficulty}: the drawn round's rank among its layout's rounds is off uniform (χ² z = ${chiZ.toFixed(2)})`);
+    if (ks > 1.95) problems.push(`${difficulty}: the drawn round's rank among its layout's rounds is off uniform (KS √n·D = ${ks.toFixed(2)})`);
+    for (const o of objects) {
+      if (Math.abs(o.z) > 5) problems.push(`${difficulty}: ${o.id} listed ${pct(o.observedInLayouts)} against its layouts' exact ${pct(o.exactInLayouts)} (z = ${o.z})`);
+      if (o.askedAtHome && o.measured < EXPOSURE.floor) problems.push(`${difficulty}: ${o.id} asked in ${pct(o.measured)} of the explorations`);
+      if (o.measured > EXPOSURE.ceiling) problems.push(`${difficulty}: ${o.id} asked in ${pct(o.measured)} of the explorations`);
+    }
+    for (const [line, counts] of tierAtLine.entries())
+      for (const tier of TIERS) {
+        const z = zOf(counts[tier] / drawn, overallTier[tier], drawn);
+        if (Math.abs(z) > 5) problems.push(`${difficulty}: in the layouts, line ${line + 1} is tier ${tier} ${pct(counts[tier] / drawn)} of the time (every line ${pct(overallTier[tier])})`);
+      }
+    for (const [line, counts] of stationAtLine.entries())
+      for (const st of STATIONS) {
+        const z = zOf(counts[st] / drawn, overallStation[st], drawn);
+        if (Math.abs(z) > 5) problems.push(`${difficulty}: in the layouts, line ${line + 1} points to ${st} ${pct(counts[st] / drawn)} of the time (every line ${pct(overallStation[st])})`);
+      }
+    report.layouts[difficulty] = {
+      explorations: LAYOUT_SAMPLES,
+      distinctLayouts: layouts.size,
+      fallbacks,
+      invalid: invalid.length,
+      tierShare: Object.fromEntries(Object.entries(overallTier).map(([tier, v]) => [tier, round4(v)])),
+      tierByLine: tierAtLine.map((counts) => Object.fromEntries(TIERS.map((tier) => [tier, round4(counts[tier] / drawn)]))),
+      stationShare: Object.fromEntries(Object.entries(overallStation).map(([st, v]) => [st, round4(v)])),
+      firstLineStation: Object.fromEntries(STATIONS.map((st) => [st, round4(stationAtLine[0][st] / drawn)])),
+      perceptualLoad: { measured: { visible: round3(loads.visible / drawn), edge: round3(loads.edge / drawn), lookAlikes: round3(loads.lookAlikes / drawn) }, exactOnEnumerated: { visible: round3(exactLoad.visible / exactN), edge: round3(exactLoad.edge / exactN) } },
+      exact: {
+        seeds: exactN,
+        validRoundsPerLayout: { min: Math.min(...roundsPerLayout), mean: Math.round(mean(roundsPerLayout)), max: Math.max(...roundsPerLayout) },
+        rankUniformity: { chiSquareZ: Number(chiZ.toFixed(2)), ksSqrtND: Number(ks.toFixed(2)) },
+        maxObjectZ: Math.max(...objects.map((o) => Math.abs(o.z))),
+      },
+      objects,
+    };
+  }
+  const played = (d) => report.layouts[d].perceptualLoad.measured;
+  if (!(played("easy").visible > played("medium").visible && played("medium").visible > played("hard").visible)) problems.push("perceptual load in the layouts: visible share does not fall as the difficulty climbs");
+  if (!(played("hard").lookAlikes > played("easy").lookAlikes)) problems.push("perceptual load in the layouts: Difícil does not stand among more look-alikes than Fácil");
+}
 report.seconds = Number(((Date.now() - started) / 1000).toFixed(1));
 
 // the difficulties ask more of the eye as they climb (the experience suite's E33, restated on the samples)
@@ -356,6 +546,33 @@ function markdown() {
     lines.push("");
     lines.push(`Carga perceptiva (auditoria medida, média exata das rodadas): visível ${pct(l.visible)} · borda ${l.edge}:1 · sósias por objeto ${l.lookAlikes} · objetos abaixo de 80% visíveis por rodada ${l.belowEightyVisible} (máx. ${l.belowEightyVisibleMax}).`);
   }
+  if (report.layouts) {
+    lines.push("");
+    lines.push("## A sala como cada exploração a joga (GAME03-REPLAYABILITY-05)");
+    lines.push("");
+    lines.push("As tabelas acima são a sala como foi pintada (cada coisa no seu primeiro lugar), com a seleção do produto.");
+    lines.push(`Aqui, a seleção real (\`selectRound\`): cada semente compõe o seu layout e sorteia entre as rodadas válidas dele — ${LAYOUT_SAMPLES.toLocaleString("pt-BR")} sementes por dificuldade;`);
+    lines.push(`nas primeiras ${EXACT_SEEDS.toLocaleString("pt-BR")}, as rodadas válidas de cada layout são enumeradas: a rodada sorteada deve ser uniforme entre elas (posto aleatorizado: χ² e KS) e cada objeto, listado tanto quanto as probabilidades exatas de cada layout dizem.`);
+    lines.push("");
+    lines.push("| Dificuldade | Explorações | Layouts distintos | Inválidas | Fallbacks | Rodadas válidas por layout (mín–média–máx) | Posto: χ² (z) · KS (√n·D) | maior \\|z\\| por objeto | Visível medido |");
+    lines.push("| --- | --- | --- | --- | --- | --- | --- | --- | --- |");
+    for (const d of DIFFICULTIES) {
+      const r = report.layouts[d];
+      const v = r.exact.validRoundsPerLayout;
+      lines.push(`| ${name[d]} | ${r.explorations} | ${r.distinctLayouts} | ${r.invalid} | ${r.fallbacks} | ${v.min}–${v.mean}–${v.max} | ${r.exact.rankUniformity.chiSquareZ} · ${r.exact.rankUniformity.ksSqrtND} | ${r.exact.maxObjectZ} | ${pct(r.perceptualLoad.measured.visible)} |`);
+    }
+    for (const d of DIFFICULTIES) {
+      const r = report.layouts[d];
+      lines.push("");
+      lines.push(`### ${name[d]} nos layouts`);
+      lines.push("");
+      lines.push("| Objeto | Pedido na sala pintada | Medido (todas as sementes) | 1ª linha | Exato nos layouts | Observado | z |");
+      lines.push("| --- | --- | --- | --- | --- | --- | --- |");
+      for (const o of r.objects) lines.push(`| ${o.id} | ${o.askedAtHome ? "sim" : "não"} | ${pct(o.measured)} | ${pct(o.firstLine)} | ${pct(o.exactInLayouts)} | ${pct(o.observedInLayouts)} | ${o.z} |`);
+      lines.push("");
+      lines.push(`Tiers (todas as linhas): ${TIERS.map((tier) => `${tier} ${pct(r.tierShare[tier])}`).join(" · ")} · estação da 1ª linha: ${STATIONS.map((st) => `${st} ${pct(r.firstLineStation[st])}`).join(" · ")}.`);
+    }
+  }
   lines.push("");
   lines.push(problems.length ? `Problemas: ${problems.join("; ")}` : "Nenhum invariante falhou.");
   return `${lines.join("\n")}\n`;
@@ -364,6 +581,10 @@ function markdown() {
 for (const d of DIFFICULTIES) {
   const r = report.difficulties[d];
   console.log(`${d.padEnd(6)} valid ${r.validRounds} · reached ${r.reached} · χ² z ${r.chiSquareZ} · max object |z| ${r.maxObjectZ} · visible ${pct(r.perceptualLoad.exact.visible)} · look-alikes ${r.perceptualLoad.exact.lookAlikes}`);
+}
+for (const d of LAYOUTS ? DIFFICULTIES : []) {
+  const r = report.layouts[d];
+  console.log(`${d.padEnd(6)} layouts: ${r.explorations} explorations · ${r.distinctLayouts} layouts · invalid ${r.invalid} · fallbacks ${r.fallbacks} · exact on ${r.exact.seeds}: rank χ² z ${r.exact.rankUniformity.chiSquareZ}, KS ${r.exact.rankUniformity.ksSqrtND}, max object |z| ${r.exact.maxObjectZ} · visible ${pct(r.perceptualLoad.measured.visible)}`);
 }
 if (OUT) {
   fs.mkdirSync(OUT, { recursive: true });

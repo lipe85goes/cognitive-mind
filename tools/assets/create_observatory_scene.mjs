@@ -1301,6 +1301,7 @@ function cupulaFloor() {
   ${mark("chao-luvas")}
   ${mark("chao-meia")}
   ${mark("bau-cupula")}
+  ${mark("atras-bau")}
   ${shadow(520, 1372, 110, 12, 0.8)}
   <rect x="420" y="1300" width="200" height="66" rx="8" fill="#3c4a5a" stroke="#141c24" stroke-width="3"/>
   <rect x="420" y="1300" width="200" height="12" rx="6" fill="#56687a"/>

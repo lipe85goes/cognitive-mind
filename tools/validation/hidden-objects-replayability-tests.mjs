@@ -1585,8 +1585,10 @@ const MUTANTS = [
     mustFail: ["R12"],
   },
   {
+    // a slot is no longer exclusive: two things on one slot never clash (dropping only the same-slot term would be
+    // an equivalent mutant — every pair of placements on one slot already clashes by shape, in both rooms)
     name: "two things may share a slot",
-    files: { [LAYOUT_FILE]: [["      if (slots[i] === slots[j] || tooClose(", "      if (tooClose("]] },
+    files: { [LAYOUT_FILE]: [["      if (slots[i] === slots[j] || tooClose(", "      if (slots[i] !== slots[j] && tooClose("]] },
     mustFail: ["R09"],
   },
   {

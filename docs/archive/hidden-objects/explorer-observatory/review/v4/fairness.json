@@ -1,7 +1,7 @@
 {
   "kit": "/assets/hidden-objects/explorer-observatory/v4",
   "plateSha256": "7e1a3158d1e84ec538945a36fc6c7a018b09d0285b66c3799e91c49fdccd4e58",
-  "atlasSha256": "0f54d7db9ea4a3391e023f94bca0ae743cd38ed561ca3fe1cd868cfa00695bc3",
+  "atlasSha256": "e89988d20b90b79b39f98b584e588b97fa3828f57e9a37dd2b3c07e7c22d3052",
   "rule": {
     "visible": "share of the target's own pixels the room shows on its slot (the plate's albedo with and without it, under what the room paints in front of the slot)",
     "contrast": "F4 as written: mean-luminance ratio, visible target vs a 24 su ring, on the composed room",
@@ -161,7 +161,7 @@
       ],
       "visibleAtRest": 0.848,
       "visibleOpen": 0.848,
-      "clutter": 0.15
+      "clutter": 0.151
     },
     {
       "id": "sino",
@@ -188,7 +188,7 @@
       ],
       "visibleAtRest": 0.695,
       "visibleOpen": 0.695,
-      "clutter": 0.18
+      "clutter": 0.181
     },
     {
       "id": "esquadro",
@@ -289,7 +289,7 @@
       ],
       "visibleAtRest": 0.968,
       "visibleOpen": 0.968,
-      "clutter": 0.135
+      "clutter": 0.134
     },
     {
       "id": "cadeado",
@@ -303,7 +303,7 @@
       ],
       "visibleAtRest": 0.967,
       "visibleOpen": 0.967,
-      "clutter": 0.238
+      "clutter": 0.239
     },
     {
       "id": "foguete",
@@ -402,7 +402,7 @@
       "contrast": 3.05,
       "edge": 4.97,
       "ring": 128128,
-      "busy": 9743,
+      "busy": 9744,
       "near": 3
     },
     {
@@ -476,6 +476,20 @@
       "near": 7
     },
     {
+      "key": "pantufas@atras-bau",
+      "id": "pantufas",
+      "slot": "atras-bau",
+      "tier": "B",
+      "visible": 0.705,
+      "visibleAtRest": 0.705,
+      "visibleOpen": 0.705,
+      "contrast": 2.99,
+      "edge": 4.48,
+      "ring": 96096,
+      "busy": 9835,
+      "near": 5
+    },
+    {
       "key": "oculos@caixa-ocular",
       "id": "oculos",
       "slot": "caixa-ocular",
@@ -529,7 +543,7 @@
       "edge": 1.87,
       "ring": 88608,
       "busy": 10855,
-      "near": 8
+      "near": 9
     },
     {
       "key": "ratinho@bau-cupula",
@@ -543,7 +557,7 @@
       "edge": 1.74,
       "ring": 88608,
       "busy": 6808,
-      "near": 8
+      "near": 9
     },
     {
       "key": "caneca@estante-740",
