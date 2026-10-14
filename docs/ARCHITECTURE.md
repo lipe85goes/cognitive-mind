@@ -26,9 +26,12 @@ política de mudança: `docs/GAMEPLAY_PLATFORM_LOCK_V1.md`. Gate:
   atrás delas, arte v3, em GAME03-INTERACTIONS-04; arranjos autorais por
   semente (as coisas pequenas mudam de lugar entre lugares desenhados, arte v4
   com prancha + atlas) em GAME03-REPLAYABILITY-05; o fechamento — polimento,
-  regressões e o registro de candidato a lock V1 — em
-  GAME03-FINAL-POLISH-LOCK-06 (`docs/GAME03_V1_LOCK_CANDIDATE_06.md`;
-  candidato, ainda não travado nem integrado).
+  regressões e candidato a lock V1 — em GAME03-FINAL-POLISH-LOCK-06
+  (`docs/GAME03_V1_LOCK_CANDIDATE_06.md`). Após revisão independente e smoke
+  final no celular, o runtime/produto em
+  `66944bc090f696e9fde3e0b012453db54d8fbc63` foi aceito e integrado por
+  fast-forward na branch canônica. `GAME03_V1_LOCK = PASS`; política e registro
+  oficial: `docs/GAME03_V1_LOCK.md`.
   Ver "Estúdio das Descobertas (Game 03)" abaixo, `docs/GAME03_SKELETON_01.md`,
   `docs/GAME03_EXPERIENCE_02.md`, `docs/GAME03_MULTISCENE_03.md`,
   `docs/GAME03_CALIBRATION_02A.md`, `docs/GAME03_INTERACTIONS_04.md`,
@@ -340,7 +343,7 @@ A cena mestre do Circuito (Home, transição, introdução, preparação) carreg
 
 ## Estúdio das Descobertas (Game 03)
 
-Skeleton V0 (GAME03-SKELETON-01), experiência V2 + pool de alvos V1 (GAME03-EXPERIENCE-02), duas salas com um motor só (GAME03-MULTISCENE-03), Dificuldade V3 (GAME03-CALIBRATION-02A), peças do cenário (GAME03-INTERACTIONS-04) e arranjos autorais por semente (GAME03-REPLAYABILITY-05); GAME03-FINAL-POLISH-LOCK-06 fechou o polimento e registrou o **candidato a lock V1** (`docs/GAME03_V1_LOCK_CANDIDATE_06.md`: o que a V1 tem, o que fica fora, evidência, limitações, quando dividir o código por sala). Até a revisão independente e a decisão de travar, o Game 03 segue fora do lock como os legados: segundo consumidor da plataforma, não um contrato travado. Registro completo — arquitetura, alvos, dificuldade, câmera, gestos, medições, `TO_VALIDATE_IN_SKELETON` e o protocolo `GAME03_FUN_GATE` — em `docs/GAME03_SKELETON_01.md`; a experiência V2, o pool, as rodadas, a justiça medida e o que fica para o playtest humano 02 em `docs/GAME03_EXPERIENCE_02.md`; o contrato de sala, o Observatório, a escolha de sala e o playtest da sala 02 em `docs/GAME03_MULTISCENE_03.md`; a Dificuldade V3 — bancos de pistas, pistas semeadas, régua e pisos derivados, arte v2, sósias V2 e o playtest da calibração — em `docs/GAME03_CALIBRATION_02A.md`; as peças do cenário — contrato, portões de revelação, profundidade de interação na régua, dicas, ciclo de vida, acessibilidade, arte v3 e o playtest das interações — em `docs/GAME03_INTERACTIONS_04.md`; decisões de produto em `docs/GAME03_DISCOVERY_01.md`.
+Skeleton V0 (GAME03-SKELETON-01), experiência V2 + pool de alvos V1 (GAME03-EXPERIENCE-02), duas salas com um motor só (GAME03-MULTISCENE-03), Dificuldade V3 (GAME03-CALIBRATION-02A), peças do cenário (GAME03-INTERACTIONS-04) e arranjos autorais por semente (GAME03-REPLAYABILITY-05); GAME03-FINAL-POLISH-LOCK-06 fechou o polimento e registrou o candidato (`docs/GAME03_V1_LOCK_CANDIDATE_06.md`). Após revisão independente e smoke final do proprietário, o conteúdo aceito foi integrado e **Game 03 V1 está travado**: `GAME03_V1_LOCK = PASS`, com registro e política de mudança em `docs/GAME03_V1_LOCK.md`. Registro completo — arquitetura, alvos, dificuldade, câmera, gestos, medições, `TO_VALIDATE_IN_SKELETON` e o protocolo `GAME03_FUN_GATE` — em `docs/GAME03_SKELETON_01.md`; a experiência V2, o pool, as rodadas, a justiça medida e o que fica para o playtest humano 02 em `docs/GAME03_EXPERIENCE_02.md`; o contrato de sala, o Observatório, a escolha de sala e o playtest da sala 02 em `docs/GAME03_MULTISCENE_03.md`; a Dificuldade V3 — bancos de pistas, pistas semeadas, régua e pisos derivados, arte v2, sósias V2 e o playtest da calibração — em `docs/GAME03_CALIBRATION_02A.md`; as peças do cenário — contrato, portões de revelação, profundidade de interação na régua, dicas, ciclo de vida, acessibilidade, arte v3 e o playtest das interações — em `docs/GAME03_INTERACTIONS_04.md`; decisões de produto em `docs/GAME03_DISCOVERY_01.md`.
 
 Arquivos (`src/games/hidden-objects/`):
 
