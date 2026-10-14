@@ -872,6 +872,11 @@ async function runChecks(tree) {
           placements += 1;
           if (!contains({ x: 0, y: 0, w: scene.width, h: scene.height }, p.box)) problems.push(`${scene.id}/${p.key}: outside the room`);
           if (thing.role === "prop") continue;
+          // nothing stands where a room piece is drawn but what that piece keeps (the piece would hide it)
+          for (const piece of scene.interactables ?? []) {
+            if (thing.gate === piece.id) continue;
+            if ([piece.rect, ...piece.states.map((st) => st.hit)].some((r) => intersects(r, p.box))) problems.push(`${scene.id}/${p.key}: under ${piece.id}, which does not keep it`);
+          }
           // F1: inside the safe area
           if (!contains(safe, p.box)) problems.push(`${scene.id}/${p.key}: outside the safe area (F1)`);
           // F4: no foreground layer, at its furthest drift and a clearance, ever covers it

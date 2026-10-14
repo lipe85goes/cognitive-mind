@@ -1797,6 +1797,7 @@ function plateBody() {
   ${mark("rodape-cupula")}
   ${mark("sobre-porta")}
   ${bookcase()}
+  ${mark("estante-prego-b")}
   ${ladder()}
   ${mark("estante-prego")}
   ${mark("coroa-a")}
@@ -1834,6 +1835,7 @@ function plateBody() {
   ${microTable()}
   ${mobileFromCeiling()}
   ${violinNail()}
+  ${mark("atras-cesto")}
   ${arquivoMaps()}
   ${mapCabinet()}
   ${curioCabinet()}

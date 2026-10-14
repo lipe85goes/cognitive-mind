@@ -1,7 +1,7 @@
 {
   "kit": "/assets/hidden-objects/explorer-observatory/v4",
   "plateSha256": "7e1a3158d1e84ec538945a36fc6c7a018b09d0285b66c3799e91c49fdccd4e58",
-  "atlasSha256": "8e6492366a0a16497a181d1f365f090ebb1b9ddf6ea9125e459e669600ab9135",
+  "atlasSha256": "0f54d7db9ea4a3391e023f94bca0ae743cd38ed561ca3fe1cd868cfa00695bc3",
   "rule": {
     "visible": "share of the target's own pixels the room shows on its slot (the plate's albedo with and without it, under what the room paints in front of the slot)",
     "contrast": "F4 as written: mean-luminance ratio, visible target vs a 24 su ring, on the composed room",
@@ -87,7 +87,7 @@
       ],
       "visibleAtRest": 0.778,
       "visibleOpen": 0.778,
-      "clutter": 0.158
+      "clutter": 0.159
     },
     {
       "id": "caneca",
@@ -111,7 +111,7 @@
       "lookAlikes": [],
       "visibleAtRest": 0.999,
       "visibleOpen": 0.999,
-      "clutter": 0.236
+      "clutter": 0.235
     },
     {
       "id": "sistema-solar",
@@ -188,7 +188,7 @@
       ],
       "visibleAtRest": 0.695,
       "visibleOpen": 0.695,
-      "clutter": 0.181
+      "clutter": 0.18
     },
     {
       "id": "esquadro",
@@ -276,7 +276,7 @@
       ],
       "visibleAtRest": 0.867,
       "visibleOpen": 0.867,
-      "clutter": 0.292
+      "clutter": 0.293
     },
     {
       "id": "cavalo-marinho",
@@ -289,7 +289,7 @@
       ],
       "visibleAtRest": 0.968,
       "visibleOpen": 0.968,
-      "clutter": 0.134
+      "clutter": 0.135
     },
     {
       "id": "cadeado",
@@ -303,7 +303,7 @@
       ],
       "visibleAtRest": 0.967,
       "visibleOpen": 0.967,
-      "clutter": 0.239
+      "clutter": 0.238
     },
     {
       "id": "foguete",
@@ -361,7 +361,7 @@
       "edge": 2.49,
       "ring": 105664,
       "busy": 15301,
-      "near": 4
+      "near": 5
     },
     {
       "key": "coruja@coroa-c",
@@ -375,7 +375,7 @@
       "edge": 2.37,
       "ring": 105664,
       "busy": 9761,
-      "near": 5
+      "near": 6
     },
     {
       "key": "pipa@parede-pipa",
@@ -402,7 +402,7 @@
       "contrast": 3.05,
       "edge": 4.97,
       "ring": 128128,
-      "busy": 9745,
+      "busy": 9743,
       "near": 3
     },
     {
@@ -501,7 +501,7 @@
       "edge": 1.83,
       "ring": 92352,
       "busy": 17520,
-      "near": 6
+      "near": 7
     },
     {
       "key": "caneca@estante-600",
@@ -515,7 +515,7 @@
       "edge": 1.39,
       "ring": 89440,
       "busy": 16780,
-      "near": 5
+      "near": 6
     },
     {
       "key": "ratinho@toca",
@@ -557,7 +557,7 @@
       "edge": 1.67,
       "ring": 89440,
       "busy": 14955,
-      "near": 6
+      "near": 7
     },
     {
       "key": "caneca@estante-880",
@@ -600,6 +600,20 @@
       "ring": 87360,
       "busy": 9148,
       "near": 3
+    },
+    {
+      "key": "ferradura@estante-prego-b",
+      "id": "ferradura",
+      "slot": "estante-prego-b",
+      "tier": "B",
+      "visible": 0.994,
+      "visibleAtRest": 0.994,
+      "visibleOpen": 0.994,
+      "contrast": 1.15,
+      "edge": 2.04,
+      "ring": 87360,
+      "busy": 20038,
+      "near": 6
     },
     {
       "key": "sistema-solar@sistema",
@@ -658,6 +672,34 @@
       "near": 4
     },
     {
+      "key": "compasso@mesa-maca",
+      "id": "compasso",
+      "slot": "mesa-maca",
+      "tier": "B",
+      "visible": 0.8,
+      "visibleAtRest": 0.8,
+      "visibleOpen": 0.8,
+      "contrast": 1.29,
+      "edge": 1.32,
+      "ring": 95680,
+      "busy": 15573,
+      "near": 5
+    },
+    {
+      "key": "maca@mesa-maca",
+      "id": "maca",
+      "slot": "mesa-maca",
+      "tier": "C",
+      "visible": 0.695,
+      "visibleAtRest": 0.695,
+      "visibleOpen": 0.695,
+      "contrast": 1.27,
+      "edge": 1.48,
+      "ring": 89440,
+      "busy": 15625,
+      "near": 5
+    },
+    {
       "key": "bule@mesa-bule",
       "id": "bule",
       "slot": "mesa-bule",
@@ -669,7 +711,7 @@
       "edge": 1.96,
       "ring": 101504,
       "busy": 14382,
-      "near": 2
+      "near": 3
     },
     {
       "key": "bule@mesa-frente",
@@ -683,7 +725,7 @@
       "edge": 1.42,
       "ring": 101504,
       "busy": 16624,
-      "near": 3
+      "near": 4
     },
     {
       "key": "maca@mesa-frente",
@@ -697,7 +739,7 @@
       "edge": 1.52,
       "ring": 89440,
       "busy": 15240,
-      "near": 3
+      "near": 4
     },
     {
       "key": "bule@mesa-esquerda",
@@ -740,20 +782,6 @@
       "ring": 88608,
       "busy": 7463,
       "near": 2
-    },
-    {
-      "key": "maca@mesa-maca",
-      "id": "maca",
-      "slot": "mesa-maca",
-      "tier": "C",
-      "visible": 0.695,
-      "visibleAtRest": 0.695,
-      "visibleOpen": 0.695,
-      "contrast": 1.27,
-      "edge": 1.48,
-      "ring": 89440,
-      "busy": 15625,
-      "near": 5
     },
     {
       "key": "maca@chao-bancada-a",
@@ -896,6 +924,20 @@
       "near": 0
     },
     {
+      "key": "gato@atras-cesto",
+      "id": "gato",
+      "slot": "atras-cesto",
+      "tier": "C",
+      "visible": 0.43,
+      "visibleAtRest": 0.43,
+      "visibleOpen": 0.43,
+      "contrast": 1.96,
+      "edge": 3.37,
+      "ring": 104000,
+      "busy": 17621,
+      "near": 2
+    },
+    {
       "key": "balanca@vitrine-700",
       "id": "balanca",
       "slot": "vitrine-700",
@@ -977,7 +1019,7 @@
       "edge": 1.89,
       "ring": 85280,
       "busy": 19077,
-      "near": 3
+      "near": 4
     },
     {
       "key": "cadeado@puxador-b",
@@ -991,7 +1033,7 @@
       "edge": 1.84,
       "ring": 85280,
       "busy": 14234,
-      "near": 3
+      "near": 4
     },
     {
       "key": "cadeado@puxador-c",
