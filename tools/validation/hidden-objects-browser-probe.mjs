@@ -134,6 +134,19 @@ const ROUNDS = SOURCE.require("src/games/hidden-objects/hidden-objects-rounds.ts
 const STUDIO_ROOM = SOURCE.require("src/games/hidden-objects/scenes/explorer-studio.ts").EXPLORER_STUDIO;
 /** The list a difficulty and seed draw in the Estúdio, in the order shown. */
 const drawn = (difficulty, seed) => ROUNDS.selectRoundTargets(STUDIO_ROOM, difficulty, seed);
+// GAME03-REPLAYABILITY-05 (restated): an object stands where its exploration's layout puts it. Old truth: where the
+// room's data painted it (TARGET). New truth: the page names the layout it plays (the shell's data-layout) and the
+// probe places the room from source with it (hidden-objects-layout.ts, placedScene) — taps, framing and hint words
+// read the object there; the room as painted until a round is on screen.
+const LAYOUT = SOURCE.require("src/games/hidden-objects/hidden-objects-layout.ts");
+let PLAYED = null;
+async function readPlayed(page) {
+  const signature = await page.evaluate(() => document.querySelector(".hos-shell")?.dataset.layout ?? null);
+  const layout = signature === null ? null : LAYOUT.layoutFromSignature(STUDIO_ROOM, signature);
+  if (layout) PLAYED = Object.fromEntries(LAYOUT.placedScene(STUDIO_ROOM, layout).pool.map((t) => [t.id, t]));
+}
+/** An object as this exploration plays it (where it stands, its slot's hint words). */
+const placed = (id) => PLAYED?.[id] ?? TARGET[id];
 /**
  * GAME03-CALIBRATION-02A: a round tells, for each object, the variant of its
  * clue bank the seed draws (the list's, and Médio's reclue) — before it, the
@@ -406,7 +419,8 @@ async function press(session, locator) {
 /** Station, then a drag if the object is not comfortably on screen: the way a person would get there. */
 async function bringIntoView(session, id) {
   const { page } = session;
-  const target = TARGET[id];
+  await readPlayed(page);
+  const target = placed(id);
   await press(session, page.locator(".hos-station", { hasText: STATION[target.station].label }));
   await settle(page);
   let cam = await camera(page);
@@ -501,6 +515,7 @@ async function startExploring(session, level = "Fácil") {
 
 /** The round on screen: the seed the shell reports and the list, in the order shown. */
 async function roundOnScreen(page) {
+  await readPlayed(page);
   const round = await page.evaluate(() => ({
     seed: document.querySelector(".hos-shell")?.dataset.roundSeed ?? null,
     ids: [...document.querySelectorAll(".hos-item")].map((item) => item.dataset.target ?? null),
@@ -620,7 +635,7 @@ async function listEntries(page) {
 async function onScreenCount(page, ids) {
   const cam = await camera(page);
   const inside = ids.filter((id) => {
-    const r = TARGET[id].region;
+    const r = placed(id).region;
     const box = r.kind === "rect" ? r : { x: r.cx - r.r, y: r.cy - r.r, w: 2 * r.r, h: 2 * r.r };
     const a = toScreen(cam, { x: box.x, y: box.y });
     const z = toScreen(cam, { x: box.x + box.w, y: box.y + box.h });
@@ -825,7 +840,7 @@ async function desktop() {
   metrics.playtest.hintPresses["desktop easy"] = 3;
   cam = await camera(page);
   const revealCentre = viewCentre(cam);
-  const subjectCentre = centreOf(subjectTarget.region);
+  const subjectCentre = centreOf(placed(subjectTarget.id).region);
   const hint3 = await page.evaluate(() => ({
     banner: document.querySelector(".hos-hint-banner")?.textContent ?? "",
     halo: document.querySelector(".hos-halo")?.className ?? null,
@@ -958,7 +973,7 @@ async function desktop() {
       (CALIBRATED
         ? mediumLadder[1].halo === null && mediumLadder[1].banner === `Pista: em outras palavras — ${toldClue("medium", SEEDS.desktop[1], mediumIds[0], "reclue")}`
         : /hos-halo-hint/.test(mediumLadder[1].halo ?? "")) &&
-      mediumLadder[2].halo === null && mediumLadder[2].banner === `Pista: olhe ${mediumSubject.hintDirection}.` &&
+      mediumLadder[2].halo === null && mediumLadder[2].banner === `Pista: olhe ${placed(mediumSubject.id).hintDirection}.` &&
       mediumLadder[3].button === "Rever pista" && neverPoints,
     { mediumLadder },
   );
@@ -1248,7 +1263,7 @@ async function hard() {
   const ladders = {};
   const problems = [];
   for (const [index, id] of hardIds.entries()) {
-    const target = TARGET[id];
+    const target = placed(id);
     await press(session, page.locator(".hos-item").nth(index));
     const steps = [];
     let previous = null;

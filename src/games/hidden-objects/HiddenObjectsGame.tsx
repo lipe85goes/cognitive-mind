@@ -6,6 +6,7 @@ import { ArrowLeft, Check, DoorOpen, Lightbulb, ListChecks, RotateCcw, Search } 
 import type { DifficultyLevel, GameComponentProps } from "@/types/game";
 import type { CameraView, HiddenObjectsSceneController, SceneTap } from "@/games/hidden-objects/hidden-objects-controller";
 import { pieceState } from "@/games/hidden-objects/hidden-objects-interactions";
+import { placedScene } from "@/games/hidden-objects/hidden-objects-layout";
 import {
   HIDDEN_OBJECTS_SUBTITLE,
   HIDDEN_OBJECTS_TITLE,
@@ -197,7 +198,7 @@ export function HiddenObjectsGame({ onComplete, onExit, onEntryReady, onEntryErr
   const feedback = useMemo<SceneFeedback>(() => {
     const event = state.lastEvent;
     const seq = state.eventSeq;
-    const halo = state.hintTarget ? hintHalo(roomOf(state), state.hintTarget, state.difficulty, state.hintStage, state.interactions) : null;
+    const halo = state.hintTarget ? hintHalo(placedScene(state.scene, state.layout), state.hintTarget, state.difficulty, state.hintStage, state.interactions) : null;
     const reveal = state.hintTarget ? hintRung(state.difficulty, state.hintStage) === "reveal" : false;
     return {
       found: state.foundIds,

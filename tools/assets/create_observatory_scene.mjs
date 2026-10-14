@@ -55,7 +55,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import sharp from "sharp";
-import { boxOf, debugOverlaySvg, fit, grainLayer, kb, loadRoom, n, render, seeded, writeReviewBoards } from "./hidden-objects-art-kit.mjs";
+import { boxOf, composeShipped, debugOverlaySvg, fit, grainLayer, kb, loadRoom, measureClutter, n, render, seeded, writeReviewBoards } from "./hidden-objects-art-kit.mjs";
 import { piecesOverlaySvg, renderPieces } from "./hidden-objects-pieces.mjs";
 import {
   allOpen,
@@ -1421,6 +1421,7 @@ function deskTop() {
 function deskItems() {
   return `
   ${mark("castical")}
+  ${mark("mesa-esquerda")}
   ${mark("mesa-pinca")}
   ${mark("mesa-frente")}
   <path d="M1716 948 L1830 940 L1836 956 L1720 962 Z" fill="url(#page)" opacity=".95"/>
@@ -2383,13 +2384,19 @@ async function main() {
     }),
   );
 
-  // the home layout's numbers (each object where it has always been, its neighbours where they have always been)
+  // the home layout's numbers (each object where it has always been, its neighbours where they have always been):
+  // clutter measured on the shipped room composed at rest with every thing on its first slot (all at once)
   const homeKeys = new Set(THINGS.map((t) => placementKey(t.id, t.placements[0].slot)));
+  // (the same composition the calibration suite measures the shipped room with: hidden-objects-art-kit.mjs, composeShipped)
+  const roomWithArt = { ...ROOM, atlas: { src: ROOM_ATLAS_SRC, width: atlasMeta.width, height: atlasMeta.height }, placementArt: Object.fromEntries(entries) };
+  const readPublic = (publicPath) => fs.readFileSync(path.join(ROOT, publicPath));
+  const homeComposed = {};
+  for (const state of ["rest", ...new Set(ROOM.pool.map((t) => t.gate).filter(Boolean))]) {
+    homeComposed[state] = await composeShipped(roomWithArt, readPublic, state === "rest" ? {} : { open: [state] });
+  }
   const homeRows = ROOM.pool.map((target) => {
     const key = placementKey(target.id, THINGS.find((t) => t.id === target.id).placements[0].slot);
     const m = measures.get(key);
-    let busy = m.busy;
-    for (const [other, delta] of Object.entries(m.near)) if (homeKeys.has(other)) busy += delta;
     return {
       id: target.id,
       tier: target.tier,
@@ -2400,7 +2407,7 @@ async function main() {
       visibleAtRest: m.visibleAtRest,
       visibleOpen: m.visibleOpen,
       ...(target.gate ? { gate: target.gate } : {}),
-      clutter: Number((busy / Math.max(1, m.ring)).toFixed(3)),
+      clutter: measureClutter(homeComposed[target.gate ?? "rest"], W, H, target.region),
     };
   });
   const placementRows = [...measures.entries()].map(([key, m]) => {
@@ -2421,7 +2428,7 @@ async function main() {
           visible: "share of the target's own pixels the room shows on its slot (the plate's albedo with and without it, under what the room paints in front of the slot)",
           contrast: "F4 as written: mean-luminance ratio, visible target vs a 24 su ring, on the composed room",
           edge: "median luminance ratio across the visible silhouette's edge (each edge pixel vs the background within 3 su), on the composed room with no other thing that moves",
-          clutter: "share of busy pixels (Sobel luminance gradient > 40) in the ring 16–120 su around the object's box, on the shipped layers composed at rest: `busy` with nothing else that moves, plus each neighbouring placement's `near` count when it is in the layout",
+          clutter: "share of busy pixels (Sobel luminance gradient > 40) in the ring 16–120 su around the object's box, on the shipped layers composed at rest: for `targets`, the home layout composed whole (every thing on its first slot); for `placements`, `busy` with nothing else that moves, plus each neighbouring placement's `near` count when it is in the layout (the game's arithmetic)",
           pieces: "the room's pieces are composed on the plate's plane at rest; an object kept behind a piece (gate) is measured with that piece open; visibleAtRest / visibleOpen: its visible share with every piece shut / open",
           layout: "GAME03-REPLAYABILITY-05: `targets` are the objects in the home layout (every thing on its first slot); `placements` are every pool object on every slot it may take",
         },

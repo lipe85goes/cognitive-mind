@@ -254,6 +254,15 @@ export async function composeShipped(room, readFile, { open = [] } = {}) {
     .composite(layerInputs(below))
     .png()
     .toBuffer();
+  // GAME03-REPLAYABILITY-05: the plate ships without the things that move; at rest the room shows each of them
+  // on its first slot (the home layout), painted from the room's atlas on the plate's plane, back to front
+  const sprites = homeSprites(room);
+  if (sprites.length) {
+    const atlas = readFile(`public${room.atlas.src}`);
+    const inputs = [];
+    for (const s of sprites) inputs.push({ input: await sharp(atlas).extract({ left: s.sx, top: s.sy, width: s.w, height: s.h }).png().toBuffer(), left: s.x, top: s.y });
+    png = await sharp(png).composite(inputs).png().toBuffer();
+  }
   if (pieces.length) {
     const images = Object.fromEntries(pieces.map((piece) => [piece.id, readFile(`public${piece.src}`)]));
     const states = Object.fromEntries(pieces.map((piece) => [piece.id, open.includes(piece.id) ? (piece.states.find((s) => s.open) ?? piece.states[0]).id : piece.initial]));
@@ -261,6 +270,26 @@ export async function composeShipped(room, readFile, { open = [] } = {}) {
     if (above.length) png = await sharp(png).composite(layerInputs(above)).png().toBuffer();
   }
   return sharp(png).raw().toBuffer();
+}
+
+/**
+ * GAME03-REPLAYABILITY-05: the pictures a room paints at rest — every thing that
+ * moves on its first slot, from the room's art (`placementArt`), in the game's
+ * order (the bottom of each thing's box, then its left, then its key). None on
+ * a room without an atlas (and on the data an art script reads, which has none).
+ */
+export function homeSprites(room) {
+  if (!room.atlas || !room.placementArt) return [];
+  const things = [
+    ...room.pool.filter((t) => t.placements?.length).map((t) => ({ id: t.id, box: boxOf(t.region), slot: t.placements[0].slot })),
+    ...room.lookAlikes.filter((l) => l.placements?.length).map((l) => ({ id: l.id, box: boxOf(l.region), slot: l.placements[0].slot })),
+    ...(room.props ?? []).map((p) => ({ id: p.id, box: p.box, slot: p.placements[0].slot })),
+  ];
+  return things
+    .map((t) => ({ ...t, key: `${t.id}@${t.slot}`, sprite: room.placementArt[`${t.id}@${t.slot}`]?.sprite }))
+    .filter((t) => t.sprite)
+    .sort((a, b) => a.box.y + a.box.h - (b.box.y + b.box.h) || a.box.x - b.box.x || (a.key < b.key ? -1 : 1))
+    .map((t) => t.sprite);
 }
 
 /** How busy a room is around a shape: the ring from CLUTTER_RING.inner to .outer su outside its box. */

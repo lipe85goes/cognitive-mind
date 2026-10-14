@@ -97,7 +97,19 @@ const STUDIO = "explorer-studio";
 const OBSERVATORY = "explorer-observatory";
 const STORAGE_KEY = /const STORAGE_KEY = "([^"]+)"/.exec(fs.readFileSync("src/engine/storage.ts", "utf8"))[1];
 const drawn = (roomId, difficulty, seed) => ROUNDS.selectRoundTargets(ROOM[roomId], difficulty, seed);
-const target = (roomId, id) => ROOM[roomId].pool.find((t) => t.id === id);
+// GAME03-REPLAYABILITY-05 (restated): an object stands where its exploration's layout puts it. Old truth: where the
+// room's data painted it. New truth: the page names the layout it plays (the shell's data-layout) and the probe
+// places the room from source with it (hidden-objects-layout.ts, placedScene) — every tap, frame and hint check
+// below reads the object there; the room as painted until a round is on screen.
+const LAYOUT = SOURCE.require("src/games/hidden-objects/hidden-objects-layout.ts");
+const PLAYED = {};
+async function readPlayed(page) {
+  const shown = await page.evaluate(() => ({ scene: document.querySelector(".hos-shell")?.dataset.scene ?? null, layout: document.querySelector(".hos-shell")?.dataset.layout ?? null }));
+  const room = shown.scene ? ROOM[shown.scene] : null;
+  const layout = room && shown.layout !== null ? LAYOUT.layoutFromSignature(room, shown.layout) : null;
+  if (layout) PLAYED[shown.scene] = LAYOUT.placedScene(room, layout);
+}
+const target = (roomId, id) => (PLAYED[roomId] ?? ROOM[roomId]).pool.find((t) => t.id === id);
 /** The line a clue list shows for `id` in the round (room, difficulty, seed). */
 function listedClue(roomId, difficulty, seed, id) {
   if (!CLUES) return target(roomId, id).clue;
@@ -262,6 +274,7 @@ const shell = (page) =>
     return element ? { status: element.dataset.status, scene: element.dataset.scene, seed: element.dataset.roundSeed === undefined ? null : Number(element.dataset.roundSeed) } : null;
   });
 async function roundOnScreen(page) {
+  await readPlayed(page);
   const round = await page.evaluate(() => ({
     scene: document.querySelector(".hos-shell")?.dataset.scene ?? null,
     seed: document.querySelector(".hos-shell")?.dataset.roundSeed ?? null,

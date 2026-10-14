@@ -1,12 +1,12 @@
 {
   "kit": "/assets/hidden-objects/explorer-studio/v4",
-  "plateSha256": "138bee5fbca77acc29a4829a548dd14da1a527a1141951c051bb96876c7a04c6",
-  "atlasSha256": "7ccceccbec64839f26adf8c08634bfbce5efccdc72fe0c9b01b78801b5a09b4c",
+  "plateSha256": "9062078bc5b5defc1bbd7224b922758f50d789fffc85d0188e86b1bc5212b800",
+  "atlasSha256": "c0e99db10e07a705ad51b8c69aa0ea0c52baa942f5e87fe8a59a7864295ed38d",
   "rule": {
     "visible": "share of the target's own pixels the room shows on its slot (the plate's albedo with and without it, under what the room paints in front of the slot)",
     "contrast": "F4 as written: mean-luminance ratio, visible target vs a 24 su ring, on the composed room",
     "edge": "median luminance ratio across the visible silhouette's edge (each edge pixel vs the background within 3 su), on the composed room with no other thing that moves",
-    "clutter": "share of busy pixels (Sobel luminance gradient > 40) in the ring 16–120 su around the object's box, on the shipped layers composed at rest: `busy` with nothing else that moves, plus each neighbouring placement's `near` count when it is in the layout",
+    "clutter": "share of busy pixels (Sobel luminance gradient > 40) in the ring 16–120 su around the object's box, on the shipped layers composed at rest: for `targets`, the home layout composed whole (every thing on its first slot); for `placements`, `busy` with nothing else that moves, plus each neighbouring placement's `near` count when it is in the layout (the game's arithmetic)",
     "pieces": "the room's pieces are composed on the plate's plane at rest; an object kept behind a piece (gate) is measured with that piece open; visibleAtRest / visibleOpen: its visible share with every piece shut / open",
     "layout": "GAME03-REPLAYABILITY-05: `targets` are the objects in the home layout (every thing on its first slot); `placements` are every pool object on every slot it may take"
   },
@@ -22,7 +22,7 @@
       ],
       "visibleAtRest": 0.953,
       "visibleOpen": 0.953,
-      "clutter": 0.159
+      "clutter": 0.161
     },
     {
       "id": "binoculo",
@@ -49,7 +49,7 @@
       ],
       "visibleAtRest": 0.707,
       "visibleOpen": 0.707,
-      "clutter": 0.133
+      "clutter": 0.13
     },
     {
       "id": "guarda-chuva",
@@ -60,7 +60,7 @@
       "lookAlikes": [],
       "visibleAtRest": 0.947,
       "visibleOpen": 0.947,
-      "clutter": 0.132
+      "clutter": 0.135
     },
     {
       "id": "gaiola",
@@ -73,7 +73,7 @@
       ],
       "visibleAtRest": 0.941,
       "visibleOpen": 0.941,
-      "clutter": 0.047
+      "clutter": 0.048
     },
     {
       "id": "caracol",
@@ -86,7 +86,7 @@
       ],
       "visibleAtRest": 0.793,
       "visibleOpen": 0.793,
-      "clutter": 0.208
+      "clutter": 0.205
     },
     {
       "id": "piao",
@@ -99,7 +99,7 @@
       ],
       "visibleAtRest": 0.976,
       "visibleOpen": 0.976,
-      "clutter": 0.156
+      "clutter": 0.154
     },
     {
       "id": "lupa",
@@ -112,7 +112,7 @@
       ],
       "visibleAtRest": 0.998,
       "visibleOpen": 0.998,
-      "clutter": 0.152
+      "clutter": 0.155
     },
     {
       "id": "bussola",
@@ -126,7 +126,7 @@
       ],
       "visibleAtRest": 0.878,
       "visibleOpen": 0.878,
-      "clutter": 0.21
+      "clutter": 0.209
     },
     {
       "id": "relogio",
@@ -140,7 +140,7 @@
       ],
       "visibleAtRest": 0.86,
       "visibleOpen": 0.86,
-      "clutter": 0.236
+      "clutter": 0.235
     },
     {
       "id": "xicara",
@@ -153,7 +153,7 @@
       ],
       "visibleAtRest": 0.538,
       "visibleOpen": 0.538,
-      "clutter": 0.189
+      "clutter": 0.192
     },
     {
       "id": "pena",
@@ -188,7 +188,7 @@
       "lookAlikes": [],
       "visibleAtRest": 1,
       "visibleOpen": 1,
-      "clutter": 0.103
+      "clutter": 0.105
     },
     {
       "id": "tesoura",
@@ -201,7 +201,7 @@
       ],
       "visibleAtRest": 0.625,
       "visibleOpen": 0.625,
-      "clutter": 0.185
+      "clutter": 0.187
     },
     {
       "id": "pinha",
@@ -225,7 +225,7 @@
       "lookAlikes": [],
       "visibleAtRest": 0.948,
       "visibleOpen": 0.948,
-      "clutter": 0.181
+      "clutter": 0.178
     },
     {
       "id": "lanterna",
@@ -251,7 +251,7 @@
       ],
       "visibleAtRest": 0.837,
       "visibleOpen": 0.837,
-      "clutter": 0.18
+      "clutter": 0.181
     },
     {
       "id": "estatueta",
@@ -265,7 +265,7 @@
       ],
       "visibleAtRest": 0.754,
       "visibleOpen": 0.754,
-      "clutter": 0.152
+      "clutter": 0.151
     },
     {
       "id": "globo",
@@ -287,7 +287,7 @@
       "lookAlikes": [],
       "visibleAtRest": 0.99,
       "visibleOpen": 0.99,
-      "clutter": 0.097
+      "clutter": 0.098
     },
     {
       "id": "gaita",
@@ -301,7 +301,7 @@
       ],
       "visibleAtRest": 0.807,
       "visibleOpen": 0.807,
-      "clutter": 0.178
+      "clutter": 0.173
     },
     {
       "id": "apito",
@@ -315,7 +315,7 @@
       "visibleAtRest": 0,
       "visibleOpen": 0.742,
       "gate": "gaveta-da-mesinha",
-      "clutter": 0.205
+      "clutter": 0.204
     },
     {
       "id": "colar",
@@ -358,8 +358,8 @@
       "contrast": 2.19,
       "edge": 1.77,
       "ring": 126880,
-      "busy": 16745,
-      "near": 12
+      "busy": 16918,
+      "near": 13
     },
     {
       "key": "ampulheta@peitoril-34",
@@ -372,7 +372,7 @@
       "contrast": 1.47,
       "edge": 1.71,
       "ring": 126880,
-      "busy": 16229,
+      "busy": 16395,
       "near": 7
     },
     {
@@ -386,8 +386,8 @@
       "contrast": 1.06,
       "edge": 1.32,
       "ring": 104416,
-      "busy": 14136,
-      "near": 7
+      "busy": 14078,
+      "near": 5
     },
     {
       "key": "chave@peitoril-1",
@@ -400,36 +400,22 @@
       "contrast": 1.48,
       "edge": 1.68,
       "ring": 95680,
-      "busy": 13557,
-      "near": 7
+      "busy": 13491,
+      "near": 5
     },
     {
-      "key": "binoculo@bau",
+      "key": "binoculo@tapete-d",
       "id": "binoculo",
-      "slot": "bau",
+      "slot": "tapete-d",
       "tier": "B",
-      "visible": 0.899,
-      "visibleAtRest": 0.899,
-      "visibleOpen": 0.899,
-      "contrast": 1.02,
-      "edge": 1.37,
+      "visible": 0.978,
+      "visibleAtRest": 0.978,
+      "visibleOpen": 0.978,
+      "contrast": 1.08,
+      "edge": 1.46,
       "ring": 104416,
-      "busy": 12900,
-      "near": 6
-    },
-    {
-      "key": "chave@bau",
-      "id": "chave",
-      "slot": "bau",
-      "tier": "C",
-      "visible": 0.707,
-      "visibleAtRest": 0.707,
-      "visibleOpen": 0.707,
-      "contrast": 1.63,
-      "edge": 1.67,
-      "ring": 95680,
-      "busy": 12716,
-      "near": 4
+      "busy": 12465,
+      "near": 14
     },
     {
       "key": "chave@tapete-d",
@@ -442,8 +428,8 @@
       "contrast": 1.63,
       "edge": 1.4,
       "ring": 95680,
-      "busy": 10829,
-      "near": 12
+      "busy": 10717,
+      "near": 13
     },
     {
       "key": "piao@tapete-d",
@@ -456,8 +442,22 @@
       "contrast": 1.85,
       "edge": 2.26,
       "ring": 89024,
-      "busy": 11105,
+      "busy": 11000,
       "near": 8
+    },
+    {
+      "key": "chave@bau",
+      "id": "chave",
+      "slot": "bau",
+      "tier": "C",
+      "visible": 0.707,
+      "visibleAtRest": 0.707,
+      "visibleOpen": 0.707,
+      "contrast": 1.63,
+      "edge": 1.67,
+      "ring": 95680,
+      "busy": 12453,
+      "near": 5
     },
     {
       "key": "guarda-chuva@canto",
@@ -470,35 +470,21 @@
       "contrast": 2.08,
       "edge": 1.49,
       "ring": 123552,
-      "busy": 14940,
-      "near": 8
+      "busy": 15381,
+      "near": 11
     },
     {
-      "key": "guarda-chuva@poltrona",
+      "key": "guarda-chuva@varao-b",
       "id": "guarda-chuva",
-      "slot": "poltrona",
+      "slot": "varao-b",
       "tier": "A",
-      "visible": 0.918,
-      "visibleAtRest": 0.918,
-      "visibleOpen": 0.918,
-      "contrast": 1.39,
-      "edge": 1.43,
+      "visible": 0.989,
+      "visibleAtRest": 0.989,
+      "visibleOpen": 0.989,
+      "contrast": 2.01,
+      "edge": 2.21,
       "ring": 123552,
-      "busy": 17156,
-      "near": 7
-    },
-    {
-      "key": "gaiola@suporte",
-      "id": "gaiola",
-      "slot": "suporte",
-      "tier": "C",
-      "visible": 0.941,
-      "visibleAtRest": 0.941,
-      "visibleOpen": 0.941,
-      "contrast": 1.41,
-      "edge": 1.5,
-      "ring": 101920,
-      "busy": 4771,
+      "busy": 16247,
       "near": 0
     },
     {
@@ -512,7 +498,21 @@
       "contrast": 1.61,
       "edge": 2.19,
       "ring": 101920,
-      "busy": 12778,
+      "busy": 12752,
+      "near": 0
+    },
+    {
+      "key": "gaiola@suporte",
+      "id": "gaiola",
+      "slot": "suporte",
+      "tier": "C",
+      "visible": 0.941,
+      "visibleAtRest": 0.941,
+      "visibleOpen": 0.941,
+      "contrast": 1.41,
+      "edge": 1.5,
+      "ring": 101920,
+      "busy": 4866,
       "near": 0
     },
     {
@@ -526,7 +526,7 @@
       "contrast": 1.35,
       "edge": 1.34,
       "ring": 101920,
-      "busy": 9095,
+      "busy": 9138,
       "near": 1
     },
     {
@@ -540,7 +540,7 @@
       "contrast": 2.03,
       "edge": 2.02,
       "ring": 87360,
-      "busy": 11421,
+      "busy": 11321,
       "near": 16
     },
     {
@@ -554,7 +554,7 @@
       "contrast": 2.3,
       "edge": 1.92,
       "ring": 87360,
-      "busy": 14441,
+      "busy": 14249,
       "near": 14
     },
     {
@@ -568,7 +568,7 @@
       "contrast": 1.43,
       "edge": 1.42,
       "ring": 87360,
-      "busy": 6686,
+      "busy": 6871,
       "near": 4
     },
     {
@@ -582,8 +582,8 @@
       "contrast": 1.59,
       "edge": 2.3,
       "ring": 89024,
-      "busy": 12973,
-      "near": 5
+      "busy": 12862,
+      "near": 4
     },
     {
       "key": "lupa@mapa",
@@ -596,8 +596,8 @@
       "contrast": 1.36,
       "edge": 1.75,
       "ring": 133120,
-      "busy": 17021,
-      "near": 12
+      "busy": 17416,
+      "near": 9
     },
     {
       "key": "lupa@livro",
@@ -610,8 +610,8 @@
       "contrast": 1.07,
       "edge": 1.77,
       "ring": 133120,
-      "busy": 22020,
-      "near": 7
+      "busy": 22187,
+      "near": 6
     },
     {
       "key": "lupa@livro-esq",
@@ -624,8 +624,8 @@
       "contrast": 1,
       "edge": 1.84,
       "ring": 133120,
-      "busy": 17677,
-      "near": 6
+      "busy": 18161,
+      "near": 4
     },
     {
       "key": "bussola@mapa-borda",
@@ -638,8 +638,8 @@
       "contrast": 1.06,
       "edge": 1.97,
       "ring": 111488,
-      "busy": 19595,
-      "near": 16
+      "busy": 19397,
+      "near": 15
     },
     {
       "key": "bussola@tapete-mesa-a",
@@ -652,7 +652,7 @@
       "contrast": 3.19,
       "edge": 1.49,
       "ring": 111488,
-      "busy": 13596,
+      "busy": 13266,
       "near": 6
     },
     {
@@ -666,7 +666,7 @@
       "contrast": 3.13,
       "edge": 1.61,
       "ring": 96512,
-      "busy": 12682,
+      "busy": 12482,
       "near": 4
     },
     {
@@ -680,8 +680,8 @@
       "contrast": 1.57,
       "edge": 1.63,
       "ring": 96512,
-      "busy": 21999,
-      "near": 8
+      "busy": 21812,
+      "near": 7
     },
     {
       "key": "relogio@tapete-mesa-b",
@@ -694,7 +694,7 @@
       "contrast": 2.71,
       "edge": 1.51,
       "ring": 96512,
-      "busy": 10385,
+      "busy": 10277,
       "near": 9
     },
     {
@@ -708,8 +708,8 @@
       "contrast": 1.52,
       "edge": 1.75,
       "ring": 89856,
-      "busy": 15752,
-      "near": 7
+      "busy": 16077,
+      "near": 5
     },
     {
       "key": "xicara@mapa-direita",
@@ -722,8 +722,8 @@
       "contrast": 1.05,
       "edge": 1.64,
       "ring": 89856,
-      "busy": 11540,
-      "near": 5
+      "busy": 11672,
+      "near": 2
     },
     {
       "key": "pena@mapa-direita",
@@ -736,36 +736,22 @@
       "contrast": 1.18,
       "edge": 3.33,
       "ring": 108992,
-      "busy": 11080,
-      "near": 2
+      "busy": 11155,
+      "near": 1
     },
     {
-      "key": "xicara@frasco",
+      "key": "xicara@mapa-dir-fundo",
       "id": "xicara",
-      "slot": "frasco",
+      "slot": "mapa-dir-fundo",
       "tier": "B",
-      "visible": 0.994,
-      "visibleAtRest": 0.994,
-      "visibleOpen": 0.994,
-      "contrast": 2.45,
-      "edge": 2.33,
+      "visible": 1,
+      "visibleAtRest": 1,
+      "visibleOpen": 1,
+      "contrast": 1.89,
+      "edge": 1.88,
       "ring": 89856,
-      "busy": 12474,
-      "near": 6
-    },
-    {
-      "key": "pena@frasco",
-      "id": "pena",
-      "slot": "frasco",
-      "tier": "B",
-      "visible": 0.999,
-      "visibleAtRest": 0.999,
-      "visibleOpen": 0.999,
-      "contrast": 1.86,
-      "edge": 2.93,
-      "ring": 108992,
-      "busy": 13013,
-      "near": 5
+      "busy": 8097,
+      "near": 1
     },
     {
       "key": "pena@mapa-dir-fundo",
@@ -778,8 +764,22 @@
       "contrast": 1.35,
       "edge": 3,
       "ring": 108992,
-      "busy": 7025,
-      "near": 7
+      "busy": 7106,
+      "near": 5
+    },
+    {
+      "key": "pena@frasco",
+      "id": "pena",
+      "slot": "frasco",
+      "tier": "B",
+      "visible": 0.999,
+      "visibleAtRest": 0.999,
+      "visibleOpen": 0.999,
+      "contrast": 1.86,
+      "edge": 2.93,
+      "ring": 108992,
+      "busy": 13079,
+      "near": 4
     },
     {
       "key": "borboleta@quadro-alto",
@@ -792,7 +792,7 @@
       "contrast": 2.74,
       "edge": 1.32,
       "ring": 104000,
-      "busy": 7056,
+      "busy": 7054,
       "near": 1
     },
     {
@@ -806,7 +806,7 @@
       "contrast": 3.19,
       "edge": 1.41,
       "ring": 104000,
-      "busy": 6003,
+      "busy": 6012,
       "near": 0
     },
     {
@@ -820,7 +820,7 @@
       "contrast": 3.07,
       "edge": 1.38,
       "ring": 104000,
-      "busy": 1946,
+      "busy": 1924,
       "near": 2
     },
     {
@@ -834,7 +834,7 @@
       "contrast": 1.75,
       "edge": 1.91,
       "ring": 96096,
-      "busy": 3583,
+      "busy": 3622,
       "near": 4
     },
     {
@@ -848,8 +848,8 @@
       "contrast": 1.34,
       "edge": 2.78,
       "ring": 96096,
-      "busy": 13265,
-      "near": 4
+      "busy": 13620,
+      "near": 3
     },
     {
       "key": "tesoura@mapa-fundo",
@@ -862,36 +862,22 @@
       "contrast": 2.32,
       "edge": 2,
       "ring": 88192,
-      "busy": 12979,
+      "busy": 13196,
       "near": 6
     },
     {
-      "key": "tesoura@livro-pagina",
+      "key": "tesoura@chao-mesa",
       "id": "tesoura",
-      "slot": "livro-pagina",
-      "tier": "A",
-      "visible": 1,
-      "visibleAtRest": 1,
-      "visibleOpen": 1,
-      "contrast": 3.91,
-      "edge": 5.42,
-      "ring": 88192,
-      "busy": 17461,
-      "near": 6
-    },
-    {
-      "key": "tesoura@mapa-fundo-b",
-      "id": "tesoura",
-      "slot": "mapa-fundo-b",
+      "slot": "chao-mesa",
       "tier": "C",
-      "visible": 0.651,
-      "visibleAtRest": 0.651,
-      "visibleOpen": 0.651,
-      "contrast": 1.96,
-      "edge": 1.41,
+      "visible": 0.999,
+      "visibleAtRest": 0.999,
+      "visibleOpen": 0.999,
+      "contrast": 1.17,
+      "edge": 1.31,
       "ring": 88192,
-      "busy": 7878,
-      "near": 4
+      "busy": 9641,
+      "near": 8
     },
     {
       "key": "pinha@prateleira-2",
@@ -904,7 +890,7 @@
       "contrast": 1.13,
       "edge": 1.51,
       "ring": 86528,
-      "busy": 9930,
+      "busy": 9874,
       "near": 4
     },
     {
@@ -918,7 +904,7 @@
       "contrast": 1.25,
       "edge": 1.53,
       "ring": 86528,
-      "busy": 5010,
+      "busy": 4981,
       "near": 2
     },
     {
@@ -932,7 +918,7 @@
       "contrast": 1.03,
       "edge": 1.53,
       "ring": 86528,
-      "busy": 8428,
+      "busy": 8409,
       "near": 2
     },
     {
@@ -946,8 +932,8 @@
       "contrast": 3.1,
       "edge": 2.06,
       "ring": 161616,
-      "busy": 28079,
-      "near": 8
+      "busy": 27690,
+      "near": 5
     },
     {
       "key": "lanterna@s4-lanterna",
@@ -960,36 +946,8 @@
       "contrast": 2.05,
       "edge": 1.39,
       "ring": 126880,
-      "busy": 17647,
-      "near": 12
-    },
-    {
-      "key": "lanterna@s4-a",
-      "id": "lanterna",
-      "slot": "s4-a",
-      "tier": "B",
-      "visible": 0.841,
-      "visibleAtRest": 0.841,
-      "visibleOpen": 0.841,
-      "contrast": 2.1,
-      "edge": 1.33,
-      "ring": 126880,
-      "busy": 16110,
-      "near": 3
-    },
-    {
-      "key": "camera@s4-a",
-      "id": "camera",
-      "slot": "s4-a",
-      "tier": "B",
-      "visible": 0.804,
-      "visibleAtRest": 0.804,
-      "visibleOpen": 0.804,
-      "contrast": 1.29,
-      "edge": 1.47,
-      "ring": 115648,
-      "busy": 14705,
-      "near": 3
+      "busy": 17453,
+      "near": 7
     },
     {
       "key": "camera@s2-camera",
@@ -1002,22 +960,50 @@
       "contrast": 1.95,
       "edge": 2.99,
       "ring": 115648,
-      "busy": 19279,
+      "busy": 19418,
       "near": 6
     },
     {
-      "key": "camera@s2-a",
+      "key": "camera@s4-a",
       "id": "camera",
-      "slot": "s2-a",
+      "slot": "s4-a",
       "tier": "B",
-      "visible": 0.978,
-      "visibleAtRest": 0.978,
-      "visibleOpen": 0.978,
-      "contrast": 1.52,
-      "edge": 1.78,
+      "visible": 0.806,
+      "visibleAtRest": 0.806,
+      "visibleOpen": 0.806,
+      "contrast": 1.19,
+      "edge": 1.45,
       "ring": 115648,
-      "busy": 23314,
-      "near": 8
+      "busy": 15566,
+      "near": 4
+    },
+    {
+      "key": "camera@s1-a",
+      "id": "camera",
+      "slot": "s1-a",
+      "tier": "B",
+      "visible": 0.97,
+      "visibleAtRest": 0.97,
+      "visibleOpen": 0.97,
+      "contrast": 1.15,
+      "edge": 1.33,
+      "ring": 115648,
+      "busy": 12368,
+      "near": 2
+    },
+    {
+      "key": "estatueta@s1-a",
+      "id": "estatueta",
+      "slot": "s1-a",
+      "tier": "B",
+      "visible": 0.989,
+      "visibleAtRest": 0.989,
+      "visibleOpen": 0.989,
+      "contrast": 3.05,
+      "edge": 2.46,
+      "ring": 99424,
+      "busy": 13483,
+      "near": 2
     },
     {
       "key": "estatueta@s1-estatueta",
@@ -1034,34 +1020,6 @@
       "near": 3
     },
     {
-      "key": "estatueta@s1-a",
-      "id": "estatueta",
-      "slot": "s1-a",
-      "tier": "B",
-      "visible": 0.989,
-      "visibleAtRest": 0.989,
-      "visibleOpen": 0.989,
-      "contrast": 3.05,
-      "edge": 2.46,
-      "ring": 99424,
-      "busy": 13413,
-      "near": 2
-    },
-    {
-      "key": "estatueta@s3-a",
-      "id": "estatueta",
-      "slot": "s3-a",
-      "tier": "B",
-      "visible": 0.998,
-      "visibleAtRest": 0.998,
-      "visibleOpen": 0.998,
-      "contrast": 3.55,
-      "edge": 2.4,
-      "ring": 99424,
-      "busy": 11743,
-      "near": 6
-    },
-    {
       "key": "globo@globo",
       "id": "globo",
       "slot": "globo",
@@ -1072,8 +1030,8 @@
       "contrast": 1.93,
       "edge": 1.35,
       "ring": 136448,
-      "busy": 16584,
-      "near": 9
+      "busy": 16566,
+      "near": 7
     },
     {
       "key": "bolsa@gancho",
@@ -1086,7 +1044,7 @@
       "contrast": 1.86,
       "edge": 2.25,
       "ring": 101504,
-      "busy": 6527,
+      "busy": 6614,
       "near": 4
     },
     {
@@ -1100,8 +1058,8 @@
       "contrast": 1.62,
       "edge": 1.65,
       "ring": 89024,
-      "busy": 12222,
-      "near": 5
+      "busy": 12215,
+      "near": 6
     },
     {
       "key": "gaita@s5-a",
@@ -1114,21 +1072,7 @@
       "contrast": 1.31,
       "edge": 1.48,
       "ring": 89024,
-      "busy": 15539,
-      "near": 4
-    },
-    {
-      "key": "gaita@s5-b",
-      "id": "gaita",
-      "slot": "s5-b",
-      "tier": "B",
-      "visible": 0.971,
-      "visibleAtRest": 0.971,
-      "visibleOpen": 0.971,
-      "contrast": 1.01,
-      "edge": 1.42,
-      "ring": 89024,
-      "busy": 11979,
+      "busy": 15487,
       "near": 3
     },
     {
@@ -1142,8 +1086,8 @@
       "contrast": 2.09,
       "edge": 1.78,
       "ring": 89440,
-      "busy": 14074,
-      "near": 13
+      "busy": 14058,
+      "near": 16
     },
     {
       "key": "apito@gaveta-b",
@@ -1156,8 +1100,8 @@
       "contrast": 1.9,
       "edge": 1.78,
       "ring": 89440,
-      "busy": 14337,
-      "near": 13
+      "busy": 14339,
+      "near": 15
     },
     {
       "key": "colar@caixinha-a",
@@ -1170,8 +1114,8 @@
       "contrast": 2.38,
       "edge": 3.15,
       "ring": 87776,
-      "busy": 9823,
-      "near": 6
+      "busy": 9857,
+      "near": 5
     },
     {
       "key": "colar@caixinha-b",
@@ -1184,8 +1128,8 @@
       "contrast": 2.6,
       "edge": 3.15,
       "ring": 87776,
-      "busy": 9913,
-      "near": 6
+      "busy": 9945,
+      "near": 5
     },
     {
       "key": "cantil@cesto-a",
@@ -1198,7 +1142,7 @@
       "contrast": 2.36,
       "edge": 2.48,
       "ring": 91520,
-      "busy": 7519,
+      "busy": 7485,
       "near": 0
     },
     {
@@ -1212,7 +1156,7 @@
       "contrast": 2.45,
       "edge": 3.06,
       "ring": 91520,
-      "busy": 7787,
+      "busy": 7731,
       "near": 0
     }
   ]

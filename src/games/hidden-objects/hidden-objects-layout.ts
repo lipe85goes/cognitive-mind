@@ -10,7 +10,7 @@ import type {
   SlotId,
   TargetMeasure,
 } from "@/games/hidden-objects/hidden-objects-scene";
-import { LOOKALIKE_CLEARANCE_SU } from "@/games/hidden-objects/hidden-objects-scene";
+import { LOOKALIKE_CLEARANCE_SU, TARGET_GAP_SU } from "@/games/hidden-objects/hidden-objects-scene";
 
 /**
  * Game 03 — where the room's movable things sit in one exploration
@@ -34,8 +34,9 @@ import { LOOKALIKE_CLEARANCE_SU } from "@/games/hidden-objects/hidden-objects-sc
  *      painted before — is used instead.
  * Two placements clash when they are the same slot, or their boxes come
  * closer than the room's rules allow: any two things never touch
- * (OCCUPANCY_GAP_SU), and a look-alike keeps LOOKALIKE_CLEARANCE_SU from every
- * pool object, as the contract has always asked.
+ * (OCCUPANCY_GAP_SU), two pool objects keep TARGET_GAP_SU and a look-alike
+ * keeps LOOKALIKE_CLEARANCE_SU from every pool object, as the contract has
+ * always asked.
  *
  * A layout's `signature` is its placements, one character per thing that can
  * move: what tests, reports and the "no immediate repeat" rule compare.
@@ -158,6 +159,7 @@ export function regionGap(a: SceneRegion, b: SceneRegion): number {
  * Whether two things on two different slots may not be in the same layout:
  *   - a look-alike and a pool object closer than the contract's clearance
  *     (shape to shape, as it has always been measured);
+ *   - two pool objects closer than TARGET_GAP_SU (shape to shape);
  *   - any other two whose boxes come closer than the occupancy gap — unless
  *     one stands clearly in front of the other (the bottoms of their boxes at
  *     least LAYER_DEPTH_SU apart: a pot on the sill behind the hourglass on the
@@ -167,6 +169,7 @@ export function regionGap(a: SceneRegion, b: SceneRegion): number {
 export function tooClose(roleA: ThingRole, a: SceneRegion, roleB: ThingRole, b: SceneRegion): boolean {
   const decoyPair = (roleA === "target" && roleB === "lookalike") || (roleA === "lookalike" && roleB === "target");
   if (decoyPair) return regionGap(a, b) < LOOKALIKE_CLEARANCE_SU - 1e-9;
+  if (roleA === "target" && roleB === "target") return regionGap(a, b) < TARGET_GAP_SU - 1e-9;
   const boxA = regionBox(a);
   const boxB = regionBox(b);
   if (regionGap(rectRegion(boxA), rectRegion(boxB)) >= OCCUPANCY_GAP_SU - 1e-9) return false;
@@ -372,7 +375,11 @@ function layoutPlan(scene: SceneDefinition): LayoutPlan {
     while (queue.length) {
       const t = queue.shift() as number;
       component.push(t);
-      for (const other of movable) if (!seen.has(other) && linked(t, other)) (seen.add(other), queue.push(other));
+      for (const other of movable) {
+        if (seen.has(other) || !linked(t, other)) continue;
+        seen.add(other);
+        queue.push(other);
+      }
     }
     components.push(component.sort((a, b) => a - b));
   }

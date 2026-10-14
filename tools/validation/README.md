@@ -255,6 +255,41 @@ drags (0) and per piece toggle (1). Checks of the older suites and probes that
 the pieces superseded read each tree by its generation (`isInteractive` in the
 harness); `docs/GAME03_INTERACTIONS_04.md` §15 lists them.
 
+**GAME03-REPLAYABILITY-05 — seeded, authored room layouts.** The replayability
+suite, its browser probe, the variety report and the layout witnesses (sharing
+the harness with the suites above):
+
+```bash
+node tools/validation/hidden-objects-replayability-tests.mjs                    # 36 checks ([replayability], [preserved]), ~50 s
+node tools/validation/hidden-objects-replayability-tests.mjs --counterfactuals  # base 36ab89a + 21 in-memory mutants
+node tools/validation/hidden-objects-replayability-probe.mjs [--scenario NAME] [--out DIR] [--json FILE]
+node tools/validation/hidden-objects-layout-variety.mjs [--n=3000] [--json FILE] # layout space, slot use, repeats, sessions, cost
+node tools/validation/hidden-objects-layout-witnesses.mjs                      # review boards from the shipped files
+```
+
+The suite checks the authored layout model (slots and placements as scene
+data, every placement on an authored slot of its station and gate, hint words
+naming only what never moves, no free coordinate, no `Math.random`), the seed
+(same room, difficulty and seed → the same layout, coordinates and hit
+regions, in fresh module graphs too; Recomeçar keeps it; a new exploration
+draws another; nothing else — render, camera, pinch, resize, rotation,
+reduced motion, hints, pieces, finds, the tray, visibility — moves a thing),
+occupancy (no shared slot, look-alike clearance, the F2 gap between objects,
+nothing in front of an object), the room fairness floors on every slot (F1
+safe area, F4 clear of the foreground's drift, F5 framed clear of the HUD,
+visible and edge floors per placement tier from the audit of the shipped
+atlas), hit testing, hints and kept objects following the placement, the
+round model reading the measurements of each slot (and every difficulty's
+rule holding on the composed room, tiers counted from the placements),
+variety (every placement reachable and drawn, no slot dominating, no Difícil
+object collapsing to one spot, no immediate repeat, 20 explorations all
+different), bounded generation, and, `[preserved]`, the rooms' anchors, a
+light Home, no timer/score, old results and two rooms. Checks of the older
+suites and probes that the layouts superseded read each tree by its
+generation (the layout module present) and aim at the room as played — the
+layout the shell names (`data-layout`); `docs/GAME03_REPLAYABILITY_05.md`
+lists them.
+
 The first runs the real code from source: the pure scene/camera/gesture/model
 modules, the scene controller on a fake viewport under a virtual clock, the real
 `HiddenObjectsGame` with its real scene under a small React (every gesture is a

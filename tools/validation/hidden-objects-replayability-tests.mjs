@@ -50,6 +50,8 @@ import {
   STORAGE_KEY,
   VIEWPORTS,
   browserMocks,
+  hudRects,
+  intersects,
   cached,
   clip,
   codeOnly,
@@ -114,6 +116,9 @@ const HIDDEN_AT_REST = 0.05;
  */
 const OCCUPANCY_GAP = 4;
 const DEPTH = 40;
+/** The room fairness floors every room has met at home since the skeleton (F1 safe area, F2 between objects, F4 clear of the foreground's drift), now held on every slot. */
+const TARGET_GAP = 24;
+const FRONT_CLEARANCE = 24;
 /** Placements a thing may have: a fixed thing one, a small one 2–4. */
 const PLACEMENTS_PER_THING = { max: 4 };
 /** A thing this large (su², its box: furniture-sized, ~200×200 su) is part of the room's structure: it never moves. */
@@ -225,6 +230,7 @@ function clashes(scene, a, pa, b, pb) {
   if (pa.slot.id === pb.slot.id) return true;
   const decoy = (a.role === "target" && b.role === "lookalike") || (a.role === "lookalike" && b.role === "target");
   if (decoy) return shapeGap(pa.region, pb.region) < clearance - EPS;
+  if (a.role === "target" && b.role === "target") return shapeGap(pa.region, pb.region) < TARGET_GAP - EPS;
   if (boxGap(pa.box, pb.box) >= OCCUPANCY_GAP - EPS) return false;
   const depth = pa.box.y + pa.box.h - (pb.box.y + pb.box.h);
   if (Math.abs(depth) < DEPTH) return true;
@@ -660,6 +666,11 @@ async function runChecks(tree) {
           // a pool object's slot says where it is in words that name only what never moves
           if (thing.role === "target" && !(p.slot.hints?.region && p.slot.hints?.direction && p.slot.hints?.context)) problems.push(`${scene.id}/${p.key}: slot without hint words`);
           if (thing.role === "target" && !["A", "B", "C"].includes(tierOf(thing, p))) problems.push(`${scene.id}/${p.key}: no tier`);
+          // a look-alike stays in the station of what it resembles (the contract's rule since it has look-alikes)
+          if (thing.role === "lookalike") {
+            const like = scene.pool.find((t) => t.id === scene.lookAlikes.find((l) => l.id === thing.id).resembles);
+            if (p.slot.station !== like.station) problems.push(`${scene.id}/${p.key}: away from ${like.id}'s station`);
+          }
         }
       }
       // a slot's hint words never name a thing that moves
@@ -706,6 +717,8 @@ async function runChecks(tree) {
       const regions = (game) => game.roomPlayed().pool.filter((t) => game.listed().includes(t.id)).map((t) => [t.id, t.region]);
       if (!ta.length) problems.push(`${id}: nothing painted from the atlas`);
       if (!same(ta, b.things()) || a.signature() !== b.signature()) problems.push(`${id}: two visits with seed ${seed} paint different rooms`);
+      // …and the room the source composes for that seed, here
+      if (a.signature() !== engine(tree).rounds.selectRound(scene, "medium", seed).layout.signature) problems.push(`${id}: the page paints another room than seed ${seed} composes`);
       if (!same(regions(a), regions(b))) problems.push(`${id}: two visits with seed ${seed} place the list differently`);
       // the same tap finds the same object in both
       const away = a.roomPlayed().pool.find((t) => a.listed().includes(t.id) && !same(t.region, scene.pool.find((x) => x.id === t.id).region) && !t.gate);
@@ -838,8 +851,8 @@ async function runChecks(tree) {
             const a = things[i];
             const b = things[j];
             if (clashes(scene, a, at[a.id], b, at[b.id])) problems.push(`${scene.id}: ${at[a.id].key} × ${at[b.id].key}`);
-            // two pool objects never overlap: a tap is never ambiguous
-            if (a.role === "target" && b.role === "target" && boxGap(at[a.id].box, at[b.id].box) <= 0) problems.push(`${scene.id}: ${a.id} overlaps ${b.id}`);
+            // F2: two pool objects keep their distance — a tap is never ambiguous
+            if (a.role === "target" && b.role === "target" && shapeGap(at[a.id].region, at[b.id].region) < TARGET_GAP - EPS) problems.push(`${scene.id}: ${at[a.id].key} ${shapeGap(at[a.id].region, at[b.id].region).toFixed(1)} su from ${at[b.id].key}`);
           }
       }
     }
@@ -848,15 +861,37 @@ async function runChecks(tree) {
   });
 
   await check("R10", "replayability", "NO_PLACEMENT_OUTSIDE_THE_ROOM_OR_UNDER_THE_FOREGROUND", () => {
+    const { contract, camera: cam } = engine(tree);
     const problems = [];
     let placements = 0;
     for (const scene of engine(tree).scenes) {
-      const fronts = scene.layers.slice(scene.layers.findIndex((l) => l.id === "plate") + 1).flatMap((l) => l.opaque ?? []);
+      const fronts = scene.layers.slice(scene.layers.findIndex((l) => l.id === "plate") + 1);
+      const safe = { x: contract.SAFE_MARGIN_X, y: contract.SAFE_MARGIN_Y, w: scene.width - 2 * contract.SAFE_MARGIN_X, h: scene.height - 2 * contract.SAFE_MARGIN_Y };
       for (const thing of thingsOf(scene))
         for (const p of thing.placements) {
           placements += 1;
           if (!contains({ x: 0, y: 0, w: scene.width, h: scene.height }, p.box)) problems.push(`${scene.id}/${p.key}: outside the room`);
-          if (fronts.some((r) => contains(r, p.box))) problems.push(`${scene.id}/${p.key}: wholly under a foreground layer`);
+          if (thing.role === "prop") continue;
+          // F1: inside the safe area
+          if (!contains(safe, p.box)) problems.push(`${scene.id}/${p.key}: outside the safe area (F1)`);
+          // F4: no foreground layer, at its furthest drift and a clearance, ever covers it
+          for (const layer of fronts) {
+            const drift = cam.maxParallaxOffset(scene, layer.parallax);
+            for (const paint of layer.opaque ?? []) {
+              const grown = { x: paint.x - drift.x - FRONT_CLEARANCE, y: paint.y - drift.y - FRONT_CLEARANCE, w: paint.w + 2 * (drift.x + FRONT_CLEARANCE), h: paint.h + 2 * (drift.y + FRONT_CLEARANCE) };
+              if (intersects(grown, p.box)) problems.push(`${scene.id}/${p.key}: within ${layer.id}'s drift (F4)`);
+            }
+          }
+          // F5: an object can be framed whole, clear of the HUD, on every viewport
+          if (thing.role === "target")
+            for (const viewport of VIEWPORTS) {
+              const camera = cam.revealCamera(scene, p.box, viewport);
+              const a = cam.sceneToViewport(scene, { x: p.box.x, y: p.box.y }, camera, viewport);
+              const z = cam.sceneToViewport(scene, { x: p.box.x + p.box.w, y: p.box.y + p.box.h }, camera, viewport);
+              const screen = { x: a.x, y: a.y, w: z.x - a.x, h: z.y - a.y };
+              if (screen.x < -EPS || screen.y < -EPS || screen.x + screen.w > viewport.width + EPS || screen.y + screen.h > viewport.height + EPS) problems.push(`${scene.id}/${p.key}: off screen when framed (${viewport.name})`);
+              for (const hud of hudRects(viewport)) if (intersects(screen, hud)) problems.push(`${scene.id}/${p.key}: under the ${hud.name} when framed (${viewport.name})`);
+            }
           // a picture of it is painted where its box is
           const sprite = scene.placementArt?.[p.key]?.sprite;
           if (sprite && boxGap(p.box, { x: sprite.x, y: sprite.y, w: sprite.w, h: sprite.h }) > 0) problems.push(`${scene.id}/${p.key}: its picture is elsewhere`);
@@ -1541,12 +1576,17 @@ const MUTANTS = [
   },
   {
     name: "the hint's halo rings where the object was painted",
-    files: { [FILES.game]: [["    const halo = state.hintTarget ? hintHalo(roomOf(state), state.hintTarget", "    const halo = state.hintTarget ? hintHalo(state.scene, state.hintTarget"]] },
+    files: { [FILES.game]: [["    const halo = state.hintTarget ? hintHalo(placedScene(state.scene, state.layout), state.hintTarget", "    const halo = state.hintTarget ? hintHalo(state.scene, state.hintTarget"]] },
     mustFail: ["R12"],
   },
   {
     name: "two things may share a slot",
     files: { [LAYOUT_FILE]: [["      if (slots[i] === slots[j] || tooClose(", "      if (tooClose("]] },
+    mustFail: ["R09"],
+  },
+  {
+    name: "two pool objects may stand closer than the F2 floor",
+    files: { [LAYOUT_FILE]: [["  if (roleA === \"target\" && roleB === \"target\") return regionGap(a, b) < TARGET_GAP_SU - 1e-9;\n", ""]] },
     mustFail: ["R09"],
   },
   {

@@ -873,8 +873,10 @@ async function runChecks(tree) {
       .filter(
         (t) =>
           // GAME03-INTERACTIONS-04 (restated): an object may name the room piece it is kept behind (`gate`), and only one the room has
-          !same(sorted(Object.keys(t).filter((key) => key !== "listedAs" && key !== "gate")), TARGET_FIELDS) || !t.label || !normalizeText(t.accessibleLabel).includes(normalizeText(t.label)) ||
+          // GAME03-REPLAYABILITY-05 (restated): and the places it may stand (`placements`), each on a slot the room authors
+          !same(sorted(Object.keys(t).filter((key) => key !== "listedAs" && key !== "gate" && key !== "placements")), TARGET_FIELDS) || !t.label || !normalizeText(t.accessibleLabel).includes(normalizeText(t.label)) ||
           (t.gate !== undefined && !(scene.SCENE_INTERACTABLES ?? []).some((piece) => piece.id === t.gate)) ||
+          (t.placements !== undefined && !(Array.isArray(t.placements) && t.placements.length > 0 && t.placements.every((p) => (scene.SCENE_SLOTS ?? []).some((slot) => slot.id === p.slot)))) ||
           !["A", "B", "C"].includes(t.tier) || !scene.SCENE_STATIONS.some((station) => station.id === t.station) || !t.hintRegion || !regionValid(t.region) ||
           ![t.hintDirection, t.hintContext].every((line) => typeof line === "string" && line.trim().length > 0) ||
           !(Array.isArray(t.clues) && t.clues.length > 0 && t.clues.every((clue) => typeof clue.text === "string" && clue.text.trim().length > 0)) ||
@@ -1094,7 +1096,8 @@ async function runChecks(tree) {
             if (!holds || !offCentre) haloProblems.push(`${d}/${id}: ${rung}`);
           } else if (rung === "reveal") {
             // GAME03-INTERACTIONS-04 (restated): an object kept behind a shut piece is shown by its piece (revealOf)
-            const at = revealOf(model, id, s).centre;
+            // (the room as painted: this loop asks the model about the room's own data, not a session's layout)
+            const at = revealOf(model, id).centre;
             const ringsIt = t.gate ? Boolean(halo) : halo && halo.r > model.regionRadius(t.region);
             if (!(halo && Math.hypot(halo.cx - at.x, halo.cy - at.y) < EPS && ringsIt)) haloProblems.push(`${d}/${id}: reveal`);
           } else if (halo !== null) {
@@ -1111,13 +1114,13 @@ async function runChecks(tree) {
     const nothingByItself = studio.banner() === null && studio.halo() === null;
     studio.goTo("janela");
     const size = studio.size();
-    const lupa = model.targetById("lupa");
     studio.clickHint();
     studio.settle();
     const one = { banner: studio.banner(), station: nearCamera(studio.camera(), cam.stationCamera("mesa", size)), halo: studio.halo(), next: studio.hintLabel() };
     studio.clickHint();
     studio.settle();
-    const expected2 = model.hintHalo("lupa", "easy", 2);
+    // GAME03-REPLAYABILITY-05 (restated): the light falls where the round's layout put the Lupa
+    const expected2 = studio.playedModel().hintHalo("lupa", "easy", 2);
     const halo2 = studio.halo();
     const two = {
       banner: studio.banner(),
@@ -1130,7 +1133,7 @@ async function runChecks(tree) {
     const three = {
       banner: studio.banner(),
       halo: studio.halo()?.kind === "reveal",
-      framed: nearCamera(studio.camera(), cam.revealCamera(model.regionBounds(lupa.region), size)),
+      framed: nearCamera(studio.camera(), cam.revealCamera(model.regionBounds(studio.regionOf("lupa")), size)),
       next: studio.hintLabel(),
     };
     studio.tapAt(studio.targetClient("lupa"));
@@ -1402,7 +1405,8 @@ async function runChecks(tree) {
     studio.goTo("estante");
     for (let i = 0; i < 3; i += 1) studio.clickHint();
     studio.frames(1);
-    const revealCut = nearCamera(studio.camera(), cam.revealCamera(model.regionBounds(model.targetById("lupa").region), studio.size())) && studio.env.clock.pending().frames === 0;
+    // GAME03-REPLAYABILITY-05 (restated): framed where the round's layout put the Lupa
+    const revealCut = nearCamera(studio.camera(), cam.revealCamera(model.regionBounds(studio.regionOf("lupa")), studio.size())) && studio.env.clock.pending().frames === 0;
     studio.unmount();
     // the stylesheet: no fades, pulses or breathing under prefers-reduced-motion
     const block = mediaBlock(tree.read(FILES.css), "prefers-reduced-motion: reduce") ?? "";

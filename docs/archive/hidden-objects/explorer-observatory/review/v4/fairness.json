@@ -1,12 +1,12 @@
 {
   "kit": "/assets/hidden-objects/explorer-observatory/v4",
   "plateSha256": "7e1a3158d1e84ec538945a36fc6c7a018b09d0285b66c3799e91c49fdccd4e58",
-  "atlasSha256": "73049a2e3989c020d0db96d831249781f11869efe06278359f19c39ffd1aa130",
+  "atlasSha256": "8e6492366a0a16497a181d1f365f090ebb1b9ddf6ea9125e459e669600ab9135",
   "rule": {
     "visible": "share of the target's own pixels the room shows on its slot (the plate's albedo with and without it, under what the room paints in front of the slot)",
     "contrast": "F4 as written: mean-luminance ratio, visible target vs a 24 su ring, on the composed room",
     "edge": "median luminance ratio across the visible silhouette's edge (each edge pixel vs the background within 3 su), on the composed room with no other thing that moves",
-    "clutter": "share of busy pixels (Sobel luminance gradient > 40) in the ring 16–120 su around the object's box, on the shipped layers composed at rest: `busy` with nothing else that moves, plus each neighbouring placement's `near` count when it is in the layout",
+    "clutter": "share of busy pixels (Sobel luminance gradient > 40) in the ring 16–120 su around the object's box, on the shipped layers composed at rest: for `targets`, the home layout composed whole (every thing on its first slot); for `placements`, `busy` with nothing else that moves, plus each neighbouring placement's `near` count when it is in the layout (the game's arithmetic)",
     "pieces": "the room's pieces are composed on the plate's plane at rest; an object kept behind a piece (gate) is measured with that piece open; visibleAtRest / visibleOpen: its visible share with every piece shut / open",
     "layout": "GAME03-REPLAYABILITY-05: `targets` are the objects in the home layout (every thing on its first slot); `placements` are every pool object on every slot it may take"
   },
@@ -161,7 +161,7 @@
       ],
       "visibleAtRest": 0.848,
       "visibleOpen": 0.848,
-      "clutter": 0.151
+      "clutter": 0.15
     },
     {
       "id": "sino",
@@ -276,7 +276,7 @@
       ],
       "visibleAtRest": 0.867,
       "visibleOpen": 0.867,
-      "clutter": 0.293
+      "clutter": 0.292
     },
     {
       "id": "cavalo-marinho",
@@ -403,7 +403,7 @@
       "edge": 4.97,
       "ring": 128128,
       "busy": 9745,
-      "near": 4
+      "near": 3
     },
     {
       "key": "luneta@mesinha",
@@ -445,7 +445,7 @@
       "edge": 1.41,
       "ring": 104832,
       "busy": 11274,
-      "near": 1
+      "near": 0
     },
     {
       "key": "pantufas@cobertor",
@@ -658,20 +658,6 @@
       "near": 4
     },
     {
-      "key": "bule@mesa-pinca",
-      "id": "bule",
-      "slot": "mesa-pinca",
-      "tier": "B",
-      "visible": 1,
-      "visibleAtRest": 1,
-      "visibleOpen": 1,
-      "contrast": 1.35,
-      "edge": 1.58,
-      "ring": 101504,
-      "busy": 15963,
-      "near": 4
-    },
-    {
       "key": "bule@mesa-bule",
       "id": "bule",
       "slot": "mesa-bule",
@@ -712,6 +698,20 @@
       "ring": 89440,
       "busy": 15240,
       "near": 3
+    },
+    {
+      "key": "bule@mesa-esquerda",
+      "id": "bule",
+      "slot": "mesa-esquerda",
+      "tier": "B",
+      "visible": 1,
+      "visibleAtRest": 1,
+      "visibleOpen": 1,
+      "contrast": 1.53,
+      "edge": 1.64,
+      "ring": 101504,
+      "busy": 14845,
+      "near": 4
     },
     {
       "key": "sino@prateleira-esq-b",
@@ -819,10 +819,10 @@
       "visible": 1,
       "visibleAtRest": 1,
       "visibleOpen": 1,
-      "contrast": 2.17,
-      "edge": 2.52,
+      "contrast": 2.14,
+      "edge": 2.51,
       "ring": 129376,
-      "busy": 12870,
+      "busy": 12458,
       "near": 0
     },
     {
@@ -879,7 +879,7 @@
       "edge": 3.1,
       "ring": 104000,
       "busy": 15466,
-      "near": 7
+      "near": 6
     },
     {
       "key": "gato@banquinho",
@@ -991,7 +991,7 @@
       "edge": 1.84,
       "ring": 85280,
       "busy": 14234,
-      "near": 4
+      "near": 3
     },
     {
       "key": "cadeado@puxador-c",

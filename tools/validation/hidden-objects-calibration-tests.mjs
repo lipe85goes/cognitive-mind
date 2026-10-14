@@ -70,6 +70,7 @@ import {
   regionGap,
   same,
   sorted,
+  v3RoundKeeper,
 } from "./hidden-objects-harness.mjs";
 import { createHash } from "node:crypto";
 
@@ -171,6 +172,19 @@ function calibration(tree) {
 const room = (tree, id) => engine(tree).byId[id];
 
 /** Every valid round of a difficulty in a room, with its profile. */
+/**
+ * GAME03-REPLAYABILITY-05: a seed's round and the room it is played in — each
+ * object where the seed's layout puts it (the product's placedScene); on trees
+ * without layouts, the room as painted.
+ */
+function roomOfDraw(tree, scene, difficulty, seed) {
+  const { rounds } = engine(tree);
+  if (!tree.exists(`${DIR}hidden-objects-layout.ts`) || !rounds.selectRound) return { ids: rounds.selectRoundTargets(scene, difficulty, seed), scene };
+  const L = cached(tree, "calibration:layout", () => createModuleGraph({ tree, mocks: {}, globals: {} }).require(`${DIR}hidden-objects-layout.ts`));
+  const draw = rounds.selectRound(scene, difficulty, seed);
+  return { ids: draw.targets, scene: L.placedScene(scene, draw.layout) };
+}
+
 function profiled(tree, sceneId, difficulty) {
   return cached(tree, `calibration:profiled:${sceneId}:${difficulty}`, () => {
     const { rounds } = engine(tree);
@@ -276,7 +290,8 @@ function openGame(tree, { viewport = DESKTOP, reducedMotion = false, seeds = [] 
     },
     async decode() {
       // GAME03-INTERACTIONS-04: a room's movable pieces are essential art too (none before it)
-      for (const entry of harness.hosts((e) => e.type === IMAGE && (cls("hos-layer")(e) || cls("hos-piece")(e)))) entry.props.onLoad?.({ currentTarget: entry.node, target: entry.node });
+      // GAME03-REPLAYABILITY-05: and the room's sprite atlas, the picture of every thing that moves (absent before it)
+      for (const entry of harness.hosts((e) => e.type === IMAGE && (cls("hos-layer")(e) || cls("hos-piece")(e) || cls("hos-atlas")(e)))) entry.props.onLoad?.({ currentTarget: entry.node, target: entry.node });
       await drain();
       harness.flush();
       flushFrames(4);
@@ -307,8 +322,20 @@ function openGame(tree, { viewport = DESKTOP, reducedMotion = false, seeds = [] 
       game.click((entry) => cls("hos-station")(entry) && entry.text === label);
       game.settle();
     },
+    /**
+     * GAME03-REPLAYABILITY-05 (restated): the room as this exploration plays it —
+     * each object where the round's layout puts it, as the shell names it
+     * (`data-layout`); the room as painted on trees without layouts.
+     */
+    played() {
+      const scene = game.scene();
+      const signature = host(cls("hos-shell"))?.props["data-layout"];
+      if (signature === undefined || !tree.exists(`${DIR}hidden-objects-layout.ts`)) return scene;
+      const L = graph.require(`${DIR}hidden-objects-layout.ts`);
+      return L.placedScene(scene, L.layoutFromSignature(scene, signature));
+    },
     find(id) {
-      const target = model.targetById(game.scene(), id);
+      const target = model.targetById(game.played(), id);
       // GAME03-INTERACTIONS-04: an object kept behind a room piece is found the way the Explorador finds it — the piece opened first
       if (target.gate) {
         const image = harness.hosts((e) => e.type === IMAGE && cls("hos-piece")(e) && e.props["data-piece"] === target.gate)[0];
@@ -768,14 +795,20 @@ async function runChecks(tree) {
     const { rule, perRoom, problems } = bandFacts("easy");
     const { rounds, byId } = engine(tree);
     // the selector, the way the game calls it, never hands out anything else
+    // GAME03-REPLAYABILITY-05 (restated): a seed composes its room's layout with its list, so the list must be a valid
+    // round of that room (each object where the layout puts it, measured there), held by the rule applied apart
+    // (v3RoundKeeper); on trees without layouts, the room as painted (its enumerated rounds) as before
+    const keep = v3RoundKeeper(tree);
     for (const id of SCENE_IDS) {
       const valid = new Set(profiled(tree, id, "easy").map((r) => r.ids.join()));
       for (const seed of seedsOf(0x0808, 2000)) {
-        const ids = rounds.selectRoundTargets(byId[id], "easy", seed);
+        const { ids, scene: own } = roomOfDraw(tree, byId[id], "easy", seed);
         const order = byId[id].pool.map((t) => t.id);
-        if (!valid.has([...ids].sort((a, b) => order.indexOf(a) - order.indexOf(b)).join())) problems.push(`${id}: seed ${seed} drew an invalid round`);
+        const ok = own === byId[id] ? valid.has([...ids].sort((a, b) => order.indexOf(a) - order.indexOf(b)).join()) : keep(own, "easy", ids);
+        if (!ok) problems.push(`${id}: seed ${seed} drew an invalid round`);
       }
     }
+    void rounds;
     return { pass: problems.length === 0, floor: rule.minSearch, ceiling: rule.maxSearch, maxGlanceFinds: rule.maxPopOuts, perRoom, problems: problems.slice(0, 6), problemCount: problems.length };
   });
 
@@ -1224,7 +1257,8 @@ async function runChecks(tree) {
       const { clues } = calibration(tree);
       const ids = medium.listed();
       const choice = clues.selectRoundClues(scene, "medium", 0x2324, ids);
-      const t = scene.pool.find((candidate) => candidate.id === ids[0]);
+      // GAME03-REPLAYABILITY-05 (restated): the object where the round's layout put it, told in its slot's words
+      const t = medium.played().pool.find((candidate) => candidate.id === ids[0]);
       medium.focus(ids[0]);
       const banners = [];
       const halos = [];

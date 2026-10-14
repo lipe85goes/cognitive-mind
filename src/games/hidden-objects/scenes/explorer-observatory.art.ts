@@ -17,85 +17,85 @@ export const OBSERVATORY_PLACEMENT_ART: Readonly<Record<string, PlacementArt>> =
   "argolas@caixa-ocular": { sprite: { sx: 808, sy: 717, w: 53, h: 25, x: 929, y: 1096 } },
   "balanca@vitrine-700": {
     sprite: { sx: 257, sy: 292, w: 106, h: 92, x: 3139, y: 610 },
-    measured: { visible: 0.887, edge: 1.62, ring: 97344, busy: 13710, near: { "cavalo-marinho@vitrine-836": 1110, "concha@vitrine-836": 1379, "violino@prego-a": 748 } },
+    measured: { visible: 0.887, edge: 1.62, ring: 97344, busy: 13710, near: { "cavalo-marinho@vitrine-836": 1111, "concha@vitrine-836": 1382, "violino@prego-a": 756 } },
   },
   "balanca@vitrine-836": {
     sprite: { sx: 365, sy: 292, w: 106, h: 92, x: 3157, y: 746 },
-    measured: { visible: 1, edge: 2.01, ring: 97344, busy: 14883, near: { "cavalo-marinho@vitrine-980": 1102, "concha@armario-gato": 154, "concha@vitrine-700": 1531, "gato@armario-gato": 623 } },
+    measured: { visible: 1, edge: 2.01, ring: 97344, busy: 14883, near: { "cavalo-marinho@vitrine-980": 1110, "concha@armario-gato": 153, "concha@vitrine-700": 1546, "gato@armario-gato": 632 } },
   },
   "bola-de-borracha@chao-bola": { sprite: { sx: 774, sy: 564, w: 46, h: 51, x: 1702, y: 1193 } },
   "bola-de-borracha@chao-carretel": { sprite: { sx: 822, sy: 564, w: 46, h: 51, x: 1877, y: 1189 } },
   "bule@mesa-bule": {
     sprite: { sx: 789, sy: 292, w: 102, h: 87, x: 1866, y: 873 },
-    measured: { visible: 0.848, edge: 1.96, ring: 101504, busy: 14382, near: { "maca@mesa-maca": 275, "xicara-azul@mesa-xicara": 623 } },
+    measured: { visible: 0.848, edge: 1.96, ring: 101504, busy: 14382, near: { "maca@mesa-maca": 257, "xicara-azul@mesa-xicara": 624 } },
+  },
+  "bule@mesa-esquerda": {
+    sprite: { sx: 541, sy: 292, w: 122, h: 87, x: 1388, y: 873 },
+    measured: { visible: 1, edge: 1.64, ring: 101504, busy: 14845, near: { "compasso@prancheta": 1674, "maca@mesa-frente": 383, "pinca@mesa-frente": 335, "xicara-azul@mesa-frente": 270 } },
   },
   "bule@mesa-frente": {
-    sprite: { sx: 541, sy: 292, w: 122, h: 87, x: 1568, y: 877 },
-    measured: { visible: 1, edge: 1.42, ring: 101504, busy: 16624, near: { "compasso@mesa-pinca": 1712, "maca@mesa-maca": 275, "pinca@mesa-pinca": 841 } },
-  },
-  "bule@mesa-pinca": {
-    sprite: { sx: 665, sy: 292, w: 122, h: 87, x: 1432, y: 875 },
-    measured: { visible: 1, edge: 1.58, ring: 101504, busy: 15963, near: { "compasso@prancheta": 1622, "maca@mesa-frente": 683, "pinca@mesa-frente": 753, "xicara-azul@mesa-frente": 561 } },
+    sprite: { sx: 665, sy: 292, w: 122, h: 87, x: 1568, y: 877 },
+    measured: { visible: 1, edge: 1.42, ring: 101504, busy: 16624, near: { "compasso@mesa-pinca": 1712, "maca@mesa-maca": 257, "pinca@mesa-pinca": 838 } },
   },
   "cadeado@puxador-a": {
     sprite: { sx: 616, sy: 410, w: 54, h: 73, x: 2858, y: 1054 },
-    measured: { visible: 0.967, edge: 1.89, ring: 85280, busy: 19077, near: { "almofada@chao-almofada": 1006, "gato@chao-almofada": 1551, "medalhao@puxador-c": 261 } },
+    measured: { visible: 0.967, edge: 1.89, ring: 85280, busy: 19077, near: { "almofada@chao-almofada": 1016, "gato@chao-almofada": 1524, "medalhao@puxador-c": 250 } },
   },
   "cadeado@puxador-b": {
     sprite: { sx: 672, sy: 410, w: 54, h: 73, x: 2858, y: 1107 },
-    measured: { visible: 0.957, edge: 1.84, ring: 85280, busy: 14234, near: { "almofada@chao-almofada": 1265, "gato@chao-almofada": 2038, "lata-de-biscoitos@chao-lata": 287, "medalhao@puxador-c": 261 } },
+    measured: { visible: 0.957, edge: 1.84, ring: 85280, busy: 14234, near: { "almofada@chao-almofada": 1260, "lata-de-biscoitos@chao-lata": 291, "medalhao@puxador-c": 250 } },
   },
   "cadeado@puxador-c": {
     sprite: { sx: 728, sy: 410, w: 54, h: 73, x: 2985, y: 1004 },
-    measured: { visible: 0.975, edge: 1.92, ring: 85280, busy: 20036, near: { "concha@armario-gato": 703, "gato@armario-gato": 895, "medalhao@puxador-a": 254, "medalhao@puxador-b": 463 } },
+    measured: { visible: 0.975, edge: 1.92, ring: 85280, busy: 20036, near: { "concha@armario-gato": 702, "gato@armario-gato": 890, "medalhao@puxador-a": 250, "medalhao@puxador-b": 473 } },
   },
   "caleidoscopio@mesinha": { sprite: { sx: 393, sy: 717, w: 118, h: 28, x: 399, y: 970 } },
   "caleidoscopio@rodape-a": { sprite: { sx: 513, sy: 717, w: 118, h: 28, x: 641, y: 845 } },
   "caleidoscopio@rodape-cupula": { sprite: { sx: 633, sy: 717, w: 118, h: 28, x: 1071, y: 852 } },
   "caneca@estante-600": {
     sprite: { sx: 893, sy: 292, w: 75, h: 85, x: 482, y: 521 },
-    measured: { visible: 1, edge: 1.39, ring: 89440, busy: 16780, near: { "coruja@coroa-a": 496, "coruja@coroa-c": 1434, "pote-de-ceramica@estante-740": 801, "vaso-de-ceramica@coroa-a": 106, "vaso-de-ceramica@coroa-b": 332 } },
+    measured: { visible: 1, edge: 1.39, ring: 89440, busy: 16780, near: { "coruja@coroa-a": 497, "coruja@coroa-c": 1434, "pote-de-ceramica@estante-740": 790, "vaso-de-ceramica@coroa-a": 107, "vaso-de-ceramica@coroa-b": 332 } },
   },
   "caneca@estante-740": {
     sprite: { sx: 77, sy: 410, w: 65, h: 85, x: 497, y: 659 },
-    measured: { visible: 0.892, edge: 1.67, ring: 89440, busy: 14955, near: { "caleidoscopio@rodape-a": 474, "ferradura@estante-prego": 262, "ferradura@sobre-porta": 168, "oculos@estante-600": 1190, "pote-de-ceramica@estante-600": 974, "pote-de-ceramica@estante-880": 758 } },
+    measured: { visible: 0.892, edge: 1.67, ring: 89440, busy: 14955, near: { "caleidoscopio@rodape-a": 472, "ferradura@estante-prego": 255, "ferradura@sobre-porta": 168, "oculos@estante-600": 1180, "pote-de-ceramica@estante-600": 975, "pote-de-ceramica@estante-880": 754 } },
   },
   "caneca@estante-880": {
     sprite: { sx: 2, sy: 410, w: 73, h: 85, x: 489, y: 799 },
-    measured: { visible: 1, edge: 1.41, ring: 89440, busy: 18043, near: { "caleidoscopio@mesinha": 1061, "caleidoscopio@rodape-a": 526, "ferradura@sobre-porta": 169, "luneta@mesinha": 796, "oculos@mesinha": 1280, "pote-de-ceramica@estante-740": 1095 } },
+    measured: { visible: 1, edge: 1.41, ring: 89440, busy: 18043, near: { "caleidoscopio@mesinha": 1037, "caleidoscopio@rodape-a": 510, "ferradura@sobre-porta": 169, "luneta@mesinha": 734, "oculos@mesinha": 1292, "pote-de-ceramica@estante-740": 1089 } },
   },
   "carretel@chao-bancada-a": { sprite: { sx: 131, sy: 622, w: 42, h: 45, x: 1419, y: 1201 } },
   "carretel@chao-bola": { sprite: { sx: 175, sy: 622, w: 42, h: 45, x: 1704, y: 1201 } },
   "carretel@chao-carretel": { sprite: { sx: 219, sy: 622, w: 42, h: 45, x: 1879, y: 1197 } },
   "cavalo-marinho@vitrine-836": {
     sprite: { sx: 194, sy: 410, w: 41, h: 78, x: 3189, y: 751 },
-    measured: { visible: 1, edge: 1.44, ring: 85280, busy: 12052, near: { "balanca@vitrine-700": 814, "concha@vitrine-700": 1531, "gato@armario-gato": 442 } },
+    measured: { visible: 1, edge: 1.44, ring: 85280, busy: 12052, near: { "balanca@vitrine-700": 816, "concha@vitrine-700": 1546, "gato@armario-gato": 447 } },
   },
   "cavalo-marinho@vitrine-980": {
     sprite: { sx: 573, sy: 410, w: 41, h: 75, x: 3240, y: 869 },
-    measured: { visible: 0.968, edge: 1.41, ring: 85280, busy: 9749, near: { "balanca@vitrine-836": 1834, "concha@vitrine-836": 1719 } },
+    measured: { visible: 0.968, edge: 1.41, ring: 85280, busy: 9749, near: { "balanca@vitrine-836": 1834, "concha@vitrine-836": 1725 } },
   },
   "chapeu-de-mago@chao-chapeu": { sprite: { sx: 783, sy: 497, w: 40, h: 59, x: 470, y: 1231 } },
   "chapeu-de-mago@chao-cupula-b": { sprite: { sx: 825, sy: 497, w: 40, h: 59, x: 310, y: 1247 } },
   "chapeu-de-mago@chao-meia": { sprite: { sx: 867, sy: 497, w: 40, h: 59, x: 610, y: 1219 } },
   "compasso@mesa-pinca": {
     sprite: { sx: 948, sy: 2, w: 55, h: 116, x: 1458, y: 848 },
-    measured: { visible: 0.994, edge: 2.54, ring: 95680, busy: 13162, near: { "bule@mesa-frente": 962, "maca@mesa-frente": 482, "pinca@mesa-frente": 568, "xicara-azul@mesa-frente": 545 } },
+    measured: { visible: 0.994, edge: 2.54, ring: 95680, busy: 13162, near: { "bule@mesa-frente": 987, "maca@mesa-frente": 489, "pinca@mesa-frente": 572, "xicara-azul@mesa-frente": 543 } },
   },
   "compasso@prancheta": {
     sprite: { sx: 2, sy: 292, w: 55, h: 116, x: 1562, y: 800 },
-    measured: { visible: 0.884, edge: 2.68, ring: 95680, busy: 13466, near: { "bule@mesa-pinca": 1649, "maca@mesa-maca": 78, "pinca@mesa-pinca": 841, "xicara-azul@mesa-frente": 561 } },
+    measured: { visible: 0.884, edge: 2.68, ring: 95680, busy: 13466, near: { "bule@mesa-esquerda": 1052, "maca@mesa-maca": 78, "pinca@mesa-pinca": 838, "xicara-azul@mesa-frente": 559 } },
   },
   "concha@armario-gato": { sprite: { sx: 510, sy: 564, w: 70, h: 52, x: 2982, y: 851 } },
   "concha@vitrine-700": { sprite: { sx: 358, sy: 564, w: 74, h: 52, x: 3155, y: 647 } },
   "concha@vitrine-836": { sprite: { sx: 434, sy: 564, w: 74, h: 52, x: 3173, y: 783 } },
   "coruja@coroa-a": {
     sprite: { sx: 451, sy: 2, w: 74, h: 135, x: 313, y: 321 },
-    measured: { visible: 1, edge: 2.49, ring: 105664, busy: 15301, near: { "caneca@estante-600": 1006, "ferradura@estante-prego": 1840, "oculos@estante-600": 322, "pote-de-ceramica@estante-600": 316 } },
+    measured: { visible: 1, edge: 2.49, ring: 105664, busy: 15301, near: { "caneca@estante-600": 1006, "ferradura@estante-prego": 1827, "oculos@estante-600": 325, "pote-de-ceramica@estante-600": 317 } },
   },
   "coruja@coroa-c": {
     sprite: { sx: 527, sy: 2, w: 74, h: 135, x: 495, y: 321 },
-    measured: { visible: 0.993, edge: 2.37, ring: 105664, busy: 9761, near: { "caneca@estante-600": 1576, "ferradura@estante-prego": 1840, "oculos@estante-600": 628, "pote-de-ceramica@estante-600": 547, "vaso-de-ceramica@coroa-a": 105 } },
+    measured: { visible: 0.993, edge: 2.37, ring: 105664, busy: 9761, near: { "caneca@estante-600": 1586, "ferradura@estante-prego": 1827, "oculos@estante-600": 632, "pote-de-ceramica@estante-600": 548, "vaso-de-ceramica@coroa-a": 101 } },
   },
   "escova@chao-chapeu": { sprite: { sx: 165, sy: 717, w: 74, h: 29, x: 454, y: 1253 } },
   "escova@chao-escova": { sprite: { sx: 241, sy: 717, w: 74, h: 29, x: 703, y: 1257 } },
@@ -112,26 +112,26 @@ export const OBSERVATORY_PLACEMENT_ART: Readonly<Record<string, PlacementArt>> =
   "fechadura@fechadura": { baked: true },
   "ferradura@estante-prego": {
     sprite: { sx: 445, sy: 410, w: 62, h: 77, x: 450, y: 480 },
-    measured: { visible: 0.999, edge: 2.96, ring: 87360, busy: 16796, near: { "caneca@estante-740": 577, "coruja@coroa-a": 2751, "coruja@coroa-c": 3084, "vaso-de-ceramica@coroa-a": 561, "vaso-de-ceramica@coroa-b": 452 } },
+    measured: { visible: 0.999, edge: 2.96, ring: 87360, busy: 16796, near: { "caneca@estante-740": 574, "coruja@coroa-a": 2753, "coruja@coroa-c": 3084, "vaso-de-ceramica@coroa-a": 556, "vaso-de-ceramica@coroa-b": 450 } },
   },
   "ferradura@sobre-porta": {
     sprite: { sx: 509, sy: 410, w: 62, h: 77, x: 681, y: 836 },
-    measured: { visible: 0.999, edge: 2.33, ring: 87360, busy: 9148, near: { "caneca@estante-740": -6, "caneca@estante-880": 244, "pote-de-ceramica@estante-740": 3 } },
+    measured: { visible: 0.999, edge: 2.33, ring: 87360, busy: 9148, near: { "caneca@estante-740": -2, "caneca@estante-880": 243, "pote-de-ceramica@estante-740": 3 } },
   },
   "flamula@flamula": { baked: true },
   "foguete@cubby-a": {
     sprite: { sx: 816, sy: 2, w: 64, h: 125, x: 685, y: 947 },
-    measured: { visible: 0.764, edge: 1.78, ring: 102336, busy: 16447, near: { "caleidoscopio@rodape-a": 1292, "caneca@estante-880": 249, "ferradura@sobre-porta": 1820, "pote-de-ceramica@estante-880": 3, "ratinho@toca": 1005, "rolo-de-mapas@mesinha-baixo": 86 } },
+    measured: { visible: 0.764, edge: 1.78, ring: 102336, busy: 16447, near: { "caleidoscopio@rodape-a": 1270, "caneca@estante-880": 248, "ferradura@sobre-porta": 1824, "pote-de-ceramica@estante-880": 3, "ratinho@toca": 1020, "rolo-de-mapas@mesinha-baixo": 85 } },
   },
   "foguete@cubby-b": {
     sprite: { sx: 882, sy: 2, w: 64, h: 125, x: 697, y: 947 },
-    measured: { visible: 0.82, edge: 1.88, ring: 102336, busy: 16340, near: { "caleidoscopio@rodape-a": 1292, "caneca@estante-880": 49, "ferradura@sobre-porta": 1820, "ratinho@toca": 851 } },
+    measured: { visible: 0.82, edge: 1.88, ring: 102336, busy: 16340, near: { "caleidoscopio@rodape-a": 1270, "caneca@estante-880": 49, "ferradura@sobre-porta": 1824, "ratinho@toca": 866 } },
   },
   "funil@prateleira-esq-a": { sprite: { sx: 697, sy: 674, w: 52, h: 32, x: 1302, y: 601 } },
   "funil@prateleira-esq-b": { sprite: { sx: 751, sy: 674, w: 40, h: 32, x: 1399, y: 605 } },
   "gato@armario-gato": {
     sprite: { sx: 290, sy: 497, w: 137, h: 65, x: 2953, y: 841 },
-    measured: { visible: 0.819, edge: 3.69, ring: 104000, busy: 19279, near: { "balanca@vitrine-836": 1250, "cadeado@puxador-c": 169, "cavalo-marinho@vitrine-836": 524, "concha@vitrine-836": 956, "medalhao@puxador-c": 144 } },
+    measured: { visible: 0.819, edge: 3.69, ring: 104000, busy: 19279, near: { "balanca@vitrine-836": 1251, "cadeado@puxador-c": 178, "cavalo-marinho@vitrine-836": 525, "concha@vitrine-836": 966, "medalhao@puxador-c": 144 } },
   },
   "gato@banquinho": {
     sprite: { sx: 2, sy: 497, w: 142, h: 65, x: 3114, y: 1261 },
@@ -139,11 +139,11 @@ export const OBSERVATORY_PLACEMENT_ART: Readonly<Record<string, PlacementArt>> =
   },
   "gato@chao-almofada": {
     sprite: { sx: 146, sy: 497, w: 142, h: 65, x: 2689, y: 1197 },
-    measured: { visible: 0.998, edge: 3.1, ring: 104000, busy: 15466, near: { "cadeado@puxador-a": 150, "cadeado@puxador-b": 893, "lata-de-biscoitos@chao-arquivo-c": 105, "lata-de-biscoitos@chao-lata": 997, "medalhao@puxador-a": 225, "medalhao@puxador-b": 463, "peca-de-xadrez@chao-arquivo-c": 34 } },
+    measured: { visible: 0.998, edge: 3.1, ring: 104000, busy: 15466, near: { "cadeado@puxador-a": 146, "lata-de-biscoitos@chao-arquivo-c": 106, "lata-de-biscoitos@chao-lata": 988, "medalhao@puxador-a": 221, "medalhao@puxador-b": 473, "peca-de-xadrez@chao-arquivo-c": 34 } },
   },
   "gramofone@armario-gramofone": {
     baked: true,
-    measured: { visible: 0.931, edge: 1.92, ring: 162656, busy: 22198, near: { "cadeado@puxador-c": 109, "concha@armario-gato": 856, "gato@armario-gato": 1248, "medalhao@puxador-c": 82, "violino@prego-a": 2632, "violino@prego-b": 2108 } },
+    measured: { visible: 0.931, edge: 1.92, ring: 162656, busy: 22198, near: { "cadeado@puxador-c": 118, "concha@armario-gato": 846, "gato@armario-gato": 1251, "medalhao@puxador-c": 82, "violino@prego-a": 2620, "violino@prego-b": 1776 } },
   },
   "ioio@gaveta-a": {
     sprite: { sx: 734, sy: 497, w: 47, h: 60, x: 2098, y: 1069 },
@@ -151,37 +151,37 @@ export const OBSERVATORY_PLACEMENT_ART: Readonly<Record<string, PlacementArt>> =
   },
   "ioio@gaveta-b": {
     sprite: { sx: 655, sy: 497, w: 77, h: 60, x: 2064, y: 1069 },
-    measured: { visible: 0.999, edge: 3.89, ring: 86944, busy: 14739, near: { "bule@mesa-bule": 6, "regador@chao-carretel": 16, "xicara-azul@mesa-xicara": 128 } },
+    measured: { visible: 0.999, edge: 3.89, ring: 86944, busy: 14739, near: { "bule@mesa-bule": 7, "regador@chao-carretel": 16, "xicara-azul@mesa-xicara": 128 } },
   },
   "lata-de-biscoitos@chao-arquivo-b": { sprite: { sx: 582, sy: 564, w: 62, h: 52, x: 2529, y: 1393 } },
   "lata-de-biscoitos@chao-arquivo-c": { sprite: { sx: 646, sy: 564, w: 62, h: 52, x: 2929, y: 1373 } },
   "lata-de-biscoitos@chao-lata": { sprite: { sx: 710, sy: 564, w: 62, h: 52, x: 2860, y: 1293 } },
   "leque@gaveta-leque": {
     baked: true,
-    measured: { visible: 0.867, edge: 1.49, ring: 93184, busy: 25481, near: { "cadeado@puxador-a": 138, "cadeado@puxador-c": 269, "concha@armario-gato": 1025, "gato@armario-gato": 1385, "medalhao@puxador-a": 169, "medalhao@puxador-c": 261 } },
+    measured: { visible: 0.867, edge: 1.49, ring: 93184, busy: 25481, near: { "cadeado@puxador-a": 129, "cadeado@puxador-c": 277, "concha@armario-gato": 1015, "gato@armario-gato": 1392, "medalhao@puxador-a": 166, "medalhao@puxador-c": 250 } },
   },
   "luminaria@luminaria": { baked: true },
   "luneta@mesinha": {
     sprite: { sx: 784, sy: 622, w: 176, h: 42, x: 371, y: 952 },
-    measured: { visible: 0.77, edge: 1.92, ring: 104832, busy: 24141, near: { "caleidoscopio@rodape-a": 355, "caneca@estante-880": 1374, "pote-de-ceramica@estante-880": 1106, "rolo-de-mapas@mesinha-baixo": 1368 } },
+    measured: { visible: 0.77, edge: 1.92, ring: 104832, busy: 24141, near: { "caleidoscopio@rodape-a": 344, "caneca@estante-880": 1378, "pote-de-ceramica@estante-880": 1104, "rolo-de-mapas@mesinha-baixo": 1333 } },
   },
   "luneta@rodape-cupula": {
     sprite: { sx: 596, sy: 622, w: 186, h: 42, x: 1033, y: 834 },
-    measured: { visible: 0.991, edge: 1.41, ring: 104832, busy: 11274, near: { "pipa@parede-pipa-b": 1502 } },
+    measured: { visible: 0.991, edge: 1.41, ring: 104832, busy: 11274, near: {  } },
   },
   "luvas@chao-luvas": { sprite: { sx: 2, sy: 674, w: 69, h: 41, x: 880, y: 1332 } },
   "luvas@cobertor": { sprite: { sx: 73, sy: 674, w: 69, h: 41, x: 1041, y: 1266 } },
   "maca@chao-bancada-a": {
     sprite: { sx: 237, sy: 410, w: 68, h: 77, x: 1406, y: 1165 },
-    measured: { visible: 1, edge: 2.79, ring: 89440, busy: 8017, near: { "novelo@caixote": 408 } },
+    measured: { visible: 1, edge: 2.79, ring: 89440, busy: 8017, near: { "novelo@caixote": 411 } },
   },
   "maca@mesa-frente": {
     sprite: { sx: 307, sy: 410, w: 68, h: 77, x: 1596, y: 887 },
-    measured: { visible: 0.999, edge: 1.52, ring: 89440, busy: 15240, near: { "bule@mesa-pinca": 1113, "compasso@mesa-pinca": 1546, "pinca@mesa-pinca": 737 } },
+    measured: { visible: 0.999, edge: 1.52, ring: 89440, busy: 15240, near: { "bule@mesa-esquerda": 733, "compasso@mesa-pinca": 1546, "pinca@mesa-pinca": 734 } },
   },
   "maca@mesa-maca": {
     sprite: { sx: 377, sy: 410, w: 66, h: 77, x: 1744, y: 889 },
-    measured: { visible: 0.695, edge: 1.48, ring: 89440, busy: 15625, near: { "bule@mesa-bule": 518, "bule@mesa-frente": 695, "compasso@prancheta": 15, "pinca@mesa-frente": 589, "xicara-azul@mesa-frente": 411 } },
+    measured: { visible: 0.695, edge: 1.48, ring: 89440, busy: 15625, near: { "bule@mesa-bule": 540, "bule@mesa-frente": 737, "compasso@prancheta": 15, "pinca@mesa-frente": 591, "xicara-azul@mesa-frente": 409 } },
   },
   "medalhao@puxador-a": { sprite: { sx: 250, sy: 564, w: 34, h: 54, x: 2868, y: 1052 } },
   "medalhao@puxador-b": { sprite: { sx: 286, sy: 564, w: 34, h: 54, x: 2868, y: 1105 } },
@@ -203,19 +203,19 @@ export const OBSERVATORY_PLACEMENT_ART: Readonly<Record<string, PlacementArt>> =
   },
   "oculos@estante-600": {
     sprite: { sx: 495, sy: 622, w: 99, h: 44, x: 463, y: 552 },
-    measured: { visible: 0.932, edge: 1.83, ring: 92352, busy: 17520, near: { "caneca@estante-740": 1357, "coruja@coroa-a": 542, "coruja@coroa-c": 735, "pote-de-ceramica@estante-740": 801, "vaso-de-ceramica@coroa-a": 152, "vaso-de-ceramica@coroa-b": 180 } },
+    measured: { visible: 0.932, edge: 1.83, ring: 92352, busy: 17520, near: { "caneca@estante-740": 1334, "coruja@coroa-a": 543, "coruja@coroa-c": 735, "pote-de-ceramica@estante-740": 790, "vaso-de-ceramica@coroa-a": 147, "vaso-de-ceramica@coroa-b": 181 } },
   },
   "oculos@mesinha": {
     sprite: { sx: 379, sy: 622, w: 114, h: 44, x: 401, y: 950 },
-    measured: { visible: 1, edge: 1.72, ring: 92352, busy: 20312, near: { "caneca@estante-880": 1374, "pote-de-ceramica@estante-880": 1106, "rolo-de-mapas@mesinha-baixo": 1368 } },
+    measured: { visible: 1, edge: 1.72, ring: 92352, busy: 20312, near: { "caneca@estante-880": 1378, "pote-de-ceramica@estante-880": 1104, "rolo-de-mapas@mesinha-baixo": 1333 } },
   },
   "pantufas@chao-cupula-a": {
     sprite: { sx: 144, sy: 674, w: 132, h: 40, x: 694, y: 1382 },
-    measured: { visible: 0.973, edge: 2.7, ring: 96096, busy: 9183, near: { "chapeu-de-mago@chao-meia": 516, "escova@chao-escova": 880, "escova@chao-meia": 684, "luvas@chao-luvas": 903, "meia@chao-escova": 723, "meia@chao-meia": 427, "ratinho@bau-cupula": 880 } },
+    measured: { visible: 0.973, edge: 2.7, ring: 96096, busy: 9183, near: { "chapeu-de-mago@chao-meia": 510, "escova@chao-escova": 870, "escova@chao-meia": 694, "luvas@chao-luvas": 903, "meia@chao-escova": 664, "meia@chao-meia": 467, "ratinho@bau-cupula": 877 } },
   },
   "pantufas@cobertor": {
     sprite: { sx: 278, sy: 674, w: 132, h: 40, x: 1010, y: 1266 },
-    measured: { visible: 0.887, edge: 2.51, ring: 96096, busy: 12202, near: { "luvas@chao-luvas": 783 } },
+    measured: { visible: 0.887, edge: 2.51, ring: 96096, busy: 12202, near: { "luvas@chao-luvas": 784 } },
   },
   "peca-de-xadrez@banquinho-peca": { sprite: { sx: 429, sy: 497, w: 36, h: 65, x: 3152, y: 1262 } },
   "peca-de-xadrez@chao-arquivo-c": { sprite: { sx: 467, sy: 497, w: 36, h: 65, x: 2942, y: 1360 } },
@@ -228,18 +228,18 @@ export const OBSERVATORY_PLACEMENT_ART: Readonly<Record<string, PlacementArt>> =
   },
   "pipa@parede-pipa-b": {
     sprite: { sx: 120, sy: 2, w: 116, h: 288, x: 1082, y: 589 },
-    measured: { visible: 1, edge: 4.97, ring: 128128, busy: 9745, near: { "caleidoscopio@rodape-cupula": 886, "funil@prateleira-esq-a": 106, "luneta@rodape-cupula": 1836, "sino@prateleira-esq-a": 575 } },
+    measured: { visible: 1, edge: 4.97, ring: 128128, busy: 9745, near: { "caleidoscopio@rodape-cupula": 885, "funil@prateleira-esq-a": 105, "sino@prateleira-esq-a": 575 } },
   },
   "pote-de-ceramica@estante-600": { sprite: { sx: 505, sy: 497, w: 48, h: 62, x: 499, y: 544 } },
   "pote-de-ceramica@estante-740": { sprite: { sx: 555, sy: 497, w: 48, h: 62, x: 514, y: 682 } },
   "pote-de-ceramica@estante-880": { sprite: { sx: 605, sy: 497, w: 48, h: 62, x: 506, y: 822 } },
   "ratinho@bau-cupula": {
     sprite: { sx: 412, sy: 674, w: 103, h: 39, x: 565, y: 1340 },
-    measured: { visible: 0.433, edge: 1.74, ring: 88608, busy: 6808, near: { "chapeu-de-mago@chao-chapeu": 689, "chapeu-de-mago@chao-meia": 602, "escova@chao-chapeu": 645, "escova@chao-escova": 880, "escova@chao-meia": 733, "meia@chao-escova": 723, "meia@chao-meia": 427, "pantufas@chao-cupula-a": 1558 } },
+    measured: { visible: 0.433, edge: 1.74, ring: 88608, busy: 6808, near: { "chapeu-de-mago@chao-chapeu": 682, "chapeu-de-mago@chao-meia": 597, "escova@chao-chapeu": 648, "escova@chao-escova": 870, "escova@chao-meia": 741, "meia@chao-escova": 664, "meia@chao-meia": 467, "pantufas@chao-cupula-a": 1590 } },
   },
   "ratinho@toca": {
     sprite: { sx: 62, sy: 622, w: 67, h: 49, x: 549, y: 1128 },
-    measured: { visible: 0.778, edge: 1.87, ring: 88608, busy: 10855, near: { "chapeu-de-mago@chao-chapeu": 689, "chapeu-de-mago@chao-meia": 602, "escova@chao-chapeu": 645, "escova@chao-escova": 870, "escova@chao-meia": 733, "meia@chao-escova": 723, "meia@chao-meia": 427, "rolo-de-mapas@mesinha-baixo": 1130 } },
+    measured: { visible: 0.778, edge: 1.87, ring: 88608, busy: 10855, near: { "chapeu-de-mago@chao-chapeu": 682, "chapeu-de-mago@chao-meia": 597, "escova@chao-chapeu": 648, "escova@chao-escova": 860, "escova@chao-meia": 741, "meia@chao-escova": 664, "meia@chao-meia": 467, "rolo-de-mapas@mesinha-baixo": 1096 } },
   },
   "regador@chao-bancada-a": { sprite: { sx: 603, sy: 2, w: 69, h: 125, x: 1415, y: 1116 } },
   "regador@chao-carretel": { sprite: { sx: 674, sy: 2, w: 69, h: 125, x: 1875, y: 1112 } },
@@ -248,7 +248,7 @@ export const OBSERVATORY_PLACEMENT_ART: Readonly<Record<string, PlacementArt>> =
   "rolo-de-mapas@mesinha-baixo": { sprite: { sx: 2, sy: 717, w: 161, h: 30, x: 391, y: 1039 } },
   "sino@prateleira-esq-a": {
     sprite: { sx: 473, sy: 292, w: 66, h: 88, x: 1294, y: 546 },
-    measured: { visible: 1, edge: 1.79, ring: 88608, busy: 7463, near: { "funil@prateleira-esq-b": 345, "pipa@parede-pipa-b": 463 } },
+    measured: { visible: 1, edge: 1.79, ring: 88608, busy: 7463, near: { "funil@prateleira-esq-b": 341, "pipa@parede-pipa-b": 463 } },
   },
   "sino@prateleira-esq-b": {
     sprite: { sx: 144, sy: 410, w: 48, h: 81, x: 1391, y: 557 },
@@ -256,7 +256,7 @@ export const OBSERVATORY_PLACEMENT_ART: Readonly<Record<string, PlacementArt>> =
   },
   "sistema-solar@sistema": {
     baked: true,
-    measured: { visible: 0.998, edge: 2.92, ring: 146016, busy: 19412, near: { "bule@mesa-bule": 713, "regador@prateleira-dir-b": 249, "xicara-azul@mesa-xicara": 607 } },
+    measured: { visible: 0.998, edge: 2.92, ring: 146016, busy: 19412, near: { "bule@mesa-bule": 708, "regador@prateleira-dir-b": 252, "xicara-azul@mesa-xicara": 608 } },
   },
   "tambor@cortina-a": {
     sprite: { sx: 868, sy: 410, w: 74, h: 69, x: 2459, y: 1032 },
@@ -271,15 +271,15 @@ export const OBSERVATORY_PLACEMENT_ART: Readonly<Record<string, PlacementArt>> =
   "vaso-de-ceramica@coroa-b": { sprite: { sx: 826, sy: 410, w: 40, h: 70, x: 548, y: 386 } },
   "vela@castical": {
     baked: true,
-    measured: { visible: 0.999, edge: 2.02, ring: 101088, busy: 11688, near: { "bule@mesa-pinca": 885, "caleidoscopio@rodape-cupula": 153, "compasso@mesa-pinca": 351, "luneta@rodape-cupula": 585, "pinca@mesa-pinca": 186, "pipa@parede-pipa-b": 169 } },
+    measured: { visible: 0.999, edge: 2.02, ring: 101088, busy: 11688, near: { "bule@mesa-esquerda": 1597, "caleidoscopio@rodape-cupula": 162, "compasso@mesa-pinca": 351, "luneta@rodape-cupula": 583, "pinca@mesa-pinca": 188, "pipa@parede-pipa-b": 169 } },
   },
   "violino@prego-a": {
     sprite: { sx: 345, sy: 2, w: 104, h: 255, x: 2974, y: 348 },
-    measured: { visible: 1, edge: 3.19, ring: 129376, busy: 12029, near: { "balanca@vitrine-700": 135, "concha@vitrine-700": 291 } },
+    measured: { visible: 1, edge: 3.19, ring: 129376, busy: 12029, near: { "balanca@vitrine-700": 134, "concha@vitrine-700": 297 } },
   },
   "violino@prego-b": {
-    sprite: { sx: 238, sy: 2, w: 105, h: 256, x: 2625, y: 318 },
-    measured: { visible: 1, edge: 2.52, ring: 129376, busy: 12870, near: {  } },
+    sprite: { sx: 238, sy: 2, w: 105, h: 256, x: 2625, y: 310 },
+    measured: { visible: 1, edge: 2.51, ring: 129376, busy: 12458, near: {  } },
   },
   "xicara-azul@mesa-frente": { sprite: { sx: 863, sy: 717, w: 48, h: 24, x: 1605, y: 939 } },
   "xicara-azul@mesa-xicara": { sprite: { sx: 913, sy: 717, w: 48, h: 24, x: 1987, y: 929 } },

@@ -117,6 +117,7 @@ import {
   findIn,
   isInteractive,
   revealOf,
+  boundToScene,
 } from "./hidden-objects-harness.mjs";
 
 const args = process.argv.slice(2);
@@ -143,6 +144,11 @@ const KIT_BASE = "/assets/hidden-objects/explorer-studio/v1";
 const KIT_V2 = "/assets/hidden-objects/explorer-studio/v2";
 /** GAME03-INTERACTIONS-04's kit: v2's room with the pieces that open or move and what they keep. */
 const KIT_V3 = "/assets/hidden-objects/explorer-studio/v3";
+/** GAME03-REPLAYABILITY-05: kit v4 — the plate without the things that move, and their sprite atlas. */
+const KIT_V4 = "/assets/hidden-objects/explorer-studio/v4";
+const isReplayable = (tree) => tree.exists(`${DIR}hidden-objects-layout.ts`);
+/** The session model, unbound (GAME03-REPLAYABILITY-05: to bind it to the room as a session plays it). */
+const rawModel = (tree) => cached(tree, "experience:rawModel", () => createModuleGraph({ tree, mocks: {}, globals: {} }).require(FILES.model));
 const V0_FOLDER = "public/assets/hidden-objects/explorer-studio/v0";
 const HOME_MAQUETTE = "public/illustrations/home/dioramas/discovery";
 const ART_SCRIPT = "tools/assets/create_hidden_objects_scene.mjs";
@@ -341,7 +347,9 @@ async function runChecks(tree) {
   await check("E02", "preserved", "THE_TEN_STAY_AND_EVERY_POOL_OBJECT_IS_PAINTED_ONCE", () => {
     const { scene } = pureModules(tree);
     const pool = scene.HIDDEN_OBJECTS;
-    const script = tree.read(ART_SCRIPT);
+    // GAME03-REPLAYABILITY-05 (restated): the art script also keeps each thing's own paint for its slots
+    // (THING_PAINT, one entry per thing that moves); an object is still drawn by exactly one entry of its art map
+    const script = tree.read(ART_SCRIPT).replace(/\nconst THING_PAINT = \{[\s\S]*?\n\};/, "");
     // an entry of the art script's target map, quoted or not (the addendum's ids may hold a hyphen)
     const unpainted = pool.filter((target) => (script.match(new RegExp(`\\n  "?${target.id}"?: [{a]`, "g")) ?? []).length !== 1).map((target) => target.id);
     return {
@@ -467,7 +475,9 @@ async function runChecks(tree) {
     const R = model.sessionReducer;
     let s = startSession(model, "easy", 1);
     for (let i = 0; i < 3; i += 1) s = R(s, { type: "hint" });
-    const halo = model.hintHalo(s.hintTarget, "easy", s.hintStage);
+    // GAME03-REPLAYABILITY-05 (restated): the halo of the room as the session plays it (its layout)
+    const played = model.roomOf ? boundToScene(rawModel(tree), model.roomOf(s)) : model;
+    const halo = played.hintHalo(s.hintTarget, "easy", s.hintStage);
     // GAME03-INTERACTIONS-04 (restated): an object kept behind a shut piece is shown by its piece (revealOf)
     const c = revealOf(model, s.hintTarget, s).centre;
     const pure = s.hintStage === 3 && halo && Math.hypot(halo.cx - c.x, halo.cy - c.y) < EPS;
@@ -479,7 +489,8 @@ async function runChecks(tree) {
       studio.clickHint();
       studio.settle();
     }
-    const shown = revealOf(model, subject.id);
+    // GAME03-REPLAYABILITY-05 (restated): shown where the round's layout put it
+    const shown = revealOf(studio.playedModel(), subject.id);
     const game = {
       banner: studio.banner() === shown.banner,
       revealHalo: studio.halo()?.kind === "reveal",
@@ -500,11 +511,12 @@ async function runChecks(tree) {
     const problems = [];
     const ladders = [];
     for (const [index, id] of list.entries()) {
-      const target = model.targetById(id);
-      const bounds = model.regionBounds(target.region);
-      const c = model.regionCenter(target.region);
       const studio = openStudio(tree, { seeds: [seed] });
       studio.start("medium");
+      // GAME03-REPLAYABILITY-05 (restated): the object where the round's layout put it, told in its slot's words
+      const target = studio.playedModel().targetById(id);
+      const bounds = model.regionBounds(target.region);
+      const c = model.regionCenter(target.region);
       focusItem(studio, index);
       const seen = [];
       let cameraAtStation = null;
@@ -576,9 +588,10 @@ async function runChecks(tree) {
     const list = first.listedIds();
     first.unmount();
     for (const [index, id] of list.entries()) {
-      const target = model.targetById(id);
       const studio = openStudio(tree, { seeds: [seed] });
       studio.start("hard");
+      // GAME03-REPLAYABILITY-05 (restated): the object where the round's layout put it, told in its slot's words
+      const target = studio.playedModel().targetById(id);
       focusItem(studio, index);
       let previous = null;
       for (let press = 1; press <= 5; press += 1) {
@@ -1091,13 +1104,16 @@ async function runChecks(tree) {
     const thumbs = scene.HIDDEN_OBJECTS.map((target) => read(scene.thumbnailSrc(target.id)));
     const visual = t.visuals[STUDIO];
     const hero = read(visual.introArt);
-    const layerBytes = layers.reduce((sum, layer) => sum + layer.bytes, 0);
+    // GAME03-REPLAYABILITY-05: the sprite atlas is essential art of the room: it counts in both budgets
+    const atlas = scene.EXPLORER_STUDIO?.atlas ? read(scene.EXPLORER_STUDIO.atlas.src) : { bytes: 0 };
+    const layerBytes = layers.reduce((sum, layer) => sum + layer.bytes, 0) + atlas.bytes;
     const entryBytes = layerBytes + thumbs.reduce((sum, thumb) => sum + thumb.bytes, 0) + hero.bytes;
     const homeMaquette = folderDiff(tree, BASE_TREE, HOME_MAQUETTE);
     const calibrated = isCalibrated(tree);
     const facts = {
       // a calibrated tree ships kit v2 (an interactive tree, GAME03-INTERACTIONS-04: kit v3); kit v1 then serves only the hero the platform's intro shows
-      kitV1: scene.SCENE_ASSET_BASE === (isInteractive(tree) ? KIT_V3 : calibrated ? KIT_V2 : KIT_BASE),
+      // GAME03-REPLAYABILITY-05 (restated): a replayable tree ships kit v4 (the plate without the things that move, and their atlas)
+      kitV1: scene.SCENE_ASSET_BASE === (isReplayable(tree) ? KIT_V4 : isInteractive(tree) ? KIT_V3 : calibrated ? KIT_V2 : KIT_BASE),
       v0NoLongerServed: listFiles(tree, V0_FOLDER).length === 0,
       layersAsDeclared: layers.every((layer) => layer.size && layer.size.width === layer.declared.w && layer.size.height === layer.declared.h),
       thumbsPresent: thumbs.every((thumb) => thumb.size && thumb.size.width === thumb.size.height && thumb.size.width >= 64),
@@ -1324,8 +1340,21 @@ async function runChecks(tree) {
     if (!rounds) throw new Error("no round selection on this tree: the lists are fixed");
     const report = {};
     const problems = [];
+    // GAME03-REPLAYABILITY-05 (restated): a seed composes the room's layout first, then draws its list uniformly
+    // among the valid rounds of the room as that layout places it. Old truth: every seed drew from the one room's
+    // valid rounds. New truth: uniform among the valid rounds of the seed's own room. So the unbiased draw is held
+    // where a room is fixed — the home layout, every thing where it was painted (the composer's fallback), drawn
+    // by the product's own sampler — and every seed's list is held valid in its own room, with the same order and
+    // exposure bounds (below). Counterfactual: a sampler that favours some rounds still fails the χ² at home.
+    const replayable = isReplayable(tree);
+    const raw = replayable ? createModuleGraph({ tree, mocks: {}, globals: {} }) : null;
+    const rawRounds = raw?.require(FILES.rounds);
+    const rawLayout = raw?.require(`${DIR}hidden-objects-layout.ts`);
+    const rawDifficulty = raw?.require(`${DIR}hidden-objects-difficulty.ts`);
+    const rawStudio = raw?.require(FILES.studioScene).EXPLORER_STUDIO;
+    const home = replayable ? rawLayout.placedScene(rawStudio, rawLayout.homeLayout(rawStudio)) : null;
     for (const d of DIFFICULTIES) {
-      const valid = rounds.validRounds(d);
+      const valid = replayable ? rawRounds.validRounds(home, d) : rounds.validRounds(d);
       // GAME03-INTERACTIONS-04 (restated): enough draws to reach every round — at least 12 per round (a round is then
       // missed with probability e^-12), never fewer than the 30 000 the check always drew
       const SAMPLES = Math.max(30000, 12 * valid.length);
@@ -1337,7 +1366,7 @@ async function runChecks(tree) {
       let invalid = 0;
       for (let i = 0; i < SAMPLES; i += 1) {
         const seed = Math.floor(next() * 2 ** 32) >>> 0;
-        const list = rounds.selectRoundTargets(d, seed);
+        const list = replayable ? rawRounds.drawValidRound(home, d, rawRounds.seededRandom(seed))?.ids ?? [] : rounds.selectRoundTargets(d, seed);
         const key = [...list].sort().join();
         if (new Set(list).size !== list.length || !index.has(key)) {
           invalid += 1;
@@ -1345,8 +1374,21 @@ async function runChecks(tree) {
         }
         roundHits[index.get(key)] += 1;
         for (const id of list) itemHits.set(id, (itemHits.get(id) ?? 0) + 1);
-        firstStation[scene.HIDDEN_OBJECTS.find((t) => t.id === list[0]).station] += 1;
+        if (!replayable) firstStation[scene.HIDDEN_OBJECTS.find((t) => t.id === list[0]).station] += 1;
       }
+      // every seed, the whole draw: its list valid in its own room; its first line, and how often each object is asked
+      const asked = new Map();
+      let ownInvalid = 0;
+      const OWN = replayable ? 6000 : 0;
+      for (let i = 0; i < OWN; i += 1) {
+        const seed = Math.floor(next() * 2 ** 32) >>> 0;
+        const draw = rawRounds.selectRound(rawStudio, d, seed);
+        const placed = rawLayout.placedScene(rawStudio, draw.layout);
+        if (!rawDifficulty.meetsRule(rawRounds.DIFFICULTY_PRESETS?.[d]?.round ?? scene.DIFFICULTY_PRESETS[d].round, rawDifficulty.roundProfile(placed, d, draw.targets))) ownInvalid += 1;
+        firstStation[scene.HIDDEN_OBJECTS.find((t) => t.id === draw.targets[0]).station] += 1;
+        for (const id of draw.targets) asked.set(id, (asked.get(id) ?? 0) + 1 / OWN);
+      }
+      if (ownInvalid) problems.push(`${d}: ${ownInvalid} seeds drew a list that is not a valid round of their own room`);
       // what "every valid round equally likely" means for each object, exactly
       const exact = new Map();
       for (const round of valid) for (const id of round) exact.set(id, (exact.get(id) ?? 0) + 1 / valid.length);
@@ -1369,7 +1411,9 @@ async function runChecks(tree) {
       // apply. What must hold is that no object a difficulty can list is starved (asked in under 1 round in 20) or
       // hogs it (asked in over 3 rounds in 4 — every replay would see it); each tier's range is reported as measured.
       if (isCalibrated(tree)) {
-        for (const t of scene.HIDDEN_OBJECTS) if (exact.has(t.id)) (byTier[t.tier] ??= []).push([t.id, exact.get(t.id)]);
+        // GAME03-REPLAYABILITY-05 (restated): how often each object is asked across seeds (each in its own room)
+        const shareOf = replayable ? asked : exact;
+        for (const t of scene.HIDDEN_OBJECTS) if (shareOf.has(t.id)) (byTier[t.tier] ??= []).push([t.id, shareOf.get(t.id)]);
         for (const [tier, rows] of Object.entries(byTier)) {
           const least = rows.reduce((a, b) => (b[1] < a[1] ? b : a));
           const most = rows.reduce((a, b) => (b[1] > a[1] ? b : a));
@@ -1399,7 +1443,7 @@ async function runChecks(tree) {
           if (ratio > 2) problems.push(`${d}: ${id} is asked for over twice as often as its tier's mean (${ratio.toFixed(2)})`);
         }
       }
-      const firstShare = Object.fromEntries(Object.entries(firstStation).map(([s, n]) => [s, Number((n / SAMPLES).toFixed(3))]));
+      const firstShare = Object.fromEntries(Object.entries(firstStation).map(([s, n]) => [s, Number((n / (replayable ? OWN : SAMPLES)).toFixed(3))]));
       if (invalid) problems.push(`${d}: ${invalid} drawn lists were not valid rounds`);
       if (reached !== valid.length) problems.push(`${d}: ${reached}/${valid.length} rounds reached`);
       if (Math.abs(z) > 4) problems.push(`${d}: round frequencies off (z = ${z.toFixed(1)})`);

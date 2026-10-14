@@ -26,17 +26,25 @@
  * layers (hidden-objects-art-kit.mjs, measureClutter). The intro art stays kit
  * v1's hero (the platform's world visuals name it; it is the room's picture).
  *
- * Writes:
- *   public/assets/hidden-objects/explorer-studio/v2/{back,plate,front,front-right}.webp
- *   public/assets/hidden-objects/explorer-studio/v2/thumbs/<id>.webp
- *   docs/archive/hidden-objects/explorer-studio/review/v2/*.webp (review boards)
- *   with --audit: docs/archive/hidden-objects/explorer-studio/review/v2/fairness.json
+ * GAME03-REPLAYABILITY-05 (kit v4): the things that move. The plate is painted
+ * without them (paint chunks with a marker per slot; the things with a single
+ * slot are baked into it); every placement of every other thing — a pool
+ * object, a look-alike or a prop on one of its slots — is painted once, lit by
+ * the plate's own light, and packed into one sprite atlas
+ * (hidden-objects-sprites.mjs). The audit measures every pool object on every
+ * slot it may take, as the game composes it, and writes the art module the
+ * game reads (scenes/explorer-studio.art.ts) and fairness.json.
+ *
+ * Writes (v4):
+ *   public/assets/hidden-objects/explorer-studio/v4/{back,plate,front,front-right,atlas}.webp, pieces/, thumbs/
+ *   src/games/hidden-objects/scenes/explorer-studio.art.ts
+ *   docs/archive/hidden-objects/explorer-studio/review/v4/ (fairness.json and review boards)
  *   with --home:  public/illustrations/home/dioramas/discovery/discovery-<pass>.webp
  *                 (the Home maquette — the mission's quality reference, so it is
  *                 only rewritten when asked)
  *
- * Usage: node tools/assets/create_hidden_objects_scene.mjs [--audit] [--home] [--preview=DIR]
- *   --preview=DIR  renders the composed room and the review boards into DIR only (nothing else written)
+ * Usage: node tools/assets/create_hidden_objects_scene.mjs [--home] [--preview=DIR]
+ *   --preview=DIR  renders the plate and the atlas into DIR only (nothing else written)
  */
 import { createHash } from "node:crypto";
 import fs from "node:fs";
@@ -46,6 +54,7 @@ import { fileURLToPath } from "node:url";
 import sharp from "sharp";
 import ts from "typescript";
 import { piecesOverlaySvg, renderPieces } from "./hidden-objects-pieces.mjs";
+import { composeShipped, measureClutter } from "./hidden-objects-art-kit.mjs";
 import {
   allOpen,
   atlasPng,
@@ -74,7 +83,6 @@ const SCENE_MODULE = path.join(ROOT, "src/games/hidden-objects/scenes/explorer-s
 const DIORAMA_OUT = path.join(ROOT, "public/illustrations/home/dioramas/discovery");
 
 const args = process.argv.slice(2);
-const AUDIT = args.includes("--audit");
 const HOME = args.includes("--home");
 const PREVIEW = args.find((arg) => arg.startsWith("--preview="))?.slice("--preview=".length) ?? null;
 
@@ -1104,13 +1112,6 @@ function table() {
     <path d="M1110 1080 C1150 1150 1400 1200 1700 1196" stroke="#d29a62" stroke-width="3" fill="none" opacity=".32"/>`;
 }
 
-function lupaOnMap() {
-  const box = boxOf(TARGETS.lupa.region);
-  return `${shadow(box.x + box.w * 0.62, box.y + box.h * 0.7, box.w * 0.6, box.h * 0.2, 0.9)}
-    ${lupaHandleSvg(box)}
-    ${fit(`${ART.lupa.clip}${ART.lupa.body}`, ART.lupa.nominal, box)}`;
-}
-
 const SHELVES = { s1: 370, s2: 600, s3: 830, s4: 1060, s5: 1240 };
 const CASE = { left: 2260, right: 3080 };
 
@@ -1774,7 +1775,6 @@ function bookcaseChunks() {
     mark("s4-lanterna"),
     bookStack(LAN.x - 6, s4, [[96, 22, "#2d4a68"], [88, 20, "#7a3024", 4], [80, 18, "#6d5a3a", 10]]),
     runF.svg,
-    mark("s4-b"),
     `<g>${shadow(2420, s5 - 2, 124, 9)}
       <path d="M2306 ${s5} L2318 ${s5 - 120} H2436 L2448 ${s5} Z" fill="#a17c4a" stroke="#4a3013" stroke-width="1.6" filter="url(#grainH)"/>
       <g stroke="#6e5230" stroke-width="3" opacity=".7"><path d="M2312 ${s5 - 30} H2442 M2314 ${s5 - 60} H2440 M2316 ${s5 - 90} H2438"/></g>
@@ -1893,7 +1893,6 @@ function plateChunks() {
     bookStack(1150, 1046, [[150, 22, "#2d4a68"], [140, 20, "#7a3024", 6], [128, 18, "#4a6a3a", 10]]),
     mark("atras-livro"),
     mark("mapa-fundo"),
-    mark("mapa-fundo-b"),
     TABLE_MAP,
     mark("mapa-borda"),
     mark("livro-borda"),
@@ -1972,7 +1971,7 @@ const HOME_LAYOUT = Object.fromEntries(THINGS.map((thing) => [thing.id, thing.pl
  * The light pass, multiplied over the plate: white keeps the albedo, warm
  * cream lights it, cool grey-blue shades it. Painted at half size (it is soft
  * everywhere) and scaled up. Shade never drops a target below its tier's
- * contrast — the --audit table checks that on the composed room.
+ * contrast — the audit's table checks that on the composed room.
  */
 /** The window's light thrown on the floor, mullions and all: the low sun is outside on the left. */
 const SUN_PATCH = {
@@ -2309,15 +2308,6 @@ async function composeFront(svg) {
   return sharp(png).modulate({ brightness: 0.78, saturation: 0.92 }).blur(1.1).png().toBuffer();
 }
 
-/** Relative luminance of an sRGB pixel. */
-function luminance(r, g, b) {
-  const lin = (c) => {
-    const v = c / 255;
-    return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
-  };
-  return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
-}
-
 /**
  * GAME03-INTERACTIONS-04's review board: for each piece, the room around it at
  * rest, open, and open with the object it keeps outlined (the hit areas of
@@ -2518,13 +2508,19 @@ async function main() {
     }),
   );
 
-  // the home layout's numbers (each object where it has always been, its neighbours where they have always been)
+  // the home layout's numbers (each object where it has always been, its neighbours where they have always been):
+  // clutter measured on the shipped room composed at rest with every thing on its first slot (all at once)
   const homeKeys = new Set(THINGS.map((t) => placementKey(t.id, t.placements[0].slot)));
+  // (the same composition the calibration suite measures the shipped room with: hidden-objects-art-kit.mjs, composeShipped)
+  const roomWithArt = { ...ROOM, atlas: { src: ROOM_ATLAS_SRC, width: atlasMeta.width, height: atlasMeta.height }, placementArt: Object.fromEntries(entries) };
+  const readPublic = (publicPath) => fs.readFileSync(path.join(ROOT, publicPath));
+  const homeComposed = {};
+  for (const state of ["rest", ...new Set(SCENE.HIDDEN_OBJECTS.map((t) => t.gate).filter(Boolean))]) {
+    homeComposed[state] = await composeShipped(roomWithArt, readPublic, state === "rest" ? {} : { open: [state] });
+  }
   const homeRows = SCENE.HIDDEN_OBJECTS.map((target) => {
     const key = placementKey(target.id, THINGS.find((t) => t.id === target.id).placements[0].slot);
     const m = measures.get(key);
-    let busy = m.busy;
-    for (const [other, delta] of Object.entries(m.near)) if (homeKeys.has(other)) busy += delta;
     return {
       id: target.id,
       tier: target.tier,
@@ -2535,7 +2531,7 @@ async function main() {
       visibleAtRest: m.visibleAtRest,
       visibleOpen: m.visibleOpen,
       ...(target.gate ? { gate: target.gate } : {}),
-      clutter: Number((busy / Math.max(1, m.ring)).toFixed(3)),
+      clutter: measureClutter(homeComposed[target.gate ?? "rest"], W, H, target.region),
     };
   });
   const placementRows = [...measures.entries()].map(([key, m]) => {
@@ -2557,7 +2553,7 @@ async function main() {
           visible: "share of the target's own pixels the room shows on its slot (the plate's albedo with and without it, under what the room paints in front of the slot)",
           contrast: "F4 as written: mean-luminance ratio, visible target vs a 24 su ring, on the composed room",
           edge: "median luminance ratio across the visible silhouette's edge (each edge pixel vs the background within 3 su), on the composed room with no other thing that moves",
-          clutter: "share of busy pixels (Sobel luminance gradient > 40) in the ring 16–120 su around the object's box, on the shipped layers composed at rest: `busy` with nothing else that moves, plus each neighbouring placement's `near` count when it is in the layout",
+          clutter: "share of busy pixels (Sobel luminance gradient > 40) in the ring 16–120 su around the object's box, on the shipped layers composed at rest: for `targets`, the home layout composed whole (every thing on its first slot); for `placements`, `busy` with nothing else that moves, plus each neighbouring placement's `near` count when it is in the layout (the game's arithmetic)",
           pieces: "the room's pieces are composed on the plate's plane at rest; an object kept behind a piece (gate) is measured with that piece open; visibleAtRest / visibleOpen: its visible share with every piece shut / open",
           layout: "GAME03-REPLAYABILITY-05: `targets` are the objects in the home layout (every thing on its first slot); `placements` are every pool object on every slot it may take",
         },

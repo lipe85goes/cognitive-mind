@@ -351,6 +351,13 @@ export interface SceneAtlas {
  */
 export const LOOKALIKE_CLEARANCE_SU = 32;
 
+/**
+ * GAME03-REPLAYABILITY-05: two pool objects are never closer than this, shape
+ * to shape, in any layout — the floor (F2) every room has met at home since
+ * the skeleton, now held wherever the objects stand.
+ */
+export const TARGET_GAP_SU = 24;
+
 /** How the list shows a pending object: picture + name, or one of its clues (the name only once found). */
 export type ListStyle = "picture" | "clue";
 

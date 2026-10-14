@@ -292,7 +292,8 @@ function openGame(tree, { viewport = DESKTOP, reducedMotion = false, seeds = [],
     /** Load + decode every layer on the page (the room on screen), then let the readiness frames pass. */
     async decode() {
       // GAME03-INTERACTIONS-04: a room's movable pieces are essential art too (none before it)
-      for (const entry of harness.hosts((e) => e.type === IMAGE && (cls("hos-layer")(e) || cls("hos-piece")(e)))) entry.props.onLoad?.({ currentTarget: entry.node, target: entry.node });
+      // GAME03-REPLAYABILITY-05: and the room's sprite atlas, the picture of every thing that moves (absent before it)
+      for (const entry of harness.hosts((e) => e.type === IMAGE && (cls("hos-layer")(e) || cls("hos-piece")(e) || cls("hos-atlas")(e)))) entry.props.onLoad?.({ currentTarget: entry.node, target: entry.node });
       await drain();
       harness.flush();
       flushFrames(4);
@@ -328,8 +329,20 @@ function openGame(tree, { viewport = DESKTOP, reducedMotion = false, seeds = [],
       game.click((entry) => cls("hos-station")(entry) && entry.text === label);
       game.settle();
     },
+    /**
+     * GAME03-REPLAYABILITY-05 (restated): the room as this exploration plays it —
+     * each object where the round's layout puts it, as the shell names it
+     * (`data-layout`); the room as painted on trees without layouts.
+     */
+    played() {
+      const scene = game.scene();
+      const signature = host(cls("hos-shell"))?.props["data-layout"];
+      if (signature === undefined || !tree.exists(`${DIR}hidden-objects-layout.ts`)) return scene;
+      const L = graph.require(`${DIR}hidden-objects-layout.ts`);
+      return L.placedScene(scene, L.layoutFromSignature(scene, signature));
+    },
     find(id) {
-      const target = model.targetById(game.scene(), id);
+      const target = model.targetById(game.played(), id);
       // GAME03-INTERACTIONS-04: an object kept behind a room piece is found the way the Explorador finds it — the piece opened first
       if (target.gate) {
         const image = harness.hosts((e) => e.type === IMAGE && cls("hos-piece")(e) && e.props["data-piece"] === target.gate)[0];
@@ -426,7 +439,9 @@ function studioBeyondTheCalibration(tree, mine, base) {
   // the one clue became a clue bank and the object gained its measurements; a listedAs that only kept an object
   // out of the silhouette list (a style Difficulty V3 dropped) says nothing any more
   const asBefore = (target) => {
-    const rest = Object.fromEntries(Object.entries(target).filter(([key]) => !["clue", "clues", "measured", "listedAs"].includes(key)));
+    // GAME03-REPLAYABILITY-05 (restated): an object also gained the slots it may stand on (`placements`) — where it was
+    // painted (its region) is still its first one, and is what this compares
+    const rest = Object.fromEntries(Object.entries(target).filter(([key]) => !["clue", "clues", "measured", "listedAs", "placements"].includes(key)));
     const styles = target.listedAs?.filter((style) => style !== "silhouette");
     return styles && !(styles.includes("picture") && styles.includes("clue")) ? { ...rest, listedAs: styles } : rest;
   };
@@ -434,9 +449,10 @@ function studioBeyondTheCalibration(tree, mine, base) {
     const now = mine.scene.HIDDEN_OBJECTS.find((candidate) => candidate.id === t.id);
     return !now || !same(asBefore(now), asBefore(t));
   }).map((t) => t.id);
-  const lookAlikesMoved = base.scene.SCENE_LOOKALIKES.filter((l) => !same(mine.scene.SCENE_LOOKALIKES.find((candidate) => candidate.id === l.id), l)).map((l) => l.id);
-  // the kit folder moves with each art kit (v2 GAME03-CALIBRATION-02A, v3 GAME03-INTERACTIONS-04): the same pictures under it
-  const kit = isInteractive(tree) ? "/v3/" : "/v2/";
+  const withoutPlacements = (l) => l && Object.fromEntries(Object.entries(l).filter(([key]) => key !== "placements"));
+  const lookAlikesMoved = base.scene.SCENE_LOOKALIKES.filter((l) => !same(withoutPlacements(mine.scene.SCENE_LOOKALIKES.find((candidate) => candidate.id === l.id)), l)).map((l) => l.id);
+  // the kit folder moves with each art kit (v2 GAME03-CALIBRATION-02A, v3 GAME03-INTERACTIONS-04, v4 GAME03-REPLAYABILITY-05): the same pictures under it
+  const kit = tree.exists(`${DIR}hidden-objects-layout.ts`) ? "/v4/" : isInteractive(tree) ? "/v3/" : "/v2/";
   const thumbsDiffer = base.scene.HIDDEN_OBJECTS.filter((t) => mine.scene.thumbnailSrc(t.id) !== base.scene.thumbnailSrc(t.id).replace("/v1/", kit)).map((t) => t.id);
   const cameraSame = JSON.stringify(cameraSweep(mine.camera)) === cached(BASE_TREE, "ms-sweep", () => JSON.stringify(cameraSweep(base.camera)));
   const controllerSame = [false, true].every((reducedMotion) =>
@@ -960,7 +976,8 @@ async function runChecks(tree) {
         for (const target of unlisted) {
           game.goTo(target.station);
           const before = { found: game.found(), listed: game.listed(), status: game.status() };
-          game.tapScene(game.model.regionCenter(target.region), { pointerType: "touch" });
+          // GAME03-REPLAYABILITY-05 (restated): tapped where it stands in this exploration (the round's layout)
+          game.tapScene(game.model.regionCenter(game.played().pool.find((t) => t.id === target.id).region), { pointerType: "touch" });
           game.settle();
           tapped += 1;
           const live = game.harness.hosts((entry) => entry.props["aria-live"] === "polite")[0]?.text ?? "";
@@ -1138,7 +1155,11 @@ async function runChecks(tree) {
     }
     // the art script paints every target and look-alike exactly once (it reads this room's module)
     const script = tree.exists("tools/assets/create_observatory_scene.mjs") ? tree.read("tools/assets/create_observatory_scene.mjs") : "";
-    for (const t of pool) if ((script.match(new RegExp(`\\n  "?${t.id}"?: \\{`, "g")) ?? []).length !== 1 || (script.split(`t(omit, "${t.id}")`).length - 1) !== 1) problems.push(`${t.id} not painted exactly once`);
+    // GAME03-REPLAYABILITY-05 (restated): the script draws each object once (its art) and keeps its own paint for its
+    // slots once (THING_PAINT, where the plate no longer paints it in place: `targetSvg` called there, once)
+    const placed = script.includes("const THING_PAINT = {");
+    for (const t of pool)
+      if ((script.match(new RegExp(`\\n  "?${t.id}"?: \\{`, "g")) ?? []).length !== (placed ? 2 : 1) || (script.split(placed ? `targetSvg("${t.id}")` : `t(omit, "${t.id}")`).length - 1) !== 1) problems.push(`${t.id} not painted exactly once`);
     for (const l of scene.lookAlikes) if ((script.split(`lookSvg("${l.id}")`).length - 1) !== 1) problems.push(`look-alike ${l.id} not painted exactly once`);
     return {
       pass: problems.length === 0,

@@ -1219,6 +1219,8 @@ export function openStudio(tree, { viewport = DESKTOP, reducedMotion = false, se
       }
       // GAME03-INTERACTIONS-04: the room's movable pieces are essential art too (absent before it)
       for (const entry of harness.hosts((e) => e.type === IMAGE && cls("hos-piece")(e))) entry.props.onLoad({ currentTarget: entry.node, target: entry.node });
+      // GAME03-REPLAYABILITY-05: and so is the room's sprite atlas, the picture of every thing that moves (absent before it)
+      for (const entry of harness.hosts((e) => e.type === IMAGE && cls("hos-atlas")(e))) entry.props.onLoad({ currentTarget: entry.node, target: entry.node });
       await drain();
       harness.flush();
     },
@@ -1242,7 +1244,28 @@ export function openStudio(tree, { viewport = DESKTOP, reducedMotion = false, se
       const rect = studio.viewport.getBoundingClientRect();
       return { x: rect.left + local.x, y: rect.top + local.y };
     },
-    targetClient: (id) => studio.client(model.regionCenter(model.targetById(id).region)),
+    /**
+     * GAME03-REPLAYABILITY-05 (restated): the room as this exploration plays it —
+     * each object where the round's layout puts it, as the shell names it
+     * (`data-layout`); the room as painted on trees without layouts, and in setup.
+     */
+    played() {
+      const signature = host(cls("hos-shell"))?.props["data-layout"];
+      if (!room || signature === undefined || !tree.exists(`${DIR}hidden-objects-layout.ts`)) return room;
+      const L = graph.require(`${DIR}hidden-objects-layout.ts`);
+      return L.placedScene(room, L.layoutFromSignature(room, signature));
+    },
+    /** The session model bound to the room as played (hint halos, reveal framing — where the objects are now). */
+    playedModel() {
+      const played = studio.played();
+      return played ? boundToScene(graph.require(FILES.model), played) : model;
+    },
+    /** Where an object is now (its region in the room as played). */
+    regionOf(id) {
+      const played = studio.played();
+      return played ? played.pool.find((t) => t.id === id).region : model.targetById(id).region;
+    },
+    targetClient: (id) => studio.client(model.regionCenter(studio.regionOf(id))),
     centre() {
       const rect = studio.viewport.getBoundingClientRect();
       return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };

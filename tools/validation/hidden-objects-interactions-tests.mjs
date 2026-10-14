@@ -271,7 +271,8 @@ function openGame(tree, { viewport = DESKTOP, reducedMotion = false, seeds = [] 
     },
     async decode() {
       // GAME03-INTERACTIONS-04: a room's movable pieces are essential art too (none before it)
-      for (const entry of harness.hosts((e) => e.type === IMAGE && (cls("hos-layer")(e) || cls("hos-piece")(e)))) entry.props.onLoad?.({ currentTarget: entry.node, target: entry.node });
+      // GAME03-REPLAYABILITY-05: and the room's sprite atlas, the picture of every thing that moves (absent before it)
+      for (const entry of harness.hosts((e) => e.type === IMAGE && (cls("hos-layer")(e) || cls("hos-piece")(e) || cls("hos-atlas")(e)))) entry.props.onLoad?.({ currentTarget: entry.node, target: entry.node });
       await drain();
       harness.flush();
       flushFrames(4);
@@ -329,9 +330,22 @@ function openGame(tree, { viewport = DESKTOP, reducedMotion = false, seeds = [] 
       entry.props.onBlur?.({ currentTarget: entry.node, target: entry.node });
       harness.flush();
     },
-    /** Tap an object's centre, framed (whatever is in front of it). */
+    /**
+     * GAME03-REPLAYABILITY-05 (restated): the room as this exploration plays it —
+     * every object where the round's layout puts it, as the shell names it
+     * (`data-layout`). Before it an object stood where the room's data painted
+     * it; that is still the room on trees without layouts, and in setup.
+     */
+    played() {
+      const scene = game.scene();
+      const signature = game.shell()["data-layout"];
+      if (signature === undefined || !tree.exists(`${DIR}hidden-objects-layout.ts`)) return scene;
+      const L = graph.require(`${DIR}hidden-objects-layout.ts`);
+      return L.placedScene(scene, L.layoutFromSignature(scene, signature));
+    },
+    /** Tap an object's centre where it stands now, framed (whatever is in front of it). */
     tapObject(id, options = {}) {
-      const target = model.targetById(game.scene(), id);
+      const target = model.targetById(game.played(), id);
       game.frame(boundsOf(target.region));
       game.tapScene(model.regionCenter(target.region), options);
       game.settle();
@@ -709,9 +723,15 @@ async function runChecks(tree) {
     const problems = [];
     for (const id of SCENE_IDS) {
       const scene = room(tree, id);
+      // GAME03-REPLAYABILITY-05 (restated): each piece is tapped in a round that does not list what it keeps. A listed,
+      // exposed object in reach of a tap is found before a piece steps (as always); with the layouts, the drum's
+      // second spot stands within a phone's touch reach of the open curtain's narrow edge, so a round listing the drum
+      // finds it there — the same rule, a new neighbour. Every Médio round lists a kept object, so one seed per piece.
       for (const viewport of [DESKTOP, REFERENCE_PHONE]) {
-        const game = await startIn(tree, id, "medium", 0x0909, { viewport });
         for (const piece of piecesOf(scene)) {
+          const kept = gatedOf(scene).filter((t) => t.gate === piece.id).map((t) => t.id);
+          const seed = seedWhere(tree, scene, "medium", Object.assign((ids) => !kept.some((k) => ids.includes(k)), { key: `not-kept-by:${piece.id}` }));
+          const game = await startIn(tree, id, "medium", seed, { viewport });
           game.frame(shutState(piece).hit);
           for (const [pointerType, jitter] of [["mouse", 0], ["touch", 0], ["touch", 5]]) {
             const before = game.camera();
@@ -721,8 +741,8 @@ async function runChecks(tree) {
             if (!nearCamera(before, game.camera())) problems.push(`${id}/${viewport.name}/${piece.id}: a ${pointerType} tap moved the camera`);
             if (game.pieces()[piece.id].state === state) problems.push(`${id}/${viewport.name}/${piece.id}: a ${pointerType} tap (jitter ${jitter}) did not step it`);
           }
+          game.unmount();
         }
-        game.unmount();
       }
     }
     return { pass: problems.length === 0, problems: problems.slice(0, 8) };
@@ -1011,7 +1031,8 @@ async function runChecks(tree) {
         game.tapPiece(piece.id);
         game.hint();
         const after = game.halo();
-        const o = game.model.regionCenter(t.region);
+        // GAME03-REPLAYABILITY-05 (restated): the object where the round's layout put it
+        const o = game.model.regionCenter(game.model.targetById(game.played(), t.id).region);
         if (!after?.reveal || Math.hypot(after.cx - o.x, after.cy - o.y) > 1) problems.push(`${id}/${t.id}: once open, the reveal does not show the object`);
         game.tapObject(t.id);
         if (!game.found().includes(t.id)) problems.push(`${id}/${t.id}: not found after the hint and the opening`);
@@ -1296,7 +1317,8 @@ async function runChecks(tree) {
           for (const piece of scene.interactables ?? []) for (let k = 0; k < 3; k += 1) s = R(s, { type: "interact", interactableId: piece.id });
         }
         if (t.gate && s.interactions && !(scene.interactables.find((p) => p.id === t.gate).states.find((x) => x.id === s.interactions[t.gate])?.open)) s = R(s, { type: "interact", interactableId: t.gate });
-        s = R(s, { type: "tap", point: model.regionCenter(t.region), scale: 1, pointerType: "mouse" });
+        // GAME03-REPLAYABILITY-05 (restated): the tap goes where the session's layout put it
+        s = R(s, { type: "tap", point: model.regionCenter((model.roomOf ? model.targetById(model.roomOf(s), id) : t).region), scale: 1, pointerType: "mouse" });
       }
       return model.buildHiddenObjectsResult(s);
     };
