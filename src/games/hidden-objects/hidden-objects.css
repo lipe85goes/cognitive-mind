@@ -1326,6 +1326,35 @@
   }
 }
 
+/*
+ * GAME03-FINAL-POLISH-LOCK-06: on a phone held upright the stations take a row
+ * of their own. Beside the count and Pista they had ~40–55px each, and the
+ * Observatório's "Bancada" (the Estúdio's "Estante" too, below 360px) was cut;
+ * the row above now gives Pista room to say which object it is about.
+ */
+@media (max-width: 479px) {
+  .hos-panel {
+    grid-template-areas:
+      "list list"
+      "head hint"
+      "stations stations";
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-rows: auto auto auto;
+  }
+
+  .hos-shell[data-tray="closed"] .hos-panel {
+    grid-template-areas:
+      "head hint"
+      "stations stations";
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-rows: auto auto;
+  }
+
+  .hos-station {
+    min-height: 44px;
+  }
+}
+
 @media (max-width: 599px) {
   .hos-hide-narrow {
     display: none;

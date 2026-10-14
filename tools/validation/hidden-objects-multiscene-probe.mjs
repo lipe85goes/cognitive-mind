@@ -571,7 +571,12 @@ async function desktop() {
     saved?.gameId === "hidden-objects" && saved.score === 5 && same(saved.details, { difficulty: "easy", foundObjects: 5, totalObjects: 5, completed: true, sceneId: OBSERVATORY, roundSeed: seeds[1] }) && saved.continuation === undefined,
     { saved },
   );
-  check("D21_RESULT_SCREEN_THROUGH_THE_SHARED_MODAL", finished.modal.world === "Estúdio das Descobertas" && finished.modal.summary === "Você encontrou todos os objetos do Observatório.", finished.modal);
+  // GAME03-FINAL-POLISH-LOCK-06 (strengthened): the title too — it read "Estúdio explorado" over the Observatório's summary
+  check(
+    "D21_RESULT_SCREEN_THROUGH_THE_SHARED_MODAL",
+    finished.modal.world === "Estúdio das Descobertas" && finished.modal.title === "Exploração concluída" && finished.modal.summary === "Você encontrou todos os objetos do Observatório.",
+    finished.modal,
+  );
   await witness(page, "ms-desktop-result", 400);
   // "Praticar outra vez": the same room, a new round
   await press(session, page.getByRole("button", { name: "Praticar este desafio outra vez" }));
