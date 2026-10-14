@@ -1,7 +1,7 @@
 {
   "kit": "/assets/hidden-objects/explorer-studio/v4",
   "plateSha256": "138bee5fbca77acc29a4829a548dd14da1a527a1141951c051bb96876c7a04c6",
-  "atlasSha256": "98dd9bf5eecfc3ade7d1e3236b41fca6d45bb5807bcdb261b1a6c8924ff3241f",
+  "atlasSha256": "7ccceccbec64839f26adf8c08634bfbce5efccdc72fe0c9b01b78801b5a09b4c",
   "rule": {
     "visible": "share of the target's own pixels the room shows on its slot (the plate's albedo with and without it, under what the room paints in front of the slot)",
     "contrast": "F4 as written: mean-luminance ratio, visible target vs a 24 su ring, on the composed room",
@@ -79,14 +79,14 @@
       "id": "caracol",
       "tier": "C",
       "visible": 0.793,
-      "contrast": 2.02,
+      "contrast": 2.03,
       "edge": 2.02,
       "lookAlikes": [
         "roseta-entalhada"
       ],
       "visibleAtRest": 0.793,
       "visibleOpen": 0.793,
-      "clutter": 0.209
+      "clutter": 0.208
     },
     {
       "id": "piao",
@@ -118,29 +118,29 @@
       "id": "bussola",
       "tier": "B",
       "visible": 0.878,
-      "contrast": 1.12,
-      "edge": 1.98,
+      "contrast": 1.06,
+      "edge": 1.97,
       "lookAlikes": [
         "lata-redonda",
         "tampa-de-pote"
       ],
       "visibleAtRest": 0.878,
       "visibleOpen": 0.878,
-      "clutter": 0.211
+      "clutter": 0.21
     },
     {
       "id": "relogio",
       "tier": "C",
       "visible": 0.86,
-      "contrast": 1.61,
-      "edge": 1.84,
+      "contrast": 1.57,
+      "edge": 1.63,
       "lookAlikes": [
         "moedas",
         "medalha"
       ],
       "visibleAtRest": 0.86,
       "visibleOpen": 0.86,
-      "clutter": 0.237
+      "clutter": 0.236
     },
     {
       "id": "xicara",
@@ -153,7 +153,7 @@
       ],
       "visibleAtRest": 0.538,
       "visibleOpen": 0.538,
-      "clutter": 0.188
+      "clutter": 0.189
     },
     {
       "id": "pena",
@@ -171,7 +171,7 @@
       "tier": "A",
       "visible": 1,
       "contrast": 2.74,
-      "edge": 1.33,
+      "edge": 1.32,
       "lookAlikes": [
         "folha-emoldurada"
       ],
@@ -194,14 +194,14 @@
       "id": "tesoura",
       "tier": "C",
       "visible": 0.625,
-      "contrast": 2.33,
-      "edge": 2.01,
+      "contrast": 2.32,
+      "edge": 2,
       "lookAlikes": [
         "compasso-de-pontas"
       ],
       "visibleAtRest": 0.625,
       "visibleOpen": 0.625,
-      "clutter": 0.184
+      "clutter": 0.185
     },
     {
       "id": "pinha",
@@ -244,7 +244,7 @@
       "id": "camera",
       "tier": "C",
       "visible": 0.837,
-      "contrast": 1.94,
+      "contrast": 1.95,
       "edge": 2.99,
       "lookAlikes": [
         "caixinha-de-musica"
@@ -287,7 +287,7 @@
       "lookAlikes": [],
       "visibleAtRest": 0.99,
       "visibleOpen": 0.99,
-      "clutter": 0.098
+      "clutter": 0.097
     },
     {
       "id": "gaita",
@@ -308,7 +308,7 @@
       "tier": "C",
       "visible": 0.742,
       "contrast": 2.09,
-      "edge": 1.79,
+      "edge": 1.78,
       "lookAlikes": [
         "apontador"
       ],
@@ -321,8 +321,8 @@
       "id": "colar",
       "tier": "C",
       "visible": 0.786,
-      "contrast": 2.37,
-      "edge": 3.13,
+      "contrast": 2.38,
+      "edge": 3.15,
       "lookAlikes": [
         "abaco"
       ],
@@ -398,7 +398,7 @@
       "visibleAtRest": 0.933,
       "visibleOpen": 0.933,
       "contrast": 1.48,
-      "edge": 1.67,
+      "edge": 1.68,
       "ring": 95680,
       "busy": 13557,
       "near": 7
@@ -471,7 +471,7 @@
       "edge": 1.49,
       "ring": 123552,
       "busy": 14940,
-      "near": 9
+      "near": 8
     },
     {
       "key": "guarda-chuva@poltrona",
@@ -512,7 +512,7 @@
       "contrast": 1.61,
       "edge": 2.19,
       "ring": 101920,
-      "busy": 12777,
+      "busy": 12778,
       "near": 0
     },
     {
@@ -537,7 +537,7 @@
       "visible": 0.793,
       "visibleAtRest": 0.793,
       "visibleOpen": 0.793,
-      "contrast": 2.02,
+      "contrast": 2.03,
       "edge": 2.02,
       "ring": 87360,
       "busy": 11421,
@@ -596,8 +596,8 @@
       "contrast": 1.36,
       "edge": 1.75,
       "ring": 133120,
-      "busy": 17015,
-      "near": 11
+      "busy": 17021,
+      "near": 12
     },
     {
       "key": "lupa@livro",
@@ -610,8 +610,8 @@
       "contrast": 1.07,
       "edge": 1.77,
       "ring": 133120,
-      "busy": 22019,
-      "near": 8
+      "busy": 22020,
+      "near": 7
     },
     {
       "key": "lupa@livro-esq",
@@ -621,10 +621,10 @@
       "visible": 0.956,
       "visibleAtRest": 0.956,
       "visibleOpen": 0.956,
-      "contrast": 1.01,
-      "edge": 1.82,
+      "contrast": 1,
+      "edge": 1.84,
       "ring": 133120,
-      "busy": 17704,
+      "busy": 17677,
       "near": 6
     },
     {
@@ -635,8 +635,8 @@
       "visible": 0.878,
       "visibleAtRest": 0.878,
       "visibleOpen": 0.878,
-      "contrast": 1.12,
-      "edge": 1.98,
+      "contrast": 1.06,
+      "edge": 1.97,
       "ring": 111488,
       "busy": 19595,
       "near": 16
@@ -677,10 +677,10 @@
       "visible": 0.86,
       "visibleAtRest": 0.86,
       "visibleOpen": 0.86,
-      "contrast": 1.61,
-      "edge": 1.84,
+      "contrast": 1.57,
+      "edge": 1.63,
       "ring": 96512,
-      "busy": 22022,
+      "busy": 21999,
       "near": 8
     },
     {
@@ -692,9 +692,9 @@
       "visibleAtRest": 0.993,
       "visibleOpen": 0.993,
       "contrast": 2.71,
-      "edge": 1.52,
+      "edge": 1.51,
       "ring": 96512,
-      "busy": 10383,
+      "busy": 10385,
       "near": 9
     },
     {
@@ -722,8 +722,8 @@
       "contrast": 1.05,
       "edge": 1.64,
       "ring": 89856,
-      "busy": 11543,
-      "near": 4
+      "busy": 11540,
+      "near": 5
     },
     {
       "key": "pena@mapa-direita",
@@ -734,9 +734,9 @@
       "visibleAtRest": 1,
       "visibleOpen": 1,
       "contrast": 1.18,
-      "edge": 3.34,
+      "edge": 3.33,
       "ring": 108992,
-      "busy": 11082,
+      "busy": 11080,
       "near": 2
     },
     {
@@ -751,7 +751,7 @@
       "edge": 2.33,
       "ring": 89856,
       "busy": 12474,
-      "near": 5
+      "near": 6
     },
     {
       "key": "pena@frasco",
@@ -765,7 +765,7 @@
       "edge": 2.93,
       "ring": 108992,
       "busy": 13013,
-      "near": 4
+      "near": 5
     },
     {
       "key": "pena@mapa-dir-fundo",
@@ -776,9 +776,9 @@
       "visibleAtRest": 1,
       "visibleOpen": 1,
       "contrast": 1.35,
-      "edge": 2.99,
+      "edge": 3,
       "ring": 108992,
-      "busy": 7023,
+      "busy": 7025,
       "near": 7
     },
     {
@@ -790,7 +790,7 @@
       "visibleAtRest": 1,
       "visibleOpen": 1,
       "contrast": 2.74,
-      "edge": 1.33,
+      "edge": 1.32,
       "ring": 104000,
       "busy": 7056,
       "near": 1
@@ -859,8 +859,8 @@
       "visible": 0.625,
       "visibleAtRest": 0.625,
       "visibleOpen": 0.625,
-      "contrast": 2.33,
-      "edge": 2.01,
+      "contrast": 2.32,
+      "edge": 2,
       "ring": 88192,
       "busy": 12979,
       "near": 6
@@ -874,24 +874,24 @@
       "visibleAtRest": 1,
       "visibleOpen": 1,
       "contrast": 3.91,
-      "edge": 5.41,
+      "edge": 5.42,
       "ring": 88192,
       "busy": 17461,
       "near": 6
     },
     {
-      "key": "tesoura@sob-rolo",
+      "key": "tesoura@mapa-fundo-b",
       "id": "tesoura",
-      "slot": "sob-rolo",
+      "slot": "mapa-fundo-b",
       "tier": "C",
-      "visible": 0.846,
-      "visibleAtRest": 0.846,
-      "visibleOpen": 0.846,
-      "contrast": 1.42,
-      "edge": 1.13,
+      "visible": 0.651,
+      "visibleAtRest": 0.651,
+      "visibleOpen": 0.651,
+      "contrast": 1.96,
+      "edge": 1.41,
       "ring": 88192,
-      "busy": 12886,
-      "near": 1
+      "busy": 7878,
+      "near": 4
     },
     {
       "key": "pinha@prateleira-2",
@@ -971,10 +971,10 @@
       "visible": 0.841,
       "visibleAtRest": 0.841,
       "visibleOpen": 0.841,
-      "contrast": 2.11,
+      "contrast": 2.1,
       "edge": 1.33,
       "ring": 126880,
-      "busy": 16109,
+      "busy": 16110,
       "near": 3
     },
     {
@@ -999,7 +999,7 @@
       "visible": 0.837,
       "visibleAtRest": 0.837,
       "visibleOpen": 0.837,
-      "contrast": 1.94,
+      "contrast": 1.95,
       "edge": 2.99,
       "ring": 115648,
       "busy": 19279,
@@ -1140,7 +1140,7 @@
       "visibleAtRest": 0,
       "visibleOpen": 0.742,
       "contrast": 2.09,
-      "edge": 1.79,
+      "edge": 1.78,
       "ring": 89440,
       "busy": 14074,
       "near": 13
@@ -1154,7 +1154,7 @@
       "visibleAtRest": 0,
       "visibleOpen": 0.912,
       "contrast": 1.9,
-      "edge": 1.77,
+      "edge": 1.78,
       "ring": 89440,
       "busy": 14337,
       "near": 13
@@ -1167,8 +1167,8 @@
       "visible": 0.786,
       "visibleAtRest": 0,
       "visibleOpen": 0.786,
-      "contrast": 2.37,
-      "edge": 3.13,
+      "contrast": 2.38,
+      "edge": 3.15,
       "ring": 87776,
       "busy": 9823,
       "near": 6
@@ -1181,8 +1181,8 @@
       "visible": 0.691,
       "visibleAtRest": 0,
       "visibleOpen": 0.691,
-      "contrast": 2.59,
-      "edge": 3.12,
+      "contrast": 2.6,
+      "edge": 3.15,
       "ring": 87776,
       "busy": 9913,
       "near": 6
@@ -1209,7 +1209,7 @@
       "visible": 0.873,
       "visibleAtRest": 0,
       "visibleOpen": 0.873,
-      "contrast": 2.44,
+      "contrast": 2.45,
       "edge": 3.06,
       "ring": 91520,
       "busy": 7787,

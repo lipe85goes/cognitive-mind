@@ -13,11 +13,12 @@
  *   occupant  the thing's own paint (its shadow and what hangs from it, then
  *             the object), put on the slot (`art(thing, box, placement)`);
  *   cover     the alpha of everything the room paints after the slot's marker;
- *   picture   the occupant lit exactly as the plate is lit (the room's own
- *             light, bloom and grain, through the same sharp pipeline, on its
- *             pixels), with alpha = occupant alpha × (1 − cover).
- * Composited over the plate, a picture gives the plate as it would be with the
- * thing painted there (up to the soft-light grain's curve on a soft edge).
+ *   picture   alpha = occupant alpha × (1 − cover); colour solved so that the
+ *             picture composited over the shipped plate gives exactly the
+ *             room as it would be lit with the thing painted there (the room's
+ *             own light, bloom and grain, through the plate's sharp pipeline,
+ *             on the crop with and without the thing) — exact under a
+ *             see-through cover (the glass of a cabinet) and on a soft edge.
  *
  * Every picture goes into one atlas per room; the art module the game reads
  * (scenes/<room>.art.ts) says where each is and what the audit measured for
@@ -153,6 +154,18 @@ export async function litCrop(rgb, crop, lighting) {
     .toBuffer();
 }
 
+/** Straight RGBA flattened on black, as the plate's pipeline lights it: RGB. */
+function onBlack(rgba) {
+  const out = Buffer.alloc((rgba.length / 4) * 3);
+  for (let i = 0, j = 0; i < rgba.length; i += 4, j += 3) {
+    const a = rgba[i + 3] / 255;
+    out[j] = Math.round(rgba[i] * a);
+    out[j + 1] = Math.round(rgba[i + 1] * a);
+    out[j + 2] = Math.round(rgba[i + 2] * a);
+  }
+  return out;
+}
+
 /** `top` over `bottom` (straight RGBA buffers of the same size), into a new buffer. */
 export function over(top, bottom) {
   const out = Buffer.alloc(bottom.length);
@@ -237,11 +250,15 @@ export async function renderPlacements({ room, chunks, defs, art, lighting, fixe
     }
     if (!rendered) throw new Error(`${slotId}: an occupant's paint is wider than any margin tried`);
     const { crop, before, after } = rendered;
+    // the room's own pixels here, lit as the plate is: without any thing on the slot
+    const litWithout = await litCrop(onBlack(over(after, before)), crop, lighting);
     for (const { p, object, occupant } of rendered.occupants) {
       const n = crop.w * crop.h;
       const rgb = Buffer.alloc(n * 3);
       for (let i = 0; i < n; i += 1) for (let c = 0; c < 3; c += 1) rgb[i * 3 + c] = occupant[i * 4 + c];
       const lit = await litCrop(rgb, crop, lighting);
+      // …and with this thing on it
+      const litWith = await litCrop(onBlack(over(after, over(occupant, before))), crop, lighting);
       const rgba = Buffer.alloc(n * 4);
       const own = new Uint8Array(n);
       const seen = new Uint8Array(n);
@@ -255,9 +272,12 @@ export async function renderPlacements({ room, chunks, defs, art, lighting, fixe
         const a = occupant[i * 4 + 3] / 255;
         const c = after[i * 4 + 3] / 255;
         const alpha = Math.round(a * (1 - c) * 255);
-        rgba[i * 4] = lit[i * 3];
-        rgba[i * 4 + 1] = lit[i * 3 + 1];
-        rgba[i * 4 + 2] = lit[i * 3 + 2];
+        // the colour that, at this alpha over the room without the thing, gives the room with it
+        const k = alpha / 255;
+        for (let ch = 0; ch < 3; ch += 1) {
+          const j = i * 3 + ch;
+          rgba[i * 4 + ch] = k >= 0.04 ? clampInt(Math.round((litWith[j] - (1 - k) * litWithout[j]) / k), 0, 255) : lit[j];
+        }
         rgba[i * 4 + 3] = alpha;
         if (alpha >= 10) {
           const x = i % crop.w;

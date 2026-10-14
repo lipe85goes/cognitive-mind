@@ -337,8 +337,6 @@ function shuffle<T>(items: T[], random: () => number): T[] {
 interface LayoutPlan {
   /** Thing numbers that move, by component. */
   components: number[][];
-  /** Thing number → how many placements of other things its placements clash with: the most constraining go first. */
-  weight: number[];
   /** Thing number → the indices of its placements that are possible at all. */
   domains: number[][];
   /** The placement numbers of the things that never move. */
@@ -378,14 +376,7 @@ function layoutPlan(scene: SceneDefinition): LayoutPlan {
     }
     components.push(component.sort((a, b) => a - b));
   }
-  const weight = things.map((_, t) => {
-    let clashes = 0;
-    for (const p of domains[t])
-      for (const [other] of things.entries())
-        if (other !== t) for (const q of domains[other]) clashes += table.clash[table.numbers[t][p] * table.count + table.numbers[other][q]];
-    return clashes / Math.max(1, domains[t].length);
-  });
-  const plan = { components, weight, domains, fixed };
+  const plan = { components, domains, fixed };
   planIndex.set(scene, plan);
   return plan;
 }
@@ -400,11 +391,10 @@ function layoutPlan(scene: SceneDefinition): LayoutPlan {
  * single placement are where it says from the start. Same room and seed, same
  * layout.
  *
- * The things that constrain the most go first (a large magnifier on a crowded
- * table leaves fewer places to the rest than a coin does), each choosing its
- * placement uniformly; the rest fit around them — so a thing's placements are
- * taken about equally often, not only the ones that block nothing. The seed
- * still orders things of equal weight, and every choice.
+ * The seed orders both the things of a group and each thing's placements, so
+ * no thing always chooses first: each placement is taken about as often as the
+ * room's other things leave it free (the replayability suite's variety checks
+ * and the variety report measure how often).
  */
 export function composeLayout(scene: SceneDefinition, seed: number): LayoutComposition {
   const things = layoutThings(scene);

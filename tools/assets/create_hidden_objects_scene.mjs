@@ -1893,6 +1893,7 @@ function plateChunks() {
     bookStack(1150, 1046, [[150, 22, "#2d4a68"], [140, 20, "#7a3024", 6], [128, 18, "#4a6a3a", 10]]),
     mark("atras-livro"),
     mark("mapa-fundo"),
+    mark("mapa-fundo-b"),
     TABLE_MAP,
     mark("mapa-borda"),
     mark("livro-borda"),
@@ -1918,7 +1919,6 @@ function plateChunks() {
     mark("frasco"),
     mark("mapa-dir-fundo"),
     mark("mapa-direita"),
-    mark("sob-rolo"),
     `<g>${shadow(1215, 1004, 60, 8)}
       <rect x="1160" y="986" width="110" height="14" rx="7" fill="url(#parchment)" stroke="#8a6a3c" stroke-width="1.3" transform="rotate(-4 1215 993)"/>
       <rect x="1204" y="984" width="9" height="18" fill="#94482a" transform="rotate(-4 1215 993)"/></g>`,
