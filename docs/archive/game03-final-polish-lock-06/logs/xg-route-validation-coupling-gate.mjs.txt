@@ -1,0 +1,46 @@
+scanning 121 validators (working tree)
+
+PASS  D1 [decoupling] — MIGRATED_VALIDATORS_LOAD_THE_GRAPH
+        migrated: 11
+        offenders: {}
+PASS  D2 [decoupling] — NO_SINGLE_FILE_SEAM
+        users: []
+PASS  D3 [decoupling] — NO_LIVE_PRIVATE_ROTA_RESOLVER
+        live: []
+        legacy: ["autopsy-generation.mjs","final-rejection-autopsy.mjs","route-lab.mjs","star-capacity-proof.mjs","star-selection-proof.mjs"]
+PASS  R1 [regression] — EVERY_COUPLING_IS_DECLARED
+        undeclared: []
+PASS  R2 [regression] — ALLOWLIST_IS_CURRENT
+        stale: []
+
+couplings, 5d541b2 → working tree (files per kind):
+  hook-path         19 → 14   removed: chest-static-render-audit.mjs, diagnostic-launcher-tests.mjs, dynamic-solvability-campaign-lib.mjs, inspect-route-board-glb.mjs, instrumented-generator.mjs, test-star-selection.mjs, validate-route-9x9.mjs   added: gameplay-platform-lock-v1.mjs, route-module-loader.mjs
+  hook-text          2 →  1   removed: final-acceptance.mjs
+  rota-module-path  15 → 23   removed: dynamic-solvability-campaign-lib.mjs, instrumented-generator.mjs, test-star-selection.mjs, validate-route-9x9.mjs   added: gameplay-platform-lock-v1.mjs, route-config-extraction-tests.mjs, route-defenders-extraction-tests.mjs, route-domain-events-tests.mjs, route-generation-extraction-tests.mjs, route-generation-lifecycle-tests.mjs, route-generation-worker-tests.mjs, route-invariants-extraction-tests.mjs, route-module-loader-tests.mjs, route-module-loader.mjs, route-state-reducer-tests.mjs, route-worker-rng-handoff-tests.mjs
+  rota-resolver      8 →  5   removed: instrumented-generator.mjs, test-star-selection.mjs, validate-route-9x9.mjs
+  single-file-seam   5 →  0   removed: game-continuation-contract-tests.mjs, inspect-route-board-glb.mjs, route-journey-ownership-tests.mjs, route-journey-terminal-tests.mjs, route-runtime-harness.mjs
+  rota-ts-compile   13 → 13   removed: instrumented-generator.mjs, test-star-selection.mjs, validate-route-9x9.mjs   added: gameplay-platform-lock-v1.mjs, route-generation-lifecycle-tests.mjs, route-module-loader.mjs
+PASS  D4 [decoupling] — COUPLING_REMOVED_SINCE_5d541b2
+        liveResolversAtBaseline: ["instrumented-generator.mjs","test-star-selection.mjs","validate-route-9x9.mjs"]
+        liveResolversNow: []
+        singleFileSeamAtBaseline: ["game-continuation-contract-tests.mjs","inspect-route-board-glb.mjs","route-journey-ownership-tests.mjs","route-journey-terminal-tests.mjs","route-runtime-harness.mjs"]
+        removedPerFile: {"instrumented-generator.mjs":["hook-path","rota-resolver","rota-ts-compile"],"route-runtime-harness.mjs":["single-file-seam"],"validate-route-9x9.mjs":["hook-path","rota-resolver","rota-ts-compile"],"test-star-selection.mjs":["hook-path","rota-resolver","rota-ts-compile"],"final-acceptance.mjs":["hook-text"],"inspect-route-board-glb.mjs":["hook-path","single-file-seam"],"chest-static-render-audit.mjs":["hook-path"],"diagnostic-launcher-tests.mjs":["hook-path"],"game-continuation-contract-tests.mjs":["single-file-seam"],"route-journey-ownership-tests.mjs":["single-file-seam"],"route-journey-terminal-tests.mjs":["single-file-seam"]}
+        notReduced: []
+
+6/6 passed · decoupling 4/4 · regression 2/2 · failing: none
+
+allowed couplings, by reason:
+  SHARED_LOADER — the shared loader itself: the one place that names, reads and compiles the Rota's modules
+    route-module-loader.mjs
+  LOADER_TESTS — tests of the shared loader: patch and assert on named Rota modules on purpose
+    route-module-loader-tests.mjs
+  STRUCTURAL_ASSERTION — intentional source/AST assertion: the check is about WHERE code lives (a contract on the file), so it names the file
+    cross-eol-tests.mjs, game-continuation-contract-tests.mjs, route-journey-ownership-tests.mjs, route-journey-terminal-tests.mjs, route-config-extraction-tests.mjs, route-generation-extraction-tests.mjs, route-defenders-extraction-tests.mjs, route-invariants-extraction-tests.mjs, route-state-reducer-tests.mjs, route-domain-events-tests.mjs, route-worker-rng-handoff-tests.mjs, route-generation-lifecycle-tests.mjs, route-generation-worker-tests.mjs, gameplay-platform-lock-v1.mjs, diagnostic-launcher-tests.mjs, production-diagnostic-boundary-tests.mjs
+  UI_STAGE — stage-isolated UI test: compiles a component (page, GameScreen, the Rota component, launcher) with stage stubs; the Rota's logic runs through route-runtime-harness
+    route-board-loader-tests.mjs
+  REPORT_LABEL — names the file inside report/evidence text only — nothing is read or compiled
+    breakable-wall-feasibility.mjs, dynamic-solvability-finalize.mjs
+  LEGACY_LEDGER — historical acceptance ledger of a closed mission: rewrites its archive on every run and is not a check; its source scan is that mission's record
+    chest-acceptance.mjs
+  LEGACY_BROKEN — legacy one-shot script that already failed at 5d541b2 and writes archived evidence when run; not migrated (reviving it would rewrite a closed mission's record)
+    render-route-9x9-evidence.mjs, route-lab.mjs, autopsy-generation.mjs, final-rejection-autopsy.mjs, star-capacity-proof.mjs, star-selection-proof.mjs

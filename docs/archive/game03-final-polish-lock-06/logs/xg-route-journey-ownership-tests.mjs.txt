@@ -1,0 +1,35 @@
+PASS  O1 [ownership] — NO_WAY_FORWARD_INSIDE_A_SESSION
+        api: ["breakWall","changeDifficulty","chooseReward","restartGame","retryGeneration","startGame","tryMovePlayer"]
+        callsMade: 52
+        routeAdvancedBy: []
+        statesNotReached: []
+PASS  O2 [ownership] — FINISHED_ROUTE_RENDERS_NO_WAY_FORWARD
+        controlsWhileSetUpOrPlayed: 12
+        controlsThatAppearOnlyOnceEnded: {"won":[],"lost":[]}
+PASS  O3 [ownership] — ONE_PRODUCER_OF_THE_NEXT_ROUTE
+        productFiles: 97
+        continuationProducers: ["src/games/escape-maze/useEscapeMaze.ts#endGame"]
+        routeNumberPlusOne: ["src/games/escape-maze/continuation.ts#nextJourneyRoute"]
+        routeSetters: []
+        continueJourney: []
+PASS  O4 [ownership] — LAB_MOVES_ON_THROUGH_THE_CONTINUATION
+        launched: {"kind":"escape-maze-route","routeNumber":3,"difficulty":"hard"}
+        resultContinuation: {"kind":"escape-maze-route","routeNumber":3,"difficulty":"hard"}
+        gameStaysAfterTheEnd: true
+        labOffersTheNextRoute: true
+        nextSession: {"kind":"escape-maze-route","routeNumber":3,"difficulty":"hard"}
+        nextSessionIsTheResultsValue: true
+        seedsArmed: [12432045,12432045]
+PASS  P1 [preserved] — RESULT_OPENS_ROUTE_N_PLUS_1_WON_AND_LOST
+        cases: 12
+        failing: []
+PASS  P2 [preserved] — FRESH_ENTRY_ROUTE_1_RETRY_KEEPS_THE_ROUTE
+        fresh: {"route":1,"mode":"easy","status":"setup"}
+        rows: [{"mode":"easy","restart":2,"changeDifficulty":2,"entryRetry":{"route":2,"mode":"easy"}},{"mode":"medium","restart":2,"changeDifficulty":2,"entryRetry":{"route":2,"mode":"medium"}},{"mode":"hard","restart":2,"changeDifficulty":2,"entryRetry":{"route":2,"mode":"hard"}}]
+PASS  P3 [preserved] — SHELL_STAYS_AGNOSTIC
+        page: []
+        screen: []
+        setContinuation: ["lastResult.continuation","undefined"]
+
+7/7 passed · ownership 4/4 · preserved 3/3 · failing: none
+ROUTE_JOURNEY_OWNERSHIP_OK

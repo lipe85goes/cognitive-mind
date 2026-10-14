@@ -1,0 +1,97 @@
+PASS  I01 [interactions] — BOTH_ROOMS_DECLARE_VALID_PIECES
+        perRoom: {"explorer-studio":["gaveta-da-mesinha (drawer) → apito","caixinha-da-mesa (lid) → colar","cesto-de-mapas (prop) → cantil"],"explorer-observatory":["portinhola-do-lambri (door) → foguete","gaveta-da-bancada (drawer) → ioio","cortina-da-mesinha (curtain) → tambor"]}
+        kinds: ["drawer","lid","prop","door","curtain"]
+        missingKinds: []
+        gatedBounds: {"easy":[0,1],"medium":[1,2],"hard":[1,3]}
+        problems: []
+        problemCount: 0
+PASS  I02 [interactions] — PIECE_IDS_ARE_UNIQUE_AND_DATA_DRIVEN
+        problems: []
+PASS  I03 [interactions] — THE_ENGINE_HAS_NO_ROOM_OR_PIECE_BRANCH
+        engineNamesARoomOrPiece: []
+        literalBranches: []
+PASS  I04 [interactions] — EVERY_PIECE_STARTS_AS_AUTHORED
+        problems: []
+PASS  I05 [interactions] — A_TAP_STEPS_THE_AUTHORED_STATES
+        said: {"explorer-studio/gaveta-da-mesinha":"aberta → fechada","explorer-studio/caixinha-da-mesa":"aberta → fechada","explorer-studio/cesto-de-mapas":"afastado → no-lugar","explorer-observatory/portinhola-do-lambri":"aberta → fechada","explorer-observatory/gaveta-da-bancada":"aberta → fechada","explorer-observatory/cortina-da-mesinha":"aberta → fechada"}
+        problems: []
+PASS  I06 [interactions] — THE_KEYBOARD_MOVES_EVERY_PIECE
+        problems: []
+PASS  I07 [interactions] — REDUCED_MOTION_KEEPS_EVERY_STATE
+        problems: []
+PASS  I08 [interactions] — A_CAMERA_DRAG_NEVER_MOVES_A_PIECE
+        problems: []
+PASS  I09 [interactions] — A_PIECE_TAP_NEVER_PANS
+        problems: []
+PASS  I10 [interactions] — A_SHUT_PIECE_KEEPS_ITS_OBJECT_UNFINDABLE
+        pointsProbed: 900
+        problems: []
+        problemCount: 0
+PASS  I11 [interactions] — OPENING_ITS_OWN_PIECE_EXPOSES_IT
+        played: {"explorer-studio/apito":{"seed":1,"found":true},"explorer-studio/colar":{"seed":2,"found":true},"explorer-studio/cantil":{"seed":3,"found":true},"explorer-observatory/foguete":{"seed":3,"found":true},"explorer-observatory/ioio":{"seed":1,"found":true},"explorer-observatory/tambor":{"seed":2,"found":true}}
+        problems: []
+PASS  I12 [interactions] — AN_UNLISTED_OBJECT_BEHIND_A_PIECE_STAYS_SCENERY
+        problems: []
+PASS  I13 [interactions] — RECOMECAR_KEEPS_THE_ROUND_AND_SHUTS_THE_PIECES
+        problems: []
+PASS  I14 [interactions] — PRACTISING_AGAIN_DRAWS_A_NEW_ROUND_WITH_SHUT_PIECES
+        problems: []
+PASS  I15 [interactions] — ANOTHER_ROOM_STARTS_WITH_ITS_OWN_PIECES
+        problems: []
+PASS  I16 [interactions] — NOTHING_BUT_THE_EXPLORADOR_MOVES_A_PIECE
+        problems: []
+PASS  I17 [interactions] — EASY_POINTS_AT_THE_PIECE_AND_LETS_THE_EXPLORADOR_OPEN_IT
+        shown: {"explorer-studio/apito":"Aqui está guardado: Apito — abra a gaveta da mesinha.","explorer-studio/colar":"Aqui está guardado: Colar — levante a tampa da caixinha de madeira.","explorer-studio/cantil":"Aqui está guardado: Cantil — afaste o cesto de mapas.","explorer-observatory/foguete":"Aqui está guardado: Foguete — abra a portinhola do lambri.","explorer...
+        problems: []
+PASS  I18 [interactions] — MEDIO_NEVER_REVEALS_A_KEPT_OBJECT
+        problems: []
+        problemCount: 0
+PASS  I19 [interactions] — DIFICIL_NEVER_POINTS_AT_OR_OPENS_THE_PIECE
+        problems: []
+        problemCount: 0
+PASS  I20 [interactions] — THE_ROUND_RULE_COUNTS_INTERACTION_DEPTH
+        roundsRejectedOnlyForTheirDepth: {"explorer-studio":{"easy":166,"medium":1819,"hard":1891},"explorer-observatory":{"easy":125,"medium":2902,"hard":5924}}
+        problems: []
+        problemCount: 0
+PASS  I21 [interactions] — NO_ROUND_IS_ALL_DRAWERS
+        summary: {"explorer-studio":{"easy":{"rounds":884,"keptBehindPieces":{"0":397,"1":487},"exposure":{"cantil":0.343,"colar":0.137,"apito":0.071}},"medium":{"rounds":3160,"keptBehindPieces":{"1":2200,"2":960},"exposure":{"cantil":0.571,"colar":0.386,"apito":0.347}},"hard":{"rounds":8005,"keptBehindPieces":{"1":4272,"2":3067,"3":666},"exposure":{"cantil":0.551,"colar"...
+        problems: []
+        problemCount: 0
+PASS  I22 [interactions] — EASY_MEDIUM_HARD_STAY_ORDERED
+        depthBounds: [[0,1],[1,2],[1,3]]
+        ordered: {"explorer-studio":{"meanSearch":[0.543,0.585,0.679],"meanKeptBehindPieces":[0.55,1.3,1.55]},"explorer-observatory":{"meanSearch":[0.543,0.584,0.695],"meanKeptBehindPieces":[0.43,1.24,1.47]}}
+        problems: []
+PASS  I23 [interactions] — EVERY_KEPT_OBJECT_IS_FAIR_SHUT_AND_OPEN
+        kept: {"explorer-studio/apito":{"shut":0,"open":0.742,"edge":1.78,"tier":"C"},"explorer-studio/colar":{"shut":0,"open":0.786,"edge":3.15,"tier":"C"},"explorer-studio/cantil":{"shut":0,"open":0.846,"edge":2.48,"tier":"B"},"explorer-observatory/foguete":{"shut":0,"open":0.764,"edge":1.78,"tier":"C"},"explorer-observatory/ioio":{"shut":0,"open":0.767,"edge":3.92,"...
+        floors: {"hiddenAtRest":0.05,"visible":{"A":0.8,"B":0.6,"C":0.4},"edge":1.3}
+        problems: []
+        problemCount: 0
+PASS  I24 [interactions] — EVERY_PIECE_MEETS_THE_TOUCH_FLOORS
+        smallestSideSu: 32
+        floors: {"touchPx":44,"atCoverPx":32}
+        problems: []
+        problemCount: 0
+PASS  I25 [preserved] — NO_TIMER_SCORE_LIVES_OR_RANKING
+        sourcesWithPressure: []
+        piecesHintsAndMissesChangeNothing: true
+        raceKeys: []
+PASS  I26 [preserved] — OLD_RESULTS_REMAIN_READABLE
+        readBackAsSaved: true
+        keptAfterANewSave: true
+        oldResultsShowTheirMode: true
+        oldResultsKeepTheirTitle: true
+        theTrilhaResultStillReads: true
+        aNewResultHasTheSameShape: true
+        newDetails: {"difficulty":"hard","foundObjects":8,"totalObjects":8,"completed":true,"sceneId":"explorer-observatory","roundSeed":9766}
+PASS  I27 [preserved] — BOTH_ROOMS_KEEP_EVERY_OBJECT_THEY_HAD
+        kept: {"explorer-studio":"23 objects, 22 look-alikes","explorer-observatory":"23 objects, 23 look-alikes"}
+        problems: []
+PASS  I28 [preserved] — THE_PIECES_NEVER_REACH_HOME
+        homeModules: 37
+        game03InHome: []
+        homeNamesRoomArt: []
+        staticGame: []
+        pieces: 6
+
+28/28 passed (24 interactions, 4 preserved)
+HIDDEN_OBJECTS_INTERACTIONS_OK

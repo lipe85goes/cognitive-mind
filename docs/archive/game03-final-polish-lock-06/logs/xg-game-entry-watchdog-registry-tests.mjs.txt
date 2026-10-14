@@ -1,0 +1,44 @@
+PASS  B1 — WATCHDOG_WINDOW_PER_GAME
+        failing: []
+        windowMs: {"color-sequence":12000,"escape-maze":28000,"security-panel":12000,"hidden-objects":12000,"seed-garden":12000}
+PASS  B2 — HIDDEN_TAB_REARMS_SAME_WINDOW
+        failing: []
+PASS  B3 — RETRY_REARMS_AND_READY_DISARMS
+        failing: []
+PASS  B4 — RESET_CLEARS_AND_NEXT_GAME_USES_ITS_WINDOW
+        pairs: 25
+        failing: []
+PASS  B5 — SESSION_ACROSS_GAMES_AND_UNMOUNT
+        sequence: {"color-sequence":[12000],"escape-maze":[28000],"security-panel":[12000],"hidden-objects":[12000],"seed-garden":[12000]}
+        pendingAfterUnmount: 0
+        lateDispatch: 0
+PASS  C1 — CONTRACT_DECLARES_WATCHDOG
+        contractExport: GAME_ENTRY_CONTRACTS
+        overrides: {"escape-maze":28000}
+        invalid: []
+        drift: []
+PASS  C2 — CONTROLLER_NAMES_NO_GAME
+        named: []
+PASS  C3 — CONTRACT_DRIVES_WATCHDOG
+        failing: []
+        note: distinct window per game, then no window anywhere; the controller followed each
+PASS  C4 — CONTROLLER_LOADS_NO_GAME_CODE
+        controllerClosure: ["src/components/world-entry/useWorldEntryController.ts","src/components/world-entry/worldEntryTypes.ts","src/games/entry-contract.ts"]
+        gameCode: []
+        contractRuntimeImports: []
+        forReference: importing src/games/index.ts instead would load 2 modules
+PASS  C5 — NO_IMPORT_CYCLES
+        modules: 100
+        imports: 282
+        runtimeCycles: []
+        cyclesWithTypeImports: []
+
+janela do watchdog por jogo (preparing -> painel de erro):
+  color-sequence   12000 ms  (padrão do shell)
+  escape-maze      28000 ms  (declarado no contrato)
+  security-panel   12000 ms  (padrão do shell)
+  hidden-objects   12000 ms  (padrão do shell)
+  seed-garden      12000 ms  (padrão do shell)
+
+10/10 passed · failing: none
+GAME_ENTRY_WATCHDOG_REGISTRY_OK

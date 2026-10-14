@@ -1,0 +1,31 @@
+working tree: 15/15 code checks pass
+CAUGHT  bd75e69 — before ROUTE-C7C (generation still on the main thread)
+        required to fail: A6, A8 · failed: A1, A6, A7, A8
+        A6 FAILED: {"generationModulesOnMain":["src/games/escape-maze/route-generation.ts"],"workerReachesGeneration":false,"workerEdges":[]}
+        A8 FAILED: {"error":"route-module-loader: src/games/escape-maze/route-generation-worker-executor.ts does not exist at bd75e69c75ca"}
+CAUGHT  7b740e4 — before ROUTE-JOURNEY-TERMINAL-01 / P4B (Route 3 → Route 4)
+        required to fail: R1 · failed: A1, A6, A7, A8, R1, R2, R3
+        R1 FAILED: {"table":[{"route":1,"won":true,"next":"no nextJourneyRoute"},{"route":1,"won":false,"next":"no nextJourneyRoute"},{"route":2,"won":true,"next":"no nextJourneyRoute"},{"route":2,"won":false,"next":"no nextJourneyRoute"},{"route":3,"won":true,"next":"no nextJourneyRoute"},{"route":3,"won":false,"next":"no nextJourneyRoute"}],"continuationsAccepted":[1,2,3,4,999]}
+CAUGHT  61c3b04 — before MEMORY-CIRCUIT-LIFECYCLE-01 (timers not session-owned)
+        required to fail: M1 · failed: A1, A3, A4, A6, A7, A8, A9, A10, R1, R2, R3, M1, M2
+        M1 FAILED: {"setTimeoutCallSites":5,"theOneTimeoutIsSessionOwned":false,"revokeClearsTimers":false,"unmountRevokesSession":false,"setIntervalCallSites":0}
+CAUGHT  3e30148 — before platform lazy loading (registry imported every game eagerly)
+        required to fail: A3, A4 · failed: A1, A3, A4, A6, A7, A8, A9, A10, R1, R2, R3, M2
+        A3 FAILED: {"homeModules":62,"gameCode":["src/games/color-sequence/MemoryCircuit3DGame.tsx","src/games/escape-maze/RouteStrategyGame.tsx","src/games/number-trail/NumberTrailGame.tsx","src/games/seed-garden/SeedGardenGame.tsx","src/games/security-panel/SecurityPanelGame.tsx","src/games/color-sequence/MemoryCircuitAccessibleControls.tsx","src/games/color-sequence/MemoryCircuitHud.tsx","src/games/color-sequence
+        A4 FAILED: {"gameIds":["color-sequence","escape-maze","number-trail","security-panel","seed-garden"],"staticGameImports":["src/games/color-sequence/MemoryCircuit3DGame.tsx","src/games/escape-maze/RouteStrategyGame.tsx","src/games/number-trail/NumberTrailGame.tsx","src/games/seed-garden/SeedGardenGame.tsx","src/games/security-panel/SecurityPanelGame.tsx"],"dynamicGameImports":0,"entryContractKeys":["color-seq
+CAUGHT  415cead — before typed game continuation (the shell read Route details)
+        required to fail: A10 · failed: A1, A6, A7, A8, A9, A10, R1, R2, R3
+        A10 FAILED: {"gameContinuationUnion":false,"routeKindTag":false,"resultCarriesContinuation":false,"shellFilesOpeningIt":["src/app/page.tsx"],"readers":[]}
+CAUGHT  mutant — the Rota's executor bound back to local generation
+        required to fail: A6, A8 · failed: A6, A8
+CAUGHT  mutant — a fourth product Route
+        required to fail: R1 · failed: R1
+CAUGHT  mutant — a game imported eagerly by the registry
+        required to fail: A3, A4 · failed: A3, A4
+CAUGHT  mutant — GameScreen learns about the Rota
+        required to fail: A9 · failed: A9
+CAUGHT  mutant — a Rota hook cell put back (the C5 mutant the historical runner no longer sees)
+        required to fail: R3 · failed: R3
+CAUGHT  mutant — the Circuit's session no longer revoked on unmount
+        required to fail: M1 · failed: M1
+LOCK_GATE_COUNTERFACTUALS_HOLD

@@ -1,0 +1,41 @@
+working tree: 38/38 checks pass
+CAUGHT  base f9254429 — the Trilha active, no Estúdio
+        [contract] failing: 30/30
+        [preserved] holding: 8/8
+CAUGHT  mutant — the Estúdio loses explicit readiness
+        required to fail: H09 · failed: H09
+CAUGHT  mutant — the Estúdio is imported eagerly
+        required to fail: H08, H37 · failed: H08, H37
+CAUGHT  mutant — number-trail stays active next to the Estúdio
+        required to fail: H02, H07 · failed: H02, H06, H07, H12
+CAUGHT  mutant — the Rota is removed by accident
+        required to fail: H03, H07 · failed: H03, H07
+CAUGHT  mutant — the Circuito is removed by accident
+        required to fail: H04, H07 · failed: H03, H04, H05, H06, H07, H12, H13
+CAUGHT  mutant — a drag selects a target
+        required to fail: H21 · failed: H20, H21
+CAUGHT  mutant — a pinch selects a target
+        required to fail: H22 · failed: H22
+CAUGHT  mutant — the camera escapes the room
+        required to fail: H17 · failed: H17
+CAUGHT  mutant — Médio lists five objects
+        required to fail: H25 · failed: H25, H29, H31
+CAUGHT  mutant — a target out of reach
+        required to fail: H27 · failed: H27
+CAUGHT  mutant — completion is sent twice
+        required to fail: H30 · failed: H30
+CAUGHT  mutant — ready before the layers decode
+        required to fail: H32 · failed: H32
+CAUGHT  mutant — ready without a paint opportunity
+        required to fail: H32 · failed: H32
+CAUGHT  mutant — the pointermove listener is left behind
+        required to fail: H33 · failed: H33
+CAUGHT  mutant — every pointermove pushes the camera into React state
+        required to fail: H35 · failed: H35
+CAUGHT  mutant — an old Trilha result crashes the world lookup
+        required to fail: H13 · failed: H13
+CAUGHT  mutant — an old Trilha result is shown as the Estúdio
+        required to fail: H13 · failed: H02, H13
+CAUGHT  mutant — old Trilha results are silently dropped at the next save
+        required to fail: H13 · failed: H02, H13
+HIDDEN_OBJECTS_SKELETON_COUNTERFACTUALS_HOLD

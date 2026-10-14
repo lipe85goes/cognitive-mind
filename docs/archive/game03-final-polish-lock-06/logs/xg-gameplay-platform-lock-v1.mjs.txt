@@ -1,0 +1,93 @@
+PASS  A1 [architecture] — CANONICAL_MODULES_EXIST
+        modules: 32
+        missing: []
+PASS  A2 [architecture] — NO_RUNTIME_CYCLES
+        modulesScanned: 96
+        cycles: []
+PASS  A3 [architecture] — HOME_INITIAL_GRAPH_HAS_NO_GAME_CODE
+        homeModules: 37
+        gameCode: []
+        heavyPackages: []
+        workerEntries: []
+PASS  A4 [architecture] — REGISTRY_LOADS_EVERY_GAME_LAZILY
+        gameIds: ["color-sequence","escape-maze","hidden-objects","security-panel","seed-garden"]
+        staticGameImports: []
+        dynamicGameImports: 5
+        entryContractKeys: ["color-sequence","escape-maze","hidden-objects","security-panel","seed-garden"]
+        loaderKeys: ["color-sequence","escape-maze","hidden-objects","security-panel","seed-garden"]
+        entryContractRuntimeImports: []
+PASS  A5 [architecture] — BABYLON_STAYS_LAZY
+        staticBabylonImporters: []
+        dynamicBabylonImporters: ["src/games/escape-maze/RouteBabylonBoard.tsx"]
+        boardStaticImporters: []
+        sceneStaticImporters: []
+PASS  A6 [architecture] — GENERATION_RUNS_ONLY_IN_THE_WORKER
+        generationModulesOnMain: []
+        workerReachesGeneration: true
+        workerEdges: ["src/games/escape-maze/route-generation-worker-executor.ts -> src/games/escape-maze/route-generation.worker.ts"]
+PASS  A7 [architecture] — WORKER_GRAPH_HAS_NO_UI_RENDER_OR_SESSION
+        workerModules: ["src/games/escape-maze/route-generation.worker.ts","src/games/escape-maze/route-generation-runner.ts","src/games/escape-maze/route-generation-worker-protocol.ts","src/engine/route-random.ts","src/games/escape-maze/route-generation.ts","src/engine/difficulty.ts","src/games/escape-maze/route-config.ts","src/games/escape-maze/route-geometry.ts"]
+        packages: []
+        forbiddenFiles: []
+        dynamicOrWorker: []
+PASS  A8 [architecture] — C7C_WORKER_IS_THE_PRODUCTION_BINDING
+        binding: true
+        clientImportsExecutor: true
+        staticWorkerUrl: true
+        noLocalFallback: true
+        runnerImporters: ["src/games/escape-maze/route-generation.worker.ts"]
+PASS  A9 [architecture] — SHELL_AND_GAMESCREEN_ARE_GAME_AGNOSTIC
+        shellFiles: ["src/app/page.tsx","src/app/layout.tsx","src/components/GameScreen.tsx","src/components/WorldEntryTransition.tsx","src/components/world-entry/useWorldEntryController.ts","src/components/world-entry/worldEntryTypes.ts"]
+        offenders: []
+PASS  A10 [architecture] — CONTINUATION_IS_TYPED_AND_GAME_OWNED
+        gameContinuationUnion: true
+        routeKindTag: true
+        resultCarriesContinuation: true
+        shellFilesOpeningIt: []
+        readers: ["src/games/escape-maze/RouteStrategyGame.tsx"]
+PASS  R1 [rota] — JOURNEY_HAS_EXACTLY_THREE_PRODUCT_ROUTES
+        finalRoute: 3
+        table: [{"route":1,"won":true,"next":2},{"route":1,"won":false,"next":2},{"route":2,"won":true,"next":3},{"route":2,"won":false,"next":3},{"route":3,"won":true,"next":"complete"},{"route":3,"won":false,"next":3}]
+        continuationsAccepted: [1,2,3]
+PASS  R2 [rota] — V1_MODES_REWARDS_ACTIONS_EVENTS_FROZEN
+        difficulties: ["easy","hard","medium"]
+        chestRewards: ["pickaxe","second-chance"]
+        stateActions: 11
+        domainEvents: 13
+        actionDelta: {"added":[],"removed":[]}
+        eventDelta: {"added":[],"removed":[]}
+PASS  R3 [rota] — HOOK_STATE_IS_ONE_ROUTE_NUMBER_CELL_AND_ONE_SESSION_REDUCER
+        useStateCells: ["routeNumber"]
+        useStateCalls: 1
+        useReducers: ["routeSessionReducer"]
+PASS  M1 [circuit] — CIRCUIT_TIMERS_BELONG_TO_THE_SESSION
+        setTimeoutCallSites: 1
+        theOneTimeoutIsSessionOwned: true
+        revokeClearsTimers: true
+        unmountRevokesSession: true
+        setIntervalCallSites: 0
+PASS  M2 [circuit] — CIRCUIT_ENTRY_CONTRACT
+        explicitReadiness: true
+        gameComponentProps: true
+        reportsReadyAndError: true
+        lazyFromRegistry: true
+PASS  D1 [doc] — LOCK_DOCUMENT_RECORDS_THE_DECISION
+        exists: true
+        decisions: ["GAMEPLAY_PLATFORM_LOCK_V1 = PASS","GAMEPLAY_PLATFORM_LOCK_V1 = PASS"]
+        canonical: "da551b17eddbf0a156228c7e2a5fc9ca178180c9"
+        canonicalIsAncestorOfHead: true
+        missingSections: []
+PASS  D2 [doc] — KNOWN_DEBT_IS_CLASSIFIED_AND_NOT_BLOCKING
+        rows: 19
+        byClass: {"BLOCKER":0,"POST-LOCK":6,"ROTA-2.0":1,"DEV/TOOLING":12}
+        unclassified: []
+        blockers: []
+        missing: []
+        duplicates: []
+PASS  D3 [doc] — EARLIER_DECISION_FLAGS_NOT_REOPENED
+        flags: 2
+        reopened: []
+        lockReferencedBySourceOfTruthAndArchitecture: true
+
+18/18 passed
+GAMEPLAY_PLATFORM_LOCK_GATE_HOLDS

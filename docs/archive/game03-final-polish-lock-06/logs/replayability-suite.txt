@@ -1,0 +1,143 @@
+PASS  R01 [replayability] — BOTH_ROOMS_DECLARE_VALID_LAYOUTS
+        explorer-studio: {"slots":85,"things":57,"movable":50,"placements":140}
+        explorer-observatory: {"slots":76,"things":53,"movable":42,"placements":118}
+        problems: []
+PASS  R02 [replayability] — NO_FREE_COORDINATE_PLACEMENT
+        problems: []
+        mathRandomIn: []
+PASS  R03 [replayability] — EVERY_THING_HAS_VALID_COMPATIBLE_SLOTS
+        placements: 258
+        problems: []
+PASS  R04 [replayability] — SAME_SEED_SAME_LAYOUT
+        compared: 30
+        problems: []
+PASS  R05 [replayability] — SAME_SEED_SAME_COORDINATES_AND_HIT_REGIONS
+        explorer-studio: {"seed":1,"signature":"10012102011200022001112010101202211102112101210001","painted":50,"tapped":"relogio"}
+        explorer-observatory: {"seed":1,"signature":"110000211010003002100100101110110011220100","painted":42,"tapped":"coruja"}
+        problems: []
+PASS  R06 [replayability] — RECOMECAR_KEEPS_THE_LAYOUT
+        problems: []
+PASS  R07 [replayability] — A_NEW_EXPLORATION_CAN_CHANGE_THE_LAYOUT
+        explorer-studio: ["10201000110021020000002001100112010021112010230110","01000101022020020011011110000110010001101001100001","00012110000021002000010022101202122002211120200101","10000010000100100111110012000010100210101121120001"]
+        explorer-observatory: ["010000000010003001101000021012000301201001","010000221000111012110001100212010111211200","010121122001002000010011000212010111001200","001110021000103102011012120011000000011010"]
+        problems: []
+PASS  R08 [replayability] — NOTHING_BUT_A_NEW_EXPLORATION_MOVES_A_THING
+        steps: {"explorer-studio":["render","zoom","pan","pinch","resize","rotation","hints","pieces","a find","the tray","visibility"],"explorer-observatory":["render","zoom","pan","pinch","resize","rotation","hints","pieces","a find","the tray","visibility"]}
+        viewComposesALayout: false
+        problems: []
+PASS  R09 [replayability] — NO_TWO_THINGS_SHARE_A_SLOT_OR_CLASH
+        layouts: 2000
+        problems: []
+PASS  R10 [replayability] — NO_PLACEMENT_OUTSIDE_THE_ROOM_OR_UNDER_THE_FOREGROUND
+        placements: 258
+        problems: []
+PASS  R11 [replayability] — HIT_TESTING_FOLLOWS_THE_PLACEMENT
+        explorer-studio: {"object":"binoculo","home":{"x":424,"y":930,"w":152,"h":78},"now":{"x":914,"y":1262,"w":152,"h":78},"atHome":false,"atPlacement":true}
+        explorer-observatory: {"object":"coruja","home":{"x":300,"y":318,"w":100,"h":136},"now":{"x":482,"y":318,"w":100,"h":136},"atHome":false,"atPlacement":true}
+        problems: []
+PASS  R12 [replayability] — HINTS_FOLLOW_THE_PLACEMENT
+        explorer-studio: {"object":"binoculo","halo":{"cx":990,"cy":1301,"r":113.42247947700886},"at":{"x":990,"y":1301}}
+        explorer-observatory: {"object":"coruja","halo":{"cx":532,"cy":386,"r":112.40379138403677},"at":{"x":532,"y":386}}
+        problems: []
+PASS  R13 [replayability] — A_SHUT_PIECE_HIDES_ITS_OBJECT_IN_EVERY_PLACEMENT
+        tried: 12
+        problems: []
+PASS  R14 [replayability] — OPENING_ITS_PIECE_EXPOSES_IT_WHERE_IT_STANDS
+        tried: 12
+        problems: []
+PASS  R15 [replayability] — WHAT_IS_NOT_LISTED_STAYS_SCENERY
+        taps: 92
+        problems: []
+PASS  R16 [replayability] — LOOK_ALIKES_MOVE_BY_SEED
+        explorer-studio: {"lookAlikes":25,"movable":22,"moved":22}
+        explorer-observatory: {"lookAlikes":26,"movable":20,"moved":20}
+        problems: []
+PASS  R17 [replayability] — PROPS_MOVE_TOO_AND_MOVING_SAYS_NOTHING
+        explorer-studio: {"props":6,"listedOffHome":0.399,"othersOffHome":0.481}
+        explorer-observatory: {"props":1,"listedOffHome":0.474,"othersOffHome":0.489}
+        problems: []
+PASS  R18 [replayability] — PLACEMENT_MEASUREMENTS_FEED_THE_ROUND_MODEL
+        checked: 3120
+        measuredOffHome: 2470
+        problems: []
+PASS  R19 [replayability] — EASY_ROUNDS_HOLD_THEIR_FLOORS_IN_EVERY_LAYOUT
+        rounds: 500
+        fallbacks: 0
+        problems: []
+PASS  R20 [replayability] — MEDIUM_ROUNDS_HOLD_THEIR_FLOORS_IN_EVERY_LAYOUT
+        rounds: 500
+        fallbacks: 0
+        problems: []
+PASS  R21 [replayability] — HARD_ROUNDS_HOLD_THEIR_FLOORS_IN_EVERY_LAYOUT
+        rounds: 500
+        fallbacks: 0
+        problems: []
+PASS  R22 [replayability] — INTERACTION_DEPTH_STAYS_IN_BOUNDS
+        keptObjectsListed: {"explorer-studio:easy":121,"explorer-studio:medium":319,"explorer-studio:hard":384,"explorer-observatory:easy":122,"explorer-observatory:medium":323,"explorer-observatory:hard":394}
+        problems: []
+PASS  R23 [replayability] — EVERY_PLACEMENT_OF_EVERY_OBJECT_IS_FAIR
+        explorer-studio: {"placements":58,"kit":"/assets/hidden-objects/explorer-studio/v4"}
+        explorer-observatory: {"placements":57,"kit":"/assets/hidden-objects/explorer-observatory/v4"}
+        problems: []
+PASS  R24 [replayability] — EVERY_AUTHORED_PLACEMENT_IS_REACHABLE
+        explorer-studio: {"placements":140,"observed":140}
+        explorer-observatory: {"placements":118,"observed":118}
+        problems: []
+PASS  R25 [replayability] — NO_SLOT_DOMINATES_AND_NO_HARD_OBJECT_COLLAPSES
+        explorer-studio: {"mostTaken":{"id":"tesoura@mapa-fundo","share":0.81}}
+        explorer-observatory: {"mostTaken":{"id":"regador@prateleira-dir-b","share":0.791}}
+        problems: []
+PASS  R26 [replayability] — NO_IMMEDIATE_REPEAT_WHILE_ANOTHER_ROOM_EXISTS
+        explorer-studio:easy: {"repeats":0,"forcedDraws":3}
+        explorer-studio:medium: {"repeats":0,"forcedDraws":3}
+        explorer-studio:hard: {"repeats":0,"forcedDraws":3}
+        explorer-observatory:easy: {"repeats":0,"forcedDraws":3}
+        explorer-observatory:medium: {"repeats":0,"forcedDraws":3}
+        explorer-observatory:hard: {"repeats":0,"forcedDraws":3}
+        problems: []
+PASS  R27 [replayability] — THE_MEMORY_NEVER_CHANGES_WHAT_A_SEED_GIVES
+        problems: []
+PASS  R28 [replayability] — GENERATION_IS_BOUNDED
+        constants: {"layoutSteps":20000,"layoutAttempts":6,"roundDraws":4000,"repeatDraws":8}
+        worstSteps: 7629
+        worstAttempt: 0
+        worstRoundMs: 2.8
+        fallbacks: 0
+        problems: []
+PASS  R29 [replayability] — TWENTY_EXPLORATIONS_LOOK_DIFFERENT
+        explorer-studio: {"rooms":20,"meanMoved":0.46,"placementsUsed":"140/140","objectsThatNeverMoved":[]}
+        explorer-observatory: {"rooms":20,"meanMoved":0.47,"placementsUsed":"117/118","objectsThatNeverMoved":[]}
+        problems: []
+PASS  R30 [preserved] — THE_ROOMS_KEEP_THEIR_ANCHORS
+        anchors: {"explorer-studio":["barco"],"explorer-observatory":["sistema-solar","gramofone"]}
+        problems: []
+PASS  R31 [preserved] — HOME_NEVER_LOADS_A_ROOM_LAYOUT
+        homeModules: 37
+        game03InHome: []
+        homeNamesRoomArt: []
+        staticGame: []
+        artImporters: []
+PASS  R32 [preserved] — NO_TIMER_SCORE_LIVES_OR_RANKING
+        sourcesWithPressure: []
+        hintsAndMissesChangeNothing: true
+        raceKeys: []
+PASS  R33 [preserved] — OLD_RESULTS_REMAIN_READABLE
+        readBackAsSaved: true
+        keptAfterANewSave: true
+        oldResultsShowTheirMode: true
+        theTrilhaResultStillReads: true
+        aNewResultHasTheSameShape: true
+        newDetails: {"difficulty":"hard","foundObjects":8,"totalObjects":8,"completed":true,"sceneId":"explorer-observatory","roundSeed":13107}
+PASS  R34 [preserved] — TWO_ROOMS_NO_THIRD
+        rooms: ["explorer-studio","explorer-observatory"]
+        sceneFiles: ["src/games/hidden-objects/scenes/explorer-observatory.ts","src/games/hidden-objects/scenes/explorer-studio.ts"]
+PASS  R35 [replayability] — BOTH_ROOMS_USE_THE_ONE_SYSTEM
+        explorer-studio: {"things":57,"movable":50,"slots":85}
+        explorer-observatory: {"things":53,"movable":42,"slots":76}
+        problems: []
+PASS  R36 [replayability] — NO_ROOM_BRANCH_IN_THE_ENGINE
+        names: 275
+        hits: []
+
+36/36 passed (31 replayability, 5 preserved)
+HIDDEN_OBJECTS_REPLAYABILITY_OK

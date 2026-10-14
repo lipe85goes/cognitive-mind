@@ -1,0 +1,206 @@
+PASS  H01 [contract] — HIDDEN_OBJECTS_IS_AN_ACTIVE_GAME
+        missingFrom: []
+        names: {"activity":"Estúdio das Descobertas","world":"Estúdio das Descobertas","intro":"Estúdio das Descobertas","visual":"Estúdio das Descobertas"}
+        activityStatus: "available"
+        rewardTitle: "Exploração concluída"
+PASS  H02 [contract] — NUMBER_TRAIL_IS_RETIRED
+        stillListedIn: []
+        activities: []
+        gameFiles: []
+        codeNaming: []
+        retiredArtStillServed: []
+PASS  H03 [preserved] — ROTA_ESTRATEGICA_STAYS
+        missingFrom: []
+        differsFromBase: []
+        gameFolderFiles: 20
+        gameFolderChangedSinceBase: []
+PASS  H04 [preserved] — CIRCUITO_DE_MEMORIA_STAYS
+        missingFrom: []
+        differsFromBase: []
+        gameFolderFiles: 11
+        gameFolderChangedSinceBase: []
+PASS  H05 [preserved] — CENTRAL_DE_COMANDOS_STAYS
+        missingFrom: []
+        differsFromBase: []
+        gameFolderFiles: 1
+        gameFolderChangedSinceBase: []
+PASS  H06 [preserved] — JARDIM_DE_SEMENTES_STAYS
+        missingFrom: []
+        differsFromBase: []
+        gameFolderFiles: 1
+        gameFolderChangedSinceBase: []
+PASS  H07 [contract] — EXACTLY_THE_FIVE_ACTIVE_GAMES
+        expected: ["color-sequence","escape-maze","security-panel","hidden-objects","seed-garden"]
+        tablesChecked: 10
+        wrong: {}
+        mapOrder: ["color-sequence","escape-maze","security-panel","hidden-objects","seed-garden"]
+PASS  H08 [contract] — STUDIO_LOADS_LAZILY_BY_LITERAL_IMPORT
+        loaderImports: ["src/games/hidden-objects/HiddenObjectsGame.tsx"]
+        registryStaticGameImports: []
+        studioModulesInHomeGraph: []
+        importersOfTheStudio: ["src/games/index.ts (dynamic)"]
+        loadedBeforeAsked: []
+        loaderResolvesTo: "HiddenObjectsGame"
+PASS  H09 [contract] — STUDIO_READINESS_IS_EXPLICIT
+        entryContract: {"readiness":"explicit"}
+        registryReadiness: "explicit"
+        watchdog: "shell default (no entryWatchdogMs)"
+        entryCallbacksReachTheScene: true
+PASS  H10 [preserved] — GAMESCREEN_IS_GAME_AGNOSTIC
+        gameNamed: null
+        gameImports: []
+PASS  H11 [preserved] — APP_SHELL_IS_GAME_AGNOSTIC
+        shellFiles: 7
+        naming: []
+        gameImports: []
+PASS  H12 [contract] — STUDIO_TAKES_THE_TRILHAS_HOME_SLOT
+        slotInherited: true
+        otherSlotsUntouched: true
+        mapPosition: true
+        activityPosition: true
+        dioramaFrame: true
+        dioramaArt: true
+        homeOrder: ["escape-maze","color-sequence","security-panel","hidden-objects","seed-garden"]
+        homeName: true
+        slot: {"tier":"quiet","navOrder":4,"mobileOrder":4,"desktop":{"sizeRem":43}}
+        missingArt: []
+PASS  H13 [contract] — OLD_TRILHA_HISTORY_STAYS_SAFE
+        freshDeviceLoads: true
+        legacyDeviceLoads: true
+        selectsAPlayableWorld: true
+        notShownAsTheStudio: true
+        noRetiredWorld: true
+        storageUntouchedByTheHome: true
+        readBackAsStored: true
+        keptAfterANewSave: true
+        foreignKeyKept: true
+        cannotBeOpened: true
+        lookupNotTheStudio: true
+        legacyDeviceSelects: ["escape-maze"]
+        storedAfterSave: ["hidden-objects","number-trail"]
+        retiredLookup: {"world":"memory","name":"Circuito de Memória","rewardTitle":"Circuito ativado"}
+PASS  H14 [preserved] — NO_NEW_DEPENDENCY
+        differs: []
+        lockfileUnchanged: true
+        dependencies: 11
+PASS  H15 [contract] — STUDIO_HAS_NO_BABYLON_OR_WEBGL
+        modules: 18
+        packages: ["lucide-react","next/image","react"]
+        unexpectedPackages: []
+        engineMarkers: []
+PASS  H16 [contract] — STUDIO_HAS_NO_ROUTE_OR_CIRCUIT_DOMAIN
+        closure: ["HiddenObjectsGame.tsx","hidden-objects-interactions.ts","hidden-objects-layout.ts","hidden-objects-model.ts","hidden-objects-scene.ts","hidden-objects-rounds.ts","hidden-objects-scenes.ts","HiddenObjectsScene.tsx","hidden-objects.css","hidden-objects-clues.ts","hidden-objects-difficulty.ts","scenes/explorer-observatory.ts","scenes/explorer-studio.ts","h...
+        modulesOutsideTheGame: []
+        routeOrCircuitSpecifiers: []
+PASS  H17 [contract] — CAMERA_STAYS_INSIDE_THE_ROOM
+        samples: 10536
+        viewports: 6
+        escapes: []
+        wheelOutReachesCover: true
+PASS  H18 [contract] — ZOOM_IS_FOCAL_AND_BOUNDED
+        constants: {"MIN_ZOOM":1,"DEFAULT_ZOOM":1,"MAX_ZOOM_FLOOR":2,"MAX_ZOOM_CEILING":4,"ZOOM_STEP":1.25}
+        maxZoomPerViewport: [2.375,2.695,2.375,3.021,4,4]
+        focalDriftSu: 2.2737367544323206e-13
+        controllerWheelDriftSu: 0
+        controllerButtonDriftSu: 0
+        wheel: {"linesIn":1.068805991211008,"pixelsIn":1.148698354997035,"pixelsOut":0.8705505632961241,"trackpadPinchIn":1.0717734625362931,"trackpadSameDeltaAsWheel":1.013959479790029,"hugeIn":1.25,"hugeOut":0.8}
+PASS  H19 [contract] — CLIENT_TO_SCENE_PIPELINE
+        roundTripPx: 2.5421149729252077e-13
+        worldTransformPx: 5.084229945850415e-13
+        controller: [{"label":"initial view","errorSu":0,"scaleError":0},{"label":"zoomed","errorSu":0,"scaleError":0},{"label":"panned","errorSu":0,"scaleError":0},{"label":"viewport moved on the page","errorSu":0,"scaleError":0}]
+PASS  H20 [contract] — TAP_THRESHOLDS_ARE_NAMED_AND_HELD
+        constants: {"TAP_SLOP_TOUCH_PX":14,"TAP_SLOP_MOUSE_PX":6,"TAP_MAX_DURATION_MS":1000}
+        failed: []
+PASS  H21 [contract] — DRAG_NEVER_SELECTS
+        failed: []
+        checked: ["pure recogniser","controller","game session"]
+PASS  H22 [contract] — PINCH_NEVER_SELECTS
+        failed: []
+        checked: ["pure recogniser","controller","game session"]
+PASS  H23 [contract] — HIT_TEST_USES_SCENE_GEOMETRY
+        failures: []
+        nearestBetweenTwo: ["barco","camera"]
+        tolerances: [{"difficulty":"easy","touch":16,"pen":16,"mouse":8},{"difficulty":"medium","touch":12,"pen":12,"mouse":6},{"difficulty":"hard","touch":10,"pen":10,"mouse":5}]
+        missRecordsNothing: true
+PASS  H24 [contract] — THE_POOL_KEEPS_THE_TEN_AND_IS_WELL_FORMED
+        count: 26
+        largestRound: 8
+        keepsTheTen: true
+        labels: ["Ampulheta","Binóculo","Chave antiga","Guarda-chuva","Gaiola","Caracol","Pião","Lupa","Bússola","Relógio","Xícara","Pena","Borboleta","Chapéu","Tesoura","Pinha","Barco em miniatura","Lanterna","Câmera","Estatueta","Globo","Bolsa de couro","Gaita","Apito","Colar","Cantil"]
+        malformed: []
+        ambiguous: []
+PASS  H25 [contract] — DIFFICULTY_ROUNDS_ARE_5_6_8_AND_SEEDED
+        roundsPerDifficulty: {"easy":884,"medium":3160,"hard":8005}
+        wrong: []
+        sameSeedSameList: true
+        randomSource: ["src/games/hidden-objects/HiddenObjectsGame.tsx"]
+        otherRandomness: []
+        clockDriven: []
+PASS  H26 [contract] — TIER_COMPOSITION
+        pool: {"A":6,"B":8,"C":12}
+        mixes: {"easy":7,"medium":8,"hard":5}
+        outside: []
+        note: "a round's mix stays inside its difficulty's bounds; Difícil never lists an A"
+PASS  H27 [contract] — FAIRNESS_GEOMETRY
+        problems: []
+        problemCount: 0
+        minGapSu: 28
+        viewports: ["desktop 1440×900","laptop 1280×800","tablet 768×1024","phone 390×844","small phone 360×640","phone landscape 844×390"]
+        phonePx: ["ampulheta 92→169","binoculo 63→118","chave 55→90","guarda-chuva 107→104","gaiola 59→115","caracol 36→95","piao 34→113","lupa 76→254","bussola 55→185","relogio 40→140","xicara 41→95","pena 70→127","borboleta 51→154","chapeu 51→103","tesoura 38→95","pinha 35→95","barco 120→293","lanterna 88→178","camera 69→168","estatueta 50→125","globo 79→264","bolsa 50→...
+PASS  H28 [contract] — HINTS_CLIMB_ON_REQUEST_AND_COST_NOTHING
+        failed: []
+        ladder: ["lupa:1","lupa:2","lupa:3","lupa:3"]
+        haloProblems: []
+        banners: ["Pista: procure na mesa.","Pista: procure sobre o mapa.","Aqui está: Lupa."]
+PASS  H29 [contract] — RESTART_KEEPS_THE_LIST_AND_CLEARS_THE_ROUND
+        failed: []
+PASS  H30 [contract] — COMPLETION_HAPPENS_ONCE
+        failed: []
+        onCompleteCalls: 1
+PASS  H31 [contract] — RESULT_CONTRACT
+        hard: {"activityId":"hidden-objects","activityTitle":"Estúdio das Descobertas","gameId":"hidden-objects","score":8,"summary":"Você encontrou todos os objetos do Estúdio.","details":{"difficulty":"hard","foundObjects":8,"totalObjects":8,"completed":true,"sceneId":"explorer-studio","roundSeed":58413}}
+        wrongShape: []
+        forbiddenKeys: []
+        rewardCopy: "Exploração concluída"
+        storedAndReadBack: true
+PASS  H32 [contract] — READY_ONLY_AFTER_DECODE_AND_A_PAINT
+        essentials: ["back","plate","front","front-right"]
+        trace: ["mounted, 3 frames: 0","back + plate decoded, 3 frames: 0","all decoded, no frame yet: 0","1 frame: 0","2 frames: 1","a layer loads again: 1"]
+        loadError: true
+        decodeError: true
+        noLateReady: true
+PASS  H33 [contract] — EVERYTHING_IS_RELEASED_ON_EXIT_AND_UNMOUNT
+        exit: true
+        before: {"listeners":7,"captured":1,"frames":1,"timers":2,"observers":1}
+        after: {"listeners":0,"captured":0,"frames":0,"timers":0,"observers":0}
+        quietAfterUnmount: true
+        controllerDestroy: true
+PASS  H34 [contract] — REDUCED_MOTION_CUTS_INSTEAD_OF_GLIDING
+        failed: []
+        glideFrames: 29
+PASS  H35 [contract] — NO_REACT_RENDER_PER_POINTERMOVE
+        failed: []
+        drag: {"pointermoves":40,"renders":0,"stateUpdates":0,"transformWrites":40}
+        pinch: {"pointermoves":24,"renders":0,"stateUpdates":0}
+        wheel: {"events":12,"rendersDuring":0,"rendersAtSettle":0}
+PASS  H36 [contract] — DISCOVERY_RECORDS_THE_APPROVED_REPLACEMENT
+        recommendationLine: true
+        decisionLine: true
+        notRewritten: true
+        baseLinesKept: "100.0%"
+PASS  H37 [preserved] — PLATFORM_BOUNDARIES_HOLD
+        homeModules: 37
+        gameCodeInHome: []
+        heavyPackagesInHome: []
+        registryStaticGameImports: []
+        loaders: ["color-sequence","escape-maze","security-panel","hidden-objects","seed-garden"]
+        nonLiteralOrForeignLoaders: []
+PASS  H38 [contract] — STUDIO_ASSETS_FIT_THE_BUDGET
+        layers: ["back 920×1000 11.9 KB","plate 3200×1600 148.7 KB","front 360×1600 32.2 KB","front-right 500×1600 25.6 KB"]
+        thumbnails: "26 × 160px, 152.2 KB"
+        transitionArt: "960×720 35.0 KB"
+        readinessBytes: "218.3 KB"
+        entryBytes: "405.5 KB of 1270 KB"
+
+38/38 passed (30 contract, 8 preserved)
+HIDDEN_OBJECTS_SKELETON_OK

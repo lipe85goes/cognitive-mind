@@ -1,0 +1,126 @@
+PASS  C01 [calibration] — EVERY_TARGET_HAS_A_VALID_CLUE_BANK
+        objects: 52
+        variantsPerObject: {"5":52}
+        problems: []
+        problemCount: 0
+PASS  C02 [calibration] — NO_DUPLICATE_OR_NEAR_DUPLICATE_CLUES
+        variantPairsCompared: 520
+        mostSimilarPair: 0.2
+        problems: []
+        problemCount: 0
+PASS  C03 [calibration] — CLUE_LEVELS_KEEP_THEIR_SEMANTIC_CONTRACT
+        levels: {"easy":{"list":null,"reclue":null},"medium":{"list":"associative","reclue":"direct"},"hard":{"list":"indirect","reclue":null}}
+        problems: []
+        problemCount: 0
+PASS  C04 [calibration] — SAME_SCENE_DIFFICULTY_AND_SEED_SAME_CLUES
+        rounds: 1200
+        unstable: []
+        listOnScreenIsTheSeedsClues: {"explorer-studio/medium":true,"explorer-studio/hard":true,"explorer-observatory/medium":true,"explorer-observatory/hard":true}
+PASS  C05 [preserved] — RESTART_PRESERVES_THE_CLUES
+        explorer-studio/medium: {"reducerKeepsThem":true,"sameLines":true,"sameSecondHint":true,"noNewDraw":true}
+        explorer-studio/hard: {"reducerKeepsThem":true,"sameLines":true,"sameSecondHint":true,"noNewDraw":true}
+        explorer-observatory/medium: {"reducerKeepsThem":true,"sameLines":true,"sameSecondHint":true,"noNewDraw":true}
+        explorer-observatory/hard: {"reducerKeepsThem":true,"sameLines":true,"sameSecondHint":true,"noNewDraw":true}
+PASS  C06 [calibration] — A_FRESH_EXPLORATION_CAN_TELL_OTHER_CLUES
+        coverage: {"explorer-studio/medium":{"objects":26,"toldMoreThanOneWay":26,"everyVariantReached":true,"independentOfRoundMates":true},"explorer-studio/hard":{"objects":18,"toldMoreThanOneWay":18,"everyVariantReached":true,"independentOfRoundMates":true},"explorer-observatory/medium":{"objects":26,"toldMoreThanOneWay":26,"everyVariantReached":true,"independentOfRound...
+        twoEntries: {"seeds":[3276552109,1367021159],"object":"bule","lines":["Às cinco da tarde, é o centro das atenções.","Ervas e água fervendo descansam dentro dele."]}
+        problems: []
+PASS  C07 [preserved] — NO_CLUE_CHANGES_DURING_THE_SESSION
+        problems: []
+        runs: {"explorer-studio/medium":{"lines":6,"banners":["Pista: procure perto da janela.","Pista: em outras palavras — Brinquedo que gira na ponta d...","Pista: olhe no chão, entre o baú e a mesinha.","Pista: olhe no chão, entre o baú e a mesinha."]},"explorer-studio/hard":{"lines":8,"banners":["Pista: procure na estante.","Pista: está numa prateleira baixa, dian...
+PASS  C08 [calibration] — EASY_ROUNDS_MEET_THE_NEW_FLOOR
+        floor: 0.533
+        ceiling: 0.552
+        maxGlanceFinds: 1
+        perRoom: {"explorer-studio":{"rounds":884,"search":{"min":0.533,"mean":0.543,"max":0.552},"decoys":0.993,"popOuts":0.946,"places":4.46},"explorer-observatory":{"rounds":1326,"search":{"min":0.533,"mean":0.543,"max":0.552},"decoys":0.982,"popOuts":0.961,"places":4.2}}
+        problems: []
+        problemCount: 0
+PASS  C09 [calibration] — MEDIUM_IS_MEASURABLY_ABOVE_EASY
+        easy: {"explorer-studio":{"rounds":884,"search":{"min":0.533,"mean":0.543,"max":0.552},"decoys":0.993,"popOuts":0.946,"places":4.46},"explorer-observatory":{"rounds":1326,"search":{"min":0.533,"mean":0.543,"max":0.552},"decoys":0.982,"popOuts":0.961,"places":4.2}}
+        medium: {"explorer-studio":{"rounds":3160,"search":{"min":0.552,"mean":0.585,"max":0.612},"decoys":1.059,"popOuts":0.887,"places":5.05},"explorer-observatory":{"rounds":4021,"search":{"min":0.552,"mean":0.584,"max":0.612},"decoys":1.025,"popOuts":0.897,"places":5.01}}
+        listTellsAClue: true
+        hintsGiveLessBack: true
+        problems: []
+PASS  C10 [calibration] — HARD_IS_MEASURABLY_ABOVE_MEDIUM
+        medium: {"explorer-studio":{"rounds":3160,"search":{"min":0.552,"mean":0.585,"max":0.612},"decoys":1.059,"popOuts":0.887,"places":5.05},"explorer-observatory":{"rounds":4021,"search":{"min":0.552,"mean":0.584,"max":0.612},"decoys":1.025,"popOuts":0.897,"places":5.01}}
+        hard: {"explorer-studio":{"rounds":8005,"search":{"min":0.612,"mean":0.679,"max":0.799},"decoys":1.325,"popOuts":0,"places":5.78},"explorer-observatory":{"rounds":19414,"search":{"min":0.613,"mean":0.695,"max":0.794},"decoys":1.312,"popOuts":0,"places":5.69}}
+        cluesOneStepFurther: true
+        fewerHints: true
+        problems: []
+PASS  C11 [calibration] — NO_ACCEPTED_HARD_ROUND_IS_BELOW_THE_HARD_FLOOR
+        floor: 0.612
+        decoyFloor: 1.25
+        perRoom: {"explorer-studio":{"rounds":8005,"search":{"min":0.612,"mean":0.679,"max":0.799},"decoys":1.325,"popOuts":0,"places":5.78},"explorer-observatory":{"rounds":19414,"search":{"min":0.613,"mean":0.695,"max":0.794},"decoys":1.312,"popOuts":0,"places":5.69}}
+        candidatesRejectedBelowTheFloor: {"explorer-studio":16301,"explorer-observatory":3307}
+        problems: []
+        problemCount: 0
+PASS  C12 [calibration] — THE_MODEL_IS_NOT_SATISFIED_BY_TARGET_COUNT
+        explorer-studio: {"easiestObjects":["globo","barco","lupa","guarda-chuva","pena"],"verdicts":[{"k":5,"hard":false,"medium":false},{"k":8,"hard":false,"medium":false},{"k":12,"hard":false,"medium":false}]}
+        explorer-observatory: {"easiestObjects":["pipa","violino","sistema-solar","gramofone","vela"],"verdicts":[{"k":5,"hard":false,"medium":false},{"k":8,"hard":false,"medium":false},{"k":12,"hard":false,"medium":false}]}
+        problems: []
+        problemCount: 0
+PASS  C13 [calibration] — LOOKALIKE_PRESSURE_RISES_WITH_THE_DIFFICULTY
+        floors: [0.75,0.794,1.25]
+        perRoom: {"explorer-studio":{"lookAlikes":"11 → 25","perObjectByDifficulty":[0.993,1.059,1.325],"minimum":[0.8,0.833,1.25]},"explorer-observatory":{"lookAlikes":"12 → 26","perObjectByDifficulty":[0.982,1.025,1.312],"minimum":[0.8,0.833,1.25]}}
+        problems: []
+PASS  C14 [preserved] — ART_FAIRNESS_FLOORS_REMAIN_INTACT
+        audits: {"explorer-studio":"v4: 26 objects, lowest visible 0.538, lowest edge 1.32","explorer-observatory":"v4: 26 objects, lowest visible 0.491, lowest edge 1.41"}
+        floors: {"visible":{"A":0.8,"B":0.6,"C":0.4},"edge":1.3}
+        problems: []
+        problemCount: 0
+PASS  C15 [preserved] — NO_ACCESSIBILITY_HIT_AREA_REGRESSION
+        tolerances: {"easy":{"touch":16,"mouse":8},"medium":{"touch":12,"mouse":6},"hard":{"touch":10,"mouse":5}}
+        smallestSideSu: 54
+        problems: []
+        problemCount: 0
+PASS  C16 [preserved] — NO_EXACT_REVEAL_IN_MEDIUM_OR_HARD
+        problems: []
+        problemCount: 0
+PASS  C17 [preserved] — HARD_NEVER_NAMES_A_TARGET_BEFORE_DISCOVERY
+        problems: []
+        shown: {"explorer-studio":["LanternaNuma noite sem lua, guiaria seus passos.","Perdido na mata, você a consultaria primeiro.","Some na mão do músico, mas a canção aparece."],"explorer-observatory":["CompassoSem ele, a lua do caderno sairia torta.","Com ele, uma gota d'água vira um zoológico.","Vai e volta sem nunca sair da mão."]}
+PASS  C18 [calibration] — BOTH_ROOMS_SATISFY_DIFFICULTY_V3
+        roundsPerRoom: {"explorer-studio":{"easy":884,"medium":3160,"hard":8005},"explorer-observatory":{"easy":1326,"medium":4021,"hard":19414}}
+        played: {"explorer-studio":{"listIsClues":true,"completed":true},"explorer-observatory":{"listIsClues":true,"completed":true}}
+        problems: []
+PASS  C19 [preserved] — OLD_RESULTS_REMAIN_READABLE
+        readBackAsSaved: true
+        keptAfterANewSave: true
+        oldGame03ResultsShowTheirMode: true
+        oldGame03ResultsKeepTheirTitle: true
+        theTrilhaResultStillReads: true
+        aNewResultHasTheSameShape: true
+        newDetails: {"difficulty":"medium","foundObjects":6,"totalObjects":6,"completed":true,"sceneId":"explorer-observatory","roundSeed":6425}
+PASS  C20 [preserved] — NO_TIMER_SCORE_LIVES_OR_RANKING
+        sourcesWithPressure: []
+        hintsAndMissesChangeNothing: true
+        raceKeys: []
+PASS  C21 [calibration] — THE_FLOORS_ARE_DERIVED_FROM_THE_BASE
+        derived: {"ruler":{"edge":{"pops":2.96,"blends":1.3},"clutter":{"calm":0.096,"busy":0.196},"side":{"large":188,"small":80}},"popOut":0.325,"floors":{"easy":0.533,"medium":0.552,"hard":0.612},"decoyFloors":{"easy":0.75,"medium":0.794,"hard":1.25}}
+        product: "equal"
+        bandsWired: true
+        v2RoundsMeasured: {"easy":304,"medium":555,"hard":1460}
+PASS  C22 [calibration] — THE_MEASURED_INPUTS_ARE_THE_AUDITS
+        problems: []
+        problemCount: 0
+PASS  C23 [calibration] — DIFFICULTY_V3_TELLS_WHAT_IT_SAYS
+        wrong: {}
+        games: {"explorer-studio/easy":true,"explorer-studio/medium":true,"explorer-studio/hard":true,"explorer-observatory/easy":true,"explorer-observatory/medium":true,"explorer-observatory/hard":true}
+PASS  C24 [preserved] — NO_OBJECT_IS_ASKED_IN_EVERY_ROUND
+        exposure: {"floor":0.05,"ceiling":0.75}
+        perRoom: {"explorer-studio":{"easy":{"listable":26,"least":"apito 7.1%","most":"chapeu 36.0%"},"medium":{"listable":26,"least":"lupa 9.9%","most":"cantil 57.1%"},"hard":{"listable":18,"least":"chapeu 16.2%","most":"gaita 60.6%"}},"explorer-observatory":{"easy":{"listable":26,"least":"coruja 11.7%","most":"bule 30.3%"},"medium":{"listable":26,"least":"coruja 12.2%"...
+        problems: []
+        problemCount: 0
+PASS  P01 [preserved] — THE_SHARED_PLATFORM_IS_UNTOUCHED
+        changedOutsideGame03: []
+        depsChanged: []
+        lockfileUnchanged: true
+PASS  P02 [preserved] — ONE_ENGINE_PLAYS_EVERY_ROOM
+        engineNamesARoom: []
+PASS  P03 [preserved] — THE_ROOMS_KEEP_THEIR_PLACES
+        problems: []
+PASS  P04 [preserved] — THE_CAMERA_AND_GESTURES_ARE_UNTOUCHED
+        changed: []
+
+28/28 passed (15 calibration, 13 preserved)
+HIDDEN_OBJECTS_CALIBRATION_OK

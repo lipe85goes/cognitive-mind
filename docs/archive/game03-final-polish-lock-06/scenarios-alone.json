@@ -1,0 +1,13 @@
+{
+  "replayability/rep-desktop-studio": "9/9 checks held · failing: none",
+  "replayability/rep-desktop-observatory": "5/5 checks held · failing: none",
+  "replayability/rep-mobile-portrait": "7/7 checks held · failing: none",
+  "replayability/rep-mobile-landscape": "4/4 checks held · failing: none",
+  "replayability/rep-reduced-motion": "4/4 checks held · failing: none",
+  "replayability/rep-replay": "3/3 checks held · failing: none",
+  "replayability/rep-sequence": "9/9 checks held · failing: none",
+  "final-lock/lock-studio": "16/16 checks held · failing: none",
+  "final-lock/lock-observatory": "10/10 checks held · failing: none",
+  "final-lock/lock-phone": "16/16 checks held · failing: none",
+  "final-lock/lock-keyboard": "8/8 checks held · failing: none"
+}

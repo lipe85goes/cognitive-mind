@@ -1,0 +1,573 @@
+{
+  "base": "http://localhost:3100",
+  "buildId": "xPmpLT8yxzmSjVU0sBnuw",
+  "scenarios": [
+    "rep-desktop-studio",
+    "rep-desktop-observatory",
+    "rep-mobile-portrait",
+    "rep-mobile-landscape",
+    "rep-reduced-motion",
+    "rep-replay",
+    "rep-sequence"
+  ],
+  "results": [
+    {
+      "scenario": "rep-desktop-studio",
+      "id": "THE_ROOM_IS_THE_SEEDS_COMPOSITION",
+      "pass": true,
+      "detail": {
+        "seed": 9001,
+        "signature": "10200200100000001001100000000111010210100001120001",
+        "expected": "10200200100000001001100000000111010210100001120001",
+        "pictures": 50,
+        "expectedPictures": 50,
+        "atlas": {
+          "src": "http://localhost:3100/assets/hidden-objects/explorer-studio/v4/atlas.webp",
+          "complete": true,
+          "natural": 1024
+        },
+        "lands": true
+      }
+    },
+    {
+      "scenario": "rep-desktop-studio",
+      "id": "PAN_AND_ZOOM_MOVE_NO_THING",
+      "pass": true,
+      "detail": {
+        "signature": "10200200100000001001100000000111010210100001120001",
+        "scale": [
+          0.526387,
+          0.657983
+        ]
+      }
+    },
+    {
+      "scenario": "rep-desktop-studio",
+      "id": "A_DRAG_IS_NOT_A_RENDER_LOOP",
+      "pass": true,
+      "detail": {
+        "dragCommits": 0,
+        "pointerMoves": 24
+      }
+    },
+    {
+      "scenario": "rep-desktop-studio",
+      "id": "A_FRESH_LAYOUT_IS_ONE_BOUNDED_SETUP",
+      "pass": true,
+      "detail": {
+        "commits": 1
+      }
+    },
+    {
+      "scenario": "rep-desktop-studio",
+      "id": "FOUND_WHERE_IT_STANDS_NOT_WHERE_IT_WAS",
+      "pass": true,
+      "detail": {
+        "id": "chave",
+        "was": {
+          "x": 518,
+          "y": 1274
+        },
+        "now": {
+          "x": 990,
+          "y": 1312
+        },
+        "atOld": false,
+        "atNew": true
+      }
+    },
+    {
+      "scenario": "rep-desktop-studio",
+      "id": "RECOMECAR_KEEPS_THE_ROOM",
+      "pass": true,
+      "detail": {
+        "signature": "10200200100000001001100000000111010210100001120001"
+      }
+    },
+    {
+      "scenario": "rep-desktop-studio",
+      "id": "A_NEW_EXPLORATION_IS_ITS_SEEDS_COMPOSITION",
+      "pass": true,
+      "detail": {
+        "seed": 9102,
+        "signature": "00012210020100020110110012010002001022000000211001",
+        "expected": "00012210020100020110110012010002001022000000211001",
+        "pictures": 50,
+        "expectedPictures": 50,
+        "atlas": {
+          "src": "http://localhost:3100/assets/hidden-objects/explorer-studio/v4/atlas.webp",
+          "complete": true,
+          "natural": 1024
+        },
+        "lands": true
+      }
+    },
+    {
+      "scenario": "rep-desktop-studio",
+      "id": "A_NEW_EXPLORATION_REARRANGES_THE_ROOM",
+      "pass": true,
+      "detail": {
+        "first": "10200200100000001001100000000111010210100001120001",
+        "second": "00012210020100020110110012010002001022000000211001",
+        "moved": 0.5263157894736842
+      }
+    },
+    {
+      "scenario": "rep-desktop-studio",
+      "id": "NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "rep-desktop-observatory",
+      "id": "THE_ROOM_IS_THE_SEEDS_COMPOSITION",
+      "pass": true,
+      "detail": {
+        "seed": 9010,
+        "signature": "000121120002012000011012000002010111202121",
+        "expected": "000121120002012000011012000002010111202121",
+        "pictures": 42,
+        "expectedPictures": 42,
+        "atlas": {
+          "src": "http://localhost:3100/assets/hidden-objects/explorer-observatory/v4/atlas.webp",
+          "complete": true,
+          "natural": 1024
+        },
+        "lands": true
+      }
+    },
+    {
+      "scenario": "rep-desktop-observatory",
+      "id": "LOOK_ALIKES_AND_PROPS_ARE_PAINTED_OFF_HOME",
+      "pass": true,
+      "detail": {
+        "lookMoved": [
+          "argolas",
+          "escova",
+          "concha",
+          "pote-de-ceramica",
+          "meia",
+          "bola-de-borracha",
+          "peca-de-xadrez",
+          "caleidoscopio",
+          "chapeu-de-mago",
+          "carretel",
+          "lata-de-biscoitos"
+        ],
+        "propMoved": [
+          "xicara-azul"
+        ]
+      }
+    },
+    {
+      "scenario": "rep-desktop-observatory",
+      "id": "THE_TAP_AREA_FOLLOWS_THE_OBJECT",
+      "pass": true,
+      "detail": {
+        "id": "maca",
+        "atOld": false,
+        "atNew": true
+      }
+    },
+    {
+      "scenario": "rep-desktop-observatory",
+      "id": "A_KEPT_OBJECT_IS_FOUND_WHERE_IT_STANDS_ONCE_OPEN",
+      "pass": true,
+      "detail": {
+        "kept": "tambor",
+        "slot": "cortina-b",
+        "shut": false,
+        "opened": true,
+        "found": true
+      }
+    },
+    {
+      "scenario": "rep-desktop-observatory",
+      "id": "NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "rep-mobile-portrait",
+      "id": "THE_ROOM_IS_THE_SEEDS_COMPOSITION",
+      "pass": true,
+      "detail": {
+        "seed": 9002,
+        "signature": "101100112212010101101002101001121100102020",
+        "expected": "101100112212010101101002101001121100102020",
+        "pictures": 42,
+        "expectedPictures": 42,
+        "atlas": {
+          "src": "http://localhost:3100/assets/hidden-objects/explorer-observatory/v4/atlas.webp",
+          "complete": true,
+          "natural": 1024
+        },
+        "lands": true
+      }
+    },
+    {
+      "scenario": "rep-mobile-portrait",
+      "id": "DRAG_AND_PINCH_MOVE_NO_THING",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "rep-mobile-portrait",
+      "id": "A_PIECE_OPENS_BY_TOUCH",
+      "pass": true,
+      "detail": {
+        "piece": "portinhola-do-lambri"
+      }
+    },
+    {
+      "scenario": "rep-mobile-portrait",
+      "id": "THE_HINT_RINGS_WHERE_IT_STANDS",
+      "pass": true,
+      "detail": {
+        "id": "bule",
+        "halo": {
+          "x": 1450,
+          "y": 912
+        },
+        "at": {
+          "x": 1450,
+          "y": 912
+        }
+      }
+    },
+    {
+      "scenario": "rep-mobile-portrait",
+      "id": "TOUCHED_AND_FOUND_WHERE_IT_STANDS",
+      "pass": true,
+      "detail": {
+        "id": "bule"
+      }
+    },
+    {
+      "scenario": "rep-mobile-portrait",
+      "id": "NO_HORIZONTAL_OVERFLOW",
+      "pass": true,
+      "detail": {
+        "overflow": 0
+      }
+    },
+    {
+      "scenario": "rep-mobile-portrait",
+      "id": "NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "rep-mobile-landscape",
+      "id": "THE_ROOM_IS_THE_SEEDS_COMPOSITION",
+      "pass": true,
+      "detail": {
+        "seed": 9001,
+        "signature": "10200200100000001001100000000111010210100001120001",
+        "expected": "10200200100000001001100000000111010210100001120001",
+        "pictures": 50,
+        "expectedPictures": 50,
+        "atlas": {
+          "src": "http://localhost:3100/assets/hidden-objects/explorer-studio/v4/atlas.webp",
+          "complete": true,
+          "natural": 1024
+        },
+        "lands": true
+      }
+    },
+    {
+      "scenario": "rep-mobile-landscape",
+      "id": "TURNING_THE_PHONE_MOVES_NO_THING",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "rep-mobile-landscape",
+      "id": "THE_SEARCH_GOES_ON",
+      "pass": true,
+      "detail": {
+        "id": "chave"
+      }
+    },
+    {
+      "scenario": "rep-mobile-landscape",
+      "id": "NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "rep-reduced-motion",
+      "id": "SAME_ROOM_WITH_REDUCED_MOTION_STUDIO",
+      "pass": true,
+      "detail": {
+        "seed": 24316,
+        "signature": "01110000000110000010010012000110002222000000200001",
+        "expected": "01110000000110000010010012000110002222000000200001",
+        "pictures": 50,
+        "expectedPictures": 50,
+        "atlas": {
+          "src": "http://localhost:3100/assets/hidden-objects/explorer-studio/v4/atlas.webp",
+          "complete": true,
+          "natural": 1024
+        },
+        "lands": true
+      }
+    },
+    {
+      "scenario": "rep-reduced-motion",
+      "id": "NO_PAGE_ERRORS_STUDIO",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "rep-reduced-motion",
+      "id": "SAME_ROOM_WITH_REDUCED_MOTION_OBSERVATORY",
+      "pass": true,
+      "detail": {
+        "seed": 24321,
+        "signature": "010000002011012012110001001102000301211000",
+        "expected": "010000002011012012110001001102000301211000",
+        "pictures": 42,
+        "expectedPictures": 42,
+        "atlas": {
+          "src": "http://localhost:3100/assets/hidden-objects/explorer-observatory/v4/atlas.webp",
+          "complete": true,
+          "natural": 1024
+        },
+        "lands": true
+      }
+    },
+    {
+      "scenario": "rep-reduced-motion",
+      "id": "NO_PAGE_ERRORS_OBSERVATORY",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "rep-replay",
+      "id": "THE_SAME_SEED_PAINTS_THE_SAME_ROOM",
+      "pass": true,
+      "detail": {
+        "signature": "010021110200012012010010200002010311211100",
+        "pixels": [
+          "b36de837a748",
+          "b36de837a748"
+        ],
+        "maxDelta": 0,
+        "changedShare": 0
+      }
+    },
+    {
+      "scenario": "rep-replay",
+      "id": "ANOTHER_SEED_PAINTS_ANOTHER_ROOM",
+      "pass": true,
+      "detail": {
+        "other": 9002,
+        "moved": 0.6037735849056604,
+        "maxDelta": 197,
+        "changedShare": 0.0176
+      }
+    },
+    {
+      "scenario": "rep-replay",
+      "id": "NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "rep-sequence",
+      "id": "EXPLORATION_1_IS_ITS_SEEDS_COMPOSITION",
+      "pass": true,
+      "detail": {
+        "seed": 20903,
+        "signature": "00200200110121000100110011111001010020100000000110",
+        "expected": "00200200110121000100110011111001010020100000000110",
+        "pictures": 50,
+        "expectedPictures": 50,
+        "atlas": {
+          "src": "http://localhost:3100/assets/hidden-objects/explorer-studio/v4/atlas.webp",
+          "complete": true,
+          "natural": 1024
+        },
+        "lands": true
+      }
+    },
+    {
+      "scenario": "rep-sequence",
+      "id": "EXPLORATION_2_IS_ITS_SEEDS_COMPOSITION",
+      "pass": true,
+      "detail": {
+        "seed": 27421,
+        "signature": "11000100100001001100011122010001020210100001120010",
+        "expected": "11000100100001001100011122010001020210100001120010",
+        "pictures": 50,
+        "expectedPictures": 50,
+        "atlas": {
+          "src": "http://localhost:3100/assets/hidden-objects/explorer-studio/v4/atlas.webp",
+          "complete": true,
+          "natural": 1024
+        },
+        "lands": true
+      }
+    },
+    {
+      "scenario": "rep-sequence",
+      "id": "EXPLORATION_3_IS_ITS_SEEDS_COMPOSITION",
+      "pass": true,
+      "detail": {
+        "seed": 31790,
+        "signature": "00012010020020001101000022210002102202100111100001",
+        "expected": "00012010020020001101000022210002102202100111100001",
+        "pictures": 50,
+        "expectedPictures": 50,
+        "atlas": {
+          "src": "http://localhost:3100/assets/hidden-objects/explorer-studio/v4/atlas.webp",
+          "complete": true,
+          "natural": 1024
+        },
+        "lands": true
+      }
+    },
+    {
+      "scenario": "rep-sequence",
+      "id": "EXPLORATION_4_IS_ITS_SEEDS_COMPOSITION",
+      "pass": true,
+      "detail": {
+        "seed": 36159,
+        "signature": "01012001111221000010001111200022010000201000211010",
+        "expected": "01012001111221000010001111200022010000201000211010",
+        "pictures": 50,
+        "expectedPictures": 50,
+        "atlas": {
+          "src": "http://localhost:3100/assets/hidden-objects/explorer-studio/v4/atlas.webp",
+          "complete": true,
+          "natural": 1024
+        },
+        "lands": true
+      }
+    },
+    {
+      "scenario": "rep-sequence",
+      "id": "EXPLORATION_5_IS_ITS_SEEDS_COMPOSITION",
+      "pass": true,
+      "detail": {
+        "seed": 40512,
+        "signature": "11001201012010010001002212001222001020010020230010",
+        "expected": "11001201012010010001002212001222001020010020230010",
+        "pictures": 50,
+        "expectedPictures": 50,
+        "atlas": {
+          "src": "http://localhost:3100/assets/hidden-objects/explorer-studio/v4/atlas.webp",
+          "complete": true,
+          "natural": 1024
+        },
+        "lands": true
+      }
+    },
+    {
+      "scenario": "rep-sequence",
+      "id": "EXPLORATION_6_IS_ITS_SEEDS_COMPOSITION",
+      "pass": true,
+      "detail": {
+        "seed": 1298393698,
+        "signature": "00001212022000021100010010100000111202101101030001",
+        "expected": "00001212022000021100010010100000111202101101030001",
+        "pictures": 50,
+        "expectedPictures": 50,
+        "atlas": {
+          "src": "http://localhost:3100/assets/hidden-objects/explorer-studio/v4/atlas.webp",
+          "complete": true,
+          "natural": 1024
+        },
+        "lands": true
+      }
+    },
+    {
+      "scenario": "rep-sequence",
+      "id": "NEVER_THE_ROOM_JUST_PLAYED",
+      "pass": true,
+      "detail": {
+        "plays": [
+          [
+            20903,
+            "00200200110121000100110011111001010020100000000110"
+          ],
+          [
+            27421,
+            "11000100100001001100011122010001020210100001120010"
+          ],
+          [
+            31790,
+            "00012010020020001101000022210002102202100111100001"
+          ],
+          [
+            36159,
+            "01012001111221000010001111200022010000201000211010"
+          ],
+          [
+            40512,
+            "11001201012010010001002212001222001020010020230010"
+          ],
+          [
+            1298393698,
+            "00001212022000021100010010100000111202101101030001"
+          ]
+        ],
+        "draws": 7
+      }
+    },
+    {
+      "scenario": "rep-sequence",
+      "id": "EVERY_EXPLORATION_A_DIFFERENT_ROOM",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "rep-sequence",
+      "id": "NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    }
+  ],
+  "metrics": {
+    "commits": {
+      "freshLayoutStudio": 1,
+      "dragStudio": 0,
+      "freshLayoutObservatory": 1
+    },
+    "layouts": {
+      "studio": {
+        "seed": 9001,
+        "signature": "10200200100000001001100000000111010210100001120001",
+        "pictures": 50
+      },
+      "studioMovedShare": 0.526,
+      "observatory": {
+        "seed": 9010,
+        "signature": "000121120002012000011012000002010111202121",
+        "pictures": 42,
+        "lookAlikesOffHome": 11
+      }
+    },
+    "bytes": {
+      "atlas": 238460,
+      "plate": 338992
+    }
+  }
+}

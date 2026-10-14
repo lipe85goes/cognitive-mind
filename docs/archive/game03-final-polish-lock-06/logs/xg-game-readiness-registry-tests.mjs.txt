@@ -1,0 +1,78 @@
+PASS  B1 — INTRO_AND_GAME_MOUNTED_AS_BEFORE
+        games: 5
+        mismatches: []
+PASS  B2 — READY_INTRO_FIRST
+        failing: []
+        readyAt: {"color-sequence":["game-reports"],"escape-maze":["game-reports"],"security-panel":["frame-2"],"hidden-objects":["game-reports"],"seed-garden":["frame-2"]}
+PASS  B3 — READY_GAME_FIRST
+        failing: []
+        readyAt: {"color-sequence":["intro-ready"],"escape-maze":["intro-ready"],"security-panel":["intro-ready"],"hidden-objects":["intro-ready"],"seed-garden":["intro-ready"]}
+PASS  B4 — READY_SKIP_INTRO
+        failing: []
+        readyAt: {"color-sequence":["game-reports"],"escape-maze":["game-reports"],"security-panel":["frame-2"],"hidden-objects":["game-reports"],"seed-garden":["frame-2"]}
+PASS  B5 — ENTRY_READY_EMITTED_ONCE
+        runs: 30
+        notOnce: []
+PASS  B6 — STRICT_MODE_SAME_READINESS
+        runs: 15
+        failing: []
+PASS  B7 — UNMOUNT_CANCELS_FALLBACK_FRAMES
+        failing: []
+PASS  C1 — REGISTRY_DECLARES_READINESS
+        registryExport: GAME_REGISTRY
+        declared: {"color-sequence":"explicit","escape-maze":"explicit","security-panel":"frame-fallback","hidden-objects":"explicit","seed-garden":"frame-fallback"}
+        componentVia: {"color-sequence":"loader","escape-maze":"loader","security-panel":"loader","hidden-objects":"loader","seed-garden":"loader"}
+        invalid: []
+        drift: []
+PASS  C2 — GAME_SCREEN_NAMES_NO_GAME
+        named: []
+PASS  C3 — REGISTRY_DRIVES_SHELL_READINESS
+        failing: []
+        note: every declaration inverted; the shell followed each one
+PASS  C4 — DECLARATION_MATCHES_COMPONENT
+        failing: []
+        forwards: {"color-sequence":true,"escape-maze":true,"security-panel":false,"hidden-objects":true,"seed-garden":false}
+PASS  L1 — REGISTRY_LOADS_EACH_GAME_ON_DEMAND
+        gameModulesImportedToEvaluateTheRegistry: []
+        failing: []
+PASS  L2 — GAME_LAYER_WAITS_FOR_ITS_CODE
+        runs: 10
+        failing: []
+PASS  L3 — READINESS_COUNTS_FROM_GAME_MOUNT
+        runs: 10
+        failing: []
+        readyAt: {"color-sequence":["game-reports"],"escape-maze":["game-reports"],"security-panel":["frame-2"],"hidden-objects":["game-reports"],"seed-garden":["frame-2"]}
+PASS  L4 — CHUNK_FAILURE_REACHES_ON_ENTRY_ERROR
+        runs: 10
+        failing: []
+PASS  L5 — RETRY_FETCHES_AGAIN
+        failing: []
+PASS  L6 — UNMOUNT_WHILE_LOADING_IS_SILENT
+        runs: 10
+        failing: []
+PASS  L7 — ONE_LOAD_PER_SESSION
+        failing: []
+        strictModeLoads: {"color-sequence":2,"escape-maze":2,"security-panel":2,"hidden-objects":2,"seed-garden":2}
+PASS  L8 — HOME_IMPORTS_NO_GAME_CODE
+        homeStaticModules: 29
+        eagerGameCode: []
+        registryStaticGameImports: []
+        registryDynamicImports: ["src/games/color-sequence/MemoryCircuit3DGame.tsx","src/games/escape-maze/RouteStrategyGame.tsx","src/games/hidden-objects/HiddenObjectsGame.tsx","src/games/security-panel/SecurityPanelGame.tsx","src/games/seed-garden/SeedGardenGame.tsx"]
+        expectedDynamicImports: ["src/games/color-sequence/MemoryCircuit3DGame.tsx","src/games/escape-maze/RouteStrategyGame.tsx","src/games/hidden-objects/HiddenObjectsGame.tsx","src/games/security-panel/SecurityPanelGame.tsx","src/games/seed-garden/SeedGardenGame.tsx"]
+
+comportamento por jogo (onEntryReady chega ao pai em):
+  color-sequence  explicit        intro-first=game-reports · game-first=intro-ready · skip-intro=game-reports
+  escape-maze     explicit        intro-first=game-reports · game-first=intro-ready · skip-intro=game-reports
+  security-panel  frame-fallback  intro-first=frame-2 · game-first=intro-ready · skip-intro=frame-2
+  hidden-objects  explicit        intro-first=game-reports · game-first=intro-ready · skip-intro=game-reports
+  seed-garden     frame-fallback  intro-first=frame-2 · game-first=intro-ready · skip-intro=frame-2
+
+código de cada jogo (como o registry o entrega):
+  color-sequence  loader  import() sob demanda -> @/games/color-sequence/MemoryCircuit3DGame
+  escape-maze     loader  import() sob demanda -> @/games/escape-maze/RouteStrategyGame
+  security-panel  loader  import() sob demanda -> @/games/security-panel/SecurityPanelGame
+  hidden-objects  loader  import() sob demanda -> @/games/hidden-objects/HiddenObjectsGame
+  seed-garden     loader  import() sob demanda -> @/games/seed-garden/SeedGardenGame
+
+19/19 passed · failing: none
+GAME_READINESS_REGISTRY_OK

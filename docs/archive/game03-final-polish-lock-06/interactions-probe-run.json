@@ -1,0 +1,728 @@
+{
+  "base": "http://localhost:3100",
+  "buildId": "xPmpLT8yxzmSjVU0sBnuw",
+  "scenarios": [
+    "int-desktop-studio",
+    "int-desktop-observatory",
+    "int-mobile-portrait",
+    "int-mobile-landscape",
+    "int-reduced-motion",
+    "int-keyboard",
+    "int-easy-help",
+    "int-round-isolation"
+  ],
+  "results": [
+    {
+      "scenario": "int-desktop-studio",
+      "id": "ROUND_LISTS_A_KEPT_OBJECT",
+      "pass": true,
+      "detail": {
+        "round": {
+          "scene": "explorer-studio",
+          "seed": 9002,
+          "ids": [
+            "estatueta",
+            "camera",
+            "apito",
+            "bussola",
+            "chapeu"
+          ]
+        },
+        "kept": "apito"
+      }
+    },
+    {
+      "scenario": "int-desktop-studio",
+      "id": "EVERY_PIECE_STARTS_SHUT",
+      "pass": true,
+      "detail": {
+        "pieces": {
+          "gaveta-da-mesinha": {
+            "state": "fechada",
+            "open": false,
+            "transform": "translate(0px, 0px) rotate(0deg) scale(1, 1)",
+            "computed": "matrix(1, 0, 0, 1, 0, 0)",
+            "transition": "0.38s, 0.38s",
+            "expanded": "false",
+            "label": "Gaveta da mesinha da janela"
+          },
+          "caixinha-da-mesa": {
+            "state": "fechada",
+            "open": false,
+            "transform": "translate(0px, 0px) rotate(0deg) scale(1, 1)",
+            "computed": "matrix(1, 0, 0, 1, 0, 0)",
+            "transition": "0.42s, 0.42s",
+            "expanded": "false",
+            "label": "Tampa da caixinha de madeira sobre a mesa"
+          },
+          "cesto-de-mapas": {
+            "state": "no-lugar",
+            "open": false,
+            "transform": "translate(0px, 0px) rotate(0deg) scale(1, 1)",
+            "computed": "matrix(1, 0, 0, 1, 0, 0)",
+            "transition": "0.46s, 0.46s",
+            "expanded": "false",
+            "label": "Cesto de mapas no pé da estante"
+          }
+        }
+      }
+    },
+    {
+      "scenario": "int-desktop-studio",
+      "id": "ANOTHER_PIECE_STEPS_THERE_AND_BACK",
+      "pass": true,
+      "detail": {
+        "there": "aberta",
+        "back": "fechada",
+        "commits": [
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "scenario": "int-desktop-studio",
+      "id": "PAN_AND_ZOOM_MOVE_NO_PIECE",
+      "pass": true,
+      "detail": {
+        "dragCommits": 0
+      }
+    },
+    {
+      "scenario": "int-desktop-studio",
+      "id": "A_DRAG_IS_NOT_A_RENDER_LOOP",
+      "pass": true,
+      "detail": {
+        "dragCommits": 0,
+        "pointerMoves": 24,
+        "interactionCommits": [
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "scenario": "int-desktop-studio",
+      "id": "SHUT_PIECE_KEEPS_THE_OBJECT",
+      "pass": true,
+      "detail": {
+        "kept": "apito",
+        "piece": {
+          "state": "aberta",
+          "open": true,
+          "transform": "translate(0px, 56px) rotate(0deg) scale(1, 1)",
+          "computed": "matrix(1, 0, 0, 1, 0, 56)",
+          "transition": "0.38s, 0.38s",
+          "expanded": "true",
+          "label": "Gaveta da mesinha da janela"
+        }
+      }
+    },
+    {
+      "scenario": "int-desktop-studio",
+      "id": "A_TAP_OPENS_THE_PIECE",
+      "pass": true,
+      "detail": {
+        "after": {
+          "state": "aberta",
+          "open": true,
+          "transform": "translate(0px, 56px) rotate(0deg) scale(1, 1)",
+          "computed": "matrix(1, 0, 0, 1, 0, 56)",
+          "transition": "0.38s, 0.38s",
+          "expanded": "true",
+          "label": "Gaveta da mesinha da janela"
+        },
+        "cameraStill": true,
+        "commits": null
+      }
+    },
+    {
+      "scenario": "int-desktop-studio",
+      "id": "OPEN_PIECE_EXPOSES_THE_OBJECT",
+      "pass": true,
+      "detail": {
+        "kept": "apito"
+      }
+    },
+    {
+      "scenario": "int-desktop-studio",
+      "id": "RECOMECAR_KEEPS_THE_ROUND_AND_SHUTS_THE_PIECES",
+      "pass": true,
+      "detail": {
+        "before": {
+          "scene": "explorer-studio",
+          "seed": 9002,
+          "ids": [
+            "estatueta",
+            "camera",
+            "apito",
+            "bussola",
+            "chapeu"
+          ]
+        },
+        "after": {
+          "scene": "explorer-studio",
+          "seed": 9002,
+          "ids": [
+            "estatueta",
+            "camera",
+            "apito",
+            "bussola",
+            "chapeu"
+          ]
+        },
+        "pieces": {
+          "gaveta-da-mesinha": {
+            "state": "fechada",
+            "open": false,
+            "transform": "translate(0px, 0px) rotate(0deg) scale(1, 1)",
+            "computed": "matrix(1, 0, 0, 1, 0, 3.69408)",
+            "transition": "0.38s, 0.38s",
+            "expanded": "false",
+            "label": "Gaveta da mesinha da janela"
+          },
+          "caixinha-da-mesa": {
+            "state": "fechada",
+            "open": false,
+            "transform": "translate(0px, 0px) rotate(0deg) scale(1, 1)",
+            "computed": "matrix(1, 0, 0, 1, 0, 0)",
+            "transition": "0.42s, 0.42s",
+            "expanded": "false",
+            "label": "Tampa da caixinha de madeira sobre a mesa"
+          },
+          "cesto-de-mapas": {
+            "state": "no-lugar",
+            "open": false,
+            "transform": "translate(0px, 0px) rotate(0deg) scale(1, 1)",
+            "computed": "matrix(1, 0, 0, 1, 0, 0)",
+            "transition": "0.46s, 0.46s",
+            "expanded": "false",
+            "label": "Cesto de mapas no pé da estante"
+          }
+        }
+      }
+    },
+    {
+      "scenario": "int-desktop-studio",
+      "id": "NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "int-desktop-observatory",
+      "id": "EVERY_KIND_OPENS",
+      "pass": true,
+      "detail": {
+        "kinds": {
+          "door": {
+            "opens": true,
+            "cameraStill": true
+          },
+          "drawer": {
+            "opens": true,
+            "cameraStill": true
+          },
+          "curtain": {
+            "opens": true,
+            "cameraStill": true
+          }
+        }
+      }
+    },
+    {
+      "scenario": "int-desktop-observatory",
+      "id": "EVERY_KIND_SHUTS_AGAIN",
+      "pass": true,
+      "detail": {
+        "pieces": {
+          "portinhola-do-lambri": {
+            "state": "fechada",
+            "open": false,
+            "transform": "translate(0px, 0px) rotate(0deg) scale(1, 1)",
+            "computed": "matrix(1, 0, 0, 1, 0, 0)",
+            "transition": "0.48s, 0.48s",
+            "expanded": "false",
+            "label": "Portinhola no lambri, ao lado do telescópio"
+          },
+          "gaveta-da-bancada": {
+            "state": "fechada",
+            "open": false,
+            "transform": "translate(0px, 0px) rotate(0deg) scale(1, 1)",
+            "computed": "matrix(1, 0, 0, 1, 0, 0)",
+            "transition": "0.38s, 0.38s",
+            "expanded": "false",
+            "label": "Gaveta funda embaixo da bancada"
+          },
+          "cortina-da-mesinha": {
+            "state": "fechada",
+            "open": false,
+            "transform": "translate(0px, 0px) rotate(0deg) scale(1, 1)",
+            "computed": "matrix(0.498842, 0, 0, 1, 0, 0)",
+            "transition": "0.52s, 0.52s",
+            "expanded": "false",
+            "label": "Cortina embaixo da mesinha do microscópio"
+          }
+        }
+      }
+    },
+    {
+      "scenario": "int-desktop-observatory",
+      "id": "MEDIO_HINTS_WORDS_ONLY",
+      "pass": true,
+      "detail": {
+        "banners": [
+          "Pista: procure sob a cúpula, perto do telescópio.",
+          "Pista: em outras palavras — Brinquedo que imita uma nave rumo à Lua.",
+          "Pista: olhe embaixo do telescópio, guardado atrás de madeira."
+        ]
+      }
+    },
+    {
+      "scenario": "int-desktop-observatory",
+      "id": "THE_KEPT_OBJECT_IS_FOUND_ONCE_OPEN",
+      "pass": true,
+      "detail": {
+        "subject": "foguete"
+      }
+    },
+    {
+      "scenario": "int-desktop-observatory",
+      "id": "DIFICIL_NEVER_POINTS_AT_THE_PIECE",
+      "pass": true,
+      "detail": {
+        "noLight": true,
+        "neverNamesThePiece": true,
+        "neverNamesTheObject": true,
+        "nothingOpened": true,
+        "neverFramed": true,
+        "banners": [
+          "Pista: procure sob a cúpula, perto do telescópio.",
+          "Pista: está guardado atrás de algo que tem dobradiças, perto do telescópio.",
+          "Pista: está guardado atrás de algo que tem dobradiças, perto do telescópio."
+        ],
+        "kept": "foguete"
+      }
+    },
+    {
+      "scenario": "int-desktop-observatory",
+      "id": "DIFICIL_PLAYED_TO_THE_END",
+      "pass": true,
+      "detail": {
+        "missed": [],
+        "stored": {
+          "difficulty": "hard",
+          "foundObjects": 8,
+          "totalObjects": 8,
+          "completed": true,
+          "sceneId": "explorer-observatory",
+          "roundSeed": 9001
+        }
+      }
+    },
+    {
+      "scenario": "int-desktop-observatory",
+      "id": "NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "int-mobile-portrait",
+      "id": "A_TOUCH_TAP_OPENS_AND_THE_CAMERA_STAYS",
+      "pass": true,
+      "detail": {
+        "before": {
+          "state": "no-lugar",
+          "open": false,
+          "transform": "translate(0px, 0px) rotate(0deg) scale(1, 1)",
+          "computed": "matrix(1, 0, 0, 1, 0, 0)",
+          "transition": "0.46s, 0.46s",
+          "expanded": "false",
+          "label": "Cesto de mapas no pé da estante"
+        },
+        "after": {
+          "state": "afastado",
+          "open": true,
+          "transform": "translate(178px, 0px) rotate(3deg) scale(1, 1)",
+          "computed": "matrix(0.999827, 0.0185921, -0.0185921, 0.999827, 63.2085, 0)",
+          "transition": "0.46s, 0.46s",
+          "expanded": "true",
+          "label": "Cesto de mapas no pé da estante"
+        },
+        "cameraStill": true,
+        "commits": 1
+      }
+    },
+    {
+      "scenario": "int-mobile-portrait",
+      "id": "DRAG_AND_PINCH_NEVER_MOVE_A_PIECE",
+      "pass": true,
+      "detail": {
+        "scale": [
+          0.419521,
+          0.419521,
+          1.25
+        ]
+      }
+    },
+    {
+      "scenario": "int-mobile-portrait",
+      "id": "THE_KEPT_OBJECT_IS_FOUND",
+      "pass": true,
+      "detail": {
+        "kept": "cantil",
+        "round": [
+          "cantil",
+          "xicara",
+          "chapeu",
+          "chave",
+          "piao",
+          "lanterna"
+        ]
+      }
+    },
+    {
+      "scenario": "int-mobile-portrait",
+      "id": "THE_TRAY_FOLDS_AND_THE_PIECES_HOLD",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "int-mobile-portrait",
+      "id": "NO_HORIZONTAL_OVERFLOW",
+      "pass": true,
+      "detail": {
+        "overflow": 0
+      }
+    },
+    {
+      "scenario": "int-mobile-portrait",
+      "id": "NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "int-mobile-landscape",
+      "id": "A_PIECE_OPENS_IN_LANDSCAPE",
+      "pass": true,
+      "detail": {
+        "before": {
+          "state": "fechada",
+          "open": false,
+          "transform": "translate(0px, 0px) rotate(0deg) scale(1, 1)",
+          "computed": "matrix(1, 0, 0, 1, 0, 0)",
+          "transition": "0.52s, 0.52s",
+          "expanded": "false",
+          "label": "Cortina embaixo da mesinha do microscópio"
+        },
+        "after": {
+          "state": "aberta",
+          "open": true,
+          "transform": "translate(0px, 0px) rotate(0deg) scale(0.27, 1)",
+          "computed": "matrix(0.82935, 0, 0, 1, 0, 0)",
+          "transition": "0.52s, 0.52s",
+          "expanded": "true",
+          "label": "Cortina embaixo da mesinha do microscópio"
+        },
+        "cameraStill": true,
+        "commits": 1
+      }
+    },
+    {
+      "scenario": "int-mobile-landscape",
+      "id": "TURNING_THE_PHONE_KEEPS_PIECES_AND_ROUND",
+      "pass": true,
+      "detail": {
+        "before": {
+          "portinhola-do-lambri": "fechada",
+          "gaveta-da-bancada": "fechada",
+          "cortina-da-mesinha": "aberta"
+        },
+        "upright": {
+          "portinhola-do-lambri": "fechada",
+          "gaveta-da-bancada": "fechada",
+          "cortina-da-mesinha": "aberta"
+        },
+        "back": {
+          "portinhola-do-lambri": "fechada",
+          "gaveta-da-bancada": "fechada",
+          "cortina-da-mesinha": "aberta"
+        }
+      }
+    },
+    {
+      "scenario": "int-mobile-landscape",
+      "id": "THE_SEARCH_GOES_ON",
+      "pass": true,
+      "detail": {
+        "kept": "tambor"
+      }
+    },
+    {
+      "scenario": "int-mobile-landscape",
+      "id": "NO_HORIZONTAL_OVERFLOW",
+      "pass": true,
+      "detail": {
+        "overflow": 0
+      }
+    },
+    {
+      "scenario": "int-mobile-landscape",
+      "id": "NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "int-reduced-motion",
+      "id": "EVERY_PIECE_CHANGES_STATE_AT_ONCE",
+      "pass": true,
+      "detail": {
+        "rows": {
+          "explorer-studio/gaveta-da-mesinha": {
+            "kind": "drawer",
+            "transition": "0s",
+            "state": "aberta",
+            "open": true,
+            "expanded": "true",
+            "wanted": "aberta"
+          },
+          "explorer-studio/caixinha-da-mesa": {
+            "kind": "lid",
+            "transition": "0s",
+            "state": "aberta",
+            "open": true,
+            "expanded": "true",
+            "wanted": "aberta"
+          },
+          "explorer-studio/cesto-de-mapas": {
+            "kind": "prop",
+            "transition": "0s",
+            "state": "afastado",
+            "open": true,
+            "expanded": "true",
+            "wanted": "afastado"
+          },
+          "explorer-observatory/portinhola-do-lambri": {
+            "kind": "door",
+            "transition": "0s",
+            "state": "aberta",
+            "open": true,
+            "expanded": "true",
+            "wanted": "aberta"
+          },
+          "explorer-observatory/gaveta-da-bancada": {
+            "kind": "drawer",
+            "transition": "0s",
+            "state": "aberta",
+            "open": true,
+            "expanded": "true",
+            "wanted": "aberta"
+          },
+          "explorer-observatory/cortina-da-mesinha": {
+            "kind": "curtain",
+            "transition": "0s",
+            "state": "aberta",
+            "open": true,
+            "expanded": "true",
+            "wanted": "aberta"
+          }
+        }
+      }
+    },
+    {
+      "scenario": "int-reduced-motion",
+      "id": "NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "int-keyboard",
+      "id": "TAB_REACHES_EVERY_PIECE",
+      "pass": true,
+      "detail": {
+        "reached": {
+          "gaveta-da-mesinha": {
+            "id": "gaveta-da-mesinha",
+            "visible": true,
+            "ring": "gaveta-da-mesinha"
+          },
+          "caixinha-da-mesa": {
+            "id": "caixinha-da-mesa",
+            "visible": true,
+            "ring": "caixinha-da-mesa"
+          },
+          "cesto-de-mapas": {
+            "id": "cesto-de-mapas",
+            "visible": true,
+            "ring": "cesto-de-mapas"
+          }
+        }
+      }
+    },
+    {
+      "scenario": "int-keyboard",
+      "id": "ENTER_AND_SPACE_STEP_THE_PIECE",
+      "pass": true,
+      "detail": {
+        "afterEnter": {
+          "state": "aberta",
+          "open": true,
+          "transform": "translate(0px, 56px) rotate(0deg) scale(1, 1)",
+          "computed": "matrix(1, 0, 0, 1, 0, 18.0354)",
+          "transition": "0.38s, 0.38s",
+          "expanded": "true",
+          "label": "Gaveta da mesinha da janela"
+        },
+        "liveEnter": "A gaveta da mesinha está aberta.",
+        "afterSpace": {
+          "state": "fechada",
+          "open": false,
+          "transform": "translate(0px, 0px) rotate(0deg) scale(1, 1)",
+          "computed": "matrix(1, 0, 0, 1, 0, 7.2558)",
+          "transition": "0.38s, 0.38s",
+          "expanded": "false",
+          "label": "Gaveta da mesinha da janela"
+        }
+      }
+    },
+    {
+      "scenario": "int-keyboard",
+      "id": "THE_BUTTON_IS_NAMED",
+      "pass": true,
+      "detail": {
+        "label": "Gaveta da mesinha da janela"
+      }
+    },
+    {
+      "scenario": "int-keyboard",
+      "id": "NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "int-easy-help",
+      "id": "THE_LAST_RUNG_RINGS_THE_SHUT_PIECE",
+      "pass": true,
+      "detail": {
+        "ring": {
+          "x": 2145,
+          "y": 1101
+        },
+        "piece": {
+          "x": 2145,
+          "y": 1101
+        },
+        "banner": "Aqui está guardado: Ioiô — abra a gaveta funda da bancada."
+      }
+    },
+    {
+      "scenario": "int-easy-help",
+      "id": "NOTHING_OPENS_BY_ITSELF",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "int-easy-help",
+      "id": "OPENED_BY_THE_EXPLORADOR_THEN_FOUND",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "int-easy-help",
+      "id": "NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "int-round-isolation",
+      "id": "SAME_SEED_SAME_ROUND",
+      "pass": true,
+      "detail": {
+        "one": {
+          "scene": "explorer-studio",
+          "seed": 9001,
+          "ids": [
+            "colar",
+            "lanterna",
+            "apito",
+            "binoculo",
+            "caracol",
+            "relogio",
+            "gaita",
+            "xicara"
+          ]
+        },
+        "two": {
+          "scene": "explorer-studio",
+          "seed": 9001,
+          "ids": [
+            "colar",
+            "lanterna",
+            "apito",
+            "binoculo",
+            "caracol",
+            "relogio",
+            "gaita",
+            "xicara"
+          ]
+        }
+      }
+    },
+    {
+      "scenario": "int-round-isolation",
+      "id": "EVERY_VISIT_STARTS_SHUT",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "int-round-isolation",
+      "id": "A_NEW_EXPLORATION_STARTS_SHUT",
+      "pass": true,
+      "detail": {
+        "next": {
+          "scene": "explorer-studio",
+          "seed": 9008,
+          "ids": [
+            "gaita",
+            "relogio",
+            "cantil",
+            "colar",
+            "binoculo",
+            "tesoura",
+            "caracol",
+            "estatueta"
+          ]
+        }
+      }
+    },
+    {
+      "scenario": "int-round-isolation",
+      "id": "NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    }
+  ],
+  "metrics": {
+    "rounds": {},
+    "interactionCommits": [
+      1,
+      1
+    ],
+    "studioDragCommits": 0
+  }
+}

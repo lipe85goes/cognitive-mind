@@ -15,7 +15,7 @@ O **MindFlow** oferece exercícios leves de estimulação cognitiva (memória, p
 | **Circuito de Memória** | Sequência de Cores | Memória e atenção |
 | **Rota Estratégica** | Labirinto de Fuga | Planejamento e estratégia |
 | **Central de Comandos** | Painel de Segurança | Foco e sequência |
-| **Trilha Lógica** | Trilha de Números | Atenção e ordem lógica |
+| **Estúdio das Descobertas** | Explore e encontre (duas salas: Estúdio e Observatório) | Atenção e observação |
 | **Jardim de Sementes** | Distribuição de sementes | Contagem e planejamento |
 
 Cada estação tem ilustração própria (`public/illustrations/`), tela de introdução ("Como jogar"), tabuleiro tátil, e tela de resultado com mensagens de encorajamento. Resultados ficam salvos no dispositivo (`localStorage`).

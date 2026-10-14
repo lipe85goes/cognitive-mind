@@ -1,0 +1,8 @@
+easy   valid 1327 · reached 1327 · χ² z 0.78 · max object |z| 2.03 · visible 84.9% · look-alikes 0.982
+medium valid 4027 · reached 4027 · χ² z 0.69 · max object |z| 1.71 · visible 82.7% · look-alikes 1.025
+hard   valid 19414 · reached 19414 · χ² z -0.19 · max object |z| 1.58 · visible 78.8% · look-alikes 1.312
+easy   layouts: 30000 explorations · 30000 layouts · invalid 0 · fallbacks 0 · exact on 500: rank χ² z 0.78, KS 1.1, max object |z| 2.55 · visible 88.4%
+medium layouts: 30000 explorations · 30000 layouts · invalid 0 · fallbacks 0 · exact on 500: rank χ² z -0.99, KS 0.77, max object |z| 1.84 · visible 86.0%
+hard   layouts: 30000 explorations · 30000 layouts · invalid 0 · fallbacks 0 · exact on 500: rank χ² z -0.53, KS 0.6, max object |z| 1.79 · visible 83.2%
+written: docs/archive/game03-final-polish-lock-06/rounds-explorer-observatory/fairness-report.json, docs/archive/game03-final-polish-lock-06/rounds-explorer-observatory/fairness-report.md
+ROUND_FAIRNESS_OK (1315 s)

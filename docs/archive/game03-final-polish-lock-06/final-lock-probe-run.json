@@ -1,0 +1,851 @@
+{
+  "base": "http://localhost:3100",
+  "buildId": "xPmpLT8yxzmSjVU0sBnuw",
+  "scenarios": [
+    "lock-studio",
+    "lock-observatory",
+    "lock-phone",
+    "lock-keyboard"
+  ],
+  "results": [
+    {
+      "scenario": "lock-studio",
+      "id": "THE_INTRO_NAMES_NO_SINGLE_ROOM",
+      "pass": true,
+      "detail": {
+        "intro": "Voltar à jornadaComo jogarEstúdio das DescobertasVocê vai praticarAtenção e observaçãoExplore e encontreExplore uma das salas do explorador, aproxime a cena e encontre os objetos da sua lista.1Escolha a sala e a dificuldade.2Arraste para ex"
+      }
+    },
+    {
+      "scenario": "lock-studio",
+      "id": "EASY_ROUND_IS_ITS_SEED",
+      "pass": true,
+      "detail": {
+        "seed": 7001,
+        "signature": "10200201111221012011012211200201011000100001230001",
+        "expected": "10200201111221012011012211200201011000100001230001",
+        "list": [
+          "cantil",
+          "pinha",
+          "tesoura",
+          "piao",
+          "camera"
+        ],
+        "expectedList": [
+          "cantil",
+          "pinha",
+          "tesoura",
+          "piao",
+          "camera"
+        ]
+      }
+    },
+    {
+      "scenario": "lock-studio",
+      "id": "EASY_HINT_LADDER_GOES_TO_SHOW_WHERE",
+      "pass": true,
+      "detail": {
+        "easyHints": [
+          "Pista: procure na estante.",
+          "Pista: procure no chão, no pé da estante, junto ao globo.",
+          "Aqui está guardado: Cantil — afaste o cesto de mapas."
+        ]
+      }
+    },
+    {
+      "scenario": "lock-studio",
+      "id": "EASY_FULL_ROUND_TO_THE_RESULT",
+      "pass": true,
+      "detail": {
+        "missed": [],
+        "card": "Estúdio explorado",
+        "modal": {
+          "world": "Estúdio das Descobertas",
+          "title": "Exploração concluída",
+          "summary": "Você encontrou todos os objetos do Estúdio."
+        }
+      }
+    },
+    {
+      "scenario": "lock-studio",
+      "id": "PRACTICE_AGAIN_KEEPS_THE_ROOM",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "lock-studio",
+      "id": "MEDIUM_ROUND_IS_ITS_SEED",
+      "pass": true,
+      "detail": {
+        "seed": 9102,
+        "signature": "00012210020100020110110012010002001022000000211001",
+        "expected": "00012210020100020110110012010002001022000000211001",
+        "list": [
+          "relogio",
+          "binoculo",
+          "chave",
+          "cantil",
+          "gaita",
+          "chapeu"
+        ],
+        "expectedList": [
+          "relogio",
+          "binoculo",
+          "chave",
+          "cantil",
+          "gaita",
+          "chapeu"
+        ]
+      }
+    },
+    {
+      "scenario": "lock-studio",
+      "id": "MEDIUM_LIST_NAMES_NOTHING",
+      "pass": true,
+      "detail": {
+        "list": [
+          "Dava-se corda nele todo dia para não parar.",
+          "Vai no pescoço de quem observa pássaros.",
+          "Tem dentes, mas nunca mordeu ninguém.",
+          "Garrafinha de metal com capa de feltro.",
+          "Cabe no bolso e tem várias casinhas de sopro.",
+          "Aba larga contra o sol da expedição."
+        ]
+      }
+    },
+    {
+      "scenario": "lock-studio",
+      "id": "MEDIUM_HINTS_NEVER_NAME_OR_REVEAL",
+      "pass": true,
+      "detail": {
+        "subject": "relogio",
+        "mediumHints": [
+          "Pista: procure na mesa.",
+          "Pista: em outras palavras — Mostra as horas e cabe no bolso.",
+          "Pista: olhe no chão, embaixo da mesa, à esquerda do pé."
+        ]
+      }
+    },
+    {
+      "scenario": "lock-studio",
+      "id": "MEDIUM_FINDS_OFF_THEIR_PAINTED_SPOT",
+      "pass": true,
+      "detail": {
+        "found": [
+          "relogio",
+          "gaita"
+        ]
+      }
+    },
+    {
+      "scenario": "lock-studio",
+      "id": "RESTART_KEEPS_ROUND_AND_LAYOUT",
+      "pass": true,
+      "detail": {
+        "before": "00012210020100020110110012010002001022000000211001",
+        "after": "00012210020100020110110012010002001022000000211001"
+      }
+    },
+    {
+      "scenario": "lock-studio",
+      "id": "HARD_ROUND_IS_ITS_SEED",
+      "pass": true,
+      "detail": {
+        "seed": 7012,
+        "signature": "11102200110111000111010211100201010020001000232110",
+        "expected": "11102200110111000111010211100201010020001000232110",
+        "list": [
+          "colar",
+          "gaita",
+          "camera",
+          "relogio",
+          "apito",
+          "piao",
+          "caracol",
+          "bussola"
+        ],
+        "expectedList": [
+          "colar",
+          "gaita",
+          "camera",
+          "relogio",
+          "apito",
+          "piao",
+          "caracol",
+          "bussola"
+        ]
+      }
+    },
+    {
+      "scenario": "lock-studio",
+      "id": "HARD_LIST_NAMES_NOTHING_BEFORE_A_FIND",
+      "pass": true,
+      "detail": {
+        "list": [
+          "Se o fecho abre, as pérolas fogem pelo chão.",
+          "Um blues solitário cabe na palma da mão.",
+          "Os álbuns de família começam com ela.",
+          "Quando ele para, ninguém sabe se está atrasado.",
+          "Perdido na trilha, você chamaria ajuda com ele.",
+          "Um barbante, um puxão e começa a festa no chão.",
+          "Depois do temporal, aparece no muro sem pressa.",
+          "Um ímã escondido decide para onde ir."
+        ]
+      }
+    },
+    {
+      "scenario": "lock-studio",
+      "id": "HARD_KEPT_OBJECT_NOT_FOUND_THROUGH_ITS_SHUT_PIECE",
+      "pass": true,
+      "detail": {
+        "keptId": "apito",
+        "slot": 1,
+        "shutTap": {
+          "counted": false,
+          "open": true
+        }
+      }
+    },
+    {
+      "scenario": "lock-studio",
+      "id": "HARD_HINTS_NEVER_REVEAL",
+      "pass": true,
+      "detail": {
+        "hardHints": [
+          "Pista: procure na mesa.",
+          "Pista: está guardado onde os tesouros pequenos dormem, na beira da mesa.",
+          "Pista: está guardado onde os tesouros pequenos dormem, na beira da mesa."
+        ]
+      }
+    },
+    {
+      "scenario": "lock-studio",
+      "id": "HARD_FULL_ROUND_TO_THE_RESULT",
+      "pass": true,
+      "detail": {
+        "missed": [],
+        "card": "Estúdio explorado",
+        "modal": {
+          "world": "Estúdio das Descobertas",
+          "title": "Exploração concluída",
+          "summary": "Você encontrou todos os objetos do Estúdio."
+        },
+        "offHome": [
+          "gaita",
+          "relogio",
+          "caracol",
+          "bussola"
+        ],
+        "kept": [
+          "colar",
+          "apito"
+        ]
+      }
+    },
+    {
+      "scenario": "lock-studio",
+      "id": "NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "lock-observatory",
+      "id": "EASY_ROUND_IS_ITS_SEED",
+      "pass": true,
+      "detail": {
+        "seed": 7301,
+        "signature": "001000021010112102101102101001020111122100",
+        "expected": "001000021010112102101102101001020111122100",
+        "list": [
+          "cadeado",
+          "ferradura",
+          "sistema-solar",
+          "esquadro",
+          "foguete"
+        ],
+        "expectedList": [
+          "cadeado",
+          "ferradura",
+          "sistema-solar",
+          "esquadro",
+          "foguete"
+        ]
+      }
+    },
+    {
+      "scenario": "lock-observatory",
+      "id": "EASY_FINDS_OFF_ITS_PAINTED_SPOT",
+      "pass": true,
+      "detail": {
+        "id": "cadeado"
+      }
+    },
+    {
+      "scenario": "lock-observatory",
+      "id": "CHANGE_SCENE_RETURNS_TO_SETUP_SAVING_NOTHING",
+      "pass": true,
+      "detail": {
+        "stored": 0
+      }
+    },
+    {
+      "scenario": "lock-observatory",
+      "id": "MEDIUM_ROUND_IS_ITS_SEED",
+      "pass": true,
+      "detail": {
+        "seed": 7402,
+        "signature": "000001112201103001001001200010020310200110",
+        "expected": "000001112201103001001001200010020310200110",
+        "list": [
+          "foguete",
+          "bule",
+          "compasso",
+          "cavalo-marinho",
+          "ferradura",
+          "microscopio"
+        ],
+        "expectedList": [
+          "foguete",
+          "bule",
+          "compasso",
+          "cavalo-marinho",
+          "ferradura",
+          "microscopio"
+        ]
+      }
+    },
+    {
+      "scenario": "lock-observatory",
+      "id": "MEDIUM_FULL_ROUND_RESULT_FITS_THE_ROOM",
+      "pass": true,
+      "detail": {
+        "missed": [],
+        "card": "Observatório explorado",
+        "modal": {
+          "world": "Estúdio das Descobertas",
+          "title": "Exploração concluída",
+          "summary": "Você encontrou todos os objetos do Observatório."
+        }
+      }
+    },
+    {
+      "scenario": "lock-observatory",
+      "id": "HARD_ROUND_IS_ITS_SEED",
+      "pass": true,
+      "detail": {
+        "seed": 7010,
+        "signature": "101000211010002101011102101012110111102200",
+        "expected": "101000211010002101011102101012110111102200",
+        "list": [
+          "esquadro",
+          "balanca",
+          "caneca",
+          "ratinho",
+          "ioio",
+          "microscopio",
+          "maca",
+          "luneta"
+        ],
+        "expectedList": [
+          "esquadro",
+          "balanca",
+          "caneca",
+          "ratinho",
+          "ioio",
+          "microscopio",
+          "maca",
+          "luneta"
+        ]
+      }
+    },
+    {
+      "scenario": "lock-observatory",
+      "id": "HARD_LIST_NAMES_NOTHING_BEFORE_A_FIND",
+      "pass": true,
+      "detail": {
+        "list": [
+          "Sem ele, a casa desenhada teria paredes tortas.",
+          "Na feira antiga, decidia o preço do feijão.",
+          "No meio da vigília, o astrônomo agradece a ela.",
+          "Um elefante, dizem, morre de medo dele.",
+          "No recreio, faz o truque do cachorrinho.",
+          "Os micróbios não escapam dele.",
+          "Lanche de mão que estala na primeira mordida.",
+          "Com ela, o vigia gritou: terra à vista!"
+        ]
+      }
+    },
+    {
+      "scenario": "lock-observatory",
+      "id": "HARD_ROUND_KEEPS_AN_OBJECT_OFF_ITS_FIRST_SPOT",
+      "pass": true,
+      "detail": {
+        "kept": [
+          "ioio"
+        ],
+        "offHome": [
+          "balanca",
+          "caneca",
+          "luneta"
+        ]
+      }
+    },
+    {
+      "scenario": "lock-observatory",
+      "id": "HARD_FULL_ROUND_RESULT_FITS_THE_ROOM",
+      "pass": true,
+      "detail": {
+        "missed": [],
+        "card": "Observatório explorado",
+        "modal": {
+          "world": "Estúdio das Descobertas",
+          "title": "Exploração concluída",
+          "summary": "Você encontrou todos os objetos do Observatório."
+        }
+      }
+    },
+    {
+      "scenario": "lock-observatory",
+      "id": "NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "lock-phone",
+      "id": "NARROW_EXPLORAR_IN_REACH",
+      "pass": true,
+      "detail": {
+        "reach": {
+          "top": 515.796875,
+          "bottom": 567.796875,
+          "width": 255.21875,
+          "viewport": 568
+        }
+      }
+    },
+    {
+      "scenario": "lock-phone",
+      "id": "NARROW_ROUND_IS_ITS_SEED",
+      "pass": true,
+      "detail": {
+        "seed": 7010,
+        "signature": "101000211010002101011102101012110111102200",
+        "expected": "101000211010002101011102101012110111102200",
+        "list": [
+          "esquadro",
+          "balanca",
+          "caneca",
+          "ratinho",
+          "ioio",
+          "microscopio",
+          "maca",
+          "luneta"
+        ],
+        "expectedList": [
+          "esquadro",
+          "balanca",
+          "caneca",
+          "ratinho",
+          "ioio",
+          "microscopio",
+          "maca",
+          "luneta"
+        ]
+      }
+    },
+    {
+      "scenario": "lock-phone",
+      "id": "NARROW_STATION_LABELS_FIT",
+      "pass": true,
+      "detail": {
+        "fitOpen": [
+          {
+            "label": "Cúpula",
+            "width": 94,
+            "needs": 94
+          },
+          {
+            "label": "Bancada",
+            "width": 94,
+            "needs": 94
+          },
+          {
+            "label": "Arquivo",
+            "width": 94,
+            "needs": 94
+          }
+        ],
+        "fitClosed": [
+          {
+            "label": "Cúpula",
+            "width": 95,
+            "needs": 95
+          },
+          {
+            "label": "Bancada",
+            "width": 95,
+            "needs": 95
+          },
+          {
+            "label": "Arquivo",
+            "width": 95,
+            "needs": 95
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "lock-phone",
+      "id": "NARROW_CLUES_FULLY_READABLE",
+      "pass": true,
+      "detail": {
+        "lines": [
+          {
+            "clipped": false,
+            "text": "Sem ele, a casa desenhada teria paredes tortas."
+          },
+          {
+            "clipped": false,
+            "text": "Na feira antiga, decidia o preço do feijão."
+          },
+          {
+            "clipped": false,
+            "text": "No meio da vigília, o astrônomo agradece a ela."
+          },
+          {
+            "clipped": false,
+            "text": "Um elefante, dizem, morre de medo dele."
+          },
+          {
+            "clipped": false,
+            "text": "No recreio, faz o truque do cachorrinho."
+          },
+          {
+            "clipped": false,
+            "text": "Os micróbios não escapam dele."
+          },
+          {
+            "clipped": false,
+            "text": "Lanche de mão que estala na primeira mordida."
+          },
+          {
+            "clipped": false,
+            "text": "Com ela, o vigia gritou: terra à vista!"
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "lock-phone",
+      "id": "NARROW_PIECE_TAPS_OPEN",
+      "pass": true,
+      "detail": {
+        "gate": "gaveta-da-bancada"
+      }
+    },
+    {
+      "scenario": "lock-phone",
+      "id": "NARROW_KEPT_OBJECT_FOUND",
+      "pass": true,
+      "detail": {
+        "kept": "ioio"
+      }
+    },
+    {
+      "scenario": "lock-phone",
+      "id": "NARROW_NO_HORIZONTAL_OVERFLOW",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "lock-phone",
+      "id": "NARROW_NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "lock-phone",
+      "id": "PORTRAIT_ROUND_IS_ITS_SEED",
+      "pass": true,
+      "detail": {
+        "seed": 9301,
+        "signature": "00001210020021000001100000002220110010101001231010",
+        "expected": "00001210020021000001100000002220110010101001231010",
+        "list": [
+          "chapeu",
+          "bussola",
+          "apito",
+          "camera",
+          "piao",
+          "estatueta"
+        ],
+        "expectedList": [
+          "chapeu",
+          "bussola",
+          "apito",
+          "camera",
+          "piao",
+          "estatueta"
+        ]
+      }
+    },
+    {
+      "scenario": "lock-phone",
+      "id": "PORTRAIT_FIND",
+      "pass": true,
+      "detail": {
+        "first": "chapeu"
+      }
+    },
+    {
+      "scenario": "lock-phone",
+      "id": "ROTATION_KEEPS_ROUND_LAYOUT_AND_FINDS",
+      "pass": true,
+      "detail": {
+        "before": "00001210020021000001100000002220110010101001231010",
+        "after": "00001210020021000001100000002220110010101001231010"
+      }
+    },
+    {
+      "scenario": "lock-phone",
+      "id": "LANDSCAPE_FIND",
+      "pass": true,
+      "detail": {
+        "second": "piao"
+      }
+    },
+    {
+      "scenario": "lock-phone",
+      "id": "LANDSCAPE_NO_HORIZONTAL_OVERFLOW",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "lock-phone",
+      "id": "PORTRAIT_EASY_ROUND_IS_ITS_SEED",
+      "pass": true,
+      "detail": {
+        "seed": 9401,
+        "signature": "11000100010020020101110120110000011002112021212000",
+        "expected": "11000100010020020101110120110000011002112021212000",
+        "list": [
+          "relogio",
+          "apito",
+          "pinha",
+          "barco",
+          "piao"
+        ],
+        "expectedList": [
+          "relogio",
+          "apito",
+          "pinha",
+          "barco",
+          "piao"
+        ]
+      }
+    },
+    {
+      "scenario": "lock-phone",
+      "id": "PHONE_RESULT_FLOW",
+      "pass": true,
+      "detail": {
+        "finished": {
+          "missed": [],
+          "card": "Estúdio explorado",
+          "modal": {
+            "world": "Estúdio das Descobertas",
+            "title": "Exploração concluída",
+            "summary": "Você encontrou todos os objetos do Estúdio."
+          }
+        },
+        "resultReach": {
+          "bottom": 742.164306640625,
+          "viewport": 844,
+          "width": 303.4542236328125
+        }
+      }
+    },
+    {
+      "scenario": "lock-phone",
+      "id": "PHONE_NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "lock-keyboard",
+      "id": "KEYBOARD_ROUND_IS_ITS_SEED",
+      "pass": true,
+      "detail": {
+        "seed": 7501,
+        "signature": "010121010200002012011000200002000011220120",
+        "expected": "010121010200002012011000200002000011220120",
+        "list": [
+          "bule",
+          "gramofone",
+          "ratinho",
+          "compasso",
+          "luneta"
+        ],
+        "expectedList": [
+          "bule",
+          "gramofone",
+          "ratinho",
+          "compasso",
+          "luneta"
+        ]
+      }
+    },
+    {
+      "scenario": "lock-keyboard",
+      "id": "KEYS_CHOOSE_ROOM_DIFFICULTY_AND_START",
+      "pass": true,
+      "detail": {
+        "stops": [
+          {
+            "tag": "INPUT",
+            "cls": "",
+            "name": "",
+            "visible": true
+          },
+          {
+            "tag": "INPUT",
+            "cls": "",
+            "name": "",
+            "visible": true
+          },
+          {
+            "tag": "BUTTON",
+            "cls": "hos-primary",
+            "name": "Explorar",
+            "visible": true
+          },
+          {
+            "tag": "BUTTON",
+            "cls": "hos-piece-key",
+            "name": "Portinhola no lambri, ao lado do telescópio",
+            "visible": true
+          },
+          {
+            "tag": "BUTTON",
+            "cls": "hos-item",
+            "name": "Bule de chá: procurar",
+            "visible": true
+          },
+          {
+            "tag": "BUTTON",
+            "cls": "hos-hint-button",
+            "name": "PistaBule",
+            "visible": true
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "lock-keyboard",
+      "id": "ENTER_OPENS_A_PIECE_ARIA_EXPANDED_FOLLOWS",
+      "pass": true,
+      "detail": {
+        "before": "false",
+        "after": "true"
+      }
+    },
+    {
+      "scenario": "lock-keyboard",
+      "id": "KEYBOARD_ONLY_FIND",
+      "pass": true,
+      "detail": {
+        "id": "bule",
+        "hint": ""
+      }
+    },
+    {
+      "scenario": "lock-keyboard",
+      "id": "THE_FIND_IS_ANNOUNCED",
+      "pass": true,
+      "detail": {
+        "live": "Encontrou: Bule. 1 de 5."
+      }
+    },
+    {
+      "scenario": "lock-keyboard",
+      "id": "FOCUS_IS_VISIBLE_ON_EVERY_STOP",
+      "pass": true,
+      "detail": {
+        "stops": [
+          {
+            "tag": "INPUT",
+            "cls": "",
+            "name": "",
+            "visible": true
+          },
+          {
+            "tag": "INPUT",
+            "cls": "",
+            "name": "",
+            "visible": true
+          },
+          {
+            "tag": "BUTTON",
+            "cls": "hos-primary",
+            "name": "Explorar",
+            "visible": true
+          },
+          {
+            "tag": "BUTTON",
+            "cls": "hos-piece-key",
+            "name": "Portinhola no lambri, ao lado do telescópio",
+            "visible": true
+          },
+          {
+            "tag": "BUTTON",
+            "cls": "hos-item",
+            "name": "Bule de chá: procurar",
+            "visible": true
+          },
+          {
+            "tag": "BUTTON",
+            "cls": "hos-hint-button",
+            "name": "PistaBule",
+            "visible": true
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "lock-keyboard",
+      "id": "NO_PICTURE_OF_THE_ROOM_IS_TABBABLE",
+      "pass": true,
+      "detail": {
+        "tabbablePictures": 0
+      }
+    },
+    {
+      "scenario": "lock-keyboard",
+      "id": "NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    }
+  ],
+  "metrics": {
+    "studioSeeds": {
+      "easy": 7001,
+      "medium": 9102,
+      "hard": 7012
+    },
+    "observatorySeeds": {
+      "easy": 7301,
+      "medium": 7402,
+      "hard": 7010
+    }
+  }
+}

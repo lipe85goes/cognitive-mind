@@ -1,0 +1,49 @@
+PASS  T1 [preserved] — ROUTES_1_AND_2_LEAD_TO_THE_NEXT
+        cases: 12
+        failing: []
+PASS  T2 [terminal] — ROUTE_3_LOST_RESUMES_ROUTE_3
+        rows: [{"from":"R3/easy/lost","continuation":{"kind":"escape-maze-route","routeNumber":3,"difficulty":"easy"},"nextRouteNumber":3,"journeyCompleted":null,"next":{"route":3,"mode":"easy","status":"setup"},"summaryRoutes":[3,3],"ok":true},{"from":"R3/medium/lost","continuation":{"kind":"escape-maze-route","routeNumber":3,"difficulty":"medium"},"nextRouteNumber":3,"journeyCompleted":null,"next":{"route":3,"mode":"medium","status":"setup"},"summaryRoutes":[3,3],"ok":true},{"from":"R3/hard/lost","continuation":{"kind":"escape-maze-route","routeNumber":3,"difficulty":"hard"},"nextRouteNumber":3,"journeyCompleted":null,"next":{"route":3,"mode":"hard","status":"setup"},"summaryRoutes":[3,3],"ok":true}]
+PASS  T3 [terminal] — ROUTE_3_WON_COMPLETES_THE_JOURNEY
+        rows: [{"from":"R3/easy/won","hasContinuation":false,"journeyCompleted":true,"nextRouteFields":[],"summaryRoutes":[3],"nextSession":"nextSession: this Route wrote no continuation to open","ok":true},{"from":"R3/medium/won","hasContinuation":false,"journeyCompleted":true,"nextRouteFields":[],"summaryRoutes":[3],"nextSession":"nextSession: this Route wrote no continuation to open","ok":true},{"from":"R3/hard/won","hasContinuation":false,"journeyCompleted":true,"nextRouteFields":[],"summaryRoutes":[3],"nextSession":"nextSession: this Route wrote no continuation to open","ok":true}]
+PASS  T4 [terminal] — READER_REFUSES_ROUTES_PAST_THE_JOURNEY
+        accepted: 9
+        refused: ["Route 4","Route 5","Route 999","Route 0","Route -1","Route 2.5","Route NaN","Route Infinity","Route as text","no Route","unknown mode","mode as number","no mode","another kind","no kind","null","undefined","a string","an array"]
+        failing: []
+PASS  T5 [terminal] — ROTA_NEVER_MOUNTS_PAST_THE_JOURNEY
+        freshInstead: ["Route 4 hard (a continuation written before the end existed)","Route 5 easy","Route 999 medium","Route 0","Route 2.5","unknown mode"]
+        route3Resumed: ["easy","medium","hard"]
+        failing: []
+PASS  T6 [terminal] — ROTA_STATUS_CARD_KNOWS_THE_END
+        route3Won: {"journeyCompleted":true,"routes":[3]}
+        route3Lost: {"journeyCompleted":false,"routes":[3],"offersRoute3Again":true}
+        route2Won: {"journeyCompleted":false,"announcesRoute3":true}
+PASS  T7 [terminal] — RESULT_SCREEN_ENDS_THE_JOURNEY
+        rows: [{"from":"R3/easy/won","title":"Jornada concluída","buttons":["Voltar aos mundos → dashboard"],"routesNamed":[3],"ok":true},{"from":"R3/medium/won","title":"Jornada concluída","buttons":["Voltar aos mundos → dashboard"],"routesNamed":[3],"ok":true},{"from":"R3/hard/won","title":"Jornada concluída","buttons":["Voltar aos mundos → dashboard"],"routesNamed":[3],"ok":true},{"from":"R3/easy/lost","title":"Rota registrada","buttons":["Tentar Rota 3 novamente → playAgain","Continuar jornada → dashboard"],"routesNamed":[3],"ok":true},{"from":"R3/medium/lost","title":"Rota registrada","buttons":["Tentar Rota 3 novamente → playAgain","Continuar jornada → dashboard"],"routesNamed":[3],"ok":true},{"from":"R3/hard/lost","title":"Rota registrada","buttons":["Tentar Rota 3 novamente → playAgain","Continuar jornada → dashboard"],"routesNamed":[3],"ok":true}]
+PASS  T8 [preserved] — RESULT_SCREEN_ROUTES_1_AND_2_UNCHANGED
+        rows: [{"from":"R1/medium/won","title":"Caminho aberto","ok":true},{"from":"R1/medium/lost","title":"Rota registrada","ok":true},{"from":"R2/medium/won","title":"Caminho aberto","ok":true},{"from":"R2/medium/lost","title":"Rota registrada","ok":true}]
+PASS  T9 [terminal] — STORAGE_KEEPS_THE_END
+        threw: null
+        won: {"journeyCompleted":true,"hasContinuation":false,"nextRouteFields":[]}
+        lost: {"continuation":{"kind":"escape-maze-route","routeNumber":3,"difficulty":"hard"},"journeyCompleted":null}
+        legacyUntouched: true
+        legacyContinuationsRead: [null,null]
+PASS  T10 [preserved] — SHELL_STAYS_AGNOSTIC
+        page: []
+        screen: []
+        setContinuation: ["lastResult.continuation","undefined"]
+PASS  T11 [terminal] — ONE_SOURCE_FOR_THE_JOURNEY_END
+        declaredIn: ["src/games/escape-maze/continuation.ts"]
+        readBy: ["src/app/lab/route-launcher/page.tsx","src/games/escape-maze/RouteStrategyGame.tsx","src/games/escape-maze/useEscapeMaze.ts"]
+        routeNumberPlusOne: ["src/games/escape-maze/continuation.ts#nextJourneyRoute"]
+PASS  T12 [terminal] — LAB_RESPECTS_THE_END
+        form: [{"route":"4","session":null,"error":"Route inválida: use um inteiro de 1 a 3."},{"route":"999","session":null,"error":"Route inválida: use um inteiro de 1 a 3."},{"route":"0","session":null,"error":"Route inválida: use um inteiro de 1 a 3."},{"route":"3","session":{"kind":"escape-maze-route","routeNumber":3,"difficulty":"hard"},"error":null}]
+        afterRoute3Won: {"launched":{"kind":"escape-maze-route","routeNumber":3,"difficulty":"hard"},"offered":null,"completedShown":true,"nextSession":null}
+        afterRoute3Lost: {"launched":{"kind":"escape-maze-route","routeNumber":3,"difficulty":"hard"},"offered":"Repetir rota → Route 3","completedShown":false,"nextSession":{"kind":"escape-maze-route","routeNumber":3,"difficulty":"hard"}}
+        afterRoute2Won: {"launched":{"kind":"escape-maze-route","routeNumber":2,"difficulty":"hard"},"offered":"Próxima rota → Route 3","completedShown":false,"nextSession":{"kind":"escape-maze-route","routeNumber":3,"difficulty":"hard"}}
+PASS  T13 [preserved] — FRESH_ENTRY_ROUTE_1_RETRY_KEEPS_THE_ROUTE
+        fresh: {"route":1,"mode":"easy","status":"setup"}
+        cases: 6
+        failing: []
+
+13/13 passed · terminal 9/9 · preserved 4/4 · failing: none
+ROUTE_JOURNEY_TERMINAL_OK

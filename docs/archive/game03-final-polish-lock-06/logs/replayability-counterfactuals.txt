@@ -1,0 +1,47 @@
+working tree: 36/36 checks pass
+CAUGHT  base 36ab89a7 — GAME03-INTERACTIONS-04's final state: every thing where it was painted
+        [replayability] failing: 31/31
+        [preserved] holding: 5/5
+CAUGHT  mutant — the view composes its own layout with Math.random on every render
+        required to fail: R02, R08 · failed: R02, R05, R06, R08
+CAUGHT  mutant — the same seed gives another position (the composer counts its calls)
+        required to fail: R04, R05 · failed: R04, R05, R11, R12, R14, R15, R27
+CAUGHT  mutant — Recomeçar draws another layout
+        required to fail: R06 · failed: R06
+CAUGHT  mutant — a tap still tests the object where it was painted
+        required to fail: R11 · failed: R05, R11, R12, R15, R32, R33
+CAUGHT  mutant — the hint's halo rings where the object was painted
+        required to fail: R12 · failed: R12
+CAUGHT  mutant — two things may share a slot
+        required to fail: R09 · failed: R09
+CAUGHT  mutant — two pool objects may stand closer than the F2 floor
+        required to fail: R09 · failed: R09
+CAUGHT  mutant — a slot outside the room
+        required to fail: R10 · failed: R01, R03, R10
+CAUGHT  mutant — look-alikes never move
+        required to fail: R16 · failed: R16, R17, R24, R25, R29
+CAUGHT  mutant — the rooms' props never move
+        required to fail: R17 · failed: R17, R24, R25
+CAUGHT  mutant — only the listed objects move
+        required to fail: R16, R17 · failed: R16, R17, R24, R25, R29
+CAUGHT  mutant — a kept object moves out of its piece
+        required to fail: R03 · failed: R01, R03, R13, R14, R18, R22, R23
+CAUGHT  mutant — a shut piece can be tapped through
+        required to fail: R13 · failed: R13
+CAUGHT  mutant — the round model ignores what the audit measured on the slot
+        required to fail: R18 · failed: R18
+CAUGHT  mutant — Difícil accepts an object on a plain-sight placement
+        required to fail: R21 · failed: R18, R19, R20, R21
+CAUGHT  mutant — one placement no room can hold
+        required to fail: R24 · failed: R01, R24, R25
+CAUGHT  mutant — every thing always takes its first slot
+        required to fail: R07, R25, R29 · failed: R05, R07, R11, R12, R13, R14, R16, R17, R18, R24, R25, R26, R29
+CAUGHT  mutant — the anti-repeat changes what a seed gives
+        required to fail: R27 · failed: R05, R11, R12, R27
+CAUGHT  mutant — the anti-repeat rerolls until the room differs
+        required to fail: R28 · failed: R28
+CAUGHT  mutant — a room-specific branch in the composer
+        required to fail: R36 · failed: R36
+CAUGHT  mutant — Home imports a room's layout art
+        required to fail: R31 · failed: R31
+HIDDEN_OBJECTS_REPLAYABILITY_COUNTERFACTUALS_HOLD

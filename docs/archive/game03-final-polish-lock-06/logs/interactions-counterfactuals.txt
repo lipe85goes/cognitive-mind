@@ -1,0 +1,41 @@
+working tree: 28/28 checks pass
+CAUGHT  base ede2cb12 — GAME03-CALIBRATION-02A's final state: no piece in any room
+        [interactions] failing: 24/24
+        [preserved] holding: 4/4
+CAUGHT  mutant — an object can be tapped through its shut drawer
+        required to fail: I10 · failed: I02, I05, I06, I07, I10, I11, I13, I17
+CAUGHT  mutant — opening any piece exposes every kept object
+        required to fail: I11 · failed: I07, I11
+CAUGHT  mutant — an object behind a piece is found even when the round does not list it
+        required to fail: I12 · failed: I05, I09, I12
+CAUGHT  mutant — Recomeçar keeps the drawers open
+        required to fail: I13 · failed: I13
+CAUGHT  mutant — a render puts the drawers back
+        required to fail: I05 · failed: I05, I06, I07, I09
+CAUGHT  mutant — a camera drag opens the piece it started on
+        required to fail: I08 · failed: I05, I08, I09, I10, I11, I13, I17
+CAUGHT  mutant — a tap on a piece also pans the camera
+        required to fail: I09 · failed: I09
+CAUGHT  mutant — Difícil rings the exact drawer
+        required to fail: I19 · failed: I19
+CAUGHT  mutant — Médio opens the cover itself
+        required to fail: I18 · failed: I18
+CAUGHT  mutant — the round rule ignores interaction depth
+        required to fail: I20, I21 · failed: I20, I21
+CAUGHT  mutant — every Difícil round keeps every object it can behind pieces
+        required to fail: I01, I21 · failed: I01, I12, I21
+CAUGHT  mutant — a piece's accessible label is removed
+        required to fail: I06 · failed: I06
+CAUGHT  mutant — a piece's tap area shrinks under the floor
+        required to fail: I24 · failed: I24
+CAUGHT  mutant — a room-specific piece branch in the engine
+        required to fail: I03 · failed: I03, I05, I06, I07, I09, I11, I17
+CAUGHT  mutant — every room's art is imported eagerly by Home
+        required to fail: I28 · failed: I28
+CAUGHT  mutant — a piece covers an object it does not keep (the curtain's tap area over the microscope)
+        required to fail: I23 · failed: I23
+CAUGHT  mutant — Fácil opens the piece for the Explorador
+        required to fail: I17 · failed: I17
+CAUGHT  mutant — hints and opened pieces make the result
+        required to fail: I25 · failed: I25
+HIDDEN_OBJECTS_INTERACTIONS_COUNTERFACTUALS_HOLD

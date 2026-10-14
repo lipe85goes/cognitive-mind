@@ -105,7 +105,18 @@ commit `da551b17eddbf0a156228c7e2a5fc9ca178180c9` (2026-10-05).
   one tap or a native button), objects kept behind them that cannot be found
   or announced while covered, interaction depth counted in the round rule
   apart from the search load, and art kits v3 — technically validated, waiting
-  for the human playtest; not locked.
+  for the human playtest; not locked. GAME03-REPLAYABILITY-05
+  (`docs/GAME03_REPLAYABILITY_05.md`) made each exploration arrange the room
+  anew from its seed — objects, look-alikes and scenery move between authored
+  slots, same seed same room, "Recomeçar" keeps the arrangement — with art kit
+  v4 (plate + sprite atlas). GAME03-FINAL-POLISH-LOCK-06
+  (`docs/GAME03_V1_LOCK_CANDIDATE_06.md`, branch
+  `feat/game03-final-polish-lock-06`) is the closing pass: no new gameplay,
+  polish and full regressions, and the record of **Game 03 V1 as a lock
+  candidate** (`GAME03_V1_LOCK_CANDIDATE`). That is a candidate only: Game 03
+  is not locked, the branch is not merged into `v06-portal-requires-lights`,
+  and nothing was promoted to production — the lock and merge decision follows
+  an independent review.
 - Rota 2.0 is a later phase, explicitly separate from v1.
 
 ## Reproducing the project

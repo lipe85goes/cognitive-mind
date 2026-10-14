@@ -1,0 +1,41 @@
+working tree: 20/20 checks pass
+CAUGHT  base 58b5f08b — EXPERIENCE-02's final state: one room, no registry
+        [multiscene] failing: 17/17
+        [preserved] holding: 3/3
+CAUGHT  mutant — the scene selector always launches the Studio
+        required to fail: M08 · failed: M03, M05, M08, M10, M11, M12, M13, M17, M18
+CAUGHT  mutant — the Observatory accidentally uses the Studio's pool
+        required to fail: M05, M16 · failed: M02, M03, M04, M05, M07, M08, M09, M10, M11, M12, M13, M14, M15, M16, M17, M18
+CAUGHT  mutant — the result forgets its room
+        required to fail: M13 · failed: M03, M11, M12, M13, M18
+CAUGHT  mutant — Recomeçar goes back to the Studio
+        required to fail: M10 · failed: M10
+CAUGHT  mutant — a change of room keeps the old list
+        required to fail: M12 · failed: M07, M12
+CAUGHT  mutant — choosing a room saves a result
+        required to fail: M07 · failed: M07, M12
+CAUGHT  mutant — every room's art is loaded eagerly
+        required to fail: M17 · failed: M08, M17
+CAUGHT  mutant — a room-specific branch leaks into the shared platform
+        required to fail: M13, M19 · failed: M13, M19
+CAUGHT  mutant — a room-specific branch leaks into the engine
+        required to fail: M03 · failed: M03
+CAUGHT  mutant — an unlisted Observatory object answers a tap
+        required to fail: M14 · failed: M03, M11, M13, M14
+CAUGHT  mutant — a target is hidden by the foreground
+        required to fail: M16 · failed: M16
+CAUGHT  mutant — a foreground layer grows over the room
+        required to fail: M16 · failed: M16
+CAUGHT  mutant — region balancing is ignored
+        required to fail: M15 · failed: M15
+CAUGHT  mutant — practice again forgets the room
+        required to fail: M11 · failed: M11, M18
+CAUGHT  mutant — a room that fails is offered again first
+        required to fail: M18 · failed: M18
+CAUGHT  mutant — the Observatory draws its rounds from the Studio's stations
+        required to fail: M15, M03 · failed: M03, M15
+CAUGHT  mutant — Médio's difficulty is recalibrated
+        required to fail: M20 · failed: M20
+CAUGHT  mutant — the Observatory's art is repainted without a new audit
+        required to fail: M16 · failed: M16
+HIDDEN_OBJECTS_MULTISCENE_COUNTERFACTUALS_HOLD

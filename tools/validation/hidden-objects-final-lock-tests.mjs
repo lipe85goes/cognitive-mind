@@ -53,7 +53,6 @@ if (args.some((arg) => arg !== revArg && arg !== "--counterfactuals") || REV ===
 const BASE = "4dc446140b1c0249070c44a23053068473cc521a";
 const BASE_TREE = openSourceTree({ rev: BASE });
 const GAME = "hidden-objects";
-const STUDIO_ID = "explorer-studio";
 const OBSERVATORY_ID = "explorer-observatory";
 const DIFFICULTIES = ["easy", "medium", "hard"];
 /** The engine: the lock candidate may not change one byte of it. */

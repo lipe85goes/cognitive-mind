@@ -1,0 +1,37 @@
+working tree: 28/28 checks pass
+CAUGHT  base 3b122cf1 — GAME03-MULTISCENE-03's final state: one static clue, Difficulty V2, art kit v1
+        [calibration] failing: 15/15
+        [preserved] holding: 13/13
+CAUGHT  mutant — the clue is always the same variant
+        required to fail: C06 · failed: C06
+CAUGHT  mutant — the clues are drawn again on every render
+        required to fail: C04, C07 · failed: C04, C05, C07
+CAUGHT  mutant — the difficulty is ignored: every difficulty draws by Fácil's rule
+        required to fail: C09, C10, C11 · failed: C09, C10, C11, C13, C18, C24
+CAUGHT  mutant — Difícil accepts trivial rounds
+        required to fail: C11, C10 · failed: C10, C11, C21, C23
+CAUGHT  mutant — the number of objects alone decides the difficulty
+        required to fail: C12 · failed: C08, C09, C10, C11, C12, C13, C24
+CAUGHT  mutant — Médio gets the exact reveal
+        required to fail: C16 · failed: C09, C16, C23
+CAUGHT  mutant — Difícil lists the direct clue
+        required to fail: C03, C23 · failed: C03, C06, C10, C23
+CAUGHT  mutant — Difícil names the objects before they are found
+        required to fail: C17 · failed: C04, C07, C17
+CAUGHT  mutant — look-alike pressure is ignored
+        required to fail: C13 · failed: C08, C09, C10, C11, C13
+CAUGHT  mutant — one room bypasses the calibration
+        required to fail: C18, P02 · failed: C08, C09, C10, C11, C13, C18, P02
+CAUGHT  mutant — an art threshold is weakened so a target passes (the ruler's fairness anchor)
+        required to fail: C21 · failed: C11, C21
+CAUGHT  mutant — a measurement is recorded better than the art's audit (the padlock's edge)
+        required to fail: C22 · failed: C22
+CAUGHT  mutant — a target's fairness drops under the floor
+        required to fail: C14 · failed: C14, C22
+CAUGHT  mutant — Difícil's look-alike floor only a few objects reach (the same objects in every replay)
+        required to fail: C24, C21 · failed: C21, C24
+CAUGHT  mutant — a clue names its object
+        required to fail: C03 · failed: C03
+CAUGHT  mutant — a clue is said twice
+        required to fail: C02 · failed: C02
+HIDDEN_OBJECTS_CALIBRATION_COUNTERFACTUALS_HOLD

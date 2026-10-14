@@ -1,0 +1,371 @@
+{
+  "mission": "GAME03-FINAL-POLISH-LOCK-06",
+  "compared": {
+    "base": "4dc4461 (GAME03-REPLAYABILITY-05 final)",
+    "now": "feat/game03-final-polish-lock-06 (this tree)"
+  },
+  "method": {
+    "bundle": "hidden-objects-browser-probe.mjs --scenario bundle: each build read from its own .next; gzip level 9",
+    "payload": "hidden-objects-multiscene-probe.mjs --scenario ms-payload: each tree’s own probe against its own production build (base on :3101 from a worktree of 4dc4461, now on :3100) — what the browser requested at each step, weighed as served",
+    "runtime": "hidden-objects-replayability-probe.mjs and hidden-objects-interactions-probe.mjs metrics, both builds"
+  },
+  "bundle": {
+    "base": {
+      "homeInitial": {
+        "js": {
+          "files": 10,
+          "raw": 773682,
+          "gzip": 242774
+        },
+        "css": {
+          "files": 7,
+          "raw": 206074,
+          "gzip": 44515
+        }
+      },
+      "studio": {
+        "js": {
+          "files": 2,
+          "raw": 182695,
+          "gzip": 49010
+        },
+        "css": {
+          "files": 1,
+          "raw": 23539,
+          "gzip": 5396
+        },
+        "files": [
+          "static/chunks/3nu2z_o6-em62.js",
+          "static/chunks/10c1c6s42p7vn.js",
+          "static/chunks/38jmr8oi3z-0r.css"
+        ]
+      },
+      "route": {
+        "js": {
+          "files": 3,
+          "raw": 55502,
+          "gzip": 18851
+        },
+        "css": {
+          "files": 1,
+          "raw": 9721,
+          "gzip": 2523
+        }
+      },
+      "circuit": {
+        "js": {
+          "files": 1,
+          "raw": 19502,
+          "gzip": 6549
+        },
+        "css": {
+          "files": 1,
+          "raw": 17603,
+          "gzip": 4162
+        }
+      },
+      "babylon": {
+        "js": {
+          "files": 36,
+          "raw": 8028358,
+          "gzip": 1767214
+        }
+      }
+    },
+    "now": {
+      "homeInitial": {
+        "js": {
+          "files": 10,
+          "raw": 773679,
+          "gzip": 242770
+        },
+        "css": {
+          "files": 7,
+          "raw": 206074,
+          "gzip": 44515
+        }
+      },
+      "studio": {
+        "js": {
+          "files": 2,
+          "raw": 182716,
+          "gzip": 48996
+        },
+        "css": {
+          "files": 1,
+          "raw": 23784,
+          "gzip": 5427
+        },
+        "files": [
+          "static/chunks/3nu2z_o6-em62.js",
+          "static/chunks/0wen_rvwlij9q.js",
+          "static/chunks/2asvp-6ncfi04.css"
+        ]
+      },
+      "route": {
+        "js": {
+          "files": 3,
+          "raw": 55502,
+          "gzip": 18851
+        },
+        "css": {
+          "files": 1,
+          "raw": 9721,
+          "gzip": 2523
+        }
+      },
+      "circuit": {
+        "js": {
+          "files": 1,
+          "raw": 19502,
+          "gzip": 6549
+        },
+        "css": {
+          "files": 1,
+          "raw": 17603,
+          "gzip": 4162
+        }
+      },
+      "babylon": {
+        "js": {
+          "files": 36,
+          "raw": 8028358,
+          "gzip": 1767214
+        }
+      }
+    }
+  },
+  "payload": {
+    "base": {
+      "homeInitial": {
+        "js": {
+          "files": 9,
+          "raw": 661088,
+          "gzip": 203254
+        },
+        "css": {
+          "files": 7,
+          "raw": 206074,
+          "gzip": 44515
+        },
+        "art": {
+          "files": 39,
+          "raw": 454096,
+          "gzip": 454096
+        }
+      },
+      "homeIncludingGame03Selection": {
+        "js": {
+          "files": 9,
+          "raw": 661088,
+          "gzip": 203254
+        },
+        "css": {
+          "files": 7,
+          "raw": 206074,
+          "gzip": 44515
+        },
+        "art": {
+          "files": 46,
+          "raw": 528352,
+          "gzip": 528352
+        }
+      },
+      "game03EntryAndSetup": {
+        "js": {
+          "files": 2,
+          "raw": 182695,
+          "gzip": 49010
+        },
+        "css": {
+          "files": 1,
+          "raw": 23539,
+          "gzip": 5396
+        },
+        "art": {
+          "files": 11,
+          "raw": 440068,
+          "gzip": 440068
+        }
+      },
+      "studioRoundSinceEntry": {
+        "js": {
+          "files": 2,
+          "raw": 182695,
+          "gzip": 49010
+        },
+        "css": {
+          "files": 1,
+          "raw": 23539,
+          "gzip": 5396
+        },
+        "art": {
+          "files": 16,
+          "raw": 474718,
+          "gzip": 474718
+        }
+      },
+      "observatoryChosenLater": {
+        "js": {
+          "files": 0,
+          "raw": 0,
+          "gzip": 0
+        },
+        "css": {
+          "files": 0,
+          "raw": 0,
+          "gzip": 0
+        },
+        "art": {
+          "files": 14,
+          "raw": 399308,
+          "gzip": 399308
+        }
+      }
+    },
+    "now": {
+      "homeInitial": {
+        "js": {
+          "files": 9,
+          "raw": 661085,
+          "gzip": 203250
+        },
+        "css": {
+          "files": 7,
+          "raw": 206074,
+          "gzip": 44515
+        },
+        "art": {
+          "files": 39,
+          "raw": 454096,
+          "gzip": 454096
+        }
+      },
+      "homeIncludingGame03Selection": {
+        "js": {
+          "files": 9,
+          "raw": 661085,
+          "gzip": 203250
+        },
+        "css": {
+          "files": 7,
+          "raw": 206074,
+          "gzip": 44515
+        },
+        "art": {
+          "files": 46,
+          "raw": 528352,
+          "gzip": 528352
+        }
+      },
+      "game03EntryAndSetup": {
+        "js": {
+          "files": 2,
+          "raw": 182716,
+          "gzip": 48996
+        },
+        "css": {
+          "files": 1,
+          "raw": 23784,
+          "gzip": 5427
+        },
+        "art": {
+          "files": 11,
+          "raw": 440068,
+          "gzip": 440068
+        }
+      },
+      "studioRoundSinceEntry": {
+        "js": {
+          "files": 2,
+          "raw": 182716,
+          "gzip": 48996
+        },
+        "css": {
+          "files": 1,
+          "raw": 23784,
+          "gzip": 5427
+        },
+        "art": {
+          "files": 16,
+          "raw": 474718,
+          "gzip": 474718
+        }
+      },
+      "observatoryChosenLater": {
+        "js": {
+          "files": 0,
+          "raw": 0,
+          "gzip": 0
+        },
+        "css": {
+          "files": 0,
+          "raw": 0,
+          "gzip": 0
+        },
+        "art": {
+          "files": 14,
+          "raw": 399334,
+          "gzip": 399334
+        }
+      }
+    }
+  },
+  "runtime": {
+    "reactCommitsFreshLayout": {
+      "base": [
+        1,
+        1
+      ],
+      "now": [
+        1,
+        1
+      ]
+    },
+    "reactCommitsDuringPan": {
+      "base": 0,
+      "now": 0
+    },
+    "reactCommitsPerPieceInteraction": {
+      "base": [
+        1,
+        1
+      ],
+      "now": [
+        1,
+        1
+      ]
+    },
+    "atlasBytesFetchedInReplayabilityProbe": {
+      "base": 238434,
+      "now": 238460
+    }
+  },
+  "layoutCompute": {
+    "source": "hidden-objects-layout-variety.mjs --n=2000 (node)",
+    "studio": {
+      "meanRoundMs": 0.704,
+      "worstRoundMs": 16.497
+    },
+    "observatory": {
+      "meanRoundMs": 0.566,
+      "worstRoundMs": 23.349
+    }
+  },
+  "decodedAtlas": {
+    "studio": {
+      "px": "1024x1391",
+      "bytes": 5697536
+    },
+    "observatory": {
+      "base": {
+        "px": "1024x780",
+        "bytes": 3194880
+      },
+      "now": {
+        "px": "1024x785",
+        "bytes": 3215360
+      }
+    }
+  }
+}

@@ -1,0 +1,1133 @@
+{
+  "rev": "working tree",
+  "samplesPerDifficulty": 2000,
+  "rooms": {
+    "explorer-studio": {
+      "things": {
+        "total": 57,
+        "targets": 26,
+        "lookAlikes": 25,
+        "props": 6,
+        "movable": 50,
+        "fixed": 7
+      },
+      "movableByRole": {
+        "targets": 22,
+        "lookAlikes": 22,
+        "props": 6
+      },
+      "slots": 85,
+      "placements": 140,
+      "layoutSpace": {
+        "components": 11,
+        "componentSizes": [
+          16,
+          12,
+          9,
+          3,
+          3,
+          2,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "reachableLayouts": "10^12.99",
+        "perComponent": [
+          995,
+          8,
+          9696,
+          6,
+          218,
+          2,
+          2,
+          2,
+          2,
+          2,
+          3
+        ]
+      },
+      "sampled": {
+        "explorations": 6000,
+        "uniqueLayouts": 2000,
+        "immediateRepeatsBetweenConsecutiveSeeds": 0,
+        "movedShareOfAllThings": {
+          "mean": 0.471,
+          "p10": 0.368,
+          "p90": 0.561,
+          "min": 0.211,
+          "max": 0.702
+        },
+        "clashesInSampledLayouts": 0,
+        "fallbacks": 0,
+        "mostTakenPlacementShare": 0.819,
+        "meanSlotEntropy": 0.902,
+        "sameSpotAsThePreviousExploration": {
+          "target": 0.507,
+          "lookalike": 0.422,
+          "prop": 0.454,
+          "kept": 0.499,
+          "listed": 0.548
+        }
+      },
+      "hard": {
+        "gaiola": [
+          0.555,
+          0,
+          0.445
+        ],
+        "binoculo": [
+          0.666,
+          0.334
+        ],
+        "estatueta": [
+          0.676,
+          0.324
+        ],
+        "tesoura": [
+          0.838,
+          0.162
+        ],
+        "pinha": [
+          0.362,
+          0.291,
+          0.347
+        ],
+        "piao": [
+          0.738,
+          0.262
+        ],
+        "gaita": [
+          0.817,
+          0.183
+        ],
+        "colar": [
+          0.502,
+          0.498
+        ],
+        "xicara": [
+          0.762,
+          0.147,
+          0.091
+        ],
+        "camera": [
+          0.712,
+          0.121,
+          0.167
+        ],
+        "apito": [
+          0.547,
+          0.453
+        ],
+        "caracol": [
+          0.394,
+          0.345,
+          0.26
+        ],
+        "chave": [
+          0.809,
+          0.081,
+          0.11
+        ],
+        "bussola": [
+          0.68,
+          0.32
+        ],
+        "cantil": [
+          0.504,
+          0.496
+        ],
+        "relogio": [
+          0.345,
+          0.459,
+          0.195
+        ],
+        "chapeu": [
+          0.649,
+          0.351
+        ]
+      },
+      "sessionsOf20": {
+        "visits": 20,
+        "allUnique": true,
+        "immediateRepeats": 0,
+        "meanMoved": 0.465
+      },
+      "cost": {
+        "meanRoundMs": 0.704,
+        "worstRoundMs": 16.497,
+        "worstCompositionSteps": 7629,
+        "stepBound": 20000,
+        "worstLayoutAttempt": 0,
+        "attemptBound": 6,
+        "worstDraws": 199,
+        "drawBound": 4000
+      },
+      "slotUse": {
+        "ampulheta": {
+          "role": "target",
+          "placements": {
+            "mesinha": 0.431,
+            "peitoril-34": 0.569
+          },
+          "entropy": 0.986
+        },
+        "binoculo": {
+          "role": "target",
+          "placements": {
+            "peitoril-1": 0.667,
+            "tapete-d": 0.333
+          },
+          "entropy": 0.918
+        },
+        "chave": {
+          "role": "target",
+          "placements": {
+            "bau": 0.786,
+            "peitoril-1": 0.107,
+            "tapete-d": 0.106
+          },
+          "entropy": 0.608
+        },
+        "guarda-chuva": {
+          "role": "target",
+          "placements": {
+            "canto": 0.672,
+            "varao-b": 0.328
+          },
+          "entropy": 0.912
+        },
+        "gaiola": {
+          "role": "target",
+          "placements": {
+            "suporte": 0.369,
+            "varao-b": 0.256,
+            "varao-a": 0.374
+          },
+          "entropy": 0.987
+        },
+        "caracol": {
+          "role": "target",
+          "placements": {
+            "lambri-a": 0.3,
+            "lambri-b": 0.36,
+            "parede-direita": 0.34
+          },
+          "entropy": 0.997
+        },
+        "piao": {
+          "role": "target",
+          "placements": {
+            "tapete-a": 0.742,
+            "tapete-d": 0.259
+          },
+          "entropy": 0.824
+        },
+        "lupa": {
+          "role": "target",
+          "placements": {
+            "mapa": 0.682,
+            "livro": 0.211,
+            "livro-esq": 0.106
+          },
+          "entropy": 0.753
+        },
+        "bussola": {
+          "role": "target",
+          "placements": {
+            "mapa-borda": 0.659,
+            "tapete-mesa-a": 0.341
+          },
+          "entropy": 0.925
+        },
+        "relogio": {
+          "role": "target",
+          "placements": {
+            "livro-borda": 0.337,
+            "tapete-mesa-b": 0.467,
+            "tapete-mesa-a": 0.196
+          },
+          "entropy": 0.948
+        },
+        "xicara": {
+          "role": "target",
+          "placements": {
+            "atras-livro": 0.682,
+            "mapa-direita": 0.18,
+            "mapa-dir-fundo": 0.137
+          },
+          "entropy": 0.766
+        },
+        "pena": {
+          "role": "target",
+          "placements": {
+            "frasco": 0.689,
+            "mapa-direita": 0.131,
+            "mapa-dir-fundo": 0.18
+          },
+          "entropy": 0.757
+        },
+        "borboleta": {
+          "role": "target",
+          "placements": {
+            "quadro-alto": 0.338,
+            "parede-mesa": 0.328,
+            "quadro-baixo": 0.335
+          },
+          "entropy": 1
+        },
+        "chapeu": {
+          "role": "target",
+          "placements": {
+            "cabide": 0.608,
+            "pilha-livros": 0.393
+          },
+          "entropy": 0.966
+        },
+        "tesoura": {
+          "role": "target",
+          "placements": {
+            "mapa-fundo": 0.805,
+            "chao-mesa": 0.195
+          },
+          "entropy": 0.712
+        },
+        "pinha": {
+          "role": "target",
+          "placements": {
+            "prateleira-2": 0.336,
+            "prateleira-1": 0.329,
+            "prateleira-livros": 0.336
+          },
+          "entropy": 1
+        },
+        "camera": {
+          "role": "target",
+          "placements": {
+            "s2-camera": 0.647,
+            "s4-a": 0.146,
+            "s1-a": 0.206
+          },
+          "entropy": 0.809
+        },
+        "estatueta": {
+          "role": "target",
+          "placements": {
+            "s1-estatueta": 0.63,
+            "s1-a": 0.37
+          },
+          "entropy": 0.951
+        },
+        "gaita": {
+          "role": "target",
+          "placements": {
+            "s5-livros": 0.795,
+            "s5-a": 0.204
+          },
+          "entropy": 0.731
+        },
+        "apito": {
+          "role": "target",
+          "placements": {
+            "gaveta-a": 0.503,
+            "gaveta-b": 0.496
+          },
+          "entropy": 1
+        },
+        "colar": {
+          "role": "target",
+          "placements": {
+            "caixinha-a": 0.506,
+            "caixinha-b": 0.494
+          },
+          "entropy": 1
+        },
+        "cantil": {
+          "role": "target",
+          "placements": {
+            "cesto-a": 0.48,
+            "cesto-b": 0.519
+          },
+          "entropy": 0.999
+        },
+        "vaso-torneado": {
+          "role": "lookalike",
+          "placements": {
+            "peitoril-6": 0.624,
+            "peitoril-2": 0.204,
+            "mesinha": 0.172
+          },
+          "entropy": 0.839
+        },
+        "tinteiros": {
+          "role": "lookalike",
+          "placements": {
+            "peitoril-2": 0.626,
+            "peitoril-1": 0.177,
+            "mesinha-b": 0.196
+          },
+          "entropy": 0.837
+        },
+        "carimbo": {
+          "role": "lookalike",
+          "placements": {
+            "mapa-direita": 0.243,
+            "tapete-mesa-d": 0.493,
+            "mapa-dir-fundo": 0.264
+          },
+          "entropy": 0.95
+        },
+        "lata-redonda": {
+          "role": "lookalike",
+          "placements": {
+            "mesa-frente-a": 0.44,
+            "mesa-frente-b": 0.157,
+            "chao-mesa-e": 0.404
+          },
+          "entropy": 0.926
+        },
+        "moedas": {
+          "role": "lookalike",
+          "placements": {
+            "mesa-frente-b": 0.472,
+            "livro-pagina": 0.31,
+            "mesa-frente-a": 0.217
+          },
+          "entropy": 0.955
+        },
+        "chaleira": {
+          "role": "lookalike",
+          "placements": {
+            "s4-chaleira": 0.819,
+            "s1-b": 0.181
+          },
+          "entropy": 0.683
+        },
+        "caixinha-de-musica": {
+          "role": "lookalike",
+          "placements": {
+            "s2-pilha": 0.566,
+            "s4-a": 0.295,
+            "s5-a": 0.14
+          },
+          "entropy": 0.871
+        },
+        "vaso-de-porcelana": {
+          "role": "lookalike",
+          "placements": {
+            "s1-vaso": 0.543,
+            "s1-a": 0.152,
+            "s1-b": 0.304
+          },
+          "entropy": 0.892
+        },
+        "rolo-de-papel": {
+          "role": "lookalike",
+          "placements": {
+            "s1-rolo": 0.551,
+            "s1-b": 0.268,
+            "s1-a": 0.181
+          },
+          "entropy": 0.902
+        },
+        "cesta-de-arame": {
+          "role": "lookalike",
+          "placements": {
+            "varao-a": 0.368,
+            "varao-b": 0.252,
+            "suporte": 0.38
+          },
+          "entropy": 0.986
+        },
+        "peao-de-xadrez": {
+          "role": "lookalike",
+          "placements": {
+            "tapete-b": 0.633,
+            "tapete-a": 0.202,
+            "tapete-d": 0.165
+          },
+          "entropy": 0.828
+        },
+        "medalha": {
+          "role": "lookalike",
+          "placements": {
+            "pilha-livros": 0.355,
+            "chao-mesa-e": 0.434,
+            "tapete-mesa-d": 0.21
+          },
+          "entropy": 0.963
+        },
+        "acucareiro": {
+          "role": "lookalike",
+          "placements": {
+            "prateleira-1": 0.337,
+            "prateleira-2": 0.332,
+            "prateleira-livros": 0.332
+          },
+          "entropy": 1
+        },
+        "tampa-de-pote": {
+          "role": "lookalike",
+          "placements": {
+            "chao-mesa": 0.503,
+            "tapete-mesa-a": 0.168,
+            "tapete-mesa-b": 0.329
+          },
+          "entropy": 0.92
+        },
+        "compasso-de-pontas": {
+          "role": "lookalike",
+          "placements": {
+            "mapa-baixo": 0.556,
+            "livro-pagina": 0.226,
+            "mesa-frente-a": 0.217
+          },
+          "entropy": 0.905
+        },
+        "abacaxi-de-madeira": {
+          "role": "lookalike",
+          "placements": {
+            "prateleira-livros": 0.333,
+            "prateleira-2": 0.333,
+            "prateleira-1": 0.335
+          },
+          "entropy": 1
+        },
+        "folha-emoldurada": {
+          "role": "lookalike",
+          "placements": {
+            "quadro-baixo": 0.392,
+            "parede-mesa": 0.413,
+            "quadro-alto": 0.195
+          },
+          "entropy": 0.957
+        },
+        "caixa-de-fosforos": {
+          "role": "lookalike",
+          "placements": {
+            "s5-caixote": 0.628,
+            "s5-a": 0.372
+          },
+          "entropy": 0.952
+        },
+        "estojo-de-oculos": {
+          "role": "lookalike",
+          "placements": {
+            "s5-rolos": 0.406,
+            "s5-b": 0.418,
+            "s5-caixote": 0.175
+          },
+          "entropy": 0.943
+        },
+        "apontador": {
+          "role": "lookalike",
+          "placements": {
+            "tapete-c": 0.66,
+            "tapete-b": 0.215,
+            "tapete-d": 0.124
+          },
+          "entropy": 0.787
+        },
+        "abaco": {
+          "role": "lookalike",
+          "placements": {
+            "tapete-mesa-c": 0.556,
+            "tapete-mesa-d": 0.211,
+            "tapete-mesa-a": 0.233
+          },
+          "entropy": 0.904
+        },
+        "pandeiro": {
+          "role": "lookalike",
+          "placements": {
+            "chao-estante": 0.492,
+            "chao-estante-b": 0.507
+          },
+          "entropy": 1
+        },
+        "pedrinhas": {
+          "role": "prop",
+          "placements": {
+            "peitoril-3": 0.141,
+            "mesinha-b": 0.298,
+            "poltrona-assento": 0.56
+          },
+          "entropy": 0.876
+        },
+        "tigela-de-latao": {
+          "role": "prop",
+          "placements": {
+            "peitoril-4": 0.172,
+            "mesinha-b": 0.229,
+            "mesinha": 0.14,
+            "poltrona": 0.46
+          },
+          "entropy": 0.918
+        },
+        "garrafinha": {
+          "role": "prop",
+          "placements": {
+            "peitoril-5": 0.625,
+            "peitoril-3": 0.185,
+            "mesinha": 0.191
+          },
+          "entropy": 0.839
+        },
+        "pote-de-frutinhas": {
+          "role": "prop",
+          "placements": {
+            "s2-pote": 0.499,
+            "s2-a": 0.5
+          },
+          "entropy": 1
+        },
+        "caixa-escura": {
+          "role": "prop",
+          "placements": {
+            "s3-caixa": 0.619,
+            "s3-a": 0.382
+          },
+          "entropy": 0.959
+        },
+        "caixa-clara": {
+          "role": "prop",
+          "placements": {
+            "s4-caixa": 0.609,
+            "s3-a": 0.391
+          },
+          "entropy": 0.965
+        }
+      }
+    },
+    "explorer-observatory": {
+      "things": {
+        "total": 53,
+        "targets": 26,
+        "lookAlikes": 26,
+        "props": 1,
+        "movable": 42,
+        "fixed": 11
+      },
+      "movableByRole": {
+        "targets": 21,
+        "lookAlikes": 20,
+        "props": 1
+      },
+      "slots": 76,
+      "placements": 118,
+      "layoutSpace": {
+        "components": 10,
+        "componentSizes": [
+          10,
+          9,
+          9,
+          7,
+          2,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "reachableLayouts": "10^10.23",
+        "perComponent": [
+          164,
+          93,
+          76,
+          2,
+          2,
+          2,
+          229,
+          2,
+          2,
+          2
+        ]
+      },
+      "sampled": {
+        "explorations": 6000,
+        "uniqueLayouts": 2000,
+        "immediateRepeatsBetweenConsecutiveSeeds": 0,
+        "movedShareOfAllThings": {
+          "mean": 0.426,
+          "p10": 0.34,
+          "p90": 0.528,
+          "min": 0.17,
+          "max": 0.623
+        },
+        "clashesInSampledLayouts": 0,
+        "fallbacks": 0,
+        "mostTakenPlacementShare": 0.799,
+        "meanSlotEntropy": 0.932,
+        "sameSpotAsThePreviousExploration": {
+          "target": 0.459,
+          "lookalike": 0.454,
+          "prop": 0.61,
+          "kept": 0.494,
+          "listed": 0.492
+        }
+      },
+      "hard": {
+        "ratinho": [
+          0.649,
+          0.351
+        ],
+        "ioio": [
+          0.514,
+          0.486
+        ],
+        "cavalo-marinho": [
+          0.77,
+          0.23
+        ],
+        "luneta": [
+          0.512,
+          0.488
+        ],
+        "maca": [
+          0.571,
+          0.237,
+          0.192
+        ],
+        "bule": [
+          0.719,
+          0.131,
+          0.15
+        ],
+        "cadeado": [
+          0.263,
+          0.225,
+          0.511
+        ],
+        "ferradura": [
+          0.384,
+          0,
+          0.616
+        ],
+        "sino": [
+          0.528,
+          0.472
+        ],
+        "balanca": [
+          0.615,
+          0.385
+        ],
+        "esquadro": [
+          0.484,
+          0.516
+        ],
+        "foguete": [
+          0.497,
+          0.503
+        ],
+        "tambor": [
+          0.502,
+          0.498
+        ],
+        "compasso": [
+          0.468,
+          0,
+          0.532
+        ],
+        "caneca": [
+          0.403,
+          0.405,
+          0.192
+        ],
+        "oculos": [
+          0.548,
+          0.188,
+          0.264
+        ],
+        "gato": [
+          0.519,
+          0,
+          0,
+          0.481
+        ],
+        "pantufas": [
+          0.774,
+          0,
+          0.226
+        ]
+      },
+      "sessionsOf20": {
+        "visits": 20,
+        "allUnique": true,
+        "immediateRepeats": 0,
+        "meanMoved": 0.43
+      },
+      "cost": {
+        "meanRoundMs": 0.566,
+        "worstRoundMs": 23.349,
+        "worstCompositionSteps": 183,
+        "stepBound": 20000,
+        "worstLayoutAttempt": 0,
+        "attemptBound": 6,
+        "worstDraws": 208,
+        "drawBound": 4000
+      },
+      "slotUse": {
+        "coruja": {
+          "role": "target",
+          "placements": {
+            "coroa-a": 0.577,
+            "coroa-c": 0.423
+          },
+          "entropy": 0.983
+        },
+        "pipa": {
+          "role": "target",
+          "placements": {
+            "parede-pipa": 0.693,
+            "parede-pipa-b": 0.307
+          },
+          "entropy": 0.89
+        },
+        "luneta": {
+          "role": "target",
+          "placements": {
+            "mesinha": 0.517,
+            "rodape-cupula": 0.482
+          },
+          "entropy": 0.999
+        },
+        "pantufas": {
+          "role": "target",
+          "placements": {
+            "cobertor": 0.474,
+            "chao-cupula-a": 0.411,
+            "atras-bau": 0.115
+          },
+          "entropy": 0.881
+        },
+        "oculos": {
+          "role": "target",
+          "placements": {
+            "caixa-ocular": 0.503,
+            "mesinha": 0.202,
+            "estante-600": 0.295
+          },
+          "entropy": 0.937
+        },
+        "ratinho": {
+          "role": "target",
+          "placements": {
+            "toca": 0.636,
+            "bau-cupula": 0.363
+          },
+          "entropy": 0.946
+        },
+        "caneca": {
+          "role": "target",
+          "placements": {
+            "estante-740": 0.4,
+            "estante-880": 0.417,
+            "estante-600": 0.183
+          },
+          "entropy": 0.948
+        },
+        "ferradura": {
+          "role": "target",
+          "placements": {
+            "estante-prego": 0.257,
+            "sobre-porta": 0.401,
+            "estante-prego-b": 0.343
+          },
+          "entropy": 0.985
+        },
+        "compasso": {
+          "role": "target",
+          "placements": {
+            "prancheta": 0.326,
+            "mesa-pinca": 0.294,
+            "mesa-maca": 0.38
+          },
+          "entropy": 0.995
+        },
+        "bule": {
+          "role": "target",
+          "placements": {
+            "mesa-bule": 0.748,
+            "mesa-frente": 0.11,
+            "mesa-esquerda": 0.142
+          },
+          "entropy": 0.671
+        },
+        "sino": {
+          "role": "target",
+          "placements": {
+            "prateleira-esq-b": 0.485,
+            "prateleira-esq-a": 0.514
+          },
+          "entropy": 0.999
+        },
+        "maca": {
+          "role": "target",
+          "placements": {
+            "mesa-maca": 0.535,
+            "mesa-frente": 0.246,
+            "chao-bancada-a": 0.218
+          },
+          "entropy": 0.921
+        },
+        "esquadro": {
+          "role": "target",
+          "placements": {
+            "carta-dir": 0.464,
+            "carta-esq": 0.536
+          },
+          "entropy": 0.996
+        },
+        "violino": {
+          "role": "target",
+          "placements": {
+            "prego-a": 0.501,
+            "prego-b": 0.498
+          },
+          "entropy": 1
+        },
+        "gato": {
+          "role": "target",
+          "placements": {
+            "armario-gato": 0.298,
+            "chao-almofada": 0.18,
+            "banquinho": 0.292,
+            "atras-cesto": 0.229
+          },
+          "entropy": 0.986
+        },
+        "balanca": {
+          "role": "target",
+          "placements": {
+            "vitrine-700": 0.589,
+            "vitrine-836": 0.411
+          },
+          "entropy": 0.977
+        },
+        "cavalo-marinho": {
+          "role": "target",
+          "placements": {
+            "vitrine-980": 0.761,
+            "vitrine-836": 0.239
+          },
+          "entropy": 0.793
+        },
+        "cadeado": {
+          "role": "target",
+          "placements": {
+            "puxador-a": 0.268,
+            "puxador-b": 0.221,
+            "puxador-c": 0.511
+          },
+          "entropy": 0.937
+        },
+        "foguete": {
+          "role": "target",
+          "placements": {
+            "cubby-a": 0.517,
+            "cubby-b": 0.482
+          },
+          "entropy": 0.999
+        },
+        "ioio": {
+          "role": "target",
+          "placements": {
+            "gaveta-a": 0.495,
+            "gaveta-b": 0.504
+          },
+          "entropy": 1
+        },
+        "tambor": {
+          "role": "target",
+          "placements": {
+            "cortina-a": 0.505,
+            "cortina-b": 0.495
+          },
+          "entropy": 1
+        },
+        "rolo-de-mapas": {
+          "role": "lookalike",
+          "placements": {
+            "mesinha-baixo": 0.779,
+            "chao-cupula-a": 0.221
+          },
+          "entropy": 0.762
+        },
+        "argolas": {
+          "role": "lookalike",
+          "placements": {
+            "caixa-argolas": 0.68,
+            "caixa-ocular": 0.32
+          },
+          "entropy": 0.904
+        },
+        "escova": {
+          "role": "lookalike",
+          "placements": {
+            "chao-escova": 0.425,
+            "chao-meia": 0.266,
+            "chao-chapeu": 0.308
+          },
+          "entropy": 0.982
+        },
+        "pinca": {
+          "role": "lookalike",
+          "placements": {
+            "mesa-pinca": 0.507,
+            "mesa-frente": 0.247,
+            "chao-bancada-a": 0.246
+          },
+          "entropy": 0.942
+        },
+        "regador": {
+          "role": "lookalike",
+          "placements": {
+            "prateleira-dir-b": 0.799,
+            "chao-carretel": 0.084,
+            "chao-bancada-a": 0.117
+          },
+          "entropy": 0.581
+        },
+        "funil": {
+          "role": "lookalike",
+          "placements": {
+            "prateleira-esq-a": 0.485,
+            "prateleira-esq-b": 0.514
+          },
+          "entropy": 0.999
+        },
+        "novelo": {
+          "role": "lookalike",
+          "placements": {
+            "caixote": 0.753,
+            "chao-bancada-a": 0.133,
+            "chao-bola": 0.114
+          },
+          "entropy": 0.663
+        },
+        "almofada": {
+          "role": "lookalike",
+          "placements": {
+            "chao-almofada": 0.429,
+            "chao-arquivo-b": 0.571
+          },
+          "entropy": 0.985
+        },
+        "concha": {
+          "role": "lookalike",
+          "placements": {
+            "vitrine-836": 0.272,
+            "vitrine-700": 0.291,
+            "armario-gato": 0.438
+          },
+          "entropy": 0.978
+        },
+        "vaso-de-ceramica": {
+          "role": "lookalike",
+          "placements": {
+            "coroa-b": 0.577,
+            "coroa-a": 0.423
+          },
+          "entropy": 0.983
+        },
+        "pote-de-ceramica": {
+          "role": "lookalike",
+          "placements": {
+            "estante-880": 0.407,
+            "estante-740": 0.409,
+            "estante-600": 0.184
+          },
+          "entropy": 0.949
+        },
+        "luvas": {
+          "role": "lookalike",
+          "placements": {
+            "chao-luvas": 0.685,
+            "cobertor": 0.315
+          },
+          "entropy": 0.899
+        },
+        "meia": {
+          "role": "lookalike",
+          "placements": {
+            "chao-meia": 0.22,
+            "chao-escova": 0.281,
+            "chao-cupula-b": 0.266,
+            "chao-cupula-a": 0.233
+          },
+          "entropy": 0.997
+        },
+        "bola-de-borracha": {
+          "role": "lookalike",
+          "placements": {
+            "chao-bola": 0.474,
+            "chao-carretel": 0.525
+          },
+          "entropy": 0.998
+        },
+        "peca-de-xadrez": {
+          "role": "lookalike",
+          "placements": {
+            "banquinho-peca": 0.481,
+            "chao-arquivo-c": 0.519
+          },
+          "entropy": 0.999
+        },
+        "caleidoscopio": {
+          "role": "lookalike",
+          "placements": {
+            "rodape-a": 0.399,
+            "mesinha": 0.228,
+            "rodape-cupula": 0.373
+          },
+          "entropy": 0.975
+        },
+        "medalhao": {
+          "role": "lookalike",
+          "placements": {
+            "puxador-c": 0.488,
+            "puxador-a": 0.255,
+            "puxador-b": 0.257
+          },
+          "entropy": 0.953
+        },
+        "chapeu-de-mago": {
+          "role": "lookalike",
+          "placements": {
+            "chao-chapeu": 0.314,
+            "chao-cupula-b": 0.436,
+            "chao-meia": 0.25
+          },
+          "entropy": 0.976
+        },
+        "carretel": {
+          "role": "lookalike",
+          "placements": {
+            "chao-carretel": 0.357,
+            "chao-bola": 0.38,
+            "chao-bancada-a": 0.263
+          },
+          "entropy": 0.989
+        },
+        "lata-de-biscoitos": {
+          "role": "lookalike",
+          "placements": {
+            "chao-lata": 0.511,
+            "chao-arquivo-c": 0.254,
+            "chao-arquivo-b": 0.235
+          },
+          "entropy": 0.939
+        },
+        "xicara-azul": {
+          "role": "prop",
+          "placements": {
+            "mesa-xicara": 0.74,
+            "mesa-frente": 0.26
+          },
+          "entropy": 0.827
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,72 @@
+working tree: 45/45 checks pass
+CAUGHT  base 87f30d3e — the skeleton the playtest played
+        [experience] failing: 16/16
+        [pool] failing: 12/12
+        [preserved] holding: 17/17
+CAUGHT  base 8fbd6382 — this mission before the addendum: Difficulty V2, fixed lists
+        [experience] holding: 16/16
+        [pool] failing: 12/12
+        [preserved] holding: 17/17
+CAUGHT  mutant — Difícil regains the exact reveal
+        required to fail: E03, E08, E10, P11 · failed: E03, E08, E09, E10, P03, P11
+CAUGHT  mutant — a halo is added to Difícil's context hint
+        required to fail: E08, E09 · failed: E08, E09, E10, P03, P11
+CAUGHT  mutant — Difícil's list names the objects again
+        required to fail: E04, E05 · failed: E04, E05
+CAUGHT  mutant — a drag selects a target
+        required to fail: E01, E32 · failed: E01, E32
+CAUGHT  mutant — parallax contaminates the hit test
+        required to fail: E01, E18 · failed: E01, E18
+CAUGHT  mutant — every difficulty climbs the same ladder
+        required to fail: E03, E07, E08 · failed: E03, E07, E08, E09, E10, P03, P11
+CAUGHT  mutant — a target moved out of reach
+        required to fail: E17 · failed: E17
+CAUGHT  mutant — reduced motion still animates the found ring
+        required to fail: E19 · failed: E19
+CAUGHT  mutant — every pointermove pushes the camera into React state
+        required to fail: E01, E20 · failed: E01, E20
+CAUGHT  mutant — number-trail becomes active again
+        required to fail: E26 · failed: E26
+CAUGHT  mutant — Médio regains the exact reveal
+        required to fail: E03, E07 · failed: E03, E07
+CAUGHT  mutant — a look-alike sits on its target
+        required to fail: E16 · failed: E16
+CAUGHT  mutant — the result shows a bare number again
+        required to fail: E15 · failed: E15
+CAUGHT  mutant — the found name is never shown
+        required to fail: E05, E31 · failed: E05, E31
+CAUGHT  mutant — the objectives cannot fold away
+        required to fail: E28 · failed: E28
+CAUGHT  mutant — the Rota is touched
+        required to fail: E22 · failed: E22
+CAUGHT  mutant — a runtime dependency is added
+        required to fail: E25 · failed: E25
+CAUGHT  mutant — hints start costing
+        required to fail: E11, E14 · failed: E11, E14
+CAUGHT  mutant — every seed draws the same round
+        required to fail: P05, P08 · failed: E31, E32, P05, P08
+CAUGHT  mutant — the difficulty's tier mix is ignored
+        required to fail: E03, P03 · failed: E03, P03
+CAUGHT  mutant — a round may list an object twice
+        required to fail: P05 · failed: E14, E21, P05, P10
+CAUGHT  mutant — rounds no longer spread over the stations
+        required to fail: P03 · failed: P03, P05
+CAUGHT  mutant — the list is drawn again on every render
+        required to fail: P06 · failed: E04, E05, E06, E07, E08, E10, E21, P06, P07, P08, P09, P10
+CAUGHT  mutant — a round lists one object too few
+        required to fail: P05 · failed: E14, E21, P05, P06
+CAUGHT  mutant — the seed is ignored: Math.random draws the round
+        required to fail: P04 · failed: E07, E08, E31, E32, P04, P08, P10
+CAUGHT  mutant — Recomeçar draws a new list
+        required to fail: P07 · failed: P07
+CAUGHT  mutant — every pool object answers a tap, listed or not
+        required to fail: P09 · failed: E21, P09, P10
+CAUGHT  mutant — a list style shows what it cannot
+        required to fail: P12 · failed: P03, P05, P12
+CAUGHT  mutant — a fresh entry repeats the last list
+        required to fail: P08 · failed: E31, E32, P06, P07, P08, P10
+CAUGHT  mutant — the result forgets its round
+        required to fail: P10 · failed: P10
+CAUGHT  mutant — a pool object loses its hint words
+        required to fail: P02 · failed: E04, P02
+HIDDEN_OBJECTS_EXPERIENCE_COUNTERFACTUALS_HOLD

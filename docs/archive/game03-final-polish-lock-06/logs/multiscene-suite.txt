@@ -1,0 +1,126 @@
+PASS  M01 [multiscene] — THE_REGISTRY_HOLDS_THE_STUDIO_AND_THE_OBSERVATORY
+        exactlyTheTwoRooms: true
+        uniqueIds: true
+        studioFirstAndDefault: true
+        lookupById: true
+        eachRoomItsOwnModule: true
+        noUnlockOrProgress: true
+        ids: ["explorer-studio","explorer-observatory"]
+        names: ["Estúdio do Explorador","Observatório do Explorador"]
+PASS  M02 [multiscene] — EVERY_ROOM_SATISFIES_THE_SCENE_CONTRACT
+        problems: []
+        problemCount: 0
+        rooms: ["explorer-studio 3200×1600 · 3 stations · 26 objects · 25 look-alikes · 4 layers","explorer-observatory 3600×1600 · 3 stations · 26 objects · 26 look-alikes · 5 layers"]
+PASS  M03 [multiscene] — ONE_ENGINE_PLAYS_EVERY_ROOM
+        engineNamesARoom: []
+        perRoomForks: []
+        roomModules: ["src/games/hidden-objects/scenes/explorer-observatory.art.ts","src/games/hidden-objects/scenes/explorer-observatory.ts","src/games/hidden-objects/scenes/explorer-studio.art.ts","src/games/hidden-objects/scenes/explorer-studio.ts"]
+        roomModulesRunNothing: true
+        played: {"explorer-studio":{"components":1,"result":{"difficulty":"medium","foundObjects":6,"totalObjects":6,"completed":true,"sceneId":"explorer-studio","roundSeed":4242},"summary":"Você encontrou todos os objetos do Estúdio."},"explorer-observatory":{"components":1,"result":{"difficulty":"medium","foundObjects":6,"totalObjects":6,"completed":true,"sceneId":"exp...
+PASS  M04 [multiscene] — SAME_ROOM_DIFFICULTY_AND_SEED_SAME_ROUND
+        draws: 1800
+        unstable: []
+        crossed: []
+        sameSeedDifferentRooms: "900/900 draw different lists"
+        example: {"seed":2995487061,"studio":["apito","binoculo","gaita","xicara","estatueta","lanterna","chave","colar"],"observatory":["caneca","ratinho","ioio","pantufas","tambor","maca","bule","leque"]}
+PASS  M05 [multiscene] — EACH_ROOM_DRAWS_FROM_ITS_OWN_POOL
+        sharedObjects: []
+        leaks: []
+        observatoryListOnScreen: ["maca","ioio","balanca","gato","foguete","cadeado","caneca","ratinho"]
+        listIsTheObservatorysDraw: true
+PASS  M06 [preserved] — THE_STUDIO_PLAYS_EXACTLY_AS_EXPERIENCE_02
+        calibrated: "rounds, sessions' lists, difficulty and art kit are Difficulty V3's (hidden-objects-calibration-tests.mjs)"
+        dataDiffers: []
+        objectsMoved: []
+        lookAlikesMoved: []
+        thumbsDiffer: []
+        cameraSame: true
+        controllerSame: true
+        hitsDiffer: 0
+        heroKept: true
+PASS  M07 [multiscene] — CHOOSING_A_ROOM_RECORDS_NOTHING
+        noResult: true
+        noExit: true
+        storageUntouched: true
+        backInSetup: true
+        results: 0
+PASS  M08 [multiscene] — CHOOSING_A_ROOM_SETS_UP_THAT_ROOM
+        opensOnTheStudio: true
+        shellViewAndRadioAgree: true
+        itsLayers: true
+        itsStations: true
+        itsName: true
+        itsRound: true
+        itsTitle: true
+        listed: ["bule","esquadro","balanca","oculos","coruja"]
+PASS  M09 [multiscene] — THE_ROUND_HOLDS_THROUGH_EVERYTHING_IN_EVERY_ROOM
+        problems: []
+PASS  M10 [multiscene] — RECOMECAR_KEEPS_THE_ROOM_AND_THE_ROUND
+        sameRoom: true
+        sameRound: true
+        clearedFinds: true
+        noNewDraw: true
+        cameraBackWhereTheRoomOpens: true
+PASS  M11 [multiscene] — PRACTICE_AGAIN_IS_A_NEW_ROUND_IN_THE_SAME_ROOM
+        firstWasTheObservatory: true
+        setupKeepsTheRoom: true
+        newRoundSameRoom: true
+        everyRoomOfferedAgain: true
+        aNewVisitOpensOnTheStudio: true
+        first: {"seed":111,"listed":["foguete","bule","microscopio","gato","luneta"]}
+        second: {"scene":"explorer-observatory","seed":222,"listed":["pipa","sino","leque","bule","cavalo-marinho"]}
+PASS  M12 [multiscene] — TROCAR_DE_CENA_STARTS_A_NEW_EXPLORATION_THERE
+        offeredWhilePlaying: true
+        backToSetupWithNothingKept: true
+        aNewRoundInTheNewRoom: true
+        noObservatoryObjectSurvives: true
+        theResultIsTheNewRooms: true
+PASS  M13 [multiscene] — THE_RESULT_RECORDS_ITS_ROOM_AND_ROUND
+        problems: []
+        savedAndReadBack: true
+        oldResultsKept: true
+        oldStudioResultShown: true
+        observatoryResultShown: true
+        legacyStillReadable: true
+        modalNamesNoRoom: true
+        observatoryResult: {"activityId":"hidden-objects","activityTitle":"Estúdio das Descobertas","gameId":"hidden-objects","score":6,"summary":"Você encontrou todos os objetos do Observatório.","details":{"difficulty":"medium","foundObjects":6,"totalObjects":6,"completed":true,"sceneId":"explorer-observatory","roundSeed":1313}}
+PASS  M14 [multiscene] — UNLISTED_OBJECTS_ARE_SCENERY_IN_EVERY_ROOM
+        tapped: 118
+        problems: []
+PASS  M15 [multiscene] — EVERY_ROUND_CROSSES_ITS_ROOM
+        problems: []
+        validRounds: {"explorer-studio/easy":884,"explorer-studio/medium":3160,"explorer-studio/hard":8005,"explorer-observatory/easy":1326,"explorer-observatory/medium":4021,"explorer-observatory/hard":19414}
+PASS  M16 [multiscene] — THE_OBSERVATORY_MEETS_THE_FAIRNESS_FLOORS
+        problems: []
+        problemCount: 0
+        minGapSu: 26
+        stationsByTier: {"cupula":{"A":2,"B":3,"C":4},"bancada":{"A":2,"B":2,"C":4},"arquivo":{"A":2,"B":2,"C":5}}
+        audit: ["coruja A 100% edge 2.49","pipa A 100% edge 4.14","luneta B 77% edge 1.92","pantufas B 89% edge 2.51","oculos C 85% edge 1.86","ratinho C 78% edge 1.87","caneca C 89% edge 1.67","ferradura B 100% edge 2.96","sistema-solar A 100% edge 2.92","vela A 100% edge 2.02","compasso B 88% edge 2.68","bule B 85% edge 1.96","sino C 60% edge 1.93","maca C 70% edge 1....
+PASS  M17 [multiscene] — A_ROOMS_ART_LOADS_ONLY_WITH_THAT_ROOM
+        roomArtKB: {"explorer-studio":405.5,"explorer-observatory":451.2}
+        overBudget: []
+        homeGameModules: []
+        homeNamesArt: []
+        assetImports: []
+        otherRoomsArtOnScreen: []
+        previews: ["/assets/hidden-objects/explorer-studio/v1/hero.webp","/assets/hidden-objects/explorer-observatory/v4/hero.webp"]
+PASS  M18 [multiscene] — A_ROOM_THAT_CANNOT_LOAD_NEVER_BREAKS_THE_OTHER
+        entryFailureReachesTheBoundary: true
+        retryOpensTheStudio: true
+        studioPlaysToTheEnd: true
+        laterChoiceWaitsForItsArt: true
+        laterFailureIsShownCalmly: true
+        theStudioStillPlays: true
+        atEntry: {"errors":["Failed to load essential scene asset: /assets/hidden-objects/explorer-observatory/v4/plate.webp"],"ready":0}
+PASS  M19 [preserved] — THE_SHARED_PLATFORM_IS_UNTOUCHED
+        changedOutsideGame03: []
+        depsChanged: []
+        lockfileUnchanged: true
+        shellNamesARoom: []
+PASS  M20 [preserved] — THE_DIFFICULTY_CONTRACT_IS_FROZEN
+        actual: {"easy":{"count":5,"tiers":{"A":[0,1],"B":[0,5],"C":[1,5]},"listStyle":"picture","hintLadder":["station","area","reveal"],"hintRadius":240,"tolerancePx":{"touch":16,"mouse":8}},"medium":{"count":6,"tiers":{"A":[0,1],"B":[0,6],"C":[2,6]},"listStyle":"clue","hintLadder":["station","reclue","direction"],"hintRadius":0,"tolerancePx":{"touch":12,"mouse":6}},"h...
+        perRoomPresets: []
+        pressure: []
+
+20/20 passed (17 multiscene, 3 preserved)
+HIDDEN_OBJECTS_MULTISCENE_OK

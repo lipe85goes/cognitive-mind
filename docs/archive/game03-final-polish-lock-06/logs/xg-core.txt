@@ -1,0 +1,30 @@
+baseline: 1050 arquivos de evidência · git status SUJO
+  aviso: a worktree já estava suja; a comparação continua válida, mas o baseline não é HEAD
+  PASS  route-visual-state-tests.mjs (exit 0, 0.1s)
+  PASS  chest-static-render-audit.mjs (exit 0, 0.9s)
+  PASS  babylon-lifecycle-tests.mjs (exit 0, 0.8s)
+  PASS  production-diagnostic-boundary-tests.mjs (exit 0, 0.5s)
+  PASS  trap-strategy-tests.mjs (exit 0, 2.4s)
+  PASS  cross-eol-tests.mjs (exit 0, 3.6s)
+  PASS  chest-controlled-tests.mjs (exit 0, 5.1s)
+  PASS  diagnostic-launcher-tests.mjs (exit 0, 5.4s)
+  PASS  difficulty-remount-persistence-tests.mjs (exit 0, 21.9s)
+  PASS  second-chance-controlled-tests.mjs (exit 0, 8.3s)
+  PASS  chest-runtime-gameplay.mjs (exit 0, 15.6s)
+  PASS  difficulty-rebalance-tests.mjs (exit 0, 20.7s)
+  PASS  difficulty-baseline-tests.mjs (exit 0, 18.6s)
+  PASS  pickaxe-controlled-tests.mjs (exit 0, 29.8s)
+  PASS  route-difficulty-identity-tests.mjs (exit 0, 94.7s)
+
+imutabilidade:
+  arquivos criados          : 0
+  arquivos apagados         : 0
+  conteúdo alterado         : 0
+  reescritos com o mesmo conteúdo (mtime mexeu): 0
+  git status idêntico       : sim
+
+VALIDATION_CHECK_IS_READ_ONLY
+CORE_BATTERY_PASSED
+
+evidence (check):
+  MATCHES    docs/archive/mindflow-validation-hygiene-04/validation-check-is-read-only.json

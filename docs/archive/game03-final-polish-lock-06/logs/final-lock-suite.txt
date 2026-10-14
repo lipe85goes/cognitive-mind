@@ -1,0 +1,34 @@
+PASS  L01 [lock] — THE_RESULT_TITLE_FITS_EVERY_ROOM
+        shown: [{"room":"explorer-studio","title":"Exploração concluída","summary":"Você encontrou todos os objetos do Estúdio."},{"room":"explorer-observatory","title":"Exploração concluída","summary":"Você encontrou todos os objetos do Observatório."}]
+        problems: []
+PASS  L02 [lock] — THE_INTRO_NAMES_NO_SINGLE_ROOM
+        named: []
+        intro: "Explore uma das salas do explorador, aproxime a cena e encontre os objetos da sua lista. Sem cronômetro: observe com calma. Há mais do que parece. Escolha a sala e a dificuldade. Arraste para explorar e aproxime para olhar de perto. Toque em cada objeto da ..."
+PASS  L03 [lock] — NO_CLUE_POINTS_AT_A_PLACE_ITS_OBJECT_CAN_LEAVE
+        clues: 260
+        problems: []
+PASS  L04 [lock] — A_PHONE_GIVES_THE_STATIONS_A_ROW
+        open: ".hos-panel {\n    grid-template-areas:\n      \"list list\"\n      \"head hint\"\n      \"stations stations\";\n    grid-template-columns: auto minmax(0, 1fr);\n    grid-template-rows: auto auto auto;\n  "
+        closed: ".hos-shell[data-tray=\"closed\"] .hos-panel {\n    grid-template-areas:\n      \"head hint\"\n      \"stations stations\";\n    grid-template-columns: auto minmax(0, 1fr);\n    grid-template-rows: auto auto;\n  "
+PASS  L05 [lock] — THE_MOUSE_STANDS_BEHIND_THE_TRUNK
+        behindTheFrontEdge: true
+        peeksPastTheEnd: true
+        facesTheOpenEnd: true
+        readable: true
+        at: {"x":618,"y":1362}
+        box: {"x":568,"y":1308,"w":100,"h":54}
+        visible: 0.658
+PASS  P01 [preserved] — NOTHING_OUTSIDE_GAME03_BUT_ITS_OWN_TABLE_ENTRIES
+        changedOutsideGame03: []
+        depsChanged: []
+        lockfileUnchanged: true
+PASS  P02 [preserved] — THE_ENGINE_IS_THE_BASES
+        changed: []
+PASS  P03 [preserved] — THE_ROOMS_HOLD_THE_SAME_THINGS
+        problems: []
+PASS  P04 [preserved] — A_SEED_IS_ONE_ROOM_AND_ROOMS_STILL_VARY
+        arrangementsIn40Seeds: {"explorer-studio/easy":40,"explorer-studio/medium":40,"explorer-studio/hard":40,"explorer-observatory/easy":40,"explorer-observatory/medium":40,"explorer-observatory/hard":40}
+        problems: []
+
+9/9 passed (5 lock, 4 preserved)
+HIDDEN_OBJECTS_FINAL_LOCK_OK

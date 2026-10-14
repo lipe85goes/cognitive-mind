@@ -1,0 +1,1558 @@
+{
+  "base": "http://localhost:3100",
+  "buildId": "xPmpLT8yxzmSjVU0sBnuw",
+  "scenarios": [
+    "cal-desktop",
+    "cal-mobile",
+    "cal-landscape",
+    "cal-reduced-motion",
+    "cal-replay"
+  ],
+  "results": [
+    {
+      "scenario": "cal-desktop",
+      "id": "STUDIO_EASY_ROUND_IS_THE_SEEDS",
+      "pass": true,
+      "detail": {
+        "round": {
+          "scene": "explorer-studio",
+          "seed": 8001,
+          "ids": [
+            "estatueta",
+            "barco",
+            "apito",
+            "bussola",
+            "binoculo"
+          ]
+        },
+        "drawn": [
+          "estatueta",
+          "barco",
+          "apito",
+          "bussola",
+          "binoculo"
+        ]
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "STUDIO_EASY_LIST_BY_PICTURE_AND_NAME",
+      "pass": true,
+      "detail": {
+        "lines": [
+          "Estatueta",
+          "Barco em miniatura",
+          "Apito",
+          "Bússola",
+          "Binóculo"
+        ]
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "STUDIO_FACIL_LADDER_ENDS_IN_THE_REVEAL",
+      "pass": true,
+      "detail": {
+        "banners": [
+          "Pista: procure na estante.",
+          "Pista: procure na prateleira mais alta.",
+          "Aqui está: Estatueta."
+        ],
+        "halos": [
+          null,
+          "hos-halo-hint",
+          "hos-halo-reveal"
+        ]
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "STUDIO_MEDIUM_ROUND_IS_THE_SEEDS",
+      "pass": true,
+      "detail": {
+        "round": {
+          "scene": "explorer-studio",
+          "seed": 8002,
+          "ids": [
+            "apito",
+            "camera",
+            "xicara",
+            "ampulheta",
+            "colar",
+            "lanterna"
+          ]
+        },
+        "drawn": [
+          "apito",
+          "camera",
+          "xicara",
+          "ampulheta",
+          "colar",
+          "lanterna"
+        ]
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "STUDIO_MEDIUM_LIST_TELLS_THE_SEEDS_ASSOCIATIVE_CLUES",
+      "pass": true,
+      "detail": {
+        "shown": [
+          "Vai no pescoço de quem vigia a piscina.",
+          "Diga xis para ela.",
+          "Fica sobre um pires, soltando vapor.",
+          "Dois bojos de vidro unidos por uma cintura.",
+          "Enfeita o decote numa festa de gala.",
+          "Os mineiros a carregavam nos túneis."
+        ],
+        "want": [
+          "Vai no pescoço de quem vigia a piscina.",
+          "Diga xis para ela.",
+          "Fica sobre um pires, soltando vapor.",
+          "Dois bojos de vidro unidos por uma cintura.",
+          "Enfeita o decote numa festa de gala.",
+          "Os mineiros a carregavam nos túneis."
+        ],
+        "levels": [
+          "associative",
+          "associative",
+          "associative",
+          "associative",
+          "associative",
+          "associative"
+        ]
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "STUDIO_MEDIUM_NO_PICTURE_NO_NAME_BEFORE_THE_FIND",
+      "pass": true,
+      "detail": {
+        "named": [],
+        "pictures": []
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "STUDIO_MEDIO_LADDER_STATION_RECLUE_DIRECTION",
+      "pass": true,
+      "detail": {
+        "banners": [
+          "Pista: procure perto da janela.",
+          "Pista: em outras palavras — Solta um som agudo quando alguém sopra.",
+          "Pista: olhe embaixo do tampo da mesinha, guardado longe da vista.",
+          "Pista: olhe embaixo do tampo da mesinha, guardado longe da vista."
+        ],
+        "reclue": "Solta um som agudo quando alguém sopra."
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "STUDIO_MEDIO_NEVER_LIGHTS_NOR_FRAMES",
+      "pass": true,
+      "detail": {
+        "halos": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "buttons": [
+          "Outra pistaVai no pescoço de quem vigia a piscina.",
+          "Outra pistaVai no pescoço de quem vigia a piscina.",
+          "Rever pistaVai no pescoço de quem vigia a piscina.",
+          "Rever pistaVai no pescoço de quem vigia a piscina."
+        ]
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "STUDIO_MEDIO_HINTS_NEVER_NAME_IT",
+      "pass": true,
+      "detail": {
+        "banners": [
+          "Pista: procure perto da janela.",
+          "Pista: em outras palavras — Solta um som agudo quando alguém sopra.",
+          "Pista: olhe embaixo do tampo da mesinha, guardado longe da vista.",
+          "Pista: olhe embaixo do tampo da mesinha, guardado longe da vista."
+        ]
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "STUDIO_HARD_ROUND_IS_THE_SEEDS",
+      "pass": true,
+      "detail": {
+        "round": {
+          "scene": "explorer-studio",
+          "seed": 8003,
+          "ids": [
+            "piao",
+            "lanterna",
+            "xicara",
+            "apito",
+            "chave",
+            "bussola",
+            "camera",
+            "tesoura"
+          ]
+        },
+        "drawn": [
+          "piao",
+          "lanterna",
+          "xicara",
+          "apito",
+          "chave",
+          "bussola",
+          "camera",
+          "tesoura"
+        ]
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "STUDIO_HARD_LIST_TELLS_THE_SEEDS_INDIRECT_CLUES",
+      "pass": true,
+      "detail": {
+        "shown": [
+          "Na roda, ganha quem o deixa de pé mais tempo.",
+          "Numa noite sem lua, guiaria seus passos.",
+          "Às cinco da tarde, os ingleses a enchem.",
+          "Perdido na trilha, você chamaria ajuda com ele.",
+          "Quem a perde fica do lado de fora de casa.",
+          "Um ímã escondido decide para onde ir.",
+          "O que ela via só aparecia depois de revelado.",
+          "O barbeiro a faz cantar perto da orelha."
+        ],
+        "want": [
+          "Na roda, ganha quem o deixa de pé mais tempo.",
+          "Numa noite sem lua, guiaria seus passos.",
+          "Às cinco da tarde, os ingleses a enchem.",
+          "Perdido na trilha, você chamaria ajuda com ele.",
+          "Quem a perde fica do lado de fora de casa.",
+          "Um ímã escondido decide para onde ir.",
+          "O que ela via só aparecia depois de revelado.",
+          "O barbeiro a faz cantar perto da orelha."
+        ],
+        "levels": [
+          "indirect",
+          "indirect",
+          "indirect",
+          "indirect",
+          "indirect",
+          "indirect",
+          "indirect",
+          "indirect"
+        ]
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "STUDIO_HARD_NO_PICTURE_NO_NAME_BEFORE_THE_FIND",
+      "pass": true,
+      "detail": {
+        "named": [],
+        "pictures": []
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "STUDIO_DIFICIL_LADDER_STATION_CONTEXT",
+      "pass": true,
+      "detail": {
+        "banners": [
+          "Pista: procure perto da janela.",
+          "Pista: está no chão, perto de onde o tapete começa.",
+          "Pista: está no chão, perto de onde o tapete começa."
+        ]
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "STUDIO_DIFICIL_NEVER_LIGHTS_NOR_FRAMES",
+      "pass": true,
+      "detail": {
+        "halos": [
+          null,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "STUDIO_DIFICIL_NAMES_NOTHING_BEFORE_THE_FIND",
+      "pass": true,
+      "detail": {
+        "said": []
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "STUDIO_THE_FIND_SAYS_THE_NAME",
+      "pass": true,
+      "detail": {
+        "line": {
+          "id": "piao",
+          "found": true,
+          "text": "Pião",
+          "answered": "Na roda, ganha quem o deixa de pé mais tempo.",
+          "aria": "Pião de madeira: encontrado",
+          "picture": true,
+          "fits": true,
+          "right": 1422.421875
+        },
+        "live": "Encontrou: Pião. Na roda, ganha quem o deixa de pé mais tempo. 1 de 8."
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "STUDIO_DIFICIL_PLAYED_TO_THE_END",
+      "pass": true,
+      "detail": {
+        "finished": {
+          "missed": []
+        },
+        "saved": {
+          "difficulty": "hard",
+          "foundObjects": 8,
+          "totalObjects": 8,
+          "completed": true,
+          "sceneId": "explorer-studio",
+          "roundSeed": 8003
+        }
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "STUDIO_NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "OBSERVATORY_EASY_ROUND_IS_THE_SEEDS",
+      "pass": true,
+      "detail": {
+        "round": {
+          "scene": "explorer-observatory",
+          "seed": 8011,
+          "ids": [
+            "balanca",
+            "bule",
+            "maca",
+            "violino",
+            "luneta"
+          ]
+        },
+        "drawn": [
+          "balanca",
+          "bule",
+          "maca",
+          "violino",
+          "luneta"
+        ]
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "OBSERVATORY_EASY_LIST_BY_PICTURE_AND_NAME",
+      "pass": true,
+      "detail": {
+        "lines": [
+          "Balança",
+          "Bule",
+          "Maçã",
+          "Violino",
+          "Luneta"
+        ]
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "OBSERVATORY_FACIL_LADDER_ENDS_IN_THE_REVEAL",
+      "pass": true,
+      "detail": {
+        "banners": [
+          "Pista: procure no arquivo de mapas e curiosidades.",
+          "Pista: procure na vitrine, numa prateleira do meio.",
+          "Aqui está: Balança."
+        ],
+        "halos": [
+          null,
+          "hos-halo-hint",
+          "hos-halo-reveal"
+        ]
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "OBSERVATORY_MEDIUM_ROUND_IS_THE_SEEDS",
+      "pass": true,
+      "detail": {
+        "round": {
+          "scene": "explorer-observatory",
+          "seed": 8012,
+          "ids": [
+            "coruja",
+            "ioio",
+            "foguete",
+            "cavalo-marinho",
+            "compasso",
+            "cadeado"
+          ]
+        },
+        "drawn": [
+          "coruja",
+          "ioio",
+          "foguete",
+          "cavalo-marinho",
+          "compasso",
+          "cadeado"
+        ]
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "OBSERVATORY_MEDIUM_LIST_TELLS_THE_SEEDS_ASSOCIATIVE_CLUES",
+      "pass": true,
+      "detail": {
+        "shown": [
+          "Faz uhu quando a noite chega.",
+          "Gira na ponta do dedo de quem tem jeito.",
+          "Tem bico pontudo e aletas para subir ao céu.",
+          "Enrola o rabo nas algas para não ir embora.",
+          "Ponta seca de um lado, grafite do outro.",
+          "Os namorados o prendem nas grades das pontes."
+        ],
+        "want": [
+          "Faz uhu quando a noite chega.",
+          "Gira na ponta do dedo de quem tem jeito.",
+          "Tem bico pontudo e aletas para subir ao céu.",
+          "Enrola o rabo nas algas para não ir embora.",
+          "Ponta seca de um lado, grafite do outro.",
+          "Os namorados o prendem nas grades das pontes."
+        ],
+        "levels": [
+          "associative",
+          "associative",
+          "associative",
+          "associative",
+          "associative",
+          "associative"
+        ]
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "OBSERVATORY_MEDIUM_NO_PICTURE_NO_NAME_BEFORE_THE_FIND",
+      "pass": true,
+      "detail": {
+        "named": [],
+        "pictures": []
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "OBSERVATORY_MEDIO_LADDER_STATION_RECLUE_DIRECTION",
+      "pass": true,
+      "detail": {
+        "banners": [
+          "Pista: procure sob a cúpula, perto do telescópio.",
+          "Pista: em outras palavras — Ave que enxerga bem no escuro.",
+          "Pista: olhe bem no alto, em cima da estante.",
+          "Pista: olhe bem no alto, em cima da estante."
+        ],
+        "reclue": "Ave que enxerga bem no escuro."
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "OBSERVATORY_MEDIO_NEVER_LIGHTS_NOR_FRAMES",
+      "pass": true,
+      "detail": {
+        "halos": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "buttons": [
+          "Outra pistaFaz uhu quando a noite chega.",
+          "Outra pistaFaz uhu quando a noite chega.",
+          "Rever pistaFaz uhu quando a noite chega.",
+          "Rever pistaFaz uhu quando a noite chega."
+        ]
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "OBSERVATORY_MEDIO_HINTS_NEVER_NAME_IT",
+      "pass": true,
+      "detail": {
+        "banners": [
+          "Pista: procure sob a cúpula, perto do telescópio.",
+          "Pista: em outras palavras — Ave que enxerga bem no escuro.",
+          "Pista: olhe bem no alto, em cima da estante.",
+          "Pista: olhe bem no alto, em cima da estante."
+        ]
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "OBSERVATORY_HARD_ROUND_IS_THE_SEEDS",
+      "pass": true,
+      "detail": {
+        "round": {
+          "scene": "explorer-observatory",
+          "seed": 8013,
+          "ids": [
+            "microscopio",
+            "maca",
+            "leque",
+            "gato",
+            "sino",
+            "foguete",
+            "caneca",
+            "esquadro"
+          ]
+        },
+        "drawn": [
+          "microscopio",
+          "maca",
+          "leque",
+          "gato",
+          "sino",
+          "foguete",
+          "caneca",
+          "esquadro"
+        ]
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "OBSERVATORY_HARD_LIST_TELLS_THE_SEEDS_INDIRECT_CLUES",
+      "pass": true,
+      "detail": {
+        "shown": [
+          "Com ele, uma gota d'água vira um zoológico.",
+          "A bruxa ofereceu uma envenenada à princesa.",
+          "Atrás dele, uma dama escondia o sorriso.",
+          "Uma caixa de papelão vazia é o castelo dele.",
+          "Na escola antiga, avisava que o recreio acabou.",
+          "Lançado do quintal, some entre as nuvens.",
+          "O chocolate quente da madrugada espera nela.",
+          "Sem ele, a casa desenhada teria paredes tortas."
+        ],
+        "want": [
+          "Com ele, uma gota d'água vira um zoológico.",
+          "A bruxa ofereceu uma envenenada à princesa.",
+          "Atrás dele, uma dama escondia o sorriso.",
+          "Uma caixa de papelão vazia é o castelo dele.",
+          "Na escola antiga, avisava que o recreio acabou.",
+          "Lançado do quintal, some entre as nuvens.",
+          "O chocolate quente da madrugada espera nela.",
+          "Sem ele, a casa desenhada teria paredes tortas."
+        ],
+        "levels": [
+          "indirect",
+          "indirect",
+          "indirect",
+          "indirect",
+          "indirect",
+          "indirect",
+          "indirect",
+          "indirect"
+        ]
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "OBSERVATORY_HARD_NO_PICTURE_NO_NAME_BEFORE_THE_FIND",
+      "pass": true,
+      "detail": {
+        "named": [],
+        "pictures": []
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "OBSERVATORY_DIFICIL_LADDER_STATION_CONTEXT",
+      "pass": true,
+      "detail": {
+        "banners": [
+          "Pista: procure no arquivo de mapas e curiosidades.",
+          "Pista: está sobre uma mesinha, perto de lâminas de vidro.",
+          "Pista: está sobre uma mesinha, perto de lâminas de vidro."
+        ]
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "OBSERVATORY_DIFICIL_NEVER_LIGHTS_NOR_FRAMES",
+      "pass": true,
+      "detail": {
+        "halos": [
+          null,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "OBSERVATORY_DIFICIL_NAMES_NOTHING_BEFORE_THE_FIND",
+      "pass": true,
+      "detail": {
+        "said": []
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "OBSERVATORY_THE_FIND_SAYS_THE_NAME",
+      "pass": true,
+      "detail": {
+        "line": {
+          "id": "microscopio",
+          "found": true,
+          "text": "Microscópio",
+          "answered": "Com ele, uma gota d'água vira um zoológico.",
+          "aria": "Microscópio: encontrado",
+          "picture": true,
+          "fits": true,
+          "right": 1422.421875
+        },
+        "live": "Encontrou: Microscópio. Com ele, uma gota d'água vira um zoológico. 1 de 8."
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "OBSERVATORY_DIFICIL_PLAYED_TO_THE_END",
+      "pass": true,
+      "detail": {
+        "finished": {
+          "missed": []
+        },
+        "saved": {
+          "difficulty": "hard",
+          "foundObjects": 8,
+          "totalObjects": 8,
+          "completed": true,
+          "sceneId": "explorer-observatory",
+          "roundSeed": 8013
+        }
+      }
+    },
+    {
+      "scenario": "cal-desktop",
+      "id": "OBSERVATORY_NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "OBSERVATORY_HARD_ROUND_IS_THE_SEEDS",
+      "pass": true,
+      "detail": {
+        "round": {
+          "scene": "explorer-observatory",
+          "seed": 8101,
+          "ids": [
+            "compasso",
+            "ratinho",
+            "ioio",
+            "balanca",
+            "luneta",
+            "leque",
+            "caneca",
+            "gato"
+          ]
+        },
+        "drawn": [
+          "compasso",
+          "ratinho",
+          "ioio",
+          "balanca",
+          "luneta",
+          "leque",
+          "caneca",
+          "gato"
+        ]
+      }
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "OBSERVATORY_HARD_LIST_TELLS_THE_SEEDS_INDIRECT_CLUES",
+      "pass": true,
+      "detail": {
+        "shown": [
+          "Na aula de geometria, faz a roda perfeita.",
+          "Farelos sumindo da despensa? Desconfie dele.",
+          "No recreio, faz o truque do cachorrinho.",
+          "Na feira antiga, decidia o preço do feijão.",
+          "Um olho fechado, o outro bem distante.",
+          "Atrás dele, uma dama escondia o sorriso.",
+          "No meio da vigília, o astrônomo agradece a ela.",
+          "Uma caixa de papelão vazia é o castelo dele."
+        ],
+        "want": [
+          "Na aula de geometria, faz a roda perfeita.",
+          "Farelos sumindo da despensa? Desconfie dele.",
+          "No recreio, faz o truque do cachorrinho.",
+          "Na feira antiga, decidia o preço do feijão.",
+          "Um olho fechado, o outro bem distante.",
+          "Atrás dele, uma dama escondia o sorriso.",
+          "No meio da vigília, o astrônomo agradece a ela.",
+          "Uma caixa de papelão vazia é o castelo dele."
+        ],
+        "levels": [
+          "indirect",
+          "indirect",
+          "indirect",
+          "indirect",
+          "indirect",
+          "indirect",
+          "indirect",
+          "indirect"
+        ]
+      }
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "OBSERVATORY_HARD_NO_PICTURE_NO_NAME_BEFORE_THE_FIND",
+      "pass": true,
+      "detail": {
+        "named": [],
+        "pictures": []
+      }
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "OBSERVATORY_CLUE_LINES_FIT_THE_PHONE",
+      "pass": true,
+      "detail": {
+        "strip": {
+          "x": 11.1875,
+          "y": 679.09375,
+          "width": 367.625,
+          "height": 50.78125,
+          "top": 679.09375,
+          "right": 378.8125,
+          "bottom": 729.875,
+          "left": 11.1875
+        },
+        "lines": [
+          {
+            "id": "compasso",
+            "fits": true
+          },
+          {
+            "id": "ratinho",
+            "fits": true
+          },
+          {
+            "id": "ioio",
+            "fits": true
+          },
+          {
+            "id": "balanca",
+            "fits": true
+          },
+          {
+            "id": "luneta",
+            "fits": true
+          },
+          {
+            "id": "leque",
+            "fits": true
+          },
+          {
+            "id": "caneca",
+            "fits": true
+          },
+          {
+            "id": "gato",
+            "fits": true
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "OBSERVATORY_FOLDING_THE_TRAY_KEEPS_THE_CLUES",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "OBSERVATORY_DRAG_AND_PINCH",
+      "pass": true,
+      "detail": {
+        "before": {
+          "tx": -500.599,
+          "ty": 0,
+          "s": 0.382197,
+          "left": 0,
+          "top": 57.78125,
+          "width": 390,
+          "height": 671.234375
+        },
+        "after": {
+          "tx": -2437.55,
+          "ty": -663.594,
+          "s": 1.25,
+          "left": 0,
+          "top": 57.78125,
+          "width": 390,
+          "height": 671.234375
+        }
+      }
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "OBSERVATORY_DIFICIL_LADDER_STATION_CONTEXT",
+      "pass": true,
+      "detail": {
+        "banners": [
+          "Pista: procure na bancada de trabalho.",
+          "Pista: está perto de um vidro de tinta com pena.",
+          "Pista: está perto de um vidro de tinta com pena."
+        ]
+      }
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "OBSERVATORY_DIFICIL_NEVER_LIGHTS_NOR_FRAMES",
+      "pass": true,
+      "detail": {
+        "halos": [
+          null,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "OBSERVATORY_DIFICIL_NAMES_NOTHING_BEFORE_THE_FIND",
+      "pass": true,
+      "detail": {
+        "said": []
+      }
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "OBSERVATORY_THE_FIND_SAYS_THE_NAME",
+      "pass": true,
+      "detail": {
+        "line": {
+          "id": "compasso",
+          "found": true,
+          "text": "Compasso",
+          "answered": "Na aula de geometria, faz a roda perfeita.",
+          "aria": "Compasso de desenho: encontrado",
+          "picture": true,
+          "fits": true,
+          "right": 172.4375
+        },
+        "live": "Encontrou: Compasso. Na aula de geometria, faz a roda perfeita. 1 de 8."
+      }
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "OBSERVATORY_CLUES_HOLD_AFTER_TOUCH",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "OBSERVATORY_NO_HORIZONTAL_OVERFLOW",
+      "pass": true,
+      "detail": {
+        "overflow": 0
+      }
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "OBSERVATORY_NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "STUDIO_MEDIUM_ROUND_IS_THE_SEEDS",
+      "pass": true,
+      "detail": {
+        "round": {
+          "scene": "explorer-studio",
+          "seed": 8102,
+          "ids": [
+            "gaita",
+            "cantil",
+            "apito",
+            "binoculo",
+            "borboleta",
+            "tesoura"
+          ]
+        },
+        "drawn": [
+          "gaita",
+          "cantil",
+          "apito",
+          "binoculo",
+          "borboleta",
+          "tesoura"
+        ]
+      }
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "STUDIO_MEDIUM_LIST_TELLS_THE_SEEDS_ASSOCIATIVE_CLUES",
+      "pass": true,
+      "detail": {
+        "shown": [
+          "O caubói a tocava em volta da fogueira.",
+          "Garrafinha de metal com capa de feltro.",
+          "O juiz o usa para parar o jogo.",
+          "Vai no pescoço de quem observa pássaros.",
+          "Presa por um alfinete, atrás do vidro.",
+          "Dois anéis para os dedos e um bico afiado."
+        ],
+        "want": [
+          "O caubói a tocava em volta da fogueira.",
+          "Garrafinha de metal com capa de feltro.",
+          "O juiz o usa para parar o jogo.",
+          "Vai no pescoço de quem observa pássaros.",
+          "Presa por um alfinete, atrás do vidro.",
+          "Dois anéis para os dedos e um bico afiado."
+        ],
+        "levels": [
+          "associative",
+          "associative",
+          "associative",
+          "associative",
+          "associative",
+          "associative"
+        ]
+      }
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "STUDIO_MEDIUM_NO_PICTURE_NO_NAME_BEFORE_THE_FIND",
+      "pass": true,
+      "detail": {
+        "named": [],
+        "pictures": []
+      }
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "STUDIO_CLUE_LINES_FIT_THE_PHONE",
+      "pass": true,
+      "detail": {
+        "strip": {
+          "x": 11.1875,
+          "y": 679.09375,
+          "width": 367.625,
+          "height": 50.78125,
+          "top": 679.09375,
+          "right": 378.8125,
+          "bottom": 729.875,
+          "left": 11.1875
+        },
+        "lines": [
+          {
+            "id": "gaita",
+            "fits": true
+          },
+          {
+            "id": "cantil",
+            "fits": true
+          },
+          {
+            "id": "apito",
+            "fits": true
+          },
+          {
+            "id": "binoculo",
+            "fits": true
+          },
+          {
+            "id": "borboleta",
+            "fits": true
+          },
+          {
+            "id": "tesoura",
+            "fits": true
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "STUDIO_MEDIO_LADDER_STATION_RECLUE_DIRECTION",
+      "pass": true,
+      "detail": {
+        "banners": [
+          "Pista: procure na estante.",
+          "Pista: em outras palavras — Toca-se soprando e puxando o ar pelos furinhos.",
+          "Pista: olhe embaixo, na parte de baixo da estante, no meio.",
+          "Pista: olhe embaixo, na parte de baixo da estante, no meio."
+        ],
+        "reclue": "Toca-se soprando e puxando o ar pelos furinhos."
+      }
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "STUDIO_MEDIO_NEVER_LIGHTS_NOR_FRAMES",
+      "pass": true,
+      "detail": {
+        "halos": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "buttons": [
+          "Outra pistaO caubói a tocava em volta da fogueira.",
+          "Outra pistaO caubói a tocava em volta da fogueira.",
+          "Rever pistaO caubói a tocava em volta da fogueira.",
+          "Rever pistaO caubói a tocava em volta da fogueira."
+        ]
+      }
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "STUDIO_MEDIO_HINTS_NEVER_NAME_IT",
+      "pass": true,
+      "detail": {
+        "banners": [
+          "Pista: procure na estante.",
+          "Pista: em outras palavras — Toca-se soprando e puxando o ar pelos furinhos.",
+          "Pista: olhe embaixo, na parte de baixo da estante, no meio.",
+          "Pista: olhe embaixo, na parte de baixo da estante, no meio."
+        ]
+      }
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "STUDIO_RECLUE_BANNER_FITS_THE_PHONE",
+      "pass": true,
+      "detail": {
+        "banner": {
+          "x": 16,
+          "y": 70.578125,
+          "width": 358,
+          "height": 61.1875,
+          "top": 70.578125,
+          "right": 374,
+          "bottom": 131.765625,
+          "left": 16
+        }
+      }
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "STUDIO_TOUCH_FIND",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "STUDIO_NO_HORIZONTAL_OVERFLOW",
+      "pass": true,
+      "detail": {
+        "overflow": 0
+      }
+    },
+    {
+      "scenario": "cal-mobile",
+      "id": "STUDIO_NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "cal-landscape",
+      "id": "EXPLORAR_IN_REACH",
+      "pass": true,
+      "detail": {
+        "exploreBox": {
+          "x": 57.59375,
+          "y": 326.21875,
+          "width": 728.8125,
+          "height": 46
+        }
+      }
+    },
+    {
+      "scenario": "cal-landscape",
+      "id": "STUDIO_HARD_ROUND_IS_THE_SEEDS",
+      "pass": true,
+      "detail": {
+        "round": {
+          "scene": "explorer-studio",
+          "seed": 8201,
+          "ids": [
+            "lanterna",
+            "chave",
+            "estatueta",
+            "piao",
+            "relogio",
+            "chapeu",
+            "caracol",
+            "colar"
+          ]
+        },
+        "drawn": [
+          "lanterna",
+          "chave",
+          "estatueta",
+          "piao",
+          "relogio",
+          "chapeu",
+          "caracol",
+          "colar"
+        ]
+      }
+    },
+    {
+      "scenario": "cal-landscape",
+      "id": "STUDIO_HARD_LIST_TELLS_THE_SEEDS_INDIRECT_CLUES",
+      "pass": true,
+      "detail": {
+        "shown": [
+          "Numa noite sem lua, guiaria seus passos.",
+          "Sem ela, a porta fica fechada para sempre.",
+          "Posa para sempre, sem nunca cansar.",
+          "Um barbante, um puxão e começa a festa no chão.",
+          "Quando ele para, ninguém sabe se está atrasado.",
+          "Um mágico tiraria um coelho de um parecido.",
+          "Depois do temporal, aparece no muro sem pressa.",
+          "A vovó só o tira nos dias especiais."
+        ],
+        "want": [
+          "Numa noite sem lua, guiaria seus passos.",
+          "Sem ela, a porta fica fechada para sempre.",
+          "Posa para sempre, sem nunca cansar.",
+          "Um barbante, um puxão e começa a festa no chão.",
+          "Quando ele para, ninguém sabe se está atrasado.",
+          "Um mágico tiraria um coelho de um parecido.",
+          "Depois do temporal, aparece no muro sem pressa.",
+          "A vovó só o tira nos dias especiais."
+        ],
+        "levels": [
+          "indirect",
+          "indirect",
+          "indirect",
+          "indirect",
+          "indirect",
+          "indirect",
+          "indirect",
+          "indirect"
+        ]
+      }
+    },
+    {
+      "scenario": "cal-landscape",
+      "id": "STUDIO_HARD_NO_PICTURE_NO_NAME_BEFORE_THE_FIND",
+      "pass": true,
+      "detail": {
+        "named": [],
+        "pictures": []
+      }
+    },
+    {
+      "scenario": "cal-landscape",
+      "id": "CLUE_LINES_FIT",
+      "pass": true,
+      "detail": {
+        "strip": {
+          "x": 608.1875,
+          "y": 114.984375,
+          "width": 224.625,
+          "height": 158.890625,
+          "top": 114.984375,
+          "right": 832.8125,
+          "bottom": 273.875,
+          "left": 608.1875
+        },
+        "lines": [
+          {
+            "id": "lanterna",
+            "fits": true
+          },
+          {
+            "id": "chave",
+            "fits": true
+          },
+          {
+            "id": "estatueta",
+            "fits": true
+          },
+          {
+            "id": "piao",
+            "fits": true
+          },
+          {
+            "id": "relogio",
+            "fits": true
+          },
+          {
+            "id": "chapeu",
+            "fits": true
+          },
+          {
+            "id": "caracol",
+            "fits": true
+          },
+          {
+            "id": "colar",
+            "fits": true
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "cal-landscape",
+      "id": "ROTATION_KEEPS_THE_ROUND_AND_ITS_CLUES",
+      "pass": true,
+      "detail": {
+        "upright": [
+          "Numa noite sem lua, guiaria seus passos.",
+          "Sem ela, a porta fica fechada para sempre.",
+          "Posa para sempre, sem nunca cansar.",
+          "Um barbante, um puxão e começa a festa no chão.",
+          "Quando ele para, ninguém sabe se está atrasado.",
+          "Um mágico tiraria um coelho de um parecido.",
+          "Depois do temporal, aparece no muro sem pressa.",
+          "A vovó só o tira nos dias especiais."
+        ]
+      }
+    },
+    {
+      "scenario": "cal-landscape",
+      "id": "TOUCH_FIND",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "cal-landscape",
+      "id": "NO_HORIZONTAL_OVERFLOW",
+      "pass": true,
+      "detail": {
+        "overflow": 0
+      }
+    },
+    {
+      "scenario": "cal-landscape",
+      "id": "NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "cal-reduced-motion",
+      "id": "OBSERVATORY_MEDIUM_ROUND_IS_THE_SEEDS",
+      "pass": true,
+      "detail": {
+        "round": {
+          "scene": "explorer-observatory",
+          "seed": 8301,
+          "ids": [
+            "esquadro",
+            "tambor",
+            "cavalo-marinho",
+            "maca",
+            "ferradura",
+            "foguete"
+          ]
+        },
+        "drawn": [
+          "esquadro",
+          "tambor",
+          "cavalo-marinho",
+          "maca",
+          "ferradura",
+          "foguete"
+        ]
+      }
+    },
+    {
+      "scenario": "cal-reduced-motion",
+      "id": "OBSERVATORY_MEDIUM_LIST_TELLS_THE_SEEDS_ASSOCIATIVE_CLUES",
+      "pass": true,
+      "detail": {
+        "shown": [
+          "Junto da régua, ajuda a traçar linhas paralelas.",
+          "Tem pele esticada e um aro em volta.",
+          "O pai carrega os filhotes numa bolsinha.",
+          "Uma por dia, diz o ditado, afasta o médico.",
+          "Pendurada de pontas para cima, guarda a sorte.",
+          "Tem bico pontudo e aletas para subir ao céu."
+        ],
+        "want": [
+          "Junto da régua, ajuda a traçar linhas paralelas.",
+          "Tem pele esticada e um aro em volta.",
+          "O pai carrega os filhotes numa bolsinha.",
+          "Uma por dia, diz o ditado, afasta o médico.",
+          "Pendurada de pontas para cima, guarda a sorte.",
+          "Tem bico pontudo e aletas para subir ao céu."
+        ],
+        "levels": [
+          "associative",
+          "associative",
+          "associative",
+          "associative",
+          "associative",
+          "associative"
+        ]
+      }
+    },
+    {
+      "scenario": "cal-reduced-motion",
+      "id": "OBSERVATORY_MEDIUM_NO_PICTURE_NO_NAME_BEFORE_THE_FIND",
+      "pass": true,
+      "detail": {
+        "named": [],
+        "pictures": []
+      }
+    },
+    {
+      "scenario": "cal-reduced-motion",
+      "id": "STATIONS_CUT",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "cal-reduced-motion",
+      "id": "OBSERVATORY_MEDIO_LADDER_STATION_RECLUE_DIRECTION",
+      "pass": true,
+      "detail": {
+        "banners": [
+          "Pista: procure na bancada de trabalho.",
+          "Pista: em outras palavras — Triângulo de desenho para traçar ângulos retos.",
+          "Pista: olhe no alto, à direita da janela redonda.",
+          "Pista: olhe no alto, à direita da janela redonda."
+        ],
+        "reclue": "Triângulo de desenho para traçar ângulos retos."
+      }
+    },
+    {
+      "scenario": "cal-reduced-motion",
+      "id": "OBSERVATORY_MEDIO_NEVER_LIGHTS_NOR_FRAMES",
+      "pass": true,
+      "detail": {
+        "halos": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "buttons": [
+          "Outra pistaJunto da régua, ajuda a traçar linhas paralelas.",
+          "Outra pistaJunto da régua, ajuda a traçar linhas paralelas.",
+          "Rever pistaJunto da régua, ajuda a traçar linhas paralelas.",
+          "Rever pistaJunto da régua, ajuda a traçar linhas paralelas."
+        ]
+      }
+    },
+    {
+      "scenario": "cal-reduced-motion",
+      "id": "OBSERVATORY_MEDIO_HINTS_NEVER_NAME_IT",
+      "pass": true,
+      "detail": {
+        "banners": [
+          "Pista: procure na bancada de trabalho.",
+          "Pista: em outras palavras — Triângulo de desenho para traçar ângulos retos.",
+          "Pista: olhe no alto, à direita da janela redonda.",
+          "Pista: olhe no alto, à direita da janela redonda."
+        ]
+      }
+    },
+    {
+      "scenario": "cal-reduced-motion",
+      "id": "CLUES_HOLD",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "scenario": "cal-reduced-motion",
+      "id": "NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "cal-replay",
+      "id": "A_PAIR_OF_SEEDS_EXISTS",
+      "pass": true,
+      "detail": {
+        "pair": {
+          "seeds": [
+            8401,
+            8402
+          ],
+          "object": "chave"
+        }
+      }
+    },
+    {
+      "scenario": "cal-replay",
+      "id": "SAME_SEED_SAME_CLUES_ON_A_FRESH_VISIT",
+      "pass": true,
+      "detail": {
+        "first": [
+          "O que ela via só aparecia depois de revelado.",
+          "No meio da caminhada, a sede vai embora.",
+          "Ali dentro, alguém cantava todas as manhãs.",
+          "Perdido na trilha, você chamaria ajuda com ele.",
+          "Se o fecho abre, as pérolas fogem pelo chão.",
+          "Um blues solitário cabe na palma da mão.",
+          "Herança de família que se abre com um clique.",
+          "Quem a perde fica do lado de fora de casa."
+        ],
+        "second": [
+          "O que ela via só aparecia depois de revelado.",
+          "No meio da caminhada, a sede vai embora.",
+          "Ali dentro, alguém cantava todas as manhãs.",
+          "Perdido na trilha, você chamaria ajuda com ele.",
+          "Se o fecho abre, as pérolas fogem pelo chão.",
+          "Um blues solitário cabe na palma da mão.",
+          "Herança de família que se abre com um clique.",
+          "Quem a perde fica do lado de fora de casa."
+        ]
+      }
+    },
+    {
+      "scenario": "cal-replay",
+      "id": "ANOTHER_SEED_TELLS_AN_OBJECT_ANOTHER_WAY",
+      "pass": true,
+      "detail": {
+        "object": "chave",
+        "before": "Quem a perde fica do lado de fora de casa.",
+        "now": "Sem ela, a porta fica fechada para sempre."
+      }
+    },
+    {
+      "scenario": "cal-replay",
+      "id": "RECOMECAR_KEEPS_THE_CLUES",
+      "pass": true,
+      "detail": {
+        "before": [
+          "Dança sozinho até ficar tonto e cair.",
+          "O juiz o usa para parar o jogo.",
+          "Tem velas, mas nunca acendeu nenhuma.",
+          "Uma pessoa que nunca se mexe nem pisca.",
+          "Dava-se corda nele todo dia para não parar.",
+          "Dois anéis para os dedos e um bico afiado."
+        ],
+        "after": [
+          "Dança sozinho até ficar tonto e cair.",
+          "O juiz o usa para parar o jogo.",
+          "Tem velas, mas nunca acendeu nenhuma.",
+          "Uma pessoa que nunca se mexe nem pisca.",
+          "Dava-se corda nele todo dia para não parar.",
+          "Dois anéis para os dedos e um bico afiado."
+        ],
+        "reclue": "Pista: em outras palavras — Solta um som agudo quando alguém sopra.",
+        "reclueAgain": "Pista: em outras palavras — Solta um som agudo quando alguém sopra."
+      }
+    },
+    {
+      "scenario": "cal-replay",
+      "id": "NO_PAGE_ERRORS",
+      "pass": true,
+      "detail": {
+        "errors": []
+      }
+    }
+  ],
+  "metrics": {
+    "rounds": {
+      "desktop explorer-studio easy": {
+        "scene": "explorer-studio",
+        "seed": 8001,
+        "ids": [
+          "estatueta",
+          "barco",
+          "apito",
+          "bussola",
+          "binoculo"
+        ]
+      },
+      "desktop explorer-studio medium": {
+        "scene": "explorer-studio",
+        "seed": 8002,
+        "ids": [
+          "apito",
+          "camera",
+          "xicara",
+          "ampulheta",
+          "colar",
+          "lanterna"
+        ]
+      },
+      "desktop explorer-studio hard": {
+        "scene": "explorer-studio",
+        "seed": 8003,
+        "ids": [
+          "piao",
+          "lanterna",
+          "xicara",
+          "apito",
+          "chave",
+          "bussola",
+          "camera",
+          "tesoura"
+        ]
+      },
+      "desktop explorer-observatory easy": {
+        "scene": "explorer-observatory",
+        "seed": 8011,
+        "ids": [
+          "balanca",
+          "bule",
+          "maca",
+          "violino",
+          "luneta"
+        ]
+      },
+      "desktop explorer-observatory medium": {
+        "scene": "explorer-observatory",
+        "seed": 8012,
+        "ids": [
+          "coruja",
+          "ioio",
+          "foguete",
+          "cavalo-marinho",
+          "compasso",
+          "cadeado"
+        ]
+      },
+      "desktop explorer-observatory hard": {
+        "scene": "explorer-observatory",
+        "seed": 8013,
+        "ids": [
+          "microscopio",
+          "maca",
+          "leque",
+          "gato",
+          "sino",
+          "foguete",
+          "caneca",
+          "esquadro"
+        ]
+      }
+    }
+  }
+}

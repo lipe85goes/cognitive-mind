@@ -1,0 +1,52 @@
+FASE 1 — estrutural final (3 rotas x 3 modos x 120 = 1080, seeded por mapa)
+  rota1/easy: 120/120 certificados · throws 0 · auditoria 0 falhas · templates {"0":102,"1":16,"2":2}
+  rota1/medium: 120/120 certificados · throws 0 · auditoria 0 falhas · templates {"0":24,"1":26,"2":70}
+  rota1/hard: 120/120 certificados · throws 0 · auditoria 0 falhas · templates {"0":7,"1":25,"2":88}
+  rota2/easy: 120/120 certificados · throws 0 · auditoria 0 falhas · templates {"0":38,"1":31,"2":51}
+  rota2/medium: 120/120 certificados · throws 0 · auditoria 0 falhas · templates {"0":21,"1":33,"2":66}
+  rota2/hard: 120/120 certificados · throws 0 · auditoria 0 falhas · templates {"0":9,"1":26,"2":85}
+  rota3/easy: 120/120 certificados · throws 0 · auditoria 0 falhas · templates {"0":29,"1":67,"2":24}
+  rota3/medium: 120/120 certificados · throws 0 · auditoria 0 falhas · templates {"0":19,"1":76,"2":25}
+  rota3/hard: 120/120 certificados · throws 0 · auditoria 0 falhas · templates {"0":25,"1":71,"2":24}
+  TOTAL: 1080/1080 · throws 0 · falhas de auditoria 0
+
+FASE 2 — contínuo final (9 combinações x 30 = 270, sem reseed entre mapas)
+  rota1/easy: 30/30 · throws 0 · recovery 0x
+  rota1/medium: 30/30 · throws 0 · recovery 0x
+  rota1/hard: 30/30 · throws 0 · recovery 0x
+  rota2/easy: 30/30 · throws 0 · recovery 0x
+  rota2/medium: 30/30 · throws 0 · recovery 0x
+  rota2/hard: 30/30 · throws 0 · recovery 0x
+  rota3/easy: 30/30 · throws 0 · recovery 0x
+  rota3/medium: 30/30 · throws 0 · recovery 0x
+  rota3/hard: 30/30 · throws 0 · recovery 0x
+  TOTAL: 270/270 · throws 0 · recovery 0x
+
+FASE 5 — recovery determinística
+  recovery acionada em 9/9 combinações · mapa certificado pela recovery em 9/9
+  todos passam a mesma auditoria de contratos: sim
+    rota1/easy: random 1 · recovery 14 · certificado
+    rota1/medium: random 1 · recovery 4 · certificado
+    rota1/hard: random 1 · recovery 25 · certificado
+    rota2/easy: random 1 · recovery 9 · certificado
+    rota2/medium: random 1 · recovery 3 · certificado
+    rota2/hard: random 1 · recovery 39 · certificado
+    rota3/easy: random 1 · recovery 30 · certificado
+    rota3/medium: random 1 · recovery 15 · certificado
+    rota3/hard: random 1 · recovery 25 · certificado
+
+FASE 6 — tempo observacional final (route3-hard, 120 gerações, sem instrumentação)
+  p50=44.6 p75=71.4 p90=142.9 p95=176.8 p99=225.8 max=238.5
+  >500ms 0 · >1s 0 · >1,5s 0 · >2s 0 · >3s 0
+
+resumo:
+  estrutural 1080: OK (1080/1080, throws 0, auditoria 0)
+  contínuo 270:    OK (270/270, throws 0)
+  recovery:        OK
+
+evidence (check):
+  MATCHES    docs/archive/route-dual-guardians-maps-01a/current/structural-1080-final.json
+  MATCHES    docs/archive/route-dual-guardians-maps-01a/current/continuous-270-final.json
+  MATCHES    docs/archive/route-dual-guardians-maps-01a/current/deterministic-recovery-final.json
+  MATCHES    docs/archive/route-dual-guardians-maps-01a/current/generation-performance-final.json
+  MATCHES    docs/archive/route-dual-guardians-maps-01a/current/known-star-dependent-waste.json

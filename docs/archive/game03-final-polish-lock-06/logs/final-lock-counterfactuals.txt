@@ -1,0 +1,31 @@
+working tree: 9/9 checks pass
+CAUGHT  base 4dc44614 — GAME03-REPLAYABILITY-05's final state
+        [lock] failing: 5/5
+        [preserved] holding: 4/4
+CAUGHT  mutant — the result title is the Estúdio's again
+        required to fail: L01 · failed: L01
+CAUGHT  mutant — the result title names the Observatório
+        required to fail: L01 · failed: L01
+CAUGHT  mutant — the intro sends the player into the Estúdio
+        required to fail: L02 · failed: L02
+CAUGHT  mutant — the scissors' clue points at the map again
+        required to fail: L03 · failed: L03
+CAUGHT  mutant — the horseshoe's clue says behind the door again
+        required to fail: L03 · failed: L03
+CAUGHT  mutant — the umbrella's clue puts it in a corner again
+        required to fail: L03 · failed: L03
+CAUGHT  mutant — a phone squeezes the stations beside Pista again
+        required to fail: L04 · failed: L04
+CAUGHT  mutant — the mouse stands in front of the trunk again, under its paint
+        required to fail: L05 · failed: L05
+CAUGHT  mutant — the Home changes
+        required to fail: P01 · failed: P01
+CAUGHT  mutant — another game's result copy changes
+        required to fail: P01 · failed: P01
+CAUGHT  mutant — the anti-repeat draws more seeds (an engine change)
+        required to fail: P02 · failed: P02
+CAUGHT  mutant — a thing gains a placement
+        required to fail: P03 · failed: P03
+CAUGHT  mutant — the composer ignores the seed (Math.random)
+        required to fail: P02, P04 · failed: P02, P04
+HIDDEN_OBJECTS_FINAL_LOCK_COUNTERFACTUALS_HOLD

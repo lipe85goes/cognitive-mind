@@ -1,0 +1,82 @@
+PASS  A1 [contract] — CONTINUATION_IS_A_TYPED_UNION
+        actual: {"unionDeclared":true,"everyMemberHasLiteralKind":true,"kindsDistinct":true,"routeMember":{"kind":{"optional":false,"type":"\"escape-maze-route\""},"routeNumber":{"optional":false,"type":"number"},"difficulty":{"optional":false,"type":"DifficultyLevel"}},"resultContinuation":{"optional":true,"type":"GameContinuation"},"resultKeepsDetails":{"optional":false,"type":"Record<string, number | string | boolean>"},"gameComponentProps":["continuation","onComplete","onEntryError","onEntryReady","onExit"],"gamePropsContinuation":{"optional":true,"type":"GameContinuation"}}
+        note: GameComponentProps carries one opaque continuation; no Route field is part of the props every game shares
+PASS  A2 [contract] — FINISHED_ROUTE_WRITES_TYPED_CONTINUATION
+        sessions: 18
+        failing: []
+        sample: {"played":"R1/easy/won","seed":31001000,"continuation":{"kind":"escape-maze-route","routeNumber":2,"difficulty":"easy"},"detailsAgree":true,"ok":true}
+        modeChangedBeforeStart: {"end":"lost","continuation":{"kind":"escape-maze-route","routeNumber":3,"difficulty":"hard"},"ok":true}
+        note: details keeps routeNumber / nextRouteNumber (or journeyCompleted) / difficulty / won for history and the result screen, and agrees with the continuation
+PASS  B1 [contract] — PAGE_SPEAKS_NO_ROUTE_PROTOCOL
+        actual: {"routeVocabulary":[],"gameIdLiterals":[],"readsIntoContinuation":[]}
+PASS  B2 [contract] — GAME_SCREEN_CARRIES_WITHOUT_OPENING
+        actual: {"routeVocabulary":[],"gameIdLiterals":[],"readsIntoContinuation":[],"carries":true}
+PASS  B3 [contract] — SHELL_HANDS_BACK_THE_SAME_VALUE
+        routeResultWithDisagreeingDetails: {"continuationWritten":{"kind":"escape-maze-route","routeNumber":3,"difficulty":"easy"},"detailsSay":{"nextRouteNumber":9,"difficulty":"hard"},"sameValueToGameScreen":true,"sameValueToGame":true,"hookArgs":{"initialRouteNumber":3,"initialDifficulty":"easy"}}
+        unknownKindFromAnotherGame: {"sameValueToGameScreen":true,"sameValueToGame":true,"skipIntro":true,"game":"@/games/color-sequence/MemoryCircuit3DGame#MemoryCircuit3DGame"}
+        note: page.tsx and GameScreen pass the game's own object through by identity; details are not consulted and kinds are not filtered
+PASS  C1 [preserved] — ROUTE_N_CONTINUES_TO_N_PLUS_1
+        hops: 8
+        routesReached: [2,3]
+        failing: []
+PASS  C2 [preserved] — MODE_TRAVELS_UNCHANGED
+        landedModeByPlayedMode: {"easy":["easy","easy","easy"],"medium":["medium","medium","medium"],"hard":["hard","hard","hard","hard","hard"]}
+        switchJourney: ["R1/easy -> R2/easy","R2/hard -> R3/hard","R3/hard -> R3/hard"]
+        failing: []
+PASS  C3 [preserved] — INTRO_SKIPPED_ONLY_WHEN_CONTINUING
+        continued: 11
+        entered: 13
+        failing: []
+PASS  C4 [preserved] — LOST_ROUTE_EXPLORES_THE_NEXT_ONE
+        lostRoutes: 4
+        failing: []
+PASS  C5 [terminal] — LAST_ROUTE_RETRIES_OR_COMPLETES_THE_JOURNEY
+        lastRouteLost: 3
+        journeysCompleted: 1
+        routesReached: [2,3]
+        failing: []
+PASS  D1 [preserved] — FRESH_ENTRY_INHERITS_NOTHING
+        entries: 13
+        failing: []
+        note: the hook's own defaults apply: Route 1, easy, setup screen — the previous journey's Route and mode are not reused
+PASS  E1 [preserved] — NO_ROUTE_DATA_IN_OTHER_WORLDS
+        entries: 32
+        games: ["color-sequence","security-panel","hidden-objects","seed-garden"]
+        via: ["result → Continuar jornada","next Route open → Voltar à jornada"]
+        failing: []
+PASS  E2 [preserved] — OTHER_WORLDS_REPLAY_AS_BEFORE
+        replays: 16
+        failing: []
+PASS  F1 [preserved] — RETRY_REMOUNTS_THE_SAME_SESSION
+        retried: [{"journey":"easy","afterRoute":2,"keys":["escape-maze-3","escape-maze-4","escape-maze-5","escape-maze-6"],"hookArgs":["3/easy","3/easy","3/easy"]},{"journey":"medium","afterRoute":1,"keys":["escape-maze-2","escape-maze-3","escape-maze-4","escape-maze-5"],"hookArgs":["2/medium","2/medium","2/medium"]},{"journey":"hard","afterRoute":3,"keys":["escape-maze-4","escape-maze-5","escape-maze-6","escape-maze-7"],"hookArgs":["3/hard","3/hard","3/hard"]}]
+        failing: []
+        note: each retry is a new mount of the same request; the Route is a value carried by the session, never incremented by mounting
+PASS  G1 [contract] — STORAGE_ROUNDTRIP_KEEPS_THE_CONTINUATION
+        savedThroughThePage: 18
+        readBack: 12
+        completedJourneysReadBack: 3
+        failing: []
+PASS  G2 [preserved] — LEGACY_RESULTS_STILL_LOAD
+        actual: {"threw":null,"homeGotTheWellFormed":true,"detailsUntouched":true,"selectedWorld":"escape-maze","keptAfterANewSave":true,"noContinuationInvented":true}
+        legacyShapes: ["valid legacy Route result (R4 hard, next 5)","unknown mode","no nextRouteNumber","nextRouteNumber as text","nextRouteNumber negative","nextRouteNumber fractional","nextRouteNumber null (NaN once serialised)","another game with Route-shaped details"]
+        garbageFiltered: 5
+PASS  G3 [preserved] — STORED_RESULTS_NEVER_RESUMED_A_JOURNEY
+        staticProof: {"setLastResultCalls":[{"arg":"saved","boundTo":"saveGameResult(partial)"}],"onlyWhatSaveGameResultReturned":true,"storedResultsFeed":["setRecentResults(nextResults)","return nextResults;","setRecentResults(storedResults)","storedResults[0]"]}
+        enteringWithLegacyRouteResultStored: {"skipIntro":false,"introShown":true,"focusTarget":null,"hookArgs":{},"hookArgsLabel":"undefined/undefined","hookArgsConsistent":true,"landed":{"route":1,"mode":"easy","status":"setup"}}
+        note: a stored result never reached playAgain — before this mission or after it — so there is no stored continuation to decode: old results keep feeding history and nothing else
+PASS  H1 [contract] — ROTA_READS_ONLY_ITS_OWN_WELL_FORMED_CONTINUATION
+        resumed: ["2/easy -> 2/easy","2/medium -> 2/medium","2/hard -> 2/hard","1/hard -> 1/hard","3/medium -> 3/medium"]
+        freshInstead: ["another kind","no kind","unknown mode","mode as number","no mode","no Route","Route as text","Route 0","Route 4, past the journey","Route 7, past the journey","Route 999, past the journey","Route negative","Route fractional","Route NaN","Route Infinity","Route unsafe","null","a string","an array"]
+        failing: []
+PASS  I1 [contract] — CONTRACT_COSTS_NOTHING
+        actual: {"readerExists":true,"readerRuntimeImports":[],"readerImportedAtRuntimeBy":["src/app/lab/route-launcher/page.tsx","src/games/escape-maze/RouteStrategyGame.tsx","src/games/escape-maze/useEscapeMaze.ts"],"hookRuntimeImports":["@/engine/difficulty","@/engine/scoring","@/games/escape-maze/continuation","@/games/escape-maze/route-config","@/games/escape-maze/route-defenders","@/games/escape-maze/route-events","@/games/escape-maze/route-generation-client","@/games/escape-maze/route-geometry","@/games/escape-maze/route-invariants","@/games/escape-maze/route-session","@/lib/game-sounds","react"],"type…
+PASS  I2 [preserved] — HOME_SHIPS_NO_GAME_CODE
+        actual: {"gameCodeInHome":[],"babylonInHome":[],"registryStaticGameImports":[],"registryDynamicImports":5,"homeReachesScreenAndRegistry":true}
+        homeStaticModules: 29
+PASS  J1 [preserved] — RESULT_REPLACES_THE_GAME_IN_PRODUCT_LAB_KEEPS_IT
+        product: {"gameOnScreenBefore":true,"gameOnScreenAfterOnComplete":false,"resultShown":true}
+        lab: {"gameOnScreenAfterOnComplete":true,"sameSession":true}
+        note: the browser smoke proves the product half in a real DOM; route-journey-ownership-tests.mjs proves the result's continuation is the only way on, in the product and in the lab
+
+21/21 passed · contract 8/8 · preserved 12/12 · terminal 1/1 · failing: none
+GAME_CONTINUATION_CONTRACT_OK

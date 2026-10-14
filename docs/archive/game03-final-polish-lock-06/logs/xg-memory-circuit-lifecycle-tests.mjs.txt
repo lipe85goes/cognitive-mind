@@ -1,0 +1,90 @@
+source: working tree · src/games/color-sequence/useColorSequenceGame.ts
+
+PASS  1 — ONE_RESULT_AFTER_THIRD_MISTAKE
+        app: {"thirdMistakeAt":5250,"completions":[5550],"lateSetState":0,"lateTones":0,"lateCompletions":0,"pendingTimers":0}
+        hookOnly: {"thirdMistakeAt":5250,"completions":[5550],"lateSetState":0,"lateTones":0,"lateCompletions":0,"pendingTimers":0}
+PASS  2 — EXIT_INSIDE_MISTAKE_WINDOW_IS_FINAL
+        exitAfterMistake3: {"completions":0,"pendingAtExit":0,"lateSetState":0,"lateTones":0,"lateCompletions":0}
+        exitAfterMistake1: {"completions":0,"pendingAtExit":0,"lateSetState":0,"lateTones":0,"lateCompletions":0}
+PASS  3 — RESTART_IN_MISTAKE_WINDOW_DROPS_OLD_SEQUENCE
+        oldSequence: [3,3]
+        newSequence: [1]
+        tonesAfterRestart: [1]
+        inputReadyAfter: 1250
+        state: {"level":1,"errors":0,"phase":"input","sequence":[1]}
+        completions: 0
+PASS  4 — RESTART_AFTER_ROUND_COMPLETE_KEEPS_LEVEL_1
+        phaseBeforeRestart: round-complete
+        newSequence: [0]
+        tonesAfterRestart: [0]
+        state: {"level":1,"errors":0,"phase":"input","sequence":[0]}
+PASS  5 — PLAYBACK_STOPS_ON_UNMOUNT
+        sequenceLength: 3
+        shownBeforeExit: 1
+        pendingAtUnmount: 0
+        lateSetState: 0
+        lateTones: 0
+        lateCompletions: 0
+PASS  N1 — NORMAL_ROUND_TIMELINE
+        firstInput: 1250
+        inputMessage: Agora repita — 1 sinais
+        afterTap: {"phase":"round-complete","statusMessage":"Circuito ativado!","statusVariant":"success"}
+        flashAt279: true
+        flashAt280: false
+        levelAt699: 1
+        levelAt700: 2
+        secondInputAfterTap: 3200
+        tones: [0,1250,1950,3200]
+        requested: [850,400,280,700,850,400,850,400]
+PASS  N2 — MISTAKE_WINDOW_TIMELINE
+        during: {"errors":1,"statusMessage":"Tente novamente com calma.","statusVariant":"error","shakeToken":1}
+        flashClearedAt280: true
+        at749: {"phase":"input","roundMessage":"wrong"}
+        at750: {"phase":"showing","roundMessage":null}
+        replayTones: [0]
+        replayInputAfterMistake: 2000
+        sequenceKept: true
+PASS  N3 — THIRD_MISTAKE_ENDS_ONCE_WITH_SAME_SCORE
+        completions: [750]
+        result: {"activityId":"color-sequence","activityTitle":"Circuito de Memória","gameId":"color-sequence","score":80,"summary":"Circuito ativado! Você chegou à etapa 2.","details":{"level":2,"sequenceLength":2,"errors":3,"maxErrors":3}}
+        lateSetState: 0
+        lateTones: 0
+        lateCompletions: 0
+        pendingTimers: 0
+PASS  N4 — END_SESSION_EMITS_ONCE
+        liveScore: 320
+        completions: 1
+        result: {"activityId":"color-sequence","activityTitle":"Circuito de Memória","gameId":"color-sequence","score":320,"summary":"Circuito ativado! Você chegou à etapa 2.","details":{"level":2,"sequenceLength":2,"errors":0,"maxErrors":3}}
+        tonesAfterEnd: 0
+PASS  N5 — END_IN_ROUND_COMPLETE_WINDOW_IS_FINAL
+        completions: 1
+        result: {"activityId":"color-sequence","activityTitle":"Circuito de Memória","gameId":"color-sequence","score":160,"summary":"Boa tentativa! Observe o circuito com calma e tente novamente.","details":{"level":1,"sequenceLength":1,"errors":0,"maxErrors":3}}
+        pendingAtUnmount: 0
+        lateSetState: 0
+        lateTones: 0
+        lateCompletions: 0
+PASS  N6 — RESTARTED_SESSION_PLAYS_NORMALLY
+        levelAt699: 1
+        levelAt700: 2
+        extendsRestarted: true
+        sequenceLength: 2
+        secondInputAfterTap: 3200
+PASS  N7 — BEGIN_SUPERSEDES_PREVIOUS_PLAYBACK
+        tonesAfterSecond: [1]
+        second: [1]
+        inputAfterSecond: 1250
+PASS  N8 — STRICT_MODE_EFFECTS_KEEP_THE_GAME_ALIVE
+        firstInput: 1250
+        inputMessage: Agora repita — 1 sinais
+        afterTap: {"phase":"round-complete","statusMessage":"Circuito ativado!","statusVariant":"success"}
+        flashAt279: true
+        flashAt280: false
+        levelAt699: 1
+        levelAt700: 2
+        secondInputAfterTap: 3200
+        tones: [0,1250,1950,3200]
+        requested: [850,400,280,700,850,400,850,400]
+
+unhandled rejections: 0
+13/13 passed · failing: none
+MEMORY_CIRCUIT_LIFECYCLE_OK

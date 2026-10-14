@@ -1,0 +1,226 @@
+PASS  E01 [preserved] — CAMERA_GESTURE_CONTROLLER_BEHAVE_AS_PLAYTESTED
+        gestureUnchanged: true
+        cameraSweepAsTheSkeleton: true
+        cameraSweepBytes: 210488
+        controllerDiffers: []
+        worldWrites: 197
+PASS  E02 [preserved] — THE_TEN_STAY_AND_EVERY_POOL_OBJECT_IS_PAINTED_ONCE
+        count: 26
+        unpainted: []
+PASS  E03 [experience] — DIFFICULTY_V2_CHANGES_WHAT_IS_TOLD
+        wrong: {}
+        threeDistinctLadders: true
+        onlyFacilRevealsExactly: true
+        dificilLightsNothing: true
+        medioLessPreciseThanFacil: true
+        notByShrinkingTargets: true
+PASS  E04 [experience] — SEMANTIC_CLUES_SAY_WHAT_NOT_WHICH
+        problems: []
+        uniqueClues: true
+        listIsTheClues: true
+        namesOnScreen: []
+        clues: ["Quem a perde fica do lado de fora de casa.","Os álbuns de família começam com ela.","No meio da caminhada, a sede vai embora.","Um alpiste esquecido lembra quem morava ali.","Um ímã escondido decide para onde ir.","Na roda, ganha quem o deixa de pé mais tempo.","Some na mão do músico, mas a canção aparece.","Quando ele para, ninguém sabe se está atrasad...
+PASS  E05 [experience] — A_FIND_SAYS_THE_NAME
+        beforeIsTheClue: true
+        pistaRefersByTheClue: true
+        afterIsTheName: true
+        theRoomSaysIt: true
+        announced: true
+        before: "Quem a perde fica do lado de fora de casa."
+        after: "Chave antigaQuem a perde fica do lado de fora de casa."
+        tags: ["Chave antiga"]
+        live: "Encontrou: Chave antiga. Quem a perde fica do lado de fora de casa. 1 de 8."
+PASS  E06 [preserved] — FACIL_CAN_STILL_SHOW_WHERE
+        pure: true
+        banner: true
+        revealHalo: true
+        framed: true
+PASS  E07 [experience] — MEDIO_NEVER_POINTS_AT_THE_OBJECT
+        problems: []
+        problemCount: 0
+        ladders: ["binoculo:------","pinha:------","barco:------","lanterna:------","xicara:------","apito:------"]
+PASS  E08 [experience] — DIFICIL_HAS_NO_EXACT_REVEAL
+        problems: []
+        problemCount: 0
+        listableInDificil: 18
+        ladder: ["station","context"]
+PASS  E09 [experience] — DIFICIL_LIGHTS_NOTHING_IN_THE_ROOM
+        lit: []
+        marks: ["chave","cantil","bussola","gaita"]
+        strays: 0
+PASS  E10 [experience] — DIFICIL_NEVER_GLIDES_TO_THE_OBJECT
+        hardCalls: ["goToStation"]
+        stationsAsked: ["janela","estante","estante","janela","mesa","janela","estante","mesa"]
+        easyRevealCalls: 10
+PASS  E11 [preserved] — HINTS_STAY_FREE
+        wrong: []
+        nothingByItself: true
+PASS  E12 [preserved] — NO_TIMER
+        intervals: []
+        timeouts: ["src/games/hidden-objects/HiddenObjectsGame.tsx","src/games/hidden-objects/hidden-objects-controller.ts"]
+        timeKeys: []
+PASS  E13 [preserved] — NO_LIVES_NO_PENALTY
+        changedByMisses: []
+        penaltyKeys: []
+PASS  E14 [preserved] — NO_SCORE_RACE
+        scores: ["easy 5/5","medium 6/6","hard 8/8"]
+        raceKeys: []
+PASS  E15 [experience] — RESULT_PRESENTATION_IS_PER_GAME_METADATA
+        studioPresentation: true
+        studioShowsOnlyTheMode: true
+        everyoneElseUnchanged: true
+        modalReadsTheMetadata: true
+        modalNamesNoGame: true
+        shown: [{"key":"difficulty","label":"Modo","value":"Difícil"}]
+        unchangedFailures: []
+PASS  E16 [experience] — LOOKALIKES_ARE_FAIR
+        problems: []
+        problemCount: 0
+        count: 25
+        perTarget: {"ampulheta":1,"binoculo":1,"chave":2,"guarda-chuva":0,"gaiola":1,"caracol":1,"piao":1,"lupa":1,"bussola":2,"relogio":2,"xicara":1,"pena":0,"borboleta":1,"chapeu":0,"tesoura":1,"pinha":1,"barco":0,"lanterna":1,"camera":1,"estatueta":2,"globo":0,"bolsa":0,"gaita":2,"apito":1,"colar":1,"cantil":1}
+PASS  E17 [experience] — FAIRNESS_HOLDS_ON_THE_NEW_ART
+        problems: []
+        problemCount: 0
+        audit: ["ampulheta A 95% edge 1.77","binoculo B 85% edge 1.32","chave C 71% edge 1.67","guarda-chuva A 95% edge 1.49","gaiola C 94% edge 1.5","caracol C 79% edge 2.02","piao C 98% edge 2.3","lupa A 100% edge 1.75","bussola B 88% edge 1.97","relogio C 86% edge 1.63","xicara C 54% edge 1.75","pena B 100% edge 2.93","borboleta A 100% edge 1.32","chapeu B 100% edge ...
+PASS  E18 [preserved] — PARALLAX_NEVER_MOVES_THE_HIT_GEOMETRY
+        parallax: ["back 0.92","front 1.05","front-right 1.05"]
+        problems: []
+        fxInsideTheWorld: true
+PASS  E19 [experience] — REDUCED_MOTION_COVERS_THE_NEW_FEEDBACK
+        ringAnimates: true
+        tagAnimates: true
+        ringStillUnderReducedMotion: true
+        tagStillUnderReducedMotion: true
+        haloStillUnderReducedMotion: true
+        vignetteNeverMoves: true
+        glideCut: true
+        parallaxStill: true
+PASS  E20 [preserved] — NO_REACT_RENDER_PER_POINTERMOVE
+        trayFolded: true
+        drag: {"pointermoves":40,"renders":0,"stateUpdates":0,"transformWrites":38}
+PASS  E21 [preserved] — ONE_COMPLETION_PER_SESSION
+        onCompleteCalls: 1
+        score: 8
+PASS  E22 [preserved] — ROTA_UNTOUCHED
+        folder: "src/games/escape-maze/"
+        changedSinceTheSkeleton: []
+        contractAndLoaderSame: true
+PASS  E23 [preserved] — CIRCUITO_UNTOUCHED
+        folder: "src/games/color-sequence/"
+        changedSinceTheSkeleton: []
+        contractAndLoaderSame: true
+PASS  E24 [preserved] — NO_BABYLON_OR_WEBGL_IN_THE_STUDIO
+        packages: ["lucide-react","next/image","react"]
+        markers: []
+        modulesOutsideTheGame: []
+PASS  E25 [preserved] — NO_NEW_RUNTIME_DEPENDENCY
+        differs: []
+        lockfileUnchanged: true
+PASS  E26 [preserved] — NUMBER_TRAIL_STAYS_RETIRED
+        stillListedIn: []
+        codeNaming: []
+PASS  E27 [preserved] — OLD_TRILHA_RESULTS_STAY_READABLE
+        storedAfterSave: ["hidden-objects","number-trail"]
+        legacyTitle: "Circuito ativado"
+PASS  E28 [experience] — THE_OBJECTIVES_FOLD_AWAY
+        openInSetup: true
+        startsOpen: true
+        folds: true
+        foldedPistaWorks: true
+        foldedStationsWork: true
+        unfolds: true
+        remembersNothing: true
+PASS  E29 [experience] — THE_RESULT_NAMES_THE_SCENE
+        sceneIds: ["explorer-studio","explorer-studio","explorer-studio"]
+        listed: ["difficulty"]
+PASS  E30 [experience] — ART_KIT_V1_SHIPS_ALONE
+        kitV1: true
+        v0NoLongerServed: true
+        layersAsDeclared: true
+        thumbsPresent: true
+        introFromTheSameKit: true
+        homeMaquetteUntouched: true
+        layersBudget: true
+        entryBudget: true
+        layers: ["back 920×1000 11.9 KB","plate 3200×1600 148.7 KB","front 360×1600 32.2 KB","front-right 500×1600 25.6 KB"]
+        entry: "545.8 KB (layers 358.6 KB)"
+        homeMaquetteChanged: []
+PASS  E31 [experience] — FOUND_FEEDBACK_IS_CALM_AND_NAMED
+        firstFind: true
+        onlyTheLatestSpeaks: true
+        nothingLoud: true
+        first: {"ring":1,"tags":["Lupa"],"seals":1}
+        second: {"rings":1,"tags":["Bússola"],"seals":2}
+PASS  E32 [preserved] — GESTURES_STILL_NEVER_MISFIRE
+        controllerDrag: true
+        dragFindsNothing: true
+        pinchFindsNothing: true
+        tapFinds: true
+PASS  E33 [experience] — DIFICIL_IS_HARDER_IN_THE_ART_ITSELF
+        lessVisibleAsItClimbs: true
+        dificilClearlyMoreCovered: true
+        moreLookAlikesInDificil: true
+        profile: {"easy":{"lists":884,"visible":0.875,"lookAlikes":0.993},"medium":{"lists":3160,"visible":0.847,"lookAlikes":1.059},"hard":{"lists":8005,"visible":0.807,"lookAlikes":1.325}}
+PASS  P01 [pool] — THE_POOL_IS_AUTHORED_AND_LARGER_THAN_ANY_ROUND
+        atLeastTwiceTheLargestRound: true
+        regionsAreLiterals: true
+        balancedTiers: true
+        everyStationHoldsEveryTier: true
+        pool: 26
+        largestRound: 8
+        literalRegions: 51
+        tiers: {"A":6,"B":8,"C":12}
+        stationsByTier: {"janela":{"A":2,"B":1,"C":5},"mesa":{"A":2,"B":4,"C":4},"estante":{"A":2,"B":3,"C":3}}
+PASS  P02 [pool] — EVERY_POOL_OBJECT_CARRIES_ITS_METADATA
+        listablePerDifficulty: {"easy":26,"medium":26,"hard":18}
+        roomToDraw: true
+        problems: []
+        problemCount: 0
+PASS  P03 [pool] — EVERY_POSSIBLE_ROUND_IS_VALID
+        coverage: {"easy":{"rounds":884,"bruteForce":884,"sameRounds":true},"medium":{"rounds":3160,"bruteForce":3160,"sameRounds":true},"hard":{"rounds":8005,"bruteForce":8005,"sameRounds":true}}
+        problems: []
+        problemCount: 0
+PASS  P04 [pool] — THE_SAME_SEED_ALWAYS_DRAWS_THE_SAME_ROUND
+        draws: 1200
+        unstable: []
+        freshDiffers: []
+        example: {"difficulty":"hard","seed":2654435761,"list":["cantil","bussola","caracol","xicara","relogio","camera","chave","binoculo"]}
+PASS  P05 [pool] — SEEDS_REACH_EVERY_ROUND_WITHOUT_BIAS
+        samplesPerDifficulty: {"easy":30000,"medium":37920,"hard":96060}
+        report: {"easy":{"samples":30000,"validRounds":884,"reached":884,"chiSquareZ":-0.06,"maxObjectDeviation":0.0044,"objectProbability":{"min":0.071,"max":0.36},"exposureByTier":{"A":{"leastAsked":["borboleta",0.093],"mostAsked":["globo",0.126]},"B":{"leastAsked":["pena",0.096],"mostAsked":["lanterna",0.295]},"C":{"leastAsked":["apito",0.153],"mostAsked":["camera",0....
+        problems: []
+PASS  P06 [pool] — THE_ROUND_HOLDS_THROUGH_EVERYTHING_THE_SESSION_DOES
+        seed: 12648430
+        list: ["cantil","apito","gaiola","estatueta","xicara","borboleta"]
+        rendersDuringTheRound: 30
+        seedsDrawn: 1
+        drift: []
+PASS  P07 [pool] — RECOMECAR_KEEPS_THE_ROUND
+        reducer: true
+        game: true
+        seed: 424242
+        before: ["xicara","gaiola","colar","gaita","cantil","camera","bussola","chave"]
+        after: ["xicara","gaiola","colar","gaita","cantil","camera","bussola","chave"]
+        seedsDrawn: 1
+PASS  P08 [pool] — A_NEW_EXPLORATION_DRAWS_A_NEW_ROUND
+        listsDiffer: true
+        entries: [{"seed":11,"list":["bussola","cantil","chave","caracol","lupa"],"nothingDrawnInSetup":true,"seedsDrawn":1},{"seed":12,"list":["apito","pena","camera","gaita","pinha"],"nothingDrawnInSetup":true,"seedsDrawn":1}]
+PASS  P09 [pool] — UNLISTED_POOL_OBJECTS_ARE_SCENERY
+        listed: ["bussola","relogio","cantil","chave","gaiola","camera"]
+        unlistedTapped: 20
+        countedAsFinds: []
+        markedInTheRoom: ["bussola","relogio"]
+PASS  P10 [pool] — THE_RESULT_RECORDS_ITS_ROUND
+        roundSeed: 31337
+        replayed: ["bussola","lupa","estatueta","piao","lanterna"]
+        listed: ["bussola","lupa","estatueta","piao","lanterna"]
+        shownOnTheResultScreen: ["difficulty"]
+PASS  P11 [pool] — DIFICIL_NEVER_REVEALS_ANYTHING_IT_CAN_LIST
+        listableInDificil: 18
+        problems: []
+PASS  P12 [pool] — LIST_STYLES_ONLY_SHOW_WHAT_THEY_CAN
+        listedWhereItCannotBeShown: []
+        notListedBothWays: []
+
+45/45 passed (16 experience, 12 pool, 17 preserved)
+HIDDEN_OBJECTS_EXPERIENCE_OK
