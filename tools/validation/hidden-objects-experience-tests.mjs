@@ -1819,10 +1819,11 @@ const MUTANTS = [
   // --- the target pool's invariants (the addendum), one product rule each ---------------------------
   {
     name: "every seed draws the same round",
-    // GAME03-REPLAYABILITY-05: a seed composes its layout, then draws its list (selectRound); the draw ignores the seed
+    // GAME03-REPLAYABILITY-05: a seed composes its layout, then draws its list (selectRound); here the list ignores
+    // the seed — one fixed draw in the room as painted — whatever the layout
     files: (tree) =>
       tree.exists(`${DIR}hidden-objects-layout.ts`)
-        ? { [FILES.rounds]: [["    const random = seededRandom(derivedSeed(seed, `round:${attempt}`));", "    const random = seededRandom(1);"]] }
+        ? { [FILES.rounds]: [["    const found = drawValidRound(placedScene(scene, layout), difficulty, random);", "    const found = drawValidRound(placedScene(scene, homeLayout(scene)), difficulty, seededRandom(1));"]] }
         : { [FILES.rounds]: [["  const list = [...rounds[Math.floor(random() * rounds.length)]];", "  const list = [...rounds[0]];"]] },
     mustFail: ["P05", "P08"],
   },

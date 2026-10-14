@@ -44,7 +44,7 @@ física; nada é salvo além do que já era (R32, R33).
 - Verificado antes de editar: branch `feat/game03-replayability-05`, `HEAD` = `36ab89a…`,
   árvore limpa.
 - Commits de checkpoint empurrados durante o trabalho (`e14324d`, `1884620`, `a3dca1b`,
-  `2bc0c56`, ⟨…⟩) e o commit final desta missão. Nenhum merge, nenhum PR.
+  `2bc0c56`, `14ff457`, `d502043`) e o commit final desta missão. Nenhum merge, nenhum PR.
 
 ## 3. Arquitetura
 
@@ -96,7 +96,7 @@ render (R02, R04, R08).
 | | |
 | --- | --- |
 | Coisas | 57: 26 objetos da lista, 25 sósias, 6 de cenário |
-| Móveis | 50 (22 objetos, 22 sósias, 6 de cenário) · fixos 7: barco, lanterna (fonte de luz), globo, bolsa e três sósias entalhadas no móvel |
+| Móveis | 50 (22 objetos, 22 sósias, 6 de cenário) · fixos 7: barco, lanterna (fonte de luz), globo, bolsa e três sósias que são parte do baú e do móvel (alça, fivela, roseta entalhada) |
 | Slots · lugares | 85 · 140 (7 coisas com 1 lugar, 18 com 2, 31 com 3, 1 com 4) |
 | Guardados | apito (gaveta da mesinha: 2 lugares), colar (caixinha da mesa: 2), cantil (cesto de mapas: 2) |
 | Cenário que se move | pedrinhas, tigela de latão, garrafinha (peitoris, mesinha, poltrona), pote de frutinhas, caixa escura, caixa clara (estante) |
@@ -107,7 +107,7 @@ render (R02, R04, R08).
 | | |
 | --- | --- |
 | Coisas | 53: 26 objetos, 26 sósias, 1 de cenário |
-| Móveis | 42 (21 objetos, 20 sósias, 1 de cenário) · fixos 11: sistema solar, vela (fonte de luz), gramofone, microscópio, leque e seis sósias de parede/móvel |
+| Móveis | 42 (21 objetos, 20 sósias, 1 de cenário) · fixos 11: sistema solar, vela (fonte de luz), gramofone, microscópio, leque e seis sósias presas à sala (esfera armilar, luminária, móbile, flâmula, fechadura, transferidor) |
 | Slots · lugares | 76 · 118 (11 coisas com 1 lugar, 21 com 2, 19 com 3, 2 com 4) |
 | Guardados | foguete (portinhola do lambri: 2 lugares), ioiô (gaveta da bancada: 2), tambor (cortina da mesinha: 2) |
 | Cenário que se move | a xícara azul (mesa) |
@@ -180,9 +180,12 @@ da cúpula para abrir espaço — sem isso, o Difícil pedia a pantufa sempre no
   que se move + a contribuição de cada vizinho presente) (R18).
 - Os pisos de cada dificuldade valem em todo arranjo composto (R19–R21, contados pela
   suíte de forma independente a partir dos tiers de cada lugar).
-- O Difícil nunca aceita um lugar A (à vista): os tiers do Difícil não admitem A além do
-  limite, e um objeto com dois lugares B/C ou mais nunca fica preso num só (R25:
-  nenhum acima de 90% das suas rodadas difíceis num lugar).
+- O Difícil nunca aceita um lugar A (à vista): a regra dele admite 0 objetos A
+  (`A: [0, 0]`) e 0 *pop-outs*, e o tier contado é o **do lugar** — um objeto num lugar à
+  vista nunca entra numa lista do Difícil (R21; o mutante que deixa entrar é pego). E um
+  objeto com dois lugares B/C ou mais nunca fica preso num só (R25: nenhum acima de 90%
+  das suas rodadas difíceis num lugar; medido, o mais concentrado fica em 83,8% — a
+  tesoura do Estúdio).
 - Justiça das rodadas (`hidden-objects-round-fairness.mjs`, reescrito — §18;
   `docs/archive/game03-replayability-05/rounds-<sala>/`), `ROUND_FAIRNESS_OK` nas duas salas:
 
@@ -211,10 +214,11 @@ o sprite do atlas, as peças em repouso e abertas, o primeiro plano):
 Pisos: visível A ≥ 0,80 · B ≥ 0,60 · C ≥ 0,40; borda ≥ 1,3:1; guardado em repouso
 ≤ 0,05 (R23, que também exige que o jogo leia exatamente as medidas da auditoria do atlas
 enviado — hash SHA-256 do atlas). A desordem de cada objeto no arranjo pintado (as linhas
-`targets`, que a calibração C22 compara com o que o jogo lê) passou a ser medida na
-composição enviada **com os sprites do atlas** (`composeShipped` + `homeSprites`), porque a
-prancha não tem mais as coisas que se movem; C22 não mudou e continua exata. O contraste médio (F4 "como escrito") é informativo,
-como antes: o menor é a lupa no livro (1,00; borda 1,84), na base era 1,06.
+`targets`, que a calibração C22 confere contra a composição enviada) passou a ser medida
+na composição **com os sprites do atlas** (`composeShipped` + `homeSprites`), porque a
+prancha não tem mais as coisas que se movem; C22 não mudou e continua exata. O contraste
+médio (F4 "como escrito") é informativo, como antes: o menor é a lupa no livro da esquerda
+(1,00; borda 1,84); na base era 1,06.
 
 ## 13. Variedade e espaço de arranjos
 
@@ -317,8 +321,9 @@ mutante em memória falha o que nomeia:
 conferidas contra a árvore final (cada uma aparece exatamente 1×). Cinco mutantes foram
 reancorados (§18) — mesma mutação, mesmos checks exigidos: três cujas âncoras tinham
 ficado para trás com a autoria e a reescrita de `selectRound` (`BROKEN`), um que editava a
-auditoria de um kit que a sala não envia mais (inerte) e um que tinha virado equivalente. O mutante "duas coisas podem dividir um slot" foi **reancorado** no fim da missão: tirar só o termo "mesmo slot" da tabela de conflitos
-virou um mutante equivalente (todos os 138 pares de lugares que dividem um slot já
+auditoria de um kit que a sala não envia mais (inerte) e um que tinha virado equivalente.
+O último é "duas coisas podem dividir um slot": tirar só o termo "mesmo slot" da tabela de
+conflitos virou um mutante equivalente (todos os 138 pares de lugares que dividem um slot já
 conflitam pela forma, nas duas salas — nenhum arranjo muda), então ele passou a fazer o
 que o nome diz: duas coisas no mesmo slot **nunca** conflitam. R09 pega.
 
@@ -349,7 +354,7 @@ coluna diz.
 | mutante "duas coisas podem dividir um slot" (replayability) | tirava o termo "mesmo slot" → nenhum conflito por slot | equivalente nos dados finais (§17) | slot exclusivo | R09 pega a versão reancorada |
 | mutante "um slot fora da sala" (replayability) | movia o slot `mapa-fundo-b` → move `mapa-dir-fundo` (um lugar da Xícara) para x = 3990 | `mapa-fundo-b` saiu da sala durante a autoria; a âncora aparecia 0× (`BROKEN`) | — | R10 pega |
 | mutante "the Observatory's art is repainted without a new audit" (multiscene) | editava a auditoria v3 do Observatório → edita a auditoria do kit que a sala envia (lido da sala: v4) | a sala passou a enviar o kit v4, que o M16 lê; o mutante ficou inerte (`MISSED`: editava um arquivo que nada lia) — o mesmo caso da v2→v3 na INTERACTIONS-04 | a auditoria lida é a do kit enviado | M16 pega (§19) |
-| mutantes "every seed draws the same round" e "the seed is ignored: Math.random draws the round" (experiência) | trocavam o sorteio de `selectRoundTargets` → trocam o gerador do sorteio da lista em `selectRound` (a semente fixa; `Math.random`) | `selectRound` reescrito: a semente compõe o arranjo e depois sorteia; as âncoras antigas apareciam 0× (`BROKEN`). Em árvores sem arranjos, as âncoras de antes | o sorteio da lista lê a semente | P05 e P08; P04 — pegos (§19) |
+| mutantes "every seed draws the same round" e "the seed is ignored: Math.random draws the round" (experiência) | trocavam o sorteio de `selectRoundTargets` → em `selectRound`: a lista sorteada uma vez só, na sala pintada, com gerador fixo (a mesma rodada para toda semente); o gerador do sorteio vira `Math.random` | `selectRound` reescrito: a semente compõe o arranjo e depois sorteia; as âncoras antigas apareciam 0× (`BROKEN`). Fixar só o gerador não bastava: arranjos diferentes aceitam candidatos diferentes, e o P08 (duas sementes, duas listas) não caía — a mutação precisa ignorar a semente de verdade. Em árvores sem arranjos, as âncoras de antes | a lista lê a semente | P05 e P08; P04 — pegos (§19) |
 
 ## 19. Regressões
 
@@ -357,12 +362,13 @@ coluna diz.
 | --- | --- |
 | `eslint` · `tsc --noEmit` · `git diff --check` | 0 erros, 5 avisos (os 5 da base; nenhum novo) · 0 erros · limpo |
 | `next build` | exit 0; mesmas rotas estáticas |
-| suite **replayability** · `--counterfactuals` | **36/36** · ⟨…⟩ |
-| suite skeleton · `--counterfactuals` | 38/38 · ⟨…⟩ |
-| suite experience · `--counterfactuals` | 45/45 · ⟨…⟩ |
-| suite multiscene · `--counterfactuals` | 20/20 · ⟨…⟩ |
-| suite calibration · `--counterfactuals` | 28/28 · ⟨…⟩ |
-| suite interactions · `--counterfactuals` | 28/28 · ⟨…⟩ |
+| a base `36ab89a` nas cinco suítes antigas reescritas (`--rev`) | esqueleto 38/38 · experiência 45/45 · multiscene 20/20 · calibração 28/28 · interactions 28/28 — as garantias de antes continuam valendo na base; só o contrato novo a reprova |
+| suite **replayability** · `--counterfactuals` | **36/36** · base `36ab89a` pega (31/31 `[replayability]` falham, 5/5 `[preserved]` de pé), 21/21 mutantes pegos (`HIDDEN_OBJECTS_REPLAYABILITY_COUNTERFACTUALS_HOLD`) |
+| suite skeleton · `--counterfactuals` | 38/38 · base `f925442` pega (30/30 falham, 8/8 de pé), 18/18 mutantes pegos (`HIDDEN_OBJECTS_SKELETON_COUNTERFACTUALS_HOLD`) |
+| suite experience · `--counterfactuals` | 45/45 · bases `87f30d3` e `8fbd638` pegas, 31/31 mutantes pegos (`HIDDEN_OBJECTS_EXPERIENCE_COUNTERFACTUALS_HOLD`; dois reancorados, §18) |
+| suite multiscene · `--counterfactuals` | 20/20 · base `58b5f08` pega (17/17 falham, 3/3 de pé), 18/18 mutantes pegos (`…_COUNTERFACTUALS_HOLD`; um reancorado, §18) |
+| suite calibration · `--counterfactuals` | 28/28 · base `3b122cf` pega (15/15 falham, 13/13 de pé), 16/16 mutantes pegos (`…_COUNTERFACTUALS_HOLD`) |
+| suite interactions · `--counterfactuals` | 28/28 · base `ede2cb1` pega (24/24 falham, 4/4 de pé), 18/18 mutantes pegos (`…_COUNTERFACTUALS_HOLD`) |
 | justiça por lugar (Estúdio, Observatório) | todos os lugares acima dos pisos (§12) |
 | justiça das rodadas, duas salas (1 000 000 de sementes na sala pintada; 30 000 + 500 exatas por arranjo) | `ROUND_FAIRNESS_OK` × 2 — toda rodada alcançada, χ² uniforme (\|z\| ≤ 1,50), nenhum objeto fora da probabilidade exata (\|z\| ≤ 2,80); 0 listas inválidas em 180 000 explorações; posto uniforme por arranjo (\|z\| ≤ 0,69, KS ≤ 1,21) |
 | relatório de variedade | 0 conflitos, 0 *fallbacks*, 0 repetições imediatas em 12 000 rodadas; todo lugar sorteado; nenhum objeto do Difícil acima de 85% num lugar (§9, §13) |
@@ -373,8 +379,8 @@ coluna diz.
 | readiness · watchdog · continuation · diagnostic boundary | 19/19 · 10/10 · 21/21 · `PRODUCTION_DIAGNOSTIC_BOUNDARY_TESTS_OK` (evidência MATCHES) |
 | Circuito (`memory-circuit-lifecycle-tests`) | 13/13 |
 | Rota: terminal de resultado · ownership · coupling gate | 13/13 · 7/7 · 6/6 |
-| CORE `validation-hygiene-tests.mjs` | ⟨…⟩ |
-| DEEP `final-acceptance.mjs` | ⟨…⟩ |
+| CORE `validation-hygiene-tests.mjs` | 15/15 validadores (`CORE_BATTERY_PASSED`); imutabilidade: nada criado, apagado ou alterado, `git status` idêntico (`VALIDATION_CHECK_IS_READ_ONLY`, evidência MATCHES) |
+| DEEP `final-acceptance.mjs` | estrutural 1080/1080, contínuo 270/270, recovery OK (9/9), sem exceções; 5 evidências MATCHES |
 | dependências | `package.json` e `package-lock.json` idênticos à base; nenhuma dependência nova; `npm audit` 13 avisos (1 baixo, 2 moderados, 10 altos, 0 críticos) — idêntico à base, mesmo `package-lock.json` |
 
 ## 20. Bundle, assets e desempenho
@@ -401,7 +407,8 @@ Tudo no chunk lazy do Game 03; a Home não muda um byte.
 
 Assets dinâmicos: **um atlas por sala** (Estúdio 133 sprites, 1024×1391, 143 680 B;
 Observatório 107 sprites, 1024×780, 94 754 B). Memória: o atlas decodificado soma 5,7 MB
-(Estúdio) e 3,2 MB (Observatório) às pranchas (20,5 MB e 23,0 MB decodificadas, do mesmo tamanho de antes).
+(Estúdio) e 3,2 MB (Observatório) às pranchas (20,5 MB e 23,0 MB decodificadas, do mesmo
+tamanho de antes).
 
 Desempenho (probe, build de produção): **1 commit do React** para montar um arranjo novo
 (Estúdio e Observatório); **0 commits** durante um arrasto de câmera; o compositor custa
@@ -448,7 +455,7 @@ Desempenho (probe, build de produção): **1 commit do React** para montar um ar
    "impossível" ou "óbvio demais"?
 5. As pistas ("atrás do baú azul", "no peitoril") descrevem bem onde o objeto está
    **agora**?
-6. A pantufa atrás do baú, o gato atrás do cesto, a xícara atrás do mapa: dá para
+6. A pantufa atrás do baú, o gato atrás do cesto, a xícara atrás do livro: dá para
    reconhecer o objeto pela parte que aparece?
 7. As sósias trocando de lugar continuam enganando de um jeito **justo**?
 8. Abrir as peças (gaveta, porta, cortina, tampa, cesto) continua natural quando o objeto
