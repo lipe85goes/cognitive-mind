@@ -1,6 +1,6 @@
 {
   "base": "http://localhost:3100",
-  "buildId": "pvqrxs-iX5_RYvvpLboMq",
+  "buildId": "_lu4HYEAwNN3YsIeygYxC",
   "scenarios": [
     "rep-desktop-studio",
     "rep-desktop-observatory",
@@ -125,9 +125,9 @@
       "id": "THE_ROOM_IS_THE_SEEDS_COMPOSITION",
       "pass": true,
       "detail": {
-        "seed": 9004,
-        "signature": "101010000010100002011111001010100210010201",
-        "expected": "101010000010100002011111001010100210010201",
+        "seed": 9010,
+        "signature": "000121120002012000011012000002010111202121",
+        "expected": "000121120002012000011012000002010111202121",
         "pictures": 42,
         "expectedPictures": 42,
         "atlas": {
@@ -144,16 +144,17 @@
       "pass": true,
       "detail": {
         "lookMoved": [
-          "rolo-de-mapas",
           "argolas",
           "escova",
-          "funil",
-          "almofada",
-          "vaso-de-ceramica",
+          "concha",
+          "pote-de-ceramica",
           "meia",
           "bola-de-borracha",
-          "medalhao",
-          "carretel"
+          "peca-de-xadrez",
+          "caleidoscopio",
+          "chapeu-de-mago",
+          "carretel",
+          "lata-de-biscoitos"
         ],
         "propMoved": [
           "xicara-azul"
@@ -165,7 +166,7 @@
       "id": "THE_TAP_AREA_FOLLOWS_THE_OBJECT",
       "pass": true,
       "detail": {
-        "id": "esquadro",
+        "id": "maca",
         "atOld": false,
         "atNew": true
       }
@@ -195,9 +196,9 @@
       "id": "THE_ROOM_IS_THE_SEEDS_COMPOSITION",
       "pass": true,
       "detail": {
-        "seed": 9001,
-        "signature": "110020011100011100010010200011100000201010",
-        "expected": "110020011100011100010010200011100000201010",
+        "seed": 9002,
+        "signature": "101100112212010101101002101001121100102020",
+        "expected": "101100112212010101101002101001121100102020",
         "pictures": 42,
         "expectedPictures": 42,
         "atlas": {
@@ -227,14 +228,14 @@
       "id": "THE_HINT_RINGS_WHERE_IT_STANDS",
       "pass": true,
       "detail": {
-        "id": "oculos",
+        "id": "bule",
         "halo": {
-          "x": 520,
-          "y": 572
+          "x": 1450,
+          "y": 912
         },
         "at": {
-          "x": 520,
-          "y": 572
+          "x": 1450,
+          "y": 912
         }
       }
     },
@@ -243,7 +244,7 @@
       "id": "TOUCHED_AND_FOUND_WHERE_IT_STANDS",
       "pass": true,
       "detail": {
-        "id": "oculos"
+        "id": "bule"
       }
     },
     {
@@ -334,8 +335,8 @@
       "pass": true,
       "detail": {
         "seed": 24321,
-        "signature": "001100211002102002010001100000000111121120",
-        "expected": "001100211002102002010001100000000111121120",
+        "signature": "010000002011012012110001001102000301211000",
+        "expected": "010000002011012012110001001102000301211000",
         "pictures": 42,
         "expectedPictures": 42,
         "atlas": {
@@ -359,10 +360,10 @@
       "id": "THE_SAME_SEED_PAINTS_THE_SAME_ROOM",
       "pass": true,
       "detail": {
-        "signature": "101120111010111010100011101112111200100010",
+        "signature": "010021110200012012010010200002010311211100",
         "pixels": [
-          "c5f33e8317b4",
-          "c5f33e8317b4"
+          "4c9bfc7441cc",
+          "4c9bfc7441cc"
         ]
       }
     },
@@ -371,8 +372,8 @@
       "id": "ANOTHER_SEED_PAINTS_ANOTHER_ROOM",
       "pass": true,
       "detail": {
-        "other": 9001,
-        "moved": 0.39622641509433965
+        "other": 9002,
+        "moved": 0.6037735849056604
       }
     },
     {
@@ -554,14 +555,14 @@
       },
       "studioMovedShare": 0.526,
       "observatory": {
-        "seed": 9004,
-        "signature": "101010000010100002011111001010100210010201",
+        "seed": 9010,
+        "signature": "000121120002012000011012000002010111202121",
         "pictures": 42,
-        "lookAlikesOffHome": 10
+        "lookAlikesOffHome": 11
       }
     },
     "bytes": {
-      "atlas": 234328,
+      "atlas": 238434,
       "plate": 338992
     }
   }

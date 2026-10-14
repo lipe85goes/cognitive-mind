@@ -1819,7 +1819,11 @@ const MUTANTS = [
   // --- the target pool's invariants (the addendum), one product rule each ---------------------------
   {
     name: "every seed draws the same round",
-    files: { [FILES.rounds]: [["  const list = [...rounds[Math.floor(random() * rounds.length)]];", "  const list = [...rounds[0]];"]] },
+    // GAME03-REPLAYABILITY-05: a seed composes its layout, then draws its list (selectRound); the draw ignores the seed
+    files: (tree) =>
+      tree.exists(`${DIR}hidden-objects-layout.ts`)
+        ? { [FILES.rounds]: [["    const random = seededRandom(derivedSeed(seed, `round:${attempt}`));", "    const random = seededRandom(1);"]] }
+        : { [FILES.rounds]: [["  const list = [...rounds[Math.floor(random() * rounds.length)]];", "  const list = [...rounds[0]];"]] },
     mustFail: ["P05", "P08"],
   },
   {
@@ -1856,7 +1860,11 @@ const MUTANTS = [
   },
   {
     name: "the seed is ignored: Math.random draws the round",
-    files: { [FILES.rounds]: [["  const random = seededRandom(seed);", "  const random = Math.random;"]] },
+    // GAME03-REPLAYABILITY-05: the round's draw in selectRound (the layout's is the replayability suite's R02, R04)
+    files: (tree) =>
+      tree.exists(`${DIR}hidden-objects-layout.ts`)
+        ? { [FILES.rounds]: [["    const random = seededRandom(derivedSeed(seed, `round:${attempt}`));", "    const random = Math.random;"]] }
+        : { [FILES.rounds]: [["  const random = seededRandom(seed);", "  const random = Math.random;"]] },
     mustFail: ["P04"],
   },
   {

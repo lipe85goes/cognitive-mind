@@ -1431,7 +1431,12 @@ const MUTANTS = [
   {
     name: "the Observatory's art is repainted without a new audit",
     // GAME03-CALIBRATION-02A: the Observatory ships art kit v2, audited in its own folder (GAME03-INTERACTIONS-04: kit v3)
-    files: { [`docs/archive/hidden-objects/${OBSERVATORY_ID}/review/v3/fairness.json`]: [['"plateSha256": "', '"plateSha256": "0']] },
+    // GAME03-REPLAYABILITY-05 (restated): the audit of the kit the room ships, read from the room (v4 now) — a fixed
+    // v3 path had become an inert mutant once the room shipped v4, which M16 reads
+    files: (worktree) => {
+      const kit = /SCENE_ASSET_BASE = "[^"]*\/(v\d+)"/.exec(worktree.read(FILES.observatoryScene))[1];
+      return { [`docs/archive/hidden-objects/${OBSERVATORY_ID}/review/${kit}/fairness.json`]: [['"plateSha256": "', '"plateSha256": "0']] };
+    },
     mustFail: ["M16"],
   },
 ];

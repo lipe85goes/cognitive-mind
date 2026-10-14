@@ -1,0 +1,99 @@
+{
+  "note": "each scenario run alone (its own process and browser) against the final production build: node tools/validation/hidden-objects-replayability-probe.mjs --scenario NAME",
+  "scenarios": {
+    "rep-desktop-studio": {
+      "held": 9,
+      "of": 9,
+      "checks": [
+        "THE_ROOM_IS_THE_SEEDS_COMPOSITION",
+        "PAN_AND_ZOOM_MOVE_NO_THING",
+        "A_DRAG_IS_NOT_A_RENDER_LOOP",
+        "A_FRESH_LAYOUT_IS_ONE_BOUNDED_SETUP",
+        "FOUND_WHERE_IT_STANDS_NOT_WHERE_IT_WAS",
+        "RECOMECAR_KEEPS_THE_ROOM",
+        "A_NEW_EXPLORATION_IS_ITS_SEEDS_COMPOSITION",
+        "A_NEW_EXPLORATION_REARRANGES_THE_ROOM",
+        "NO_PAGE_ERRORS"
+      ],
+      "failing": []
+    },
+    "rep-desktop-observatory": {
+      "held": 5,
+      "of": 5,
+      "checks": [
+        "THE_ROOM_IS_THE_SEEDS_COMPOSITION",
+        "LOOK_ALIKES_AND_PROPS_ARE_PAINTED_OFF_HOME",
+        "THE_TAP_AREA_FOLLOWS_THE_OBJECT",
+        "A_KEPT_OBJECT_IS_FOUND_WHERE_IT_STANDS_ONCE_OPEN",
+        "NO_PAGE_ERRORS"
+      ],
+      "failing": []
+    },
+    "rep-mobile-portrait": {
+      "held": 7,
+      "of": 7,
+      "checks": [
+        "THE_ROOM_IS_THE_SEEDS_COMPOSITION",
+        "DRAG_AND_PINCH_MOVE_NO_THING",
+        "A_PIECE_OPENS_BY_TOUCH",
+        "THE_HINT_RINGS_WHERE_IT_STANDS",
+        "TOUCHED_AND_FOUND_WHERE_IT_STANDS",
+        "NO_HORIZONTAL_OVERFLOW",
+        "NO_PAGE_ERRORS"
+      ],
+      "failing": []
+    },
+    "rep-mobile-landscape": {
+      "held": 4,
+      "of": 4,
+      "checks": [
+        "THE_ROOM_IS_THE_SEEDS_COMPOSITION",
+        "TURNING_THE_PHONE_MOVES_NO_THING",
+        "THE_SEARCH_GOES_ON",
+        "NO_PAGE_ERRORS"
+      ],
+      "failing": []
+    },
+    "rep-reduced-motion": {
+      "held": 4,
+      "of": 4,
+      "checks": [
+        "SAME_ROOM_WITH_REDUCED_MOTION_STUDIO",
+        "NO_PAGE_ERRORS_STUDIO",
+        "SAME_ROOM_WITH_REDUCED_MOTION_OBSERVATORY",
+        "NO_PAGE_ERRORS_OBSERVATORY"
+      ],
+      "failing": []
+    },
+    "rep-replay": {
+      "held": 3,
+      "of": 3,
+      "checks": [
+        "THE_SAME_SEED_PAINTS_THE_SAME_ROOM",
+        "ANOTHER_SEED_PAINTS_ANOTHER_ROOM",
+        "NO_PAGE_ERRORS"
+      ],
+      "failing": []
+    },
+    "rep-sequence": {
+      "held": 9,
+      "of": 9,
+      "checks": [
+        "EXPLORATION_1_IS_ITS_SEEDS_COMPOSITION",
+        "EXPLORATION_2_IS_ITS_SEEDS_COMPOSITION",
+        "EXPLORATION_3_IS_ITS_SEEDS_COMPOSITION",
+        "EXPLORATION_4_IS_ITS_SEEDS_COMPOSITION",
+        "EXPLORATION_5_IS_ITS_SEEDS_COMPOSITION",
+        "EXPLORATION_6_IS_ITS_SEEDS_COMPOSITION",
+        "NEVER_THE_ROOM_JUST_PLAYED",
+        "EVERY_EXPLORATION_A_DIFFERENT_ROOM",
+        "NO_PAGE_ERRORS"
+      ],
+      "failing": []
+    }
+  },
+  "total": {
+    "held": 41,
+    "of": 41
+  }
+}

@@ -265,7 +265,17 @@ node tools/validation/hidden-objects-replayability-tests.mjs --counterfactuals  
 node tools/validation/hidden-objects-replayability-probe.mjs [--scenario NAME] [--out DIR] [--json FILE]
 node tools/validation/hidden-objects-layout-variety.mjs [--n=3000] [--json FILE] # layout space, slot use, repeats, sessions, cost
 node tools/validation/hidden-objects-layout-witnesses.mjs                      # review boards from the shipped files
+node tools/validation/hidden-objects-round-fairness.mjs --scene ID [--layout-samples N] [--exact-seeds N] [--out DIR]
 ```
+
+`hidden-objects-round-fairness.mjs` reads each seed's round in the room as that
+seed arranges it: every check it made before, at full strength, on the room as
+painted (every thing on its first slot, the product's selection with every
+other placement set aside); every list of 30 000 real seeds a valid round of its
+own layout, no line favouring a tier or a station, exposure 5–75%; and, on 500
+of them, each layout's valid rounds enumerated — the drawn round uniform among
+them (randomised rank, χ² and KS) and each object listed as the exact per-layout
+probabilities say.
 
 The suite checks the authored layout model (slots and placements as scene
 data, every placement on an authored slot of its station and gate, hint words

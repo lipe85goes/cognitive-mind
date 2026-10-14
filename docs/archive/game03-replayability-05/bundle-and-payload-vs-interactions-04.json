@@ -6,8 +6,8 @@
   },
   "method": {
     "bundle": "hidden-objects-browser-probe.mjs --scenario bundle: each build read from its own .next (the base built from a worktree of 36ab89a); gzip level 9",
-    "payload": "hidden-objects-multiscene-probe.mjs --scenario ms-payload: each tree's own probe against its own production build (base on :3101, now on :3100) \u2014 what the browser requested at each step, weighed as served",
-    "decoded": "pixel area \u00d7 4 bytes of each room's atlas and plate (what a browser holds decoded)"
+    "payload": "hidden-objects-multiscene-probe.mjs --scenario ms-payload: each tree's own probe against its own production build (base on :3101, now on :3100) — what the browser requested at each step, weighed as served",
+    "decoded": "pixel area × 4 bytes of each room's atlas and plate (what a browser holds decoded)"
   },
   "bundle": {
     "base": {
@@ -88,8 +88,8 @@
       "studio": {
         "js": {
           "files": 2,
-          "raw": 180405,
-          "gzip": 48581
+          "raw": 182695,
+          "gzip": 49010
         },
         "css": {
           "files": 1,
@@ -98,7 +98,7 @@
         },
         "files": [
           "static/chunks/3nu2z_o6-em62.js",
-          "static/chunks/279_pulirsdua.js",
+          "static/chunks/10c1c6s42p7vn.js",
           "static/chunks/38jmr8oi3z-0r.css"
         ]
       },
@@ -483,8 +483,8 @@
       "game03EntryAndSetup": {
         "js": {
           "files": 2,
-          "raw": 180405,
-          "gzip": 48581
+          "raw": 182695,
+          "gzip": 49010
         },
         "css": {
           "files": 1,
@@ -513,8 +513,8 @@
       "studioRoundSinceEntry": {
         "js": {
           "files": 2,
-          "raw": 180405,
-          "gzip": 48581
+          "raw": 182695,
+          "gzip": 49010
         },
         "css": {
           "files": 1,
@@ -558,8 +558,8 @@
         },
         "art": {
           "files": 14,
-          "raw": 390118,
-          "gzip": 390118
+          "raw": 399308,
+          "gzip": 399308
         },
         "artFiles": [
           "/assets/hidden-objects/explorer-observatory/v4/atlas.webp",
@@ -571,11 +571,11 @@
           "/assets/hidden-objects/explorer-observatory/v4/pieces/portinhola-do-lambri.webp",
           "/assets/hidden-objects/explorer-observatory/v4/pieces/gaveta-da-bancada.webp",
           "/assets/hidden-objects/explorer-observatory/v4/pieces/cortina-da-mesinha.webp",
-          "/assets/hidden-objects/explorer-observatory/v4/thumbs/leque.webp",
-          "/assets/hidden-objects/explorer-observatory/v4/thumbs/violino.webp",
-          "/assets/hidden-objects/explorer-observatory/v4/thumbs/bule.webp",
-          "/assets/hidden-objects/explorer-observatory/v4/thumbs/ratinho.webp",
-          "/assets/hidden-objects/explorer-observatory/v4/thumbs/esquadro.webp"
+          "/assets/hidden-objects/explorer-observatory/v4/thumbs/balanca.webp",
+          "/assets/hidden-objects/explorer-observatory/v4/thumbs/compasso.webp",
+          "/assets/hidden-objects/explorer-observatory/v4/thumbs/oculos.webp",
+          "/assets/hidden-objects/explorer-observatory/v4/thumbs/vela.webp",
+          "/assets/hidden-objects/explorer-observatory/v4/thumbs/cadeado.webp"
         ]
       }
     }
@@ -603,10 +603,10 @@
       "atlas": {
         "size": [
           1024,
-          771
+          780
         ],
-        "bytes": 90648,
-        "decodedBytes": 3158016
+        "bytes": 94754,
+        "decodedBytes": 3194880
       },
       "plate": {
         "size": [
@@ -616,6 +616,44 @@
         "bytes": 186692,
         "decodedBytes": 23040000
       }
+    }
+  },
+  "publicHiddenObjects": {
+    "base": 1006646,
+    "now": 1128480,
+    "note": "bytes under public/assets/hidden-objects/ (base: 36ab89a)"
+  },
+  "sourceGrowth": {
+    "note": "what the Game 03 lazy chunk grew by, per source (bytes of source, gzip -9; the chunk itself is minified)",
+    "src/games/hidden-objects/hidden-objects-layout.ts": {
+      "base": 0,
+      "now": 24003,
+      "nowGzip": 7617
+    },
+    "src/games/hidden-objects/hidden-objects-rounds.ts": {
+      "base": 6316,
+      "now": 14000,
+      "nowGzip": 4644
+    },
+    "src/games/hidden-objects/scenes/explorer-studio.ts": {
+      "base": 35789,
+      "now": 62414,
+      "nowGzip": 14128
+    },
+    "src/games/hidden-objects/scenes/explorer-studio.art.ts": {
+      "base": 0,
+      "now": 27708,
+      "nowGzip": 5770
+    },
+    "src/games/hidden-objects/scenes/explorer-observatory.ts": {
+      "base": 36796,
+      "now": 61141,
+      "nowGzip": 14103
+    },
+    "src/games/hidden-objects/scenes/explorer-observatory.art.ts": {
+      "base": 0,
+      "now": 21952,
+      "nowGzip": 4981
     }
   }
 }

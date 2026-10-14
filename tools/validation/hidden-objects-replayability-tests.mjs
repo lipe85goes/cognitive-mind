@@ -1597,8 +1597,9 @@ const MUTANTS = [
     mustFail: ["R09"],
   },
   {
+    // the far right of the map (mapa-dir-fundo, one of the Xícara's spots) moved past the room's right edge
     name: "a slot outside the room",
-    files: { [FILES.studioScene]: [['    at: { x: 1930, y: 998 },', '    at: { x: 3990, y: 998 },']] },
+    files: { [FILES.studioScene]: [['    at: { x: 1900, y: 990 },', '    at: { x: 3990, y: 990 },']] },
     mustFail: ["R10"],
   },
   {

@@ -19,7 +19,7 @@ isso faz voltar a ela sem virar "decorar onde está" — só o playtest humano d
 ## 1. O que muda para quem joga
 
 - Cada **Explorar** (Praticar outra vez, Trocar de cena → Explorar, outra sala) arruma a
-  sala de novo: em média **⟨47⟩% das coisas** do Estúdio e **⟨42⟩%** do Observatório estão
+  sala de novo: em média **47% das coisas** do Estúdio e **43%** do Observatório estão
   em outro lugar que na exploração anterior — objetos da lista, sósias e cenário juntos.
 - A sala continua **a mesma**: estante, mesa, janela, telescópio, poltrona, lanterna,
   vela, cúpula, as três peças que abrem de cada sala — nada disso se move.
@@ -108,10 +108,10 @@ render (R02, R04, R08).
 | --- | --- |
 | Coisas | 53: 26 objetos, 26 sósias, 1 de cenário |
 | Móveis | 42 (21 objetos, 20 sósias, 1 de cenário) · fixos 11: sistema solar, vela (fonte de luz), gramofone, microscópio, leque e seis sósias de parede/móvel |
-| Slots · lugares | ⟨76⟩ · ⟨119⟩ |
+| Slots · lugares | 76 · 118 (11 coisas com 1 lugar, 21 com 2, 19 com 3, 2 com 4) |
 | Guardados | foguete (portinhola do lambri: 2 lugares), ioiô (gaveta da bancada: 2), tambor (cortina da mesinha: 2) |
 | Cenário que se move | a xícara azul (mesa) |
-| Atlas | `v4/atlas.webp` ⟨1024×776⟩, ⟨106⟩ sprites, ⟨…⟩ B |
+| Atlas | `v4/atlas.webp` 1024×780, 107 sprites, 94 754 B |
 
 No fim da missão, a pantufa ganhou um lugar **atrás do baú azul** (só a boca das
 pantufas aparece sobre a tampa: 70,5% visível, borda 4,48:1), e a meia, um lugar no chão
@@ -141,7 +141,9 @@ da cúpula para abrir espaço — sem isso, o Difícil pedia a pantufa sempre no
 - A semente escolhida é **a rodada inteira**: a memória decide qual semente, nunca o que
   uma semente dá (R27).
 - Medido: 0 repetições imediatas em 150 explorações seguidas por sala e dificuldade
-  (R26); 20 visitas de 20 explorações: todas as 400 salas diferentes, ⟨…⟩ (variedade).
+  (R26); 20 visitas de 20 explorações por sala: nenhuma repetição imediata, nenhuma sala
+  repetida dentro da visita, 47% (Estúdio) e 43% (Observatório) das coisas fora do lugar de
+  uma exploração para a outra (relatório de variedade).
 
 ## 9. Alvos, sósias e cenário
 
@@ -155,10 +157,10 @@ da cúpula para abrir espaço — sem isso, o Difícil pedia a pantufa sempre no
 
 | | Estúdio | Observatório |
 | --- | --- | --- |
-| coisas fora do lugar entre duas explorações (média · p10–p90) | 47,1% · 36,8–56,1% | ⟨42,4% · 32,1–50,9%⟩ |
-| mesmo lugar que na exploração anterior: objeto · sósia · cenário | 50,7% · 42,2% · 45,4% | ⟨46,4% · 45,2% · 60,8%⟩ |
-| entropia média de lugar (1 = uniforme) | 0,902 | ⟨0,937⟩ |
-| lugar mais tomado | 81,9% (a chaleira, sósia, na prateleira 4) | ⟨77,4%⟩ |
+| coisas fora do lugar entre duas explorações (média · p10–p90) | 47,1% · 36,8–56,1% | 42,6% · 34,0–52,8% |
+| mesmo lugar que na exploração anterior: objeto · sósia · cenário | 50,7% · 42,2% · 45,4% | 45,9% · 45,4% · 61,0% |
+| entropia média de lugar (1 = uniforme) | 0,902 | 0,932 |
+| lugar mais tomado | 81,9% (a chaleira, sósia, na prateleira 4) | 79,9% (o regador, sósia, na prateleira) |
 
 ## 10. Compatibilidade com as peças
 
@@ -181,8 +183,17 @@ da cúpula para abrir espaço — sem isso, o Difícil pedia a pantufa sempre no
 - O Difícil nunca aceita um lugar A (à vista): os tiers do Difícil não admitem A além do
   limite, e um objeto com dois lugares B/C ou mais nunca fica preso num só (R25:
   nenhum acima de 90% das suas rodadas difíceis num lugar).
-- Justiça das rodadas (`hidden-objects-round-fairness.mjs`, reescrito — §16):
-  ⟨…⟩
+- Justiça das rodadas (`hidden-objects-round-fairness.mjs`, reescrito — §18;
+  `docs/archive/game03-replayability-05/rounds-<sala>/`), `ROUND_FAIRNESS_OK` nas duas salas:
+
+| | Estúdio | Observatório |
+| --- | --- | --- |
+| sala pintada, 1 000 000 de sementes por dificuldade: rodadas válidas · alcançadas | 884 · 3 160 · 8 005 — todas | 1 326 · 4 021 · 19 414 — todas |
+| χ² uniforme (z) · maior \|z\| por objeto | 1,50 / −0,39 / 0,53 · ≤ 2,80 | 0,64 / 0,77 / −0,19 · ≤ 2,11 |
+| arranjos, 30 000 sementes por dificuldade: listas inválidas · *fallbacks* | 0 · 0 | 0 · 0 |
+| exato em 500 sementes por dificuldade: posto χ² (z) · KS (√n·D) | ≤ 0,46 · ≤ 1,21 | ≤ 0,69 · ≤ 0,82 |
+| maior \|z\| por objeto contra as probabilidades exatas por arranjo | 2,29 | 2,51 |
+| visível médio das listas (medido, Fácil → Médio → Difícil) | 88,9% → 86,1% → 83,8% | 88,2% → 85,7% → 82,6% |
 
 ## 12. Justiça por lugar
 
@@ -191,10 +202,10 @@ o sprite do atlas, as peças em repouso e abertas, o primeiro plano):
 
 | | Estúdio | Observatório |
 | --- | --- | --- |
-| lugares auditados | 58 | ⟨59⟩ |
-| A: menor visível · menor borda | 89,6% · 1,32 | ⟨93,1% · 1,92⟩ |
-| B | 74,7% · 1,32 | ⟨70,5% · 1,32⟩ |
-| C | 53,8% · 1,31 | ⟨43,0% · 1,39⟩ |
+| lugares auditados | 58 | 57 |
+| A: menor visível · menor borda | 89,6% · 1,32 | 93,1% · 1,92 |
+| B | 74,7% · 1,32 | 70,5% · 1,32 |
+| C | 53,8% · 1,31 | 43,0% · 1,39 |
 | guardados: visível com a peça fechada | 0 em 6 lugares | 0 em 6 lugares |
 
 Pisos: visível A ≥ 0,80 · B ≥ 0,60 · C ≥ 0,40; borda ≥ 1,3:1; guardado em repouso
@@ -209,12 +220,12 @@ como antes: o menor é a lupa no livro (1,00; borda 1,84), na base era 1,06.
 
 | | Estúdio | Observatório |
 | --- | --- | --- |
-| componentes independentes · tamanhos | 11 · 16, 12, 9, 3, 3, 2, 1… | ⟨11 · …⟩ |
-| arranjos alcançáveis (exato, produto dos componentes) | **10^12,99** | ⟨10^10,15⟩ |
-| arranjos distintos em 6 000 explorações | 2 000 por dificuldade (todos) | ⟨…⟩ |
+| componentes independentes · tamanhos | 11 · 16, 12, 9, 3, 3, 2, 1, 1, 1, 1, 1 | 10 · 10, 9, 9, 7, 2, 1, 1, 1, 1, 1 |
+| arranjos alcançáveis (exato, produto dos componentes) | **10^12,99** | **10^10,23** |
+| arranjos distintos em 6 000 explorações (2 000 sementes × 3) | 2 000 (cada semente, um arranjo) | 2 000 |
 | repetições imediatas · conflitos · *fallbacks* | 0 · 0 · 0 | 0 · 0 · 0 |
-| custo: média · pior por rodada | 0,73 ms · 40 ms (1ª chamada) | ⟨0,48 ms · 26 ms⟩ |
-| pior: passos de composição · tentativa · sorteios | 7 629 / 20 000 · 0 / 6 · 199 / 4 000 | ⟨249 · 0 · 347⟩ |
+| custo: média · pior por rodada | 0,68 ms · 28 ms (1ª chamada, JIT frio) | 0,46 ms · 42 ms (idem) |
+| pior: passos de composição · tentativa · sorteios | 7 629 / 20 000 · 0 / 6 · 199 / 4 000 | 183 / 20 000 · 0 / 6 · 164 / 4 000 |
 
 Todo lugar autoral é alcançável e foi sorteado (R24); nenhum lugar passa de 85% dos
 arranjos nem fica abaixo de 5% (R25). Relatório completo:
@@ -267,9 +278,10 @@ roda sozinho com `--scenario`:
 | `rep-replay` | mesma semente numa visita nova = mesma composição (pixels); outra semente = outra |
 | `rep-sequence` | várias explorações seguidas, nenhuma igual à anterior |
 
-Resultado: ⟨41/41⟩ no conjunto; ⟨41/41⟩ somando cada cenário sozinho
-(`replayability-probe-run.json`, `replayability-scenarios-alone.json`). Probes antigos no
-build final: ⟨interactions 42/42 · calibração 83/83 · multiscene 61/61 · Estúdio 104/104⟩.
+Resultado: **41/41** no conjunto; **41/41** somando cada cenário sozinho (9 + 5 + 7 + 4 + 4
++ 3 + 9; `replayability-probe-run.json`, `replayability-scenarios-alone.json`). Probes
+antigos no build final: interactions 42/42 · calibração 83/83 · multiscene 61/61 · Estúdio
+104/104 (`*-probe-run.json`).
 
 ## 17. Contrafactuais e mutantes
 
@@ -301,8 +313,11 @@ mutante em memória falha o que nomeia:
 | um ramo específico de sala no compositor | R36 |
 | a Home importa a arte de arranjo de uma sala | R31 |
 
-21 mutantes (os 20 da missão + F2). O mutante "duas coisas podem dividir um slot" foi
-**reancorado** no fim da missão: tirar só o termo "mesmo slot" da tabela de conflitos
+21 mutantes (os 20 da missão + F2). Todas as âncoras de mutante das seis suítes foram
+conferidas contra a árvore final (cada uma aparece exatamente 1×). Cinco mutantes foram
+reancorados (§18) — mesma mutação, mesmos checks exigidos: três cujas âncoras tinham
+ficado para trás com a autoria e a reescrita de `selectRound` (`BROKEN`), um que editava a
+auditoria de um kit que a sala não envia mais (inerte) e um que tinha virado equivalente. O mutante "duas coisas podem dividir um slot" foi **reancorado** no fim da missão: tirar só o termo "mesmo slot" da tabela de conflitos
 virou um mutante equivalente (todos os 138 pares de lugares que dividem um slot já
 conflitam pela forma, nas duas salas — nenhum arranjo muda), então ele passou a fazer o
 que o nome diz: duas coisas no mesmo slot **nunca** conflitam. R09 pega.
@@ -332,6 +347,9 @@ coluna diz.
 | interactions I17 · I25 · multiscene M14 | toca o centro pintado → toca a região colocada | idem | o toque segue o lugar | "Fácil opens the piece" → I17; "hints and opened pieces make the result" → I25; "an unlisted Observatory object answers a tap" → M14, pegos |
 | `hidden-objects-round-fairness.mjs` | toda semente sorteia uniforme entre as rodadas válidas **da sala** (enumeradas uma vez) → (1) na sala pintada, a seleção do produto com os outros lugares postos de lado: tudo o que valia antes, com a mesma força (1 000 000 de sementes); (2) a seleção real em 30 000 sementes: toda lista é rodada válida do seu arranjo, nenhuma linha favorece tier ou estação, exposição 5–75%, a carga perceptiva sobe com a dificuldade; (3) em 500 sementes, as rodadas de cada arranjo enumeradas: a rodada sorteada é uniforme entre elas (posto aleatorizado: χ² e KS) e cada objeto sai tanto quanto as probabilidades exatas por arranjo dizem | a versão antiga comparava cada semente com a sala pintada e falhava (\|z\| até 29) — por construção, não por viés | uniforme entre as rodadas válidas **do arranjo da semente** | um sorteio que favorece rodadas falha (1) e (3); uma lista válida só na sala pintada falha (2) e (3) |
 | mutante "duas coisas podem dividir um slot" (replayability) | tirava o termo "mesmo slot" → nenhum conflito por slot | equivalente nos dados finais (§17) | slot exclusivo | R09 pega a versão reancorada |
+| mutante "um slot fora da sala" (replayability) | movia o slot `mapa-fundo-b` → move `mapa-dir-fundo` (um lugar da Xícara) para x = 3990 | `mapa-fundo-b` saiu da sala durante a autoria; a âncora aparecia 0× (`BROKEN`) | — | R10 pega |
+| mutante "the Observatory's art is repainted without a new audit" (multiscene) | editava a auditoria v3 do Observatório → edita a auditoria do kit que a sala envia (lido da sala: v4) | a sala passou a enviar o kit v4, que o M16 lê; o mutante ficou inerte (`MISSED`: editava um arquivo que nada lia) — o mesmo caso da v2→v3 na INTERACTIONS-04 | a auditoria lida é a do kit enviado | M16 pega (§19) |
+| mutantes "every seed draws the same round" e "the seed is ignored: Math.random draws the round" (experiência) | trocavam o sorteio de `selectRoundTargets` → trocam o gerador do sorteio da lista em `selectRound` (a semente fixa; `Math.random`) | `selectRound` reescrito: a semente compõe o arranjo e depois sorteia; as âncoras antigas apareciam 0× (`BROKEN`). Em árvores sem arranjos, as âncoras de antes | o sorteio da lista lê a semente | P05 e P08; P04 — pegos (§19) |
 
 ## 19. Regressões
 
@@ -346,18 +364,18 @@ coluna diz.
 | suite calibration · `--counterfactuals` | 28/28 · ⟨…⟩ |
 | suite interactions · `--counterfactuals` | 28/28 · ⟨…⟩ |
 | justiça por lugar (Estúdio, Observatório) | todos os lugares acima dos pisos (§12) |
-| justiça das rodadas, duas salas | ⟨…⟩ |
-| relatório de variedade | ⟨…⟩ |
+| justiça das rodadas, duas salas (1 000 000 de sementes na sala pintada; 30 000 + 500 exatas por arranjo) | `ROUND_FAIRNESS_OK` × 2 — toda rodada alcançada, χ² uniforme (\|z\| ≤ 1,50), nenhum objeto fora da probabilidade exata (\|z\| ≤ 2,80); 0 listas inválidas em 180 000 explorações; posto uniforme por arranjo (\|z\| ≤ 0,69, KS ≤ 1,21) |
+| relatório de variedade | 0 conflitos, 0 *fallbacks*, 0 repetições imediatas em 12 000 rodadas; todo lugar sorteado; nenhum objeto do Difícil acima de 85% num lugar (§9, §13) |
 | relatório de calibração | `CALIBRATION_REPORT_OK`; constantes = derivadas |
-| probe **replayability** | ⟨41/41⟩, e cada cenário sozinho ⟨41/41⟩ |
-| probes antigos (build final) | ⟨…⟩ |
+| probe **replayability** | **41/41**, e cada cenário sozinho 41/41 |
+| probes antigos (build final) | interactions 42/42 · calibração 83/83 · multiscene 61/61 · Estúdio 104/104 |
 | `gameplay-platform-lock-v1.mjs` · `--counterfactuals` | 18/18 · `LOCK_GATE_COUNTERFACTUALS_HOLD` |
 | readiness · watchdog · continuation · diagnostic boundary | 19/19 · 10/10 · 21/21 · `PRODUCTION_DIAGNOSTIC_BOUNDARY_TESTS_OK` (evidência MATCHES) |
 | Circuito (`memory-circuit-lifecycle-tests`) | 13/13 |
 | Rota: terminal de resultado · ownership · coupling gate | 13/13 · 7/7 · 6/6 |
 | CORE `validation-hygiene-tests.mjs` | ⟨…⟩ |
 | DEEP `final-acceptance.mjs` | ⟨…⟩ |
-| dependências | ⟨…⟩ |
+| dependências | `package.json` e `package-lock.json` idênticos à base; nenhuma dependência nova; `npm audit` 13 avisos (1 baixo, 2 moderados, 10 altos, 0 críticos) — idêntico à base, mesmo `package-lock.json` |
 
 ## 20. Bundle, assets e desempenho
 
@@ -368,28 +386,28 @@ Medido nos dois builds de produção, cada um com seu `.next`
 | --- | --- | --- | --- |
 | Home, JS e CSS iniciais | 773 682 B · 206 074 B | iguais (mesmos bytes) | 0 |
 | Home, arte (com o Game 03 selecionado) | 46 arquivos · 528 352 B | iguais | 0 |
-| Game 03, JS lazy | 95 457 B · 29 402 gz | ⟨182 005 B · 48 871 gz⟩ | ⟨+86,5 KB · **+19,5 KB gz**⟩ |
-| Game 03, CSS | 23 252 B | ⟨23 539 B⟩ | ⟨+0,3 KB⟩ |
+| Game 03, JS lazy | 95 457 B · 29 402 gz | 182 695 B · 49 010 gz | +87,2 KB · **+19,6 KB gz** (compositor, slots e lugares, arte por lugar) |
+| Game 03, CSS | 23 252 B | 23 539 B | +0,3 KB |
 | Rota · Circuito · Babylon | — | idênticos | 0 |
-| Entrada + preparar, arte | 10 · 359 610 B | ⟨11 · 440 064 B⟩ | ⟨+80 KB⟩ (o atlas do Estúdio) |
-| Rodada do Estúdio desde a entrada, arte | 15 · 394 086 B | ⟨16 · 474 714 B⟩ | ⟨+80,6 KB⟩ |
-| Observatório escolhido depois, arte | 13 · 356 922 B | ⟨…⟩ | ⟨…⟩ |
-| `public/assets/hidden-objects/` | 1 006 646 B | ⟨…⟩ | ⟨…⟩ |
+| Entrada + preparar, arte | 10 · 359 610 B | 11 · 440 064 B | +80,5 KB (o atlas do Estúdio; a prancha v4 é a sala sem as coisas que se movem) |
+| Rodada do Estúdio desde a entrada, arte | 15 · 394 086 B | 16 · 474 714 B | +80,6 KB |
+| Observatório escolhido depois, arte | 13 · 356 922 B | 14 · 399 308 B | +42,4 KB |
+| `public/assets/hidden-objects/` | 1 006 646 B | 1 128 480 B | +121,8 KB (v3 removido, v4 com dois atlas) |
 
 De onde vem o JS a mais (fonte, gzip 9; o chunk é minificado): a arte por lugar
 (`*.art.ts`: o retângulo do atlas e as medidas de 256 lugares) ≈ 10,7 KB gz; o compositor
 ≈ 7,6 KB gz de fonte com comentários; os slots e lugares nas duas salas ≈ 4,5 KB gz cada.
 Tudo no chunk lazy do Game 03; a Home não muda um byte.
 
-Assets dinâmicos: **um atlas por sala** (Estúdio 133 sprites, 143 680 B; Observatório
-⟨106 sprites, … B⟩). Memória: o atlas decodificado soma 5,7 MB (Estúdio) e ⟨3,2 MB⟩
-(Observatório) às pranchas (20,5 MB e 23,0 MB decodificadas, do mesmo tamanho de antes).
+Assets dinâmicos: **um atlas por sala** (Estúdio 133 sprites, 1024×1391, 143 680 B;
+Observatório 107 sprites, 1024×780, 94 754 B). Memória: o atlas decodificado soma 5,7 MB
+(Estúdio) e 3,2 MB (Observatório) às pranchas (20,5 MB e 23,0 MB decodificadas, do mesmo tamanho de antes).
 
 Desempenho (probe, build de produção): **1 commit do React** para montar um arranjo novo
 (Estúdio e Observatório); **0 commits** durante um arrasto de câmera; o compositor custa
-⟨0,48–0,73 ms⟩ por rodada em média (pior ⟨40 ms⟩, a primeira chamada com JIT frio); pior
-caso ⟨7 629⟩ de 20 000 passos, tentativa 0 de 6, ⟨347⟩ de 4 000 sorteios; nenhum
-*fallback*. Babylon não entra; nenhuma dependência nova.
+0,46–0,68 ms por rodada em média (pior 42 ms, a primeira chamada com JIT frio); pior caso
+7 629 de 20 000 passos, tentativa 0 de 6, 199 de 4 000 sorteios; nenhum *fallback* em
+12 000 rodadas. Babylon não entra; nenhuma dependência nova.
 
 ## 21. Limitações conhecidas
 
@@ -399,17 +417,24 @@ caso ⟨7 629⟩ de 20 000 passos, tentativa 0 de 6, ⟨347⟩ de 4 000 sorteios
   lugar (eles têm um só lugar, não "colapsam").
 - Algumas coisas ficam em casa na maior parte dos arranjos, porque os outros lugares delas
   conflitam com muitos vizinhos: a chaleira (sósia) na prateleira em 81,9%, a tesoura no
-  mapa em 80,5%, a lupa no mapa em 68,2% (Estúdio); o regador em 77,4% (Observatório).
+  mapa em 80,5%, a lupa no mapa em 68,2% (Estúdio); o regador em 79,9% (Observatório).
   Todas abaixo do teto de 85% (R25), mas são as que menos variam.
 - O tamanho de um objeto guardado continua limitado pela peça; os guardados têm dois
   lugares cada, ambos dentro da peça.
 - A arte é 2D: "atrás do baú" é a ordem de pintura, não perspectiva real; a sombra de
   contato de cada coisa vai com ela, mas não muda com o lugar. A revisão visual foi
   minha, não de um artista nem de crianças.
-- O JS lazy do Game 03 cresceu ⟨+19,5 KB gz⟩ (dados de lugar e o compositor); um formato
+- O JS lazy do Game 03 cresceu +19,6 KB gz (dados de lugar e o compositor); um formato
   compacto para a arte por lugar caberia numa missão de otimização.
-- A rodada do Estúdio carrega ⟨+80 KB⟩ de atlas.
+- A rodada do Estúdio carrega +80,6 KB de atlas; o Observatório, +42,4 KB.
 - A anti-repetição lembra só o **último** arranjo de cada sala, e só durante a visita.
+- A desordem que o jogo lê por lugar é **aditiva** (o anel medido sem nada que se move + a
+  contribuição de cada vizinho presente); a da composição inteira (o relatório de
+  calibração, C22) difere dela em até 0,002 na sala pintada (3 objetos do Estúdio, 1 do
+  Observatório). Isso troca 4 rodadas perto do limiar no Fácil e no Médio do Observatório
+  (1 326 / 4 021 rodadas pela leitura do jogo, 1 322 / 4 025 pelo relatório); o Estúdio
+  fica idêntico (884 / 3 160 / 8 005). O jogo é coerente consigo (R18): toda rodada que ele
+  sorteia cumpre a regra na sala que ele mostra.
 
 ## 22. Playtest humano — `TO_VALIDATE_IN_REPLAYABILITY_05`
 
