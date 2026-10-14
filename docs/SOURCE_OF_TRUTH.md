@@ -110,13 +110,14 @@ commit `da551b17eddbf0a156228c7e2a5fc9ca178180c9` (2026-10-05).
   anew from its seed — objects, look-alikes and scenery move between authored
   slots, same seed same room, "Recomeçar" keeps the arrangement — with art kit
   v4 (plate + sprite atlas). GAME03-FINAL-POLISH-LOCK-06
-  (`docs/GAME03_V1_LOCK_CANDIDATE_06.md`, branch
-  `feat/game03-final-polish-lock-06`) is the closing pass: no new gameplay,
-  polish and full regressions, and the record of **Game 03 V1 as a lock
-  candidate** (`GAME03_V1_LOCK_CANDIDATE`). That is a candidate only: Game 03
-  is not locked, the branch is not merged into `v06-portal-requires-lights`,
-  and nothing was promoted to production — the lock and merge decision follows
-  an independent review.
+  (`docs/GAME03_V1_LOCK_CANDIDATE_06.md`) completed the closing pass with no
+  new gameplay: polish, mobile/accessibility closure and full regressions.
+  Independent review accepted runtime/product anchor
+  `66944bc090f696e9fde3e0b012453db54d8fbc63`; the owner then completed the
+  final phone smoke without finding an apparent blocker. The canonical branch
+  was fast-forwarded to that accepted tree and **Game 03 V1 is now locked**
+  (`GAME03_V1_LOCK = PASS`). The authoritative lock record and post-lock
+  change policy are in `docs/GAME03_V1_LOCK.md`.
 - Rota 2.0 is a later phase, explicitly separate from v1.
 
 ## Reproducing the project
