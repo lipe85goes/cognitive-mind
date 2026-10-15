@@ -67,6 +67,20 @@ npm 10.9.4 (`npm ci` limpo a partir do `package-lock.json`), Next 16.3.6
 > `journeyCompleted`) continua como estava. Nenhum contrato do §4 mudou (o gate
 > segue verde). Ver `docs/GAME03_EXPERIENCE_02.md`.
 
+> **Pós-lock — HOME-WORLD-VISUAL-UNIFICATION-01 (a mudança de Home planejada
+> em `docs/GAME03_V1_LOCK.md`, "Next product order" 1):** a apresentação dos
+> mundos na Home passou a ser o kit do ateliê — a maquete de todo mundo é a
+> construção da do Estúdio (mesmo canvas, pedestal, câmera, luz e passes), com
+> um tamanho só, um renderer só (`WorldDiorama`), e Central e Jardim entram pela
+> própria maquete como Rota e Circuito. Nenhum contrato do §4 mudou: as tabelas
+> Home/mundos mantêm forma e chaves (`HOME_WORLD_LAYOUT`, `WORLD_VISUALS`,
+> configs de maquete); mudaram valores de apresentação (arte, tamanho). O grafo
+> estático da Home continua sem código de jogo (A3) e o gate segue verde. A
+> gameplay da Rota e do Circuito não foi tocada — nenhum arquivo de
+> `src/games/`, `src/engine/`, `src/data/`, `src/types/`, `src/app/` ou
+> `src/lib/` mudou (`home-atelier-kit-tests.mjs` K10). Ver
+> `docs/archive/home-world-visual-unification-01/`.
+
 ## 4. Frozen contracts
 
 ### 4.1 Rota Estratégica v1 — contrato de produto

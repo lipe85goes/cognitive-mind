@@ -144,7 +144,7 @@ export const WORLD_MASTER_SCENES: Record<
     renderer: "world-diorama",
     focalElement: "bloom",
     accessibleLabel:
-      "Jardim de Sementes: canteiro com sementes, broto e flor, regador, redoma de vidro e treliça com feijoeiro.",
+      "Jardim de Sementes: banco de semeadura com seis vasos (sementes, broto e flor), regador, redoma de vidro e trelica de feijao.",
     atmosphere: "/illustrations/home/home-background-desktop.webp",
     accent: "#9fc96a",
     accentSoft: "rgba(159, 201, 106, 0.2)",
@@ -163,7 +163,8 @@ export const WORLD_MASTER_SCENES: Record<
 export function hasWorldMasterScene(
   gameId: GameId,
 ): gameId is MasterSceneGameId {
-  return Object.hasOwn(WORLD_MASTER_SCENES, gameId);
+  // hasOwnProperty, not Object.hasOwn: older tablets (Safari < 15.4) still visit.
+  return Object.prototype.hasOwnProperty.call(WORLD_MASTER_SCENES, gameId);
 }
 
 export function getWorldMasterSceneConfig(

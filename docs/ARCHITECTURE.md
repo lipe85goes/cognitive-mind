@@ -149,6 +149,23 @@ Contrato da Home:
 - `Rota Estratégica` e `Circuito de Memória` são mundos-herói.
 - `Central de Comandos`, `Estúdio das Descobertas` (no slot da antiga Trilha, mesma geometria) e `Jardim de Sementes` são os mundos secundários.
 
+Maquetes da Home (HOME-WORLD-VISUAL-UNIFICATION-01): todo mundo é a mesma
+construção — o kit do ateliê, restaurado da maquete do Estúdio (a referência de
+qualidade): um canvas 1040×780, o mesmo pedestal, a mesma câmera e luz, os
+mesmos sete passes (`DIORAMA_PASSES` em
+`src/components/worlds/diorama/worldDioramaLayout.ts`, cada mundo só declara o
+prefixo do seu kit). A Home desenha todo mundo com `WorldDiorama`, num tamanho
+só (`HOME_DIORAMA_SIZE_REM`), ancorado pela maquete; nenhuma regra CSS por
+mundo — a cor vem de `worldVisuals.ts`. Rota, Circuito, Central e Jardim entram
+pela mesma maquete (cena mestre, `worldMasterSceneConfig.ts`); o Estúdio entra
+pela imagem do próprio cômodo. Arte: `tools/assets/home-atelier-kit.mjs`
+(contrato), `home-atelier-worlds.mjs` (os quatro mundos),
+`create_home_atelier_dioramas.mjs` (render); o Estúdio continua pintado pelo seu
+próprio kit (`create_hidden_objects_scene.mjs --home`). Provas:
+`tools/validation/home-atelier-kit-tests.mjs` (K01–K10, `--deep`,
+`--counterfactuals`) e `tools/validation/home-world-browser-probe.mjs` (build de
+produção).
+
 Assets ativos/permitidos da Home:
 
 - `public/illustrations/home/*`

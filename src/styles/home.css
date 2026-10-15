@@ -243,7 +243,7 @@
   /* Peça em foco grande: a galeria é de mundos, não de miniaturas. Em telas
      baixas a maquete cede pela altura, para a placa e os controles nunca se
      encontrarem (HOME-WORLD-VISUAL-UNIFICATION-01). */
-  --hj-w: min(var(--hj-size), 60vw, calc((100dvh - 15rem) * 4 / 3));
+  --hj-w: min(var(--hj-size), 60vw, calc((100vh - 15rem) * 4 / 3));
   position: absolute;
   z-index: var(--hj-z);
   left: 50%;
