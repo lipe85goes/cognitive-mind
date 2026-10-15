@@ -52,13 +52,13 @@ scene); the Home has no crop or ground of its own any more.
 | `home-atelier-kit-tests.mjs --deep --counterfactuals` | 11/11 — K01–K10 hold; at the base K01, K04, K07 and K08 all fail (two canvases, sizes 48/47/43, entry maquettes for two worlds, two Home renderers + 8 per-world CSS selectors) |
 | `home-world-browser-probe.mjs` (production build) | 28/28 (`probe/home-world-browser-probe.json`) |
 | `gameplay-platform-lock-v1.mjs` · `--counterfactuals` | 18/18 · `LOCK_GATE_COUNTERFACTUALS_HOLD` |
-| Game 03 suites (skeleton 38, experience 45, multiscene 20, calibration 28, interactions, replayability, final-lock 9) | all green |
-| Game 03 `--counterfactuals` | multiscene, calibration, final-lock: HOLD; skeleton, experience: see the mission report |
+| Game 03 suites (skeleton 38, experience 45, multiscene 20, calibration 28, interactions 28, replayability 36, final-lock 9) | all green |
+| Game 03 `--counterfactuals` | all HOLD — skeleton 19, experience 33, multiscene 19, calibration 17, final-lock 14 caught (base + every mutant) |
 | `hidden-objects-browser-probe.mjs` desktop, mobile, legacy, reduced-motion (through the Home) | 68/68 |
 | Home → Circuito / Central / Jardim → intro → the game started | all three, no page error |
 | CORE (`validation-hygiene-tests.mjs`) | 15/15 · `VALIDATION_CHECK_IS_READ_ONLY` · evidence matches |
 | DEEP (`final-acceptance.mjs`) | 1080/1080 · 270/270 · recovery OK · evidence matches |
-| Home → Rota (continuation `journey`, and a direct launch) | in this container the Rota's board does not report ready within its 28 s entry watchdog under headless SwiftShader — **identically on the base build** (`720b404`, same phases covering → preparing → error, no page error): the environment limit recorded as D18 in the lock document, not this change |
+| Home → Rota (continuation `journey`, and a direct launch) | in this container the Rota's board does not report ready within its 28 s entry watchdog under headless SwiftShader — **identically on the base build** (`720b404`, same phases covering → preparing → error, no page error): the environment limit recorded as D18 in the lock document, not this change. WebGL2 is available (ANGLE · SwiftShader on Vulkan); two presses of the product's "Tentar novamente" end the same way on both builds. The Rota's gameplay is covered by CORE, DEEP, the lock gate and K10 (no file of the Rota moved) |
 
 ## Payload (production build, cold cache)
 
