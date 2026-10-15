@@ -7,8 +7,6 @@ import type { WorldKey } from "@/data/worlds";
 import { getWorldVisual } from "@/components/worlds/worldVisuals";
 import { WorldEmblem } from "@/components/worlds/WorldEmblem";
 import { WorldDiorama } from "@/components/worlds/diorama/WorldDiorama";
-import { WorldMasterScene } from "@/components/worlds/master-scene/WorldMasterScene";
-import { hasWorldMasterScene } from "@/components/worlds/master-scene/worldMasterSceneConfig";
 import type { HomeWorldLayout } from "./homeLayout";
 
 export interface HomeWorldEntry {
@@ -111,32 +109,20 @@ export function WorldObject({
         <span className="hj-world-aura" aria-hidden="true" />
         <span className="hj-world-diorama" aria-hidden="true">
           <span className="hj-world-art">
-            {hasWorldMasterScene(entry.gameId) ? (
-              <WorldMasterScene
-                gameId={entry.gameId}
-                context="home"
-                state={selected ? "focused" : "idle"}
-                /* Wide enough that the optimizer never serves a soft, detail-
-                   free variant — the stone, bronze and trellis must survive. */
-                sizes={
-                  selected
-                    ? "(max-width: 899px) 92vw, 48rem"
-                    : "(max-width: 899px) 74vw, 30rem"
-                }
-              />
-            ) : (
-              /* Os mundos secundários também são maquetes em camadas: mesma
-                 câmera, mesma luz e sombra de contato própria. */
-              <WorldDiorama
-                gameId={entry.gameId}
-                state={selected ? "focused" : "idle"}
-                sizes={
-                  selected
-                    ? "(max-width: 899px) 92vw, 44rem"
-                    : "(max-width: 899px) 74vw, 28rem"
-                }
-              />
-            )}
+            {/* HOME-WORLD-VISUAL-UNIFICATION-01: todo mundo é a mesma
+                construção do ateliê — mesmo pedestal, câmera, luz e passes —
+                e chega à Home pelo mesmo renderer, sem recorte nem chão
+                próprios. Largura pedida grande o bastante para o otimizador
+                nunca servir uma variante sem detalhe. */}
+            <WorldDiorama
+              gameId={entry.gameId}
+              state={selected ? "focused" : "idle"}
+              sizes={
+                selected
+                  ? "(max-width: 899px) 92vw, 46rem"
+                  : "(max-width: 899px) 74vw, 28rem"
+              }
+            />
           </span>
         </span>
       </button>

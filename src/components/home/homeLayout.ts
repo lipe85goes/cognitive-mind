@@ -22,6 +22,14 @@ export interface HomeWorldLayout {
   };
 }
 
+/**
+ * HOME-WORLD-VISUAL-UNIFICATION-01: every maquette is the atelier kit's — the
+ * same canvas, with the pedestal in the same place — so every world is shown
+ * at the same size. The pedestal, the shadow and the plaque then land on the
+ * same line whichever world is chosen; the tier still says which worlds lead.
+ */
+export const HOME_DIORAMA_SIZE_REM = 46;
+
 export const HOME_WORLD_LAYOUT: Record<GameId, HomeWorldLayout> = {
   "escape-maze": {
     gameId: "escape-maze",
@@ -30,9 +38,7 @@ export const HOME_WORLD_LAYOUT: Record<GameId, HomeWorldLayout> = {
     tier: "hero",
     navOrder: 1,
     mobileOrder: 1,
-    // UNIFIED-VISUAL-01: heroes grew slightly to compensate for the wider
-    // diorama render framing (the maquette now fits fully inside the frame).
-    desktop: { sizeRem: 48 },
+    desktop: { sizeRem: HOME_DIORAMA_SIZE_REM },
   },
   "color-sequence": {
     gameId: "color-sequence",
@@ -41,7 +47,7 @@ export const HOME_WORLD_LAYOUT: Record<GameId, HomeWorldLayout> = {
     tier: "hero",
     navOrder: 2,
     mobileOrder: 2,
-    desktop: { sizeRem: 47 },
+    desktop: { sizeRem: HOME_DIORAMA_SIZE_REM },
   },
   "security-panel": {
     gameId: "security-panel",
@@ -50,7 +56,7 @@ export const HOME_WORLD_LAYOUT: Record<GameId, HomeWorldLayout> = {
     tier: "quiet",
     navOrder: 3,
     mobileOrder: 3,
-    desktop: { sizeRem: 43 },
+    desktop: { sizeRem: HOME_DIORAMA_SIZE_REM },
   },
   "hidden-objects": {
     gameId: "hidden-objects",
@@ -59,7 +65,7 @@ export const HOME_WORLD_LAYOUT: Record<GameId, HomeWorldLayout> = {
     tier: "quiet",
     navOrder: 4,
     mobileOrder: 4,
-    desktop: { sizeRem: 43 },
+    desktop: { sizeRem: HOME_DIORAMA_SIZE_REM },
   },
   "seed-garden": {
     gameId: "seed-garden",
@@ -68,7 +74,7 @@ export const HOME_WORLD_LAYOUT: Record<GameId, HomeWorldLayout> = {
     tier: "quiet",
     navOrder: 5,
     mobileOrder: 5,
-    desktop: { sizeRem: 43 },
+    desktop: { sizeRem: HOME_DIORAMA_SIZE_REM },
   },
 };
 

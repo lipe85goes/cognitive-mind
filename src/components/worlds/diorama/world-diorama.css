@@ -1,3 +1,7 @@
+/* HOME-WORLD-VISUAL-UNIFICATION-01: one rule set for every maquette. Every
+   kit has the same seven passes (worldDioramaLayout.ts → DIORAMA_PASSES), so
+   no world needs a selector of its own: focus, depth and light behave alike,
+   and each world's colour arrives through --wd-accent*. */
 .wd-shell {
   --wd-accent: #63ddca;
   --wd-accent-soft: rgba(99, 221, 202, 0.22);
@@ -133,38 +137,6 @@
 
 .wd-shell[data-state="entering"] .wd-layer-front {
   transform: translateY(0.7rem) scale(1.035);
-}
-
-.wd-shell[data-world="route"][data-state="focused"] .wd-layer-portal,
-.wd-shell[data-world="route"][data-state="entering"] .wd-layer-portal {
-  filter:
-    drop-shadow(0 0 0.95rem rgba(99, 221, 202, 0.78))
-    drop-shadow(0 0 1.9rem rgba(99, 221, 202, 0.32))
-    saturate(1.16);
-}
-
-.wd-shell[data-world="route"][data-state="focused"] .wd-layer-lights,
-.wd-shell[data-world="route"][data-state="entering"] .wd-layer-lights {
-  opacity: 1;
-  filter:
-    drop-shadow(0 0 0.55rem rgba(244, 210, 94, 0.7))
-    drop-shadow(0 0 1.1rem rgba(244, 210, 94, 0.24));
-}
-
-.wd-shell[data-world="circuit"][data-state="focused"] .wd-layer-core,
-.wd-shell[data-world="circuit"][data-state="entering"] .wd-layer-core {
-  filter:
-    drop-shadow(0 0 0.75rem rgba(248, 214, 122, 0.75))
-    drop-shadow(0 0 1.4rem rgba(248, 214, 122, 0.28))
-    saturate(1.12);
-}
-
-.wd-shell[data-world="circuit"][data-state="focused"] .wd-layer-circuit-energy,
-.wd-shell[data-world="circuit"][data-state="entering"] .wd-layer-circuit-energy {
-  opacity: 0.94;
-  filter:
-    drop-shadow(0 0 0.52rem rgba(255, 224, 126, 0.55))
-    saturate(1.12);
 }
 
 .wd-shell[data-variant="transition"] {

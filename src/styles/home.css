@@ -192,12 +192,16 @@
 }
 
 /* —— Explorer presence (decorative, non-mascot) —— */
+/* HOME-WORLD-VISUAL-UNIFICATION-01: the Explorer stands at the table's near
+   left corner, in front of the gallery, where no world ever passes — before,
+   it sat under the left neighbour's pedestal and read as part of that world. */
 .hj-explorer {
   position: absolute;
-  z-index: 3;
-  left: 18%;
-  top: 74%;
-  width: 5.75rem;
+  z-index: 6;
+  left: 6.5%;
+  top: 86%;
+  width: 4.25rem;
+  opacity: 0.88;
   transform: translate(-50%, -50%);
   pointer-events: none;
 }
@@ -208,8 +212,8 @@
   inset: 44% -18% -8%;
   border-radius: 999px;
   background:
-    radial-gradient(circle, rgba(72, 195, 184, 0.3), transparent 64%),
-    url("/illustrations/home/world-glow.webp") center / contain no-repeat;
+    radial-gradient(closest-side, rgba(255, 226, 168, 0.2), transparent 60%),
+    radial-gradient(closest-side, rgba(72, 195, 184, 0.3), transparent);
   opacity: 0.72;
 }
 
@@ -240,8 +244,10 @@
   z-index: var(--hj-z);
   left: 50%;
   top: 54%;
-  /* Peça em foco grande: a galeria é de mundos, não de miniaturas. */
-  width: min(var(--hj-size), 60vw);
+  /* Peça em foco grande: a galeria é de mundos, não de miniaturas. Em telas
+     baixas a maquete cede pela altura, para a placa e os controles nunca se
+     encontrarem (HOME-WORLD-VISUAL-UNIFICATION-01). */
+  width: min(var(--hj-size), 60vw, calc((100dvh - 15rem) * 4 / 3));
   min-width: 12rem;
   opacity: var(--hj-opacity);
   transform:
@@ -339,6 +345,22 @@
   border-radius: 2.2rem;
 }
 
+/* A world's name selects it as well as its maquette does: on a world that is
+   not chosen the plaque lets the pointer through to this extension of the
+   world's own button, so a click or tap on the label is never lost. */
+.hj-world-object:not(.hj-world-selected) .hj-world-select::after {
+  content: "";
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  bottom: -3.6rem;
+  height: 3.8rem;
+}
+
+.hj-world-object:not(.hj-world-selected) .hj-world-plaque {
+  pointer-events: none;
+}
+
 .hj-world-selected .hj-world-select {
   filter: saturate(1.04);
 }
@@ -380,22 +402,25 @@
   opacity: 0.42;
 }
 
+/* HOME-WORLD-VISUAL-UNIFICATION-01: one glow rule for every world — a warm
+   core (the atelier's light) inside the world's own accent, both sized to the
+   box (closest-side) so the light fades out before any edge. */
 .hj-world-aura {
   position: absolute;
   z-index: -1;
-  inset: 11% 3% 22%;
-  border-radius: 999px;
+  inset: 6% 2% 12%;
+  border-radius: 50%;
   background:
-    url("/illustrations/home/world-glow.webp") center / contain no-repeat,
-    radial-gradient(circle, var(--hj-world-glow), transparent 68%);
-  opacity: 0.26;
+    radial-gradient(closest-side, rgba(255, 226, 168, 0.2), transparent 58%),
+    radial-gradient(closest-side, var(--hj-world-glow), transparent);
+  opacity: 0.3;
   transition: opacity 260ms ease;
 }
 
 .hj-world-selected .hj-world-aura,
 .hj-world-select:hover .hj-world-aura,
 .hj-world-select:focus-visible .hj-world-aura {
-  opacity: 0.64;
+  opacity: 0.78;
 }
 
 .hj-world-diorama {
@@ -411,31 +436,6 @@
   place-items: center;
 }
 
-.hj-world-sprite {
-  display: block;
-  width: 100%;
-  height: auto;
-  object-fit: contain;
-  filter:
-    drop-shadow(0 1.35rem 1.15rem rgba(0, 0, 0, 0.42))
-    drop-shadow(0 0.24rem 0.18rem rgba(255, 248, 210, 0.2));
-  transform-origin: 50% 76%;
-}
-
-.hj-world-offset-neg-1 .hj-world-sprite,
-.hj-world-offset-pos-1 .hj-world-sprite {
-  filter:
-    drop-shadow(0 1rem 0.9rem rgba(0, 0, 0, 0.34))
-    drop-shadow(0 0.18rem 0.16rem rgba(255, 248, 210, 0.16));
-}
-
-.hj-world-offset-neg-2 .hj-world-sprite,
-.hj-world-offset-pos-2 .hj-world-sprite {
-  filter: drop-shadow(0 0.8rem 0.7rem rgba(0, 0, 0, 0.3));
-}
-
-/* Flat baked-background heroes (fallback only): crop + soft ellipse edge.
-   Layered dioramas never use this — their silhouette is the real object. */
 .hj-stage[data-entering="true"] .hj-world-selected {
   --hj-scale: 1.025;
 }
@@ -550,36 +550,9 @@
   white-space: nowrap;
 }
 
-/* —— Per-world accents —— */
-.hj-world-route {
-  --hj-world-glow: rgba(72, 195, 184, 0.46);
-  --hj-world-plaque: #245b6b;
-  --hj-world-plaque-dark: #143f52;
-}
-
-.hj-world-memory {
-  --hj-world-glow: rgba(250, 200, 80, 0.4);
-  --hj-world-plaque: #71522b;
-  --hj-world-plaque-dark: #4a351d;
-}
-
-.hj-world-commands {
-  --hj-world-glow: rgba(61, 183, 172, 0.34);
-  --hj-world-plaque: #365c4b;
-  --hj-world-plaque-dark: #203c31;
-}
-
-.hj-world-discovery {
-  --hj-world-glow: rgba(232, 164, 111, 0.34);
-  --hj-world-plaque: #6b3f24;
-  --hj-world-plaque-dark: #452816;
-}
-
-.hj-world-garden {
-  --hj-world-glow: rgba(150, 204, 99, 0.36);
-  --hj-world-plaque: #526d34;
-  --hj-world-plaque-dark: #314520;
-}
+/* Per-world colour comes from data only: WorldObject sets --hj-world-accent,
+   --hj-world-glow and --hj-world-plaque from worldVisuals.ts. No world has a
+   selector of its own here. */
 
 /* —— Gallery controls —— */
 .hj-gallery-controls {
@@ -647,6 +620,12 @@
 .hj-gallery-pip-active::before {
   width: 1.34rem;
   background: linear-gradient(90deg, #63ddca, #e2b859);
+}
+
+@media (min-width: 900px) and (max-height: 820px) {
+  .hj-world-object {
+    top: 51%;
+  }
 }
 
 /* —— Mobile: vertical scene gallery with scroll-snap —— */
@@ -759,11 +738,6 @@
     width: min(70vw, 21rem);
   }
 
-  .hj-world-art-rendered .hj-world-art {
-    inset: -2% -5% 0;
-  }
-
-  .hj-world-art-rendered .hj-world-diorama,
   .hj-world-art-diorama .hj-world-diorama {
     width: min(88vw, 30rem);
   }
@@ -800,12 +774,13 @@
   }
 
   .hj-world-plaque {
-    grid-template-columns: 1fr;
-    gap: 0.58rem;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.58rem 0.7rem;
     width: min(92%, 21rem);
   }
 
   .hj-world-enter {
+    grid-column: 1 / -1;
     width: 100%;
   }
 

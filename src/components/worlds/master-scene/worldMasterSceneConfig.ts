@@ -2,13 +2,22 @@ import type { CSSProperties } from "react";
 import type { GameId } from "@/types/game";
 import { WORLD_DIORAMA_CONFIGS } from "@/components/worlds/diorama/worldDioramaLayout";
 
+/**
+ * HOME-WORLD-VISUAL-UNIFICATION-01: every world painted with the atelier kit
+ * has a master scene — the same maquette from the Home into the threshold and
+ * the introduction. The Estúdio's entry keeps its room picture (Game 03's own
+ * world visuals).
+ */
 export type MasterSceneGameId = Extract<
   GameId,
-  "escape-maze" | "color-sequence"
+  "escape-maze" | "color-sequence" | "security-panel" | "seed-garden"
 >;
 
+/**
+ * The Home draws every world's maquette directly (WorldDiorama, at rest and
+ * uncropped — the same files); the master scene picks it up at the threshold.
+ */
 export type WorldMasterSceneContext =
-  | "home"
   | "transition"
   | "intro"
   | "setup"
@@ -24,9 +33,9 @@ interface WorldMasterSceneCrop {
 
 export interface WorldMasterSceneConfig {
   gameId: MasterSceneGameId;
-  world: "route" | "circuit";
+  world: "route" | "circuit" | "commands" | "garden";
   renderer: "world-diorama";
-  focalElement: "portal" | "core";
+  focalElement: "portal" | "core" | "seal" | "bloom";
   accessibleLabel: string;
   atmosphere: string;
   accent: string;
@@ -75,7 +84,7 @@ export const WORLD_MASTER_SCENES: Record<
     renderer: "world-diorama",
     focalElement: "portal",
     accessibleLabel:
-      "Maquete da Rota Estrategica com explorador, guardiao, luzes e portal teal.",
+      "Maquete da Rota Estrategica: tabuleiro com explorador, guardiao, luzes, ruina e portal teal.",
     atmosphere: "/illustrations/home/home-background-desktop.webp",
     accent: "#63ddca",
     accentSoft: "rgba(99, 221, 202, 0.24)",
@@ -83,7 +92,6 @@ export const WORLD_MASTER_SCENES: Record<
     warmLight: "#e1b45e",
     essentialAssets: dioramaAssets("escape-maze"),
     crops: {
-      home: { scale: 1, x: "0%", y: "0%" },
       transition: { scale: 1.14, x: "-2%", y: "1%" },
       intro: { scale: 1.08, x: "-1%", y: "1%" },
       setup: { scale: 1.02, x: "0%", y: "0%" },
@@ -96,7 +104,7 @@ export const WORLD_MASTER_SCENES: Record<
     renderer: "world-diorama",
     focalElement: "core",
     accessibleLabel:
-      "Circuito de Memoria circular com quatro pads coloridos e cristal central.",
+      "Circuito de Memoria: disco de pedra com quatro pads coloridos e cristal central, num berco de bronze.",
     atmosphere: "/illustrations/memory-circuit/memory-room-bg.webp",
     accent: "#f2c65a",
     accentSoft: "rgba(242, 198, 90, 0.22)",
@@ -104,8 +112,47 @@ export const WORLD_MASTER_SCENES: Record<
     warmLight: "#f2c65a",
     essentialAssets: dioramaAssets("color-sequence"),
     crops: {
-      home: { scale: 0.96, x: "0%", y: "1%" },
       transition: { scale: 1.16, x: "0%", y: "2%" },
+      intro: { scale: 1.08, x: "0%", y: "1%" },
+      setup: { scale: 1.02, x: "0%", y: "0%" },
+      "game-shell": { scale: 1, x: "0%", y: "0%" },
+    },
+  },
+  "security-panel": {
+    gameId: "security-panel",
+    world: "commands",
+    renderer: "world-diorama",
+    focalElement: "seal",
+    accessibleLabel:
+      "Central de Comandos: console de madeira com o grande selo teal, alavancas e o armario de mostradores.",
+    atmosphere: "/illustrations/home/home-background-desktop.webp",
+    accent: "#6bc7b7",
+    accentSoft: "rgba(107, 199, 183, 0.2)",
+    accentDeep: "#214b43",
+    warmLight: "#e1b45e",
+    essentialAssets: dioramaAssets("security-panel"),
+    crops: {
+      transition: { scale: 1.14, x: "0%", y: "2%" },
+      intro: { scale: 1.08, x: "0%", y: "1%" },
+      setup: { scale: 1.02, x: "0%", y: "0%" },
+      "game-shell": { scale: 1, x: "0%", y: "0%" },
+    },
+  },
+  "seed-garden": {
+    gameId: "seed-garden",
+    world: "garden",
+    renderer: "world-diorama",
+    focalElement: "bloom",
+    accessibleLabel:
+      "Jardim de Sementes: canteiro com sementes, broto e flor, regador, redoma de vidro e treliça com feijoeiro.",
+    atmosphere: "/illustrations/home/home-background-desktop.webp",
+    accent: "#9fc96a",
+    accentSoft: "rgba(159, 201, 106, 0.2)",
+    accentDeep: "#365124",
+    warmLight: "#e1b45e",
+    essentialAssets: dioramaAssets("seed-garden"),
+    crops: {
+      transition: { scale: 1.14, x: "0%", y: "2%" },
       intro: { scale: 1.08, x: "0%", y: "1%" },
       setup: { scale: 1.02, x: "0%", y: "0%" },
       "game-shell": { scale: 1, x: "0%", y: "0%" },
@@ -116,7 +163,7 @@ export const WORLD_MASTER_SCENES: Record<
 export function hasWorldMasterScene(
   gameId: GameId,
 ): gameId is MasterSceneGameId {
-  return gameId === "escape-maze" || gameId === "color-sequence";
+  return Object.hasOwn(WORLD_MASTER_SCENES, gameId);
 }
 
 export function getWorldMasterSceneConfig(
