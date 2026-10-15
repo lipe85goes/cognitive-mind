@@ -240,18 +240,22 @@
   --hj-rise: 0rem;
   --hj-opacity: 1;
   --hj-z: 5;
-  position: absolute;
-  z-index: var(--hj-z);
-  left: 50%;
-  top: 54%;
   /* Peça em foco grande: a galeria é de mundos, não de miniaturas. Em telas
      baixas a maquete cede pela altura, para a placa e os controles nunca se
      encontrarem (HOME-WORLD-VISUAL-UNIFICATION-01). */
-  width: min(var(--hj-size), 60vw, calc((100dvh - 15rem) * 4 / 3));
+  --hj-w: min(var(--hj-size), 60vw, calc((100dvh - 15rem) * 4 / 3));
+  position: absolute;
+  z-index: var(--hj-z);
+  left: 50%;
+  top: calc(54% - 1.5rem);
+  width: var(--hj-w);
   min-width: 12rem;
   opacity: var(--hj-opacity);
+  /* Ancorada pela maquete (4:3 → metade da altura = 0.375 da largura), não
+     pela caixa inteira: uma descrição de duas linhas alonga a placa para
+     baixo sem erguer o mundo — pedestal, sombra e placa na mesma linha. */
   transform:
-    translate(-50%, -50%)
+    translate(-50%, calc(var(--hj-w) * -0.375))
     translateX(var(--hj-shift))
     translateY(var(--hj-rise))
     scale(var(--hj-scale));
@@ -624,7 +628,7 @@
 
 @media (min-width: 900px) and (max-height: 820px) {
   .hj-world-object {
-    top: 51%;
+    top: calc(51% - 1.5rem);
   }
 }
 

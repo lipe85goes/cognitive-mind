@@ -1,8 +1,10 @@
 # MindFlow World Master Scenes
 
 Este documento define o contrato visual compartilhado entre Home, transicao,
-introducao, preparacao e game shell dos dois mundos principais do MindFlow:
-Rota Estrategica e Circuito de Memoria.
+introducao, preparacao e game shell dos mundos do MindFlow pintados com o kit
+do atelie: Rota Estrategica e Circuito de Memoria (os mundos principais) e,
+desde HOME-WORLD-VISUAL-UNIFICATION-01, Central de Comandos e Jardim de
+Sementes.
 
 O sistema existe para que o Explorador reconheca o mesmo mundo durante toda a
 entrada. Ele nao altera regras, mapas, sequencias, pontuacao, dificuldade,
@@ -21,11 +23,15 @@ Cada mundo principal possui uma cena mestre com:
 
 Os contextos oficiais sao:
 
-1. `home`
-2. `transition`
-3. `intro`
-4. `setup`
-5. `game-shell`
+1. `transition`
+2. `intro`
+3. `setup`
+4. `game-shell`
+
+A Home (HOME-WORLD-VISUAL-UNIFICATION-01) desenha a maquete de todo mundo
+direto, pelo mesmo `WorldDiorama`, em repouso e sem recorte — os mesmos
+arquivos que a cena mestre usa a partir do limiar. O contexto `home` deixou de
+existir: nao havia nada a recortar.
 
 O crop pode aproximar ou afastar a cena. O mundo, seus materiais e seu foco
 visual nao podem ser substituidos por uma arte desconectada entre etapas.
@@ -63,12 +69,13 @@ Identidade oficial:
 
 A cena mestre reutiliza o kit em camadas em:
 
-`public/illustrations/home/dioramas/route-world/`
+`public/illustrations/home/atelier/route/` (+ a sombra de contato
+compartilhada em `atelier/shared/`)
 
 `essentialAssets` em `worldMasterSceneConfig.ts` deriva de
-`WORLD_DIORAMA_CONFIGS`, que resolve para esse diretório. O kit V02 anterior
-(`dioramas/route/`) foi substituído por HOME-HERO-WORLDS-3D-01 e removido em
-MINDFLOW-CLEANUP-03C.
+`WORLD_DIORAMA_CONFIGS`, que resolve para esse diretório. O kit-ilha de
+HOME-HERO-WORLDS-3D-01 (`dioramas/route-world/`) foi substituído pelo kit do
+atelie em HOME-WORLD-VISUAL-UNIFICATION-01 e removido.
 
 O runtime Babylon continua sendo a implementacao jogavel. A cena mestre nao
 substitui o board 3D e nao interfere em picking, camera, D-pad ou teclado.
@@ -85,14 +92,14 @@ Identidade oficial:
 - cores: teal e ambar como base, com coral, azul, verde e dourado nos pads;
 - energia contida: brilho orienta, sem neon agressivo.
 
-A cena mestre carrega **exatamente os mesmos arquivos do jogo ativo**:
-
-`public/assets/memory-circuit/v2/` (gerado por
-`tools/blender/create_memory_circuit_visual_v2.py`).
-
-Nao existe copia derivada. `CIRCUIT_MASTER_ASSETS` aponta direto para esse kit,
-entao Home, transicao, introducao, preparacao e jogo mostram o mesmo artefato —
-so o crop, a escala e a energia mudam por contexto.
+O jogo desenha o board V2 de `public/assets/memory-circuit/v2/` (gerado por
+`tools/blender/create_memory_circuit_visual_v2.py`; `CIRCUIT_MASTER_ASSETS`
+aponta direto para esse kit). Home, limiar e introducao mostram, desde
+HOME-HERO-WORLDS-3D-01, a maquete em camadas do mundo — hoje a do kit do
+atelie, `public/illustrations/home/atelier/circuit/` (HOME-WORLD-VISUAL-
+UNIFICATION-01): o mesmo artefato no vocabulario do board (quatro pads nos
+mesmos lugares em volta do core, bronze, pedra), assentado no pedestal comum.
+Nao existe copia derivada de nenhum dos dois kits.
 
 A pasta `public/illustrations/worlds/master-scenes/circuit/` foi removida na
 CIRCUIT-PRESENTATION-FINAL-01-FIX: manter uma segunda copia com nomes antigos
@@ -100,17 +107,26 @@ fez o otimizador de imagens do Next continuar servindo a variante V1 em cache
 para a Home e a introducao enquanto o jogo ja mostrava a V2. O primeiro kit PNG
 continua arquivado em `docs/archive/memory-circuit/legacy-kit-v1/`.
 
+## Central de Comandos e Jardim de Sementes
+
+HOME-WORLD-VISUAL-UNIFICATION-01 deu aos dois a mesma continuidade: a Home, o
+limiar e a introducao mostram a mesma maquete (`atelier/commands/`,
+`atelier/garden/`), no lugar dos sprites planos `world-panel.webp` /
+`world-garden.webp` (que ficam como `transitionArt`/`introArt` de reserva, como
+os `-hero` da Rota e do Circuito). Elemento focal: o grande selo (Central) e a
+flor do quarto vaso (Jardim). Os jogos legados em si nao mudaram.
+
 ## Crops por contexto
 
 Os valores ficam centralizados em `WORLD_MASTER_SCENES`.
 
-| Contexto | Rota | Circuito | Intencao |
-| --- | --- | --- | --- |
-| Home | cena completa | board completo | reconhecer o mundo na estante |
-| Transition | aproximacao leve | aproximacao do core | entrar sem trocar a arte |
-| Intro | board e objetivo legiveis | quatro pads e core legiveis | explicar usando o mundo real |
-| Setup | enquadramento de preparacao | board em repouso | preparar sem ruptura |
-| Game shell | runtime em escala natural | runtime em escala natural | jogar no mesmo ambiente |
+| Contexto | Rota | Circuito | Central / Jardim | Intencao |
+| --- | --- | --- | --- | --- |
+| Home | — (maquete inteira, sem recorte) | — | — | reconhecer o mundo na estante |
+| Transition | aproximacao leve | aproximacao do core | aproximacao do selo / da flor | entrar sem trocar a arte |
+| Intro | board e objetivo legiveis | quatro pads e core legiveis | maquete legivel | explicar usando o mundo real |
+| Setup | enquadramento de preparacao | board em repouso | — | preparar sem ruptura |
+| Game shell | runtime em escala natural | runtime em escala natural | — | jogar no mesmo ambiente |
 
 ## Placas e acoes
 
@@ -133,15 +149,16 @@ O foco por teclado deve permanecer sempre visivel.
 
 ## Mundos secundarios
 
-Central de Comandos, Trilha Logica e Jardim de Sementes continuam jogaveis.
-Nesta fase recebem somente o shell leve `.wms-secondary-shell`, que unifica:
+Central de Comandos e Jardim de Sementes continuam jogaveis (a Trilha Logica
+foi aposentada em GAME03-SKELETON-01). Dentro do jogo recebem somente o shell
+leve `.wms-secondary-shell`, que unifica:
 
 - fundo e espacamento externo;
 - temperatura visual;
 - borda e foco dos containers compartilhados.
 
-Eles nao reutilizam a cena mestre da Rota ou do Circuito e nao foram
-redesenhados. Cada um precisa de um futuro kit visual proprio.
+Os jogos em si nao foram redesenhados; a maquete de cada um (Home, limiar e
+introducao) e do kit do atelie desde HOME-WORLD-VISUAL-UNIFICATION-01.
 
 ## Limites protegidos
 
@@ -176,7 +193,11 @@ importadas pelo app.
   (CIRCUIT-MASTER-FINAL-01).
 - Em viewports desktop muito baixas, o setup/game da Rota pode exigir scroll
   vertical para mostrar simultaneamente cabecalho, board e controles.
-- Os mundos secundarios ainda nao possuem cenas mestre proprias.
+- Central e Jardim tem cena mestre ate a introducao; os jogos legados ainda
+  nao tem um game shell visual proprio.
+- O Circuito na Home e no limiar e a maquete do kit do atelie (o mesmo
+  vocabulario do board V2: quatro pads, core, bronze); o jogo continua
+  desenhando o board V2 de `public/assets/memory-circuit/v2/`.
 - Esta missao nao inclui 9x9, armadilha ativa, HOME-02 ou redesign dos jogos
   legados.
 

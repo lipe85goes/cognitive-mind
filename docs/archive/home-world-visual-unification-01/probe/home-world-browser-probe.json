@@ -1,0 +1,438 @@
+{
+  "base": "http://localhost:3100",
+  "scenarios": [
+    "desktop",
+    "keyboard",
+    "launch",
+    "phone",
+    "short",
+    "reduced"
+  ],
+  "checks": [
+    {
+      "scenario": "desktop",
+      "name": "FIVE_WORLDS_ONE_CONSTRUCTION",
+      "pass": true,
+      "facts": {
+        "worlds": [
+          "Rota Estratégica:7",
+          "Circuito de Memória:7",
+          "Central de Comandos:7",
+          "Estúdio das Descobertas:7",
+          "Jardim de Sementes:7"
+        ]
+      }
+    },
+    {
+      "scenario": "desktop",
+      "name": "EVERY_WORLD_SELECTED_BY_ITS_PIP",
+      "pass": true,
+      "facts": {
+        "selections": [
+          {
+            "world": "route",
+            "ok": true
+          },
+          {
+            "world": "circuit",
+            "ok": true
+          },
+          {
+            "world": "commands",
+            "ok": true
+          },
+          {
+            "world": "discovery",
+            "ok": true
+          },
+          {
+            "world": "garden",
+            "ok": true
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "desktop",
+      "name": "ONE_LINE_FOR_EVERY_WORLD",
+      "pass": true,
+      "facts": {
+        "lines": {
+          "route": {
+            "plaqueTop": 714,
+            "artBottom": 732,
+            "artWidth": 736
+          },
+          "circuit": {
+            "plaqueTop": 714,
+            "artBottom": 732,
+            "artWidth": 736
+          },
+          "commands": {
+            "plaqueTop": 714,
+            "artBottom": 732,
+            "artWidth": 736
+          },
+          "discovery": {
+            "plaqueTop": 714,
+            "artBottom": 732,
+            "artWidth": 736
+          },
+          "garden": {
+            "plaqueTop": 714,
+            "artBottom": 732,
+            "artWidth": 736
+          }
+        }
+      }
+    },
+    {
+      "scenario": "desktop",
+      "name": "ARROWS_CYCLE",
+      "pass": true,
+      "facts": {
+        "seen": [
+          "Circuito de Memória",
+          "Central de Comandos",
+          "Estúdio das Descobertas",
+          "Jardim de Sementes",
+          "Rota Estratégica"
+        ]
+      }
+    },
+    {
+      "scenario": "desktop",
+      "name": "A_NEIGHBOURS_PLAQUE_SELECTS_IT",
+      "pass": true,
+      "facts": {
+        "afterHover": "Rota Estratégica",
+        "afterClick": "Circuito de Memória",
+        "neighbourName": "Circuito de Memória"
+      }
+    },
+    {
+      "scenario": "desktop",
+      "name": "NO_RETIRED_ART_REQUESTED",
+      "pass": true,
+      "facts": {
+        "retired": []
+      }
+    },
+    {
+      "scenario": "desktop",
+      "name": "NO_PAGE_ERROR",
+      "pass": true,
+      "facts": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "keyboard",
+      "name": "ARROW_KEYS_MOVE_THE_SELECTION",
+      "pass": true,
+      "facts": {
+        "start": "Rota Estratégica",
+        "right": "Circuito de Memória",
+        "back": "Rota Estratégica"
+      }
+    },
+    {
+      "scenario": "keyboard",
+      "name": "FOCUS_RING_AND_SELECTION",
+      "pass": true,
+      "facts": {
+        "rings": [
+          {
+            "label": "Entrar em Rota Estratégica",
+            "outline": "solid 3px",
+            "visible": true,
+            "selected": "Rota Estratégica"
+          },
+          {
+            "label": "Entrar em Circuito de Memória",
+            "outline": "solid 3px",
+            "visible": true,
+            "selected": "Circuito de Memória"
+          },
+          {
+            "label": "Entrar em Central de Comandos",
+            "outline": "solid 3px",
+            "visible": true,
+            "selected": "Central de Comandos"
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "keyboard",
+      "name": "ENTER_ENTERS_THE_CHOSEN_WORLD",
+      "pass": true,
+      "facts": {
+        "chosen": "Central de Comandos",
+        "title": "Central de Comandos"
+      }
+    },
+    {
+      "scenario": "keyboard",
+      "name": "NO_PAGE_ERROR",
+      "pass": true,
+      "facts": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "launch",
+      "name": "ENTERS_ROUTE",
+      "pass": true,
+      "facts": {
+        "threshold": true,
+        "title": "Rota Estratégica",
+        "threshold_art": {
+          "maquette": true,
+          "picture": false
+        },
+        "intro_art": {
+          "maquette": true,
+          "picture": false
+        },
+        "errors": []
+      }
+    },
+    {
+      "scenario": "launch",
+      "name": "ENTERS_CIRCUIT",
+      "pass": true,
+      "facts": {
+        "threshold": true,
+        "title": "Circuito de Memória",
+        "threshold_art": {
+          "maquette": true,
+          "picture": false
+        },
+        "intro_art": {
+          "maquette": true,
+          "picture": false
+        },
+        "errors": []
+      }
+    },
+    {
+      "scenario": "launch",
+      "name": "ENTERS_COMMANDS",
+      "pass": true,
+      "facts": {
+        "threshold": true,
+        "title": "Central de Comandos",
+        "threshold_art": {
+          "maquette": true,
+          "picture": false
+        },
+        "intro_art": {
+          "maquette": true,
+          "picture": false
+        },
+        "errors": []
+      }
+    },
+    {
+      "scenario": "launch",
+      "name": "ENTERS_DISCOVERY",
+      "pass": true,
+      "facts": {
+        "threshold": true,
+        "title": "Estúdio das Descobertas",
+        "threshold_art": {
+          "maquette": false,
+          "picture": true
+        },
+        "intro_art": {
+          "maquette": false,
+          "picture": true
+        },
+        "errors": []
+      }
+    },
+    {
+      "scenario": "launch",
+      "name": "ENTERS_GARDEN",
+      "pass": true,
+      "facts": {
+        "threshold": true,
+        "title": "Jardim de Sementes",
+        "threshold_art": {
+          "maquette": true,
+          "picture": false
+        },
+        "intro_art": {
+          "maquette": true,
+          "picture": false
+        },
+        "errors": []
+      }
+    },
+    {
+      "scenario": "phone",
+      "name": "NO_SIDEWAYS_SCROLL_390x844",
+      "pass": true,
+      "facts": {
+        "overflow": 0
+      }
+    },
+    {
+      "scenario": "phone",
+      "name": "EVERY_WORLD_IN_VIEW_390x844",
+      "pass": true,
+      "facts": {
+        "views": [
+          {
+            "world": "route",
+            "ok": true,
+            "enter": "292×48"
+          },
+          {
+            "world": "circuit",
+            "ok": true,
+            "enter": "292×48"
+          },
+          {
+            "world": "commands",
+            "ok": true,
+            "enter": "292×48"
+          },
+          {
+            "world": "discovery",
+            "ok": true,
+            "enter": "292×48"
+          },
+          {
+            "world": "garden",
+            "ok": true,
+            "enter": "292×48"
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "phone",
+      "name": "TAP_TARGETS_44_390x844",
+      "pass": true,
+      "facts": {
+        "targets": [
+          46,
+          44,
+          44,
+          44,
+          44,
+          44,
+          46
+        ]
+      }
+    },
+    {
+      "scenario": "phone",
+      "name": "NO_PAGE_ERROR_390x844",
+      "pass": true,
+      "facts": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "phone",
+      "name": "NO_SIDEWAYS_SCROLL_360x740",
+      "pass": true,
+      "facts": {
+        "overflow": 0
+      }
+    },
+    {
+      "scenario": "phone",
+      "name": "EVERY_WORLD_IN_VIEW_360x740",
+      "pass": true,
+      "facts": {
+        "views": [
+          {
+            "world": "route",
+            "ok": true,
+            "enter": "268×48"
+          },
+          {
+            "world": "circuit",
+            "ok": true,
+            "enter": "268×48"
+          },
+          {
+            "world": "commands",
+            "ok": true,
+            "enter": "268×48"
+          },
+          {
+            "world": "discovery",
+            "ok": true,
+            "enter": "268×48"
+          },
+          {
+            "world": "garden",
+            "ok": true,
+            "enter": "268×48"
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "phone",
+      "name": "TAP_TARGETS_44_360x740",
+      "pass": true,
+      "facts": {
+        "targets": [
+          46,
+          44,
+          44,
+          44,
+          44,
+          44,
+          46
+        ]
+      }
+    },
+    {
+      "scenario": "phone",
+      "name": "NO_PAGE_ERROR_360x740",
+      "pass": true,
+      "facts": {
+        "errors": []
+      }
+    },
+    {
+      "scenario": "short",
+      "name": "PLAQUES_CLEAR_OF_CONTROLS_1280x720",
+      "pass": true,
+      "facts": {
+        "problems": []
+      }
+    },
+    {
+      "scenario": "short",
+      "name": "PLAQUES_CLEAR_OF_CONTROLS_1366x768",
+      "pass": true,
+      "facts": {
+        "problems": []
+      }
+    },
+    {
+      "scenario": "reduced",
+      "name": "NO_MAQUETTE_ANIMATION",
+      "pass": true,
+      "facts": {
+        "animated": 0
+      }
+    },
+    {
+      "scenario": "reduced",
+      "name": "NO_PAGE_ERROR",
+      "pass": true,
+      "facts": {
+        "errors": []
+      }
+    }
+  ]
+}

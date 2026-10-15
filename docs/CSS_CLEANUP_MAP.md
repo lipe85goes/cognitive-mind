@@ -260,6 +260,25 @@ cascade. It is now a single dark design, and the dead light rules plus the
 unused `.hj-plane-*` / `.hj-haze-b` noise layers were removed together with
 their spans in `HomeStage.tsx`.
 
+HOME-WORLD-VISUAL-UNIFICATION-01 made every world one construction (the
+atelier kit), so the Home's CSS has no per-world rule left:
+
+- `home.css`: the per-world accent block (`.hj-world-route`, `-memory`,
+  `-commands`, `-discovery`, `-garden` setting `--hj-world-glow` /
+  `--hj-world-plaque` / `--hj-world-plaque-dark`) was dead — `WorldObject.tsx`
+  sets those variables inline from `worldVisuals.ts`, and inline wins — and was
+  removed, as were `.hj-world-sprite` and `.hj-world-art-rendered` (no element
+  carries them since every world is a layered maquette). `.hj-world-aura` is
+  CSS only now (no `world-glow.webp`), sized with `closest-side` so the light
+  fades before the box edge.
+- `world-diorama.css`: the `[data-world="route"]` / `[data-world="circuit"]`
+  rules for `.wd-layer-portal`, `-lights`, `-core`, `-circuit-energy` were dead
+  (no layer has had those classes since HOME-HERO-WORLDS-3D-01) and were
+  removed. One rule set serves every maquette.
+- `world-master-scene.css` was not touched (the games import it); its
+  `.wms-circuit-*` rules have no element either and are left for a cleanup
+  pass that may touch the game shells.
+
 Preserve:
 
 - `.hj-main`

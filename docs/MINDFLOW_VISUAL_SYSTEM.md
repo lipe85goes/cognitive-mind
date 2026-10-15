@@ -124,6 +124,62 @@ Decisões aprovadas:
 
 Critério de aprovação da Home: parecer "um lugar calmo com mundos para explorar", não dashboard.
 
+### 4.1 O kit do ateliê (HOME-WORLD-VISUAL-UNIFICATION-01)
+
+A maquete do Estúdio das Descobertas na Home é a referência de qualidade
+escolhida pelo dono do projeto. Desde HOME-WORLD-VISUAL-UNIFICATION-01, todo
+mundo da Home é **a mesma construção** que ela, com o seu próprio assunto:
+
+- **Um canvas**: 1040×780 (4:3), transparente, com margem real.
+- **Um pedestal**: o tambor de madeira torneada do Estúdio — mesma elipse, mesma
+  altura, mesma borda e os mesmos dois anéis (o anel dourado e a faixa do
+  mundo). Só o material do tampo muda: tapete (Estúdio), slate teal (Rota),
+  pedra sálvia (Circuito), couro verde (Central), musgo e terra (Jardim).
+- **Uma câmera**: o chão visto a ~24° (a proporção da elipse do pedestal); um
+  tabuleiro, um vaso ou um console encurtam igual (`floor()` do kit).
+- **Uma luz**: chave quente vinda do alto à esquerda, pousada só sobre a
+  matéria (nunca no ar), e um único brilho de acento no elemento focal.
+- **Um vocabulário de passes**, os do Estúdio, nesta ordem: sombra de contato,
+  base, fundo, peça principal, detalhes, energia e frente.
+- **Uma silhueta de fundo** em todo mundo (a janela e a estante do Estúdio; a
+  ruína, a placa e o portal da Rota; a armila do Circuito; o armário e a
+  luminária da Central; a treliça, a sebe e a redoma do Jardim), para que
+  nenhum mundo seja só um chão.
+- **Um tamanho** na Home para todos os mundos (`HOME_DIORAMA_SIZE_REM`): o
+  pedestal, a sombra e a placa caem na mesma linha qualquer que seja o mundo
+  escolhido. O tier (Rota e Circuito à frente) continua sendo dado.
+
+Identidade de cada mundo, sem copiar o assunto do Estúdio:
+
+- Rota: tabuleiro de slate na moldura de nogueira, paredes, luzes, baú,
+  Explorador e Guardião, uma rota planejada acesa, ruína, placa de caminhos e o
+  portal teal (foco).
+- Circuito: o disco de memória com os quatro pads nos lugares do jogo em volta
+  do cristal (foco), num berço de bronze; a armila leva as quatro luzes de
+  sinal. Energia contida, nada de sci-fi agressivo.
+- Central: console de nogueira com o grande selo (foco) e duas alavancas, o
+  armário de mostradores e selos e uma luminária de leitura — central do
+  ateliê, analógica, sem tela de dashboard.
+- Jardim: o banco de semeadura com seis vasos (o tabuleiro do jogo), sementes
+  para contar, broto e flor (foco), treliça de feijão, sebe, redoma, regador.
+
+Regras de runtime da Home que acompanham o kit:
+
+- Um renderer só (`WorldDiorama`) para todo mundo; nenhuma regra CSS por mundo —
+  a cor vem de `worldVisuals.ts`.
+- O halo do mundo é CSS no acento do próprio mundo (sem imagem).
+- A placa de um mundo vizinho também o seleciona (clique ou toque).
+- Em telas baixas a maquete cede pela altura; a placa nunca encontra os
+  controles da galeria.
+- Rota, Circuito, Central e Jardim entram pela mesma maquete (cena mestre): a
+  Home, o limiar e a introdução mostram o mesmo objeto. O Estúdio entra pela
+  imagem do próprio cômodo (metadado do Game 03).
+
+Fonte e validação: `tools/assets/home-atelier-kit.mjs` (o contrato),
+`tools/assets/home-atelier-worlds.mjs` (os quatro mundos),
+`tools/assets/create_home_atelier_dioramas.mjs` (render, orçamento, folhas de
+revisão) e `tools/validation/home-atelier-kit-tests.mjs` (K01–K10).
+
 ## 5. Circuito de Memória
 
 O Circuito de Memória usa board mestre 2.5D + overlays alinhados.
@@ -224,7 +280,7 @@ Padrão:
 
 | Área | Estado atual | Problema | Direção futura | Missão recomendada |
 | --- | --- | --- | --- | --- |
-| Home | 2.5D HTML/CSS com placeholders em `HomeStage` | Arte ainda é placeholder técnico | Sprites finais leves de objetos-mundo no Ateliê | HOME-ART-01 |
+| Home | 2.5D HTML/CSS; os cinco mundos no kit do ateliê (§4.1) | Marcador do Explorador ainda na arte antiga | Repintar o marcador no kit; manter o kit como única construção | HOME-EXPLORER-01 |
 | Circuito | Board mestre 2.5D + overlays | Ainda precisa refinamento material/HUD | Palco premium coerente, overlays contidos, HUD integrado | CIRCUIT-ART-01 |
 | Rota | Babylon + GLBs | Visual ainda pode divergir da linguagem 2.5D/premium calma | Materiais e HUD mais MindFlow, peças mais claras | ROTA-VISUAL-01 |
 | Security Panel | Ativo, legado visual | Ainda depende de shared UI antiga | Recriar como console tátil calmo | GAME-BRIDGE-01 |

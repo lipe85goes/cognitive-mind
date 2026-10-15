@@ -1,0 +1,324 @@
+{
+  "desktop": {
+    "loadMs": 564,
+    "fcp": 612,
+    "lcp": null,
+    "byKind": {
+      "other": {
+        "count": 1,
+        "bytes": 8806
+      },
+      "font": {
+        "count": 2,
+        "bytes": 52996
+      },
+      "image": {
+        "count": 40,
+        "bytes": 471334
+      },
+      "css": {
+        "count": 7,
+        "bytes": 47535
+      },
+      "js": {
+        "count": 9,
+        "bytes": 207811
+      }
+    },
+    "images": [
+      {
+        "url": "/illustrations/home/home-background-desktop.webp",
+        "bytes": 199190
+      },
+      {
+        "url": "/illustrations/home/world-glow.webp",
+        "bytes": 35082
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/route-world/route-structure.webp&w=828&q=75",
+        "bytes": 16582
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/discovery/discovery-contact-shadow.webp&w=640&q=75",
+        "bytes": 15111
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/route-world/route-terrain.webp&w=828&q=75",
+        "bytes": 11836
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/circuit-world/circuit-terrain.webp&w=640&q=75",
+        "bytes": 11432
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/route-world/route-base.webp&w=828&q=75",
+        "bytes": 11029
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/discovery/discovery-energy.webp&w=640&q=75",
+        "bytes": 10691
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/circuit-world/circuit-structure.webp&w=640&q=75",
+        "bytes": 10319
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/discovery/discovery-base.webp&w=640&q=75",
+        "bytes": 9372
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/route-world/route-props.webp&w=828&q=75",
+        "bytes": 8543
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/circuit-world/circuit-base.webp&w=640&q=75",
+        "bytes": 7766
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/garden/garden-base.webp&w=640&q=75",
+        "bytes": 7737
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/panel/panel-base.webp&w=640&q=75",
+        "bytes": 7736
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/discovery/discovery-main.webp&w=640&q=75",
+        "bytes": 7668
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/circuit-world/circuit-props.webp&w=640&q=75",
+        "bytes": 6435
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/discovery/discovery-back.webp&w=640&q=75",
+        "bytes": 5884
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/route-world/route-shadow.webp&w=828&q=75",
+        "bytes": 5596
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/garden/garden-main.webp&w=640&q=75",
+        "bytes": 5487
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/discovery/discovery-detail.webp&w=640&q=75",
+        "bytes": 5326
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/discovery/discovery-front.webp&w=640&q=75",
+        "bytes": 5211
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/route-world/route-front.webp&w=828&q=75",
+        "bytes": 5133
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/garden/garden-contact-shadow.webp&w=640&q=75",
+        "bytes": 5109
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/panel/panel-contact-shadow.webp&w=640&q=75",
+        "bytes": 5108
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/garden/garden-detail.webp&w=640&q=75",
+        "bytes": 5047
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/route-world/route-energy.webp&w=828&q=75",
+        "bytes": 4976
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/circuit-world/circuit-energy.webp&w=640&q=75",
+        "bytes": 4878
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/garden/garden-back.webp&w=640&q=75",
+        "bytes": 4151
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/panel/panel-detail.webp&w=640&q=75",
+        "bytes": 3606
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/circuit-world/circuit-shadow.webp&w=640&q=75",
+        "bytes": 3576
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/circuit-world/circuit-front.webp&w=640&q=75",
+        "bytes": 3481
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/route-world/route-characters.webp&w=828&q=75",
+        "bytes": 3432
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/panel/panel-back.webp&w=640&q=75",
+        "bytes": 3092
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/garden/garden-energy.webp&w=640&q=75",
+        "bytes": 3039
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/panel/panel-main.webp&w=640&q=75",
+        "bytes": 2824
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/explorer-marker.webp&w=96&q=75",
+        "bytes": 2619
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/panel/panel-front.webp&w=640&q=75",
+        "bytes": 2531
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/panel/panel-energy.webp&w=640&q=75",
+        "bytes": 2014
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/garden/garden-front.webp&w=640&q=75",
+        "bytes": 1914
+      },
+      {
+        "url": "/icon.svg",
+        "bytes": 771
+      }
+    ]
+  },
+  "mobile": {
+    "loadMs": 397,
+    "fcp": 276,
+    "lcp": null,
+    "byKind": {
+      "other": {
+        "count": 1,
+        "bytes": 8806
+      },
+      "font": {
+        "count": 2,
+        "bytes": 52996
+      },
+      "image": {
+        "count": 26,
+        "bytes": 484892
+      },
+      "css": {
+        "count": 7,
+        "bytes": 47535
+      },
+      "js": {
+        "count": 9,
+        "bytes": 207811
+      }
+    },
+    "images": [
+      {
+        "url": "/illustrations/home/home-background-desktop.webp",
+        "bytes": 199190
+      },
+      {
+        "url": "/illustrations/home/world-glow.webp",
+        "bytes": 35082
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/route-world/route-structure.webp&w=1080&q=75",
+        "bytes": 23772
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/circuit-world/circuit-terrain.webp&w=1080&q=75",
+        "bytes": 22904
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/circuit-world/circuit-structure.webp&w=1080&q=75",
+        "bytes": 20040
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/route-world/route-terrain.webp&w=1080&q=75",
+        "bytes": 16524
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/route-world/route-base.webp&w=1080&q=75",
+        "bytes": 15859
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/circuit-world/circuit-base.webp&w=1080&q=75",
+        "bytes": 15857
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/circuit-world/circuit-props.webp&w=1080&q=75",
+        "bytes": 13266
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/route-world/route-props.webp&w=1080&q=75",
+        "bytes": 12502
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/panel/panel-base.webp&w=1080&q=75",
+        "bytes": 12319
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/panel/panel-contact-shadow.webp&w=1080&q=75",
+        "bytes": 11383
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/circuit-world/circuit-energy.webp&w=1080&q=75",
+        "bytes": 10813
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/route-world/route-shadow.webp&w=1080&q=75",
+        "bytes": 8462
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/circuit-world/circuit-shadow.webp&w=1080&q=75",
+        "bytes": 8436
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/explorer-marker.webp&w=256&q=75",
+        "bytes": 7553
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/route-world/route-front.webp&w=1080&q=75",
+        "bytes": 7493
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/circuit-world/circuit-front.webp&w=1080&q=75",
+        "bytes": 7199
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/route-world/route-energy.webp&w=1080&q=75",
+        "bytes": 7046
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/panel/panel-detail.webp&w=1080&q=75",
+        "bytes": 5938
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/panel/panel-back.webp&w=1080&q=75",
+        "bytes": 4966
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/route-world/route-characters.webp&w=1080&q=75",
+        "bytes": 4902
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/panel/panel-main.webp&w=1080&q=75",
+        "bytes": 4716
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/panel/panel-front.webp&w=1080&q=75",
+        "bytes": 4273
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/panel/panel-energy.webp&w=1080&q=75",
+        "bytes": 3626
+      },
+      {
+        "url": "/icon.svg",
+        "bytes": 771
+      }
+    ]
+  }
+}

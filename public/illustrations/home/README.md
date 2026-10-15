@@ -17,10 +17,9 @@ Active HOME-PIVOT-01 runtime sprites:
 | Asset | Runtime role | Size target |
 | --- | --- | --- |
 | `world-panel.webp` | Quiet world sprite for Central de Comandos. | <= 60 KB |
-| `world-trail.webp` | Quiet world sprite for Trilha Numerica. | <= 60 KB |
+| `world-trail.webp` | Retired with the Trilha (GAME03-SKELETON-01); no longer on disk. | — |
 | `world-garden.webp` | Quiet world sprite for Jardim de Sementes. | <= 60 KB |
 | `explorer-marker.webp` | Small non-mascot Explorer marker in the Home stage. | <= 40 KB |
-| `world-glow.webp` | Shared soft glow sprite used by the Home stage CSS. | <= 60 KB |
 
 WORLD-COHESION-01 promotes the existing premium Route and Memory renders into
 the shared Home → transition → intro visual contract:
@@ -58,44 +57,65 @@ master scene never followed them across: `worldMasterSceneConfig.ts` derives
 `essentialAssets` from `WORLD_DIORAMA_CONFIGS`, which resolves to the folders
 below.
 
+## HOME-WORLD-VISUAL-UNIFICATION-01 — the atelier kit (active runtime)
+
+Every Home world maquette is now one construction: the Estúdio das
+Descobertas' Home maquette (the quality reference) restated as a kit — one
+1040×780 canvas, one turned-wood pedestal in the same place, one floor camera,
+one warm key light laid onto the matter, one pass vocabulary and one encoding.
+Only the subject changes per world. See `docs/MINDFLOW_VISUAL_SYSTEM.md` §4.
+
+Passes, back to front (the runtime paints them in this order —
+`worldDioramaLayout.ts` → `DIORAMA_PASSES`):
+`contact-shadow`, `base`, `back`, `main`, `detail`, `energy`, `front`.
+
 Active runtime diorama layers:
 
 | Folder | Role |
 | --- | --- |
-| `dioramas/route-world/` | Route hero island: shadow, base, terrain, structure, props, characters, energy and front. |
-| `dioramas/circuit-world/` | Memory hero island: the same passes minus `characters` — the artefact is the subject. |
-| `dioramas/panel/`, `dioramas/trail/`, `dioramas/garden/` | Secondary worlds: contact shadow, base, back, main, detail, energy and front. |
+| `atelier/route/` | Rota Estratégica: slate board in a walnut frame (walls, lights, chest, Explorador, Guardião, a planned route), ruin, signpost and the teal portal. |
+| `atelier/circuit/` | Circuito de Memória: the memory dial (four pads around the crystal core) on a bronze cradle, the armillary with the four signal lamps. |
+| `atelier/commands/` | Central de Comandos: walnut console with the great seal and two levers, the switchboard cabinet (dials, seal sockets), reading lamp. |
+| `atelier/garden/` | Jardim de Sementes: the six-pot sowing bench (seeds, sprout, flower), bean teepee, hedge, cloche, watering can, seed sack. |
+| `atelier/shared/atelier-contact-shadow.webp` | The one contact shadow every kit world shares. |
+| `dioramas/discovery/` | Estúdio das Descobertas: the reference, painted by its own art kit (`node tools/assets/create_hidden_objects_scene.mjs --home`) — Game 03's, not rewritten by the atelier script. |
 
-Regenerate the layered runtime assets and review sheets with:
+The soft passes (`contact-shadow`, `energy`) ship at half resolution
+(520×390); every pass is stretched over the same 4:3 box, so nothing moves.
 
-```powershell
-& "C:\Program Files\Blender Foundation\Blender 5.1\blender.exe" --background --python tools\blender\create_hero_world_dioramas.py
-& "C:\Program Files\Blender Foundation\Blender 5.1\blender.exe" --background --python tools\blender\create_secondary_world_dioramas.py
-node tools/assets/create_hero_world_layers.mjs
-node tools/assets/create_secondary_world_layers.mjs
+Regenerate the four kit worlds, their review sheets and the lineup with:
+
+```bash
+node tools/assets/create_home_atelier_dioramas.mjs              # writes runtime + docs/archive/home-world-visual-unification-01/kit/
+node tools/assets/create_home_atelier_dioramas.mjs --preview=DIR # composites only, nothing else written
+node tools/validation/home-atelier-kit-tests.mjs --deep          # the kit contract, and that the kit paints what ships
 ```
 
-`create_hero_world_dioramas.py` stages `public/models/route/*.glb`. It used to
-stage `shield.glb` as well, which is why that model outlived the pickup it
-represented; MINDFLOW-HOME-VISUAL-04 replaced it in the maquette with the Chest
-the game actually has, and removed the model.
+Budgets (encoded): ≤ 130 KB per kit world and ≤ 40 KB per pass; all five
+maquettes together ≤ 600 KB on disk (today ~439 KB); the Home fetches
+optimizer-sized variants of these.
 
-Review-only V02 material lives in `docs/archive/world-diorama-2_5d-02/` and
-must not be referenced by runtime code. V01 review material remains archived in
-`docs/archive/world-diorama-2_5d-01/` for comparison only.
+To add a world: give it an entry in `tools/assets/home-atelier-worlds.mjs`
+(passes from the kit's primitives), a kit entry in `worldDioramaLayout.ts`, and
+— if its entry should keep the maquette — a master scene in
+`worldMasterSceneConfig.ts`. No CSS per world: colour comes from
+`worldVisuals.ts`.
 
-MINDFLOW-UNIFIED-VISUAL-01 re-framed both diorama cameras so the **whole
-maquette fits inside the render frame with margin** (Route `ortho_scale` 8.25 →
-12.8, Circuit 7.15 → 9.6). Before this, the maquettes were cropped by the frame
-and the Home hid the cut behind an ellipse mask, which made each world read as
-a flat sticker. The mask is now reserved for the flat fallback art only —
-layered dioramas always render their real silhouette.
+Retired by this mission (no reader left): `dioramas/route-world/`,
+`dioramas/circuit-world/`, `dioramas/panel/`, `dioramas/garden/`,
+`world-glow.webp` (the aura is CSS in the world's own accent now) and the Node
+encoders `create_hero_world_layers.mjs` / `create_secondary_world_layers.mjs`.
+The Blender scripts under `tools/blender/` and their raw renders in
+`docs/archive/` stay as history; they no longer feed the Home.
 
-Runtime totals after the re-frame: Route layers ~232 KB, Circuit layers ~172 KB.
+### History (superseded)
 
-Unreferenced V01 prop layers (`route-back-props`, `route-front-foliage`,
-`circuit-back-props`, `circuit-front-props`) were moved out of `public/` to
-`docs/archive/world-diorama-2_5d-01/legacy-prop-layers/`.
+The sections above this one describe earlier kits and are kept as history.
+HOME-HERO-WORLDS-3D-01's island kits lived in `dioramas/route-world/` and
+`dioramas/circuit-world/`; HOME-WORLDS-FINAL-01's secondary kits in
+`dioramas/panel/`, `dioramas/garden/` (and `dioramas/trail/`, retired with the
+Trilha). They were regenerated with the Blender scripts plus
+`create_hero_world_layers.mjs` / `create_secondary_world_layers.mjs`.
 
 Review/master material:
 

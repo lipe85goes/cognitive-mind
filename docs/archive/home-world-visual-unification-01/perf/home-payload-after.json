@@ -1,0 +1,292 @@
+{
+  "desktop": {
+    "loadMs": 705,
+    "fcp": 884,
+    "lcp": null,
+    "byKind": {
+      "other": {
+        "count": 1,
+        "bytes": 8383
+      },
+      "font": {
+        "count": 2,
+        "bytes": 52996
+      },
+      "image": {
+        "count": 36,
+        "bytes": 479855
+      },
+      "css": {
+        "count": 7,
+        "bytes": 47270
+      },
+      "js": {
+        "count": 9,
+        "bytes": 207844
+      }
+    },
+    "images": [
+      {
+        "url": "/illustrations/home/home-background-desktop.webp",
+        "bytes": 199190
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/atelier/circuit/circuit-back.webp&w=640&q=75",
+        "bytes": 18117
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/atelier/garden/garden-back.webp&w=640&q=75",
+        "bytes": 15288
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/discovery/discovery-contact-shadow.webp&w=640&q=75",
+        "bytes": 15110
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/atelier/route/route-back.webp&w=750&q=75",
+        "bytes": 14099
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/atelier/route/route-base.webp&w=750&q=75",
+        "bytes": 13169
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/atelier/route/route-main.webp&w=750&q=75",
+        "bytes": 12217
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/atelier/commands/commands-base.webp&w=640&q=75",
+        "bytes": 11292
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/atelier/circuit/circuit-base.webp&w=640&q=75",
+        "bytes": 10757
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/discovery/discovery-energy.webp&w=640&q=75",
+        "bytes": 10690
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/atelier/garden/garden-main.webp&w=640&q=75",
+        "bytes": 10674
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/atelier/garden/garden-base.webp&w=640&q=75",
+        "bytes": 10167
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/discovery/discovery-base.webp&w=640&q=75",
+        "bytes": 9371
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/atelier/circuit/circuit-main.webp&w=640&q=75",
+        "bytes": 9146
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/atelier/commands/commands-back.webp&w=640&q=75",
+        "bytes": 9035
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/atelier/commands/commands-energy.webp&w=640&q=75",
+        "bytes": 8937
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/atelier/route/route-energy.webp&w=750&q=75",
+        "bytes": 8740
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/atelier/circuit/circuit-energy.webp&w=640&q=75",
+        "bytes": 8268
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/atelier/shared/atelier-contact-shadow.webp&w=750&q=75",
+        "bytes": 7958
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/atelier/shared/atelier-contact-shadow.webp&w=640&q=75",
+        "bytes": 7958
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/discovery/discovery-main.webp&w=640&q=75",
+        "bytes": 7667
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/atelier/commands/commands-main.webp&w=640&q=75",
+        "bytes": 6639
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/atelier/garden/garden-front.webp&w=640&q=75",
+        "bytes": 6562
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/discovery/discovery-back.webp&w=640&q=75",
+        "bytes": 5883
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/discovery/discovery-detail.webp&w=640&q=75",
+        "bytes": 5325
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/dioramas/discovery/discovery-front.webp&w=640&q=75",
+        "bytes": 5210
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/atelier/route/route-front.webp&w=750&q=75",
+        "bytes": 5063
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/atelier/route/route-detail.webp&w=750&q=75",
+        "bytes": 4564
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/atelier/garden/garden-energy.webp&w=640&q=75",
+        "bytes": 4023
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/atelier/circuit/circuit-front.webp&w=640&q=75",
+        "bytes": 3675
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/atelier/commands/commands-front.webp&w=640&q=75",
+        "bytes": 3364
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/atelier/garden/garden-detail.webp&w=640&q=75",
+        "bytes": 3029
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/atelier/circuit/circuit-detail.webp&w=640&q=75",
+        "bytes": 2982
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/explorer-marker.webp&w=96&q=75",
+        "bytes": 2618
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/atelier/commands/commands-detail.webp&w=640&q=75",
+        "bytes": 2297
+      },
+      {
+        "url": "/icon.svg",
+        "bytes": 771
+      }
+    ]
+  },
+  "mobile": {
+    "loadMs": 520,
+    "fcp": 376,
+    "lcp": null,
+    "byKind": {
+      "other": {
+        "count": 1,
+        "bytes": 8383
+      },
+      "font": {
+        "count": 2,
+        "bytes": 52996
+      },
+      "image": {
+        "count": 22,
+        "bytes": 445909
+      },
+      "css": {
+        "count": 7,
+        "bytes": 47270
+      },
+      "js": {
+        "count": 9,
+        "bytes": 207844
+      }
+    },
+    "images": [
+      {
+        "url": "/illustrations/home/home-background-desktop.webp",
+        "bytes": 199190
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/atelier/circuit/circuit-back.webp&w=1080&q=75",
+        "bytes": 30295
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/atelier/commands/commands-base.webp&w=1080&q=75",
+        "bytes": 20210
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/atelier/route/route-back.webp&w=1080&q=75",
+        "bytes": 20107
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/atelier/route/route-base.webp&w=1080&q=75",
+        "bytes": 19333
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/atelier/circuit/circuit-base.webp&w=1080&q=75",
+        "bytes": 19097
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/atelier/route/route-main.webp&w=1080&q=75",
+        "bytes": 17725
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/atelier/circuit/circuit-main.webp&w=1080&q=75",
+        "bytes": 16709
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/atelier/commands/commands-back.webp&w=1080&q=75",
+        "bytes": 15384
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/atelier/commands/commands-main.webp&w=1080&q=75",
+        "bytes": 11328
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/atelier/commands/commands-energy.webp&w=1080&q=75",
+        "bytes": 8937
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/atelier/route/route-energy.webp&w=1080&q=75",
+        "bytes": 8740
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/atelier/circuit/circuit-energy.webp&w=1080&q=75",
+        "bytes": 8268
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/atelier/shared/atelier-contact-shadow.webp&w=1080&q=75",
+        "bytes": 7958
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/explorer-marker.webp&w=256&q=75",
+        "bytes": 7552
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/atelier/route/route-front.webp&w=1080&q=75",
+        "bytes": 7303
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/atelier/commands/commands-front.webp&w=1080&q=75",
+        "bytes": 6256
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/atelier/route/route-detail.webp&w=1080&q=75",
+        "bytes": 6130
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/atelier/circuit/circuit-front.webp&w=1080&q=75",
+        "bytes": 5833
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/atelier/circuit/circuit-detail.webp&w=1080&q=75",
+        "bytes": 4922
+      },
+      {
+        "url": "/_next/image?url=/illustrations/home/atelier/commands/commands-detail.webp&w=1080&q=75",
+        "bytes": 3861
+      },
+      {
+        "url": "/icon.svg",
+        "bytes": 771
+      }
+    ]
+  }
+}
