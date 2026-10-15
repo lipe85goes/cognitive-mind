@@ -110,31 +110,6 @@ function commandsWorld() {
   return svgFrame(WORLD_SIZE.width, WORLD_SIZE.height, body);
 }
 
-function logicWorld() {
-  const tile = (cx, cy, fill, mark) => `
-    <g filter="url(#contactShadow)">
-      <rect x="${cx - 38}" y="${cy - 27}" width="76" height="54" rx="15" fill="${fill}" stroke="url(#brass)" stroke-width="5"/>
-      ${mark}
-    </g>`;
-  const body = baseDiorama(`
-    <path d="M214 374 C260 303 325 337 360 282 C398 222 476 270 507 211" fill="none" stroke="#60d5dd" stroke-width="15" stroke-linecap="round" opacity="0.45"/>
-    <path d="M214 374 C260 303 325 337 360 282 C398 222 476 270 507 211" fill="none" stroke="#fff4b4" stroke-width="5" stroke-linecap="round" opacity="0.72"/>
-    ${tile(211, 374, "#8b72c2", '<circle cx="211" cy="374" r="10" fill="#f6e9ff"/>')}
-    ${tile(300, 326, "#a88bd5", '<path d="M285 326h30" stroke="#f6e9ff" stroke-width="8" stroke-linecap="round"/>')}
-    ${tile(366, 280, "#c1a4dd", '<path d="M366 264v32M350 280h32" stroke="#f6e9ff" stroke-width="7" stroke-linecap="round"/>')}
-    ${tile(445, 260, "#8c79c5", '<path d="M428 269 L445 247 L462 269Z" fill="#f6e9ff"/>')}
-    ${tile(507, 211, "#6d5ca1", '<path d="M491 211 Q507 193 523 211 Q507 229 491 211Z" fill="#f6e9ff"/>')}
-    <path d="M500 158 L500 212" stroke="#8d6f37" stroke-width="8"/>
-    <path d="M505 161 L565 182 L505 204Z" fill="#f5c84f" stroke="#9e6728" stroke-width="5"/>
-    <g filter="url(#glowGold)">
-      <path d="M246 236 L270 183 L292 236 Z" fill="#9964d4" opacity="0.78"/>
-      <path d="M478 352 L502 303 L525 352 Z" fill="#56c9db" opacity="0.78"/>
-    </g>
-  `);
-
-  return svgFrame(WORLD_SIZE.width, WORLD_SIZE.height, body);
-}
-
 function gardenWorld() {
   const pot = (cx, cy, scale = 1) => `
     <g transform="translate(${cx} ${cy}) scale(${scale})" filter="url(#contactShadow)">
@@ -189,19 +164,6 @@ function explorerMarker() {
   );
 }
 
-function worldGlow() {
-  return svgFrame(
-    640,
-    360,
-    `
-  <radialGradient id="softWorldGlow" cx="50%" cy="50%" r="50%">
-    <stop offset="0%" stop-color="#f4d980" stop-opacity="0.62"/>
-    <stop offset="38%" stop-color="#77d9c9" stop-opacity="0.26"/>
-    <stop offset="100%" stop-color="#77d9c9" stop-opacity="0"/>
-  </radialGradient>
-  <ellipse cx="320" cy="180" rx="300" ry="150" fill="url(#softWorldGlow)"/>`,
-  );
-}
 
 // MINDFLOW-CLEANUP-03C: the two hero worlds no longer take their sprite from
 // here. Rota and Circuito are rendered from the layered dioramas, and their
@@ -209,12 +171,14 @@ function worldGlow() {
 // world-route-hero.webp / world-circuit-hero.webp. The flat world-route.webp and
 // world-circuit.webp had no consumer left, so this stops emitting them; the
 // three secondary worlds below are still live in worldVisuals.ts.
+// HOME-WORLD-VISUAL-UNIFICATION-01: world-glow.webp is gone (the Home's glow is
+// CSS in the world's own accent now) and so is world-trail.webp, which the
+// GAME03-SKELETON-01 retirement of the Trilha left listed here — a run would
+// have put the retired world's art back in public/.
 const assets = [
   { name: "world-panel.webp", title: "Painel", svg: commandsWorld(), width: WORLD_SIZE.width, height: WORLD_SIZE.height },
-  { name: "world-trail.webp", title: "Trilha", svg: logicWorld(), width: WORLD_SIZE.width, height: WORLD_SIZE.height },
   { name: "world-garden.webp", title: "Jardim", svg: gardenWorld(), width: WORLD_SIZE.width, height: WORLD_SIZE.height },
   { name: "explorer-marker.webp", title: "Explorador", svg: explorerMarker(), width: MARKER_SIZE.width, height: MARKER_SIZE.height },
-  { name: "world-glow.webp", title: "Glow", svg: worldGlow(), width: 640, height: 360 },
 ];
 
 async function renderAsset(asset) {

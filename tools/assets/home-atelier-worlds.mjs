@@ -143,10 +143,11 @@ const pebble = (x, y, rx, ry, fill = "url(#stoneGrey)") =>
 // --- Jardim de Sementes ----------------------------------------------------------------------------
 
 /**
- * Cultivation: a raised cedar planter holding the cycle the game asks the
- * Explorador to follow — seeds, a sprout, a flowering plant — a bean teepee
- * climbing at the back, a glass cloche keeping a seedling, the watering can and
- * the seed pouch in front.
+ * Cultivation, in the game's own terms: the sowing bench of six terracotta
+ * pots ("tabuleiro com seis vasos") with seeds to count in them, a sprout and
+ * the flowering plant the cycle ends in — a bean teepee climbing at the back,
+ * a low hedge, a glass cloche keeping a seedling, the watering can and the
+ * seed sack in front.
  */
 function gardenPasses() {
   const etching = (() => {
@@ -216,77 +217,71 @@ function gardenPasses() {
     return out;
   })();
 
-  // main: the raised cedar planter with the three stages
-  const planter = (() => {
+  // main: the sowing bench — six terracotta pots in a row, the game's board
+  const SEEDS = [3, 1, 0, 0, 4, 2];
+  const bench = (() => {
     const angle = -6;
-    const box = rect(0, 30, 420, 128);
-    let out = shadow(...floor(0, 50), 250, 46, 0.9);
-    out += prism(box, { top: 52, angle, fill: "#8a5a34", side: "url(#woodH)", sideLight: "url(#woodLight)", stroke: "#3a2212", strokeWidth: 1.8 });
-    // plank seams on the front face
-    for (const h of [18, 35]) {
-      const [x0, y0] = floor(-210, 94, h, { angle });
-      const [x1, y1] = floor(210, 94, h, { angle });
-      out += `<path d="M${x0} ${y0} L${x1} ${y1}" stroke="#3a2212" stroke-width="1.2" opacity=".55"/>`;
+    const at = (u, v, h) => floor(u, v, h, { angle });
+    let out = shadow(...at(0, 50, 0), 262, 44, 0.9);
+    // a low cedar bench on two trestles
+    for (const u of [-180, 180]) out += prism(rect(u, 40, 34, 84), { top: 20, angle, fill: "#6e4428", side: "url(#woodH)", sideLight: "url(#woodLight)", stroke: "#2b170b", strokeWidth: 1.4 });
+    out += prism(rect(0, 40, 480, 100), { bottom: 20, top: 34, angle, fill: "#9a6a40", side: "url(#woodH)", sideLight: "url(#woodLight)", stroke: "#2b170b", strokeWidth: 1.8 });
+    for (const v of [6, 40, 74]) {
+      const [x0, y0] = at(-236, v, 34.5);
+      const [x1, y1] = at(236, v, 34.5);
+      out += `<path d="M${x0} ${y0} L${x1} ${y1}" stroke="#5e3a20" stroke-width="1.2" opacity=".55"/>`;
     }
-    // brass corner brackets
-    for (const u of [-210, 210]) {
-      const [x0, y0] = floor(u, 94, 4, { angle });
-      const [, y1] = floor(u, 94, 48, { angle });
-      out += `<rect x="${n(x0 - (u < 0 ? 0 : 9))}" y="${n(y1)}" width="9" height="${n(y0 - y1)}" fill="url(#brassV)" stroke="#6e4b1c" stroke-width=".8"/>`;
+    const pots = [];
+    for (let i = 0; i < 6; i += 1) {
+      const u = -200 + i * 80;
+      const [x, y] = at(u, 40, 34);
+      const r = 30;
+      const h = 34;
+      out += shadow(x + 3, y + 2, r * 1.05, 7, 0.9);
+      out += `<path d="M${n(x - r)} ${n(y - h)} L${n(x - r * 0.74)} ${n(y)} A${n(r * 0.74)} ${n(r * 0.26)} 0 0 0 ${n(x + r * 0.74)} ${n(y)} L${n(x + r)} ${n(y - h)} Z" fill="url(#terracotta)" stroke="#4a2410" stroke-width="1.3"/>`;
+      out += `<path d="M${n(x - r * 0.72)} ${n(y - h + 4)} L${n(x - r * 0.56)} ${n(y - 3)}" stroke="#f1b083" stroke-width="2.4" opacity=".35" stroke-linecap="round"/>`;
+      out += `<ellipse cx="${n(x)}" cy="${n(y - h)}" rx="${n(r + 3)}" ry="${n(r * 0.36)}" fill="#bb6a3d" stroke="#4a2410" stroke-width="1.3"/>`;
+      out += `<ellipse cx="${n(x)}" cy="${n(y - h + 1)}" rx="${n(r - 3)}" ry="${n(r * 0.27)}" fill="url(#soil)"/>`;
+      pots.push([x, y - h + 1]);
     }
-    // the soil, inset into the top
-    out += prism(rect(0, 30, 392, 102), { bottom: 50, top: 52, angle, fill: "url(#soil)", side: "#2c1c11", stroke: "#24160c", strokeWidth: 1 });
-    // dividers between the three wells
-    for (const u of [-66, 66]) {
-      const a = floor(u, -21, 53, { angle });
-      const b = floor(u, 81, 53, { angle });
-      out += `<path d="M${a[0]} ${a[1]} L${b[0]} ${b[1]}" stroke="#7a4e2c" stroke-width="5" stroke-linecap="round"/>`;
-    }
-    // stage 1: a mound with seeds
-    const [m1x, m1y] = floor(-132, 30, 54, { angle });
-    out += `<ellipse cx="${m1x}" cy="${m1y}" rx="44" ry="13" fill="#5c3d26"/><ellipse cx="${m1x - 6}" cy="${m1y - 3}" rx="30" ry="7" fill="#71503a" opacity=".7"/>`;
-    // stage 2: a sprout
-    const [m2x, m2y] = floor(0, 30, 54, { angle });
-    out += `<ellipse cx="${m2x}" cy="${m2y}" rx="40" ry="12" fill="#5c3d26"/>`;
-    out += `<path d="M${m2x} ${m2y} C${m2x - 2} ${m2y - 18} ${m2x + 3} ${m2y - 30} ${m2x} ${m2y - 44}" stroke="#5f8a3a" stroke-width="3.4" fill="none" stroke-linecap="round"/>`;
-    out += leaf(m2x, m2y - 34, 26, 11, -70, "url(#leafLight)") + leaf(m2x, m2y - 38, 28, 11, 66, "url(#leaf)") + leaf(m2x, m2y - 44, 16, 6, 4, "url(#leafLight)");
-    // stage 3: the flowering plant
-    const [m3x, m3y] = floor(132, 30, 54, { angle });
-    out += `<ellipse cx="${m3x}" cy="${m3y}" rx="42" ry="12" fill="#5c3d26"/>`;
-    out += `<path d="M${m3x} ${m3y} C${m3x - 4} ${m3y - 40} ${m3x + 6} ${m3y - 70} ${m3x + 2} ${m3y - 104}" stroke="#4f7a36" stroke-width="4.4" fill="none" stroke-linecap="round"/>`;
-    out += `<path d="M${m3x + 1} ${m3y - 64} C${m3x + 18} ${m3y - 76} ${m3x + 30} ${m3y - 80} ${m3x + 36} ${m3y - 94}" stroke="#4f7a36" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+    // the cycle, read left to right: seeds, a sprout in the third pot, the flowering plant in the fourth
+    const [sx, sy] = pots[2];
+    out += `<path d="M${sx} ${sy} C${sx - 2} ${sy - 16} ${sx + 3} ${sy - 28} ${sx} ${sy - 42}" stroke="#5f8a3a" stroke-width="3.2" fill="none" stroke-linecap="round"/>`;
+    out += leaf(sx, sy - 32, 24, 10, -70, "url(#leafLight)") + leaf(sx, sy - 36, 26, 10, 66, "url(#leaf)") + leaf(sx, sy - 42, 15, 6, 4, "url(#leafLight)");
+    const [fx, fy] = pots[3];
+    out += `<path d="M${fx} ${fy} C${fx - 4} ${fy - 40} ${fx + 6} ${fy - 72} ${fx + 2} ${fy - 108}" stroke="#4f7a36" stroke-width="4.4" fill="none" stroke-linecap="round"/>`;
+    out += `<path d="M${fx + 1} ${fy - 66} C${fx + 18} ${fy - 78} ${fx + 28} ${fy - 82} ${fx + 34} ${fy - 96}" stroke="#4f7a36" stroke-width="3" fill="none" stroke-linecap="round"/>`;
     const rnd = rng(41);
     for (let i = 0; i < 9; i += 1) {
-      const h = 14 + i * 9;
+      const h = 12 + i * 9.5;
       const side = i % 2 ? 1 : -1;
-      out += leaf(m3x + side * 2, m3y - h, 26 + rnd() * 10, 10, side * (56 + rnd() * 20), i % 3 ? "url(#leaf)" : "url(#leafDark)");
+      out += leaf(fx + side * 2, fy - h, 24 + rnd() * 10, 9.5, side * (56 + rnd() * 20), i % 3 ? "url(#leaf)" : "url(#leafDark)");
     }
-    // plant markers (blank wooden tags)
-    for (const u of [-176, -44, 88]) {
-      const [x, y] = floor(u, 70, 54, { angle });
-      out += `<path d="M${x} ${y} V${y - 26}" stroke="#7a5a33" stroke-width="2.4"/><rect x="${x - 9}" y="${y - 40}" width="18" height="15" rx="2" fill="url(#parchment)" stroke="#8a6a3c" stroke-width="1"/>`;
-    }
-    return { svg: out, m1: [m1x, m1y], m2: [m2x, m2y], m3: [m3x, m3y] };
+    return { svg: out, pots };
   })();
 
-  // detail: the bloom, the seeds and the dew — what lights up with the world's focus
+  // detail: the seeds to count, the dew and the bloom — what lights up with the world's focus
   const detail = (() => {
-    const [m1x, m1y] = planter.m1;
-    const [m2x, m2y] = planter.m2;
-    const [m3x, m3y] = planter.m3;
     let out = "";
-    for (const [dx, dy] of [[-18, -1], [-4, -5], [10, -2], [22, -4], [2, 2]]) {
-      out += `<ellipse cx="${m1x + dx}" cy="${m1y + dy - 4}" rx="4.2" ry="3" fill="#e8c27a" stroke="#7a5521" stroke-width=".8"/><ellipse cx="${m1x + dx - 1}" cy="${m1y + dy - 5}" rx="1.6" ry="1" fill="#fff4d0" opacity=".8"/>`;
+    const spots = [[0, 0], [-11, -2], [11, -1], [-5, 3], [6, 3]];
+    for (const [i, [px, py]] of bench.pots.entries()) {
+      for (let k = 0; k < SEEDS[i]; k += 1) {
+        const [dx, dy] = spots[k];
+        out += `<ellipse cx="${n(px + dx)}" cy="${n(py + dy - 1)}" rx="4.4" ry="3" fill="#e8c27a" stroke="#7a5521" stroke-width=".8"/><ellipse cx="${n(px + dx - 1)}" cy="${n(py + dy - 2)}" rx="1.6" ry="1" fill="#fff4d0" opacity=".85"/>`;
+      }
     }
-    out += `<circle cx="${m2x - 18}" cy="${m2y - 40}" r="2.6" fill="#dff6ff" opacity=".85"/><circle cx="${m2x + 22}" cy="${m2y - 46}" r="2.2" fill="#dff6ff" opacity=".8"/>`;
-    out += flower(m3x + 2, m3y - 108, 17, { petals: 8, fill: "#f6d27a", edge: "#c08a2c", heart: "#7a4a1c", turn: 10 });
-    out += flower(m3x + 38, m3y - 98, 11, { petals: 7, fill: "#f3c58a", edge: "#b9822a", heart: "#7a4a1c", turn: 20 });
-    out += `<ellipse cx="${m3x - 22}" cy="${m3y - 78}" rx="6" ry="8" fill="#9cc565" stroke="#4f7a36" stroke-width="1"/>`;
+    const [sx, sy] = bench.pots[2];
+    out += `<circle cx="${sx - 17}" cy="${sy - 38}" r="2.6" fill="#dff6ff" opacity=".85"/><circle cx="${sx + 21}" cy="${sy - 44}" r="2.2" fill="#dff6ff" opacity=".8"/>`;
+    const [fx, fy] = bench.pots[3];
+    out += flower(fx + 2, fy - 112, 17, { petals: 8, fill: "#f6d27a", edge: "#c08a2c", heart: "#7a4a1c", turn: 10 });
+    out += flower(fx + 36, fy - 100, 11, { petals: 7, fill: "#f3c58a", edge: "#b9822a", heart: "#7a4a1c", turn: 20 });
+    out += `<ellipse cx="${fx - 22}" cy="${fy - 80}" rx="6" ry="8" fill="#9cc565" stroke="#4f7a36" stroke-width="1"/>`;
     return out;
   })();
 
   const energy = (() => {
-    const [m3x, m3y] = planter.m3;
+    const [m3x, m3y0] = bench.pots[3];
+    const m3y = m3y0 + 4;
     const rnd = rng(7);
     let motes = "";
     for (let i = 0; i < 9; i += 1) motes += `<circle cx="${n(m3x - 80 + rnd() * 200)}" cy="${n(m3y - 200 + rnd() * 120)}" r="${n(1.6 + rnd() * 1.8)}" fill="#fff3c4" opacity="${n(0.4 + rnd() * 0.4)}"/>`;
@@ -340,7 +335,7 @@ function gardenPasses() {
     "contact-shadow": contactShadowPass(),
     base,
     back: wrap(`${hedge}${teepee}${cloche}`),
-    main: wrap(planter.svg),
+    main: wrap(bench.svg),
     detail: wrap(detail),
     energy: wrap(energy),
     front: wrap(front),

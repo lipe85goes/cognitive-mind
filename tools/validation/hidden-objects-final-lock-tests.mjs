@@ -206,6 +206,7 @@ async function runChecks(tree) {
   // --- what it was not allowed to change -------------------------------------------------------------------
 
   await check("P01", "preserved", "NOTHING_OUTSIDE_GAME03_BUT_ITS_OWN_TABLE_ENTRIES", () => {
+    // HOME-WORLD-VISUAL-UNIFICATION-01 (restated): the Home files that mission owns are the Home's (HOME_ATELIER_FILES)
     const changed = changedOutsideGame03(tree, BASE_TREE, DIR);
     const fields = ["dependencies", "devDependencies", "peerDependencies", "optionalDependencies"];
     const mine = JSON.parse(tree.read("package.json"));

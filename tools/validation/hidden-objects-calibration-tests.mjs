@@ -1316,6 +1316,7 @@ async function runChecks(tree) {
   await check("P01", "preserved", "THE_SHARED_PLATFORM_IS_UNTOUCHED", () => {
     // GAME03-FINAL-POLISH-LOCK-06 (restated): a change confined to Game 03's own entry of a per-game table (its result
     // title, its intro) is Game 03's; the rest of those files, and every other file outside Game 03, byte for byte
+    // HOME-WORLD-VISUAL-UNIFICATION-01 (restated): the Home files that mission owns are the Home's (HOME_ATELIER_FILES)
     const changed = changedOutsideGame03(tree, BASE_TREE, DIR);
     const fields = ["dependencies", "devDependencies", "peerDependencies", "optionalDependencies"];
     const mine = JSON.parse(tree.read("package.json"));

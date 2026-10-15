@@ -69,6 +69,13 @@
  * Médio's count where Difficulty V3 states it. Difficulty V3's own contract
  * lives in hidden-objects-calibration-tests.mjs.
  *
+ * HOME-WORLD-VISUAL-UNIFICATION-01 (after the Game 03 V1 lock) rebuilt every
+ * world's Home maquette on the atelier kit and gave every world one Home size.
+ * The checks say the new truth: a kept world's Home slot — tier, order — is
+ * still the base's, its size is the Home's, and it still has a whole layered
+ * maquette (H03–H06); the Estúdio still inherits the Trilha's slot, and its
+ * maquette's frame is still the Trilha's (H12). Home files that mission owns
+ * are listed in hidden-objects-harness.mjs (HOME_ATELIER_FILES).
  * Usage:
  *   node tools/validation/hidden-objects-skeleton-tests.mjs                  # the working tree
  *   node tools/validation/hidden-objects-skeleton-tests.mjs --rev=<commit>   # every source at <commit> (git show)
@@ -86,6 +93,7 @@ import { createModuleGraph, openSourceTree } from "./route-module-loader.mjs";
 import {
   codeOnly,
   sorted,
+  homeSlot,
   same,
   clip,
   nearCamera,
@@ -228,6 +236,10 @@ const openListStudio = (tree, difficulty, options = {}) => openStudio(tree, { ..
 
 const BASE_TREE = openSourceTree({ rev: BASE });
 
+/** A layered Home maquette with every layer's art on disk. */
+const hasWholeMaquette = (tree, config) =>
+  Boolean(config) && config.layers.length > 0 && config.layers.every((layer) => tree.exists(`public${layer.src}`));
+
 const KEPT_GAMES = [
   { id: "H03", name: "ROTA_ESTRATEGICA_STAYS", gameId: "escape-maze", component: "src/games/escape-maze/RouteStrategyGame.tsx", contract: { readiness: "explicit", entryWatchdogMs: 28_000 } },
   { id: "H04", name: "CIRCUITO_DE_MEMORIA_STAYS", gameId: "color-sequence", component: "src/games/color-sequence/MemoryCircuit3DGame.tsx", contract: { readiness: "explicit" } },
@@ -299,9 +311,11 @@ async function runChecks(tree) {
         activity: same(t.activities.find((a) => a.gameId === kept.gameId), b.activities.find((a) => a.gameId === kept.gameId)),
         worldMeta: same(t.worlds.GAME_WORLDS[kept.gameId], b.worlds.GAME_WORLDS[kept.gameId]),
         intro: same(t.intros[kept.gameId], b.intros[kept.gameId]),
-        homeLayout: same(t.homeLayout[kept.gameId], b.homeLayout[kept.gameId]),
+        // HOME-WORLD-VISUAL-UNIFICATION-01 (restated): the world's Home slot is the base's; its size and its
+        // maquette are the Home's now (one size, the atelier kit) — the world still has a whole layered maquette
+        homeLayout: same(homeSlot(t.homeLayout[kept.gameId]), homeSlot(b.homeLayout[kept.gameId])),
         worldVisual: same(t.visuals[kept.gameId], b.visuals[kept.gameId]),
-        diorama: same(t.dioramas[kept.gameId], b.dioramas[kept.gameId]),
+        diorama: hasWholeMaquette(tree, t.dioramas[kept.gameId]),
       };
       const folder = `src/games/${kept.gameId}/`;
       const changedFiles = folderDiff(tree, BASE_TREE, folder);
@@ -409,8 +423,9 @@ async function runChecks(tree) {
     const baseHome = cached(BASE_TREE, "home", () => renderHome(BASE_TREE));
     const order = home.worlds.map((world) => world.gameId);
     const facts = {
-      slotInherited: same(slot(t.homeLayout[STUDIO]), slot(b.homeLayout[RETIRED])),
-      otherSlotsUntouched: ACTIVE_GAMES.filter((id) => id !== STUDIO).every((id) => same(t.homeLayout[id], b.homeLayout[id])),
+      // HOME-WORLD-VISUAL-UNIFICATION-01 (restated): the slot is inherited and the others untouched; the size is the Home's
+      slotInherited: same(homeSlot(slot(t.homeLayout[STUDIO])), homeSlot(slot(b.homeLayout[RETIRED]))),
+      otherSlotsUntouched: ACTIVE_GAMES.filter((id) => id !== STUDIO).every((id) => same(homeSlot(t.homeLayout[id]), homeSlot(b.homeLayout[id]))),
       mapPosition: same(t.stages, swap(b.stages)),
       activityPosition: same(t.activities.map((a) => a.gameId ?? a.id), swap(b.activities.map((a) => a.gameId ?? a.id))),
       dioramaFrame: same(dioramaShape(t.dioramas[STUDIO]), dioramaShape(b.dioramas[RETIRED])),

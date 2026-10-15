@@ -174,10 +174,33 @@ export function withoutGame03Entry(text) {
   return null;
 }
 
+/**
+ * HOME-WORLD-VISUAL-UNIFICATION-01 — after the Game 03 V1 lock, an approved Home
+ * mission rebuilt every world's Home maquette on the Estúdio's own construction
+ * (the atelier kit: one pedestal, camera, light and pass vocabulary) and gave
+ * every world the same Home size. These files are the Home's from then on, not
+ * Game 03's to keep byte for byte. What Game 03 owns in them is still pinned by
+ * name: the Estúdio's Home slot and maquette frame (skeleton H12) and the
+ * maquette's own files (experience E30). Everything else outside Game 03 still
+ * has to be its base's, byte for byte.
+ */
+export const HOME_ATELIER_FILES = Object.freeze([
+  "src/components/home/WorldObject.tsx",
+  "src/components/home/homeLayout.ts",
+  "src/components/worlds/diorama/world-diorama.css",
+  "src/components/worlds/diorama/worldDioramaLayout.ts",
+  "src/components/worlds/master-scene/worldMasterSceneConfig.ts",
+  "src/styles/home.css",
+]);
+
+/** A world's Home slot without its size, which is the Home's (one size for every world since HOME-WORLD-VISUAL-UNIFICATION-01). */
+export const homeSlot = (layout) => layout && Object.fromEntries(Object.entries(layout).filter(([key]) => key !== "desktop"));
+
 /** folderDiff outside Game 03, where a change confined to Game 03's own entry of a per-game table does not count. */
 export function changedOutsideGame03(tree, base, dir) {
   return folderDiff(tree, base, "src")
     .filter((file) => !file.startsWith(dir))
+    .filter((file) => !HOME_ATELIER_FILES.includes(file))
     .filter((file) => {
       if (!GAME03_OWN_ENTRY_FILES.includes(file) || !tree.exists(file) || !base.exists(file)) return true;
       const mine = withoutGame03Entry(tree.read(file));
