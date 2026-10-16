@@ -1,7 +1,7 @@
 {
   "mission": "ROTA2-DYNAMIC-TRAPS-01",
   "base": "9f8ebb5d8c0c747e68d8719e523ecab3ecbdab00",
-  "allPass": false,
+  "allPass": true,
   "checks": {
     "everyMapHasExactlyOneLink": true,
     "noInvalidLink": true,
@@ -18,7 +18,7 @@
     "pickaxeBeforeTrapNeverRerolls": true,
     "trapBeforePickaxeNeverOffersTheOpenedWall": true,
     "everyPlayingRenderValid": true,
-    "terminalIssuesAreV1Shapes": false
+    "terminalIssuesAreV1Shapes": true
   },
   "sizes": {
     "routes": [
@@ -284,8 +284,9 @@
     "invalidTerminalRenders": {
       "lost:PLAYER_ON_UNOPENED_CHEST": 2
     },
-    "terminalIssuesSameInV1": 0,
-    "terminalIssuesDifferentInV1": 2,
+    "terminalIssuesSameInV1": 2,
+    "terminalIssuesDifferentInV1": 0,
+    "terminalIssuesAfterAnOpening": 2,
     "invalidExamples": [
       {
         "status": "lost",
@@ -322,6 +323,6 @@
     }
   },
   "run": {
-    "elapsedMs": 1215551
+    "elapsedMs": 1224456
   }
 }
