@@ -279,6 +279,35 @@ ligação é uma varredura de ~81 células sobre um mapa já certificado.
   revertidos à base reproduz cada registro exatamente (exit 0) — a divergência
   é da mecânica aprovada e de nada mais. Os registros foram atualizados com
   `--update` (o DEEP só no `current/`, com nota em
-  `docs/archive/route-dual-guardians-maps-01a/README-current.md`).
+  `docs/archive/route-dual-guardians-maps-01a/README-current.md`). Depois
+  disso: CORE 15/15 (`CORE_BATTERY_PASSED`, imutabilidade da árvore
+  confirmada) e DEEP com as 5 evidências batendo.
+- Game 03 e Home: nenhum arquivo de produto tocado.
 
-RESULTS_PENDING
+## 7. Limitações
+
+- Uma ligação por mapa, só `open-wall`. Nenhum outro arquétipo dinâmico.
+- A solucionabilidade adversarial exata é pré-Baú e amostral (72 mapas); a
+  garantia para todos os mapas é estrutural (só acrescentar grafo, 0 softlocks
+  em 45 819 estados), não adversarial.
+- 2 dos 1080 mapas do censo mudam em relação à v1 para a mesma semente (o
+  portão novo pediu outra tentativa); no DEEP isso desloca o resto de um fluxo
+  contínuo. Vereditos inalterados.
+- A leitura do telegrafo foi medida em SwiftShader (lilás nos pixels a 480×360
+  e revisão a 1280×900); em GPU real a cor pode puxar mais para rosa ou mais
+  para violeta. Só o playtest diz se o par "runa da armadilha ↔ runa da
+  parede" é entendido sem ler a legenda.
+- O vigia de entrada do produto (28 s) não entra a 1280×800 sob SwiftShader
+  neste contêiner — idêntico na base; não é desta missão.
+
+## 8. Perguntas para o playtest
+
+1. Sem ler os detalhes, a pessoa liga a runa da armadilha à runa da parede?
+2. Ela pisa na armadilha de propósito (para abrir o atalho) ou por acaso?
+3. A mensagem "a passagem serve para todos" deixa claro que o Caçador também
+   pode usar o atalho? Isso é percebido como justo?
+4. A abertura (parede some + anel lilás) é calma o bastante, e visível o
+   bastante?
+5. Picareta e armadilha ligada na mesma parede: a mensagem "já estava aberta"
+   evita a sensação de desperdício?
+6. A mecânica muda decisões (rota planejada pelo atalho) ou passa despercebida?
