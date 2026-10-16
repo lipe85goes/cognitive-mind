@@ -194,6 +194,21 @@ const ALLOWED = {
     reason: "STRUCTURAL_ASSERTION",
     note: "GAMEPLAY-PLATFORM-LOCK-V1's manifest: names the canonical modules and reads the product's import graph (static, dynamic, Worker URL) to pin where code lives and what each realm reaches; evaluates only continuation.ts; its Rota's behaviour is the other suites'",
   },
+  "rota2-dynamic-traps-tests.mjs": {
+    kinds: ["hook-path", "rota-ts-compile"],
+    reason: "STRUCTURAL_ASSERTION",
+    note: "ROTA2-DYNAMIC-TRAPS-01: instruments the event seam and the defender policies by file, reads the hook's trap-activation statements (no draw), compiles RouteBabylonBoard with stubs to read what it hands the scene, and holds the Worker's closure; its Rota runs through the graph",
+  },
+  "rota2-dynamic-traps-census.mjs": {
+    kinds: ["rota-module-path"],
+    reason: "STRUCTURAL_ASSERTION",
+    note: "ROTA2-DYNAMIC-TRAPS-01: a read-only recorder line in route-defenders.ts (the walls each Hunter decision was given); its Rota runs through the graph",
+  },
+  "rota2-dynamic-traps-edit.mjs": {
+    kinds: ["hook-path", "rota-module-path"],
+    reason: "STRUCTURAL_ASSERTION",
+    note: "ROTA2-DYNAMIC-TRAPS-01: the approved delta's manifest names the files it touches (the reversal the extraction suites read through route-module-loader's treeBeforeRota2)",
+  },
   "route-board-loader-tests.mjs": { kinds: ["rota-module-path", "rota-ts-compile"], reason: "UI_STAGE" },
   "diagnostic-launcher-tests.mjs": {
     kinds: ["rota-module-path"],

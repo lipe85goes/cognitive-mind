@@ -74,7 +74,14 @@ import {
   openSourceTree,
   routeRandomBeforeC7A,
   treeBeforeC7B,
+  treeBeforeRota2,
 } from "./route-module-loader.mjs";
+// ROTA2-DYNAMIC-TRAPS-01 (an approved Rota 2.0 mission, class 4 of the lock's change policy) changes the Rota on
+// purpose. This suite proves an extraction that came before it, so it reads and runs every tree it opens with exactly
+// that mission's pinned delta reversed (`treeBeforeRota2`, `beforeRota2`; no-ops on any tree without the delta):
+// whatever else changed still fails it. What the mission does is rota2-dynamic-traps-tests.mjs' question.
+const openTree = (options) => treeBeforeRota2(openSourceTree(options));
+
 import { POLICIES, applyAction, instrumentEvents, nextAction, runInRealReact, runInShim } from "./route-react-runtime.mjs";
 import { loadRouteRuntime, withoutLifecycle } from "./route-runtime-harness.mjs";
 
@@ -492,7 +499,7 @@ function typeContract(tree) {
 function structureChecks(tree) {
   const out = [];
   const record = (id, name, pass, detail) => out.push({ id, kind: "structure", name, pass, detail });
-  const base = openSourceTree({ rev: BASELINE });
+  const base = openTree({ rev: BASELINE });
   const exists = tree.exists(ROUTE_EVENTS);
   const eventsText = exists ? tree.read(ROUTE_EVENTS) : "";
   const events = moduleShape(ROUTE_EVENTS, eventsText);
@@ -792,7 +799,7 @@ const variantOf = (e) => [e.type, e.reason ?? e.cause ?? e.by ?? e.outcome ?? e.
 
 /** Generated boards, each with its Sentinel on its post: what every corpus is built from. */
 function corpusMaps(tree, seedBase) {
-  const rota = loadRouteModules({ tree, surface: ["generateMaze", "computePortalDefenceZone", "createSentinelState"] });
+  const rota = loadRouteModules({ beforeRota2: true, tree, surface: ["generateMaze", "computePortalDefenceZone", "createSentinelState"] });
   const maps = [];
   for (const routeNumber of [1, 2, 3]) {
     for (const difficulty of DIFFICULTIES) {
@@ -894,11 +901,11 @@ function contractChecks(tree) {
       throw new Error(`route-events constructed ${name}`);
     },
   });
-  const graph = createModuleGraph({ tree, globals: { Math: poison("Math"), Date: poison("Date"), performance: poison("performance"), crypto: poison("crypto") } });
+  const graph = createModuleGraph({ tree: treeBeforeRota2(tree), globals: { Math: poison("Math"), Date: poison("Date"), performance: poison("performance"), crypto: poison("crypto") } });
   const { routeStateActionsForEvent: map } = graph.require(ROUTE_EVENTS);
   const loaded = graph.modules().map((m) => m.file);
-  const stateNow = createModuleGraph({ tree }).require(ROUTE_STATE);
-  const stateBase = createModuleGraph({ tree: openSourceTree({ rev: BASELINE }) }).require(ROUTE_STATE);
+  const stateNow = createModuleGraph({ tree: treeBeforeRota2(tree) }).require(ROUTE_STATE);
+  const stateBase = createModuleGraph({ tree: openTree({ rev: BASELINE }) }).require(ROUTE_STATE);
   const maps = corpusMaps(tree, 66_000);
   const rand = prng(6_600_006);
 
@@ -1016,7 +1023,7 @@ function createTracedRota({ rev = null, sourceOverrides, sounds = null } = {}) {
       playStoneBreak: () => sounds.push("sound:stone"),
     },
   };
-  const runtime = loadRouteRuntime({ rev, sourceOverrides, mocks });
+  const runtime = loadRouteRuntime({ beforeRota2: true, rev, sourceOverrides, mocks });
   const graph = runtime.LAB.graph;
   const tracer = instrumentEvents(graph);
   const generation = graph.require(graph.tree.declaring("generateMaze"));
@@ -1547,7 +1554,7 @@ function traceChecks({ rev = null, sourceOverrides, scale = "full", tree }) {
   const real = realScenarios(scale).map((scenario) => ({ scenario, ...drive(rota, scenario) }));
   const inputs = [...synthetic, ...real].flatMap((s) => s.inputs);
   const realInputs = real.flatMap((s) => s.inputs);
-  const mapping = createModuleGraph({ tree }).require(ROUTE_EVENTS).routeStateActionsForEvent;
+  const mapping = createModuleGraph({ tree: treeBeforeRota2(tree) }).require(ROUTE_EVENTS).routeStateActionsForEvent;
 
   // T1 — the situations, input by input, exactly as pinned; mounting writes nothing (the initial state is no event).
   {
@@ -1782,7 +1789,7 @@ const firstLineDiff = (a, b) => {
 function preservedChecks(tree) {
   const out = [];
   const record = (id, name, pass, detail) => out.push({ id, kind: "preserved", name, pass, detail });
-  const base = openSourceTree({ rev: BASELINE });
+  const base = openTree({ rev: BASELINE });
   const hookNow = moduleShape(ROUTE_HOOK, tree.read(ROUTE_HOOK));
   const hookBase = moduleShape(ROUTE_HOOK, base.read(ROUTE_HOOK));
 
@@ -1850,7 +1857,7 @@ function preservedChecks(tree) {
   {
     const now = turnSkeleton(tree.read(ROUTE_HOOK), { mode: "erase" });
     const c5 = turnSkeleton(base.read(ROUTE_HOOK), { mode: "erase" });
-    const c4 = turnSkeleton(openSourceTree({ rev: C4_BASELINE }).read(ROUTE_HOOK), { mode: "erase" });
+    const c4 = turnSkeleton(openTree({ rev: C4_BASELINE }).read(ROUTE_HOOK), { mode: "erase" });
     record("P5", "TURN_ORDER_UNCHANGED_WITH_WRITES_ERASED", Boolean(now && c5 && c4) && now.text === c5.text && now.text === c4.text, {
       skeletonChars: now?.text.length,
       removedNow: now?.removed,
@@ -1866,7 +1873,7 @@ function preservedChecks(tree) {
   // with the same values (`⟨nextTurn⟩`, `⟨SECOND_CHANCE_DEFENDER_MESSAGE⟩`…) at the same points of the same decisions,
   // in the same order. Nothing reordered, dropped, added or re-valued between the two.
   {
-    const mapping = tree.exists(ROUTE_EVENTS) ? createModuleGraph({ tree }).require(ROUTE_EVENTS).routeStateActionsForEvent : () => {
+    const mapping = tree.exists(ROUTE_EVENTS) ? createModuleGraph({ tree: treeBeforeRota2(tree) }).require(ROUTE_EVENTS).routeStateActionsForEvent : () => {
       throw new Error("no route-events");
     };
     const now = turnSkeleton(tree.read(ROUTE_HOOK), { mode: "resolve", mapping });
@@ -1975,8 +1982,8 @@ async function equivalenceChecks({ rev = null, sourceOverrides, scale = "full", 
   const out = [];
   const record = (id, name, pass, detail) => out.push({ id, kind: "equivalence", name, pass, detail });
   const scenarios = realScenarios(scale);
-  const now = await runInShim({ rev, sourceOverrides, scenarios, traceEvents: true });
-  baselineCache[scale] ??= await runInShim({ rev: BASELINE, scenarios, traceEvents: true });
+  const now = await runInShim({ beforeRota2: true, rev, sourceOverrides, scenarios, traceEvents: true });
+  baselineCache[scale] ??= await runInShim({ beforeRota2: true, rev: BASELINE, scenarios, traceEvents: true });
   const base = baselineCache[scale];
   const traced = now.every((r) => r.traces.every((t) => Array.isArray(t.events)));
   const items = classify(now, base);
@@ -2109,8 +2116,8 @@ async function equivalenceChecks({ rev = null, sourceOverrides, scale = "full", 
     for (const config of REACT_CONFIGS) {
       const scenariosFor = reactScenarios({ keys: config.keys });
       const [a, b] = await Promise.all([
-        runInRealReact({ rev, sourceOverrides, nodeEnv: config.nodeEnv, strict: config.strict, regime: config.regime, scenarios: scenariosFor, traceEvents: true }),
-        runInRealReact({ rev: BASELINE, nodeEnv: config.nodeEnv, strict: config.strict, regime: config.regime, scenarios: scenariosFor }),
+        runInRealReact({ beforeRota2: true, rev, sourceOverrides, nodeEnv: config.nodeEnv, strict: config.strict, regime: config.regime, scenarios: scenariosFor, traceEvents: true }),
+        runInRealReact({ beforeRota2: true, rev: BASELINE, nodeEnv: config.nodeEnv, strict: config.strict, regime: config.regime, scenarios: scenariosFor }),
       ]);
       const inputs = a.results.flatMap((r) => r.steps.filter((s) => s.label !== "mount" && s.label !== "next" && s.commits !== undefined));
       const observational = a.results.flatMap((r) => r.steps.filter((_s, i) => (r.traces[i]?.events ?? []).some((e) => OBSERVATIONAL.includes(e.type))));
@@ -2135,7 +2142,7 @@ async function equivalenceChecks({ rev = null, sourceOverrides, scale = "full", 
     // gives the same trace, production gives the shim's, and in development (where React calls things twice) every
     // input's trace is still a word of the turn's grammar: nothing applied twice.
     const shimScenarios = reactScenarios({ keys: false }).filter((s) => !s.keysOnly);
-    const shim = eventsPerStep(await runInShim({ rev, sourceOverrides, scenarios: shimScenarios, traceEvents: true }));
+    const shim = eventsPerStep(await runInShim({ beforeRota2: true, rev, sourceOverrides, scenarios: shimScenarios, traceEvents: true }));
     const production = traces[REACT_CONFIGS.findIndex((c) => !c.keys)].filter((_r, i) => !reactScenarios({ keys: false })[i].keysOnly);
     const byBuild = {};
     REACT_CONFIGS.forEach((c, i) => (byBuild[c.nodeEnv] ??= []).push(traces[i]));
@@ -2204,7 +2211,7 @@ const MUTANT_LIST = [
 ];
 
 async function runMutants() {
-  const worktree = openSourceTree();
+  const worktree = openTree();
   // The reference: the unmutated working tree, on the mutants' smaller set of Routes, must pass everything; its real
   // trace digest is what T6 holds each mutant to at that scale.
   const reference = traceChecks({ scale: "mutant", tree: worktree });
@@ -2229,7 +2236,7 @@ async function runMutants() {
       continue;
     }
     const sourceOverrides = { [file]: text.replace(from, () => to) };
-    const tree = openSourceTree({ sourceOverrides });
+    const tree = openTree({ sourceOverrides });
     const results = [];
     const errors = [];
     const attempt = async (group, fn) => {
@@ -2267,7 +2274,7 @@ if (MUTANTS) {
   console.log(`route domain events · mutants of the working tree (in memory), against baseline ${BASELINE.slice(0, 7)}\n`);
   await runMutants();
 } else {
-  const TREE = openSourceTree({ rev: REV });
+  const TREE = openTree({ rev: REV });
   console.log(`route domain events · ${REV ? `rev ${TREE.rev.slice(0, 12)}` : "working tree"} vs baseline ${BASELINE.slice(0, 7)} (the hook dispatches the eleven C5 actions itself)\n`);
   const tests = [];
   const show = (results) => {

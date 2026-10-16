@@ -74,7 +74,14 @@ import {
   routeRandomBeforeC7A,
   treeBeforeC7B,
   hookExportsBeforeC7C,
+  treeBeforeRota2,
 } from "./route-module-loader.mjs";
+// ROTA2-DYNAMIC-TRAPS-01 (an approved Rota 2.0 mission, class 4 of the lock's change policy) changes the Rota on
+// purpose. This suite proves an extraction that came before it, so it reads and runs every tree it opens with exactly
+// that mission's pinned delta reversed (`treeBeforeRota2`, `beforeRota2`; no-ops on any tree without the delta):
+// whatever else changed still fails it. What the mission does is rota2-dynamic-traps-tests.mjs' question.
+const openTree = (options) => treeBeforeRota2(openSourceTree(options));
+
 import { cellKey, loadRouteRuntime, pathBetween, walkableNeighbours } from "./route-runtime-harness.mjs";
 
 /** C1: the last revision whose generation lived in the hook — what C2 must be equivalent to. */
@@ -188,8 +195,8 @@ const codeOnly = (source) => source.replace(/\/\*[\s\S]*?\*\//g, " ").replace(/(
 // ROUTE-C7B: the text this extraction pins is read through C7B's sanctioned edit of the hook, the Rota's view and its
 // stylesheet (route-module-loader.mjs `treeBeforeC7B`), and C7B's two new modules are not in it; every other byte is
 // still compared. Its graph questions (closure, declaring, locate) are the tree's own, and its runs load `rev`.
-const TREE = treeBeforeC7B(openSourceTree({ rev: REV }));
-const BASE_TREE = openSourceTree({ rev: BASELINE });
+const TREE = treeBeforeC7B(openTree({ rev: REV }));
+const BASE_TREE = openTree({ rev: BASELINE });
 const label = REV ? `rev ${TREE.rev.slice(0, 12)}` : "working tree";
 console.log(`route-generation extraction · ${label} vs baseline ${BASELINE.slice(0, 7)} (generation in the hook)\n`);
 
@@ -512,8 +519,8 @@ const SURFACE = [
   "escapeGeometryIsPossible", "generateMaze", "computePortalDefenceZone", "createSentinelState", "inspectDynamicMazeState",
   "PLAYER_START",
 ];
-const NOW = loadRouteModules({ rev: REV, surface: SURFACE });
-const BASE = loadRouteModules({ rev: BASELINE, surface: SURFACE });
+const NOW = loadRouteModules({ beforeRota2: true, rev: REV, surface: SURFACE });
+const BASE = loadRouteModules({ beforeRota2: true, rev: BASELINE, surface: SURFACE });
 
 // P5 — at run time: the same export names, and the hook's posKey / positionsEqual / generateMaze ARE the functions
 // that do the work (a re-export, not a copy).
@@ -705,8 +712,8 @@ const nextDraws = (rota, n = 3) => Array.from({ length: n }, () => rota.routeRan
   });
 }
 
-const NOW_LAB = loadInstrumented({ rev: REV });
-const BASE_LAB = loadInstrumented({ rev: BASELINE });
+const NOW_LAB = loadInstrumented({ beforeRota2: true, rev: REV });
+const BASE_LAB = loadInstrumented({ beforeRota2: true, rev: BASELINE });
 
 // E4 — every attempt of every replayed generation, with capture on: structural reason, escape context, final gates
 // failed, the candidate map and its objective cells — and the totals: attempts, random phase, recovery, throw.
@@ -748,14 +755,14 @@ const BASE_LAB = loadInstrumented({ rev: BASELINE });
 
 /** A Rota whose budget is rewritten in memory, wherever the budget is declared — the same edit on both trees. */
 function budgeted(rev, edits) {
-  const tree = openSourceTree({ rev });
+  const tree = openTree({ rev });
   const lines = edits.map(([name, value]) => {
     const file = tree.declaring(name);
     const line = tree.read(file).split("\n").find((l) => new RegExp(String.raw`^(?:export )?const ${name} = \d+;$`).test(l));
     if (!line) throw new Error(`${name}: declaration not found in ${file}`);
     return [line, line.replace(/= \d+;$/, `= ${value};`)];
   });
-  return loadRouteModules({ tree, transforms: anchoredEdits(tree, lines), surface: SURFACE });
+  return loadRouteModules({ beforeRota2: true, tree, transforms: anchoredEdits(tree, lines), surface: SURFACE });
 }
 
 // E5 — recovery and the throw, forced: with the random phase cut to one attempt the recovery sweep must enter and
@@ -854,7 +861,7 @@ function budgeted(rev, edits) {
     return "budget";
   };
   const play = (rev) => {
-    const runtime = loadRouteRuntime({ rev });
+    const runtime = loadRouteRuntime({ beforeRota2: true, rev });
     const out = [];
     for (const routeNumber of [1, 2, 3]) {
       for (const difficulty of DIFFICULTIES) {
@@ -963,7 +970,7 @@ function budgeted(rev, edits) {
 // N3 — the instrumented loader explains the same way: 18 structural reasons and 23 final gates, the same names in the
 // same order; bare mode generates the instrumented mode's maps; replayGeneration still mirrors generateMaze.
 {
-  const nowBare = loadInstrumented({ rev: REV, bare: true });
+  const nowBare = loadInstrumented({ beforeRota2: true, rev: REV, bare: true });
   const fidelity = [];
   for (const [stage, difficulty, seed] of [[1, "easy", 3], [2, "medium", 5], [3, "hard", 8], [3, "hard", 13], [2, "easy", 21], [1, "hard", 34]]) {
     const map = (lab, how) => {

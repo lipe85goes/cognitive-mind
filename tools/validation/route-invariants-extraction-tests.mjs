@@ -93,7 +93,14 @@ import {
   routeRandomBeforeC7A,
   treeBeforeC7B,
   hookExportsBeforeC7C,
+  treeBeforeRota2,
 } from "./route-module-loader.mjs";
+// ROTA2-DYNAMIC-TRAPS-01 (an approved Rota 2.0 mission, class 4 of the lock's change policy) changes the Rota on
+// purpose. This suite proves an extraction that came before it, so it reads and runs every tree it opens with exactly
+// that mission's pinned delta reversed (`treeBeforeRota2`, `beforeRota2`; no-ops on any tree without the delta):
+// whatever else changed still fails it. What the mission does is rota2-dynamic-traps-tests.mjs' question.
+const openTree = (options) => treeBeforeRota2(openSourceTree(options));
+
 import { cellKey, loadRouteRuntime, pathBetween, walkableNeighbours } from "./route-runtime-harness.mjs";
 
 /** C3: the last revision whose dynamic invariants lived in the hook — what C4 must be equivalent to. */
@@ -254,8 +261,8 @@ const tally = (counts, label) => {
 // ROUTE-C7B: the text this extraction pins is read through C7B's sanctioned edit of the hook, the Rota's view and its
 // stylesheet (route-module-loader.mjs `treeBeforeC7B`), and C7B's two new modules are not in it; every other byte is
 // still compared. Its graph questions (closure, declaring, locate) are the tree's own, and its runs load `rev`.
-const TREE = treeBeforeC7B(openSourceTree({ rev: REV }));
-const BASE_TREE = openSourceTree({ rev: BASELINE });
+const TREE = treeBeforeC7B(openTree({ rev: REV }));
+const BASE_TREE = openTree({ rev: BASELINE });
 const label = REV ? `rev ${TREE.rev.slice(0, 12)}` : "working tree";
 console.log(`route-invariants extraction · ${label} vs baseline ${BASELINE.slice(0, 7)} (invariants in the hook)\n`);
 
@@ -693,8 +700,8 @@ function findCycle(edges) {
 // =================================================================================================
 
 const SURFACE = ["inspectDynamicMazeState", "generateMaze", "posKey", "computePortalDefenceZone", "createSentinelState", "decideSentinelMove"];
-const NOW = loadRouteModules({ rev: REV, surface: SURFACE });
-const BASE = loadRouteModules({ rev: BASELINE, surface: SURFACE });
+const NOW = loadRouteModules({ beforeRota2: true, rev: REV, surface: SURFACE });
+const BASE = loadRouteModules({ beforeRota2: true, rev: BASELINE, surface: SURFACE });
 
 // P6 — at run time: the same export names as the baseline, and the hook's inspectDynamicMazeState IS the function that
 // inspects (a re-export, not a copy).
@@ -1339,7 +1346,7 @@ const POLICIES = ["win", "lose", "pickaxe", "traps", "sc-hunter", "sc-sentinel",
 // moment), and its effective walls are the walls the hook plays on.
 guarded("E5", "equivalence", "RUNTIME_DYNAMIC_SOLVABILITY_IDENTICAL_STEP_BY_STEP", () => {
   const play = (rev) => {
-    const runtime = loadRouteRuntime({ rev });
+    const runtime = loadRouteRuntime({ beforeRota2: true, rev });
     const api = runtime.API;
     const out = [];
     const events = {};
@@ -1474,8 +1481,8 @@ const holderOf = (graph, name) =>
 // inspectDynamicMazeState to route-invariants.ts; `routeModuleDeclaring` (the counterfactual aim) and `locate` (textual
 // anchors on the contract's code) find it there too.
 {
-  const LAB = loadInstrumented({ rev: REV, bare: true });
-  const RUNTIME = loadRouteRuntime({ rev: REV });
+  const LAB = loadInstrumented({ beforeRota2: true, rev: REV, bare: true });
+  const RUNTIME = loadRouteRuntime({ beforeRota2: true, rev: REV });
   const lab = holderOf(LAB.graph, "inspectDynamicMazeState");
   const runtime = holderOf(RUNTIME.LAB.graph, "inspectDynamicMazeState");
   const declaring = errorOf(() => routeModuleDeclaring("inspectDynamicMazeState", { rev: REV })) ?? routeModuleDeclaring("inspectDynamicMazeState", { rev: REV });

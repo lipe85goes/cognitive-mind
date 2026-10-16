@@ -43,6 +43,7 @@ import { EXIT_OK, EXIT_USAGE, EXIT_VALIDATION_FAILED, openEvidence } from "./evi
 import { cellKey, loadRouteRuntime, pathBetween, playToEnd, sameCell, walkableNeighbours } from "./route-runtime-harness.mjs";
 import { openSourceTree } from "./route-module-loader.mjs";
 import { createCanvasDouble, loadSceneModule } from "./babylon-lifecycle-harness.mjs";
+import { independentLinkOffences } from "./rota2-link-oracle.mjs";
 
 export const ROTA2_BASE = "9f8ebb5d8c0c747e68d8719e523ecab3ecbdab00";
 const ROTA = "src/games/escape-maze/";
@@ -208,16 +209,29 @@ async function runSuite({ rev = null, transforms = [], sceneTransform = null, bo
     const avoid = new Set(extra);
     const map = g.mazeMap;
     if (map.chest && !g.chestOpened) avoid.add(cellKey(map.chest));
-    for (const trap of map.traps) avoid.add(cellKey(trap));
-    for (const star of map.collectibleStars) if (!g.collectedSet.has(cellKey(star))) avoid.add(cellKey(star));
+    // margin < 0: the least careful Explorer — lights and other traps are fair ground.
+    if (margin >= 0) {
+      for (const trap of map.traps) avoid.add(cellKey(trap));
+      for (const star of map.collectibleStars) if (!g.collectedSet.has(cellKey(star))) avoid.add(cellKey(star));
+    }
     avoid.add(cellKey(map.exitPosition));
     avoid.delete(cellKey(target));
     return avoid;
   };
+  let margin = 1; // how far around the defenders the Explorer keeps (1: their next step; 2: two steps)
+  const reachOf = (from, walls) => {
+    const out = [from];
+    let frontier = [from];
+    for (let depth = 0; depth < margin; depth += 1) {
+      frontier = frontier.flatMap((cell) => walkableNeighbours(cell, walls));
+      out.push(...frontier);
+    }
+    return out;
+  };
   const stepToward = (run, target, extraAvoid) => {
     const g = run.state;
     const avoid = avoidSetFor(g, target, extraAvoid);
-    const reach = [g.guardian, g.sentinel, ...walkableNeighbours(g.guardian, g.walls), ...walkableNeighbours(g.sentinel, g.walls)].map(cellKey);
+    const reach = margin <= 0 ? [g.guardian, g.sentinel].map(cellKey) : [...reachOf(g.guardian, g.walls), ...reachOf(g.sentinel, g.walls)].map(cellKey);
     const careful = new Set([...g.walls, ...avoid, ...reach]);
     careful.delete(cellKey(g.player));
     careful.delete(cellKey(target));
@@ -252,7 +266,9 @@ async function runSuite({ rev = null, transforms = [], sceneTransform = null, bo
     return false;
   };
 
-  const mountFor = ({ seed, difficulty, route }) => {
+  /** A fixture remounted is replayed with the caution it was found with, so it walks the same path. */
+  const mountFor = ({ seed, difficulty, route, margin: m }) => {
+    margin = m ?? 1;
     resetTrace();
     return RT.mount({ seed, difficulty, routeNumber: route });
   };
@@ -260,7 +276,7 @@ async function runSuite({ rev = null, transforms = [], sceneTransform = null, bo
   // =============================================================================================
   // fixtures — found by search on the tree under test, so a tree without links simply has none
   // =============================================================================================
-  const SEARCH = { from: 6100, count: 40 };
+  const SEARCH = { from: 6100, count: 120 };
   const seedsFor = (kind) => {
     const hinted = fixturesHint?.[kind];
     if (hinted) return [hinted];
@@ -275,8 +291,12 @@ async function runSuite({ rev = null, transforms = [], sceneTransform = null, bo
     for (const route of ROUTES) {
       const slot = `${difficulty}-${route}`;
       const hint = fixturesHint?.activation?.[slot];
-      for (const seed of hint ? [hint] : seedsFor("none")) {
-        const run = mountFor({ seed, difficulty, route });
+      // The Explorer's caution is part of the fixture: the first that reaches the trap is kept.
+      const attempts = hint
+        ? [{ seed: hint.seed, margin: hint.margin }]
+        : [1, 2, 0, -1].flatMap((m) => seedsFor("none").map((seed) => ({ seed, margin: m })));
+      for (const { seed, margin: m } of attempts) {
+        const run = mountFor({ seed, difficulty, route, margin: m });
         const link = linkOf(run.state.mazeMap);
         if (!link) break;
         const trap = keyToCell(link.trap);
@@ -287,11 +307,13 @@ async function runSuite({ rev = null, transforms = [], sceneTransform = null, bo
         run.stepTo(trap);
         const after = run.state;
         if (!sameCell(after.player, trap)) continue;
-        activation[slot] = { seed, difficulty, route, run, link, trap, before: observe(before), beforeWalls, afterWalls: new Set(after.walls), after, trace: { ...trace, events: [...trace.events], hunter: [...trace.hunter], sentinel: [...trace.sentinel] } };
+        activation[slot] = { seed, margin: m, difficulty, route, run, link, trap, before: observe(before), beforeWalls, afterWalls: new Set(after.walls), after, trace: { ...trace, events: [...trace.events], hunter: [...trace.hunter], sentinel: [...trace.sentinel] } };
         break;
       }
+      margin = 1;
     }
   }
+  margin = 1;
   const primary = activation["medium-2"] ?? Object.values(activation)[0] ?? null;
 
   /** pickaxeFirst: Pickaxe from the Chest opens the linked wall, then the Explorer arms its trap. */
@@ -374,36 +396,45 @@ async function runSuite({ rev = null, transforms = [], sceneTransform = null, bo
     }
   }
 
-  /** secondChance: Second Chance from the Chest is held, then the Explorer arms the linked trap. */
-  let secondChance = null;
-  const scSeeds = fixturesHint?.secondChance ? [fixturesHint.secondChance] : null;
-  outer3: for (const difficulty of scSeeds ? [scSeeds[0].difficulty] : DIFFICULTIES) {
-    for (const route of scSeeds ? [scSeeds[0].route] : ROUTES) {
-      for (const seed of scSeeds ? [scSeeds[0].seed] : seedsFor("none").slice(0, 25)) {
+  /**
+   * plainTrap: any trap armed through the hook (the linked one where the tree has links) — the v1 trap
+   * contract, searched the same way on every tree. `withSecondChance` takes Second Chance from the Chest first.
+   */
+  const findPlainTrap = (withSecondChance) => {
+    const hint = fixturesHint?.[withSecondChance ? "plainSecondChance" : "plainTrap"];
+    const combos = hint ? [hint] : DIFFICULTIES.flatMap((difficulty) => ROUTES.map((route) => ({ difficulty, route })));
+    for (const { difficulty, route, seed: hinted } of combos) {
+      for (const seed of hinted ? [hinted] : seedsFor("none").slice(0, 20)) {
         const run = mountFor({ seed, difficulty, route });
-        const link = linkOf(run.state.mazeMap);
-        if (!link || !run.state.mazeMap.chest) break;
-        const trap = keyToCell(link.trap);
-        if (!walkCarefully(run, run.state.mazeMap.chest, [link.trap])) continue;
-        if (!run.state.rewardChoicePending) continue;
-        run.choose("second-chance");
-        if (run.state.status !== "playing") continue;
-        const held = { selected: run.state.rewardSelected, spent: run.state.rewardSpent, available: run.state.secondChanceAvailable };
+        const map = run.state.mazeMap;
+        const link = linkOf(map);
+        const trap = link ? keyToCell(link.trap) : map.traps[0];
+        if (!trap) continue;
+        let held = null;
+        if (withSecondChance) {
+          if (!map.chest || !walkCarefully(run, map.chest, [cellKey(trap)]) || !run.state.rewardChoicePending) continue;
+          run.choose("second-chance");
+          if (run.state.status !== "playing") continue;
+          held = { selected: run.state.rewardSelected, spent: run.state.rewardSpent, available: run.state.secondChanceAvailable };
+        }
         if (!walkToBeforeTrap(run, trap)) continue;
         const trace = resetTrace();
         run.stepTo(trap);
         if (!sameCell(run.state.player, trap)) continue;
-        secondChance = { seed, difficulty, route, run, link, held, after: run.state, events: [...trace.events] };
-        break outer3;
+        return { seed, difficulty, route, trap, linked: !!link, held, after: run.state, trace: { events: [...trace.events], hunter: [...trace.hunter], sentinel: [...trace.sentinel] } };
       }
     }
-  }
+    return null;
+  };
+  const plainTrap = findPlainTrap(false);
+  const plainSecondChance = findPlainTrap(true);
 
   const fixtureSummary = {
-    activation: Object.fromEntries(Object.entries(activation).map(([slot, f]) => [slot, f.seed])),
+    activation: Object.fromEntries(Object.entries(activation).map(([slot, f]) => [slot, { seed: f.seed, margin: f.margin }])),
     pickaxeFirst: pickaxeFirst && { seed: pickaxeFirst.seed, difficulty: pickaxeFirst.difficulty, route: pickaxeFirst.route },
     trapFirst: trapFirst && { seed: trapFirst.seed, difficulty: trapFirst.difficulty, route: trapFirst.route },
-    secondChance: secondChance && { seed: secondChance.seed, difficulty: secondChance.difficulty, route: secondChance.route },
+    plainTrap: plainTrap && { seed: plainTrap.seed, difficulty: plainTrap.difficulty, route: plainTrap.route },
+    plainSecondChance: plainSecondChance && { seed: plainSecondChance.seed, difficulty: plainSecondChance.difficulty, route: plainSecondChance.route },
   };
   const need = (fixture, what) => {
     if (!fixture) throw new Error(`no ${what} fixture on this tree`);
@@ -434,8 +465,11 @@ async function runSuite({ rev = null, transforms = [], sceneTransform = null, bo
   await guarded("T02", "rota2", "SAME_SEED_SAME_LINKED_WALL", () => {
     const drift = [];
     for (const { seed, difficulty, route, map } of sample.slice(0, 54)) {
+      // Later in the run, and twice back to back: nothing about when it is asked may move the link.
       const again = generate(seed, difficulty, route);
-      if (!sameJson(again.trapLinks, map.trapLinks) || !sameJson(sortedKeys(again.walls), sortedKeys(map.walls))) drift.push({ seed, difficulty, route });
+      const twice = generate(seed, difficulty, route);
+      const same = (m) => sameJson(m.trapLinks, map.trapLinks) && sameJson(sortedKeys(m.walls), sortedKeys(map.walls));
+      if (!same(again) || !same(twice)) drift.push({ seed, difficulty, route });
     }
     const links = new Set(sample.map(({ map }) => JSON.stringify(map.trapLinks ?? null)));
     return { pass: drift.length === 0 && sample.every(({ map }) => linkOf(map)) && links.size > 1, regenerated: 54, drift, distinctLinksInSample: links.size };
@@ -507,15 +541,13 @@ async function runSuite({ rev = null, transforms = [], sceneTransform = null, bo
     });
     // Later turns too: keep walking and require every Hunter decision to have the wall open.
     const f = need(primary, "activation");
-    const trace = resetTrace();
     const run = mountFor(f);
     walkToBeforeTrap(run, f.trap);
+    const trace = resetTrace();
     run.stepTo(f.trap);
-    for (let i = 0; i < 6 && run.state.status === "playing"; i += 1) {
-      const options = walkableNeighbours(run.state.player, run.state.walls).filter((c) => !sameCell(c, run.state.guardian) && !sameCell(c, run.state.sentinel));
-      if (!options.length) break;
-      run.stepTo(options[i % options.length]);
-    }
+    // A few careful steps more, through the opened passage and back toward the start.
+    walkCarefully(run, keyToCell(f.link.mutation.wall), [], 4);
+    walkCarefully(run, run.state.mazeMap.playerStart, [], 4);
     const later = trace.hunter.length > 1 && trace.hunter.every((c) => !c.walls.has(f.link.mutation.wall));
     return { pass: rows.length > 0 && rows.every((r) => r.everyCallOpen) && later, activationTurns: rows.slice(0, 3), laterDecisions: trace.hunter.length, laterAllOpen: later };
   });
@@ -597,17 +629,15 @@ async function runSuite({ rev = null, transforms = [], sceneTransform = null, bo
         }
       }
     }
-    // On a tree without links, arm a plain trap through the hook instead.
-    if (rows.length === 0) {
-      const run = mountFor({ seed: 6100, difficulty: "medium", route: 2 });
-      const trap = run.state.mazeMap.traps[0];
-      const trace = resetTrace();
-      if (walkToBeforeTrap(run, trap)) {
-        run.stepTo(trap);
-        rows.push({ slot: "plain-trap", blockedHunter: trace.hunter.length > 0 && trace.hunter.every((c) => c.blocked.has(cellKey(trap))), blockedSentinel: trace.sentinel.every((c) => c.blocked.has(cellKey(trap))) });
-      }
-    }
-    return { pass: entered === 0 && decisions > 0 && rows.length > 0 && rows.every((r) => r.blockedHunter && r.blockedSentinel), policyDecisions: decisions, hunterEnteredArmedTrap: entered, runtime: rows.slice(0, 4) };
+    // The same trap step on every tree: the defenders' answer that very turn carries the armed trap as blocked.
+    const plain = need(plainTrap, "trap");
+    const plainRow = {
+      slot: `plain ${plain.difficulty}-${plain.route}@${plain.seed}`,
+      blockedHunter: plain.trace.hunter.length > 0 && plain.trace.hunter.every((c) => c.blocked.has(cellKey(plain.trap))),
+      blockedSentinel: plain.trace.sentinel.length > 0 && plain.trace.sentinel.every((c) => c.blocked.has(cellKey(plain.trap))),
+    };
+    const all = [plainRow, ...rows];
+    return { pass: entered === 0 && decisions > 0 && all.every((r) => r.blockedHunter && r.blockedSentinel), policyDecisions: decisions, hunterEnteredArmedTrap: entered, runtime: all.slice(0, 4) };
   });
 
   // =============================================================================================
@@ -652,33 +682,27 @@ async function runSuite({ rev = null, transforms = [], sceneTransform = null, bo
   // T13 · Second Chance unchanged
   // =============================================================================================
   await guarded("T13", "preserved", "SECOND_CHANCE_UNCHANGED_BY_TOPOLOGY", () => {
-    if (!secondChance) {
-      // A tree without links: Second Chance held across any trap step stays held (v1).
-      const run = mountFor({ seed: 6100, difficulty: "medium", route: 2 });
-      const map = run.state.mazeMap;
-      if (!map.chest || !walkCarefully(run, map.chest) || !run.state.rewardChoicePending) return { pass: false, reason: "no plain fixture" };
-      run.choose("second-chance");
-      const trap = map.traps.find((t) => walkableNeighbours(t, run.state.walls).length > 0);
-      if (!trap || !walkToBeforeTrap(run, trap)) return { pass: false, reason: "no plain trap" };
-      run.stepTo(trap);
-      return { pass: run.state.secondChanceAvailable === true && run.state.rewardSpent === false, mode: "plain-trap", rewardSpent: run.state.rewardSpent };
-    }
-    const f = secondChance;
-    const types = f.events.map((e) => e.type);
-    const facts = {
-      heldBefore: f.held,
-      stillHeld: f.after.secondChanceAvailable,
-      rewardSpent: f.after.rewardSpent,
-      rewardSelected: f.after.rewardSelected,
-      noSecondChanceEventOnTheStep: !types.includes("SECOND_CHANCE_USED") || f.after.rewardSpent,
-      wallOpened: !f.after.walls.has(f.link.mutation.wall),
-    };
-    // A trap-opening never spends it: only a capture does, and a capture says so (SECOND_CHANCE_USED).
+    // Second Chance held across the trap step (the linked trap where the tree has links): only a capture spends it,
+    // and a capture says so (SECOND_CHANCE_USED). Same search on every tree.
+    const f = need(plainSecondChance, "Second Chance + trap");
+    const types = f.trace.events.map((e) => e.type);
     const captured = types.includes("SECOND_CHANCE_USED");
-    const pass = f.held.available === true && f.after.rewardSelected === "second-chance" &&
+    const linkedOpened = f.linked ? !f.after.walls.has(linkOf(f.after.mazeMap).mutation.wall) : null;
+    const facts = {
+      slot: `${f.difficulty}-${f.route}`,
+      seed: f.seed,
+      linkedTrap: f.linked,
+      heldBefore: f.held,
+      captured,
+      rewardSpent: f.after.rewardSpent,
+      stillHeld: f.after.secondChanceAvailable,
+      rewardSelected: f.after.rewardSelected,
+      linkedWallOpened: linkedOpened,
+    };
+    const pass = f.held?.available === true && f.after.rewardSelected === "second-chance" &&
       (captured ? f.after.rewardSpent === true : f.after.rewardSpent === false && f.after.secondChanceAvailable === true) &&
-      facts.wallOpened;
-    return { pass, seed: f.seed, slot: `${f.difficulty}-${f.route}`, ...facts };
+      linkedOpened !== false;
+    return { pass, ...facts };
   });
 
   // =============================================================================================
@@ -937,7 +961,8 @@ async function runSuite({ rev = null, transforms = [], sceneTransform = null, bo
       return { slot, found: true, seed: f.seed, opened: !f.afterWalls.has(f.link.mutation.wall), valid: f.after.dynamicSolvability.valid };
     });
     const everyMapLinked = sample.every(({ map }) => linkOf(map));
-    return { pass: rows.every((r) => r.found && r.opened && r.valid) && everyMapLinked, rows };
+    const bad = rows.filter((r) => !(r.found && r.opened && r.valid));
+    return { pass: bad.length === 0 && everyMapLinked, slots: rows.length, activated: rows.filter((r) => r.found).map((r) => `${r.slot}@${r.seed}`), bad, everyMapLinked };
   });
 
   await guarded("T23", "rota2", "NO_NEW_SOFTLOCK_CLASS", () => {
@@ -951,8 +976,12 @@ async function runSuite({ rev = null, transforms = [], sceneTransform = null, bo
         continue;
       }
       for (const linkOpen of [false, true]) {
-        for (const broken of [null, ...map.walls]) {
-          if (linkOpen && broken === link.mutation.wall) continue; // the Pickaxe cannot reach a wall that is not there
+        // The Pickaxe opens a wall the Explorer stands next to: one beside a cell it can reach on this maze.
+        const maze = new Set(map.walls);
+        if (linkOpen) maze.delete(link.mutation.wall);
+        const reachable = API.getReachableDistances(map.playerStart, maze);
+        const pickaxeWalls = [...maze].filter((w) => walkableNeighbours(keyToCell(w), maze).some((c) => reachable.has(cellKey(c))));
+        for (const broken of [null, ...pickaxeWalls]) {
           const snapshot = snapshotOf(map, {
             triggeredTraps: linkOpen || broken === link.mutation.wall ? [link.trap] : [],
             trapOpenedWalls: linkOpen ? [link.mutation.wall] : [],
@@ -1144,57 +1173,6 @@ async function runSuite({ rev = null, transforms = [], sceneTransform = null, bo
   });
 
   return { results, fixtureSummary };
-}
-
-// =================================================================================================
-// the independent link oracle (T21) — written from the contract, not from production
-// =================================================================================================
-
-function independentLinkOffences(API, map) {
-  const links = map.trapLinks;
-  if (!Array.isArray(links) || links.length !== 1) return ["not exactly one link"];
-  const why = [];
-  const [link] = links;
-  if (link.mutation?.kind !== "open-wall") why.push("mutation is not open-wall");
-  const wall = keyToCell(link.mutation.wall);
-  const trapKeys = new Set(map.traps.map(cellKey));
-  if (!trapKeys.has(link.trap)) why.push("trap is not a trap");
-  if (!map.walls.has(link.mutation.wall)) why.push("wall is not standing");
-  if (!(wall.row >= 0 && wall.row < 9 && wall.col >= 0 && wall.col < 9)) why.push("wall outside the board");
-  if (map.grid[wall.row]?.[wall.col] !== 1) why.push("wall is not a grid wall");
-  const d = manhattan(keyToCell(link.trap), wall);
-  if (d < 2 || d > 4) why.push(`trap distance ${d}`);
-  const around = [[-1, 0], [1, 0], [0, -1], [0, 1]]
-    .map(([dr, dc]) => ({ row: wall.row + dr, col: wall.col + dc }))
-    .filter((c) => c.row >= 0 && c.row < 9 && c.col >= 0 && c.col < 9 && !map.walls.has(cellKey(c)));
-  if (around.length < 2 || around.length > 3) why.push(`${around.length} open cells around the wall`);
-  if (around.some((c) => trapKeys.has(cellKey(c)))) why.push("a trap at the passage");
-  // Portal region (distance <= 3 from the portal on the certified walls) untouched.
-  const fromExit = API.getReachableDistances(map.exitPosition, map.walls);
-  if (around.some((c) => (fromExit.get(cellKey(c)) ?? -1) <= 3)) why.push("touches the portal region");
-  // Opening it keeps one connected field, adds no dead end, leaves the Sentinel's region as it was.
-  const opened = new Set(map.walls);
-  opened.delete(link.mutation.wall);
-  const reach = API.getReachableDistances(map.playerStart, opened);
-  if (reach.size !== 81 - opened.size) why.push("opening leaves a pocket");
-  for (const key of reach.keys()) {
-    const before = API.getNeighbors(keyToCell(key), map.walls).length;
-    const after = API.getNeighbors(keyToCell(key), opened).length;
-    if (after < 2 && (before >= 2 || key === link.mutation.wall)) why.push(`dead end at ${key}`);
-  }
-  const zoneBefore = API.computePortalDefenceZone(map.playerStart, map.exitPosition, map.walls).zone.map(cellKey).sort();
-  const zoneAfter = API.computePortalDefenceZone(map.playerStart, map.exitPosition, opened).zone.map(cellKey).sort();
-  if (!sameJson(zoneBefore, zoneAfter)) why.push("portal zone changed");
-  // Worth noticing: the opening saves at least two steps between two of the cells it joins.
-  let shortcut = 0;
-  for (let i = 0; i < around.length; i += 1) {
-    for (let j = i + 1; j < around.length; j += 1) {
-      const longWay = API.findPathLength(around[i], around[j], map.walls);
-      shortcut = Math.max(shortcut, (longWay ?? 0) - manhattan(around[i], around[j]));
-    }
-  }
-  if (shortcut < 2) why.push(`shortcut ${shortcut}`);
-  return why;
 }
 
 // =================================================================================================
@@ -1456,8 +1434,12 @@ const MUTANTS_LIST = [
         : triggeredTrapSet;`, "M12") },
   },
   {
-    id: "M13a", name: "generation accepts an invalid edge (wall next to its trap)", targets: ["T21"],
-    transforms: { [FILES.generation]: edit("const TRAP_LINK_DISTANCE = { min: 2, max: 4 };", "const TRAP_LINK_DISTANCE = { min: 1, max: 4 };", "M13a") },
+    id: "M13a", name: "generation accepts an invalid edge (a wall touching the portal region)", targets: ["T21"],
+    transforms: { [FILES.generation]: edit("    if (distance === undefined || distance <= PORTAL_CONVERGENCE_RADIUS) return null;", "    if (distance === undefined) return null;", "M13a") },
+  },
+  {
+    id: "M13c", name: "generation accepts an invalid edge (a wall opening into a plaza)", targets: ["T21"],
+    transforms: { [FILES.generation]: edit("  if (open.length < 2 || open.length > 3) return null;", "  if (open.length < 2) return null;", "M13c") },
   },
   {
     id: "M13b", name: "the inspector accepts a link to a non-wall", targets: ["T20"],
@@ -1465,7 +1447,7 @@ const MUTANTS_LIST = [
   },
   {
     id: "M14", name: "generation relation non-deterministic", targets: ["T02"],
-    transforms: { [FILES.generation]: (source) => edit("  const links: RouteTrapLink[] = [];", "  ROTA2_SHUFFLE += 1;\n  if (ROTA2_SHUFFLE % 2 === 0) pairs.reverse();\n  const links: RouteTrapLink[] = [];", "M14 pick")(
+    transforms: { [FILES.generation]: (source) => edit("  const links: RouteTrapLink[] = [];", "  ROTA2_SHUFFLE += 1;\n  pairs.push(...pairs.splice(0, ROTA2_SHUFFLE % Math.max(1, pairs.length)));\n  const links: RouteTrapLink[] = [];", "M14 pick")(
       edit("const TRAP_LINKS_PER_ROUTE = 1;", "const TRAP_LINKS_PER_ROUTE = 1;\nlet ROTA2_SHUFFLE = 0;", "M14 module")(source),
     ) },
   },

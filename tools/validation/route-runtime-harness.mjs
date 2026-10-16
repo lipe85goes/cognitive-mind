@@ -279,7 +279,7 @@ export const DIRECT_DIFFICULTY_START_GAME = {
  *
  * Omitted, the working tree is loaded exactly as before. Nothing is written.
  */
-export function loadRouteRuntime({ directDifficulty = false, rev = null, sourceOverrides, transforms, mocks, generationExecutor } = {}) {
+export function loadRouteRuntime({ directDifficulty = false, rev = null, sourceOverrides, transforms, mocks, generationExecutor, beforeRota2 = false } = {}) {
   const react = createReactShim();
   const directDifficultyTransform = directDifficulty
     ? {
@@ -317,6 +317,7 @@ export function loadRouteRuntime({ directDifficulty = false, rev = null, sourceO
     transforms: [transforms, directDifficultyTransform],
     mocks,
     generationExecutor,
+    beforeRota2,
   });
   const useEscapeMaze = LAB.exports.useEscapeMaze;
   if (typeof useEscapeMaze !== "function") {

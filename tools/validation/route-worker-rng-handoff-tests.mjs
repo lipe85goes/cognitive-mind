@@ -96,7 +96,14 @@ import {
   topLevelStatements,
   routeGenerationRunnerFile,
   treeBeforeC7C,
+  treeBeforeRota2,
 } from "./route-module-loader.mjs";
+// ROTA2-DYNAMIC-TRAPS-01 (an approved Rota 2.0 mission, class 4 of the lock's change policy) changes the Rota on
+// purpose. This suite proves an extraction that came before it, so it reads and runs every tree it opens with exactly
+// that mission's pinned delta reversed (`treeBeforeRota2`, `beforeRota2`; no-ops on any tree without the delta):
+// whatever else changed still fails it. What the mission does is rota2-dynamic-traps-tests.mjs' question.
+const openTree = (options) => treeBeforeRota2(openSourceTree(options));
+
 import { applyAction, mapDigest, nextAction, observeRoute, runInRealReact } from "./route-react-runtime.mjs";
 import { loadRouteRuntime, pathBetween } from "./route-runtime-harness.mjs";
 
@@ -205,7 +212,7 @@ const codeOnly = (source) => source.replace(/\/\*[\s\S]*?\*\//g, " ").replace(/(
 
 /** A side is a tree plus in-memory transforms (mutants only). */
 const makeSide = (tree, transforms) => ({ tree, transforms, hasJob: tree.exists(ROUTE_GENERATION_JOB) });
-const BASE = makeSide(openSourceTree({ rev: ROUTE_C7A_BASE }));
+const BASE = makeSide(openTree({ rev: ROUTE_C7A_BASE }));
 
 /** A `Math` whose `random` is the tooling's seeded PRNG, counted: the realm's normal-play stream, observable. */
 function countingMath(seed = 99) {
@@ -222,7 +229,7 @@ function countingMath(seed = 99) {
 /** A fresh module graph holding only the RNG seam: the cheapest "other realm". */
 function seamRealm(side, mathSeed = 99) {
   const m = countingMath(mathSeed);
-  const graph = createModuleGraph({ tree: side.tree, transforms: side.transforms, globals: { Math: m.math } });
+  const graph = createModuleGraph({ tree: treeBeforeRota2(side.tree), transforms: side.transforms, globals: { Math: m.math } });
   return { seam: graph.require(ROUTE_RANDOM_SEAM), math: m };
 }
 
@@ -230,7 +237,7 @@ function seamRealm(side, mathSeed = 99) {
 function rotaRealm(side, mathSeed = 99) {
   const m = countingMath(mathSeed);
   const graph = createModuleGraph({
-    tree: side.tree,
+    tree: treeBeforeRota2(side.tree),
     transforms: side.transforms,
     mocks: routeMocks(),
     globals: { console, Math: m.math, Set, Map },
@@ -732,7 +739,7 @@ function playSessions(runtime, plan, { armed, counter }) {
 
 /** The hook as the product has it, with every `generateMaze` call it makes counted. */
 function plainRuntime(side) {
-  const runtime = loadRouteRuntime({ rev: side.tree.rev, transforms: side.transforms });
+  const runtime = loadRouteRuntime({ beforeRota2: true, rev: side.tree.rev, transforms: side.transforms });
   const generation = runtime.LAB.graph.require(ROUTE_GENERATION);
   const real = generation.generateMaze;
   let count = 0;
@@ -759,7 +766,7 @@ function remoteRuntime(side) {
   // request built by the client in the hook's realm, cloned into the second realm, run by the job there, cloned back
   // and delivered on the sandbox's timer for the client to accept — and no source is edited.
   if (side.tree.exists(ROUTE_GENERATION_CLIENT)) {
-    const runtime = loadRouteRuntime({ rev: side.tree.rev, transforms: side.transforms });
+    const runtime = loadRouteRuntime({ beforeRota2: true, rev: side.tree.rev, transforms: side.transforms });
     const local = runtime.LAB.graph.require(ROUTE_GENERATION);
     const realLocal = local.generateMaze;
     let localCount = 0;
@@ -789,7 +796,7 @@ function remoteRuntime(side) {
         return text.replace(anchor, replacement);
       }, source),
   };
-  const runtime = loadRouteRuntime({ rev: side.tree.rev, transforms: [side.transforms, hookEdit] });
+  const runtime = loadRouteRuntime({ beforeRota2: true, rev: side.tree.rev, transforms: [side.transforms, hookEdit] });
   const local = runtime.LAB.graph.require(ROUTE_GENERATION);
   const realLocal = local.generateMaze;
   let localCount = 0;
@@ -852,8 +859,8 @@ async function equivalenceReactChecks(R, cur) {
   const rows = [];
   for (const config of configs) {
     const [a, b] = await Promise.all([
-      runInRealReact({ rev: BASE.tree.rev, ...config, regime: "discrete", scenarios }),
-      runInRealReact({ rev: cur.tree.rev, ...config, regime: "discrete", scenarios }),
+      runInRealReact({ beforeRota2: true, rev: BASE.tree.rev, ...config, regime: "discrete", scenarios }),
+      runInRealReact({ beforeRota2: true, rev: cur.tree.rev, ...config, regime: "discrete", scenarios }),
     ]);
     rows.push({
       ...config,
@@ -1434,7 +1441,7 @@ async function loadPlaywright() {
 /** The page's main realm for C4: the job, the defenders and the seam in ONE registry, as the product's bundle has them. */
 const C4_MAIN = "src/__c7a-handoff-main.ts";
 function pageMainBundle(side) {
-  const tree = openSourceTree({
+  const tree = openTree({
     rev: side.tree.rev,
     sourceOverrides: {
       [C4_MAIN]:
@@ -1655,7 +1662,7 @@ const replaceOnce = (file, anchor, replacement) => ({
   },
 });
 /** Where C7A's run lives in the working tree: the runner since ROUTE-C7C (moved verbatim from the job). */
-const RUNNER_FILE = routeGenerationRunnerFile(openSourceTree());
+const RUNNER_FILE = routeGenerationRunnerFile(openTree());
 const MUTANTS_LIST = [
   ["checkpoint one draw behind", replaceOnce(ROUTE_RANDOM_SEAM, "return { armedSeed, state: seededState };", "return { armedSeed, state: seededState - 0x6d2b79f5 };")],
   ["checkpoint one draw ahead", replaceOnce(ROUTE_RANDOM_SEAM, "return { armedSeed, state: seededState };", "return { armedSeed, state: seededState + 0x6d2b79f5 };")],
@@ -1682,7 +1689,7 @@ const MUTANTS_LIST = [
 const started = performance.now();
 if (MUTANTS) {
   console.log(`route worker rng handoff · mutants of the working tree (in memory), against baseline ${ROUTE_C7A_BASE.slice(0, 7)}\n`);
-  const tree = openSourceTree();
+  const tree = openTree();
   const shared = { ...SMALL, baseRecords: new Map(), cache: {} };
   const clean = await suite(makeSide(tree), shared, { quiet: true, react: false, perf: false });
   const cleanFailures = clean.tests.filter((t) => !t.pass).map((t) => t.id);
@@ -1705,7 +1712,7 @@ if (MUTANTS) {
   process.exit(ok ? EXIT_OK : EXIT_VALIDATION_FAILED);
 }
 
-const CURRENT = makeSide(openSourceTree({ rev: REV }));
+const CURRENT = makeSide(openTree({ rev: REV }));
 console.log(
   `route worker rng handoff · ${REV ? `rev ${CURRENT.tree.rev.slice(0, 12)}` : "working tree"} vs baseline ${ROUTE_C7A_BASE.slice(0, 7)} (no checkpoint, no job)`,
 );

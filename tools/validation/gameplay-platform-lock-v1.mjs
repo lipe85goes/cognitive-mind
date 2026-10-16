@@ -12,12 +12,15 @@
  *                   Worker, the Worker graph pure, the C7C production binding,
  *                   shell/GameScreen game-agnostic, continuation game-owned;
  *   [rota]          exactly three product Routes (evaluated), the three modes,
- *                   the v1 Chest rewards, the C5 action set, the C6 event set,
- *                   the hook's state shape (one routeNumber cell, one reducer);
+ *                   the v1 Chest rewards, the C5 action set, the C6 event set
+ *                   (plus only what an approved Rota 2.0 mission added —
+ *                   ROTA2_APPROVED_MISSIONS), the hook's state shape (one
+ *                   routeNumber cell, one reducer);
  *   [circuit]       timers belong to the session, the entry contract;
  *   [doc]           the lock document, its decision, its canonical commit, the
- *                   debt register (every row classified, no BLOCKER), and the
- *                   older decision flags not reopened.
+ *                   debt register (every row classified, no BLOCKER), the
+ *                   approved Rota 2.0 missions recorded, and the older
+ *                   decision flags not reopened.
  *
  * Import graph: every product module is transpiled with TypeScript (ESNext
  * modules, so type-only imports are already elided) and its output is read
@@ -119,6 +122,21 @@ const V1_DOMAIN_EVENTS = [
   "TRAP_ARMED", "WALL_OPENED",
 ];
 
+/**
+ * Explicitly approved Rota 2.0 missions (class 4 of the change policy, §12): what each added to the v1 unions. R2
+ * accepts these additions and nothing else, and never the loss of a v1 member; D4 requires the lock document to
+ * record each one. A tree from before the mission (no addition) still passes R2.
+ */
+const ROTA2_APPROVED_MISSIONS = [
+  {
+    mission: "ROTA2-DYNAMIC-TRAPS-01",
+    stateActions: ["OPEN_WALL_BY_TRAP"],
+    domainEvents: ["WALL_OPENED_BY_TRAP"],
+  },
+];
+const ROTA2_ACTIONS = ROTA2_APPROVED_MISSIONS.flatMap((m) => m.stateActions);
+const ROTA2_EVENTS = ROTA2_APPROVED_MISSIONS.flatMap((m) => m.domainEvents);
+
 const DEBT_CLASSES = ["BLOCKER", "POST-LOCK", "ROTA-2.0", "DEV/TOOLING"];
 /** Every debt the lock audited must be in the register (ids are the doc's first column). */
 const REQUIRED_DEBT_IDS = [
@@ -156,6 +174,12 @@ const MUTANTS = [
       ["  runRouteGenerationInWorker;\n", "  runRouteGenerationLocally;\n"],
     ],
     mustFail: ["A6", "A8"],
+  },
+  {
+    name: "a Rota event no approved Rota 2.0 mission added",
+    file: "src/games/escape-maze/route-events.ts",
+    edits: [["  | { type: \"WALL_OPENED_BY_TRAP\"; turn: number; trap: string; wall: string }", "  | { type: \"WALL_OPENED_BY_TRAP\"; turn: number; trap: string; wall: string }\n  | { type: \"TOPOLOGY_SHUFFLED\"; turn: number }"]],
+    mustFail: ["R2"],
   },
   {
     name: "a fourth product Route",
@@ -485,19 +509,31 @@ function codeChecks(tree) {
     };
   });
 
-  check("R2", "rota", "V1_MODES_REWARDS_ACTIONS_EVENTS_FROZEN", () => {
+  check("R2", "rota", "V1_MODES_REWARDS_ACTIONS_EVENTS_FROZEN_BUT_FOR_APPROVED_ROTA2", () => {
     const difficulties = unionLiterals(tree, FILES.types, "DifficultyLevel");
     const rewards = unionLiterals(tree, FILES.invariants, "ChestReward");
     const actions = unionLiterals(tree, FILES.state, "RouteStateAction", { tag: "type" });
     const events = unionLiterals(tree, FILES.events, "RouteDomainEvent", { tag: "type" });
+    // Every v1 member stays; the only additions are those of an approved Rota 2.0 mission.
+    const actionDelta = actions ? { added: actions.filter((a) => !V1_STATE_ACTIONS.includes(a)), removed: V1_STATE_ACTIONS.filter((a) => !actions.includes(a)) } : null;
+    const eventDelta = events ? { added: events.filter((e) => !V1_DOMAIN_EVENTS.includes(e)), removed: V1_DOMAIN_EVENTS.filter((e) => !events.includes(e)) } : null;
+    const unapproved = {
+      actions: actionDelta ? actionDelta.added.filter((a) => !ROTA2_ACTIONS.includes(a)) : null,
+      events: eventDelta ? eventDelta.added.filter((e) => !ROTA2_EVENTS.includes(e)) : null,
+    };
     return {
-      pass: same(difficulties, V1_DIFFICULTIES) && same(rewards, V1_CHEST_REWARDS) && same(actions, V1_STATE_ACTIONS) && same(events, V1_DOMAIN_EVENTS),
+      pass:
+        same(difficulties, V1_DIFFICULTIES) && same(rewards, V1_CHEST_REWARDS) &&
+        actionDelta !== null && actionDelta.removed.length === 0 && unapproved.actions.length === 0 &&
+        eventDelta !== null && eventDelta.removed.length === 0 && unapproved.events.length === 0,
       difficulties,
       chestRewards: rewards,
       stateActions: actions?.length ?? null,
       domainEvents: events?.length ?? null,
-      actionDelta: actions ? { added: actions.filter((a) => !V1_STATE_ACTIONS.includes(a)), removed: V1_STATE_ACTIONS.filter((a) => !actions.includes(a)) } : null,
-      eventDelta: events ? { added: events.filter((e) => !V1_DOMAIN_EVENTS.includes(e)), removed: V1_DOMAIN_EVENTS.filter((e) => !events.includes(e)) } : null,
+      actionDelta,
+      eventDelta,
+      approvedRota2: ROTA2_APPROVED_MISSIONS.map((m) => m.mission),
+      unapproved,
     };
   });
 
@@ -597,6 +633,16 @@ function docChecks() {
     const duplicates = rows.map((r) => r.id).filter((id, i, all) => all.indexOf(id) !== i);
     const byClass = Object.fromEntries(DEBT_CLASSES.map((c) => [c, rows.filter((r) => r.cls?.replace(/\*/g, "") === c).length]));
     return { pass: rows.length > 0 && unclassified.length === 0 && blockers.length === 0 && missing.length === 0 && duplicates.length === 0, rows: rows.length, byClass, unclassified, blockers, missing, duplicates };
+  });
+
+  check("D4", "APPROVED_ROTA2_MISSIONS_RECORDED", () => {
+    // Each approved Rota 2.0 mission is written into the lock record: its id, the change class, and what it added.
+    const rows = ROTA2_APPROVED_MISSIONS.map(({ mission, stateActions, domainEvents }) => {
+      const section = doc.includes(mission) ? doc.slice(doc.indexOf(mission)) : "";
+      const recorded = [...stateActions, ...domainEvents].every((name) => doc.includes(name));
+      return { mission, inDocument: Boolean(section), classFour: /class(e)? 4|classe 4/i.test(doc), additionsRecorded: recorded };
+    });
+    return { pass: rows.every((r) => r.inDocument && r.classFour && r.additionsRecorded), missions: rows };
   });
 
   check("D3", "EARLIER_DECISION_FLAGS_NOT_REOPENED", () => {

@@ -33,6 +33,7 @@ import vm from "node:vm";
 import { execFileSync } from "node:child_process";
 import ts from "typescript";
 import { createSeededRandom } from "./route-lab.mjs";
+import { ROTA2_DYNAMIC_TRAPS_FILES, ROTA2_DYNAMIC_TRAPS_MARKER, reverseRota2 } from "./rota2-dynamic-traps-edit.mjs";
 
 /** The Rota's entry: the hook the game mounts. Where its logic lives is the graph's business. */
 export const ROUTE_HOOK = "src/games/escape-maze/useEscapeMaze.ts";
@@ -616,7 +617,11 @@ export function loadRouteModules({
   entry = ROUTE_HOOK,
   tree,
   generationExecutor = "local",
+  // ROTA2-DYNAMIC-TRAPS-01: run the tree with the approved Rota 2.0 delta reversed (`treeBeforeRota2`) — what an
+  // extraction suite compares with a tree from before the mission. Off by default: the product runs with it.
+  beforeRota2 = false,
 } = {}) {
+  if (beforeRota2) tree = treeBeforeRota2(tree ?? openSourceTree({ root, rev, sourceOverrides }));
   let random = createSeededRandom(1);
   const seededMath = Object.create(Math);
   seededMath.random = () => random();
@@ -1111,6 +1116,8 @@ export function routeFileBeforeC7C(tree, file) {
  * validator's runs load the tree's own code. On a tree without C7C it is the tree.
  */
 export function treeBeforeC7C(tree) {
+  // ROTA2-DYNAMIC-TRAPS-01 came after: what the checks before C7C read is the tree before Rota 2.0, then before C7C.
+  tree = treeBeforeRota2(tree);
   if (tree.beforeC7C || !tree.exists(ROUTE_GENERATION_WORKER)) return tree;
   const added = (file) => ROUTE_C7C_ADDED_FILES.includes(tree.toRepoPath(file));
   const view = openSourceTree({
@@ -1125,4 +1132,40 @@ export function treeBeforeC7C(tree) {
     },
   });
   return { ...view, beforeC7C: true };
+}
+
+// ---------------------------------------------------------------------------
+// ROTA2-DYNAMIC-TRAPS-01 — the first approved Rota 2.0 mission: the sanctioned edit
+// ---------------------------------------------------------------------------
+
+/**
+ * One of the mission's touched Rota files with exactly its approved delta reversed (rota2-dynamic-traps-edit.mjs:
+ * a pinned manifest of hunks, held equal to the base byte for byte). Any other file, or a tree before Rota 2.0, as it
+ * is. A file whose delta no longer matches the manifest makes the reversal refuse loudly.
+ */
+export function routeFileBeforeRota2(tree, file) {
+  const repoPath = tree.toRepoPath(file);
+  const text = tree.read(repoPath);
+  return ROTA2_DYNAMIC_TRAPS_FILES.includes(repoPath) ? reverseRota2(repoPath, text) : text;
+}
+
+/**
+ * A read-only view of `tree` as the checks written before ROTA2-DYNAMIC-TRAPS-01 read it: every touched Rota file
+ * through `routeFileBeforeRota2` (the mission adds no file). `treeBeforeC7C`, and so `treeBeforeC7B`, start from it,
+ * so every extraction suite's TEXT checks see the Rota without the approved delta and still see anything else. On a
+ * tree without the delta it is the tree.
+ */
+export function treeBeforeRota2(tree) {
+  if (tree.beforeRota2) return tree;
+  const touched = ROTA2_DYNAMIC_TRAPS_FILES.some((file) => tree.exists(file) && tree.read(file).includes(ROTA2_DYNAMIC_TRAPS_MARKER));
+  if (!touched) return tree;
+  const view = openSourceTree({
+    root: tree.root,
+    underlying: {
+      rev: tree.rev,
+      exists: (file) => tree.exists(file),
+      read: (file) => routeFileBeforeRota2(tree, file),
+    },
+  });
+  return { ...view, beforeRota2: true };
 }

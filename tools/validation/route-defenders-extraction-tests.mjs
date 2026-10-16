@@ -79,7 +79,14 @@ import {
   routeRandomBeforeC7A,
   treeBeforeC7B,
   hookExportsBeforeC7C,
+  treeBeforeRota2,
 } from "./route-module-loader.mjs";
+// ROTA2-DYNAMIC-TRAPS-01 (an approved Rota 2.0 mission, class 4 of the lock's change policy) changes the Rota on
+// purpose. This suite proves an extraction that came before it, so it reads and runs every tree it opens with exactly
+// that mission's pinned delta reversed (`treeBeforeRota2`, `beforeRota2`; no-ops on any tree without the delta):
+// whatever else changed still fails it. What the mission does is rota2-dynamic-traps-tests.mjs' question.
+const openTree = (options) => treeBeforeRota2(openSourceTree(options));
+
 import { cellKey, loadRouteRuntime, pathBetween, walkableNeighbours } from "./route-runtime-harness.mjs";
 
 /** C2: the last revision whose defenders lived in the hook — what C3 must be equivalent to. */
@@ -202,8 +209,8 @@ const tally = (counts, label) => {
 // ROUTE-C7B: the text this extraction pins is read through C7B's sanctioned edit of the hook, the Rota's view and its
 // stylesheet (route-module-loader.mjs `treeBeforeC7B`), and C7B's two new modules are not in it; every other byte is
 // still compared. Its graph questions (closure, declaring, locate) are the tree's own, and its runs load `rev`.
-const TREE = treeBeforeC7B(openSourceTree({ rev: REV }));
-const BASE_TREE = openSourceTree({ rev: BASELINE });
+const TREE = treeBeforeC7B(openTree({ rev: REV }));
+const BASE_TREE = openTree({ rev: BASELINE });
 const label = REV ? `rev ${TREE.rev.slice(0, 12)}` : "working tree";
 console.log(`route-defenders extraction · ${label} vs baseline ${BASELINE.slice(0, 7)} (defenders in the hook)\n`);
 
@@ -600,8 +607,8 @@ const SURFACE = [
   ...MOVED_VALUES, "generateMaze", "posKey", "positionsEqual", "getNeighbors", "getReachableDistances", "findPathLength",
   "inspectDynamicMazeState",
 ];
-const NOW = loadRouteModules({ rev: REV, surface: SURFACE });
-const BASE = loadRouteModules({ rev: BASELINE, surface: SURFACE });
+const NOW = loadRouteModules({ beforeRota2: true, rev: REV, surface: SURFACE });
+const BASE = loadRouteModules({ beforeRota2: true, rev: BASELINE, surface: SURFACE });
 for (const rota of [NOW, BASE]) rota.difficulty = rota.graph.require(DIFFICULTY);
 
 /** Counts every draw the sandbox's Math makes — with no seed armed, every `routeRandom()` is one. */
@@ -1180,7 +1187,7 @@ const POLICIES = ["win", "lose", "pickaxe", "traps", "sc-hunter", "sc-sentinel",
 // Route; plain captures by either defender end it at once.
 {
   const play = (rev) => {
-    const runtime = loadRouteRuntime({ rev });
+    const runtime = loadRouteRuntime({ beforeRota2: true, rev });
     const api = runtime.API;
     const seam = () => runtime.routeRandom;
     const out = { runs: [], events: {}, violations: [] };
@@ -1284,7 +1291,7 @@ const POLICIES = ["win", "lose", "pickaxe", "traps", "sc-hunter", "sc-sentinel",
 // restart, a mode change and the next Route opened from the continuation; then the stream itself.
 {
   const play = (rev) => {
-    const runtime = loadRouteRuntime({ rev });
+    const runtime = loadRouteRuntime({ beforeRota2: true, rev });
     const out = [];
     const drive = (run, policy, trace, budget) => {
       for (let guard = 0; guard < budget; guard += 1) {
@@ -1395,8 +1402,8 @@ const holderOf = (graph, name) =>
 // harness (both C0) resolve the four functions and four constants to route-defenders.ts; `routeModuleDeclaring` (the
 // counterfactual aim) and `locate` (textual anchors, cross-eol's `function chooseGuardianMove(` among them) find it.
 {
-  const LAB = loadInstrumented({ rev: REV, bare: true });
-  const RUNTIME = loadRouteRuntime({ rev: REV });
+  const LAB = loadInstrumented({ beforeRota2: true, rev: REV, bare: true });
+  const RUNTIME = loadRouteRuntime({ beforeRota2: true, rev: REV });
   const names = ["computePortalDefenceZone", "createSentinelState", "decideSentinelMove", "chooseGuardianMove", "PORTAL_ZONE_RADIUS", "SENTINEL_LEASH", "SENTINEL_THREAT_HORIZON", "SENTINEL_COMMIT_TURNS"];
   const labHolders = Object.fromEntries(names.map((name) => [name, holderOf(LAB.graph, name)]));
   const runtimeHolders = Object.fromEntries(names.map((name) => [name, holderOf(RUNTIME.LAB.graph, name)]));

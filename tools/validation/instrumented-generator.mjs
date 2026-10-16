@@ -243,6 +243,7 @@ export function loadInstrumented({
   react,
   mocks,
   generationExecutor,
+  beforeRota2 = false,
 } = {}) {
   // `bare` skips the diagnostics entirely and only exposes the surface. Timing
   // must be measured on the real control flow: the named-checks rewrite drops
@@ -263,6 +264,8 @@ export function loadInstrumented({
     mocks,
     // ROUTE-C7C: "local" (the profile's default) or "product" (the Worker binding) — see loadRouteModules.
     generationExecutor,
+    // ROTA2-DYNAMIC-TRAPS-01: the tree with the approved Rota 2.0 delta reversed (route-module-loader.mjs).
+    beforeRota2,
     surface: EXPORT_SURFACE,
     transforms: [transform && { [ROUTE_HOOK]: transform }, transforms, instrumentation?.transform],
   });

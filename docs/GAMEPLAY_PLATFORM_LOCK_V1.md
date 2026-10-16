@@ -81,6 +81,14 @@ npm 10.9.4 (`npm ci` limpo a partir do `package-lock.json`), Next 16.3.6
 > `src/lib/` mudou (`home-atelier-kit-tests.mjs` K10). Ver
 > `docs/archive/home-world-visual-unification-01/`.
 
+> **Pós-lock — ROTA2-DYNAMIC-TRAPS-01 (classe 4 do §12: missão Rota 2.0
+> explicitamente aprovada):** a primeira mecânica de topologia dinâmica. Uma
+> armadilha por mapa é ligada pelo gerador a uma parede fechada; armá-la abre
+> essa parede pelo resto da Rota. É a única exceção aprovada aos contratos do
+> §4.1 até aqui e está registrada nele ("Exceção aprovada — Rota 2.0"), no
+> manifesto do gate (`ROTA2_APPROVED_MISSIONS`, checks R2 e D4) e em
+> `docs/ROTA2_DYNAMIC_TRAPS_01.md`. Nada mais do §4 mudou.
+
 ## 4. Frozen contracts
 
 ### 4.1 Rota Estratégica v1 — contrato de produto
@@ -109,7 +117,9 @@ Jornada (fonte única: `src/games/escape-maze/continuation.ts`,
   **Segunda Chance** (1 carga; resiste a uma captura).
   `ChestReward = "pickaxe" | "second-chance"`.
 - Armadilhas atuais: o passo do Explorador arma a armadilha (`TRAP_ARMED`,
-  observacional); armadilha armada bloqueia os defensores; não altera o mapa.
+  observacional); armadilha armada bloqueia os defensores; não altera o mapa
+  (v1 — exceção aprovada da Rota 2.0 abaixo: a armadilha ligada abre a parede
+  dela, e continua bloqueando os defensores).
 - Caçador atual (`chooseGuardianMove`, inclusive o ramo aleatório 0.45 do
   fácil) e Sentinela atual (`decideSentinelMove`: zona do portal, coleira,
   horizonte, compromisso de 3 turnos) — política pura em `route-defenders.ts`.
@@ -125,6 +135,28 @@ Jornada (fonte única: `src/games/escape-maze/continuation.ts`,
   nextRouteNumber/nextRouteStage ou journeyCompleted) e `continuation`
   (`kind: "escape-maze-route"`); salvo pelo shell em `localStorage`
   (`cognitive-mind-recent-results`, máx. 12).
+
+**Exceção aprovada — Rota 2.0 (ROTA2-DYNAMIC-TRAPS-01, classe 4 do §12).**
+Base `9f8ebb5d8c0c747e68d8719e523ecab3ecbdab00`. Tudo acima continua valendo,
+com exatamente estes acréscimos:
+
+- `MazeMap.trapLinks`: uma ligação por mapa certificado, armadilha → parede
+  fechada (`{ trap, mutation: { kind: "open-wall", wall } }`), escolhida pelo
+  gerador a partir do mapa já certificado, sem sorteio (mesmo mapa/semente =
+  mesma ligação), e certificada por `isValidMap` (`trapLinksAreLegal`). Só
+  existe `open-wall`; nenhuma armadilha fecha parede.
+- `RouteRuntimeState.trapOpenedWalls` e a ação C5 `OPEN_WALL_BY_TRAP` (12
+  ações); o evento C6 `WALL_OPENED_BY_TRAP` (14 eventos), distinto de
+  `WALL_OPENED` (Picareta). Ordem do turno: passo → `TRAP_ARMED` →
+  `WALL_OPENED_BY_TRAP` → defensores já no labirinto aberto.
+- Topologia atual = `currentWalls(mazeMap.walls, brokenWall, trapOpenedWalls)`
+  (`route-geometry.ts`), a única derivação; `inspectDynamicMazeState` lê por
+  ela e ganha 10 códigos (`TRAP_LINK_*`, `TRAP_OPENED_WALL_*`,
+  `ARMED_TRAP_LINK_WALL_STILL_CLOSED`; 36 no total).
+- Picareta antes da armadilha: a armadilha arma e não abre nada (no-op
+  idempotente, nenhuma parede sorteada no lugar). Segunda Chance intocada.
+- Tabuleiro: runa lilás compartilhada armadilha↔parede, pulso calmo na
+  abertura (nenhum sob movimento reduzido); o render só desenha `walls`.
 
 **Não pertencem à v1 — ficam para a Rota 2.0 (não implementados, dívida D16):**
 microsequência de morte/captura; armadilha alterando o mapa; objetivos
@@ -419,7 +451,7 @@ ferramenta/processo). Cada item foi auditado nesta missão — nada foi assumido
 | D13 | confete sem cancelamento | POST-LOCK | `celebrateSuccess` agenda `setTimeout` sem limpar no unmount; respeita `prefers-reduced-motion` | confete pode disparar após sair do resultado | efeito visual inofensivo | missão visual futura |
 | D14 | superfícies compartilhadas com ramo por jogo | POST-LOCK | `RewardResultModal` tem ramo da Rota lendo `details` (routeNumber, journeyCompleted…); `GameHowToPlay` (rótulo do CTA), `HomeStage` (mundo padrão = Rota) e `rewards.ts` (cópia por `GameId`) | um jogo novo cai nos defaults genéricos | `details` é contrato de apresentação; nada decide fluxo por ele (fluxo = `continuation`); shell e GameScreen seguem limpos | Game 03 Discovery: promover para metadado só com o segundo consumidor |
 | D15 | metadados de registro espalhados | POST-LOCK | um `GameId` novo exige entradas em `types/game.ts`, `entry-contract.ts`, `games/index.ts`, `activities.ts`, `stage-progress.ts`, `worlds.ts`, `game-intros.ts`, `rewards.ts`, `homeLayout.ts`, `worldVisuals.ts`, `WorldEmblem.tsx`, `worldDioramaLayout.ts` | checklist longo | o TypeScript obriga cada `Record<GameId, …>` (o build falha até completar) | Game 03 Discovery: consolidar só se o Game 03 provar a dor |
-| D16 | ideias de gameplay da Rota 2.0 | ROTA-2.0 | não implementadas: microsequência de morte/captura, armadilha alterando mapa, objetivos dependentes, mapa mudando durante o jogo, Caçador adaptativo/interceptador | — | fora da v1 por definição | missão Rota 2.0 aprovada explicitamente |
+| D16 | ideias de gameplay da Rota 2.0 | ROTA-2.0 | não implementadas: microsequência de morte/captura, objetivos dependentes, Caçador adaptativo/interceptador, armadilhas que fecham parede ou outros arquétipos dinâmicos. Primeira fatia de "armadilha alterando mapa / mapa mudando durante o jogo" feita em ROTA2-DYNAMIC-TRAPS-01 (só `open-wall`, uma por mapa) | — | fora da v1 por definição | missão Rota 2.0 aprovada explicitamente |
 | D17 | âncoras obsoletas nos mutantes C6 | DEV/TOOLING | 3 de 13 mutantes de `route-domain-events-tests --mutants` BROKEN ("anchor found 0x" no hook): troca LIGHT_COLLECTED/TRAP_ARMED, ROUTE_ENDED antes de EXPLORER_CAPTURED, hook expondo o último evento. Em `e8971eb` (pré-C7B) o mesmo runner pega 13/13 | 3 mutações históricas não são aplicadas | nenhum mutante C6 sobreviveu; os 10 aplicados são pegos; C7A/C7B/C7C 42/42 | tooling: re-ancorar no texto pós-C7B |
 | D18 | watchdog de entrada sob SwiftShader | DEV/TOOLING | em Chromium headless sem GPU, com a CPU disputada, o board pode passar dos 28 s do watchdog da Rota; as probes pressionam "Tentar novamente" (mesma sessão) e reportam quantas vezes | ruído de ambiente nas probes | é o caminho de retry do produto funcionando; em GPU real a medição de produção é 9,5–14,8 s | tooling: rodar probes com a CPU ociosa |
 | D19 | gate estrutural do C5 cego a uma célula `useState` reposta | DEV/TOOLING | o mutante "a cell put back: moveTick in its own useState" é aplicado e sobrevive: `structureChecks(treeBeforeC7B(tree))` reconstrói o hook a partir de `e8971eb` + edição sancionada e a linha adicionada some (verificado: `moveTickCell` ausente na visão); os outros 3 mutantes C5 não são aplicados (âncoras 0× desde `bd75e69`) | o contrato "nenhuma célula fora do reducer" do C5 deixou de ser vigiado pelo runner histórico | o produto está correto (1 `useState`); o gate do lock pina o formato no texto real (R3) e seu mutante em memória é pego | tooling: o C5 ler o hook ao vivo para S2/S3 e re-ancorar os mutantes |
@@ -517,13 +549,14 @@ node tools/validation/gameplay-platform-lock-v1.mjs --counterfactuals # prova qu
 | A9 | App Shell e GameScreen sem id/termo de jogo e sem import de `src/games/<jogo>/` |
 | A10 | `GameContinuation` tipada com `kind`; shell não lê campos; `readRouteContinuation` só na Rota |
 | R1 | `continuation.ts` avaliado: final = 3; tabela R1–R3 × vitória/derrota; leitor aceita só 1–3 |
-| R2 | modos, recompensas do Baú, 11 ações C5 e 13 eventos C6 exatamente os da v1 |
+| R2 | modos, recompensas do Baú, 11 ações C5 e 13 eventos C6 da v1 — mais só o que uma missão Rota 2.0 aprovada acrescentou (`ROTA2_APPROVED_MISSIONS`: `OPEN_WALL_BY_TRAP`, `WALL_OPENED_BY_TRAP`) |
 | R3 | estado do hook da Rota: um único `useState` (`routeNumber`) e um único `useReducer` (`routeSessionReducer`) — lido no texto real (cobre a lacuna D19) |
 | M1 | Circuito: 1 `setTimeout`, dentro de `scheduleForSession` (registrado e guardado pela sessão); revoke limpa; unmount revoga; sem `setInterval` |
 | M2 | Circuito: readiness `explicit`, `GameComponentProps`, `onReady/onError` ligados, carregado por `import()` |
 | D1 | este documento: decisão, commit canônico ancestral do HEAD, seções obrigatórias |
 | D2 | dívida: toda linha D01–D19 classificada, IDs exigidos presentes, nenhum BLOCKER |
 | D3 | decisões anteriores não reabertas (`GITHUB_SOURCE_OF_TRUTH = YES`, `DECISION: C7_GO`) e lock referenciado em SOURCE_OF_TRUTH e ARCHITECTURE |
+| D4 | cada missão Rota 2.0 aprovada registrada neste documento (id, classe 4, acréscimos) |
 
 ## 14. Contrafactual
 
@@ -549,6 +582,7 @@ cada uma precisa derrubar exatamente o check dela:
 | registry importando a Rota estaticamente | A3, A4 | CAUGHT (falham A3, A4) |
 | GameScreen testando `gameId === "escape-maze"` | A9 | CAUGHT (falha A9) |
 | célula `useState` reposta no hook (o mutante C5 que o runner histórico não vê) | R3 | CAUGHT (falha R3) |
+| evento C6 que nenhuma missão Rota 2.0 aprovada acrescentou (`TOPOLOGY_SHUFFLED`) | R2 | CAUGHT (falha R2) |
 | Circuito sem revogar a sessão no unmount | M1 | CAUGHT (falha M1) |
 
 Saída: `LOCK_GATE_COUNTERFACTUALS_HOLD`.

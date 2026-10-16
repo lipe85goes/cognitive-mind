@@ -84,7 +84,14 @@ import {
   routeGameBeforeC7B,
   routeHookBeforeC7B,
   routeVisualBeforeC7B,
+  treeBeforeRota2,
 } from "./route-module-loader.mjs";
+// ROTA2-DYNAMIC-TRAPS-01 (an approved Rota 2.0 mission, class 4 of the lock's change policy) changes the Rota on
+// purpose. This suite proves an extraction that came before it, so it reads and runs every tree it opens with exactly
+// that mission's pinned delta reversed (`treeBeforeRota2`, `beforeRota2`; no-ops on any tree without the delta):
+// whatever else changed still fails it. What the mission does is rota2-dynamic-traps-tests.mjs' question.
+const openTree = (options) => treeBeforeRota2(openSourceTree(options));
+
 import { createReactRenderer, mapDigest, observeRoute, runInRealReact, runInShim } from "./route-react-runtime.mjs";
 import { isLifecycleRender, loadRouteRuntime, playToEnd, withoutLifecycle } from "./route-runtime-harness.mjs";
 
@@ -395,7 +402,7 @@ function structureChecks(tree) {
   // S7 — the lifecycle is infrastructure, not the domain: route-events is e8971eb's byte for byte (no MAP_GENERATED,
   // no generation event), and neither the client nor the session imports route-events, sounds or scoring.
   {
-    const base = openSourceTree({ rev: BASELINE });
+    const base = openTree({ rev: BASELINE });
     const eventsSame = read(tree, ROUTE_EVENTS) === base.read(ROUTE_EVENTS);
     const generationEvent = /MAP_GENERATED|GENERATION_/.test(codeOnly(read(tree, ROUTE_EVENTS) ?? ""));
     const reach = [client, session].map((text) => (text ? /route-events|game-sounds|scoring/.test(codeOnly(text)) : true));
@@ -425,7 +432,7 @@ function structureChecks(tree) {
 
 function preservedChecks(tree) {
   const R = recorder();
-  const base = openSourceTree({ rev: BASELINE });
+  const base = openTree({ rev: BASELINE });
 
   // P1 — C7B's edit is exactly the declared one: the hook, the view and the stylesheet, reversed through
   // route-module-loader.mjs, are e8971eb's byte for byte. (On e8971eb itself the reversal is the identity.)
@@ -493,7 +500,7 @@ const recordingSounds = (log) => ({
  */
 function instrumentedRota({ rev = null, sourceOverrides } = {}) {
   const sounds = [];
-  const rt = loadRouteRuntime({ rev, sourceOverrides, mocks: recordingSounds(sounds) });
+  const rt = loadRouteRuntime({ beforeRota2: true, rev, sourceOverrides, mocks: recordingSounds(sounds) });
   const graph = rt.LAB.graph;
   const tree = graph.tree;
   const lifecycleTree = tree.exists(ROUTE_GENERATION_CLIENT);
@@ -560,7 +567,7 @@ function instrumentedRota({ rev = null, sourceOverrides } = {}) {
  * the cancel and nothing else: an answer may still be delivered after it, as a Worker's would.
  */
 function controllableExecutor(tree) {
-  const otherRealm = createModuleGraph({ tree }).require(routeGenerationRunnerFile(tree));
+  const otherRealm = createModuleGraph({ tree: treeBeforeRota2(tree) }).require(routeGenerationRunnerFile(tree));
   const jobs = [];
   const executor = (command, deliver) => {
     const job = { command: structuredClone(command), deliver, cancels: 0 };
@@ -1009,7 +1016,7 @@ function lifecycleChecks({ rev = null, sourceOverrides } = {}) {
     rota.seam.armRouteRandomSeed(12412046);
     try {
       const seeded = rota.rt.mount({ seed: 1, routeNumber: 1, initialDifficulty: "hard", autoStart: true });
-      const reference = createModuleGraph({ tree: rota.tree });
+      const reference = createModuleGraph({ tree: treeBeforeRota2(rota.tree)});
       const refSeam = reference.require(ROUTE_RANDOM_SEAM);
       refSeam.armRouteRandomSeed(12412046);
       const refMap = reference.require(rota.tree.declaring("generateMaze")).generateMaze("hard", 1);
@@ -1062,8 +1069,8 @@ async function realReactLifecycleMain({ rev, sourceOverrides, strict }) {
   console.error = (...a) => consoleErrors.push(a.map(String).join(" ").slice(0, 300));
   console.warn = (...a) => consoleErrors.push(`warn: ${a.map(String).join(" ").slice(0, 300)}`);
   const react = await createReactRenderer({ strict, regime: "discrete" });
-  const tree = openSourceTree({ rev, sourceOverrides });
-  const rota = loadRouteModules({ tree, react: react.React, surface: [] });
+  const tree = openTree({ rev, sourceOverrides });
+  const rota = loadRouteModules({ beforeRota2: true, tree, react: react.React, surface: [] });
   rota.sandbox.window = react.fakeWindow;
   let clock = 0;
   rota.sandbox.Date = { now: () => (clock += 1000) };
@@ -1139,7 +1146,7 @@ async function realReactLifecycleMain({ rev, sourceOverrides, strict }) {
   results.leavePending = { ...delta(s0, snapshot()), commands: log.commands.length - beforeLeave.commands, ran: log.ran - beforeLeave.ran };
 
   // the controllable executor: answers held until the scenario gives them, computed by a second realm
-  const otherRealm = createModuleGraph({ tree }).require(routeGenerationRunnerFile(tree));
+  const otherRealm = createModuleGraph({ tree: treeBeforeRota2(tree) }).require(routeGenerationRunnerFile(tree));
   const jobs = [];
   client.routeGenerationExecutor = (command, deliver) => {
     const j = { command: structuredClone(command), deliver, cancels: 0 };
@@ -1392,7 +1399,7 @@ async function equivalenceChecks({ rev = null, sourceOverrides, scale = "full" }
   // the baseline's, scenario by scenario.
   {
     const scenarios = equivalenceScenarios({ keys: false, scale });
-    const [a, b] = await Promise.all([runInShim({ rev, sourceOverrides, scenarios }), runInShim({ rev: BASELINE, scenarios })]);
+    const [a, b] = await Promise.all([runInShim({ beforeRota2: true, rev, sourceOverrides, scenarios }), runInShim({ beforeRota2: true, rev: BASELINE, scenarios })]);
     const firstDiff = a.findIndex((r, i) => !same(r, b[i]));
     R.record("E1", "equivalence", "SHIM_READY_STATES_ARE_THE_BASELINES", firstDiff < 0, {
       scenarios: a.length,
@@ -1416,9 +1423,9 @@ async function equivalenceChecks({ rev = null, sourceOverrides, scale = "full" }
     for (const config of configs) {
       const scenarios = equivalenceScenarios({ keys: config.keys, scale: scale === "full" ? "small" : "small" });
       const [a, b, l] = await Promise.all([
-        runInRealReact({ rev, sourceOverrides, ...config, scenarios }),
-        runInRealReact({ rev: BASELINE, ...config, scenarios }),
-        runInRealReact({ rev, sourceOverrides, ...config, scenarios, observeLifecycle: true }),
+        runInRealReact({ beforeRota2: true, rev, sourceOverrides, ...config, scenarios }),
+        runInRealReact({ beforeRota2: true, rev: BASELINE, ...config, scenarios }),
+        runInRealReact({ beforeRota2: true, rev, sourceOverrides, ...config, scenarios, observeLifecycle: true }),
       ]);
       const firstDiff = a.results.findIndex((r, i) => !same(r, b.results[i]));
       rows.push({
@@ -1433,7 +1440,7 @@ async function equivalenceChecks({ rev = null, sourceOverrides, scale = "full" }
       coherence.push({ label: config.label, lifecycleCommits, problems: l.results.flatMap(pendingCoherence).slice(0, 4) });
     }
     R.record("E2", "equivalence", "REAL_REACT_READY_STATES_ARE_THE_BASELINES", rows.every((r) => r.identical && r.consoleErrors === 0), { rows });
-    const lifecycleTree = openSourceTree({ rev, sourceOverrides }).exists(ROUTE_SESSION);
+    const lifecycleTree = openTree({ rev, sourceOverrides }).exists(ROUTE_SESSION);
     R.record(
       "E3",
       "equivalence",
@@ -1453,7 +1460,7 @@ async function equivalenceChecks({ rev = null, sourceOverrides, scale = "full" }
       { seed: 12432045, routeNumber: 3, difficulty: "hard" },
     ];
     const session = (side, w) => {
-      const rt = loadRouteRuntime({ rev: side.rev, sourceOverrides: side.sourceOverrides });
+      const rt = loadRouteRuntime({ beforeRota2: true, rev: side.rev, sourceOverrides: side.sourceOverrides });
       const seam = rt.LAB.graph.require(ROUTE_RANDOM_SEAM);
       seam.armRouteRandomSeed(w.seed);
       try {
@@ -1656,9 +1663,9 @@ function loadView({ rev, sourceOverrides, React, entry = ROUTE_GAME_VIEW, board 
     },
   };
   const sounds = [];
-  const tree = openSourceTree({ rev, sourceOverrides });
+  const tree = openTree({ rev, sourceOverrides });
   let graphRef = null;
-  const rota = loadRouteModules({
+  const rota = loadRouteModules({ beforeRota2: true,
     tree,
     entry,
     react: React,
@@ -1812,7 +1819,7 @@ async function viewMain({ rev, sourceOverrides, strict, suite }) {
       const view = loadView({ rev, sourceOverrides, React, board });
       if (!view.tree.exists(ROUTE_GENERATION_CLIENT)) return null;
       const client = view.graph.require(ROUTE_GENERATION_CLIENT);
-      const other = createModuleGraph({ tree: view.tree }).require(routeGenerationRunnerFile(view.tree));
+      const other = createModuleGraph({ tree: treeBeforeRota2(view.tree)}).require(routeGenerationRunnerFile(view.tree));
       const jobs = [];
       client.routeGenerationExecutor = (command, deliver) => {
         const j = { command: structuredClone(command), deliver, cancels: 0 };
@@ -2016,7 +2023,7 @@ async function viewMain({ rev, sourceOverrides, strict, suite }) {
     mark("unmount");
     // the expected board for each seeded request: one `generateMaze` from the seed, in a fresh realm
     const reference = (seed, difficulty, routeNumber) => {
-      const g = createModuleGraph({ tree: view.tree });
+      const g = createModuleGraph({ tree: treeBeforeRota2(view.tree)});
       g.require(ROUTE_RANDOM_SEAM).armRouteRandomSeed(seed);
       return mapDigest(g.require(view.tree.declaring("generateMaze")).generateMaze(difficulty, routeNumber));
     };
@@ -2182,9 +2189,9 @@ async function viewChecks({ rev = null, sourceOverrides, includeBaseline = true 
  * Never a verdict.
  */
 async function performanceInfo({ rev = null, sourceOverrides } = {}) {
-  const tree = openSourceTree({ rev, sourceOverrides });
+  const tree = openTree({ rev, sourceOverrides });
   if (!tree.exists(ROUTE_GENERATION_CLIENT)) return { id: "I1", kind: "performance", name: "LOCAL_EXECUTOR_SCHEDULING_OVERHEAD", pass: true, detail: { note: "no generation client in this tree" } };
-  const graph = createModuleGraph({ tree, globals: { setTimeout, clearTimeout, Math, Date } });
+  const graph = createModuleGraph({ tree: treeBeforeRota2(tree), globals: { setTimeout, clearTimeout, Math, Date } });
   const job = graph.require(ROUTE_GENERATION_JOB);
   // ROUTE-C7C: the run and the local executor moved to the runner (the job keeps request/accept). Same functions.
   const runner = graph.require(routeGenerationRunnerFile(tree));
@@ -2250,7 +2257,7 @@ const MUTANTS_LIST = [
 ];
 
 async function mutantSuite({ sourceOverrides }) {
-  const tree = openSourceTree({ sourceOverrides });
+  const tree = openTree({ sourceOverrides });
   const results = [];
   const attempt = async (group, fn) => {
     try {
@@ -2269,7 +2276,7 @@ async function mutantSuite({ sourceOverrides }) {
 }
 
 async function runMutants() {
-  const worktree = openSourceTree();
+  const worktree = openTree();
   console.log("route generation lifecycle · mutants (each applied in memory to the working tree)\n");
   const unmutated = await mutantSuite({ sourceOverrides: {} });
   const unmutatedFailing = unmutated.filter((r) => !r.pass).map((r) => r.id);
@@ -2309,7 +2316,7 @@ async function main() {
     }
   }
   if (MUTANTS) return (await runMutants()) ? EXIT_OK : EXIT_VALIDATION_FAILED;
-  const tree = openSourceTree({ rev: REV });
+  const tree = openTree({ rev: REV });
   console.log(`route generation lifecycle · ${REV ? `rev ${tree.rev.slice(0, 12)}` : "working tree"} vs baseline ${BASELINE.slice(0, 7)} (generation synchronous in the hook)\n`);
   const results = [];
   const group = async (label, fn) => {

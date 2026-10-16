@@ -45,7 +45,13 @@ import crypto from "node:crypto";
 import { execFileSync } from "node:child_process";
 import ts from "typescript";
 import { EXIT_OK, EXIT_USAGE, EXIT_VALIDATION_FAILED } from "./evidence.mjs";
-import { ROUTE_HOOK, ROUTE_MODULE_DIR, INTERNALS_EXPORT, hookExportsBeforeC7C, loadRouteModules, openSourceTree, treeBeforeC7B } from "./route-module-loader.mjs";
+import { ROUTE_HOOK, ROUTE_MODULE_DIR, INTERNALS_EXPORT, hookExportsBeforeC7C, loadRouteModules, openSourceTree, treeBeforeC7B, treeBeforeRota2 } from "./route-module-loader.mjs";
+// ROTA2-DYNAMIC-TRAPS-01 (an approved Rota 2.0 mission, class 4 of the lock's change policy) changes the Rota on
+// purpose. This suite proves an extraction that came before it, so it reads and runs every tree it opens with exactly
+// that mission's pinned delta reversed (`treeBeforeRota2`, `beforeRota2`; no-ops on any tree without the delta):
+// whatever else changed still fails it. What the mission does is rota2-dynamic-traps-tests.mjs' question.
+const openTree = (options) => treeBeforeRota2(openSourceTree(options));
+
 import { loadRouteRuntime, playToEnd } from "./route-runtime-harness.mjs";
 
 /** The last revision whose Rota was one file: what C1 must be equivalent to. */
@@ -122,7 +128,7 @@ const sorted = (list) => [...list].sort();
 // ROUTE-C7B: the text this extraction pins is read through C7B's sanctioned edit of the hook, the Rota's view and its
 // stylesheet (route-module-loader.mjs `treeBeforeC7B`), and C7B's two new modules are not in it; every other byte is
 // still compared. Its graph questions (closure, declaring, locate) are the tree's own, and its runs load `rev`.
-const TREE = treeBeforeC7B(openSourceTree({ rev: REV }));
+const TREE = treeBeforeC7B(openTree({ rev: REV }));
 const label = REV ? `rev ${TREE.rev.slice(0, 12)}` : "working tree";
 console.log(`route-config extraction · ${label} vs one-file Rota ${ONE_FILE_ROTA.slice(0, 7)}\n`);
 
@@ -292,8 +298,8 @@ const closure = TREE.closure(ROUTE_HOOK);
 // =================================================================================================
 
 const SURFACE = [...MOVED_VALUES, "generateMaze", "posKey", "computePortalDefenceZone", "createSentinelState"];
-const NOW = loadRouteModules({ rev: REV, surface: SURFACE });
-const ONE = loadRouteModules({ rev: ONE_FILE_ROTA, surface: SURFACE });
+const NOW = loadRouteModules({ beforeRota2: true, rev: REV, surface: SURFACE });
+const ONE = loadRouteModules({ beforeRota2: true, rev: ONE_FILE_ROTA, surface: SURFACE });
 const A = NOW.api;
 const B = ONE.api;
 const configFile = (rota) => rota.graph.modules().find((m) => Object.hasOwn(rota.graph.require(m.file)[INTERNALS_EXPORT] ?? {}, "ROWS"))?.file;
@@ -499,7 +505,7 @@ function canonical(rota, difficulty, routeNumber, seed) {
 // E3 — the real hook, mounted by the runtime harness, plays the same Routes to the same ends.
 {
   const play = (rev) => {
-    const runtime = loadRouteRuntime({ rev });
+    const runtime = loadRouteRuntime({ beforeRota2: true, rev });
     const out = [];
     for (const routeNumber of [1, 2, 3]) {
       for (const difficulty of DIFFICULTIES) {

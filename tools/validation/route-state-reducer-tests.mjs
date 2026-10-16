@@ -64,7 +64,14 @@ import {
   openSourceTree,
   routeRandomBeforeC7A,
   treeBeforeC7B,
+  treeBeforeRota2,
 } from "./route-module-loader.mjs";
+// ROTA2-DYNAMIC-TRAPS-01 (an approved Rota 2.0 mission, class 4 of the lock's change policy) changes the Rota on
+// purpose. This suite proves an extraction that came before it, so it reads and runs every tree it opens with exactly
+// that mission's pinned delta reversed (`treeBeforeRota2`, `beforeRota2`; no-ops on any tree without the delta):
+// whatever else changed still fails it. What the mission does is rota2-dynamic-traps-tests.mjs' question.
+const openTree = (options) => treeBeforeRota2(openSourceTree(options));
+
 import { POLICIES, runInRealReact, runInShim } from "./route-react-runtime.mjs";
 
 /** C4: the last revision whose session state was independent useState cells — what C5 must be equivalent to. */
@@ -483,7 +490,7 @@ function structureChecks(tree) {
       written = sorted(new Set(hook.dispatches.map((d) => d.type)));
       shape = !c6InHook;
     } else {
-      const { routeStateActionsForEvent } = createModuleGraph({ tree }).require(ROUTE_EVENTS);
+      const { routeStateActionsForEvent } = createModuleGraph({ tree: treeBeforeRota2(tree) }).require(ROUTE_EVENTS);
       const resolved = [];
       for (const a of hook.applications) {
         const mapped = errorOf(() => routeStateActionsForEvent(a.event)) ?? routeStateActionsForEvent(a.event).map((t) => t.type);
@@ -517,7 +524,7 @@ function structureChecks(tree) {
   // sound, onComplete, the clock and map generation are called there, in the same functions as before (counted against
   // the baseline's own anatomy); route-state's code names none of them.
   {
-    const base = hookAnatomy(openSourceTree({ rev: BASELINE }).read(ROUTE_HOOK));
+    const base = hookAnatomy(openTree({ rev: BASELINE }).read(ROUTE_HOOK));
     const missing = ORCHESTRATION.filter((name) => (hook.declared[name] ?? 0) !== 1);
     const leaked = ORCHESTRATION.filter((name) => new RegExp(String.raw`\b${name}\b`).test(codeOnly(stateText)));
     const effectsNow = Object.fromEntries(Object.entries(hook.effects).filter(([k]) => !k.startsWith("generateMaze")));
@@ -543,7 +550,7 @@ function structureChecks(tree) {
   // S8 — the cells, counted: what the baseline had and what is left. Fails while the hook still holds its state in
   // independent cells (the counterfactual) — the static gate against going back.
   {
-    const base = hookAnatomy(openSourceTree({ rev: BASELINE }).read(ROUTE_HOOK));
+    const base = hookAnatomy(openTree({ rev: BASELINE }).read(ROUTE_HOOK));
     record(
       "S8",
       "STATE_CELLS_CONSOLIDATED",
@@ -600,7 +607,7 @@ function reducerChecks(tree) {
     },
   });
   const graph = createModuleGraph({
-    tree,
+    tree: treeBeforeRota2(tree),
     globals: { Math: poison("Math"), Date: poison("Date"), performance: poison("performance"), crypto: poison("crypto") },
   });
   const mod = graph.require(ROUTE_STATE);
@@ -608,7 +615,7 @@ function reducerChecks(tree) {
   const { routeStateReducer, createRouteState } = mod;
 
   // States built from real maps, both shapes of every field. Maps come from the Rota's own generation (another graph).
-  const rota = loadRouteModules({ tree, surface: ["generateMaze", "computePortalDefenceZone", "createSentinelState"] });
+  const rota = loadRouteModules({ beforeRota2: true, tree, surface: ["generateMaze", "computePortalDefenceZone", "createSentinelState"] });
   const rand = prng(5_550_005);
   const maps = [];
   for (const routeNumber of [1, 2, 3]) {
@@ -811,7 +818,7 @@ function turnSkeleton(source) {
 function preservedChecks(tree) {
   const out = [];
   const record = (id, name, pass, detail) => out.push({ id, kind: "preserved", name, pass, detail });
-  const base = openSourceTree({ rev: BASELINE });
+  const base = openTree({ rev: BASELINE });
   const hookNow = moduleShape(ROUTE_HOOK, tree.read(ROUTE_HOOK));
   const hookBase = moduleShape(ROUTE_HOOK, base.read(ROUTE_HOOK));
 
@@ -1044,11 +1051,11 @@ async function equivalenceChecks({ rev = null, sourceOverrides, react = true } =
   const out = [];
   const record = (id, name, pass, detail) => out.push({ id, kind: "equivalence", name, pass, detail });
   const scenarios = harnessScenarios();
-  const now = await runInShim({ rev, sourceOverrides, scenarios });
+  const now = await runInShim({ beforeRota2: true, rev, sourceOverrides, scenarios });
   // The baseline's run is the same for every tree compared (the mutants reuse it).
-  baselineCache ??= await runInShim({ rev: BASELINE, scenarios });
+  baselineCache ??= await runInShim({ beforeRota2: true, rev: BASELINE, scenarios });
   const base = baselineCache;
-  const api = loadRouteModules({ rev, sourceOverrides, surface: ["decideSentinelMove"] }).api;
+  const api = loadRouteModules({ beforeRota2: true, rev, sourceOverrides, surface: ["decideSentinelMove"] }).api;
   const items = classify(now, base, api);
   const holds = (label, min = 1) => items[label] && items[label].inputs >= min && items[label].identical === items[label].inputs;
   const commits = now.reduce((sum, r) => sum + r.commits.length, 0);
@@ -1154,8 +1161,8 @@ async function equivalenceChecks({ rev = null, sourceOverrides, react = true } =
     for (const config of REACT_CONFIGS) {
       const scenarios = reactScenarios({ keys: config.keys });
       const [a, b] = await Promise.all([
-        runInRealReact({ rev, sourceOverrides, nodeEnv: config.nodeEnv, strict: config.strict, regime: config.regime, scenarios }),
-        runInRealReact({ rev: BASELINE, nodeEnv: config.nodeEnv, strict: config.strict, regime: config.regime, scenarios }),
+        runInRealReact({ beforeRota2: true, rev, sourceOverrides, nodeEnv: config.nodeEnv, strict: config.strict, regime: config.regime, scenarios }),
+        runInRealReact({ beforeRota2: true, rev: BASELINE, nodeEnv: config.nodeEnv, strict: config.strict, regime: config.regime, scenarios }),
       ]);
       const inputs = a.results.flatMap((r) => r.steps.filter((s) => s.label !== "mount" && s.label !== "next" && s.commits !== undefined));
       const perInput = inputs.reduce((acc, s) => (tally(acc, `${s.commits} commit${s.commits === 1 ? "" : "s"}`), acc), {});
@@ -1209,7 +1216,7 @@ const MUTANT_LIST = [
 ];
 
 async function runMutants() {
-  const worktree = openSourceTree();
+  const worktree = openTree();
   const rows = [];
   for (const [name, file, [from, to]] of MUTANT_LIST) {
     const text = worktree.read(file);
@@ -1219,7 +1226,7 @@ async function runMutants() {
       continue;
     }
     const sourceOverrides = { [file]: text.replace(from, () => to) };
-    const tree = openSourceTree({ sourceOverrides });
+    const tree = openTree({ sourceOverrides });
     const results = [...structureChecks(treeBeforeC7B(tree)), ...reducerChecks(tree), ...preservedChecks(treeBeforeC7B(tree))];
     let error = null;
     try {
@@ -1250,7 +1257,7 @@ if (MUTANTS) {
   console.log(`route-state reducer · mutants of the working tree (in memory), against baseline ${BASELINE.slice(0, 7)}\n`);
   await runMutants();
 } else {
-  const TREE = openSourceTree({ rev: REV });
+  const TREE = openTree({ rev: REV });
   console.log(`route-state reducer · ${REV ? `rev ${TREE.rev.slice(0, 12)}` : "working tree"} vs baseline ${BASELINE.slice(0, 7)} (eighteen useState cells)\n`);
   const tests = [];
   // ROUTE-C7B: the text checks read the hook, the Rota's view and its stylesheet through C7B's sanctioned edit

@@ -67,7 +67,7 @@ import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import { Worker, isMainThread, workerData, parentPort } from "node:worker_threads";
 
-import { ROUTE_SESSION, createModuleGraph, loadRouteModules, openSourceTree } from "./route-module-loader.mjs";
+import { ROUTE_SESSION, createModuleGraph, loadRouteModules, openSourceTree, treeBeforeRota2 } from "./route-module-loader.mjs";
 import {
   cellKey,
   isLifecycleRender,
@@ -451,10 +451,11 @@ async function runScenarios(renderer, scenarios, { counters, peek, effects, setS
  * React renders only when something was, so a render counts as a commit here when it was scheduled (or is the
  * mount). The shim runs no effects: no keyboard listener, so scenarios with keys are for the real React only.
  */
-export async function runInShim({ rev = null, scenarios, sourceOverrides, traceEvents = false }) {
+export async function runInShim({ rev = null, scenarios, sourceOverrides, traceEvents = false, beforeRota2 = false }) {
   const effects = [];
-  const tree = openSourceTree({ rev, sourceOverrides });
-  const runtime = loadRouteRuntime({ rev, sourceOverrides, mocks: rotaEnvironment(tree, effects) });
+  // ROTA2-DYNAMIC-TRAPS-01: `beforeRota2` runs the tree with the approved Rota 2.0 delta reversed (route-module-loader).
+  const tree = beforeRota2 ? treeBeforeRota2(openSourceTree({ rev, sourceOverrides })) : openSourceTree({ rev, sourceOverrides });
+  const runtime = loadRouteRuntime({ rev, sourceOverrides, beforeRota2, mocks: rotaEnvironment(tree, effects) });
   const { counters, peek } = instrumentStream(runtime.LAB.graph, runtime.LAB.sb.Math);
   const tracer = traceEvents ? instrumentEvents(runtime.LAB.graph) : null;
   const commits = [];
@@ -518,11 +519,12 @@ export function runInRealReact({
   observeLifecycle = false,
   alignStrictMount = true,
   transforms,
+  beforeRota2 = false,
 }) {
   if (regime === "act" && nodeEnv !== "development") throw new Error("React.act exists in development builds only");
   return new Promise((resolve, reject) => {
     const worker = new Worker(SELF, {
-      workerData: { routeReactRuntime: true, rev, strict, regime, scenarios, sourceOverrides, traceEvents, observeLifecycle, alignStrictMount, transforms },
+      workerData: { routeReactRuntime: true, rev, strict, regime, scenarios, sourceOverrides, traceEvents, observeLifecycle, alignStrictMount, transforms, beforeRota2 },
       env: { ...process.env, NODE_ENV: nodeEnv },
     });
     let settled = false;
@@ -710,14 +712,14 @@ export async function createReactRenderer({ strict, regime }) {
 }
 
 async function workerMain() {
-  const { rev, strict, regime, scenarios, sourceOverrides, traceEvents, observeLifecycle, alignStrictMount, transforms } = workerData;
+  const { rev, strict, regime, scenarios, sourceOverrides, traceEvents, observeLifecycle, alignStrictMount, transforms, beforeRota2 } = workerData;
   const consoleErrors = [];
   console.error = (...args) => consoleErrors.push(args.map(String).join(" ").slice(0, 300));
   console.warn = (...args) => consoleErrors.push(`warn: ${args.map(String).join(" ").slice(0, 300)}`);
 
   const react = await createReactRenderer({ strict, regime });
   const effects = [];
-  const tree = openSourceTree({ rev, sourceOverrides });
+  const tree = beforeRota2 ? treeBeforeRota2(openSourceTree({ rev, sourceOverrides })) : openSourceTree({ rev, sourceOverrides });
   const rota = loadRouteModules({
     tree,
     react: react.React,

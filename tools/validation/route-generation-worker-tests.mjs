@@ -77,7 +77,14 @@ import {
   moduleStatementKeys,
   openSourceTree,
   routeFileBeforeC7C,
+  treeBeforeRota2,
 } from "./route-module-loader.mjs";
+// ROTA2-DYNAMIC-TRAPS-01 (an approved Rota 2.0 mission, class 4 of the lock's change policy) changes the Rota on
+// purpose. This suite proves an extraction that came before it, so it reads and runs every tree it opens with exactly
+// that mission's pinned delta reversed (`treeBeforeRota2`, `beforeRota2`; no-ops on any tree without the delta):
+// whatever else changed still fails it. What the mission does is rota2-dynamic-traps-tests.mjs' question.
+const openTree = (options) => treeBeforeRota2(openSourceTree(options));
+
 import { createSeededRandom } from "./route-lab.mjs";
 import { applyAction, mapDigest, nextAction, observeRoute } from "./route-react-runtime.mjs";
 import { loadRouteRuntime } from "./route-runtime-harness.mjs";
@@ -416,7 +423,7 @@ function createWorkerHost({ tree, transforms, clock, mathSeed = 7000, cost = () 
 /** The main realm of a tree, for the executor alone: the client, the job, the seam, with the host's Worker and clock. */
 function mainRealm({ tree, transforms, host, clock, sourceOverrides }) {
   const graph = createModuleGraph({
-    tree: tree ?? openSourceTree({ sourceOverrides }),
+    tree: treeBeforeRota2(tree ?? openTree({ sourceOverrides })),
     transforms,
     globals: { console, Set, Map, Math: Object.create(Math), URL, setTimeout: clock.setTimeout, clearTimeout: clock.clearTimeout, Worker: host?.Worker },
   });
@@ -431,7 +438,7 @@ function mainRealm({ tree, transforms, host, clock, sourceOverrides }) {
 
 /** The map a seeded request produces, computed by the runner in a realm of its own (the expected answer). */
 function referenceRun(tree, request) {
-  const graph = createModuleGraph({ tree, globals: { console, Set, Map, Math: Object.create(Math) } });
+  const graph = createModuleGraph({ tree: treeBeforeRota2(tree), globals: { console, Set, Map, Math: Object.create(Math) } });
   const runner = graph.require(tree.exists(ROUTE_GENERATION_RUNNER) ? ROUTE_GENERATION_RUNNER : ROUTE_GENERATION_JOB);
   return runner.runRouteGenerationSync(structuredClone(request));
 }
@@ -471,7 +478,7 @@ function structureChecks(tree) {
     // and at run time: the client module's own binding (not rebound by any validator profile) is that function
     let identity = false;
     if (executor) {
-      const graph = createModuleGraph({ tree, globals: { console, Set, Map, Math, setTimeout, clearTimeout } });
+      const graph = createModuleGraph({ tree: treeBeforeRota2(tree), globals: { console, Set, Map, Math, setTimeout, clearTimeout } });
       identity = graph.require(ROUTE_GENERATION_CLIENT).routeGenerationExecutor === graph.require(ROUTE_GENERATION_WORKER_EXECUTOR).runRouteGenerationInWorker;
     }
     R.record("S1", "structure", "PRODUCT_BINDING_IS_THE_WORKER_EXECUTOR", binding && imported && !local && identity &&
@@ -576,13 +583,13 @@ function structureChecks(tree) {
       const Counting = function () {
         count += 1;
       };
-      const graph = createModuleGraph({ tree, globals: { console, Set, Map, Math, URL, setTimeout, clearTimeout, Worker: Counting } });
+      const graph = createModuleGraph({ tree: treeBeforeRota2(tree), globals: { console, Set, Map, Math, URL, setTimeout, clearTimeout, Worker: Counting } });
       graph.require(ROUTE_GENERATION_CLIENT);
       graph.require(ROUTE_GENERATION_WORKER_EXECUTOR);
       graph.require(ROUTE_SESSION);
       constructedAtImport = count;
       try {
-        const ssr = createModuleGraph({ tree, globals: { console, Set, Map, Math, setTimeout, clearTimeout } });
+        const ssr = createModuleGraph({ tree: treeBeforeRota2(tree), globals: { console, Set, Map, Math, setTimeout, clearTimeout } });
         ssr.require(ROUTE_GENERATION_CLIENT);
         ssrImport = "ok";
       } catch (error) {
@@ -658,7 +665,7 @@ function structureChecks(tree) {
 
 function preservedChecks(tree) {
   const R = recorder();
-  const base = openSourceTree({ rev: BASELINE });
+  const base = openTree({ rev: BASELINE });
 
   // P1 — C7C's edit of the job, the client and the hook is exactly the declared one: the reversal gives bd75e69 back
   // byte for byte, and the statements that differ are exactly those declared rewritten/removed/added.
@@ -727,7 +734,7 @@ function preservedChecks(tree) {
 const command = (request, requestId = 1, intent = "restart") => ({ requestId, intent, request });
 
 function executorChecks({ tree, transforms } = {}) {
-  tree ??= openSourceTree();
+  tree ??= openTree();
   const R = recorder();
   const fresh = (hostOptions = {}) => {
     const clock = createClock();
@@ -985,7 +992,7 @@ function executorChecks({ tree, transforms } = {}) {
 
 /** The Rota of a tree on the shim, generating through the product's Worker executor on the host. */
 function productRota({ tree, sourceOverrides, rev = null, transforms, mathSeed } = {}) {
-  const rt = loadRouteRuntime({ rev, sourceOverrides, transforms, generationExecutor: "product" });
+  const rt = loadRouteRuntime({ beforeRota2: true, rev, sourceOverrides, transforms, generationExecutor: "product" });
   const graph = rt.LAB.graph;
   const clock = createClock();
   const host = createWorkerHost({ tree: tree ?? graph.tree, transforms, clock, mathSeed });
@@ -1038,7 +1045,7 @@ function productRota({ tree, sourceOverrides, rev = null, transforms, mathSeed }
 
 /** The baseline's Rota (bd75e69: C7B's local executor, the harness's own timers). */
 function baselineRota() {
-  const rt = loadRouteRuntime({ rev: BASELINE });
+  const rt = loadRouteRuntime({ beforeRota2: true, rev: BASELINE });
   const seam = rt.LAB.graph.require(ROUTE_RANDOM_SEAM);
   return { rt, seam, pump: (run) => run.state, act: (run, fn) => run.act(fn) };
 }
@@ -1361,7 +1368,7 @@ async function cloneChecks() {
   // exactly as an in-realm run would; normal play brings no stream back; the main realm accepts through the REAL
   // protocol check and the REAL accept.
   await R.guardAsync("C1", "clone", "REAL_ISOLATE_STRUCTURED_CLONE", async () => {
-    const tree = openSourceTree();
+    const tree = openTree();
     const bundle = emitModuleBundle({ tree, entry: ROUTE_GENERATION_WORKER, params: ["self", "Math"] });
     const thread = new NodeWorker(THREAD_SOURCE, { eval: true, workerData: { bundle } });
     const ask = (message) =>
@@ -1464,7 +1471,7 @@ function mutantOverrides(worktree, edits) {
 }
 
 async function mutantSuite(sourceOverrides) {
-  const tree = openSourceTree({ sourceOverrides });
+  const tree = openTree({ sourceOverrides });
   const results = [];
   const attempt = async (group, fn) => {
     try {
@@ -1481,7 +1488,7 @@ async function mutantSuite(sourceOverrides) {
 }
 
 async function runMutants() {
-  const worktree = openSourceTree();
+  const worktree = openTree();
   console.log("route generation worker · mutants (each applied in memory to the working tree)\n");
   const unmutated = await mutantSuite({});
   const unmutatedFailing = unmutated.filter((r) => !r.pass).map((r) => r.id);
@@ -1521,7 +1528,7 @@ async function main() {
     }
   }
   if (MUTANTS) return (await runMutants()) ? EXIT_OK : EXIT_VALIDATION_FAILED;
-  const tree = openSourceTree({ rev: REV });
+  const tree = openTree({ rev: REV });
   console.log(`route generation worker · ${REV ? `rev ${tree.rev.slice(0, 12)}` : "working tree"} vs baseline ${BASELINE.slice(0, 7)} (generation on the main thread, C7B's local executor)\n`);
   const results = [];
   const group = async (label, fn) => {
