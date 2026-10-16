@@ -501,6 +501,10 @@ export function createStateDouble(overrides = {}) {
     breakTargetKeys: [],
     aimedWallKey: null,
     brokenWallKey: null,
+    // ROTA2-DYNAMIC-TRAPS-01: RouteBabylonState carries the trap links and the
+    // walls traps opened; none here, so every v1 scenario draws what it drew.
+    trapLinks: [],
+    trapOpenedWallKeys: [],
     dangerTiles: [],
     reducedMotion: true,
     status: "playing",

@@ -2183,11 +2183,18 @@ export function createRouteBabylonController(
   /**
    * Pulse once for each wall a dynamic trap opened since the last state — on
    * the same board, with motion allowed. A new board (restart, next Route, a
-   * new mode) clears whatever was still fading: nothing of a previous board's
-   * topology outlives it, not even its glow.
+   * new mode — or a restart onto the same seeded board, where an opened wall
+   * stands again) clears whatever was still fading: nothing of a previous
+   * session's topology outlives it, not even its glow.
    */
   function syncTopologyPulses(previous: RouteBabylonState, next: RouteBabylonState) {
-    if (next.reducedMotion || trapLinkSignature(previous) !== trapLinkSignature(next)) {
+    const after = new Set(next.trapOpenedWallKeys);
+    if (
+      next.reducedMotion ||
+      trapLinkSignature(previous) !== trapLinkSignature(next) ||
+      // An opened wall closing again is a new session on the same board.
+      previous.trapOpenedWallKeys.some((wall) => !after.has(wall))
+    ) {
       clearTopologyPulses();
       return;
     }
@@ -2201,7 +2208,8 @@ export function createRouteBabylonController(
       });
   }
 
-  scene.onBeforeRenderObservable.add(() => {
+  /** One frame of the pulses, from the render loop; nothing to do while none fades. */
+  function stepTopologyPulses() {
     if (topologyPulses.length === 0) return;
     const now = performance.now();
     let oldest = 0;
@@ -2217,7 +2225,7 @@ export function createRouteBabylonController(
       pulse.root.scaling.setAll(0.7 + (1 - (1 - t) * (1 - t)) * 0.8);
     }
     pulseMaterial.alpha = TOPOLOGY_PULSE_ALPHA * (1 - oldest);
-  });
+  }
 
   function getStaticBoardSignature() {
     return [
@@ -2548,6 +2556,7 @@ export function createRouteBabylonController(
     loadPropAssetOnce("trap"),
   ]);
   engine.runRenderLoop(() => {
+    stepTopologyPulses();
     scene.render();
   });
 

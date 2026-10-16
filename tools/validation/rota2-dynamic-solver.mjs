@@ -1,0 +1,411 @@
+/**
+ * ROTA2-DYNAMIC-TRAPS-01 — the exact pre-chest solver, on a maze that changes.
+ *
+ * `dynamic-solver-packed*.mjs` (ROTA-DYNAMIC-SOLVABILITY-01) enumerates the
+ * exact support of every turn on ONE wall graph, fixed for the whole Route.
+ * Rota 2.0 breaks that assumption: arming a dynamic trap opens its linked wall
+ * for the rest of the Route. This module is that solver with the one change
+ * the mechanic needs, and nothing else:
+ *
+ *   - the topology is a function of the state already in the key — the armed
+ *     traps bitmask — so the state space does not grow: with the linked trap's
+ *     bit clear the board is the certified walls, with it set the linked wall
+ *     is open ("variant"). No new state component, no new branch of the RNG.
+ *   - the turn reads the topology exactly where the hook does: the Explorer's
+ *     step is legal on the maze BEFORE the step; the trap the step arms opens
+ *     its wall; the Hunter and the Sentinel then answer on the maze AFTER it
+ *     (useEscapeMaze.ts: step commits → TRAP_ARMED → WALL_OPENED_BY_TRAP →
+ *     defender phase on `turnWalls`).
+ *   - each variant gets the packed context's own tables (neighbours, BFS
+ *     distances, the Sentinel's threat table, the trap-blocked variants), built
+ *     by the reference `preparePackedContext` from a map whose walls are that
+ *     variant's walls. `hunterSupport` and `sentinelMove` below are the
+ *     reference's, statement for statement; only WHICH table they read moved.
+ *
+ * Soundness is asserted, not assumed (rota2-dynamic-traps-census.mjs):
+ *   - with the dynamic topology switched off, the successor sets are identical
+ *     to the reference `enumeratePackedSuccessors` on every explored state;
+ *   - with it on, every transition the REAL hook makes in played Routes is in
+ *     the enumerated support.
+ *
+ * Model limits (the same as the reference, said again): PRE_CHEST — no Chest,
+ * no Pickaxe, no Second Chance. A dynamic map whose Sentinel doors differ
+ * between the two variants is refused (`accessesDiffer`), not approximated:
+ * the held-door index would change meaning between topologies.
+ *
+ * Writes nothing.
+ */
+import { ACTIONS, API, buildContext } from "./dynamic-solver.mjs";
+import {
+  canonicalToNumeric,
+  initialPackedState,
+  preparePackedContext,
+} from "./dynamic-solver-packed.mjs";
+import { GrowableBuffer, PackedNodeStore } from "./dynamic-solver-packed-graph.mjs";
+import { classifyPacked, solvePackedGraph } from "./dynamic-solver-packed-solve.mjs";
+
+const CELL_COUNT = 81;
+const UNREACHABLE = 255;
+const MAX_COMMIT = 3;
+const SENTINEL_THREAT_HORIZON = 6;
+const SENTINEL_MAX_HOME_DISTANCE = 4;
+
+const cellId = (key) => {
+  const [row, col] = key.split(",").map(Number);
+  return row * 9 + col;
+};
+
+// --- reference tables, verbatim from dynamic-solver-packed-successors.mjs ---
+
+function buildDistances(neighbours, walls) {
+  const distances = new Uint8Array(CELL_COUNT * CELL_COUNT);
+  distances.fill(UNREACHABLE);
+  const queue = new Uint8Array(CELL_COUNT);
+  for (let start = 0; start < CELL_COUNT; start += 1) {
+    if (walls[start]) continue;
+    const rowOffset = start * CELL_COUNT;
+    let head = 0;
+    let tail = 0;
+    queue[tail++] = start;
+    distances[rowOffset + start] = 0;
+    while (head < tail) {
+      const current = queue[head++];
+      const nextDistance = distances[rowOffset + current] + 1;
+      for (const next of neighbours[current]) {
+        const index = rowOffset + next;
+        if (distances[index] !== UNREACHABLE) continue;
+        distances[index] = nextDistance;
+        queue[tail++] = next;
+      }
+    }
+  }
+  return distances;
+}
+
+function trapVariant(meta, trapMask) {
+  let variant = meta.trapVariants[trapMask];
+  if (variant) return variant;
+  const blocked = new Uint8Array(meta.walls);
+  for (let index = 0; index < meta.trapIds.length; index += 1) {
+    if (trapMask & (1 << index)) blocked[meta.trapIds[index]] = 1;
+  }
+  const neighbours = Array.from({ length: CELL_COUNT }, (_, id) => {
+    if (blocked[id]) return new Uint8Array(0);
+    return Uint8Array.from(meta.baseNeighbours[id].filter((next) => !blocked[next]));
+  });
+  variant = { neighbours, distances: buildDistances(neighbours, blocked) };
+  meta.trapVariants[trapMask] = variant;
+  return variant;
+}
+
+function packFields(meta, e, h, s, t, c, lights, traps) {
+  let key = e;
+  key = key * CELL_COUNT + h;
+  key = key * CELL_COUNT + s;
+  key = key * meta.targetRadix + (t + 1);
+  key = key * (MAX_COMMIT + 1) + c;
+  key = key * meta.lightRadix + lights;
+  return key * meta.trapRadix + traps;
+}
+
+function addUnique(target, value) {
+  for (let index = 0; index < target.length; index += 1) {
+    if (target[index] === value) return;
+  }
+  target.push(value);
+}
+
+function hunterSupport(meta, hunter, player, traps, sentinel, output) {
+  output.length = 0;
+  const neighbours = meta.baseNeighbours[hunter];
+  if (neighbours.length === 0) {
+    output.push(hunter);
+    return output;
+  }
+  const preferred = [];
+  if (meta.difficulty === "easy" || meta.difficulty === "medium") {
+    for (const next of neighbours) preferred.push(next);
+  } else {
+    const currentDistance = meta.manhattan[hunter * CELL_COUNT + player];
+    let bestDistance = UNREACHABLE;
+    for (const next of neighbours) {
+      const distance = meta.manhattan[next * CELL_COUNT + player];
+      if (distance < currentDistance && distance < bestDistance) bestDistance = distance;
+    }
+    if (bestDistance === UNREACHABLE) {
+      for (const next of neighbours) preferred.push(next);
+    } else {
+      for (const next of neighbours) {
+        if (meta.manhattan[next * CELL_COUNT + player] === bestDistance) preferred.push(next);
+      }
+    }
+  }
+  const illegal = (id) =>
+    id === meta.exitId ||
+    id === sentinel ||
+    Boolean(meta.trapBitByCell[id] & traps);
+  let anyIllegal = false;
+  for (const next of preferred) {
+    if (illegal(next)) anyIllegal = true;
+    else addUnique(output, next);
+  }
+  if (!anyIllegal) return output;
+  const alternatives = [];
+  for (const next of neighbours) if (!illegal(next)) alternatives.push(next);
+  if (alternatives.length === 0) {
+    addUnique(output, hunter);
+    return output;
+  }
+  if (meta.difficulty === "easy") {
+    for (const next of alternatives) addUnique(output, next);
+  }
+  let bestDistance = UNREACHABLE;
+  for (const next of alternatives) {
+    bestDistance = Math.min(bestDistance, meta.manhattan[next * CELL_COUNT + player]);
+  }
+  for (const next of alternatives) {
+    if (meta.manhattan[next * CELL_COUNT + player] === bestDistance) addUnique(output, next);
+  }
+  return output;
+}
+
+function sentinelMove(meta, sentinel, targetIndex, commitLeft, player, traps) {
+  let target = meta.exitId;
+  const bestThreat = meta.threatDistance[player];
+  const threatenedAccess = meta.threatTarget[player];
+  if (threatenedAccess >= 0) target = meta.accessIds[threatenedAccess];
+  let heldTarget = targetIndex;
+  let nextCommit = commitLeft;
+  if (nextCommit > 0 && heldTarget >= 0) {
+    target = meta.accessIds[heldTarget];
+    nextCommit -= 1;
+  } else {
+    heldTarget = threatenedAccess;
+    nextCommit = MAX_COMMIT;
+  }
+  const variant = trapVariant(meta, traps);
+  const rawDistanceHome = variant.distances[sentinel * CELL_COUNT + meta.exitId];
+  const distanceHome = rawDistanceHome === UNREACHABLE ? 0 : rawDistanceHome;
+  const outside = !meta.zoneMask[sentinel];
+  if (bestThreat > SENTINEL_THREAT_HORIZON || (outside && distanceHome > SENTINEL_MAX_HOME_DISTANCE)) {
+    target = meta.exitId;
+    heldTarget = -1;
+    nextCommit = 0;
+  }
+  if (
+    traps !== 0 && heldTarget >= 0 &&
+    variant.distances[sentinel * CELL_COUNT + target] === UNREACHABLE
+  ) {
+    target = meta.exitId;
+    heldTarget = -1;
+    nextCommit = 0;
+  }
+  let best = sentinel;
+  let bestScore = Number.POSITIVE_INFINITY;
+  let optionCount = 0;
+  for (const next of variant.neighbours[sentinel]) {
+    if (next === meta.exitId) continue;
+    const homeDistance = variant.distances[next * CELL_COUNT + meta.exitId];
+    if (homeDistance === UNREACHABLE || homeDistance > SENTINEL_MAX_HOME_DISTANCE) continue;
+    optionCount += 1;
+    const rawScore = variant.distances[next * CELL_COUNT + target];
+    const score = rawScore === UNREACHABLE ? 99 : rawScore;
+    if (score < bestScore) {
+      bestScore = score;
+      best = next;
+    }
+  }
+  if (optionCount === 0) return { s: sentinel, t: heldTarget, c: nextCommit };
+  const rawStayScore = variant.distances[sentinel * CELL_COUNT + target];
+  const stayScore = rawStayScore === UNREACHABLE ? 99 : rawStayScore;
+  return { s: bestScore < stayScore ? best : sentinel, t: heldTarget, c: nextCommit };
+}
+
+// --- the dynamic context ------------------------------------------------------
+
+const sameIds = (a, b) => a.length === b.length && a.every((value, index) => value === b[index]);
+
+/**
+ * Two packed contexts for one map — certified walls, and certified walls with
+ * the linked wall open — and the bit of the linked trap. `dynamic: false`
+ * (or a map without a link) gives the v1 model: both variants are the same.
+ */
+export function buildDynamicContext(map, difficulty, { dynamic = true } = {}) {
+  const closed = buildContext(map, difficulty);
+  const link = dynamic ? (map.trapLinks ?? [])[0] ?? null : null;
+  if (!link) {
+    preparePackedContext(closed);
+    return { map, difficulty, closed, open: closed, linkBit: 0, link: null, accessesDiffer: false };
+  }
+  const openedWalls = new Set(map.walls);
+  openedWalls.delete(link.mutation.wall);
+  const open = buildContext({ ...map, walls: openedWalls }, difficulty);
+  const closedMeta = preparePackedContext(closed);
+  const openMeta = preparePackedContext(open);
+  const trapIndex = map.traps.map(API.posKey).indexOf(link.trap);
+  return {
+    map,
+    difficulty,
+    closed,
+    open,
+    linkBit: trapIndex < 0 ? 0 : 1 << trapIndex,
+    link,
+    accessesDiffer: !sameIds([...closedMeta.accessIds], [...openMeta.accessIds]),
+    zoneDiffers: !sameIds([...closedMeta.zoneMask], [...openMeta.zoneMask]),
+    openedCell: cellId(link.mutation.wall),
+  };
+}
+
+/** The topology the state's armed traps imply. */
+const metaFor = (dctx, traps) =>
+  traps & dctx.linkBit ? dctx.open.packed : dctx.closed.packed;
+
+/**
+ * Every exact successor of `state` under `actionIndex`, on the maze the state
+ * implies before the step and the maze the step leaves for the defenders.
+ * Same contract as the reference `enumeratePackedSuccessors`.
+ */
+export function enumerateDynamicSuccessors(dctx, canonicalOrNumericState, actionIndex, emit) {
+  const state = canonicalToNumeric(canonicalOrNumericState);
+  const before = metaFor(dctx, state.traps);
+  const next = before.moveTarget[state.e * ACTIONS.length + actionIndex];
+  if (next < 0) return null;
+  if (next === state.h || next === state.s) return { hasWin: false, hasLoss: true, stateCount: 0 };
+  const lights = state.lights | before.lightBitByCell[next];
+  const traps = state.traps | before.trapBitByCell[next];
+  if (next === before.exitId && lights === before.allLights) {
+    return { hasWin: true, hasLoss: false, stateCount: 0 };
+  }
+  // The trap this step armed has already opened its wall: the defenders read
+  // the maze after the step.
+  const after = metaFor(dctx, traps);
+  const hunterOutcomes = [];
+  hunterSupport(after, state.h, next, traps, state.s, hunterOutcomes);
+  const seen = [];
+  let hasLoss = false;
+  for (const hunter of hunterOutcomes) {
+    if (hunter === next) {
+      hasLoss = true;
+      continue;
+    }
+    const sentinel = sentinelMove(after, state.s, state.t, state.c, next, traps);
+    const settledSentinel = sentinel.s === hunter && sentinel.s !== state.s ? state.s : sentinel.s;
+    if (settledSentinel === next) {
+      hasLoss = true;
+      continue;
+    }
+    const key = packFields(after, next, hunter, settledSentinel, sentinel.t, sentinel.c, lights, traps);
+    if (seen.includes(key)) continue;
+    seen.push(key);
+    emit(key, next, hunter, settledSentinel, sentinel.t, sentinel.c, lights, traps);
+  }
+  return { hasWin: false, hasLoss, stateCount: seen.length };
+}
+
+/** The successor keys as a set, for differential checks. */
+export function dynamicSuccessorSet(dctx, state, actionIndex) {
+  const states = [];
+  const result = enumerateDynamicSuccessors(dctx, state, actionIndex, (key) => states.push(key));
+  if (!result) return null;
+  return { ...result, states };
+}
+
+export function packDynamicState(dctx, numeric) {
+  return packFields(metaFor(dctx, numeric.traps), numeric.e, numeric.h, numeric.s, numeric.t, numeric.c, numeric.lights, numeric.traps);
+}
+
+/**
+ * Breadth-first exploration into the reference's graph layout, so the
+ * reference attractors (`solvePackedGraph`) and classification apply as they
+ * are. Limits as the reference's `maxStates` / `maxElapsedMs`.
+ */
+export function exploreDynamic(dctx, { maxStates = 3_000_000, maxElapsedMs = 60_000 } = {}) {
+  const started = performance.now();
+  const start = initialPackedState(dctx.closed);
+  const startMeta = metaFor(dctx, start.traps);
+  const startKey = packFields(startMeta, start.e, start.h, start.s, start.t, start.c, start.lights, start.traps);
+  const nodes = new PackedNodeStore(65_536);
+  nodes.add(startKey, start.e, start.h, start.s, start.t, start.c, start.lights, start.traps);
+  const actionSource = new GrowableBuffer(Uint32Array);
+  const actionName = new GrowableBuffer(Uint8Array);
+  const actionSuccessorOffset = new GrowableBuffer(Uint32Array);
+  const actionSuccessorCount = new GrowableBuffer(Uint8Array);
+  const actionFlags = new GrowableBuffer(Uint8Array);
+  const successorIds = new GrowableBuffer(Uint32Array, 4096);
+  let head = 0;
+  let resourceLimit = null;
+  let shortestWin = null;
+  while (head < nodes.count) {
+    if ((head & 255) === 0) {
+      if (nodes.count > maxStates) resourceLimit = "STATE_LIMIT";
+      else if (performance.now() - started > maxElapsedMs) resourceLimit = "TIME_LIMIT";
+      if (resourceLimit) break;
+    }
+    const nodeId = head++;
+    const state = nodes.numericState(nodeId);
+    nodes.actionOffset[nodeId] = actionSource.length;
+    for (let action = 0; action < ACTIONS.length; action += 1) {
+      const successorOffset = successorIds.length;
+      const result = enumerateDynamicSuccessors(dctx, state, action, (key, e, h, s, t, c, lights, traps) => {
+        let successorId = nodes.ids.get(key);
+        if (successorId === undefined) {
+          successorId = nodes.add(key, e, h, s, t, c, lights, traps, nodeId, action, nodes.depth[nodeId] + 1);
+        }
+        successorIds.push(successorId);
+      });
+      if (!result) continue;
+      let flags = 0;
+      if (result.hasWin) flags |= 1;
+      if (result.hasLoss) flags |= 2;
+      actionSource.push(nodeId);
+      actionName.push(action);
+      actionSuccessorOffset.push(successorOffset);
+      actionSuccessorCount.push(result.stateCount);
+      actionFlags.push(flags);
+      if (result.hasWin && shortestWin === null) shortestWin = { nodeId, action };
+    }
+    nodes.actionCount[nodeId] = actionSource.length - nodes.actionOffset[nodeId];
+  }
+  return {
+    kind: "PACKED_GRAPH",
+    ctx: dctx.closed,
+    nodes,
+    startId: 0,
+    startKey,
+    processedNodes: head,
+    actionSource,
+    actionName,
+    actionSuccessorOffset,
+    actionSuccessorCount,
+    actionFlags,
+    successorIds,
+    explored: nodes.count,
+    truncated: head < nodes.count,
+    resourceLimit,
+    shortestWin,
+    elapsedMs: performance.now() - started,
+  };
+}
+
+/**
+ * Classify one map under one model. `dynamic: false` is the v1 model (the
+ * link ignored: the trap only blocks the defenders). Labels are the
+ * reference's PRE_CHEST labels; INCONCLUSIVE when a limit cut the search.
+ */
+export function classifyMap(map, difficulty, { dynamic = true, maxStates, maxElapsedMs } = {}) {
+  const dctx = buildDynamicContext(map, difficulty, { dynamic });
+  if (dctx.accessesDiffer) {
+    return { label: "NOT_ANALYSED_ACCESSES_DIFFER", explored: 0, elapsedMs: 0, dctx };
+  }
+  const graph = exploreDynamic(dctx, { maxStates, maxElapsedMs });
+  const solved = solvePackedGraph(graph);
+  return {
+    label: classifyPacked(graph, solved),
+    explored: graph.explored,
+    elapsedMs: Math.round(graph.elapsedMs),
+    // Is the linked trap's bit set anywhere the Explorer can still win from?
+    graph,
+    solved,
+    dctx,
+  };
+}
