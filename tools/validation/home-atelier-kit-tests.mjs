@@ -31,7 +31,7 @@ import { execFileSync } from "node:child_process";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import sharp from "sharp";
 import { EXIT_OK, EXIT_USAGE, EXIT_VALIDATION_FAILED } from "./evidence.mjs";
-import { createModuleGraph, openSourceTree } from "./route-module-loader.mjs";
+import { createModuleGraph, openSourceTree, treeBeforeRota2 } from "./route-module-loader.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 /** The mission's base: the latest v06-portal-requires-lights when HOME-WORLD-VISUAL-UNIFICATION-01 began. */
@@ -268,7 +268,12 @@ if (DEEP) {
 await check("K10", "NOTHING_BUT_PRESENTATION", () => {
   const changed = execFileSync("git", ["diff", "--name-only", BASE, "--", "src"], { cwd: ROOT, encoding: "utf8" }).split("\n").filter(Boolean);
   const untracked = execFileSync("git", ["ls-files", "--others", "--exclude-standard", "--", "src"], { cwd: ROOT, encoding: "utf8" }).split("\n").filter(Boolean);
-  const touched = [...changed, ...untracked].filter((f) => PRESENTATION_ONLY.some((dir) => f.startsWith(dir)));
+  // ROTA2-DYNAMIC-TRAPS-01: the approved Rota 2.0 mission changes the Rota's own files on purpose. They are read with
+  // exactly its pinned delta reversed (treeBeforeRota2); a file that then reads as at the base did not move otherwise.
+  const live = treeBeforeRota2(openSourceTree({ root: ROOT }));
+  const atBase = openSourceTree({ root: ROOT, rev: BASE });
+  const movedOutsideRota2 = (f) => !live.beforeRota2 || !live.exists(f) || !atBase.exists(f) || live.read(f) !== atBase.read(f);
+  const touched = [...changed, ...untracked].filter((f) => PRESENTATION_ONLY.some((dir) => f.startsWith(dir))).filter(movedOutsideRota2);
   return { pass: touched.length === 0, base: BASE.slice(0, 7), changedInSrc: [...changed, ...untracked], touchedOutsidePresentation: touched };
 });
 

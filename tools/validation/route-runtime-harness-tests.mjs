@@ -366,8 +366,10 @@ async function main() {
   // is the same Route, render for render: same board, same pieces, status "playing", the setup message kept.
   {
     const observe = (g) => ({ status: g.status, message: g.message, turns: g.turns, player: g.player, guardian: g.guardian, sentinel: g.sentinel, map: [...g.mazeMap.walls].length, exit: g.mazeMap.exitPosition, lights: [...g.collectedSet], traps: [...g.triggeredTrapSet] });
+    // ROTA2-DYNAMIC-TRAPS-01 changes how a Route plays on purpose, so both engines run with that approved delta
+    // reversed (`beforeRota2`, a no-op on the setter tree, which predates it): this compares the engines, not the Rotas.
     const play = (rev) => {
-      const runtime = loadRouteRuntime({ directDifficulty: true, rev });
+      const runtime = loadRouteRuntime({ directDifficulty: true, rev, beforeRota2: true });
       const text = runtime.LAB.graph.compiledSource(ROUTE_HOOK);
       const out = [];
       for (const [i, difficulty] of ["easy", "medium", "hard"].entries()) {

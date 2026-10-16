@@ -37,7 +37,7 @@
  * Writes nothing. Exit 0 = every check holds, 1 = a check failed, 3 = usage error.
  */
 import { EXIT_OK, EXIT_USAGE, EXIT_VALIDATION_FAILED } from "./evidence.mjs";
-import { createModuleGraph, openSourceTree } from "./route-module-loader.mjs";
+import { createModuleGraph, openSourceTree, treeBeforeRota2 } from "./route-module-loader.mjs";
 import { DIR, FILES, cached, changedOutsideGame03, clip, mediaBlock, normalizeText, platformTables, same } from "./hidden-objects-harness.mjs";
 
 const args = process.argv.slice(2);
@@ -207,7 +207,9 @@ async function runChecks(tree) {
 
   await check("P01", "preserved", "NOTHING_OUTSIDE_GAME03_BUT_ITS_OWN_TABLE_ENTRIES", () => {
     // HOME-WORLD-VISUAL-UNIFICATION-01 (restated): the Home files that mission owns are the Home's (HOME_ATELIER_FILES)
-    const changed = changedOutsideGame03(tree, BASE_TREE, DIR);
+    // ROTA2-DYNAMIC-TRAPS-01: the approved Rota 2.0 mission changes the Rota's own files on purpose; they are read with
+    // exactly its pinned delta reversed (treeBeforeRota2), so any other change to them is still caught here.
+    const changed = changedOutsideGame03(treeBeforeRota2(tree), BASE_TREE, DIR);
     const fields = ["dependencies", "devDependencies", "peerDependencies", "optionalDependencies"];
     const mine = JSON.parse(tree.read("package.json"));
     const base = JSON.parse(BASE_TREE.read("package.json"));
@@ -321,6 +323,11 @@ const MUTANTS = [
   {
     name: "the Home changes",
     files: { [FILES.page]: [['"use client";', '"use client";\n// a Home change']] },
+    mustFail: ["P01"],
+  },
+  {
+    name: "the Rota changes outside the approved Rota 2.0 delta",
+    files: { "src/games/escape-maze/useEscapeMaze.ts": [['"Caminho bloqueado. Escolha outra direção."', '"Caminho fechado. Escolha outra direção."']] },
     mustFail: ["P01"],
   },
   {
