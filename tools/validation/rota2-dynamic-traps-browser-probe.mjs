@@ -592,11 +592,13 @@ async function scenarioContinuation() {
     if (!route || route.length < 2) break;
     await press(s, directionOf(board.player, route[1]));
   }
-  const lost = await readBoard(s);
-  const lostStatus = lost?.status ?? null;
-  const lostRoute = await routeOf();
+  // A finished Route hands the screen to the result card (the board is gone): the card says how it ended.
   at("continuation:result-card");
   await s.page.locator(".prm-card").waitFor({ timeout: 30000 });
+  const resultCard = await s.page.evaluate(() => {
+    const card = document.querySelector(".prm-card");
+    return { attempt: card?.classList.contains("is-attempt") ?? false, title: document.querySelector(".prm-title")?.textContent?.trim() ?? null };
+  });
   const action = (await s.page.locator(".prm-cta").textContent())?.trim() ?? null;
   const from = await s.page.evaluate(() => window.__rota2Probe.phases.length);
   at("continuation:result-action");
@@ -610,8 +612,7 @@ async function scenarioContinuation() {
   const next = await readBoard(s);
   const out = {
     routeWithOpening,
-    lostStatus,
-    lostRoute,
+    resultCard,
     action,
     nextRoute,
     nextNothingOpened: next.opened.length === 0,
@@ -623,7 +624,7 @@ async function scenarioContinuation() {
   await s.context.close();
   return {
     ...out,
-    held: lostStatus === "lost" && out.nextRoute === (routeWithOpening ?? 0) + 1 && out.nextNothingOpened && out.nextLinkStanding && out.nextTrapsDormant,
+    held: resultCard.attempt && out.nextRoute === (routeWithOpening ?? 0) + 1 && out.nextNothingOpened && out.nextLinkStanding && out.nextTrapsDormant,
   };
 }
 
