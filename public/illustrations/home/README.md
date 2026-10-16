@@ -19,7 +19,7 @@ Active HOME-PIVOT-01 runtime sprites:
 | `world-panel.webp` | Quiet world sprite for Central de Comandos. | <= 60 KB |
 | `world-trail.webp` | Retired with the Trilha (GAME03-SKELETON-01); no longer on disk. | — |
 | `world-garden.webp` | Quiet world sprite for Jardim de Sementes. | <= 60 KB |
-| `explorer-marker.webp` | Small non-mascot Explorer marker in the Home stage. | <= 40 KB |
+| `explorer-marker.webp` | Small non-mascot Explorer marker in the Home stage. Since HOME-ROUTE-POLISH-02 it is the Rota board's Explorador miniature (`explorerMiniature` in `tools/assets/home-atelier-worlds.mjs`), painted by `create_home_world_set.mjs` in the same 360×430 frame. | <= 40 KB |
 
 WORLD-COHESION-01 promotes the existing premium Route and Memory renders into
 the shared Home → transition → intro visual contract:
@@ -73,7 +73,7 @@ Active runtime diorama layers:
 
 | Folder | Role |
 | --- | --- |
-| `atelier/route/` | Rota Estratégica: slate board in a walnut frame (walls, lights, chest, Explorador, Guardião, a planned route), ruin, signpost and the teal portal. |
+| `atelier/route/` | Rota Estratégica: slate board in a walnut frame (walls, lights, chest, Explorador, Guardião, a planned route), ruin, signpost and the teal portal. The Explorador and the Guardião are painted miniatures on turned bases, in the lit `main` pass; the Explorador's cyan ring and the Guardião's eye glow are in `detail` / `energy` (HOME-ROUTE-POLISH-02). |
 | `atelier/circuit/` | Circuito de Memória: the memory dial (four pads around the crystal core) on a bronze cradle, the armillary with the four signal lamps. |
 | `atelier/commands/` | Central de Comandos: walnut console with the great seal and two levers, the switchboard cabinet (dials, seal sockets), reading lamp. |
 | `atelier/garden/` | Jardim de Sementes: the six-pot sowing bench (seeds, sprout, flower), bean teepee, hedge, cloche, watering can, seed sack. |

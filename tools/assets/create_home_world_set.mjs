@@ -2,6 +2,8 @@ import { mkdir, stat, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import sharp from "sharp";
+import { DEFS as ATELIER_DEFS } from "./home-atelier-kit.mjs";
+import { MINIATURE_DEFS, explorerMiniature, explorerRing } from "./home-atelier-worlds.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const repoRoot = join(__dirname, "..", "..");
@@ -144,24 +146,19 @@ function gardenWorld() {
   return svgFrame(WORLD_SIZE.width, WORLD_SIZE.height, body);
 }
 
+// HOME-ROUTE-POLISH-02: the Home's Explorador marker is the Rota board's own
+// Explorador miniature (tools/assets/home-atelier-worlds.mjs), painted with the
+// atelier kit's materials — one piece, not a second, flatter drawing of it. Same
+// 360×430 frame, so the marker's box, place and size in the Home do not move.
+const MARKER_GROUND = { x: 180, y: 360, scale: 5.2 };
+
 function explorerMarker() {
-  return svgFrame(
-    MARKER_SIZE.width,
-    MARKER_SIZE.height,
-    `
-  <ellipse cx="180" cy="375" rx="102" ry="26" fill="#14312d" opacity="0.24"/>
-  <g filter="url(#softShadow)">
-    <path d="M121 176 Q180 92 239 176 L244 292 Q180 352 116 292Z" fill="#188a81" stroke="#e9fbde" stroke-width="10"/>
-    <path d="M139 179 Q180 122 221 179 L225 274 Q180 320 135 274Z" fill="#2fb6aa"/>
-    <ellipse cx="180" cy="146" rx="42" ry="33" fill="#f7dc9b"/>
-    <path d="M142 145 Q180 97 218 145 Q189 128 142 145Z" fill="#0e675f"/>
-    <circle cx="165" cy="151" r="5" fill="#173941"/>
-    <circle cx="195" cy="151" r="5" fill="#173941"/>
-    <path d="M166 169 Q180 179 196 169" stroke="#173941" stroke-width="5" stroke-linecap="round" fill="none"/>
-    <path d="M122 246 Q180 287 238 246" stroke="#fff4bd" stroke-width="9" opacity="0.65"/>
-    <circle cx="180" cy="252" r="20" fill="url(#brass)"/>
-  </g>`,
-  );
+  const { x, y, scale } = MARKER_GROUND;
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<svg width="${MARKER_SIZE.width}" height="${MARKER_SIZE.height}" viewBox="0 0 ${MARKER_SIZE.width} ${MARKER_SIZE.height}" xmlns="http://www.w3.org/2000/svg">
+  <defs>${ATELIER_DEFS}${MINIATURE_DEFS}</defs>
+  ${explorerMiniature(x, y, scale)}${explorerRing(x, y, scale)}
+</svg>`;
 }
 
 

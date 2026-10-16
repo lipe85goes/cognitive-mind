@@ -153,7 +153,10 @@ Identidade de cada mundo, sem copiar o assunto do Estúdio:
 
 - Rota: tabuleiro de slate na moldura de nogueira, paredes, luzes, baú,
   Explorador e Guardião, uma rota planejada acesa, ruína, placa de caminhos e o
-  portal teal (foco).
+  portal teal (foco). Explorador e Guardião são miniaturas em bases torneadas,
+  as peças do jogo na escala do ateliê (HOME-ROUTE-POLISH-02): o Explorador de
+  casaco azul, chapéu, cachecol teal, cajado e anel ciano; o Guardião mais alto,
+  de capuz, manto e barra âmbar, olhos âmbar — nunca peão nem ficha.
 - Circuito: o disco de memória com os quatro pads nos lugares do jogo em volta
   do cristal (foco), num berço de bronze; a armila leva as quatro luzes de
   sinal. Energia contida, nada de sci-fi agressivo.
@@ -280,7 +283,7 @@ Padrão:
 
 | Área | Estado atual | Problema | Direção futura | Missão recomendada |
 | --- | --- | --- | --- | --- |
-| Home | 2.5D HTML/CSS; os cinco mundos no kit do ateliê (§4.1) | Marcador do Explorador ainda na arte antiga | Repintar o marcador no kit; manter o kit como única construção | HOME-EXPLORER-01 |
+| Home | 2.5D HTML/CSS; os cinco mundos no kit do ateliê (§4.1); o marcador do Explorador é a miniatura da Rota (HOME-ROUTE-POLISH-02) | — | Manter o kit como única construção | — |
 | Circuito | Board mestre 2.5D + overlays | Ainda precisa refinamento material/HUD | Palco premium coerente, overlays contidos, HUD integrado | CIRCUIT-ART-01 |
 | Rota | Babylon + GLBs | Visual ainda pode divergir da linguagem 2.5D/premium calma | Materiais e HUD mais MindFlow, peças mais claras | ROTA-VISUAL-01 |
 | Security Panel | Ativo, legado visual | Ainda depende de shared UI antiga | Recriar como console tátil calmo | GAME-BRIDGE-01 |

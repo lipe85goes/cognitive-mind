@@ -722,6 +722,155 @@ function circuitPasses() {
 // --- Rota Estratégica ------------------------------------------------------------------------------
 
 /**
+ * HOME-ROUTE-POLISH-02 — the Rota's two pieces as painted miniatures.
+ *
+ * The game's own pieces are tabletop miniatures (tools/blender/create_route_player_glb.py,
+ * create_route_guardian_glb.py): the Explorador a friendly blue figure on a base
+ * with a cyan ring, the Guardião a taller dark hooded figure with a flared cloak,
+ * amber eyes and an amber hem. Here they are the same pieces at the atelier's
+ * scale: each on a turned base that stands on the tile, shaded light→dark along
+ * the key light, with a few planes the eye can read at the Home's size (hat,
+ * scarf, staff and pack; hood, mantle, folded sleeves and hem) — never a pawn or
+ * a token. Drawn in local units around the base's ground point, so the Home's
+ * Explorador marker paints the very same piece (create_home_world_set.mjs).
+ */
+export const MINIATURE_DEFS = `
+  <linearGradient id="miniBaseSide" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#7a4c2c"/><stop offset=".5" stop-color="#43281a"/><stop offset="1" stop-color="#1f120a"/>
+  </linearGradient>
+  <linearGradient id="miniBaseTop" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#6b4630"/><stop offset="1" stop-color="#2e1c10"/>
+  </linearGradient>
+  <linearGradient id="miniIronSide" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#5a4f45"/><stop offset=".5" stop-color="#2e2620"/><stop offset="1" stop-color="#15100c"/>
+  </linearGradient>
+  <linearGradient id="miniIronTop" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#4a4038"/><stop offset="1" stop-color="#1c1610"/>
+  </linearGradient>
+  <linearGradient id="miniCoat" x1="0" y1="0" x2="1" y2=".6">
+    <stop offset="0" stop-color="#5f9fd6"/><stop offset=".48" stop-color="#2d6aa6"/><stop offset="1" stop-color="#163a63"/>
+  </linearGradient>
+  <linearGradient id="miniSkin" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#f2c9a2"/><stop offset=".55" stop-color="#d9a077"/><stop offset="1" stop-color="#9c6744"/>
+  </linearGradient>
+  <linearGradient id="miniFelt" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#9a6e48"/><stop offset=".5" stop-color="#62402a"/><stop offset="1" stop-color="#2e1d10"/>
+  </linearGradient>
+  <linearGradient id="miniPack" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#7d6446"/><stop offset="1" stop-color="#3a2a1a"/>
+  </linearGradient>
+  <linearGradient id="miniCloak" x1="0" y1="0" x2="1" y2=".5">
+    <stop offset="0" stop-color="#6e5442"/><stop offset=".45" stop-color="#3a2a1e"/><stop offset="1" stop-color="#140c06"/>
+  </linearGradient>
+  <linearGradient id="miniMantle" x1="0" y1="0" x2="1" y2=".4">
+    <stop offset="0" stop-color="#5e4636"/><stop offset=".5" stop-color="#2e2016"/><stop offset="1" stop-color="#110a05"/>
+  </linearGradient>
+`;
+
+/**
+ * A miniature's turned base: a short puck whose top is the floor ellipse
+ * (the camera's own foreshortening), its side lit from the left, a bevel on the
+ * lit rim and an inlaid ring on the front (the piece's identity colour).
+ */
+function miniatureBase(r, h, { side, top, ring, rim = "#1a0f08" }) {
+  const ry = n(r * PLINTH.ry / PLINTH.rx);
+  return `${shadow(2.5, 1.5, r * 1.45, ry * 1.7, 0.95)}
+    <ellipse cx="0" cy=".5" rx="${n(r + 0.8)}" ry="${n(ry + 0.8)}" fill="#0b0704" opacity=".5"/>
+    <path d="M${-r} ${-h} V0 A${r} ${ry} 0 0 0 ${r} 0 V${-h} Z" fill="${side}" stroke="${rim}" stroke-width=".8"/>
+    <path d="M${-r} ${n(-h * 0.45)} A${r} ${ry} 0 0 0 ${r} ${n(-h * 0.45)}" fill="none" stroke="${ring}" stroke-width="1.1"/>
+    <ellipse cx="0" cy="${-h}" rx="${r}" ry="${ry}" fill="${top}" stroke="${rim}" stroke-width=".8"/>
+    <path d="M${n(-r * 0.94)} ${n(-h - ry * 0.34)} A${r} ${ry} 0 0 1 ${n(r * 0.2)} ${n(-h - ry * 0.98)}" fill="none" stroke="#e8c79a" stroke-width=".8" opacity=".5"/>`;
+}
+
+/** The Explorador: traveller's coat, wide-brimmed hat, teal scarf, staff and pack, on a walnut base with the cyan ring. */
+export function explorerMiniature(x, y, s = 1) {
+  const g = -4.5; // the base's top: where the figure stands
+  return `<g transform="translate(${n(x)} ${n(y)}) scale(${s})">
+    ${miniatureBase(12.5, 4.5, { side: "url(#miniBaseSide)", top: "url(#miniBaseTop)", ring: "#2aa797" })}
+    <ellipse cx=".6" cy="${g + 0.3}" rx="7.6" ry="2.4" fill="#0b0704" opacity=".45"/>
+    <rect x="3.2" y="-34" width="7.2" height="15.2" rx="2.4" fill="url(#miniPack)" stroke="#24180e" stroke-width=".8"/>
+    <path d="M3.6 -33.2 Q7 -35.2 10 -33 L10 -29.6 Q7 -28.6 3.6 -29.8 Z" fill="#4e3a26" stroke="#24180e" stroke-width=".6"/>
+    <ellipse cx="-3.1" cy="${g - 0.9}" rx="2.7" ry="1.5" fill="#1e140d"/><ellipse cx="3.3" cy="${g - 0.9}" rx="2.7" ry="1.5" fill="#160e08"/>
+    <rect x="-4.6" y="${g - 6}" width="9.2" height="5" fill="#252830"/>
+    <path d="M-3 -35 C-5.5 -35 -7.6 -34 -7.8 -31.5 L-6.4 -21 C-7.2 -16 -8.6 -12 -9.2 -9.6 Q0 -6.6 9.2 -9.6 C8.6 -12 7.2 -16 6.4 -21 L7.8 -31.5 C7.6 -34 5.5 -35 3 -35 Z" fill="url(#miniCoat)" stroke="#0f2a48" stroke-width=".9" stroke-linejoin="round"/>
+    <path d="M1.4 -34 L2 -8 Q6 -8.4 9.2 -9.6 C8.6 -12 7.2 -16 6.4 -21 L7.8 -31.5 C7.6 -34 5.5 -35 3 -35 Z" fill="#0b2036" opacity=".24"/>
+    <path d="M1.4 -33.4 L2 -8.4" stroke="#12304f" stroke-width=".8" opacity=".8"/>
+    <path d="M-7.5 -31 L-6.2 -21.4 C-6.9 -16.6 -8.1 -12.6 -8.7 -10.2" fill="none" stroke="#c4e2fa" stroke-width=".9" opacity=".5"/>
+    <path d="M-6.4 -21 Q0 -19.4 6.4 -21 L6.5 -19.1 Q0 -17.5 -6.5 -19.1 Z" fill="#4a2e1a"/>
+    <rect x="-.6" y="-20.7" width="2.2" height="2" rx=".4" fill="url(#brass)"/>
+    <path d="M-5.4 -33.4 L6.2 -15.8" stroke="#8a5a34" stroke-width="1.5"/>
+    <path d="M4.6 -17.6 H10.4 V-12.6 Q7.5 -11 4.6 -12.6 Z" fill="#a8743f" stroke="#3a2212" stroke-width=".8" stroke-linejoin="round"/>
+    <path d="M4.6 -17.6 H10.4 L10 -15.2 H5 Z" fill="#7a4e28"/>
+    <path d="M7.2 -32 C9.2 -30.5 9.8 -26 9.4 -21.8 L7 -21.6 C7 -25 6.6 -28 5.8 -29.5 Z" fill="#1f4c7c" stroke="#0f2a48" stroke-width=".8"/>
+    <circle cx="8.3" cy="-21" r="1.5" fill="#b07a56"/>
+    <path d="M-10.3 -3.6 L-11.5 -45" stroke="#3a2212" stroke-width="2.2" stroke-linecap="round"/>
+    <path d="M-10.3 -3.6 L-11.5 -45" stroke="#a9763f" stroke-width="1.3" stroke-linecap="round"/>
+    <path d="M-10.8 -6 L-11.9 -43.6" stroke="#f0c690" stroke-width=".5" opacity=".6"/>
+    <circle cx="-11.5" cy="-45.4" r="1.5" fill="url(#brass)" stroke="#5e4119" stroke-width=".5"/>
+    <path d="M-7.2 -32 C-9.4 -31 -10.4 -27 -10.6 -22.6 L-8 -22.2 C-7.8 -25.5 -7 -28 -5.8 -29.5 Z" fill="#3f80be" stroke="#0f2a48" stroke-width=".8"/>
+    <circle cx="-10.4" cy="-21.8" r="1.7" fill="#d9a077" stroke="#7a4a2c" stroke-width=".4"/>
+    <path d="M-4.2 -35.6 Q0 -33 4.2 -35.6 L3.8 -33.2 Q0 -31.2 -3.8 -33.2 Z" fill="#2aa797" stroke="#0f5f56" stroke-width=".6"/>
+    <path d="M-2.6 -33.6 L-3.6 -28.2 L-1.6 -28.8 Z" fill="#1f8a7c"/>
+    <ellipse cx=".9" cy="-39.4" rx="4.3" ry="3.8" fill="#1d3550"/>
+    <ellipse cx="0" cy="-38.6" rx="3.7" ry="4.1" fill="url(#miniSkin)"/>
+    <path d="M-3.7 -40.2 Q0 -38.8 3.7 -40.2 V-42 H-3.7 Z" fill="#5a3420" opacity=".42"/>
+    <ellipse cx="-1.5" cy="-37.8" rx="1" ry=".8" fill="#ffe2c4" opacity=".4"/>
+    <g transform="rotate(-6 0 -41.8)">
+      <ellipse cx="0" cy="-41.6" rx="7.8" ry="2.5" fill="url(#miniFelt)" stroke="#24160b" stroke-width=".8"/>
+      <path d="M-4.4 -42 C-4.6 -45.5 -3 -47.6 0 -47.6 C3 -47.6 4.6 -45.5 4.4 -42 Q0 -40.8 -4.4 -42 Z" fill="url(#miniFelt)" stroke="#24160b" stroke-width=".8"/>
+      <path d="M-4.45 -42.4 Q0 -41.2 4.45 -42.4 L4.5 -43.8 Q0 -42.6 -4.5 -43.8 Z" fill="#26170c"/>
+      <path d="M-1.3 -47.2 Q0 -46 1.3 -47.2" fill="none" stroke="#24160b" stroke-width=".6"/>
+      <path d="M-7.2 -42.3 Q-4 -43.7 -.4 -44" fill="none" stroke="#dcb38a" stroke-width=".7" opacity=".6"/>
+      <path d="M-3.4 -43.6 C-3.4 -45.6 -2.2 -46.8 -.6 -47" fill="none" stroke="#c99a6c" stroke-width=".8" opacity=".55"/>
+    </g>
+  </g>`;
+}
+
+/** The Explorador's cyan ring, lit: the front of its base, which glows with the world's focus (the game's PlayerCyanGlow). */
+export function explorerRing(x, y, s = 1) {
+  const r = 12.5;
+  const ry = n(r * PLINTH.ry / PLINTH.rx);
+  const d = `M${-r} -2 A${r} ${ry} 0 0 0 ${r} -2`;
+  return `<g transform="translate(${n(x)} ${n(y)}) scale(${s})"><path d="${d}" fill="none" stroke="#4fd0bd" stroke-width="2.6" opacity=".35"/><path d="${d}" fill="none" stroke="#9ff3e4" stroke-width="1.1"/></g>`;
+}
+
+/**
+ * The Guardião: hood, mantle, folded sleeves and a flared cloak in dark umber,
+ * amber eyes in the hood and an amber hem, on an iron base — taller than the
+ * Explorador, as in the game. `warmSide` lays the nearest light's warmth on its
+ * right edge.
+ */
+function guardianMiniature(x, y, { s = 1, warmSide = 0 } = {}) {
+  const fold = (d) => `<path d="${d}" fill="none" stroke="#0b0603" stroke-width="1.1" opacity=".55"/>`;
+  return `<g transform="translate(${n(x)} ${n(y)}) scale(${s})">
+    ${miniatureBase(14.5, 5, { side: "url(#miniIronSide)", top: "url(#miniIronTop)", ring: "#b9782a", rim: "#0d0907" })}
+    <ellipse cx=".6" cy="-4.7" rx="12.4" ry="3.6" fill="#0b0704" opacity=".5"/>
+    <path d="M-7.6 -36 C-9.4 -33 -10 -28 -10.6 -22 C-11.4 -15 -12.6 -10 -13.4 -6.4 Q-9 -4.3 -4.5 -5.6 Q0 -4.2 4.5 -5.6 Q9 -4.3 13.4 -6.4 C12.6 -10 11.4 -15 10.6 -22 C10 -28 9.4 -33 7.6 -36 Z" fill="url(#miniCloak)" stroke="#0b0603" stroke-width=".9" stroke-linejoin="round"/>
+    ${fold("M-5 -26 C-5.6 -18 -6.6 -11 -7.6 -5.6")}${fold("M1 -26.5 C1.2 -18 1 -11 .4 -4.8")}${fold("M6 -25 C6.6 -18 7.6 -11 8.8 -5.8")}
+    <path d="M-6.1 -25.6 C-6.7 -18 -7.7 -11 -8.7 -5.9 M-.1 -26 C.1 -18 -.1 -11 -.6 -5" fill="none" stroke="#9a7656" stroke-width=".6" opacity=".35"/>
+    <path d="M-10 -27 C-10.6 -20 -11.8 -13 -12.9 -7" fill="none" stroke="#b28c68" stroke-width=".9" opacity=".45"/>
+    <path d="M-13.4 -6.4 Q-9 -4.3 -4.5 -5.6 Q0 -4.2 4.5 -5.6 Q9 -4.3 13.4 -6.4" fill="none" stroke="#d0903a" stroke-width="1.1"/>
+    <path d="M-9.8 -26 C-7 -23.4 -3.2 -21 0 -19.6 C3.2 -21 7 -23.4 9.8 -26 L9.4 -21.6 C6.6 -19 3.2 -16.8 0 -15.8 C-3.2 -16.8 -6.6 -19 -9.4 -21.6 Z" fill="#2c1f15" stroke="#0b0603" stroke-width=".8" stroke-linejoin="round"/>
+    <path d="M-9 -25.2 C-6.6 -23 -3.4 -21 -.6 -19.8" fill="none" stroke="#86664c" stroke-width=".7" opacity=".5"/>
+    <path d="M0 -19.6 V-15.8" stroke="#0b0603" stroke-width=".8"/>
+    <path d="M-3.2 -17.2 L-.4 -16.1 M3.2 -17.2 L.4 -16.1" fill="none" stroke="#c98a34" stroke-width=".9" stroke-linecap="round"/>
+    <path d="M-8.4 -36 C-10.6 -33.5 -11.2 -30.5 -10.6 -28.4 Q0 -25 10.6 -28.4 C11.2 -30.5 10.6 -33.5 8.4 -36 Z" fill="url(#miniMantle)" stroke="#0b0603" stroke-width=".9" stroke-linejoin="round"/>
+    <path d="M-10.6 -28.4 Q0 -25 10.6 -28.4" fill="none" stroke="#b9782a" stroke-width=".8" opacity=".8"/>
+    <path d="M-7.8 -35 C-8.8 -40 -8 -46.5 -4 -50.5 C-2.4 -52.2 .4 -54.4 1.6 -55.6 C3 -53.4 6.2 -49.6 7.6 -45.2 C8.8 -41.2 8.6 -37.4 7.8 -35 Q0 -33 -7.8 -35 Z" fill="url(#miniMantle)" stroke="#0b0603" stroke-width=".9" stroke-linejoin="round"/>
+    <path d="M-7 -37 C-7.6 -42 -6.4 -47 -2.6 -50.6" fill="none" stroke="#977458" stroke-width=".9" opacity=".5"/>
+    <path d="M-4.4 -36.6 C-5 -40.6 -3.6 -45.2 0 -46 C3.6 -45.2 5 -40.6 4.4 -36.6 Q0 -35.4 -4.4 -36.6 Z" fill="#070302"/>
+    <path d="M-4.4 -36.6 C-5 -40.6 -3.6 -45.2 0 -46 C3.6 -45.2 5 -40.6 4.4 -36.6" fill="none" stroke="#b9782a" stroke-width=".9" opacity=".85"/>
+    <ellipse cx="0" cy="-41.2" rx="3.6" ry="2.2" fill="#ffb02e" opacity=".22"/>
+    <ellipse cx="-1.7" cy="-41.2" rx="1.15" ry=".85" fill="#ffc740"/><ellipse cx="1.7" cy="-41.2" rx="1.15" ry=".85" fill="#ffc740"/>
+    <circle cx="-1.8" cy="-41.3" r=".4" fill="#fff2c0"/><circle cx="1.6" cy="-41.3" r=".4" fill="#fff2c0"/>
+    ${warmSide ? `<path d="M7.2 -46 C8.6 -41 8.6 -37.4 7.8 -35 M10.4 -33 C10.6 -28 11.2 -18 13 -7" fill="none" stroke="#ffb04a" stroke-width="1" opacity="${warmSide}"/>` : ""}
+  </g>`;
+}
+
+/** The Guardião's eyes, as light (the energy pass): a small warm glow in the hood. */
+const guardianEyeGlow = (x, y, s = 1) => glow(x, y - 41.2 * s, 9 * s, "glowWarm", 0.75);
+
+/**
  * The strategy board, as the game has it: a slate board in a walnut frame with
  * walls, the lights the portal asks for, a chest, the Explorador and the
  * Guardião — and a few tiles of a route being planned toward stepping stones
@@ -737,6 +886,11 @@ function routePasses() {
     return floor(x, y, h, { angle: B.angle, cx: bc[0], cy: bc[1] });
   };
   const cell = B.size / B.cells;
+  const EXPLORER_TILE = onBoard(1, 5, B.h - 4);
+  const GUARDIAN_TILE = onBoard(6, 6, B.h - 4);
+  // the pieces' size on the board: small, inside one tile, the Guardião taller than the Explorador (as in the game)
+  const EXPLORER_SCALE = 1.12;
+  const GUARDIAN_SCALE = 1.06;
 
   const etching = (() => {
     let out = "";
@@ -874,11 +1028,11 @@ function routePasses() {
     const [chx, chy] = onBoard(0, 1, B.h - 4);
     out += prism(rect(0, 0, 30, 22), { top: 18, angle: B.angle, fill: "#8a5a34", side: "url(#woodH)", sideLight: "url(#woodLight)", stroke: "#2b170b", strokeWidth: 1.2, cx: chx, cy: chy + 0 });
     out += `<rect x="${chx - 3}" y="${chy - 22}" width="6" height="8" rx="1" fill="url(#brass)"/>`;
-    // the Guardião: a dark rounded stone sentinel with a quiet amber eye
-    const [gx, gy] = onBoard(5, 6, B.h - 4);
-    out += shadow(gx, gy, 18, 7, 0.9);
-    out += `<path d="M${gx - 15} ${gy} C${gx - 17} ${gy - 30} ${gx - 12} ${gy - 46} ${gx} ${gy - 48} C${gx + 12} ${gy - 46} ${gx + 17} ${gy - 30} ${gx + 15} ${gy} Z" fill="url(#iron)" stroke="#16130f" stroke-width="1.4"/>`;
-    out += `<ellipse cx="${gx}" cy="${gy}" rx="15" ry="5" fill="#2b2622"/><ellipse cx="${gx + 2}" cy="${gy - 32}" rx="5" ry="3" fill="#f2c65a"/>`;
+    // the two pieces, as miniatures on their bases (HOME-ROUTE-POLISH-02), back to front: the Explorador
+    // on the route's first tile, the Guardião on the near corner by a light — its own free tile (it
+    // used to stand inside the low wall's block)
+    out += explorerMiniature(...EXPLORER_TILE, EXPLORER_SCALE);
+    out += guardianMiniature(...GUARDIAN_TILE, { s: GUARDIAN_SCALE, warmSide: 0.32 });
     // stepping stones from the board's edge to the portal
     const stones = [[118, -64], [150, -100], [178, -134]];
     for (const [u, v] of stones) {
@@ -898,12 +1052,8 @@ function routePasses() {
       out += `<ellipse cx="${x}" cy="${y}" rx="12" ry="5.5" fill="url(#brass)" stroke="#5e4119" stroke-width="1"/>`;
       out += `<circle cx="${x}" cy="${y - 11}" r="9" fill="url(#amberOrb)" stroke="#9c6510" stroke-width="1"/><circle cx="${x - 3}" cy="${y - 14}" r="2.6" fill="#ffffff" opacity=".8"/>`;
     }
-    // the Explorador on the route's first tile
-    const [ex, ey] = onBoard(1, 5, B.h - 4);
-    out += shadow(ex, ey, 16, 6, 0.9);
-    out += `<path d="M${ex - 12} ${ey} C${ex - 12} ${ey - 10} ${ex - 7} ${ey - 26} ${ex - 5} ${ey - 30} H${ex + 5} C${ex + 7} ${ey - 26} ${ex + 12} ${ey - 10} ${ex + 12} ${ey} Z" fill="#3a86c8" stroke="#1c4f80" stroke-width="1.4"/>`;
-    out += `<circle cx="${ex}" cy="${ey - 38}" r="10" fill="#4f9ad8" stroke="#1c4f80" stroke-width="1.4"/><circle cx="${ex - 3}" cy="${ey - 41}" r="3.2" fill="#d6ecff" opacity=".8"/>`;
-    out += `<ellipse cx="${ex}" cy="${ey}" rx="12" ry="4.5" fill="#245b8e"/>`;
+    // the Explorador's cyan ring: the piece itself is matter (main), its ring lights up with the focus
+    out += explorerRing(...EXPLORER_TILE, EXPLORER_SCALE);
     // the portal's swirl
     const [px, py] = portal.centre;
     out += `<path d="M${px} ${py} m-34 0 a34 40 0 1 1 34 40" stroke="#e9fffb" stroke-width="2.4" fill="none" opacity=".55" stroke-linecap="round"/><path d="M${px} ${py} m-18 0 a18 22 0 1 0 18 -22" stroke="#e9fffb" stroke-width="2" fill="none" opacity=".45" stroke-linecap="round"/>`;
@@ -919,6 +1069,7 @@ function routePasses() {
     }
     const [lx, ly] = signpost.lantern;
     out += glow(lx, ly, 56, "glowWarm", 0.8);
+    out += guardianEyeGlow(...GUARDIAN_TILE, GUARDIAN_SCALE);
     return out;
   })();
 
@@ -944,7 +1095,7 @@ function routePasses() {
     "contact-shadow": contactShadowPass(),
     base,
     back: wrap(`${ruin}${signpost.svg}${portal.svg}`),
-    main: wrap(board),
+    main: wrap(board, MINIATURE_DEFS),
     detail: wrap(detail),
     energy: wrap(energy),
     front: wrap(front),
