@@ -1,0 +1,359 @@
+{
+  "mission": "ROTA2-DYNAMIC-TRAPS-01",
+  "base": "9f8ebb5d8c0c747e68d8719e523ecab3ecbdab00",
+  "tool": "tools/validation/route-generation-performance-gate.mjs --samples 100 --reps 2 (warm-up 50)",
+  "note": "Wall clock is run metadata (differs each run); base and mission alternated base -> mission -> base -> mission on an idle 4-core container. Same seeds on both sides.",
+  "runs": {
+    "base-1": {
+      "total": {
+        "timeMs": {
+          "n": 1800,
+          "p50": 46.03,
+          "p95": 279.56,
+          "p99": 481.46,
+          "max": 1226.99,
+          "mean": 81.71
+        },
+        "throws": 0,
+        "attempts": {
+          "mean": 10.07,
+          "p50": 5,
+          "p95": 38,
+          "max": 197
+        },
+        "recoveryIncidence": "0/1800"
+      },
+      "combos": {
+        "R1-easy": {
+          "p50": 46.03,
+          "p95": 159.27,
+          "attemptsMean": 6.46,
+          "throws": 0,
+          "recovery": "0/200"
+        },
+        "R1-medium": {
+          "p50": 30.78,
+          "p95": 109.02,
+          "attemptsMean": 3.12,
+          "throws": 0,
+          "recovery": "0/200"
+        },
+        "R1-hard": {
+          "p50": 26.7,
+          "p95": 89.68,
+          "attemptsMean": 5.2,
+          "throws": 0,
+          "recovery": "0/200"
+        },
+        "R2-easy": {
+          "p50": 102.61,
+          "p95": 414.03,
+          "attemptsMean": 11.94,
+          "throws": 0,
+          "recovery": "0/200"
+        },
+        "R2-medium": {
+          "p50": 45.9,
+          "p95": 177.44,
+          "attemptsMean": 4.92,
+          "throws": 0,
+          "recovery": "0/200"
+        },
+        "R2-hard": {
+          "p50": 25.57,
+          "p95": 77.13,
+          "attemptsMean": 5.05,
+          "throws": 0,
+          "recovery": "0/200"
+        },
+        "R3-easy": {
+          "p50": 113.78,
+          "p95": 491.31,
+          "attemptsMean": 27.66,
+          "throws": 0,
+          "recovery": "0/200"
+        },
+        "R3-medium": {
+          "p50": 65.8,
+          "p95": 224.45,
+          "attemptsMean": 12.6,
+          "throws": 0,
+          "recovery": "0/200"
+        },
+        "R3-hard": {
+          "p50": 55.25,
+          "p95": 224.2,
+          "attemptsMean": 13.7,
+          "throws": 0,
+          "recovery": "0/200"
+        }
+      },
+      "failures": []
+    },
+    "mission-1": {
+      "total": {
+        "timeMs": {
+          "n": 1800,
+          "p50": 48.72,
+          "p95": 274.86,
+          "p99": 474.23,
+          "max": 1321.82,
+          "mean": 84.12
+        },
+        "throws": 0,
+        "attempts": {
+          "mean": 10.1,
+          "p50": 5,
+          "p95": 38,
+          "max": 197
+        },
+        "recoveryIncidence": "0/1800"
+      },
+      "combos": {
+        "R1-easy": {
+          "p50": 45.63,
+          "p95": 145.65,
+          "attemptsMean": 6.67,
+          "throws": 0,
+          "recovery": "0/200"
+        },
+        "R1-medium": {
+          "p50": 31.05,
+          "p95": 118.6,
+          "attemptsMean": 3.12,
+          "throws": 0,
+          "recovery": "0/200"
+        },
+        "R1-hard": {
+          "p50": 31.26,
+          "p95": 104.91,
+          "attemptsMean": 5.2,
+          "throws": 0,
+          "recovery": "0/200"
+        },
+        "R2-easy": {
+          "p50": 99.59,
+          "p95": 416.17,
+          "attemptsMean": 11.94,
+          "throws": 0,
+          "recovery": "0/200"
+        },
+        "R2-medium": {
+          "p50": 45.85,
+          "p95": 172.77,
+          "attemptsMean": 4.92,
+          "throws": 0,
+          "recovery": "0/200"
+        },
+        "R2-hard": {
+          "p50": 28.92,
+          "p95": 101.24,
+          "attemptsMean": 5.05,
+          "throws": 0,
+          "recovery": "0/200"
+        },
+        "R3-easy": {
+          "p50": 130.58,
+          "p95": 514.05,
+          "attemptsMean": 27.66,
+          "throws": 0,
+          "recovery": "0/200"
+        },
+        "R3-medium": {
+          "p50": 69.04,
+          "p95": 242.88,
+          "attemptsMean": 12.63,
+          "throws": 0,
+          "recovery": "0/200"
+        },
+        "R3-hard": {
+          "p50": 62.5,
+          "p95": 224.7,
+          "attemptsMean": 13.7,
+          "throws": 0,
+          "recovery": "0/200"
+        }
+      },
+      "failures": []
+    },
+    "base-2": {
+      "total": {
+        "timeMs": {
+          "n": 1800,
+          "p50": 46.27,
+          "p95": 277,
+          "p99": 491.74,
+          "max": 1385.18,
+          "mean": 83.22
+        },
+        "throws": 0,
+        "attempts": {
+          "mean": 10.07,
+          "p50": 5,
+          "p95": 38,
+          "max": 197
+        },
+        "recoveryIncidence": "0/1800"
+      },
+      "combos": {
+        "R1-easy": {
+          "p50": 43.4,
+          "p95": 159.88,
+          "attemptsMean": 6.46,
+          "throws": 0,
+          "recovery": "0/200"
+        },
+        "R1-medium": {
+          "p50": 28.56,
+          "p95": 103.46,
+          "attemptsMean": 3.12,
+          "throws": 0,
+          "recovery": "0/200"
+        },
+        "R1-hard": {
+          "p50": 28.54,
+          "p95": 90.73,
+          "attemptsMean": 5.2,
+          "throws": 0,
+          "recovery": "0/200"
+        },
+        "R2-easy": {
+          "p50": 94.01,
+          "p95": 417.67,
+          "attemptsMean": 11.94,
+          "throws": 0,
+          "recovery": "0/200"
+        },
+        "R2-medium": {
+          "p50": 45.89,
+          "p95": 170.4,
+          "attemptsMean": 4.92,
+          "throws": 0,
+          "recovery": "0/200"
+        },
+        "R2-hard": {
+          "p50": 28.31,
+          "p95": 80.77,
+          "attemptsMean": 5.05,
+          "throws": 0,
+          "recovery": "0/200"
+        },
+        "R3-easy": {
+          "p50": 112.62,
+          "p95": 496.22,
+          "attemptsMean": 27.66,
+          "throws": 0,
+          "recovery": "0/200"
+        },
+        "R3-medium": {
+          "p50": 69.3,
+          "p95": 244.67,
+          "attemptsMean": 12.6,
+          "throws": 0,
+          "recovery": "0/200"
+        },
+        "R3-hard": {
+          "p50": 61.11,
+          "p95": 243.47,
+          "attemptsMean": 13.7,
+          "throws": 0,
+          "recovery": "0/200"
+        }
+      },
+      "failures": []
+    },
+    "mission-2": {
+      "total": {
+        "timeMs": {
+          "n": 1800,
+          "p50": 44.83,
+          "p95": 268.07,
+          "p99": 441.49,
+          "max": 1133.23,
+          "mean": 78.34
+        },
+        "throws": 0,
+        "attempts": {
+          "mean": 10.1,
+          "p50": 5,
+          "p95": 38,
+          "max": 197
+        },
+        "recoveryIncidence": "0/1800"
+      },
+      "combos": {
+        "R1-easy": {
+          "p50": 39.88,
+          "p95": 130.26,
+          "attemptsMean": 6.67,
+          "throws": 0,
+          "recovery": "0/200"
+        },
+        "R1-medium": {
+          "p50": 30.17,
+          "p95": 102.45,
+          "attemptsMean": 3.12,
+          "throws": 0,
+          "recovery": "0/200"
+        },
+        "R1-hard": {
+          "p50": 26.38,
+          "p95": 85.98,
+          "attemptsMean": 5.2,
+          "throws": 0,
+          "recovery": "0/200"
+        },
+        "R2-easy": {
+          "p50": 108.68,
+          "p95": 384.17,
+          "attemptsMean": 11.94,
+          "throws": 0,
+          "recovery": "0/200"
+        },
+        "R2-medium": {
+          "p50": 46.18,
+          "p95": 140.6,
+          "attemptsMean": 4.92,
+          "throws": 0,
+          "recovery": "0/200"
+        },
+        "R2-hard": {
+          "p50": 25.74,
+          "p95": 70.76,
+          "attemptsMean": 5.05,
+          "throws": 0,
+          "recovery": "0/200"
+        },
+        "R3-easy": {
+          "p50": 123.1,
+          "p95": 484.7,
+          "attemptsMean": 27.66,
+          "throws": 0,
+          "recovery": "0/200"
+        },
+        "R3-medium": {
+          "p50": 61.2,
+          "p95": 224,
+          "attemptsMean": 12.63,
+          "throws": 0,
+          "recovery": "0/200"
+        },
+        "R3-hard": {
+          "p50": 51.34,
+          "p95": 192.97,
+          "attemptsMean": 13.7,
+          "throws": 0,
+          "recovery": "0/200"
+        }
+      },
+      "failures": []
+    }
+  },
+  "machine": {
+    "node": "v22.22.0",
+    "cpu": "Intel(R) Xeon(R) Processor @ 2.80GHz",
+    "cores": 4,
+    "memGiB": 16,
+    "platform": "linux 6.18.44-fc-v139"
+  }
+}
