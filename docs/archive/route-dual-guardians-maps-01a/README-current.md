@@ -42,3 +42,24 @@ and are unchanged.
 Rewriting the archived numbers would have replaced a closed mission's record with
 today's, so it was not done. The gate now has a current baseline beside it, and
 the drift is stated here rather than absorbed.
+
+## ROTA2-DYNAMIC-TRAPS-01 (2026-10-16)
+
+The approved Rota 2.0 mission added one certification gate to `isValidMap`
+(`trapLinksLegal`: every map must link one trap to a legal closed wall). A map
+with no legal link is rejected and the generator draws again, so a seed that
+used to certify on its first candidate can now need another one. In this gate's
+1080 seeds that happened once (Route 1 · easy), and in the continuous 270 the
+extra draws shift every later map of that same stream (Route 1 · easy, no
+reseed between maps). Two `current/` artifacts moved, in fingerprints only:
+
+| artifact | diverging fields |
+| -------- | ---------------- |
+| `structural-1080-final.json` | Route 1 · easy `templatesUsed` (102/16 → 103/15), `attempts.max` (29 → 30) |
+| `continuous-270-final.json` | stream 0 (Route 1 · easy) `entries[9…].attempts`, `randomAttempts` |
+
+Every verdict still holds (1080/1080, 270/270, 0 throws, 0 audit failures,
+recovery 9/9). The live tree with exactly the mission's pinned delta reversed
+(`tools/validation/rota2-dynamic-traps-edit.json`) reproduces the previous
+`current/` byte for byte, so the drift is the mission's and nothing else.
+`current/` was refreshed with `--update`; the historical files are untouched.

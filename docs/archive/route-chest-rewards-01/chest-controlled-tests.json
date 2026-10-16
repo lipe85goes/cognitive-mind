@@ -173,7 +173,7 @@
         {
           "reward": "pickaxe",
           "combo": "hard/r3",
-          "seed": 6302000,
+          "seed": 6302001,
           "rewardSelected": "pickaxe",
           "pickaxeAvailable": true,
           "secondChanceAvailable": false,
@@ -207,7 +207,7 @@
         {
           "reward": "second-chance",
           "combo": "hard/r3",
-          "seed": 6302000,
+          "seed": 6302001,
           "rewardSelected": "second-chance",
           "pickaxeAvailable": false,
           "secondChanceAvailable": true,

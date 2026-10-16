@@ -400,14 +400,14 @@
           "combo": "easy/r1",
           "adjacentWalls": 2,
           "directions": [
-            "left",
+            "down",
             "right"
           ],
           "directionsAreUnique": true,
           "directionsAreTruthful": true,
           "chosen": {
             "direction": "right",
-            "cell": "3,2"
+            "cell": "4,4"
           },
           "openedExactlyTheChosenOne": true
         },

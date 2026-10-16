@@ -233,4 +233,52 @@ isso as viewports. Nenhuma regra do jogo foi mudada para o ambiente. A revisão
 visual a 1280×900 (`browser/telegraph-*.png`) foi feita entrando pequeno e
 redimensionando.
 
+### 6.4 Performance da geração
+
+`route-generation-performance-gate.mjs --samples 100 --reps 2`, base e missão
+alternadas (base → missão → base → missão), CPU ociosa, mesmas sementes
+(`docs/archive/rota2-dynamic-traps-01/generation-performance.json`):
+
+| rodada | p50 (ms) | p95 (ms) | tentativas (média) | exceções | recuperação |
+| --- | --- | --- | --- | --- | --- |
+| base 1 | 46,03 | 279,56 | 10,07 | 0 | 0/1800 |
+| missão 1 | 48,72 | 274,86 | 10,10 | 0 | 0/1800 |
+| base 2 | 46,27 | 277,00 | 10,07 | 0 | 0/1800 |
+| missão 2 | 44,83 | 268,07 | 10,10 | 0 | 0/1800 |
+
+A diferença está dentro do ruído entre rodadas do mesmo lado; a escolha da
+ligação é uma varredura de ~81 células sobre um mapa já certificado.
+
+### 6.5 Regressões
+
+- `npm run lint`: 0 erros (os 5 avisos são os da base); `tsc --noEmit` limpo;
+  `next build` ok; `git diff --check` limpo.
+- Gameplay/Platform Lock: 19/19 com a exceção aprovada (R2/D4); contrafactuais
+  do lock valem. Coupling gate 6/6. Manifesto do delta: reversão exata.
+- C1 22/22 · C2 21/21 · C7A ok. C3 19/20, C4 18/19, C5 41/42, C6 34/35,
+  C7B 35/36, C7C 40/41: a única falha de cada uma ("todo outro módulo
+  intocado") é **idêntica à da base** (arquivos do Game 03/Home mudaram depois
+  desses checks) — pré-existente.
+- Jornada (ownership, terminal), continuação, readiness, watchdog, projeção,
+  validate-9x9, bundle audit, memory-circuit: ok. Harness 13/15 com H13/H14
+  falhando exatamente como na base.
+- Sentinela (equivalência) ok; Dynamic Solvability 02 ok.
+- Lock do Game 03 (P01) e kit do Home (K10), carregador do tabuleiro (R2),
+  module-loader (X6): passavam a acusar o delta aprovado como mudança não
+  sancionada; agora leem a Rota por `treeBeforeRota2` (ou, no carregador do
+  tabuleiro, exigem exatamente as duas props novas numa árvore da missão).
+  Contrafactuais intactos; um mutante novo no P01 prova que uma edição na Rota
+  fora do delta continua sendo pega.
+- CORE (15 validadores) e DEEP: todos os **vereditos** valem na árvore da
+  missão. Seis registros de evidência divergiam em traços, não em contratos:
+  contagem de portões do gerador (23 → 24, `trapLinksLegal`), uma semente de
+  fixture do Baú (6302000 → 6302001), uma parede aberta pela armadilha numa
+  repetição da Segunda Chance, a parede escolhida pela Picareta e trajetórias
+  do runtime do Baú, e as impressões digitais de distribuição do DEEP. A mesma
+  bateria rodada na árvore da missão com **só** os 10 arquivos do delta
+  revertidos à base reproduz cada registro exatamente (exit 0) — a divergência
+  é da mecânica aprovada e de nada mais. Os registros foram atualizados com
+  `--update` (o DEEP só no `current/`, com nota em
+  `docs/archive/route-dual-guardians-maps-01a/README-current.md`).
+
 RESULTS_PENDING

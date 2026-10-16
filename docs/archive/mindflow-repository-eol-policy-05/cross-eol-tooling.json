@@ -30,14 +30,14 @@
     {
       "id": "INSTRUMENTED_LOAD_SURVIVES_A_CRLF_TRANSFORM",
       "pass": true,
-      "gatesParsed": 23,
+      "gatesParsed": 24,
       "note": "loadInstrumented re-normalises after transform, so instrument() never sees CRLF"
     },
     {
       "id": "SAME_GATES_FROM_LF_AND_CRLF",
       "pass": true,
-      "lfGates": 23,
-      "crlfGates": 23,
+      "lfGates": 24,
+      "crlfGates": 24,
       "identical": true
     },
     {

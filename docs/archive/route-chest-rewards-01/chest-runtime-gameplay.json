@@ -60,8 +60,8 @@
       "name": "SCENARIOS_COVERED",
       "pass": true,
       "wallBreaks": 7,
-      "wallsBrokenOutsideTheOldCertifiedSet": 3,
-      "wallsBrokenInsideTheOldCertifiedSet": 4,
+      "wallsBrokenOutsideTheOldCertifiedSet": 2,
+      "wallsBrokenInsideTheOldCertifiedSet": 5,
       "defenderUsedTheOpening": 1,
       "trapsAndBreakInTheSameRoute": 7,
       "secondChanceActivations": 7,
@@ -239,8 +239,8 @@
       "reward": "pickaxe",
       "outcome": "lost",
       "status": "lost",
-      "turns": 67,
-      "lights": "2/3",
+      "turns": 62,
+      "lights": "1/3",
       "events": {
         "chestOpened": true,
         "reward": "pickaxe",
@@ -249,7 +249,7 @@
         "trapsArmedBeforeBreak": 3,
         "trapsArmedAfterBreak": 3,
         "secondChanceFired": false,
-        "wall": "5,2",
+        "wall": "5,4",
         "wallWasInOldCertifiedSet": false,
         "oldCertifiedSetSize": 10
       },
@@ -404,8 +404,8 @@
       "reward": "pickaxe",
       "outcome": "lost",
       "status": "lost",
-      "turns": 52,
-      "lights": "1/4",
+      "turns": 53,
+      "lights": "2/4",
       "events": {
         "chestOpened": true,
         "reward": "pickaxe",
@@ -414,8 +414,8 @@
         "trapsArmedBeforeBreak": 2,
         "trapsArmedAfterBreak": 2,
         "secondChanceFired": false,
-        "wall": "2,3",
-        "wallWasInOldCertifiedSet": false,
+        "wall": "2,4",
+        "wallWasInOldCertifiedSet": true,
         "oldCertifiedSetSize": 8
       },
       "completion": {

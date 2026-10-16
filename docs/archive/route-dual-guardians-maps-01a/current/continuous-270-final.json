@@ -95,8 +95,8 @@
         },
         {
           "index": 9,
-          "attempts": 1,
-          "randomAttempts": 1,
+          "attempts": 5,
+          "randomAttempts": 5,
           "recoveryAttempts": 0,
           "recoveryActivated": false,
           "threw": false,
@@ -122,15 +122,6 @@
         },
         {
           "index": 12,
-          "attempts": 4,
-          "randomAttempts": 4,
-          "recoveryAttempts": 0,
-          "recoveryActivated": false,
-          "threw": false,
-          "certified": true
-        },
-        {
-          "index": 13,
           "attempts": 11,
           "randomAttempts": 11,
           "recoveryAttempts": 0,
@@ -139,7 +130,7 @@
           "certified": true
         },
         {
-          "index": 14,
+          "index": 13,
           "attempts": 6,
           "randomAttempts": 6,
           "recoveryAttempts": 0,
@@ -148,7 +139,7 @@
           "certified": true
         },
         {
-          "index": 15,
+          "index": 14,
           "attempts": 15,
           "randomAttempts": 15,
           "recoveryAttempts": 0,
@@ -157,7 +148,7 @@
           "certified": true
         },
         {
-          "index": 16,
+          "index": 15,
           "attempts": 12,
           "randomAttempts": 12,
           "recoveryAttempts": 0,
@@ -166,7 +157,7 @@
           "certified": true
         },
         {
-          "index": 17,
+          "index": 16,
           "attempts": 14,
           "randomAttempts": 14,
           "recoveryAttempts": 0,
@@ -175,9 +166,18 @@
           "certified": true
         },
         {
-          "index": 18,
+          "index": 17,
           "attempts": 11,
           "randomAttempts": 11,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 18,
+          "attempts": 3,
+          "randomAttempts": 3,
           "recoveryAttempts": 0,
           "recoveryActivated": false,
           "threw": false,
@@ -194,15 +194,6 @@
         },
         {
           "index": 20,
-          "attempts": 3,
-          "randomAttempts": 3,
-          "recoveryAttempts": 0,
-          "recoveryActivated": false,
-          "threw": false,
-          "certified": true
-        },
-        {
-          "index": 21,
           "attempts": 8,
           "randomAttempts": 8,
           "recoveryAttempts": 0,
@@ -211,7 +202,7 @@
           "certified": true
         },
         {
-          "index": 22,
+          "index": 21,
           "attempts": 5,
           "randomAttempts": 5,
           "recoveryAttempts": 0,
@@ -220,7 +211,7 @@
           "certified": true
         },
         {
-          "index": 23,
+          "index": 22,
           "attempts": 8,
           "randomAttempts": 8,
           "recoveryAttempts": 0,
@@ -229,7 +220,7 @@
           "certified": true
         },
         {
-          "index": 24,
+          "index": 23,
           "attempts": 4,
           "randomAttempts": 4,
           "recoveryAttempts": 0,
@@ -238,7 +229,7 @@
           "certified": true
         },
         {
-          "index": 25,
+          "index": 24,
           "attempts": 9,
           "randomAttempts": 9,
           "recoveryAttempts": 0,
@@ -247,7 +238,7 @@
           "certified": true
         },
         {
-          "index": 26,
+          "index": 25,
           "attempts": 1,
           "randomAttempts": 1,
           "recoveryAttempts": 0,
@@ -256,7 +247,7 @@
           "certified": true
         },
         {
-          "index": 27,
+          "index": 26,
           "attempts": 10,
           "randomAttempts": 10,
           "recoveryAttempts": 0,
@@ -265,7 +256,7 @@
           "certified": true
         },
         {
-          "index": 28,
+          "index": 27,
           "attempts": 1,
           "randomAttempts": 1,
           "recoveryAttempts": 0,
@@ -274,9 +265,18 @@
           "certified": true
         },
         {
-          "index": 29,
+          "index": 28,
           "attempts": 4,
           "randomAttempts": 4,
+          "recoveryAttempts": 0,
+          "recoveryActivated": false,
+          "threw": false,
+          "certified": true
+        },
+        {
+          "index": 29,
+          "attempts": 1,
+          "randomAttempts": 1,
           "recoveryAttempts": 0,
           "recoveryActivated": false,
           "threw": false,
