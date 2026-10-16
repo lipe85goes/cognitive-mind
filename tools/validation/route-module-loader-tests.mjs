@@ -555,8 +555,8 @@ const canonicalMap = (api, map) =>
 
 // X5 — the runtime harness mounts the split hook and plays the same Routes to the same ends.
 {
-  const play = (sourceOverrides, rev = ONE_FILE_ROTA) => {
-    const runtime = loadRouteRuntime({ rev, sourceOverrides });
+  const play = (sourceOverrides, rev = ONE_FILE_ROTA, beforeRota2 = false) => {
+    const runtime = loadRouteRuntime({ rev, sourceOverrides, beforeRota2 });
     return [1, 2, 3].flatMap((routeNumber) =>
       ["win", "lose"].map((policy) => {
         const run = runtime.mount({ seed: 300 + routeNumber, routeNumber, difficulty: "medium" });
@@ -612,7 +612,10 @@ const canonicalMap = (api, map) =>
       }
     }
   }
-  const realPlay = play(undefined, null);
+  // ROTA2-DYNAMIC-TRAPS-01 changes how a Route plays on purpose (a linked trap opens its wall), so the real hook is
+  // played with exactly that approved delta reversed (`beforeRota2`, route-module-loader.mjs), as the C1–C7C suites
+  // read it; the maps above are the live generator's, unchanged.
+  const realPlay = play(undefined, null, true);
   const realFiles = real.graph.modules().map((m) => m.file);
   record(
     "X6",

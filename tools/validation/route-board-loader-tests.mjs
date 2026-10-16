@@ -236,6 +236,9 @@ const GAME_STATE = {
   secondChanceSpent: false,
   brokenWall: null,
   breakTargets: [],
+  // ROTA2-DYNAMIC-TRAPS-01: the map's trap → wall links and the walls traps opened (read only by the board).
+  trapLinks: [],
+  trapOpenedWalls: [],
   startGame: noop,
   restartGame: noop,
   changeDifficulty: noop,
@@ -561,6 +564,10 @@ const BOARD_PROP_KEYS = [
   "triggeredTrapSet",
   "walls",
 ];
+// ROTA2-DYNAMIC-TRAPS-01 — the approved Rota 2.0 mission hands the board two more read-only props: the map's trap →
+// wall links (to draw the shared rune) and the walls traps opened (to draw the opened passage). A tree of that
+// mission (its marker in the Rota) must pass exactly these as well; any other tree, exactly the v1 list.
+const ROTA2_BOARD_PROP_KEYS = ["trapLinks", "trapOpenedWalls"];
 /** What the slot shows, as a short name; anything unexpected is spelled out. */
 function describeSlot(rota) {
   const canvas = rota.canvas();
@@ -642,7 +649,7 @@ const record = (id, name, pass, detail) => {
   const expected = {
     slot: ["board"],
     boardImports: 1,
-    propKeys: BOARD_PROP_KEYS,
+    propKeys: GAME_SOURCE.includes("ROTA2-DYNAMIC-TRAPS-01") ? [...BOARD_PROP_KEYS, ...ROTA2_BOARD_PROP_KEYS].sort() : BOARD_PROP_KEYS,
     onReadyIsOnEntryReady: true,
     onErrorIsOnEntryError: true,
     onMoveIsTryMovePlayer: true,
