@@ -1,0 +1,604 @@
+{
+  "mission": "ROTA2-DYNAMIC-TRAPS-01",
+  "base": "9f8ebb5d8c0c747e68d8719e523ecab3ecbdab00",
+  "allPass": true,
+  "passed": 28,
+  "total": 28,
+  "fixtures": {
+    "activation": {
+      "easy-1": {
+        "seed": 6108,
+        "margin": 1
+      },
+      "easy-2": {
+        "seed": 6100,
+        "margin": 1
+      },
+      "easy-3": {
+        "seed": 6101,
+        "margin": 1
+      },
+      "medium-1": {
+        "seed": 6154,
+        "margin": 1
+      },
+      "medium-2": {
+        "seed": 6100,
+        "margin": 1
+      },
+      "medium-3": {
+        "seed": 6106,
+        "margin": 1
+      },
+      "hard-1": {
+        "seed": 6100,
+        "margin": -1
+      },
+      "hard-2": {
+        "seed": 6101,
+        "margin": 1
+      },
+      "hard-3": {
+        "seed": 6108,
+        "margin": 1
+      }
+    },
+    "pickaxeFirst": {
+      "seed": 6100,
+      "difficulty": "easy",
+      "route": 1
+    },
+    "trapFirst": {
+      "seed": 6108,
+      "difficulty": "easy",
+      "route": 1
+    },
+    "plainTrap": {
+      "seed": 6108,
+      "difficulty": "easy",
+      "route": 1
+    },
+    "plainSecondChance": {
+      "seed": 6108,
+      "difficulty": "easy",
+      "route": 1
+    }
+  },
+  "checks": [
+    {
+      "id": "T01",
+      "tag": "rota2",
+      "name": "TRAP_TO_WALL_RELATION_GENERATED_AND_SEEDED",
+      "pass": true,
+      "detail": {
+        "maps": 108,
+        "withoutExactlyOneOpenWallLink": 0,
+        "firstBad": null
+      }
+    },
+    {
+      "id": "T02",
+      "tag": "rota2",
+      "name": "SAME_SEED_SAME_LINKED_WALL",
+      "pass": true,
+      "detail": {
+        "regenerated": 54,
+        "drift": [],
+        "distinctLinksInSample": 81
+      }
+    },
+    {
+      "id": "T03",
+      "tag": "rota2",
+      "name": "LINKED_WALL_BEGINS_CLOSED",
+      "pass": true,
+      "detail": {
+        "maps": 108,
+        "linkedWallNotStanding": 0,
+        "standingInTheHookUntilTheStep": true
+      }
+    },
+    {
+      "id": "T04",
+      "tag": "rota2",
+      "name": "ACTIVATION_OPENS_EXACTLY_THAT_WALL",
+      "pass": true,
+      "detail": {
+        "activations": 9,
+        "rows": [
+          {
+            "slot": "easy-1",
+            "seed": 6108,
+            "linked": "4,4",
+            "diff": [
+              "4,4"
+            ],
+            "trapOpenedWalls": [
+              "4,4"
+            ]
+          },
+          {
+            "slot": "easy-2",
+            "seed": 6100,
+            "linked": "3,2",
+            "diff": [
+              "3,2"
+            ],
+            "trapOpenedWalls": [
+              "3,2"
+            ]
+          },
+          {
+            "slot": "easy-3",
+            "seed": 6101,
+            "linked": "5,3",
+            "diff": [
+              "5,3"
+            ],
+            "trapOpenedWalls": [
+              "5,3"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "T05",
+      "tag": "rota2",
+      "name": "UNRELATED_WALLS_UNCHANGED",
+      "pass": true,
+      "detail": {
+        "rows": [
+          {
+            "slot": "easy-1",
+            "sameAsCertifiedMinusLinked": true,
+            "certifiedWallsUntouched": true
+          },
+          {
+            "slot": "easy-2",
+            "sameAsCertifiedMinusLinked": true,
+            "certifiedWallsUntouched": true
+          },
+          {
+            "slot": "easy-3",
+            "sameAsCertifiedMinusLinked": true,
+            "certifiedWallsUntouched": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "T06",
+      "tag": "rota2",
+      "name": "RUNTIME_MOVEMENT_SEES_THE_OPENED_PASSAGE",
+      "pass": true,
+      "detail": {
+        "wall": "6,2",
+        "blockedBeforeActivation": true,
+        "enteredAfterActivation": true,
+        "slot": "medium-2",
+        "seed": 6100
+      }
+    },
+    {
+      "id": "T07",
+      "tag": "rota2",
+      "name": "HUNTER_SEES_CURRENT_TOPOLOGY",
+      "pass": true,
+      "detail": {
+        "activationTurns": [
+          {
+            "slot": "easy-1",
+            "calls": 1,
+            "everyCallOpen": true
+          },
+          {
+            "slot": "easy-2",
+            "calls": 1,
+            "everyCallOpen": true
+          },
+          {
+            "slot": "easy-3",
+            "calls": 1,
+            "everyCallOpen": true
+          }
+        ],
+        "laterDecisions": 7,
+        "laterAllOpen": true
+      }
+    },
+    {
+      "id": "T08",
+      "tag": "rota2",
+      "name": "SENTINEL_SEES_CURRENT_TOPOLOGY",
+      "pass": true,
+      "detail": {
+        "activationTurns": [
+          {
+            "slot": "easy-1",
+            "calls": 1,
+            "everyCallOpen": true
+          },
+          {
+            "slot": "easy-2",
+            "calls": 1,
+            "everyCallOpen": true
+          },
+          {
+            "slot": "easy-3",
+            "calls": 1,
+            "everyCallOpen": true
+          }
+        ],
+        "zoneComputedOnTheOpenedMaze": true
+      }
+    },
+    {
+      "id": "T09",
+      "tag": "rota2",
+      "name": "RENDERER_RECEIVES_CURRENT_TOPOLOGY",
+      "pass": true,
+      "detail": {
+        "wall": "6,2",
+        "boardWallsBefore": true,
+        "boardWallsAfter": false,
+        "canvasWallCellsAfter": false,
+        "canvasOpenedAfter": true,
+        "wallMeshBefore": true,
+        "wallMeshAfter": false,
+        "openedRuneAfter": true,
+        "wallRuneBefore": true,
+        "trapRuneBefore": true,
+        "duplicateWallMeshes": []
+      }
+    },
+    {
+      "id": "T10",
+      "tag": "preserved",
+      "name": "TRAP_STILL_BLOCKS_DEFENDERS",
+      "pass": true,
+      "detail": {
+        "policyDecisions": 432,
+        "hunterEnteredArmedTrap": 0,
+        "runtime": [
+          {
+            "slot": "plain easy-1@6108",
+            "blockedHunter": true,
+            "blockedSentinel": true
+          },
+          {
+            "slot": "easy-1",
+            "blockedHunter": true,
+            "blockedSentinel": true
+          },
+          {
+            "slot": "easy-2",
+            "blockedHunter": true,
+            "blockedSentinel": true
+          },
+          {
+            "slot": "easy-3",
+            "blockedHunter": true,
+            "blockedSentinel": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "T11",
+      "tag": "rota2",
+      "name": "PICKAXE_BEFORE_TRAP_IS_AN_IDEMPOTENT_NO_OP",
+      "pass": true,
+      "detail": {
+        "seed": 6100,
+        "slot": "easy-1",
+        "linked": "3,0",
+        "trapArmed": true,
+        "noTopologyEvent": true,
+        "wallsUnchangedByTheStep": true,
+        "trapOpenedWalls": [],
+        "brokenWall": "3,0",
+        "pickaxeStillOneUse": true,
+        "message": "Armadilha ativada. A parede da mesma runa já estava aberta.",
+        "invariant": []
+      }
+    },
+    {
+      "id": "T12",
+      "tag": "rota2",
+      "name": "TRAP_BEFORE_PICKAXE_WORKS",
+      "pass": true,
+      "detail": {
+        "seed": 6108,
+        "slot": "easy-1",
+        "linked": "4,4",
+        "linkedWallNeverAPickaxeTarget": true,
+        "broken": "6,1",
+        "brokenIsAnotherWall": true,
+        "trapOpenedWalls": [
+          "4,4"
+        ],
+        "bothOpen": true,
+        "pickaxeEvent": [
+          "6,1"
+        ],
+        "invariant": []
+      }
+    },
+    {
+      "id": "T13",
+      "tag": "preserved",
+      "name": "SECOND_CHANCE_UNCHANGED_BY_TOPOLOGY",
+      "pass": true,
+      "detail": {
+        "slot": "easy-1",
+        "seed": 6108,
+        "linkedTrap": true,
+        "heldBefore": {
+          "selected": "second-chance",
+          "spent": false,
+          "available": true
+        },
+        "captured": false,
+        "rewardSpent": false,
+        "stillHeld": true,
+        "rewardSelected": "second-chance",
+        "linkedWallOpened": true
+      }
+    },
+    {
+      "id": "T14",
+      "tag": "rota2",
+      "name": "RESTART_RESTORES_ORIGINAL_TOPOLOGY",
+      "pass": true,
+      "detail": {
+        "seed": 6100,
+        "openedBeforeRestart": true,
+        "sameBoardAgain": true,
+        "linkedWallClosedAgain": true,
+        "wallsAreTheCertifiedOnes": true,
+        "trapOpenedWalls": [],
+        "dormantTraps": [],
+        "linksRestored": true,
+        "sceneWallBack": true,
+        "sceneOpenedMarkGone": true,
+        "sceneEqualsAFreshMount": true
+      }
+    },
+    {
+      "id": "T15",
+      "tag": "rota2",
+      "name": "NEXT_ROUTE_DOES_NOT_INHERIT_THE_MUTATION",
+      "pass": true,
+      "detail": {
+        "seed": 6108,
+        "openedOnTheFirstRoute": true,
+        "firstRouteEnded": "lost",
+        "nextRoute": 2,
+        "nextTrapOpenedWalls": [],
+        "nextWallsAreItsCertifiedWalls": true,
+        "nextLinkIsItsOwn": true,
+        "previousOpenedWallStandsIfItIsAWallHere": true
+      }
+    },
+    {
+      "id": "T16",
+      "tag": "rota2",
+      "name": "DIFFICULTY_CHANGE_DOES_NOT_INHERIT_THE_MUTATION",
+      "pass": true,
+      "detail": {
+        "openedHere": true,
+        "inSetup": {
+          "status": "setup",
+          "trapOpenedWalls": [],
+          "identity": true
+        },
+        "afterStart": {
+          "status": "playing",
+          "difficulty": "hard",
+          "trapOpenedWalls": []
+        }
+      }
+    },
+    {
+      "id": "T17",
+      "tag": "rota2",
+      "name": "NO_RUNTIME_RANDOM_CHOOSES_THE_MUTATION",
+      "pass": true,
+      "detail": {
+        "reseededRuns": 6,
+        "openedPerRun": [
+          "6,2"
+        ],
+        "linked": "6,2",
+        "activationBlockFound": true,
+        "drawsInActivationBlock": false
+      }
+    },
+    {
+      "id": "T18",
+      "tag": "rota2",
+      "name": "TRACE_DISTINGUISHES_TRAP_OPEN_FROM_PICKAXE_OPEN",
+      "pass": true,
+      "detail": {
+        "trapEvent": {
+          "type": "WALL_OPENED_BY_TRAP",
+          "turn": 4,
+          "trap": "5,1",
+          "wall": "6,2"
+        },
+        "noPickaxeEventOnTheTrapStep": true,
+        "orderStepArmOpenDefenders": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "translation": [
+          "OPEN_WALL_BY_TRAP"
+        ],
+        "pickaxeTranslation": [
+          "OPEN_WALL",
+          "COUNT_TURN"
+        ],
+        "appliedKeepsPickaxeFields": true,
+        "pickaxeEventsElsewhere": 1
+      }
+    },
+    {
+      "id": "T19",
+      "tag": "rota2",
+      "name": "INSPECTOR_ACCEPTS_LEGAL_CHANGED_STATES",
+      "pass": true,
+      "detail": {
+        "states": 324,
+        "rejected": [],
+        "runtimeActivationsValid": true
+      }
+    },
+    {
+      "id": "T20",
+      "tag": "rota2",
+      "name": "INVALID_MUTATION_STATE_DETECTED",
+      "pass": true,
+      "detail": {
+        "cases": 11,
+        "missed": [],
+        "untouchedMapValid": true
+      }
+    },
+    {
+      "id": "T21",
+      "tag": "rota2",
+      "name": "GENERATION_NEVER_LINKS_AN_INVALID_EDGE",
+      "pass": true,
+      "detail": {
+        "maps": 108,
+        "offences": [],
+        "gateCases": 85,
+        "gateRefusals": 85
+      }
+    },
+    {
+      "id": "T22",
+      "tag": "rota2",
+      "name": "ALL_DIFFICULTIES_RECEIVE_VALID_BEHAVIOUR",
+      "pass": true,
+      "detail": {
+        "slots": 9,
+        "activated": [
+          "easy-1@6108",
+          "easy-2@6100",
+          "easy-3@6101",
+          "medium-1@6154",
+          "medium-2@6100",
+          "medium-3@6106",
+          "hard-1@6100",
+          "hard-2@6101",
+          "hard-3@6108"
+        ],
+        "bad": [],
+        "everyMapLinked": true
+      }
+    },
+    {
+      "id": "T23",
+      "tag": "rota2",
+      "name": "NO_NEW_SOFTLOCK_CLASS",
+      "pass": true,
+      "detail": {
+        "maps": 108,
+        "topologyStates": 4589,
+        "softlocks": [],
+        "note": "adversarial (exact solver) classes: rota2-dynamic-traps-census.mjs"
+      }
+    },
+    {
+      "id": "T24",
+      "tag": "rota2",
+      "name": "REDUCED_MOTION_PRESERVES_SEMANTICS",
+      "pass": true,
+      "detail": {
+        "hookIgnoresMotion": true,
+        "reducedPulses": 0,
+        "motionPulses": 2,
+        "motionPulsesAfterASecond": 0,
+        "sameBoardEitherWay": true
+      }
+    },
+    {
+      "id": "T25",
+      "tag": "rota2",
+      "name": "NO_GAMEPLAY_RULE_IN_THE_RENDERER",
+      "pass": true,
+      "detail": {
+        "wallDrawnAsGiven": true,
+        "sceneHasNoRuntimeImports": true,
+        "sceneNeverWritesWalls": true,
+        "boardPassesWallsThrough": true,
+        "gamePassesHookTopology": true,
+        "gameDecidesNoTopology": true
+      }
+    },
+    {
+      "id": "T26",
+      "tag": "preserved",
+      "name": "WORKER_GENERATION_ARCHITECTURE_INTACT",
+      "pass": true,
+      "detail": {
+        "workerClosureUnchanged": true,
+        "workerModules": 8,
+        "generationOffTheMainGraph": true,
+        "clonedBoardAccepted": true,
+        "clonedBoardKeepsItsShape": true,
+        "runnerSameAsDirect": true
+      }
+    },
+    {
+      "id": "T27",
+      "tag": "preserved",
+      "name": "V1_ROUTE_WITHOUT_ACTIVATION_BEHAVES_EQUIVALENTLY",
+      "pass": true,
+      "detail": {
+        "gamesCompared": 27,
+        "mapsDifferentFromV1": 0,
+        "divergences": [],
+        "note": "the linked trap avoided; maps differing from v1 are the link gate's retries (census)"
+      }
+    },
+    {
+      "id": "T28",
+      "tag": "preserved",
+      "name": "ROTA_JOURNEY_STILL_TERMINATES",
+      "pass": true,
+      "detail": {
+        "continuationModuleUnchanged": true,
+        "chain": [
+          {
+            "route": 1,
+            "status": "lost",
+            "next": 2
+          },
+          {
+            "route": 2,
+            "status": "lost",
+            "next": 3
+          },
+          {
+            "route": 3,
+            "status": "lost",
+            "next": 3
+          }
+        ],
+        "journeyCompleted": {
+          "seed": 8210000,
+          "continuation": null,
+          "journeyCompleted": true
+        }
+      }
+    }
+  ],
+  "run": {
+    "elapsedMs": 60968
+  }
+}

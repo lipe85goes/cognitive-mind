@@ -81,6 +81,11 @@ const size = (text) => {
 const DESKTOP = size(arg("--viewport", "480x360"));
 const MOBILE = size(arg("--mobile-viewport", "360x640"));
 const log = (...a) => console.log("[rota2]", ...a);
+/** Where the running scenario is, reported with any error (a timeout names a selector, not a step). */
+let stage = "start";
+const at = (name) => {
+  stage = name;
+};
 if (OUT) fs.mkdirSync(OUT, { recursive: true });
 
 // --- in-page observer (observes, changes nothing) --------------------------------------------
@@ -222,7 +227,9 @@ async function settleEntry(s, from, label) {
   }
   report.entryRetries.push({ entry: label, retries });
 }
-const startRoute = async ({ page }) => {
+const startRoute = async ({ page }, difficulty = null) => {
+  at("start-route");
+  if (difficulty) await page.locator(`button[aria-label^="Modo ${difficulty}:"]`).click();
   await page.locator('button[aria-label="Iniciar rota com a dificuldade selecionada"]').click();
   await page.waitForFunction(() => document.querySelector("canvas.route-babylon-board")?.getAttribute("data-status") === "playing", null, { timeout: 60000 });
   await page.waitForTimeout(400);
@@ -315,8 +322,10 @@ async function stepToward(s, board, target, avoid = []) {
 async function walkTo(s, target, avoid = [], budget = 60) {
   for (let i = 0; i < budget; i += 1) {
     const board = await readBoard(s);
-    if (!board || board.status !== "playing" || board.rewardPending) return false;
+    if (!board || board.status !== "playing") return false;
+    // Arriving counts even when the step paused the turn (the Chest's reward).
     if (board.player === target) return true;
+    if (board.rewardPending) return false;
     if (!(await stepToward(s, board, target, avoid))) return false;
   }
   return false;
@@ -337,14 +346,18 @@ async function nextBoard(s) {
   const { page } = s;
   const board = await readBoard(s);
   if (board?.result || (board && board.status !== "playing")) {
+    at("result-card");
     await page.locator(".prm-card").waitFor({ timeout: 30000 });
     const from = await page.evaluate(() => window.__rota2Probe.phases.length);
+    at("result-action");
     await page.locator(".prm-cta").click();
+    at("next-route-entry");
     await settleEntry(s, from, "next-route");
     await page.locator(".rsg-shell").waitFor({ state: "visible", timeout: 60000 });
     await page.locator('.route-babylon-wrap[data-visual-state="ready"]').waitFor({ timeout: 120000 });
     return startRoute(s);
   }
+  at("restart-from-details");
   await page.locator(".rsg-details-trigger").click();
   await page.locator('button[aria-label="Começar outra rota"]').click();
   await page.waitForFunction(() => document.querySelector("canvas.route-babylon-board")?.getAttribute("data-status") === "playing", null, { timeout: 60000 });
@@ -458,38 +471,59 @@ async function scenarioMain() {
 async function scenarioPickaxe() {
   const s = await newSession();
   await enterRota(s, "pickaxe");
-  await startRoute(s);
+  // The longest plan of the probe (Chest → Picareta → the linked wall → the trap) in "Aberto", where the Hunter
+  // sometimes takes a random branch: the Pickaxe-first contract is the same in every mode (T11 covers all three).
+  await startRoute(s, "Aberto");
+  const attempts = [];
   for (let attempt = 1; attempt <= ATTEMPTS; attempt += 1) {
     const board = await readBoard(s);
     const link = board.links[0];
+    const reached = (name) => {
+      at(`pickaxe:${name}`);
+      attempts[attempt - 1] = name;
+    };
+    reached("board");
     if (board.chest && (await walkTo(s, board.chest, [link.trap]))) {
+      reached("chest");
       const atChest = await readBoard(s);
       if (atChest.rewardPending) {
         await s.page.locator('.rsg-reward-btn[aria-label^="Escolher Picareta"]').click();
         await s.page.waitForTimeout(300);
+        reached("pickaxe-chosen");
         if (await walkBeside(s, link.wall, [link.trap])) {
+          reached("beside-wall");
           const atWall = await readBoard(s);
           if (atWall.breakTargets.includes(link.wall)) {
             const direction = directionOf(atWall.player, link.wall);
             await s.page.locator(`button[aria-label^="Quebrar a parede ${BREAK_LABEL[direction]}."]`).click();
             await s.page.waitForTimeout(300);
             const broken = await readBoard(s);
-            if (broken.status === "playing" && broken.brokenWall === link.wall && (await walkBeside(s, link.trap))) {
-              const before = await readBoard(s);
-              await press(s, directionOf(before.player, link.trap));
-              const after = await readBoard(s);
-              if (after.player === link.trap && after.triggered.includes(link.trap)) {
-                await witness(s, "pickaxe-then-trap");
-                const out = {
-                  attempt,
-                  link,
-                  brokenWall: after.brokenWall,
-                  trapOpenedWalls: after.opened,
-                  wallsUnchangedByTheStep: JSON.stringify(after.walls.slice().sort()) === JSON.stringify(before.walls.slice().sort()),
-                  message: after.message,
-                };
-                await s.context.close();
-                return { ...out, held: out.brokenWall === link.wall && out.trapOpenedWalls.length === 0 && out.wallsUnchangedByTheStep && /já estava aberta/.test(out.message) };
+            if (broken.status === "playing" && broken.brokenWall === link.wall) {
+              reached("wall-broken");
+              await witness(s, "pickaxe-wall-broken");
+              if (await walkBeside(s, link.trap)) {
+                reached("beside-trap");
+                const before = await readBoard(s);
+                await press(s, directionOf(before.player, link.trap));
+                const after = await readBoard(s);
+                if (after.player === link.trap && after.triggered.includes(link.trap)) {
+                  reached("trap-armed");
+                  await witness(s, "pickaxe-then-trap");
+                  const out = {
+                    attempt,
+                    attempts,
+                    link,
+                    brokenWall: after.brokenWall,
+                    trapOpenedWalls: after.opened,
+                    wallsUnchangedByTheStep: JSON.stringify(after.walls.slice().sort()) === JSON.stringify(before.walls.slice().sort()),
+                    message: after.message,
+                  };
+                  await s.context.close();
+                  return {
+                    ...out,
+                    held: out.brokenWall === link.wall && out.trapOpenedWalls.length === 0 && out.wallsUnchangedByTheStep && /já estava aberta/.test(out.message),
+                  };
+                }
               }
             }
           }
@@ -499,7 +533,7 @@ async function scenarioPickaxe() {
     await nextBoard(s);
   }
   await s.context.close();
-  return { held: false, error: "no Pickaxe-before-trap run within the attempts" };
+  return { held: false, attempts, error: "no Pickaxe-before-trap run within the attempts" };
 }
 
 async function scenarioActivationOnly(label, sessionOptions) {
@@ -535,15 +569,18 @@ async function scenarioActivationOnly(label, sessionOptions) {
 async function scenarioContinuation() {
   const s = await newSession();
   await enterRota(s, "continuation");
+  // The setup and the result name the Route ("Rota N: …", "Rota N registrada"); play shows the lights instead.
+  const routeOf = () =>
+    s.page.evaluate(() => Number(/Rota (\d+)/.exec(document.querySelector(".rsg-current-objective strong")?.textContent ?? "")?.[1]) || null);
+  const routeWithOpening = await routeOf();
   await startRoute(s);
   const act = await activate(s, "continuation");
   if (act.error) {
     await s.context.close();
-    return { ...act, held: false };
+    return { ...act, routeWithOpening, held: false };
   }
-  const routeOf = () => s.page.evaluate(() => Number(/^Rota (\d+):/.exec(document.querySelector(".rsg-route-context")?.textContent ?? "")?.[1]) || null);
-  const routeWithOpening = await routeOf();
   // Lose on purpose: straight at the Hunter.
+  at("continuation:lose");
   for (let i = 0; i < 80; i += 1) {
     const board = await readBoard(s);
     if (!board || board.status !== "playing" || board.result) break;
@@ -555,18 +592,39 @@ async function scenarioContinuation() {
     if (!route || route.length < 2) break;
     await press(s, directionOf(board.player, route[1]));
   }
-  await nextBoard(s);
+  const lost = await readBoard(s);
+  const lostStatus = lost?.status ?? null;
+  const lostRoute = await routeOf();
+  at("continuation:result-card");
+  await s.page.locator(".prm-card").waitFor({ timeout: 30000 });
+  const action = (await s.page.locator(".prm-cta").textContent())?.trim() ?? null;
+  const from = await s.page.evaluate(() => window.__rota2Probe.phases.length);
+  at("continuation:result-action");
+  await s.page.locator(".prm-cta").click();
+  at("continuation:next-route-entry");
+  await settleEntry(s, from, "continuation-next-route");
+  await s.page.locator(".rsg-shell").waitFor({ state: "visible", timeout: 60000 });
+  await s.page.locator('.route-babylon-wrap[data-visual-state="ready"]').waitFor({ timeout: 120000 });
+  const nextRoute = await routeOf();
+  await startRoute(s);
   const next = await readBoard(s);
   const out = {
     routeWithOpening,
-    nextRoute: await routeOf(),
+    lostStatus,
+    lostRoute,
+    action,
+    nextRoute,
     nextNothingOpened: next.opened.length === 0,
     nextLinkStanding: next.links[0] ? next.walls.includes(next.links[0].wall) : false,
     nextTrapsDormant: next.triggered.length === 0,
+    nextLinkDiffers: !next.links[0] || next.links[0].trap !== act.link.trap || next.links[0].wall !== act.link.wall,
   };
   await witness(s, "continuation-next-route");
   await s.context.close();
-  return { ...out, held: out.nextRoute === (routeWithOpening ?? 0) + 1 && out.nextNothingOpened && out.nextLinkStanding && out.nextTrapsDormant };
+  return {
+    ...out,
+    held: lostStatus === "lost" && out.nextRoute === (routeWithOpening ?? 0) + 1 && out.nextNothingOpened && out.nextLinkStanding && out.nextTrapsDormant,
+  };
 }
 
 const runners = {
@@ -578,10 +636,11 @@ const runners = {
 };
 for (const name of SCENARIOS) {
   const started = Date.now();
+  stage = "start";
   try {
     report.scenarios[name] = await runners[name]();
   } catch (error) {
-    report.scenarios[name] = { held: false, error: String(error?.message ?? error).split("\n")[0] };
+    report.scenarios[name] = { held: false, stage, error: String(error?.message ?? error).split("\n")[0] };
   }
   report.scenarios[name].seconds = Math.round((Date.now() - started) / 1000);
   log(`${report.scenarios[name].held ? "HELD  " : "FAILED"} ${name}`, JSON.stringify(report.scenarios[name]).slice(0, 900));

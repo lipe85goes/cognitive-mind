@@ -229,7 +229,6 @@ log(`   ${topology.maps} maps · ${topology.states} states · softlocks ${topolo
 // C — exact adversarial classes, v1 model against the Rota 2.0 model
 // =================================================================================================
 log("C  exact PRE_CHEST solver, v1 vs Rota 2.0");
-const LABELS = ["GUARANTEED_SOLVABLE_PRE_CHEST", "POSSIBLE_BUT_NOT_GUARANTEED_PRE_CHEST", "PROVED_UNSOLVABLE_PRE_CHEST", "INCONCLUSIVE_RESOURCE_LIMIT", "NOT_ANALYSED_ACCESSES_DIFFER"];
 const short = (label) => ({ GUARANTEED_SOLVABLE_PRE_CHEST: "G", POSSIBLE_BUT_NOT_GUARANTEED_PRE_CHEST: "P", PROVED_UNSOLVABLE_PRE_CHEST: "U", INCONCLUSIVE_RESOURCE_LIMIT: "I", NOT_ANALYSED_ACCESSES_DIFFER: "N" })[label] ?? label;
 const rank = { G: 0, P: 1, U: 2 };
 const solver = { maps: 0, v1: {}, rota2: {}, transitions: {}, improved: 0, degraded: 0, unchanged: 0, inconclusive: 0, accessesDiffer: 0, degradedExamples: [], improvedExamples: [], note: "a class change needs every v1 strategy of that class to arm the linked trap" };
@@ -338,7 +337,6 @@ const walkBeside = (run, cell, avoidKeys = []) => {
 
 // The solver's view of a render, for the differential check (pre-Chest only).
 const numericOf = (g, dctx) => {
-  const meta = (g.triggeredTrapSet.has(dctx.link?.trap ?? "") ? dctx.open : dctx.closed).packed;
   const id = (p) => p.row * 9 + p.col;
   let lights = 0;
   g.mazeMap.collectibleStars.forEach((s, i) => {
