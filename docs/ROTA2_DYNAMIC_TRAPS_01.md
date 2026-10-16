@@ -136,5 +136,78 @@ a parede da Picareta. Ninguém lê topologia meio velha, meio nova.
 
 ## 6. Validação
 
-Ver a seção de resultados no fim deste documento e
-`docs/archive/rota2-dynamic-traps-01/`.
+Evidência: `docs/archive/rota2-dynamic-traps-01/` (`dynamic-traps-tests.json`,
+`census.json`, `browser-probe.json`). Comandos em `tools/validation/README.md`.
+
+### 6.1 Testes dedicados (`rota2-dynamic-traps-tests.mjs`)
+
+- T01–T28: **28/28** na árvore da missão. Hook real, gerador, invariantes,
+  reducer, eventos, o mapeamento real do `RouteBabylonBoard` e a cena real no
+  NullEngine do Babylon.
+- Contrafactual na base exata `9f8ebb5`: os 23 checks `[rota2]` **falham**
+  todos; os 5 `[preserved]` (T10 armadilha bloqueia os defensores, T13 Segunda
+  Chance, T26 Worker, T27 Rota v1 sem ativação, T28 jornada termina) **passam**.
+- Mutantes: **17/17** pegos (M01–M15, com M13 em três formas: região do
+  portal, praça, inspetor).
+
+### 6.2 Censo (`rota2-dynamic-traps-census.mjs`) — 16/16 vereditos
+
+**A — geração**, 3 Rotas × 3 modos × 120 sementes = **1080 mapas**:
+
+| | |
+| --- | --- |
+| mapas com exatamente uma ligação | 1080 / 1080 |
+| armadilhas no total / ligadas | 4320 / 1080 |
+| paredes ligadas distintas (células) | 55 |
+| retentativas causadas só pelo portão novo | 2 (em 2 mapas: R1 fácil, R1 equilibrado) |
+| tentativas totais (v1 → Rota 2.0) | 11 419 → 11 435 |
+| fallbacks (varredura de recuperação) | 0 (v1: 0) |
+| exceções | 0 (v1: 0) |
+| ligações inválidas (oráculo independente) | 0 |
+| mapas diferentes do que a v1 gera para a semente | 2 (as 2 retentativas) |
+| forma da parede | porta 628 · junção 319 · quina 133 |
+| distância armadilha–parede | 2: 727 · 3: 260 · 4: 93 |
+
+**B — topologia**: cada mapa, cada estado de topologia alcançável (ligação
+fechada/aberta × sem parede da Picareta ou qualquer parede que o Explorador
+alcança): **45 819 estados, 0 softlocks, 0 inválidos**, região do portal nunca
+muda. Picareta-antes-da-armadilha: 1080 estados; armadilha-antes-da-Picareta:
+21 304.
+
+**C — solucionabilidade adversarial exata (pré-Baú)**, 72 mapas
+estratificados, modelo v1 (ligação ignorada) contra o modelo Rota 2.0 (a
+ligação abre a parede no turno em que arma, com os defensores no labirinto
+novo):
+
+| classe | v1 | Rota 2.0 |
+| --- | --- | --- |
+| GARANTIDA (o Explorador vence contra qualquer resposta) | 11 | 16 |
+| POSSÍVEL, NÃO GARANTIDA | 49 | 45 |
+| PROVADA INSOLÚVEL | 6 | 4 |
+| INCONCLUSIVA (limite de recurso) | 6 | 7 |
+
+Transições: P→G 5, U→P 2, P→I 1 (orçamento, não piora provada), nenhuma
+degradação. Um mapa em que a parede aberta dá à Sentinela uma porta nova é
+modelado (portas da Sentinela como união das duas topologias), não pulado. O
+que isso **não** diz: as classes são pré-Baú, com o modelo exato dos
+defensores; "garantida" não é promessa sobre a Rota inteira (Baú e
+recompensas ficam fora do modelo); a amostra é de 72 mapas — nenhuma piora
+apareceu nela, o que não prova que nenhuma piora exista em mapa algum. A
+garantia estrutural vale para todos os 1080 (B): abrir uma célula só acrescenta
+grafo.
+
+**D — runtime no hook real**, 108 partidas estratificadas:
+
+- ativações da armadilha ligada: 75 (as outras partidas terminaram antes);
+  parede aberta em 75/75; estado inválido depois: 0;
+- decisões do Caçador depois da abertura: 509, em topologia velha: 0;
+- Picareta-antes-da-armadilha: 67 completas, 67 no-ops, 0 resorteios, 0
+  inválidas; armadilha-antes-da-Picareta: 73 completas, parede aberta oferecida
+  à Picareta: 0;
+- 5271 renders inspecionados: 0 inválidos com a Rota em jogo; 2 terminais
+  (`lost:PLAYER_ON_UNOPENED_CHEST`, o Explorador pisou no Caçador parado no Baú
+  fechado) — o inspetor da v1 diz exatamente o mesmo do mesmo estado;
+- diferencial solver × hook: 1840 transições (585 depois de uma abertura), 0
+  fora do suporte do solver.
+
+RESULTS_PENDING
