@@ -37,7 +37,7 @@
  * Writes nothing. Exit 0 = every check holds, 1 = a check failed, 3 = usage error.
  */
 import { EXIT_OK, EXIT_USAGE, EXIT_VALIDATION_FAILED } from "./evidence.mjs";
-import { createModuleGraph, openSourceTree, treeBeforeRota2 } from "./route-module-loader.mjs";
+import { ROUTE_HOOK, createModuleGraph, openSourceTree, treeBeforeRota2 } from "./route-module-loader.mjs";
 import { DIR, FILES, cached, changedOutsideGame03, clip, mediaBlock, normalizeText, platformTables, same } from "./hidden-objects-harness.mjs";
 
 const args = process.argv.slice(2);
@@ -327,7 +327,7 @@ const MUTANTS = [
   },
   {
     name: "the Rota changes outside the approved Rota 2.0 delta",
-    files: { "src/games/escape-maze/useEscapeMaze.ts": [['"Caminho bloqueado. Escolha outra direção."', '"Caminho fechado. Escolha outra direção."']] },
+    files: { [ROUTE_HOOK]: [['"Caminho bloqueado. Escolha outra direção."', '"Caminho fechado. Escolha outra direção."']] },
     mustFail: ["P01"],
   },
   {
