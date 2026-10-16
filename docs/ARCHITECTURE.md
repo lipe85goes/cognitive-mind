@@ -39,7 +39,13 @@ política de mudança: `docs/GAMEPLAY_PLATFORM_LOCK_V1.md`. Gate:
   Regra: segundo consumidor primeiro, abstração depois.
 - Rota 2.0 é uma fase posterior, separada da v1 (microsequência de captura,
   armadilha que altera o mapa, objetivos dependentes, mapa que muda em jogo,
-  Caçador adaptativo — nada disso existe na v1).
+  Caçador adaptativo — nada disso existe na v1). Primeira missão aprovada:
+  ROTA2-DYNAMIC-TRAPS-01 (`docs/ROTA2_DYNAMIC_TRAPS_01.md`) — uma armadilha
+  por mapa, ligada pelo gerador a uma parede fechada (`MazeMap.trapLinks`),
+  abre essa parede ao ser armada (`trapOpenedWalls`, `OPEN_WALL_BY_TRAP`,
+  `WALL_OPENED_BY_TRAP`); a topologia atual tem uma única derivação,
+  `currentWalls` em `route-geometry.ts`, lida pelo turno, pelos defensores,
+  pelos invariantes e pelo tabuleiro.
 - Depois do lock, mudança em Rota/Circuito/plataforma só por: correção de
   regressão, segurança/dependência, performance medida, missão Rota 2.0
   aprovada, ou requisito de plataforma achado pelo Game 03.

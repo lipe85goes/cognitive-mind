@@ -389,21 +389,25 @@ function createMaterials(
       alpha: 0.78,
     }),
     // ROTA2-DYNAMIC-TRAPS-01: the rune a dynamic trap shares with its wall.
-    // Lavender, a colour no other piece of the Rota uses, so the pair reads as
-    // a pair and as nothing else: not a light (gold), not the portal or the
-    // chest (teal/green), not danger (amber), not the trap's own wine. Asleep it
-    // is barely lit; once the trap arms it glows, calmly. Emissive only.
-    passageRune: makeMaterial(B, scene, "route-passage-rune", "#7d6fbf", {
-      emissive: "#33296a",
-      specular: "#3a3160",
+    // Violet, a colour no other piece of the Rota uses, so the pair reads as a
+    // pair and as nothing else: not a light (gold), not the portal or the chest
+    // (teal/green), not danger (amber), not the trap's own wine. A dark diffuse
+    // with the hue carried by the emissive (as the armed trap's wine is), and
+    // no specular: the warm key light and the ACES grade wash a bright diffuse
+    // or a highlight out to white on the board (measured in review).
+    // Asleep it is a steady mark; once the trap arms it glows, calmly.
+    passageRune: makeMaterial(B, scene, "route-passage-rune", "#3b2a8c", {
+      emissive: "#3c22a8",
+      specular: "#000000",
     }),
-    passageRuneLit: makeMaterial(B, scene, "route-passage-rune-lit", "#c4b5fd", {
-      emissive: "#7461d2",
-      specular: "#e9e2ff",
+    passageRuneLit: makeMaterial(B, scene, "route-passage-rune-lit", "#5a40cc", {
+      emissive: "#6a46f0",
+      specular: "#000000",
     }),
-    passageThread: makeMaterial(B, scene, "route-passage-thread", "#9b8be0", {
-      emissive: "#3f3482",
-      alpha: 0.55,
+    passageThread: makeMaterial(B, scene, "route-passage-thread", "#3b2a8c", {
+      emissive: "#33209a",
+      specular: "#000000",
+      alpha: 0.85,
     }),
     rubble: makeMaterial(B, scene, "route-rubble", "#4b3826", {
       specular: "#7d5f3a",
@@ -591,8 +595,9 @@ export function createRouteBabylonController(
   // opened passage simply appears with its rune.
   const TOPOLOGY_PULSE_MS = 900;
   const TOPOLOGY_PULSE_ALPHA = 0.7;
-  const pulseMaterial = makeMaterial(B, scene, "route-passage-pulse", "#c4b5fd", {
-    emissive: "#8b7cf0",
+  const pulseMaterial = makeMaterial(B, scene, "route-passage-pulse", "#9c80ff", {
+    emissive: "#6a4ef0",
+    specular: "#000000",
     alpha: TOPOLOGY_PULSE_ALPHA,
   });
   const topologyPulses: Array<{ root: BABYLON.TransformNode; startedAt: number }> = [];
@@ -1723,15 +1728,16 @@ export function createRouteBabylonController(
             BOARD_SURFACE_Y + (useWallAsset ? 0.612 : 0.668),
             pos.z,
           ),
-          0.2,
+          0.26,
           materials.passageRune,
           parent,
         );
+        // Wide enough to clear the block's plinth (0.84), inside the cell.
         torus(
           "route-passage-wall-ring",
-          0.9,
-          0.014,
-          new B.Vector3(pos.x, BOARD_SURFACE_Y + 0.006, pos.z),
+          0.97,
+          0.022,
+          new B.Vector3(pos.x, BOARD_SURFACE_Y + 0.008, pos.z),
           materials.passageRune,
           parent,
         );
@@ -2045,7 +2051,7 @@ export function createRouteBabylonController(
       passageRune(
         "route-passage-trap-rune",
         new B.Vector3(pos.x, BOARD_SURFACE_Y + 0.02, pos.z),
-        0.13,
+        0.16,
         armed ? materials.passageRuneLit : materials.passageRune,
         parent,
       );
@@ -2065,7 +2071,7 @@ export function createRouteBabylonController(
             BOARD_SURFACE_Y + 0.012,
             pos.z + (wallPos.z - pos.z) * t,
           ),
-          0.055,
+          0.075,
           materials.passageThread,
           parent,
         );

@@ -161,6 +161,39 @@ node tools/validation/gameplay-platform-lock-v1.mjs --counterfactuals # bd75e69,
 
 A change that moves a locked contract fails the gate until the lock document
 and the manifest are updated in the same commit, naming the change class.
+Approved Rota 2.0 missions are listed in the gate's `ROTA2_APPROVED_MISSIONS`:
+R2 accepts exactly their additions to the C5/C6 unions (and never the loss of
+a v1 member), D4 requires the lock document to record each one.
+
+**ROTA 2.0 — DYNAMIC TRAPS (ROTA2-DYNAMIC-TRAPS-01)** — one trap per map is
+linked by the generator to a closed wall; arming it opens that wall for the
+rest of the Route (`docs/ROTA2_DYNAMIC_TRAPS_01.md`).
+
+```bash
+node tools/validation/rota2-dynamic-traps-tests.mjs                 # T01–T28, ~1 min (check/--update evidence)
+node tools/validation/rota2-dynamic-traps-tests.mjs --rev=9f8ebb5   # the v1 base: every [rota2] check fails, every [preserved] one holds
+node tools/validation/rota2-dynamic-traps-tests.mjs --mutants       # 17 in-memory mutants, each caught by a check it targets
+node tools/validation/rota2-dynamic-traps-census.mjs                # 1080 maps + exact solver + runtime scenarios, ~20 min (check/--update)
+node tools/validation/rota2-dynamic-traps-edit.mjs                  # the approved delta's manifest reverses the tree to the base exactly
+node tools/validation/rota2-dynamic-traps-browser-probe.mjs         # Playwright, needs `next build && next start -p 3100` and an idle CPU
+```
+
+The tests drive the real hook, generator, invariants, reducer, events, the
+real `RouteBabylonBoard` mapping and the real scene on Babylon's NullEngine;
+the census holds the topology-aware exact solver (`rota2-dynamic-solver.mjs`)
+against the reference with the mechanic off (identical support) and against
+the real hook with it on (every transition in the support). The link contract
+used to judge the generator is written apart from production
+(`rota2-link-oracle.mjs`).
+
+The Rota's extraction suites (C1–C7C) prove that an extraction changed
+nothing, against trees from before it. Since this mission changes the Rota on
+purpose, they read and run every tree through `treeBeforeRota2` /
+`beforeRota2` (route-module-loader.mjs): the live tree with exactly the
+mission's pinned hunks reversed (`rota2-dynamic-traps-edit.json`, regenerated
+with `--write` only for a change that belongs to the approved mission). The
+reversal refuses a hunk it cannot find exactly once, and anything outside the
+hunks still fails those suites as before.
 
 **GAME 03 — ESTÚDIO DAS DESCOBERTAS** — the skeleton (`hidden-objects`), the
 retirement of the Trilha Lógica (`number-trail`), the experience V2 and the

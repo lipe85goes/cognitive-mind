@@ -29,9 +29,11 @@
  *     the enumerated support.
  *
  * Model limits (the same as the reference, said again): PRE_CHEST — no Chest,
- * no Pickaxe, no Second Chance. A dynamic map whose Sentinel doors differ
- * between the two variants is refused (`accessesDiffer`), not approximated:
- * the held-door index would change meaning between topologies.
+ * no Pickaxe, no Second Chance. The Sentinel's usable doors are recomputed per
+ * topology, as the hook recomputes its zone: opening a wall can make a door
+ * usable that was not (`accessesDiffer`). The held door is therefore indexed in
+ * the union of both variants' doors and read back as a cell — the hook's
+ * Sentinel holds its door as a position — so it means the same door on both.
  *
  * Writes nothing.
  */
@@ -169,18 +171,22 @@ function hunterSupport(meta, hunter, player, traps, sentinel, output) {
   return output;
 }
 
+// The reference's `sentinelMove`, with one change: the held door is an index into the map's UNION of doors (both
+// topologies), and becomes a cell before it is used — exactly as the hook's Sentinel holds its door as a position,
+// so a door that only the opened maze has (or a door held across the opening) means the same cell either way.
 function sentinelMove(meta, sentinel, targetIndex, commitLeft, player, traps) {
   let target = meta.exitId;
   const bestThreat = meta.threatDistance[player];
   const threatenedAccess = meta.threatTarget[player];
+  const threatenedUnion = threatenedAccess >= 0 ? meta.toUnion[threatenedAccess] : -1;
   if (threatenedAccess >= 0) target = meta.accessIds[threatenedAccess];
   let heldTarget = targetIndex;
   let nextCommit = commitLeft;
   if (nextCommit > 0 && heldTarget >= 0) {
-    target = meta.accessIds[heldTarget];
+    target = meta.unionAccessIds[heldTarget];
     nextCommit -= 1;
   } else {
-    heldTarget = threatenedAccess;
+    heldTarget = threatenedUnion;
     nextCommit = MAX_COMMIT;
   }
   const variant = trapVariant(meta, traps);
@@ -230,18 +236,34 @@ const sameIds = (a, b) => a.length === b.length && a.every((value, index) => val
  * the linked wall open — and the bit of the linked trap. `dynamic: false`
  * (or a map without a link) gives the v1 model: both variants are the same.
  */
+/** Both variants index the Sentinel's doors in one list: the closed maze's doors, then any only the open maze has. */
+function unifyAccesses(closedMeta, openMeta) {
+  const union = [...closedMeta.accessIds];
+  for (const id of openMeta.accessIds) if (!union.includes(id)) union.push(id);
+  const unionAccessIds = Uint8Array.from(union);
+  for (const meta of new Set([closedMeta, openMeta])) {
+    meta.unionAccessIds = unionAccessIds;
+    meta.toUnion = Int8Array.from([...meta.accessIds].map((id) => union.indexOf(id)));
+    meta.targetRadix = union.length + 1;
+  }
+  return unionAccessIds;
+}
+
 export function buildDynamicContext(map, difficulty, { dynamic = true } = {}) {
   const closed = buildContext(map, difficulty);
   const link = dynamic ? (map.trapLinks ?? [])[0] ?? null : null;
   if (!link) {
-    preparePackedContext(closed);
-    return { map, difficulty, closed, open: closed, linkBit: 0, link: null, accessesDiffer: false };
+    const meta = preparePackedContext(closed);
+    const unionAccessIds = unifyAccesses(meta, meta);
+    return { map, difficulty, closed, open: closed, linkBit: 0, link: null, accessesDiffer: false, unionAccessIds };
   }
   const openedWalls = new Set(map.walls);
   openedWalls.delete(link.mutation.wall);
   const open = buildContext({ ...map, walls: openedWalls }, difficulty);
   const closedMeta = preparePackedContext(closed);
   const openMeta = preparePackedContext(open);
+  const accessesDiffer = !sameIds([...closedMeta.accessIds], [...openMeta.accessIds]);
+  const unionAccessIds = unifyAccesses(closedMeta, openMeta);
   const trapIndex = map.traps.map(API.posKey).indexOf(link.trap);
   return {
     map,
@@ -250,7 +272,9 @@ export function buildDynamicContext(map, difficulty, { dynamic = true } = {}) {
     open,
     linkBit: trapIndex < 0 ? 0 : 1 << trapIndex,
     link,
-    accessesDiffer: !sameIds([...closedMeta.accessIds], [...openMeta.accessIds]),
+    // Reported, and modelled: the opened maze can give the Sentinel a usable door it did not have.
+    accessesDiffer,
+    unionAccessIds,
     zoneDiffers: !sameIds([...closedMeta.zoneMask], [...openMeta.zoneMask]),
     openedCell: cellId(link.mutation.wall),
   };
@@ -394,9 +418,6 @@ export function exploreDynamic(dctx, { maxStates = 3_000_000, maxElapsedMs = 60_
  */
 export function classifyMap(map, difficulty, { dynamic = true, maxStates, maxElapsedMs } = {}) {
   const dctx = buildDynamicContext(map, difficulty, { dynamic });
-  if (dctx.accessesDiffer) {
-    return { label: "NOT_ANALYSED_ACCESSES_DIFFER", explored: 0, elapsedMs: 0, dctx };
-  }
   const graph = exploreDynamic(dctx, { maxStates, maxElapsedMs });
   const solved = solvePackedGraph(graph);
   return {

@@ -850,11 +850,16 @@ async function runSuite({ rev = null, transforms = [], sceneTransform = null, bo
   // =============================================================================================
   // T19–T21 · the invariants and the generator
   // =============================================================================================
+  // A legal resting state: once a trap is armed no defender stands on it, so the Sentinel takes the nearest zone
+  // cell that is not the linked trap.
   const snapshotOf = (map, overrides = {}) => {
     const zone = API.computePortalDefenceZone(map.playerStart, map.exitPosition, map.walls);
-    const sentinel = API.createSentinelState(map, zone);
+    const linkedTrap = linkOf(map)?.trap ?? null;
+    const post = zone.zone.find(
+      (cell) => ![map.exitPosition, map.playerStart, map.guardianStart].some((p) => sameCell(p, cell)) && cellKey(cell) !== linkedTrap,
+    ) ?? API.createSentinelState(map, zone).position;
     return {
-      mazeMap: map, player: map.playerStart, guardian: map.guardianStart, sentinel: sentinel.position,
+      mazeMap: map, player: map.playerStart, guardian: map.guardianStart, sentinel: post,
       collectedStars: [], triggeredTraps: [], chestOpened: false, rewardSelected: null, rewardSpent: false,
       brokenWall: null, trapOpenedWalls: [], status: "playing", ...overrides,
     };

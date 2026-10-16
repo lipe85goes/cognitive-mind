@@ -171,11 +171,19 @@ generation.differentFromV1Examples = differentExamples;
 // =================================================================================================
 log("B  topology states");
 const API = NOW.API;
+/**
+ * A legal resting state on the board: the Explorer at the start, the Hunter on its seat and the Sentinel on the
+ * nearest zone cell that is not the linked trap — once a trap is armed no defender can stand on it (a defender on
+ * a dormant trap blocks the Explorer from arming it at all: stepping there is a capture).
+ */
 const snapshotOf = (map, overrides) => {
   const zone = API.computePortalDefenceZone(map.playerStart, map.exitPosition, map.walls);
-  const sentinel = API.createSentinelState(map, zone);
+  const linkedTrap = (map.trapLinks ?? [])[0]?.trap ?? null;
+  const post = zone.zone.find(
+    (cell) => cellKey(cell) !== cellKey(map.exitPosition) && cellKey(cell) !== cellKey(map.playerStart) && cellKey(cell) !== cellKey(map.guardianStart) && cellKey(cell) !== linkedTrap,
+  ) ?? API.createSentinelState(map, zone).position;
   return {
-    mazeMap: map, player: map.playerStart, guardian: map.guardianStart, sentinel: sentinel.position,
+    mazeMap: map, player: map.playerStart, guardian: map.guardianStart, sentinel: post,
     collectedStars: [], triggeredTraps: [], chestOpened: false, rewardSelected: null, rewardSpent: false,
     brokenWall: null, trapOpenedWalls: [], status: "playing", ...overrides,
   };
@@ -269,6 +277,7 @@ const runtime = {
   maps: 0,
   activationsAttempted: 0,
   activations: 0,
+  stepsOntoADefenderOnTheTrap: 0,
   wallOpenedOnActivation: 0,
   invalidAfterActivation: 0,
   hunterDecisionsAfterOpening: 0,
@@ -279,6 +288,10 @@ const runtime = {
   trapBeforePickaxe: { attempted: 0, completed: 0, linkedWallOffered: 0, invalid: 0 },
   rendersInspected: 0,
   invalidRenders: 0,
+  invalidPlayingRenders: 0,
+  invalidTerminalRenders: {},
+  terminalIssuesSameInV1: 0,
+  terminalIssuesDifferentInV1: 0,
   invalidExamples: [],
   differential: { transitions: 0, unsound: 0, examples: [], afterOpening: 0 },
 };
@@ -335,7 +348,7 @@ const numericOf = (g, dctx) => {
   g.mazeMap.traps.forEach((t, i) => {
     if (g.triggeredTrapSet.has(cellKey(t))) traps |= 1 << i;
   });
-  const t = g.sentinelTarget ? [...meta.accessIds].indexOf(id(g.sentinelTarget)) : -1;
+  const t = g.sentinelTarget ? [...dctx.unionAccessIds].indexOf(id(g.sentinelTarget)) : -1;
   return { e: id(g.player), h: id(g.guardian), s: id(g.sentinel), t, c: g.sentinelCommitLeft, lights, traps };
 };
 let currentDctx = null;
@@ -343,7 +356,22 @@ function inspect(g) {
   runtime.rendersInspected += 1;
   if (!g.dynamicSolvability.valid) {
     runtime.invalidRenders += 1;
-    if (runtime.invalidExamples.length < 5) runtime.invalidExamples.push({ issues: g.dynamicSolvability.issues, player: cellKey(g.player) });
+    if (g.status === "playing") runtime.invalidPlayingRenders += 1;
+    else {
+      for (const issue of g.dynamicSolvability.issues) tally(runtime.invalidTerminalRenders, `${g.status}:${issue}`);
+      // The same state through the v1 base's own inspector: a terminal shape v1 already had says the same.
+      const v1 = V1.API.inspectDynamicMazeState({
+        mazeMap: g.mazeMap, player: g.player, guardian: g.guardian, sentinel: g.sentinel,
+        collectedStars: [...g.collectedSet], triggeredTraps: [...g.triggeredTrapSet],
+        chestOpened: g.chestOpened, rewardSelected: g.rewardSelected, rewardSpent: g.rewardSpent,
+        brokenWall: g.brokenWall, status: g.status,
+      });
+      if (g.trapOpenedWalls.length === 0 && JSON.stringify(v1.issues) === JSON.stringify(g.dynamicSolvability.issues)) runtime.terminalIssuesSameInV1 += 1;
+      else runtime.terminalIssuesDifferentInV1 += 1;
+    }
+    if (runtime.invalidExamples.length < 5) {
+      runtime.invalidExamples.push({ status: g.status, issues: g.dynamicSolvability.issues, player: cellKey(g.player), guardian: cellKey(g.guardian), sentinel: cellKey(g.sentinel), chest: g.mazeMap.chest ? cellKey(g.mazeMap.chest) : null, trapOpenedWalls: g.trapOpenedWalls });
+    }
   }
 }
 function observedStep(run, cell) {
@@ -388,6 +416,11 @@ for (const { seed, route, difficulty } of runtimeSample) {
     if (!walkBeside(run, trap)) continue;
     observedStep(run, trap);
     if (!sameCell(run.state.player, trap)) continue;
+    // A step onto a defender standing on the trap is a capture and arms nothing (v1): not an activation.
+    if (!run.state.triggeredTrapSet.has(link.trap)) {
+      runtime.stepsOntoADefenderOnTheTrap += 1;
+      continue;
+    }
     runtime.activations += 1;
     const wall = link.mutation.wall;
     if (!run.state.walls.has(wall)) runtime.wallOpenedOnActivation += 1;
@@ -483,14 +516,18 @@ const checks = {
   noTopologySoftlock: topology.softlocks === 0,
   solverSoundAgainstRuntime: runtime.differential.unsound === 0 && runtime.differential.transitions > 0,
   // A map the solver cannot finish within its budget is reported as INCONCLUSIVE, never counted as solved or as a
-  // failure; one it refuses to model (Sentinel doors differing between topologies) would be a hole in the analysis.
-  solverModelledEveryMap: solver.accessesDiffer === 0,
+  // failure. Every map is modelled, a Sentinel door the opened maze adds included (`accessesDiffer`, reported).
+  solverModelledEveryMap: !("N" in solver.rota2),
   noUnexplainedDegradation: solver.degradedExamples.every((d) => d.linkedTrap && d.linkedWall),
   everyActivationOpensAndStaysValid: runtime.activations > 0 && runtime.wallOpenedOnActivation === runtime.activations && runtime.invalidAfterActivation === 0,
   defendersNeverOnStaleTopology: runtime.hunterDecisionsOnStaleTopology === 0 && runtime.hunterDecisionsAfterOpening > 0,
   pickaxeBeforeTrapNeverRerolls: runtime.pickaxeBeforeTrap.rerolled === 0 && runtime.pickaxeBeforeTrap.completed > 0,
   trapBeforePickaxeNeverOffersTheOpenedWall: runtime.trapBeforePickaxe.linkedWallOffered === 0 && runtime.trapBeforePickaxe.completed > 0,
-  everyRenderValid: runtime.invalidRenders === 0,
+  // Every render while the Route is on is valid. A finished Route can hold a v1 terminal shape the inspector flags
+  // (e.g. a capture stepping onto a defender who stands on the unopened Chest): reported, and each one must be what
+  // the v1 base's own inspector says of the same state.
+  everyPlayingRenderValid: runtime.invalidPlayingRenders === 0,
+  terminalIssuesAreV1Shapes: runtime.terminalIssuesDifferentInV1 === 0,
 };
 const allPass = Object.values(checks).every(Boolean);
 for (const [name, pass] of Object.entries(checks)) log(`${pass ? "PASS" : "FAIL"}  ${name}`);
