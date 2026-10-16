@@ -36,6 +36,10 @@ import type { GridPosition } from "@/types/game";
  *    this module. They are the seam later feedback sequences and Gameplay 2.0
  *    will read from.
  *
+ * ROTA2-DYNAMIC-TRAPS-01 (an approved Rota 2.0 mission) adds one event,
+ * `WALL_OPENED_BY_TRAP`, so a trace tells a wall the Pickaxe opened
+ * (`WALL_OPENED`) from a wall a dynamic trap opened, and which trap.
+ *
  * Pure: no React, no RNG, no map generation, no sound, no clock, no browser,
  * no storage. It imports types only — the transitions and the session start
  * from route-state, and the domain's own types — and reaches nothing at run
@@ -96,6 +100,15 @@ export type RouteDomainEvent =
   | { type: "REWARD_SELECTED"; turn: number; reward: ChestReward }
   /** The Pickaxe opened `wall` and is spent with it; opening it is turn `turn`. */
   | { type: "WALL_OPENED"; turn: number; wall: string }
+  /**
+   * ROTA2-DYNAMIC-TRAPS-01: arming the dynamic trap `trap` opened its linked
+   * `wall` — a topology change caused by the trap, never by the Pickaxe, and
+   * not a turn of its own: it belongs to the step that armed the trap, after
+   * `TRAP_ARMED` and before the defenders answer, who already see the wall
+   * open. Only when the wall was still standing: a trap whose wall the Pickaxe
+   * already opened changes nothing, and nothing is reported.
+   */
+  | { type: "WALL_OPENED_BY_TRAP"; turn: number; trap: string; wall: string }
   /**
    * The held Second Chance absorbed a capture at `at`, and is spent. Nobody
    * moves: an Explorer's step into a defender does not happen (its turn is
@@ -180,6 +193,9 @@ export function routeStateActionsForEvent(
         { type: "OPEN_WALL", wall: event.wall },
         { type: "COUNT_TURN", turns: event.turn },
       ];
+    case "WALL_OPENED_BY_TRAP":
+      // The step already counted the turn; this records the maze change only.
+      return [{ type: "OPEN_WALL_BY_TRAP", wall: event.wall }];
     case "SECOND_CHANCE_USED":
       // The Explorer's own step never happened, so nothing else counted its
       // turn; a defender's capture came after a step or a wall that did.

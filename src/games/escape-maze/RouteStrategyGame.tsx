@@ -18,6 +18,7 @@ import {
   ChevronUp,
   CircleCheck,
   CircleUserRound,
+  Diamond,
   DoorOpen,
   Gauge,
   Hourglass,
@@ -402,6 +403,8 @@ function RouteSessionView({
     secondChanceAvailable,
     secondChanceSpent,
     brokenWall,
+    trapLinks,
+    trapOpenedWalls,
     breakTargets,
     startGame,
     restartGame,
@@ -682,6 +685,9 @@ function RouteSessionView({
     { label: "Saída", Icon: DoorOpen },
     { label: "Luz", Icon: Sun },
     { label: "Armadilha", Icon: TriangleAlert },
+    // ROTA2-DYNAMIC-TRAPS-01: the shared lavender rune of a dynamic trap and
+    // the wall it opens — a description of the board, not a recommendation.
+    { label: "Runa: armadilha e parede", Icon: Diamond },
     { label: "Baú", Icon: Package },
     // Post-playtest: there is no "cracked wall" symbol on the board any more.
     // Every wall is a possible target, so the legend says what a wall IS, not
@@ -832,6 +838,8 @@ function RouteSessionView({
                     breakTargets={breakTargetKeys}
                     aimedWall={aimedWall}
                     brokenWall={brokenWall}
+                    trapLinks={trapLinks}
+                    trapOpenedWalls={trapOpenedWalls}
                     dangerTiles={dangerTiles}
                     reducedMotion={Boolean(reducedMotion)}
                     status={status}
@@ -1033,6 +1041,11 @@ function RouteSessionView({
                 <span>
                   <TriangleAlert className="h-4 w-4" aria-hidden />
                   Evite armadilhas e bloqueios.
+                </span>
+                <span>
+                  <Diamond className="h-4 w-4" aria-hidden />
+                  Runa lilás: pisar nessa armadilha abre a parede com a mesma
+                  runa, para todos.
                 </span>
                 <span>
                   <Package className="h-4 w-4" aria-hidden />

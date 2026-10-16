@@ -9,6 +9,7 @@ import {
   type GameStatus,
   type MazeMap,
 } from "@/games/escape-maze/useEscapeMaze";
+import type { RouteTrapLink } from "@/games/escape-maze/route-generation";
 import type { GridPosition } from "@/types/game";
 import type {
   RouteBabylonController,
@@ -17,7 +18,10 @@ import type {
 
 interface RouteBabylonBoardProps {
   mazeMap: MazeMap;
-  /** The board as it stands: `mazeMap.walls` minus the wall the Pickaxe opened. */
+  /**
+   * The board as it stands: `mazeMap.walls` minus the wall the Pickaxe opened
+   * and the walls dynamic traps opened — the hook's one current topology.
+   */
   walls: Set<string>;
   player: GridPosition;
   guardian: GridPosition;
@@ -33,6 +37,10 @@ interface RouteBabylonBoardProps {
   /** The one the player is pointing at, so the board can show which will open. */
   aimedWall: string | null;
   brokenWall: string | null;
+  /** ROTA2-DYNAMIC-TRAPS-01: the map's trap → wall links (data, not rules). */
+  trapLinks: RouteTrapLink[];
+  /** ROTA2-DYNAMIC-TRAPS-01: walls dynamic traps opened, already out of `walls`. */
+  trapOpenedWalls: string[];
   reducedMotion: boolean;
   status: GameStatus;
   onMove: (delta: GridPosition) => void;
@@ -55,6 +63,8 @@ export function RouteBabylonBoard({
   breakTargets,
   aimedWall,
   brokenWall,
+  trapLinks,
+  trapOpenedWalls,
   reducedMotion,
   status,
   onMove,
@@ -91,6 +101,11 @@ export function RouteBabylonBoard({
       breakTargetKeys: breakTargets,
       aimedWallKey: aimedWall,
       brokenWallKey: brokenWall,
+      trapLinks: trapLinks.map((link) => ({
+        trap: link.trap,
+        wall: link.mutation.wall,
+      })),
+      trapOpenedWallKeys: trapOpenedWalls,
       dangerTiles: Array.from(dangerTiles),
       reducedMotion,
       status,
@@ -110,6 +125,8 @@ export function RouteBabylonBoard({
       breakTargets,
       aimedWall,
       brokenWall,
+      trapLinks,
+      trapOpenedWalls,
       reducedMotion,
       status,
     ],
@@ -213,6 +230,10 @@ export function RouteBabylonBoard({
         data-break-target-cells={state.breakTargetKeys.join(" ")}
         data-aimed-wall-cell={aimedWall ?? ""}
         data-broken-wall-cell={brokenWall ?? ""}
+        data-trap-link-cells={state.trapLinks
+          .map((link) => `${link.trap}>${link.wall}`)
+          .join(" ")}
+        data-trap-opened-wall-cells={state.trapOpenedWallKeys.join(" ")}
         data-danger-cells={state.dangerTiles.join(" ")}
         data-move-targets={state.moveTargets.join(" ")}
         data-status={status}

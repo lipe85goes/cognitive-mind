@@ -84,9 +84,10 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
 /**
  * The response in `data` if it is a well-formed reply to request `requestId`,
  * or null. Checks the shape the main thread reads — a ready map whose walls
- * arrived as a `Set`, a stream that is null or two numbers, a failure that is
- * a message — and nothing about the board's content: whether the stream is the
- * request's is `acceptRouteGenerationResult`'s question.
+ * arrived as a `Set` and whose trap links arrived as an array, a stream that is
+ * null or two numbers, a failure that is a message — and nothing about the
+ * board's content: whether the stream is the request's is
+ * `acceptRouteGenerationResult`'s question.
  */
 export function readRouteGenerationWorkerReply(
   data: unknown,
@@ -107,6 +108,9 @@ export function readRouteGenerationWorkerReply(
   if (!isRecord(map) || !(map.walls instanceof Set) || !Array.isArray(map.grid)) {
     return null;
   }
+  // ROTA2-DYNAMIC-TRAPS-01: a board without its trap links is a board from
+  // another build, not one this main thread can play.
+  if (!Array.isArray(map.trapLinks)) return null;
   if (
     random !== null &&
     !(

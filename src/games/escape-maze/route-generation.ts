@@ -53,12 +53,17 @@ import type { DifficultyLevel, GridPosition } from "@/types/game";
  *   -> isValidMap -> certified map; then the bounded deterministic recovery
  *   sweep through the SAME gates; then the throw.
  *
+ * ROTA2-DYNAMIC-TRAPS-01 (an approved Rota 2.0 mission) adds one step and one
+ * gate: `buildCandidate` reads the dynamic trap's wall off the finished board
+ * (`chooseTrapLinks`, no random draw) and `isValidMap` certifies it
+ * (`trapLinksAreLegal`). The stream is drawn exactly as before.
+ *
  * It draws from the Rota's one stream (`@/engine/route-random`) exactly as it
  * always did, so the Hunter, which draws next from the same stream in the hook,
  * sees the same numbers. It reads configuration, the board's graph primitives
  * and the difficulty helpers — never React, the hook, the UI, Babylon or
- * sounds. Only `generateMaze` and `MazeMap` are exported; validators reach the
- * private gates through route-module-loader's surface.
+ * sounds. Only `generateMaze`, `MazeMap` and the trap-link types are exported;
+ * validators reach the private gates through route-module-loader's surface.
  */
 
 export interface MazeMap {
@@ -68,13 +73,48 @@ export interface MazeMap {
   guardianStart: GridPosition;
   exitPosition: GridPosition;
   collectibleStars: GridPosition[];
-  /** Walkable hazard tiles (Gameplay 2.0). Never affect path/guardian/walls. */
+  /**
+   * Walkable hazard tiles (Gameplay 2.0). Never affect path/guardian/walls at
+   * generation; once armed they block the defenders, and a linked one opens its
+   * wall (`trapLinks`, ROTA2-DYNAMIC-TRAPS-01).
+   */
   traps: GridPosition[];
   /**
    * The reward chest: one walkable tile, an optional detour. Replaces the old
    * shield collectible entirely (ROTA-CHEST-REWARDS-01) and inherits its slot.
    */
   chest: GridPosition | null;
+  /**
+   * ROTA2-DYNAMIC-TRAPS-01: the traps that change the maze when the Explorer
+   * arms them, and what each one changes. Chosen here, from the certified map
+   * alone — no random draw — so the same board always carries the same links,
+   * and nothing about them is decided at the moment a trap is stepped on.
+   * Exactly one per certified map in this mission.
+   */
+  trapLinks: RouteTrapLink[];
+}
+
+/**
+ * ROTA2-DYNAMIC-TRAPS-01 — the one change a dynamic trap may make to the maze.
+ *
+ * A wall of the Rota is a CELL of the 9x9 graph (`grid` value 1), so a wall is
+ * named canonically by its cell key, the same vocabulary as the Pickaxe's
+ * `brokenWall`; opening it puts that one vertex back into the graph with its
+ * edges to the open cells around it. Only "open-wall" exists: a trap never
+ * closes anything. The union is the seam a later, explicitly approved mission
+ * could extend — nothing else here anticipates it.
+ */
+export interface OpenWallMutation {
+  kind: "open-wall";
+  /** The wall cell, "row,col" — standing when the Route starts. */
+  wall: string;
+}
+export type RouteTopologyMutation = OpenWallMutation;
+
+/** A trap (its cell key) and the mutation arming it causes, once. */
+export interface RouteTrapLink {
+  trap: string;
+  mutation: RouteTopologyMutation;
 }
 
 function countReachableJunctions(
@@ -476,6 +516,163 @@ function chooseTrapsAndChest(
   }
 
   return { traps, chest };
+}
+
+/**
+ * ROTA2-DYNAMIC-TRAPS-01 — the dynamic trap's wall, chosen with the map.
+ *
+ * Arming a dynamic trap opens one wall for the rest of the Route. Which wall is
+ * decided here, from the certified board alone — walls, portal and traps — with
+ * a fixed score and a fixed tie-break and no random draw: the same board always
+ * links the same trap to the same wall, the generator's stream is not touched
+ * (every map and every Hunter draw stays the number it was), and nothing is
+ * chosen at the moment the trap is stepped on.
+ *
+ * A wall is linkable when opening it is a calm, legible, structurally harmless
+ * change to the maze:
+ *
+ *  - it stands on the board at Route start (a cell of `walls`);
+ *  - it touches two or three open cells, so it opens INTO the maze as one
+ *    passage — never a pocket (fewer than two) and never a plaza (four);
+ *  - the passage saves at least `TRAP_LINK_MIN_SHORTCUT` steps between two of
+ *    those cells, so the change is worth noticing;
+ *  - no cell it touches lies inside the portal's convergence region
+ *    (`PORTAL_CONVERGENCE_RADIUS`), so the Sentinel's region, its doors and the
+ *    escape-width contract around the portal are exactly what was certified;
+ *  - no cell it touches is a trap, so an armed trap never seals the new
+ *    passage it opened: the way is real for the Explorer AND the defenders.
+ *
+ * Opening a cell only ever ADDS walkable graph: every route that existed still
+ * exists, no cell becomes unreachable and no new dead end appears (the opened
+ * cell touches at least two open cells). Start, safe cells, guardian seat and
+ * portal are walkable by construction, so none of them can be a wall.
+ *
+ * The trap is between `TRAP_LINK_DISTANCE.min` and `.max` cells away (Manhattan)
+ * so the pair reads as a pair on the board, and is never next to its wall.
+ * Preference, in one number: a straight door (two open cells on opposite
+ * sides — exactly one new edge of the graph) over a corner over a junction, a
+ * longer shortcut, a nearer trap; then the trap the generator ranked first,
+ * then the wall's row and column.
+ */
+const TRAP_LINKS_PER_ROUTE = 1;
+const TRAP_LINK_DISTANCE = { min: 2, max: 4 };
+const TRAP_LINK_MIN_SHORTCUT = 2;
+const TRAP_LINK_SHAPE_SCORE = { door: 20, corner: 10, junction: 0 } as const;
+
+interface LinkableWall {
+  wall: GridPosition;
+  shape: keyof typeof TRAP_LINK_SHAPE_SCORE;
+  /** Steps the opening saves between the two open cells it joins best. */
+  shortcut: number;
+}
+
+function linkableWall(
+  wallKey: string,
+  walls: Set<string>,
+  trapKeys: Set<string>,
+  fromExit: Map<string, number>,
+): LinkableWall | null {
+  if (!walls.has(wallKey)) return null;
+  const wall = keyToPosition(wallKey);
+  if (wall.row < 0 || wall.row >= ROWS || wall.col < 0 || wall.col >= COLS) return null;
+  // `getNeighbors` filters by `walls`, so these are the open cells around it.
+  const open = getNeighbors(wall, walls);
+  if (open.length < 2 || open.length > 3) return null;
+  for (const cell of open) {
+    const cellKey = posKey(cell);
+    if (trapKeys.has(cellKey)) return null;
+    const distance = fromExit.get(cellKey);
+    if (distance === undefined || distance <= PORTAL_CONVERGENCE_RADIUS) return null;
+  }
+  let shortcut = 0;
+  for (let i = 0; i < open.length; i += 1) {
+    for (let j = i + 1; j < open.length; j += 1) {
+      const around = findPathLength(open[i], open[j], walls);
+      if (around === null) return null;
+      shortcut = Math.max(shortcut, around - manhattanDistance(open[i], open[j]));
+    }
+  }
+  if (shortcut < TRAP_LINK_MIN_SHORTCUT) return null;
+  const shape =
+    open.length === 3
+      ? "junction"
+      : open[0].row === open[1].row || open[0].col === open[1].col
+        ? "door"
+        : "corner";
+  return { wall, shape, shortcut };
+}
+
+function chooseTrapLinks(
+  walls: Set<string>,
+  exitPosition: GridPosition,
+  traps: GridPosition[],
+): RouteTrapLink[] {
+  const trapKeys = new Set(traps.map(posKey));
+  const fromExit = getReachableDistances(exitPosition, walls);
+  const linkable = [...walls]
+    .map(keyToPosition)
+    .sort((a, b) => a.row - b.row || a.col - b.col)
+    .map((wall) => linkableWall(posKey(wall), walls, trapKeys, fromExit))
+    .filter((candidate): candidate is LinkableWall => candidate !== null);
+
+  const pairs: Array<{ trapIndex: number; candidate: LinkableWall; score: number }> = [];
+  traps.forEach((trap, trapIndex) => {
+    for (const candidate of linkable) {
+      const distance = manhattanDistance(trap, candidate.wall);
+      if (distance < TRAP_LINK_DISTANCE.min || distance > TRAP_LINK_DISTANCE.max) continue;
+      pairs.push({
+        trapIndex,
+        candidate,
+        score:
+          TRAP_LINK_SHAPE_SCORE[candidate.shape] +
+          Math.min(candidate.shortcut, 10) * 2 -
+          (distance - TRAP_LINK_DISTANCE.min) * 5,
+      });
+    }
+  });
+  pairs.sort(
+    (a, b) =>
+      b.score - a.score ||
+      a.trapIndex - b.trapIndex ||
+      a.candidate.wall.row - b.candidate.wall.row ||
+      a.candidate.wall.col - b.candidate.wall.col,
+  );
+
+  const links: RouteTrapLink[] = [];
+  for (const { trapIndex, candidate } of pairs) {
+    if (links.length >= TRAP_LINKS_PER_ROUTE) break;
+    const trap = posKey(traps[trapIndex]);
+    const wall = posKey(candidate.wall);
+    if (links.some((link) => link.trap === trap || link.mutation.wall === wall)) continue;
+    links.push({ trap, mutation: { kind: "open-wall", wall } });
+  }
+  return links;
+}
+
+/**
+ * The final defence for the links, as `isValidMap` judges everything else: the
+ * map carries exactly `TRAP_LINKS_PER_ROUTE` links, each from one of its traps
+ * to a distinct linkable wall within the distance window. A map without a legal
+ * link is not certified, and the generator tries again.
+ */
+function trapLinksAreLegal(map: MazeMap): boolean {
+  const links = map.trapLinks ?? [];
+  if (links.length !== TRAP_LINKS_PER_ROUTE) return false;
+  const trapKeys = new Set(map.traps.map(posKey));
+  const fromExit = getReachableDistances(map.exitPosition, map.walls);
+  const linkedTraps = new Set<string>();
+  const linkedWalls = new Set<string>();
+  return links.every((link) => {
+    if (link.mutation.kind !== "open-wall") return false;
+    const { trap } = link;
+    const { wall } = link.mutation;
+    if (!trapKeys.has(trap) || linkedTraps.has(trap) || linkedWalls.has(wall)) return false;
+    linkedTraps.add(trap);
+    linkedWalls.add(wall);
+    if (linkableWall(wall, map.walls, trapKeys, fromExit) === null) return false;
+    const distance = manhattanDistance(keyToPosition(trap), keyToPosition(wall));
+    return distance >= TRAP_LINK_DISTANCE.min && distance <= TRAP_LINK_DISTANCE.max;
+  });
 }
 
 /**
@@ -1264,6 +1461,10 @@ function isValidMap(
     map.walls,
   );
 
+  // ROTA2-DYNAMIC-TRAPS-01: the dynamic trap's wall is part of what is
+  // certified, judged on the same board as everything above.
+  const trapLinksLegal = trapLinksAreLegal(map);
+
   return (
     alternativeRoute &&
     lightsHaveAlternatives &&
@@ -1287,7 +1488,8 @@ function isValidMap(
     map.traps.length === expectedTraps &&
     trapsValid &&
     chestUseful &&
-    getNeighbors(map.guardianStart, map.walls).length >= 2
+    getNeighbors(map.guardianStart, map.walls).length >= 2 &&
+    trapLinksLegal
   );
 }
 
@@ -1381,6 +1583,8 @@ function buildCandidate(
       collectibleStars,
       traps,
       chest,
+      // ROTA2-DYNAMIC-TRAPS-01: read off the finished board, no draw.
+      trapLinks: chooseTrapLinks(walls, exitPosition, traps),
     },
     analysis,
   };

@@ -159,3 +159,31 @@ export function findPathCells(
   }
   return null;
 }
+
+/**
+ * ROTA2-DYNAMIC-TRAPS-01 — the maze as it stands during a Route.
+ *
+ * The certified walls never change (`MazeMap.walls` is never written to); what
+ * opened since the Route began is recorded beside them — the one wall the
+ * Pickaxe opened (`brokenWall`) and the walls dynamic traps opened
+ * (`trapOpenedWalls`). This is the ONE derivation of the current topology from
+ * those records: the turn, both defenders, the portal zone, the move hints, the
+ * board and the dynamic invariants all read the walls through it, so no part of
+ * the game can believe a wall stands while another believes it is open.
+ *
+ * With nothing open it returns `walls` itself, so a Route on which nothing has
+ * opened is the certified board by identity, exactly as in v1. Otherwise a new
+ * set; `walls` is never mutated. Opening a cell that is not a wall changes
+ * nothing.
+ */
+export function currentWalls(
+  walls: Set<string>,
+  brokenWall: string | null,
+  trapOpenedWalls: readonly string[] = [],
+): Set<string> {
+  if (brokenWall === null && trapOpenedWalls.length === 0) return walls;
+  const standing = new Set(walls);
+  if (brokenWall !== null) standing.delete(brokenWall);
+  for (const wall of trapOpenedWalls) standing.delete(wall);
+  return standing;
+}

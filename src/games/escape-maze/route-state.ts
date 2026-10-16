@@ -31,6 +31,10 @@ import type { DifficultyLevel, GridPosition } from "@/types/game";
  *    computed from this state by the hook, so there is never a second copy of
  *    something these fields already say.
  *
+ * ROTA2-DYNAMIC-TRAPS-01 (an approved Rota 2.0 mission) adds one field,
+ * `trapOpenedWalls`, and one transition, `OPEN_WALL_BY_TRAP`: the maze can now
+ * change during a Route, and that change is recorded here, never in `mazeMap`.
+ *
  * Pure: state and action in, a new state out. No React, no RNG, no map
  * generation, no sound, no clock, no storage — it does not even run the
  * defenders' policy: a new Route arrives with its board already generated and
@@ -41,7 +45,10 @@ import type { DifficultyLevel, GridPosition } from "@/types/game";
 export interface RouteRuntimeState {
   /** The mode the board was generated for. */
   difficulty: DifficultyLevel;
-  /** The certified board. Never written to: a broken wall lives in `brokenWall`. */
+  /**
+   * The certified board. Never written to: a broken wall lives in `brokenWall`,
+   * a wall a dynamic trap opened in `trapOpenedWalls`.
+   */
   mazeMap: MazeMap;
   player: GridPosition;
   /** The Hunter. */
@@ -67,6 +74,13 @@ export interface RouteRuntimeState {
   rewardSpent: boolean;
   /** The one wall the Pickaxe opened this Route, or null. */
   brokenWall: string | null;
+  /**
+   * ROTA2-DYNAMIC-TRAPS-01: the walls dynamic traps opened this Route, in the
+   * order they opened. Never the Pickaxe's wall — a trap whose wall the Pickaxe
+   * already opened records nothing here. The walls as they stand are
+   * `currentWalls(mazeMap.walls, brokenWall, trapOpenedWalls)`.
+   */
+  trapOpenedWalls: string[];
 }
 
 /** What a new Route session starts from. Everything else starts at its zero. */
@@ -82,8 +96,8 @@ export interface RouteSessionStart {
 /**
  * A new Route session, as one coherent state: the board, the three pieces on
  * their starts, every counter at zero, nothing collected or armed, the Chest
- * closed and nothing chosen, spent or broken. The arrays are new, so no list
- * of a previous Route can leak into this one.
+ * closed and nothing chosen, spent, broken or opened by a trap. The arrays are
+ * new, so no list of a previous Route can leak into this one.
  */
 export function createRouteState(start: RouteSessionStart): RouteRuntimeState {
   return {
@@ -105,6 +119,7 @@ export function createRouteState(start: RouteSessionStart): RouteRuntimeState {
     rewardSelected: null,
     rewardSpent: false,
     brokenWall: null,
+    trapOpenedWalls: [],
   };
 }
 
@@ -133,6 +148,11 @@ export type RouteStateAction =
   | { type: "SPEND_SECOND_CHANCE"; message: string }
   /** The Pickaxe opened `wall`, and is spent with it. */
   | { type: "OPEN_WALL"; wall: string }
+  /**
+   * ROTA2-DYNAMIC-TRAPS-01: a dynamic trap the Explorer just armed opened
+   * `wall`. Nothing is spent; the wall joins `trapOpenedWalls`.
+   */
+  | { type: "OPEN_WALL_BY_TRAP"; wall: string }
   /** The defenders end the turn on these cells, nobody caught. */
   | {
       type: "SETTLE_DEFENDERS";
@@ -184,6 +204,8 @@ export function routeStateReducer(
       return { ...state, rewardSpent: true, message: action.message };
     case "OPEN_WALL":
       return { ...state, brokenWall: action.wall, rewardSpent: true };
+    case "OPEN_WALL_BY_TRAP":
+      return { ...state, trapOpenedWalls: [...state.trapOpenedWalls, action.wall] };
     case "SETTLE_DEFENDERS":
       return {
         ...state,

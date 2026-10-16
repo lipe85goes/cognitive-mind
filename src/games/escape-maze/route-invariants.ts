@@ -1,7 +1,9 @@
 import { COLS, ROWS } from "@/games/escape-maze/route-config";
 import type { MazeMap } from "@/games/escape-maze/route-generation";
 import {
+  currentWalls,
   getReachableDistances,
+  keyToPosition,
   posKey,
   positionsEqual,
 } from "@/games/escape-maze/route-geometry";
@@ -49,6 +51,12 @@ export interface DynamicMazeStateSnapshot {
   rewardSelected: ChestReward | null;
   rewardSpent: boolean;
   brokenWall: string | null;
+  /**
+   * ROTA2-DYNAMIC-TRAPS-01: the walls dynamic traps opened (route-state's
+   * `trapOpenedWalls`). Optional so a snapshot written before Rota 2.0 still
+   * reads as "nothing opened by a trap".
+   */
+  trapOpenedWalls?: Iterable<string>;
   status: GameStatus;
 }
 
@@ -69,6 +77,13 @@ export interface DynamicSolvabilityInspection {
  * not permanent walls, and their adversarial outcome is analysed separately by
  * the exact dynamic solver. This function detects impossible state, stale wall
  * topology and genuine objective softlocks without depending on React or render.
+ *
+ * ROTA2-DYNAMIC-TRAPS-01: the wall graph is the CURRENT one — the certified
+ * walls minus the Pickaxe's wall and the walls dynamic traps opened — and the
+ * snapshot's trap links and opened walls are themselves checked: a link must
+ * name one of the board's traps and walls, and an opened wall must be what an
+ * armed link opened (ten more issue codes, all `TRAP_LINK_*`,
+ * `TRAP_OPENED_WALL_*` or `ARMED_TRAP_LINK_*`).
  */
 export function inspectDynamicMazeState(
   snapshot: DynamicMazeStateSnapshot,
@@ -85,10 +100,12 @@ export function inspectDynamicMazeState(
     status,
   } = snapshot;
   const issues: string[] = [];
-  const effectiveWalls = new Set(mazeMap.walls);
-  if (brokenWall !== null) {
-    if (!mazeMap.walls.has(brokenWall)) issues.push("BROKEN_WALL_NOT_IN_BASE_MAP");
-    effectiveWalls.delete(brokenWall);
+  const trapOpenedWalls = [...(snapshot.trapOpenedWalls ?? [])];
+  // ROTA2-DYNAMIC-TRAPS-01: the walls as they stand, through the same
+  // derivation the turn and the board use — never a copy of their own.
+  const effectiveWalls = new Set(currentWalls(mazeMap.walls, brokenWall, trapOpenedWalls));
+  if (brokenWall !== null && !mazeMap.walls.has(brokenWall)) {
+    issues.push("BROKEN_WALL_NOT_IN_BASE_MAP");
   }
 
   const collected = new Set(snapshot.collectedStars);
@@ -130,6 +147,47 @@ export function inspectDynamicMazeState(
   }
   if (armedTraps.has(posKey(guardian))) issues.push("HUNTER_ON_ARMED_TRAP");
   if (armedTraps.has(posKey(sentinel))) issues.push("SENTINEL_ON_ARMED_TRAP");
+
+  // --- ROTA2-DYNAMIC-TRAPS-01: the links the map carries, and what they did --
+  // The map side: each link is one of the board's traps, opening one of its
+  // walls, one link per trap and per wall, with the one mutation that exists.
+  const links = mazeMap.trapLinks ?? [];
+  const wallOfTrap = new Map<string, string>();
+  const linkedWalls = new Set<string>();
+  for (const link of links) {
+    if (link.mutation.kind !== "open-wall") {
+      issues.push("TRAP_LINK_UNKNOWN_MUTATION");
+      continue;
+    }
+    const { wall } = link.mutation;
+    if (!trapKeys.has(link.trap)) issues.push("TRAP_LINK_UNKNOWN_TRAP");
+    if (!mazeMap.walls.has(wall) || !insideBoard(keyToPosition(wall))) {
+      issues.push("TRAP_LINK_WALL_NOT_IN_BASE_MAP");
+    }
+    if (wallOfTrap.has(link.trap)) issues.push("TRAP_LINK_DUPLICATE_TRAP");
+    if (linkedWalls.has(wall)) issues.push("TRAP_LINK_DUPLICATE_WALL");
+    wallOfTrap.set(link.trap, wall);
+    linkedWalls.add(wall);
+  }
+  // The state side: a wall a trap opened belongs to an armed link, once, and
+  // is not also the Pickaxe's; an armed link's wall stands no more — opened by
+  // its trap, or already by the Pickaxe (the trap then had nothing to open).
+  const openedByTrap = new Set<string>();
+  for (const wall of trapOpenedWalls) {
+    if (!mazeMap.walls.has(wall)) issues.push("TRAP_OPENED_WALL_NOT_IN_BASE_MAP");
+    if (openedByTrap.has(wall)) issues.push("TRAP_OPENED_WALL_TWICE");
+    if (wall === brokenWall) issues.push("TRAP_OPENED_WALL_ALSO_BROKEN");
+    const armedLink = [...wallOfTrap].some(
+      ([trap, linked]) => linked === wall && armedTraps.has(trap),
+    );
+    if (!armedLink) issues.push("TRAP_OPENED_WALL_WITHOUT_ARMED_LINK");
+    openedByTrap.add(wall);
+  }
+  for (const [trap, wall] of wallOfTrap) {
+    if (armedTraps.has(trap) && !openedByTrap.has(wall) && wall !== brokenWall) {
+      issues.push("ARMED_TRAP_LINK_WALL_STILL_CLOSED");
+    }
+  }
 
   if (!chestOpened) {
     if (rewardSelected !== null) issues.push("REWARD_BEFORE_CHEST");

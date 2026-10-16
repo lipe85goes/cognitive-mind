@@ -27,7 +27,11 @@ import {
   type SentinelState,
 } from "@/games/escape-maze/route-defenders";
 import type { MazeMap } from "@/games/escape-maze/route-generation";
-import { posKey, positionsEqual } from "@/games/escape-maze/route-geometry";
+import {
+  currentWalls,
+  posKey,
+  positionsEqual,
+} from "@/games/escape-maze/route-geometry";
 import {
   inspectDynamicMazeState,
   type ChestReward,
@@ -220,6 +224,15 @@ const SECOND_CHANCE_DEFENDER_MESSAGE =
   "Segunda Chance: você resistiu e os defensores recuaram.";
 
 /**
+ * ROTA2-DYNAMIC-TRAPS-01 — what the Explorer is told when a dynamic trap arms.
+ * Calm and literal: what changed, and that it changed for everyone.
+ */
+const TRAP_OPENED_WALL_MESSAGE =
+  "Armadilha ativada: a parede da mesma runa se abriu. A passagem serve para todos.";
+const TRAP_LINK_ALREADY_OPEN_MESSAGE =
+  "Armadilha ativada. A parede da mesma runa já estava aberta.";
+
+/**
  * The Sentinel's post on a board nobody has played yet. Computed from the map's
  * own walls — nothing is broken on a new board — rather than read from the
  * hook's portal-zone memo, which still holds the previous map on the render a
@@ -318,6 +331,9 @@ export function useEscapeMaze(
       // ROTA-CHEST-REWARDS-01 §19/§21: a new route restores the board and the
       // decision. Broken walls close again because they were never written to
       // the map definition — `brokenWall` is the only thing that opened them.
+      // ROTA2-DYNAMIC-TRAPS-01: the same holds for walls dynamic traps opened
+      // (`trapOpenedWalls` starts empty), and the trap links are the new
+      // map's own: nothing of a previous board's topology carries over.
       applyDomainEvent({
         type: "ROUTE_STARTED",
         routeNumber: nextRouteNumber,
@@ -416,6 +432,7 @@ export function useEscapeMaze(
   // stand-in. Once a board is accepted none of them is null again.
   const boardMap = route === null ? null : route.mazeMap;
   const boardBrokenWall = route === null ? null : route.brokenWall;
+  const boardTrapOpenedWalls = route === null ? null : route.trapOpenedWalls;
 
   /**
    * The board as it stands right now.
@@ -425,14 +442,16 @@ export function useEscapeMaze(
    * through `getNeighbors` on one set. With nothing broken this IS
    * `mazeMap.walls`, the same object, so every pre-chest behaviour is untouched
    * by identity rather than by comparison.
+   *
+   * ROTA2-DYNAMIC-TRAPS-01: "broken" now includes the walls dynamic traps
+   * opened. Both are folded in by `currentWalls`, the one derivation of the
+   * current topology, which the invariants read too; the board is handed this
+   * same set, so what is drawn is what is walked.
    */
   const walls = useMemo(() => {
-    if (boardMap === null) return null;
-    if (boardBrokenWall === null) return boardMap.walls;
-    const opened = new Set(boardMap.walls);
-    opened.delete(boardBrokenWall);
-    return opened;
-  }, [boardMap, boardBrokenWall]);
+    if (boardMap === null || boardTrapOpenedWalls === null) return null;
+    return currentWalls(boardMap.walls, boardBrokenWall, boardTrapOpenedWalls);
+  }, [boardMap, boardBrokenWall, boardTrapOpenedWalls]);
 
   // The Sentinel's region follows the board, so a broken wall reshapes its
   // territory the same way a differently-generated map would have.
@@ -681,6 +700,8 @@ export function useEscapeMaze(
       rewardSelected,
       rewardSpent,
       brokenWall,
+      // ROTA2-DYNAMIC-TRAPS-01: the walls dynamic traps opened this Route.
+      trapOpenedWalls,
     } = route;
 
     // --- Chest, derived -------------------------------------------------------
@@ -972,6 +993,18 @@ export function useEscapeMaze(
       const nextPortalActive =
         nextTotalLights === 0 || nextCollectedStars.length >= nextTotalLights;
       const nextTrapsTriggered = triggeredTraps.length + (isUntriggeredTrap ? 1 : 0);
+      // ROTA2-DYNAMIC-TRAPS-01: what arming this trap does to the maze is
+      // already part of the board — the link the generator certified — never a
+      // choice made now. It opens its wall if the wall still stands; if the
+      // Pickaxe opened it first, there is nothing left to open and nothing else
+      // is chosen in its place.
+      const trapLink = isUntriggeredTrap
+        ? (mazeMap.trapLinks ?? []).find((link) => link.trap === nextKey) ?? null
+        : null;
+      const trapOpensWall =
+        trapLink !== null && walls.has(trapLink.mutation.wall)
+          ? trapLink.mutation.wall
+          : null;
 
       applyDomainEvent({
         type: "EXPLORER_STEP_COMMITTED",
@@ -991,6 +1024,17 @@ export function useEscapeMaze(
       }
       if (isUntriggeredTrap) {
         applyDomainEvent({ type: "TRAP_ARMED", turn: nextTurn, trap: nextKey });
+      }
+      // ROTA2-DYNAMIC-TRAPS-01 — the turn order, fixed: the step commits, the
+      // trap arms, THEN the maze changes, and only then do the defenders
+      // answer, on the changed maze. Nothing reads a half-old topology.
+      if (trapOpensWall !== null) {
+        applyDomainEvent({
+          type: "WALL_OPENED_BY_TRAP",
+          turn: nextTurn,
+          trap: nextKey,
+          wall: trapOpensWall,
+        });
       }
 
       if (positionsEqual(next, mazeMap.exitPosition) && nextPortalActive) {
@@ -1019,6 +1063,22 @@ export function useEscapeMaze(
       const armedTraps = isUntriggeredTrap
         ? new Set<string>([...triggeredTrapSet, nextKey])
         : triggeredTrapSet;
+      // ROTA2-DYNAMIC-TRAPS-01: likewise the wall the trap just opened — built
+      // here for the same reason, so both defenders and the Sentinel's region
+      // answer this turn on the maze as it now stands, exactly as they do on a
+      // wall the Pickaxe opens.
+      const turnWalls =
+        trapOpensWall === null
+          ? walls
+          : currentWalls(walls, null, [trapOpensWall]);
+      const turnZone =
+        trapOpensWall === null
+          ? portalDefenceZone
+          : computePortalDefenceZone(
+              mazeMap.playerStart,
+              mazeMap.exitPosition,
+              turnWalls,
+            );
 
       // --- the Chest pauses the turn ------------------------------------------
       // §12: the Explorer arrives, the Chest opens, and the turn STOPS here. The
@@ -1037,8 +1097,8 @@ export function useEscapeMaze(
         playerPosition: next,
         guardianFrom: guardian,
         sentinelFrom: sentinel,
-        graphWalls: walls,
-        zone: portalDefenceZone,
+        graphWalls: turnWalls,
+        zone: turnZone,
         armedTraps,
         turnNumber: nextTurn,
         errorsSoFar: errors,
@@ -1051,22 +1111,27 @@ export function useEscapeMaze(
         secondChanceReady: secondChanceAvailable,
         // Same priority the route has always used: what the Explorer just did
         // first, then how close the Hunter got, then the portal, then calm.
+        // ROTA2-DYNAMIC-TRAPS-01: a dynamic trap says what it did to the maze.
         calmMessage: (guardianAfter) =>
-          isUntriggeredTrap
-            ? "Armadilha ativada. Os defensores precisam contornar."
-            : collectedStar
-              ? nextPortalActive
-                ? "Portal ativado! Vá até a saída."
-                : "Luz-chave coletada."
-              : positionsEqual(next, mazeMap.exitPosition)
-                ? "O portal ainda precisa das luzes da rota."
-                : manhattanDistance(guardianAfter, next) <= 2
-                  ? "O Caçador está próximo. Pense no próximo caminho."
-                  : manhattanDistance(next, mazeMap.exitPosition) <= 2
-                    ? nextPortalActive
-                      ? "A saída está próxima."
-                      : "O portal ainda precisa de todas as luzes."
-                    : "Boa jogada. O Caçador se moveu.",
+          trapLink !== null
+            ? trapOpensWall !== null
+              ? TRAP_OPENED_WALL_MESSAGE
+              : TRAP_LINK_ALREADY_OPEN_MESSAGE
+            : isUntriggeredTrap
+              ? "Armadilha ativada. Os defensores precisam contornar."
+              : collectedStar
+                ? nextPortalActive
+                  ? "Portal ativado! Vá até a saída."
+                  : "Luz-chave coletada."
+                : positionsEqual(next, mazeMap.exitPosition)
+                  ? "O portal ainda precisa das luzes da rota."
+                  : manhattanDistance(guardianAfter, next) <= 2
+                    ? "O Caçador está próximo. Pense no próximo caminho."
+                    : manhattanDistance(next, mazeMap.exitPosition) <= 2
+                      ? nextPortalActive
+                        ? "A saída está próxima."
+                        : "O portal ainda precisa de todas as luzes."
+                      : "Boa jogada. O Caçador se moveu.",
       });
     };
 
@@ -1181,7 +1246,10 @@ export function useEscapeMaze(
       routeNumber,
       routeProgression,
       mazeMap,
-      /** The board as it stands — `mazeMap.walls` until the Pickaxe opens one. */
+      /**
+       * The board as it stands — `mazeMap.walls` until the Pickaxe or a dynamic
+       * trap opens one.
+       */
       walls,
       player,
       guardian,
@@ -1217,6 +1285,13 @@ export function useEscapeMaze(
       secondChanceAvailable,
       secondChanceSpent,
       brokenWall,
+      /**
+       * ROTA2-DYNAMIC-TRAPS-01: the walls dynamic traps opened, in order, and
+       * the map's trap → wall links (`mazeMap.trapLinks`). Read-only views: the
+       * board draws the links' runes and the opened passages from them.
+       */
+      trapOpenedWalls,
+      trapLinks: mazeMap.trapLinks ?? [],
       dynamicSolvability: inspectDynamicMazeState({
         mazeMap,
         player,
@@ -1228,6 +1303,7 @@ export function useEscapeMaze(
         rewardSelected,
         rewardSpent,
         brokenWall,
+        trapOpenedWalls,
         status,
       }),
       /** Adjacent walls, in a fixed direction order. The only Pickaxe affordance. */

@@ -34,6 +34,15 @@ export interface RouteBabylonState {
   aimedWallKey: string | null;
   /** The single wall the Pickaxe opened, or null. Already absent from `walls`. */
   brokenWallKey: string | null;
+  /**
+   * ROTA2-DYNAMIC-TRAPS-01: each dynamic trap and the wall it opens, as the
+   * generator certified them. The board draws their shared rune — on the trap,
+   * on the wall while it stands, and a faint thread between them while the
+   * trap sleeps. It decides nothing from them: which walls stand is `walls`.
+   */
+  trapLinks: Array<{ trap: string; wall: string }>;
+  /** Walls dynamic traps opened. Already absent from `walls`. */
+  trapOpenedWallKeys: string[];
   dangerTiles: string[];
   reducedMotion: boolean;
   status: "setup" | "playing" | "won" | "lost";
@@ -84,6 +93,9 @@ type RouteMaterials = Record<
   | "chestSpent"
   | "breakTarget"
   | "breakAim"
+  | "passageRune"
+  | "passageRuneLit"
+  | "passageThread"
   | "rubble"
   | "danger"
   | "move",
@@ -376,6 +388,23 @@ function createMaterials(
       emissive: "#a8641a",
       alpha: 0.78,
     }),
+    // ROTA2-DYNAMIC-TRAPS-01: the rune a dynamic trap shares with its wall.
+    // Lavender, a colour no other piece of the Rota uses, so the pair reads as
+    // a pair and as nothing else: not a light (gold), not the portal or the
+    // chest (teal/green), not danger (amber), not the trap's own wine. Asleep it
+    // is barely lit; once the trap arms it glows, calmly. Emissive only.
+    passageRune: makeMaterial(B, scene, "route-passage-rune", "#7d6fbf", {
+      emissive: "#33296a",
+      specular: "#3a3160",
+    }),
+    passageRuneLit: makeMaterial(B, scene, "route-passage-rune-lit", "#c4b5fd", {
+      emissive: "#7461d2",
+      specular: "#e9e2ff",
+    }),
+    passageThread: makeMaterial(B, scene, "route-passage-thread", "#9b8be0", {
+      emissive: "#3f3482",
+      alpha: 0.55,
+    }),
     rubble: makeMaterial(B, scene, "route-rubble", "#4b3826", {
       specular: "#7d5f3a",
     }),
@@ -550,6 +579,23 @@ export function createRouteBabylonController(
   const materials = createMaterials(B, scene);
   materials.hit.disableDepthWrite = true;
   let state = initialState;
+
+  // ROTA2-DYNAMIC-TRAPS-01 — the activation pulse.
+  //
+  // When a dynamic trap opens its wall the block is gone in the very frame the
+  // state says so (the static board is rebuilt from `walls`), so the board and
+  // the game never disagree about the maze, and no move needs holding back.
+  // What plays on top is decoration only: one soft lavender ring widening and
+  // fading over the opened cell and over its trap, under a second. No flash,
+  // no shake, no camera move — and none at all under reduced motion, where the
+  // opened passage simply appears with its rune.
+  const TOPOLOGY_PULSE_MS = 900;
+  const TOPOLOGY_PULSE_ALPHA = 0.7;
+  const pulseMaterial = makeMaterial(B, scene, "route-passage-pulse", "#c4b5fd", {
+    emissive: "#8b7cf0",
+    alpha: TOPOLOGY_PULSE_ALPHA,
+  });
+  const topologyPulses: Array<{ root: BABYLON.TransformNode; startedAt: number }> = [];
   let staticBoardRoot: BABYLON.TransformNode | null = null;
   let dynamicBoardRoot: BABYLON.TransformNode | null = null;
   let staticBoardSignature = "";
@@ -1586,6 +1632,63 @@ export function createRouteBabylonController(
   }
 
   /**
+   * ROTA2-DYNAMIC-TRAPS-01 — the shared rune: a small diamond cut flat into a
+   * surface. The same mark sits on a dynamic trap and on the wall it opens, so
+   * the player can read "this trap, that wall" before stepping anywhere.
+   */
+  function passageRune(
+    name: string,
+    position: BABYLON.Vector3,
+    size: number,
+    material: BABYLON.Material,
+    parent: BABYLON.TransformNode,
+  ) {
+    const rune = B.MeshBuilder.CreateBox(
+      name,
+      { width: size, height: 0.014, depth: size },
+      scene,
+    );
+    rune.position = position;
+    rune.rotation.y = Math.PI / 4;
+    rune.material = material;
+    rune.parent = parent;
+    rune.isPickable = false;
+    return rune;
+  }
+
+  /** The cell key a dynamic trap's link opens, by trap. */
+  function linkedWallOf(trapKey: string): string | null {
+    return state.trapLinks.find((link) => link.trap === trapKey)?.wall ?? null;
+  }
+
+  /**
+   * Where a dynamic trap opened its wall: the block is gone (it is simply not
+   * in `walls` any more) and the rune it carried now lies lit in the floor,
+   * with a thin ring — the passage is open and stays open. No rubble: that is
+   * the Pickaxe's mark, and the two causes must not look alike.
+   */
+  function renderOpenedPassage(
+    parent: BABYLON.TransformNode,
+    pos: BABYLON.Vector3,
+  ) {
+    passageRune(
+      "route-passage-opened-rune",
+      new B.Vector3(pos.x, BOARD_SURFACE_Y + 0.01, pos.z),
+      0.2,
+      materials.passageRuneLit,
+      parent,
+    );
+    torus(
+      "route-passage-opened-ring",
+      0.62,
+      0.014,
+      new B.Vector3(pos.x, BOARD_SURFACE_Y + 0.008, pos.z),
+      materials.passageRuneLit,
+      parent,
+    );
+  }
+
+  /**
    * Every wall is drawn the same way, because every wall is the same thing.
    *
    * ROTA-CHEST-REWARDS-01 (revisão pós-playtest): this function used to give a
@@ -1600,10 +1703,39 @@ export function createRouteBabylonController(
       const [row, col] = state.brokenWallKey.split(",").map(Number);
       renderBrokenWallTrace(parent, cellToPosition(row, col));
     }
+    state.trapOpenedWallKeys.forEach((key) => {
+      const [row, col] = key.split(",").map(Number);
+      renderOpenedPassage(parent, cellToPosition(row, col));
+    });
+    // ROTA2-DYNAMIC-TRAPS-01: a wall a dynamic trap will open carries the
+    // trap's rune on its crown and a thin ring at its foot — only while it
+    // stands, because only a standing wall is in `walls`.
+    const linkedWalls = new Set(state.trapLinks.map((link) => link.wall));
 
     state.walls.forEach((key) => {
       const [row, col] = key.split(",").map(Number);
       const pos = cellToPosition(row, col);
+      if (linkedWalls.has(key)) {
+        passageRune(
+          "route-passage-wall-rune",
+          new B.Vector3(
+            pos.x,
+            BOARD_SURFACE_Y + (useWallAsset ? 0.612 : 0.668),
+            pos.z,
+          ),
+          0.2,
+          materials.passageRune,
+          parent,
+        );
+        torus(
+          "route-passage-wall-ring",
+          0.9,
+          0.014,
+          new B.Vector3(pos.x, BOARD_SURFACE_Y + 0.006, pos.z),
+          materials.passageRune,
+          parent,
+        );
+      }
 
       if (useWallAsset && wallAssetProto) {
         // Clone the loaded prototype onto this cell. Clones share the GLB's
@@ -1903,6 +2035,41 @@ export function createRouteBabylonController(
         core,
         parent,
       );
+
+      // ROTA2-DYNAMIC-TRAPS-01: a dynamic trap carries its wall's rune in the
+      // centre of its own. Asleep, a faint thread of the same rune runs toward
+      // that wall; once armed the rune glows and the thread is gone — the
+      // promise was kept, the passage is open.
+      const linkedWall = linkedWallOf(keyOf(trap));
+      if (linkedWall === null) return;
+      passageRune(
+        "route-passage-trap-rune",
+        new B.Vector3(pos.x, BOARD_SURFACE_Y + 0.02, pos.z),
+        0.13,
+        armed ? materials.passageRuneLit : materials.passageRune,
+        parent,
+      );
+      if (armed || !state.walls.includes(linkedWall)) return;
+      const [wallRow, wallCol] = linkedWall.split(",").map(Number);
+      const wallPos = cellToPosition(wallRow, wallCol);
+      const steps = Math.max(
+        3,
+        Math.abs(wallRow - trap.row) + Math.abs(wallCol - trap.col) + 1,
+      );
+      for (let index = 1; index < steps; index += 1) {
+        const t = index / steps;
+        passageRune(
+          "route-passage-thread",
+          new B.Vector3(
+            pos.x + (wallPos.x - pos.x) * t,
+            BOARD_SURFACE_Y + 0.012,
+            pos.z + (wallPos.z - pos.z) * t,
+          ),
+          0.055,
+          materials.passageThread,
+          parent,
+        );
+      }
     });
 
     if (state.chest) renderChest(parent);
@@ -1984,6 +2151,74 @@ export function createRouteBabylonController(
     }
   }
 
+  /** Which board the links belong to: a new Route is a new signature. */
+  function trapLinkSignature(boardState: RouteBabylonState) {
+    return [
+      keyOf(boardState.exitPosition),
+      boardState.trapLinks.map((link) => `${link.trap}>${link.wall}`).join("|"),
+    ].join(";");
+  }
+
+  function clearTopologyPulses() {
+    topologyPulses.forEach((pulse) => pulse.root.dispose(false, false));
+    topologyPulses.length = 0;
+  }
+
+  function startTopologyPulse(cellKey: string) {
+    const [row, col] = cellKey.split(",").map(Number);
+    const pos = cellToPosition(row, col);
+    const root = new B.TransformNode("route-passage-pulse-root", scene);
+    root.position.set(pos.x, BOARD_SURFACE_Y + 0.03, pos.z);
+    torus(
+      "route-passage-pulse-ring",
+      0.7,
+      0.03,
+      new B.Vector3(0, 0, 0),
+      pulseMaterial,
+      root,
+    );
+    topologyPulses.push({ root, startedAt: performance.now() });
+  }
+
+  /**
+   * Pulse once for each wall a dynamic trap opened since the last state — on
+   * the same board, with motion allowed. A new board (restart, next Route, a
+   * new mode) clears whatever was still fading: nothing of a previous board's
+   * topology outlives it, not even its glow.
+   */
+  function syncTopologyPulses(previous: RouteBabylonState, next: RouteBabylonState) {
+    if (next.reducedMotion || trapLinkSignature(previous) !== trapLinkSignature(next)) {
+      clearTopologyPulses();
+      return;
+    }
+    const before = new Set(previous.trapOpenedWallKeys);
+    next.trapOpenedWallKeys
+      .filter((wall) => !before.has(wall))
+      .forEach((wall) => {
+        startTopologyPulse(wall);
+        const trap = next.trapLinks.find((link) => link.wall === wall)?.trap;
+        if (trap) startTopologyPulse(trap);
+      });
+  }
+
+  scene.onBeforeRenderObservable.add(() => {
+    if (topologyPulses.length === 0) return;
+    const now = performance.now();
+    let oldest = 0;
+    for (let index = topologyPulses.length - 1; index >= 0; index -= 1) {
+      const pulse = topologyPulses[index];
+      const t = (now - pulse.startedAt) / TOPOLOGY_PULSE_MS;
+      if (t >= 1) {
+        pulse.root.dispose(false, false);
+        topologyPulses.splice(index, 1);
+        continue;
+      }
+      oldest = Math.max(oldest, t);
+      pulse.root.scaling.setAll(0.7 + (1 - (1 - t) * (1 - t)) * 0.8);
+    }
+    pulseMaterial.alpha = TOPOLOGY_PULSE_ALPHA * (1 - oldest);
+  });
+
   function getStaticBoardSignature() {
     return [
       state.rows,
@@ -1995,6 +2230,11 @@ export function createRouteBabylonController(
       // The break-target rings do NOT: they move with the Explorer every turn,
       // so they belong to the dynamic board and must not force a static rebuild.
       state.brokenWallKey ?? "",
+      // ROTA2-DYNAMIC-TRAPS-01: the wall runes and the opened-passage marks
+      // are static too; a trap opening its wall rebuilds the static board,
+      // which is what removes the block — no wall mesh survives its wall.
+      state.trapLinks.map((link) => `${link.trap}>${link.wall}`).join("|"),
+      state.trapOpenedWallKeys.join("|"),
     ].join(";");
   }
 
@@ -2376,7 +2616,9 @@ export function createRouteBabylonController(
     ready,
     updateBoard(nextState: RouteBabylonState) {
       if (disposed) return;
+      const previous = state;
       state = nextState;
+      syncTopologyPulses(previous, nextState);
       renderBoard();
     },
     resize() {
@@ -2407,6 +2649,8 @@ export function createRouteBabylonController(
       engine.stopRenderLoop();
       staticBoardRoot?.dispose(false, false);
       dynamicBoardRoot?.dispose(false, false);
+      clearTopologyPulses();
+      pulseMaterial.dispose();
       boardAssetRoot?.dispose(false, true);
       wallAssetProto?.dispose(false, true);
       playerAssetProto?.dispose(false, true);
