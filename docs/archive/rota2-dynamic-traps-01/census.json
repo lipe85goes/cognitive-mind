@@ -1,0 +1,327 @@
+{
+  "mission": "ROTA2-DYNAMIC-TRAPS-01",
+  "base": "9f8ebb5d8c0c747e68d8719e523ecab3ecbdab00",
+  "allPass": false,
+  "checks": {
+    "everyMapHasExactlyOneLink": true,
+    "noInvalidLink": true,
+    "noThrow": true,
+    "replayIsTheProduct": true,
+    "fallbacksNotIncreased": true,
+    "portalZoneNeverChanges": true,
+    "noTopologySoftlock": true,
+    "solverSoundAgainstRuntime": true,
+    "solverModelledEveryMap": true,
+    "noUnexplainedDegradation": true,
+    "everyActivationOpensAndStaysValid": true,
+    "defendersNeverOnStaleTopology": true,
+    "pickaxeBeforeTrapNeverRerolls": true,
+    "trapBeforePickaxeNeverOffersTheOpenedWall": true,
+    "everyPlayingRenderValid": true,
+    "terminalIssuesAreV1Shapes": false
+  },
+  "sizes": {
+    "routes": [
+      1,
+      2,
+      3
+    ],
+    "difficulties": [
+      "easy",
+      "medium",
+      "hard"
+    ],
+    "mapsPerCombination": 120,
+    "solverPerCombination": 8,
+    "runtimePerCombination": 12
+  },
+  "generation": {
+    "maps": 1080,
+    "throws": 0,
+    "v1Throws": 0,
+    "mapsWithExactlyOneLink": 1080,
+    "trapsTotal": 4320,
+    "trapsLinked": 1080,
+    "distinctLinkedWallCells": 55,
+    "replayMatchesProduct": 1080,
+    "attempts": 11435,
+    "v1Attempts": 11419,
+    "retriesCausedByTrapLinkGate": 2,
+    "mapsWithATrapLinkRetry": 2,
+    "fallbacks": 0,
+    "v1Fallbacks": 0,
+    "mapsDifferentFromV1": 2,
+    "invalidLinks": 0,
+    "shapes": {
+      "junction": 319,
+      "door": 628,
+      "corner": 133
+    },
+    "trapDistance": {
+      "2": 727,
+      "3": 260,
+      "4": 93
+    },
+    "shortcut": {
+      "2": 132,
+      "4": 360,
+      "6": 141,
+      "8": 159,
+      "10": 128,
+      "12": 85,
+      "14": 48,
+      "16": 19,
+      "18": 4,
+      "20": 4
+    },
+    "linkedTrapRank": {
+      "0": 412,
+      "1": 292,
+      "2": 190,
+      "3": 126,
+      "4": 50,
+      "5": 10
+    },
+    "perCombination": {
+      "1-easy": {
+        "maps": 120,
+        "retriesCausedByTrapLinkGate": 1,
+        "fallbacks": 0,
+        "v1Fallbacks": 0,
+        "throws": 0,
+        "mapsDifferentFromV1": 1,
+        "distinctWalls": 17
+      },
+      "1-medium": {
+        "maps": 120,
+        "retriesCausedByTrapLinkGate": 1,
+        "fallbacks": 0,
+        "v1Fallbacks": 0,
+        "throws": 0,
+        "mapsDifferentFromV1": 1,
+        "distinctWalls": 30
+      },
+      "1-hard": {
+        "maps": 120,
+        "retriesCausedByTrapLinkGate": 0,
+        "fallbacks": 0,
+        "v1Fallbacks": 0,
+        "throws": 0,
+        "mapsDifferentFromV1": 0,
+        "distinctWalls": 30
+      },
+      "2-easy": {
+        "maps": 120,
+        "retriesCausedByTrapLinkGate": 0,
+        "fallbacks": 0,
+        "v1Fallbacks": 0,
+        "throws": 0,
+        "mapsDifferentFromV1": 0,
+        "distinctWalls": 22
+      },
+      "2-medium": {
+        "maps": 120,
+        "retriesCausedByTrapLinkGate": 0,
+        "fallbacks": 0,
+        "v1Fallbacks": 0,
+        "throws": 0,
+        "mapsDifferentFromV1": 0,
+        "distinctWalls": 26
+      },
+      "2-hard": {
+        "maps": 120,
+        "retriesCausedByTrapLinkGate": 0,
+        "fallbacks": 0,
+        "v1Fallbacks": 0,
+        "throws": 0,
+        "mapsDifferentFromV1": 0,
+        "distinctWalls": 25
+      },
+      "3-easy": {
+        "maps": 120,
+        "retriesCausedByTrapLinkGate": 0,
+        "fallbacks": 0,
+        "v1Fallbacks": 0,
+        "throws": 0,
+        "mapsDifferentFromV1": 0,
+        "distinctWalls": 29
+      },
+      "3-medium": {
+        "maps": 120,
+        "retriesCausedByTrapLinkGate": 0,
+        "fallbacks": 0,
+        "v1Fallbacks": 0,
+        "throws": 0,
+        "mapsDifferentFromV1": 0,
+        "distinctWalls": 36
+      },
+      "3-hard": {
+        "maps": 120,
+        "retriesCausedByTrapLinkGate": 0,
+        "fallbacks": 0,
+        "v1Fallbacks": 0,
+        "throws": 0,
+        "mapsDifferentFromV1": 0,
+        "distinctWalls": 33
+      }
+    },
+    "invalidExamples": [],
+    "differentFromV1Examples": [
+      {
+        "seed": 9210044,
+        "route": 1,
+        "difficulty": "easy",
+        "trapLinkRetries": 1
+      },
+      {
+        "seed": 9211016,
+        "route": 1,
+        "difficulty": "medium",
+        "trapLinkRetries": 1
+      }
+    ]
+  },
+  "topology": {
+    "maps": 1080,
+    "states": 45819,
+    "pickaxeBeforeTrapStates": 1080,
+    "trapBeforePickaxeStates": 21304,
+    "softlocks": 0,
+    "invalid": 0,
+    "examples": [],
+    "portalZoneChanged": 0
+  },
+  "solver": {
+    "maps": 72,
+    "v1": {
+      "P": 49,
+      "U": 6,
+      "G": 11,
+      "I": 6
+    },
+    "rota2": {
+      "P": 45,
+      "U": 4,
+      "G": 16,
+      "I": 7
+    },
+    "transitions": {
+      "P->P": 43,
+      "U->P": 2,
+      "U->U": 4,
+      "G->G": 11,
+      "I->I": 6,
+      "P->I": 1,
+      "P->G": 5
+    },
+    "improved": 7,
+    "degraded": 0,
+    "unchanged": 58,
+    "inconclusive": 7,
+    "accessesDiffer": 1,
+    "degradedExamples": [],
+    "improvedExamples": [
+      {
+        "seed": 9211005,
+        "route": 1,
+        "difficulty": "medium",
+        "pair": "U->P"
+      },
+      {
+        "seed": 9220003,
+        "route": 2,
+        "difficulty": "easy",
+        "pair": "U->P"
+      },
+      {
+        "seed": 9232000,
+        "route": 3,
+        "difficulty": "hard",
+        "pair": "P->G"
+      },
+      {
+        "seed": 9232002,
+        "route": 3,
+        "difficulty": "hard",
+        "pair": "P->G"
+      },
+      {
+        "seed": 9232004,
+        "route": 3,
+        "difficulty": "hard",
+        "pair": "P->G"
+      }
+    ],
+    "note": "a class change needs every v1 strategy of that class to arm the linked trap"
+  },
+  "runtime": {
+    "maps": 108,
+    "activationsAttempted": 108,
+    "activations": 75,
+    "stepsOntoADefenderOnTheTrap": 12,
+    "wallOpenedOnActivation": 75,
+    "invalidAfterActivation": 0,
+    "hunterDecisionsAfterOpening": 509,
+    "hunterDecisionsOnStaleTopology": 0,
+    "defenderEnteredOpenedCell": 18,
+    "defenderRoutedThroughPassage": 31,
+    "pickaxeBeforeTrap": {
+      "attempted": 108,
+      "completed": 67,
+      "rerolled": 0,
+      "invalid": 0,
+      "noOp": 67
+    },
+    "trapBeforePickaxe": {
+      "attempted": 108,
+      "completed": 73,
+      "linkedWallOffered": 0,
+      "invalid": 0
+    },
+    "rendersInspected": 5271,
+    "invalidRenders": 2,
+    "invalidPlayingRenders": 0,
+    "invalidTerminalRenders": {
+      "lost:PLAYER_ON_UNOPENED_CHEST": 2
+    },
+    "terminalIssuesSameInV1": 0,
+    "terminalIssuesDifferentInV1": 2,
+    "invalidExamples": [
+      {
+        "status": "lost",
+        "issues": [
+          "PLAYER_ON_UNOPENED_CHEST"
+        ],
+        "player": "6,3",
+        "guardian": "6,3",
+        "sentinel": "0,8",
+        "chest": "6,3",
+        "trapOpenedWalls": [
+          "8,6"
+        ]
+      },
+      {
+        "status": "lost",
+        "issues": [
+          "PLAYER_ON_UNOPENED_CHEST"
+        ],
+        "player": "6,3",
+        "guardian": "6,3",
+        "sentinel": "0,8",
+        "chest": "6,3",
+        "trapOpenedWalls": [
+          "8,6"
+        ]
+      }
+    ],
+    "differential": {
+      "transitions": 1840,
+      "unsound": 0,
+      "examples": [],
+      "afterOpening": 585
+    }
+  },
+  "run": {
+    "elapsedMs": 1215551
+  }
+}

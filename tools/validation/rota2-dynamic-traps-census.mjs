@@ -291,6 +291,7 @@ const runtime = {
   invalidTerminalRenders: {},
   terminalIssuesSameInV1: 0,
   terminalIssuesDifferentInV1: 0,
+  terminalIssuesAfterAnOpening: 0,
   invalidExamples: [],
   differential: { transitions: 0, unsound: 0, examples: [], afterOpening: 0 },
 };
@@ -357,14 +358,19 @@ function inspect(g) {
     if (g.status === "playing") runtime.invalidPlayingRenders += 1;
     else {
       for (const issue of g.dynamicSolvability.issues) tally(runtime.invalidTerminalRenders, `${g.status}:${issue}`);
-      // The same state through the v1 base's own inspector: a terminal shape v1 already had says the same.
+      // The same state through the v1 base's own inspector: a terminal shape v1 already had says the same. v1 reads
+      // the certified walls (a wall a trap opened stands again there), so an identical verdict — with no code of the
+      // trap topology among the issues — says the issue is not about the opened wall.
       const v1 = V1.API.inspectDynamicMazeState({
         mazeMap: g.mazeMap, player: g.player, guardian: g.guardian, sentinel: g.sentinel,
         collectedStars: [...g.collectedSet], triggeredTraps: [...g.triggeredTrapSet],
         chestOpened: g.chestOpened, rewardSelected: g.rewardSelected, rewardSpent: g.rewardSpent,
         brokenWall: g.brokenWall, status: g.status,
       });
-      if (g.trapOpenedWalls.length === 0 && JSON.stringify(v1.issues) === JSON.stringify(g.dynamicSolvability.issues)) runtime.terminalIssuesSameInV1 += 1;
+      if (g.trapOpenedWalls.length > 0) runtime.terminalIssuesAfterAnOpening += 1;
+      const sameAsV1 = JSON.stringify(v1.issues) === JSON.stringify(g.dynamicSolvability.issues);
+      const topologyCode = g.dynamicSolvability.issues.some((issue) => /TRAP_LINK|TRAP_OPENED|ARMED_TRAP_LINK/.test(issue));
+      if (sameAsV1 && !topologyCode) runtime.terminalIssuesSameInV1 += 1;
       else runtime.terminalIssuesDifferentInV1 += 1;
     }
     if (runtime.invalidExamples.length < 5) {
