@@ -210,4 +210,27 @@ grafo.
 - diferencial solver × hook: 1840 transições (585 depois de uma abertura), 0
   fora do suporte do solver.
 
+### 6.3 Navegador (`rota2-dynamic-traps-browser-probe.mjs`) — 5/5
+
+Build de produção (`next build && next start`), Chromium headless com
+SwiftShader, entrando pela Home (galeria → Rota → intro → "Iniciar rota").
+Joga lendo só o que o tabuleiro publica no canvas; nada no app é
+instrumentado. `docs/archive/rota2-dynamic-traps-01/browser-probe.json` e
+`browser/*.png`.
+
+| cenário | o que provou |
+| --- | --- |
+| main (teclado, 480×360) | par adormecido publicado; lilás nos pixels da armadilha ligada (0,56 %) e da parede (1,19 %), 0 % numa armadilha comum; pisar arma e abre exatamente a parede ligada (as outras paredes iguais), a mensagem certa, os pixels da parede mudam (Δ 14,8); o Explorador atravessa a célula aberta; Caçador e Sentinela seguem jogando; "Começar outra rota" traz tudo fechado de novo |
+| pickaxe ("Aberto") | Baú → Picareta → quebra a parede ligada → pisa na armadilha: arma, nada mais abre, `trapOpenedWalls` vazio, "já estava aberta" |
+| mobile (360×640, toque no D-pad) | a mesma ativação pelos toques |
+| reduced (prefers-reduced-motion) | mesma semântica; a passagem já está aberta no primeiro quadro e nada muda depois de 1,5 s |
+| continuation | a armadilha abre na Rota 1, a Rota 1 é perdida de propósito, "Explorar outra rota" abre a Rota 2: nada aberto, ligação nova de pé, armadilhas adormecidas |
+
+0 erros de página, 0 retentativas da entrada. O vigia de entrada (28 s) é do
+produto: sob SwiftShader neste contêiner, nem a base nem a missão entram a
+1280×800 ou 800×500 (medido, idêntico nas duas); a 480×360 as duas entram — por
+isso as viewports. Nenhuma regra do jogo foi mudada para o ambiente. A revisão
+visual a 1280×900 (`browser/telegraph-*.png`) foi feita entrando pequeno e
+redimensionando.
+
 RESULTS_PENDING
