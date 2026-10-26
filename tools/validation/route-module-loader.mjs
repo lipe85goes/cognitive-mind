@@ -34,6 +34,12 @@ import { execFileSync } from "node:child_process";
 import ts from "typescript";
 import { createSeededRandom } from "./route-lab.mjs";
 import { ROTA2_DYNAMIC_TRAPS_FILES, ROTA2_DYNAMIC_TRAPS_MARKER, reverseRota2 } from "./rota2-dynamic-traps-edit.mjs";
+import {
+  ROTA2_DEPENDENT_OBJECTIVES_ADDED_FILES,
+  ROTA2_DEPENDENT_OBJECTIVES_FILES,
+  carriesObjectives,
+  reverseObjectives,
+} from "./rota2-dependent-objectives-edit.mjs";
 
 /** The Rota's entry: the hook the game mounts. Where its logic lives is the graph's business. */
 export const ROUTE_HOOK = "src/games/escape-maze/useEscapeMaze.ts";
@@ -1145,7 +1151,10 @@ export function treeBeforeC7C(tree) {
  */
 export function routeFileBeforeRota2(tree, file) {
   const repoPath = tree.toRepoPath(file);
-  const text = tree.read(repoPath);
+  // ROTA2-DEPENDENT-OBJECTIVES-02 came after ROTA2-DYNAMIC-TRAPS-01: the approved missions are a chain, reversed
+  // newest first — back to DYNAMIC-TRAPS-01's tree, then back to v1.
+  let text = tree.read(repoPath);
+  if (ROTA2_DEPENDENT_OBJECTIVES_FILES.includes(repoPath)) text = reverseObjectives(repoPath, text);
   return ROTA2_DYNAMIC_TRAPS_FILES.includes(repoPath) ? reverseRota2(repoPath, text) : text;
 }
 
@@ -1157,14 +1166,21 @@ export function routeFileBeforeRota2(tree, file) {
  */
 export function treeBeforeRota2(tree) {
   if (tree.beforeRota2) return tree;
-  const touched = ROTA2_DYNAMIC_TRAPS_FILES.some((file) => tree.exists(file) && tree.read(file).includes(ROTA2_DYNAMIC_TRAPS_MARKER));
+  const touched =
+    ROTA2_DYNAMIC_TRAPS_FILES.some((file) => tree.exists(file) && tree.read(file).includes(ROTA2_DYNAMIC_TRAPS_MARKER)) ||
+    carriesObjectives((file) => tree.exists(file), (file) => tree.read(file));
   if (!touched) return tree;
+  // ROTA2-DEPENDENT-OBJECTIVES-02 adds a module; before Rota 2.0 it does not exist.
+  const added = (file) => ROTA2_DEPENDENT_OBJECTIVES_ADDED_FILES.includes(tree.toRepoPath(file));
   const view = openSourceTree({
     root: tree.root,
     underlying: {
       rev: tree.rev,
-      exists: (file) => tree.exists(file),
-      read: (file) => routeFileBeforeRota2(tree, file),
+      exists: (file) => !added(file) && tree.exists(file),
+      read: (file) => {
+        if (added(file)) throw new Error(`route-module-loader: ${tree.toRepoPath(file)} does not exist before Rota 2.0`);
+        return routeFileBeforeRota2(tree, file);
+      },
     },
   });
   return { ...view, beforeRota2: true };

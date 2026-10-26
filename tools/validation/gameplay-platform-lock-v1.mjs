@@ -132,8 +132,28 @@ const ROTA2_APPROVED_MISSIONS = [
     mission: "ROTA2-DYNAMIC-TRAPS-01",
     stateActions: ["OPEN_WALL_BY_TRAP"],
     domainEvents: ["WALL_OPENED_BY_TRAP"],
+    stateFields: ["trapOpenedWalls"],
+  },
+  {
+    // Objectives are derived from the lights and the current walls: no action, no event, no state field.
+    mission: "ROTA2-DEPENDENT-OBJECTIVES-02",
+    stateActions: [],
+    domainEvents: [],
+    stateFields: [],
+    // The one module it adds, and the plan it must hold: Route 1 v1's lights → portal, Routes 2 and 3 lights AND
+    // the marked passage (R5).
+    objectivesModule: "src/games/escape-maze/route-objectives.ts",
+    objectivePlans: { 1: ["collect-all-lights"], 2: ["collect-all-lights", "open-linked-passage"], 3: ["collect-all-lights", "open-linked-passage"] },
   },
 ];
+/** RouteRuntimeState's v1 fields (route-state.ts at the v1 lock); R4 accepts only approved additions. */
+const V1_STATE_FIELDS = [
+  "blockedMoves", "blockedShake", "brokenWall", "chestOpened", "collectedStars", "difficulty", "errors", "guardian",
+  "mazeMap", "message", "moveTick", "player", "rewardSelected", "rewardSpent", "sentinel", "status", "triggeredTraps",
+  "turns",
+];
+const ROTA2_STATE_FIELDS = ROTA2_APPROVED_MISSIONS.flatMap((m) => m.stateFields);
+const OBJECTIVES = ROTA2_APPROVED_MISSIONS.find((m) => m.objectivesModule);
 const ROTA2_ACTIONS = ROTA2_APPROVED_MISSIONS.flatMap((m) => m.stateActions);
 const ROTA2_EVENTS = ROTA2_APPROVED_MISSIONS.flatMap((m) => m.domainEvents);
 
@@ -204,6 +224,36 @@ const MUTANTS = [
     file: "src/games/escape-maze/useEscapeMaze.ts",
     edits: [["  const [routeNumber] = useState(normalizedInitialRouteNumber);\n", "  const [routeNumber] = useState(normalizedInitialRouteNumber);\n  const [moveTickCell] = useState(0);\n"]],
     mustFail: ["R3"],
+  },
+  {
+    name: "objective progress stored in the Rota state (a duplicate of what the walls and lights say)",
+    file: "src/games/escape-maze/route-state.ts",
+    edits: [["  trapOpenedWalls: string[];\n}", "  trapOpenedWalls: string[];\n  passageObjectiveDone: boolean;\n}"]],
+    mustFail: ["R4"],
+  },
+  {
+    name: "Route 1 asks for the marked passage too",
+    file: "src/games/escape-maze/route-objectives.ts",
+    edits: [["    1: STANDARD_PLAN,", "    1: LIGHTS_AND_PASSAGE_PLAN,"]],
+    mustFail: ["R5"],
+  },
+  {
+    name: "Route 3 forgets the marked passage",
+    file: "src/games/escape-maze/route-objectives.ts",
+    edits: [["    3: LIGHTS_AND_PASSAGE_PLAN,", "    3: STANDARD_PLAN,"]],
+    mustFail: ["R5"],
+  },
+  {
+    name: "the objective plan draws from Math.random",
+    file: "src/games/escape-maze/route-objectives.ts",
+    edits: [["  return ROUTE_OBJECTIVE_PLANS[route as 1 | 2 | 3];", "  return Math.random() < 0.5 ? STANDARD_PLAN : ROUTE_OBJECTIVE_PLANS[route as 1 | 2 | 3];"]],
+    mustFail: ["R5"],
+  },
+  {
+    name: "the objective module imports React",
+    file: "src/games/escape-maze/route-objectives.ts",
+    edits: [['import type { MazeMap } from "@/games/escape-maze/route-generation";', 'import type { MazeMap } from "@/games/escape-maze/route-generation";\nimport { useMemo } from "react";\nvoid useMemo;']],
+    mustFail: ["R5"],
   },
   {
     name: "the Circuit's session no longer revoked on unmount",
@@ -549,6 +599,43 @@ function codeChecks(tree) {
       useStateCells: useStates,
       useStateCalls: anyUseState,
       useReducers: reducers,
+    };
+  });
+
+  check("R4", "rota", "ROUTE_STATE_FIELDS_FROZEN_BUT_FOR_APPROVED_ROTA2", () => {
+    // ROTA2-DEPENDENT-OBJECTIVES-02: objectives are derived, so the session state may only hold v1's fields plus
+    // the approved Rota 2.0 additions — no objective flag, no "portal ready" copy.
+    const sf = ts.createSourceFile(FILES.state, text(FILES.state), ts.ScriptTarget.ES2022, true, ts.ScriptKind.TS);
+    const decl = sf.statements.find((st) => ts.isInterfaceDeclaration(st) && st.name.text === "RouteRuntimeState");
+    const fields = decl ? sorted(decl.members.filter(ts.isPropertySignature).map((m) => m.name.getText(sf))) : null;
+    const added = fields ? fields.filter((f) => !V1_STATE_FIELDS.includes(f)) : null;
+    const removed = fields ? V1_STATE_FIELDS.filter((f) => !fields.includes(f)) : null;
+    const unapproved = added ? added.filter((f) => !ROTA2_STATE_FIELDS.includes(f)) : null;
+    return { pass: fields !== null && removed.length === 0 && unapproved.length === 0, fields: fields?.length ?? null, added, removed, unapproved };
+  });
+
+  check("R5", "rota", "ROTA2_OBJECTIVE_PLAN_IS_PURE_AND_APPROVED", () => {
+    // A tree before ROTA2-DEPENDENT-OBJECTIVES-02 has no objective module, and nothing to hold here.
+    const file = OBJECTIVES.objectivesModule;
+    if (!has(file)) return { pass: true, objectivesModule: "absent (a tree before the mission)" };
+    const node = graph.node(file);
+    const source = codeOnly(text(file));
+    const forbidden = source.match(/Math\.random|\bwindow\b|\bdocument\b|localStorage|sessionStorage|\bWorker\b|postMessage|@babylonjs|\bReact\b|\buse(State|Effect|Memo|Reducer|Ref|Callback)\b/g) ?? [];
+    const runtimeImports = [...node.static, ...node.dynamic, ...node.worker, ...node.packages.static, ...node.packages.dynamic];
+    let plans = null;
+    try {
+      const mod = evaluateTypesOnlyModule(tree, file);
+      plans = Object.fromEntries([1, 2, 3].map((n) => [n, [...mod.routeObjectivePlan(n).prerequisites]]));
+    } catch (error) {
+      plans = { error: String(error?.message ?? error).split("\n")[0] };
+    }
+    const hookReadsIt = graph.node(FILES.hook).static.includes(file);
+    return {
+      pass: forbidden.length === 0 && runtimeImports.length === 0 && same(plans, OBJECTIVES.objectivePlans) && hookReadsIt,
+      runtimeImports,
+      forbidden: [...new Set(forbidden)],
+      plans,
+      hookReadsIt,
     };
   });
 

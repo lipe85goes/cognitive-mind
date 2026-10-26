@@ -45,7 +45,12 @@ política de mudança: `docs/GAMEPLAY_PLATFORM_LOCK_V1.md`. Gate:
   abre essa parede ao ser armada (`trapOpenedWalls`, `OPEN_WALL_BY_TRAP`,
   `WALL_OPENED_BY_TRAP`); a topologia atual tem uma única derivação,
   `currentWalls` em `route-geometry.ts`, lida pelo turno, pelos defensores,
-  pelos invariantes e pelo tabuleiro.
+  pelos invariantes e pelo tabuleiro. Segunda missão aprovada:
+  ROTA2-DEPENDENT-OBJECTIVES-02 (`docs/ROTA2_DEPENDENT_OBJECTIVES_02.md`) —
+  `route-objectives.ts`, puro, dá o plano de objetivos de cada Rota (Rota 1:
+  luzes; Rotas 2/3: luzes + passagem marcada) e o avalia a partir de
+  `collectedStars` e de `currentWalls`; o hook deriva `portalActive` dele a
+  cada render. Nenhum estado, ação ou evento novo.
 - Depois do lock, mudança em Rota/Circuito/plataforma só por: correção de
   regressão, segurança/dependência, performance medida, missão Rota 2.0
   aprovada, ou requisito de plataforma achado pelo Game 03.

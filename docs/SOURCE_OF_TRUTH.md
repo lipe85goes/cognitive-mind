@@ -123,7 +123,13 @@ commit `da551b17eddbf0a156228c7e2a5fc9ca178180c9` (2026-10-05).
   `feat/rota2-dynamic-traps-01`), adds one dynamic trap per map that opens a
   linked wall; it is recorded as the lock's one approved exception
   (`GAMEPLAY_PLATFORM_LOCK_V1.md` §4.1, gate checks R2/D4). Not merged until
-  accepted.
+  accepted. The second approved mission, ROTA2-DEPENDENT-OBJECTIVES-02
+  (`docs/ROTA2_DEPENDENT_OBJECTIVES_02.md`, branch
+  `feat/rota2-dependent-objectives-02`, base `32c419a`), keeps Route 1 as v1
+  and makes the Route 2/3 portal wait for every light AND the marked passage
+  (the trap-linked wall) open, by its trap or the Pickaxe; objectives are
+  derived, no state/action/event added (gate checks R4/R5/D4). Not merged
+  until accepted.
 
 ## Reproducing the project
 

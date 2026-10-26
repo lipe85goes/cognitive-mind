@@ -26,6 +26,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
+import { reverseObjectives } from "./rota2-dependent-objectives-edit.mjs";
 
 export const ROTA2_DYNAMIC_TRAPS_BASE = "9f8ebb5d8c0c747e68d8719e523ecab3ecbdab00";
 export const ROTA2_DYNAMIC_TRAPS_MARKER = "ROTA2-DYNAMIC-TRAPS-01";
@@ -119,7 +120,9 @@ function main() {
   }
   const edit = readRota2Edit();
   const rows = ROTA2_DYNAMIC_TRAPS_FILES.map((file) => {
-    const live = normalize(fs.readFileSync(path.join(root, file), "utf8"));
+    // ROTA2-DEPENDENT-OBJECTIVES-02 came after: the chain reverses the newer mission first
+    // (rota2-dependent-objectives-edit.mjs), so this manifest is checked against the tree it was written for.
+    const live = reverseObjectives(file, normalize(fs.readFileSync(path.join(root, file), "utf8")));
     const base = normalize(execFileSync("git", ["show", `${ROTA2_DYNAMIC_TRAPS_BASE}:${file}`], { cwd: root, encoding: "utf8" }));
     let reversed = null;
     let error = null;
