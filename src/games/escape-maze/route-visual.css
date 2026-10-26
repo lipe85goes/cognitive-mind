@@ -689,3 +689,67 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+/*
+ * ROTA2-DEPENDENT-OBJECTIVES-02 — the objective list of Routes 2 and 3.
+ * Small and inline, under the current objective: three words-first rows that
+ * wrap on a phone. A done row is a check AND the word; the lilac rune names
+ * the marked passage, the same rune the board draws on it.
+ */
+.rsg-shell .rsg-objective-list {
+  grid-column: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.85rem;
+  margin: 0.1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rsg-shell .rsg-objective-list li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: rgba(213, 235, 224, 0.78);
+  font-size: 0.74rem;
+  line-height: 1.2;
+}
+
+.rsg-shell .rsg-objective-list b {
+  font-weight: 800;
+  color: #fff3d6;
+}
+
+.rsg-shell .rsg-objective-list i {
+  font-style: normal;
+  font-weight: 700;
+}
+
+.rsg-shell .rsg-objective-list li.is-done i {
+  color: var(--rsg-green-bright);
+}
+
+.rsg-shell .rsg-objective-mark {
+  width: 0.95rem;
+  height: 0.95rem;
+  flex: none;
+  color: #ffd970;
+}
+
+.rsg-shell .rsg-objective-mark.is-rune {
+  color: #c4a8ff;
+}
+
+.rsg-shell .rsg-objective-list li.is-done .rsg-objective-mark {
+  color: var(--rsg-green-bright);
+}
+
+.rsg-shell .rsg-current-objective.is-passage .rsg-current-objective-icon {
+  color: #c4a8ff;
+}
+
+@media (max-width: 640px) {
+  .rsg-shell .rsg-objective-list li {
+    font-size: 0.62rem;
+  }
+}

@@ -43,6 +43,12 @@ export interface RouteBabylonState {
   trapLinks: Array<{ trap: string; wall: string }>;
   /** Walls dynamic traps opened. Already absent from `walls`. */
   trapOpenedWallKeys: string[];
+  /**
+   * ROTA2-DEPENDENT-OBJECTIVES-02: the portal is usable, as the hook derived it
+   * (lights, and the marked passage on Routes 2 and 3). Optional: a state
+   * without it reads the v1 rule — every light collected.
+   */
+  portalActive?: boolean;
   dangerTiles: string[];
   reducedMotion: boolean;
   status: "setup" | "playing" | "won" | "lost";
@@ -1936,8 +1942,9 @@ export function createRouteBabylonController(
     const pos = cellToPosition(state.exitPosition.row, state.exitPosition.col);
     const collectedKeys = new Set(state.collectedKeys);
     const portalActive =
-      state.lights.length === 0 ||
-      state.lights.every((lightCell) => collectedKeys.has(keyOf(lightCell)));
+      state.portalActive ??
+      (state.lights.length === 0 ||
+        state.lights.every((lightCell) => collectedKeys.has(keyOf(lightCell))));
     const clone = clonePropAsset(
       "portal",
       "route-portal-glb",

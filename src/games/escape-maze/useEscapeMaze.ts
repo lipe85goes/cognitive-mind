@@ -60,6 +60,14 @@ import {
   startRouteGeneration,
 } from "@/games/escape-maze/route-generation-client";
 import type { RouteRuntimeState } from "@/games/escape-maze/route-state";
+// ROTA2-DEPENDENT-OBJECTIVES-02: what the portal waits for on this Route, and
+// how far the Explorer has got — derived from the lights and the current walls,
+// never stored (route-objectives.ts).
+import {
+  evaluateRouteObjectives,
+  routeObjectivePlan,
+  type RouteObjectiveEvaluation,
+} from "@/games/escape-maze/route-objectives";
 // ROUTE-C6: the hook says what happened — a `RouteDomainEvent` — and
 // route-events.ts translates it into the C5 transitions that record it. The
 // hook still runs the turn: it decides which events happen, in what order and
@@ -231,6 +239,37 @@ const TRAP_OPENED_WALL_MESSAGE =
   "Armadilha ativada: a parede da mesma runa se abriu. A passagem serve para todos.";
 const TRAP_LINK_ALREADY_OPEN_MESSAGE =
   "Armadilha ativada. A parede da mesma runa já estava aberta.";
+
+/**
+ * ROTA2-DEPENDENT-OBJECTIVES-02 — what the Explorer is told on a Route whose
+ * portal also waits for the marked passage (Routes 2 and 3). Route 1 never
+ * reads these: its portal waits for the lights alone, and every one of its
+ * messages is v1's. Calm and specific: what is done, what is still missing.
+ */
+const PORTAL_READY_MESSAGE = "Portal ativado! Vá até a saída.";
+const LIGHTS_DONE_PASSAGE_MISSING_MESSAGE =
+  "Todas as luzes coletadas. Falta abrir a passagem marcada.";
+const TRAP_OPENED_PASSAGE_PORTAL_MESSAGE =
+  "Armadilha ativada: a passagem marcada se abriu, para todos. Portal ativado! Vá até a saída.";
+const TRAP_OPENED_PASSAGE_LIGHTS_MISSING_MESSAGE =
+  "Armadilha ativada: a passagem marcada se abriu, para todos. Ainda faltam luzes.";
+const PICKAXE_OPENED_PASSAGE_PORTAL_MESSAGE =
+  "Parede aberta: a passagem marcada está aberta. Portal ativado! Vá até a saída.";
+const PICKAXE_OPENED_PASSAGE_LIGHTS_MISSING_MESSAGE =
+  "Parede aberta: a passagem marcada está aberta. Ainda faltam luzes.";
+
+/**
+ * What is still missing before the portal opens, on a Route with the marked
+ * passage — for the portal visited early and the portal approached.
+ */
+function missingObjectivesMessage(objectives: RouteObjectiveEvaluation): string {
+  const lights = !objectives.lights.complete;
+  const passage = !objectives.passage.complete;
+  if (lights && passage) return "Faltam luzes e a passagem marcada.";
+  if (passage) return "As luzes estão prontas. Falta abrir a passagem marcada.";
+  if (lights) return "A passagem está aberta. Ainda faltam luzes.";
+  return PORTAL_READY_MESSAGE;
+}
 
 /**
  * The Sentinel's post on a board nobody has played yet. Computed from the map's
@@ -714,7 +753,20 @@ export function useEscapeMaze(
 
     const totalLights = mazeMap.collectibleStars.length;
     const collectedCount = collectedStars.length;
-    const portalActive = totalLights === 0 || collectedCount >= totalLights;
+    // ROTA2-DEPENDENT-OBJECTIVES-02: the portal is active when the Route's
+    // prerequisites are complete. On Route 1 that is the lights alone — v1's
+    // rule, `totalLights === 0 || collectedCount >= totalLights` — and on
+    // Routes 2 and 3 the lights AND the marked passage, read off the walls as
+    // they stand. Derived on every render, like every other view here.
+    const objectivePlan = routeObjectivePlan(routeNumber);
+    const objectives = evaluateRouteObjectives({
+      plan: objectivePlan,
+      mazeMap,
+      collectedStars,
+      walls,
+    });
+    const passageRequired = objectives.passage.required;
+    const portalActive = objectives.portalReady;
 
     const score = calculateEscapeMazeScore({
       won: status === "won",
@@ -989,9 +1041,6 @@ export function useEscapeMaze(
       const nextCollectedStars = collectedStar
         ? [...collectedStars, nextKey]
         : collectedStars;
-      const nextTotalLights = mazeMap.collectibleStars.length;
-      const nextPortalActive =
-        nextTotalLights === 0 || nextCollectedStars.length >= nextTotalLights;
       const nextTrapsTriggered = triggeredTraps.length + (isUntriggeredTrap ? 1 : 0);
       // ROTA2-DYNAMIC-TRAPS-01: what arming this trap does to the maze is
       // already part of the board — the link the generator certified — never a
@@ -1005,6 +1054,26 @@ export function useEscapeMaze(
         trapLink !== null && walls.has(trapLink.mutation.wall)
           ? trapLink.mutation.wall
           : null;
+      // ROTA2-DYNAMIC-TRAPS-01: the wall the trap opens is open for the rest of
+      // this turn. Built here, before anything reads it, so the objectives, both
+      // defenders and the Sentinel's region answer this turn on the maze as it
+      // now stands, exactly as they do on a wall the Pickaxe opens.
+      const turnWalls =
+        trapOpensWall === null
+          ? walls
+          : currentWalls(walls, null, [trapOpensWall]);
+      // ROTA2-DEPENDENT-OBJECTIVES-02: the objectives after the step — its light
+      // and the passage its trap opened. The portal activates on the turn the
+      // LAST missing prerequisite completes, whichever one that is, and only
+      // then: before the step it was not ready, after it it is.
+      const nextObjectives = evaluateRouteObjectives({
+        plan: objectivePlan,
+        mazeMap,
+        collectedStars: nextCollectedStars,
+        walls: turnWalls,
+      });
+      const nextPortalActive = nextObjectives.portalReady;
+      const portalActivatedNow = !portalActive && nextPortalActive;
 
       applyDomainEvent({
         type: "EXPLORER_STEP_COMMITTED",
@@ -1014,13 +1083,10 @@ export function useEscapeMaze(
         armedTrap: isUntriggeredTrap ? nextKey : null,
       });
       // What the step did, said once each. The step above already wrote all of
-      // it, so these record nothing more: the light, then the portal it opened,
-      // then the trap.
+      // it, so these record nothing more: the light, then the trap, then the
+      // wall it opened, then the portal they completed.
       if (collectedStar) {
         applyDomainEvent({ type: "LIGHT_COLLECTED", turn: nextTurn, light: nextKey });
-        if (nextPortalActive) {
-          applyDomainEvent({ type: "PORTAL_ACTIVATED", turn: nextTurn });
-        }
       }
       if (isUntriggeredTrap) {
         applyDomainEvent({ type: "TRAP_ARMED", turn: nextTurn, trap: nextKey });
@@ -1035,6 +1101,15 @@ export function useEscapeMaze(
           trap: nextKey,
           wall: trapOpensWall,
         });
+      }
+      // ROTA2-DEPENDENT-OBJECTIVES-02: the portal, once, on the turn its last
+      // missing prerequisite completed — after the light and after the wall,
+      // since either may be that prerequisite, and before the defenders. A
+      // light and a trap are never the same cell (the generator keeps traps
+      // two cells from every light), so on Route 1 this is the order v1 had:
+      // the light, then the portal.
+      if (portalActivatedNow) {
+        applyDomainEvent({ type: "PORTAL_ACTIVATED", turn: nextTurn });
       }
 
       if (positionsEqual(next, mazeMap.exitPosition) && nextPortalActive) {
@@ -1063,14 +1138,8 @@ export function useEscapeMaze(
       const armedTraps = isUntriggeredTrap
         ? new Set<string>([...triggeredTrapSet, nextKey])
         : triggeredTrapSet;
-      // ROTA2-DYNAMIC-TRAPS-01: likewise the wall the trap just opened — built
-      // here for the same reason, so both defenders and the Sentinel's region
-      // answer this turn on the maze as it now stands, exactly as they do on a
-      // wall the Pickaxe opens.
-      const turnWalls =
-        trapOpensWall === null
-          ? walls
-          : currentWalls(walls, null, [trapOpensWall]);
+      // ROTA2-DYNAMIC-TRAPS-01: likewise the Sentinel's region, on the walls the
+      // trap left (`turnWalls`, above).
       const turnZone =
         trapOpensWall === null
           ? portalDefenceZone
@@ -1112,25 +1181,38 @@ export function useEscapeMaze(
         // Same priority the route has always used: what the Explorer just did
         // first, then how close the Hunter got, then the portal, then calm.
         // ROTA2-DYNAMIC-TRAPS-01: a dynamic trap says what it did to the maze.
+        // ROTA2-DEPENDENT-OBJECTIVES-02: on a Route with the marked passage,
+        // the passage and what is still missing are said too. Route 1 keeps
+        // every v1 message (`passageRequired` is false there).
         calmMessage: (guardianAfter) =>
           trapLink !== null
             ? trapOpensWall !== null
-              ? TRAP_OPENED_WALL_MESSAGE
+              ? passageRequired
+                ? portalActivatedNow
+                  ? TRAP_OPENED_PASSAGE_PORTAL_MESSAGE
+                  : TRAP_OPENED_PASSAGE_LIGHTS_MISSING_MESSAGE
+                : TRAP_OPENED_WALL_MESSAGE
               : TRAP_LINK_ALREADY_OPEN_MESSAGE
             : isUntriggeredTrap
               ? "Armadilha ativada. Os defensores precisam contornar."
               : collectedStar
                 ? nextPortalActive
-                  ? "Portal ativado! Vá até a saída."
-                  : "Luz-chave coletada."
+                  ? PORTAL_READY_MESSAGE
+                  : passageRequired && nextObjectives.lights.complete
+                    ? LIGHTS_DONE_PASSAGE_MISSING_MESSAGE
+                    : "Luz-chave coletada."
                 : positionsEqual(next, mazeMap.exitPosition)
-                  ? "O portal ainda precisa das luzes da rota."
+                  ? passageRequired
+                    ? missingObjectivesMessage(nextObjectives)
+                    : "O portal ainda precisa das luzes da rota."
                   : manhattanDistance(guardianAfter, next) <= 2
                     ? "O Caçador está próximo. Pense no próximo caminho."
                     : manhattanDistance(next, mazeMap.exitPosition) <= 2
                       ? nextPortalActive
                         ? "A saída está próxima."
-                        : "O portal ainda precisa de todas as luzes."
+                        : passageRequired
+                          ? missingObjectivesMessage(nextObjectives)
+                          : "O portal ainda precisa de todas as luzes."
                       : "Boa jogada. O Caçador se moveu.",
       });
     };
@@ -1215,8 +1297,24 @@ export function useEscapeMaze(
         opened,
       );
       const nextTurn = turns + 1;
+      // ROTA2-DEPENDENT-OBJECTIVES-02: the Pickaxe opening the marked wall
+      // completes the passage exactly as its trap would; any other wall does
+      // not. When it was the last missing prerequisite, the portal activates
+      // in this same turn, before the defenders answer.
+      const openedObjectives = evaluateRouteObjectives({
+        plan: objectivePlan,
+        mazeMap,
+        collectedStars,
+        walls: opened,
+      });
+      const portalActivatedNow = !portalActive && openedObjectives.portalReady;
+      const openedPassage =
+        passageRequired && !objectives.passage.open && openedObjectives.passage.open;
 
       applyDomainEvent({ type: "WALL_OPENED", turn: nextTurn, wall: wallKey });
+      if (portalActivatedNow) {
+        applyDomainEvent({ type: "PORTAL_ACTIVATED", turn: nextTurn });
+      }
       playStoneBreak();
 
       runDefenderPhase({
@@ -1237,7 +1335,12 @@ export function useEscapeMaze(
         rewardSpentNow: true,
         brokenWallNow: wallKey,
         secondChanceReady: false,
-        calmMessage: () => "Parede aberta. O caminho novo serve para todos.",
+        calmMessage: () =>
+          openedPassage
+            ? portalActivatedNow
+              ? PICKAXE_OPENED_PASSAGE_PORTAL_MESSAGE
+              : PICKAXE_OPENED_PASSAGE_LIGHTS_MISSING_MESSAGE
+            : "Parede aberta. O caminho novo serve para todos.",
       });
     };
 
@@ -1261,6 +1364,11 @@ export function useEscapeMaze(
       collectedCount,
       totalLights,
       portalActive,
+      /**
+       * ROTA2-DEPENDENT-OBJECTIVES-02: the Route's objective plan and where it
+       * stands — derived from the lights and the current walls, never stored.
+       */
+      objectives,
       turns,
       blockedMoves,
       errors,
@@ -1304,6 +1412,9 @@ export function useEscapeMaze(
         rewardSpent,
         brokenWall,
         trapOpenedWalls,
+        // ROTA2-DEPENDENT-OBJECTIVES-02: on Routes 2 and 3 the marked passage
+        // is an objective too, and must stay openable while it stands.
+        requiredPassageWall: passageRequired ? objectives.passage.wall : null,
         status,
       }),
       /** Adjacent walls, in a fixed direction order. The only Pickaxe affordance. */

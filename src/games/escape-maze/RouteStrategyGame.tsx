@@ -16,6 +16,7 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronUp,
+  Circle,
   CircleCheck,
   CircleUserRound,
   Diamond,
@@ -386,6 +387,7 @@ function RouteSessionView({
     collectedCount,
     totalLights,
     portalActive,
+    objectives,
     turns,
     blockedMoves,
     errors,
@@ -483,6 +485,12 @@ function RouteSessionView({
     "Parede aberta. O caminho novo serve para todos.",
     "Segunda Chance: você resistiu e não avançou.",
     "Segunda Chance: você resistiu e os defensores recuaram.",
+    // ROTA2-DEPENDENT-OBJECTIVES-02: a prerequisite done is good news too.
+    "Todas as luzes coletadas. Falta abrir a passagem marcada.",
+    "Armadilha ativada: a passagem marcada se abriu, para todos. Portal ativado! Vá até a saída.",
+    "Armadilha ativada: a passagem marcada se abriu, para todos. Ainda faltam luzes.",
+    "Parede aberta: a passagem marcada está aberta. Portal ativado! Vá até a saída.",
+    "Parede aberta: a passagem marcada está aberta. Ainda faltam luzes.",
   ]);
   const warnMessages = new Set([
     "Este caminho tem um obstáculo. Observe o próximo passo.",
@@ -491,6 +499,10 @@ function RouteSessionView({
     "Parede no caminho. A Picareta pode abri-la.",
     "O portal ainda precisa das luzes da rota.",
     "O portal ainda precisa de todas as luzes.",
+    // ROTA2-DEPENDENT-OBJECTIVES-02: what is still missing — information, calm.
+    "Faltam luzes e a passagem marcada.",
+    "As luzes estão prontas. Falta abrir a passagem marcada.",
+    "A passagem está aberta. Ainda faltam luzes.",
   ]);
   const statusVariant: "neutral" | "info" | "success" | "warn" | "error" =
     status === "won" || positiveMessages.has(message)
@@ -503,6 +515,11 @@ function RouteSessionView({
             ? "info"
             : "neutral";
   const remainingLights = Math.max(totalLights - collectedCount, 0);
+  // ROTA2-DEPENDENT-OBJECTIVES-02: Routes 2 and 3 also wait for the marked
+  // passage. Read off the hook's derived verdict; nothing here decides it.
+  const passageRequired = objectives.passage.required;
+  const passageMissing = passageRequired && !objectives.passage.complete;
+  const lightsMissing = !objectives.lights.complete;
   const currentObjective = (() => {
     if (status === "won") {
       // The same rule the result is written with: after the last Route there
@@ -538,6 +555,18 @@ function RouteSessionView({
         title: `Rota ${routeNumber}: ${routeProgression.label}`,
         detail: routeProgression.description,
         className: "is-setup",
+      };
+    }
+    if (!portalActive && passageMissing) {
+      return {
+        Icon: lightsMissing ? Sun : Diamond,
+        title: lightsMissing
+          ? remainingLights === 1
+            ? "Colete 1 luz e abra a passagem marcada"
+            : `Colete ${remainingLights} luzes e abra a passagem marcada`
+          : "Abra a passagem marcada para acordar o portal",
+        detail: `${routeProgression.label}. A passagem tem a runa lilás: a armadilha da mesma runa ou a Picareta a abrem.`,
+        className: lightsMissing ? "is-lights" : "is-passage",
       };
     }
     if (!portalActive) {
@@ -781,7 +810,57 @@ function RouteSessionView({
                   : message}
             </small>
           </span>
-          {status === "playing" && !awaitingRoute && totalLights > 0 && !portalActive && (
+          {/*
+            ROTA2-DEPENDENT-OBJECTIVES-02: on a Route whose portal also waits for
+            the marked passage, a compact list of what it waits for, readable
+            without any interaction. Every state is a word, never a colour
+            alone; the live message above narrates the changes, so this list is
+            not a second live region. Route 1 keeps its single objective line.
+          */}
+          {passageRequired && !awaitingRoute && (status === "playing" || status === "won") && (
+            <ul className="rsg-objective-list" aria-label="Objetivos da rota">
+              <li className={objectives.lights.complete ? "is-done" : undefined}>
+                {objectives.lights.complete ? (
+                  <CircleCheck className="rsg-objective-mark" aria-hidden />
+                ) : (
+                  <Sun className="rsg-objective-mark" aria-hidden />
+                )}
+                <b>Luzes</b>
+                <i>
+                  {objectives.lights.collected}/{objectives.lights.total}
+                  <span className="sr-only">
+                    {objectives.lights.complete ? " coletadas, concluído" : " coletadas"}
+                  </span>
+                </i>
+              </li>
+              <li className={objectives.passage.complete ? "is-done" : undefined}>
+                {objectives.passage.complete ? (
+                  <CircleCheck className="rsg-objective-mark" aria-hidden />
+                ) : (
+                  <Diamond className="rsg-objective-mark is-rune" aria-hidden />
+                )}
+                <b>Passagem marcada</b>
+                <i>
+                  {objectives.passage.complete ? "Aberta" : "Fechada"}
+                  {objectives.passage.complete && (
+                    <span className="sr-only">, concluído</span>
+                  )}
+                </i>
+              </li>
+              <li className={portalActive ? "is-done" : undefined}>
+                {portalActive ? (
+                  <CircleCheck className="rsg-objective-mark" aria-hidden />
+                ) : (
+                  <Circle className="rsg-objective-mark" aria-hidden />
+                )}
+                <b>Portal</b>
+                <i>
+                  {status === "won" ? "Alcançado" : portalActive ? "Ativado" : "Aguardando"}
+                </i>
+              </li>
+            </ul>
+          )}
+          {status === "playing" && !awaitingRoute && totalLights > 0 && !portalActive && lightsMissing && (
             <div
               className="rsg-current-objective-progress"
               aria-hidden="true"
@@ -840,6 +919,7 @@ function RouteSessionView({
                     brokenWall={brokenWall}
                     trapLinks={trapLinks}
                     trapOpenedWalls={trapOpenedWalls}
+                    portalActive={portalActive}
                     dangerTiles={dangerTiles}
                     reducedMotion={Boolean(reducedMotion)}
                     status={status}
@@ -1047,6 +1127,13 @@ function RouteSessionView({
                   Runa lilás: pisar nessa armadilha abre a parede com a mesma
                   runa, para todos.
                 </span>
+                {passageRequired && (
+                  <span>
+                    <Diamond className="h-4 w-4" aria-hidden />
+                    Nesta rota o portal também espera a passagem marcada:
+                    abra-a pela armadilha da mesma runa ou com a Picareta.
+                  </span>
+                )}
                 <span>
                   <Package className="h-4 w-4" aria-hidden />
                   O baú é opcional: escolha uma ferramenta, só uma.

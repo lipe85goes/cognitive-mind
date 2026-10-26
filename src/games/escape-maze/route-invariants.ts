@@ -57,6 +57,12 @@ export interface DynamicMazeStateSnapshot {
    * reads as "nothing opened by a trap".
    */
   trapOpenedWalls?: Iterable<string>;
+  /**
+   * ROTA2-DEPENDENT-OBJECTIVES-02: the marked passage the Route's portal waits
+   * for (route-objectives.ts) — the linked wall on Routes 2 and 3, null on
+   * Route 1. Optional so an older snapshot reads as "no passage objective".
+   */
+  requiredPassageWall?: string | null;
   status: GameStatus;
 }
 
@@ -220,6 +226,31 @@ export function inspectDynamicMazeState(
   unfinishedObjectives.push(posKey(mazeMap.exitPosition));
   if (!chestOpened && mazeMap.chest) unfinishedObjectives.push(posKey(mazeMap.chest));
   const unreachableObjectives = unfinishedObjectives.filter((key) => !reachable.has(key));
+  // ROTA2-DEPENDENT-OBJECTIVES-02: a marked passage still standing is an
+  // unfinished objective. It is not a cell to walk to — it is a wall to open,
+  // and it stays openable while its trap is unarmed and within reach, or while
+  // a Pickaxe (in hand, or still waiting in a Chest within reach) can be
+  // carried to a walkable cell beside it. Neither way needs the passage open.
+  const passageWall = snapshot.requiredPassageWall ?? null;
+  if (passageWall !== null && effectiveWalls.has(passageWall)) {
+    const passageTrap = [...wallOfTrap].find(([, wall]) => wall === passageWall)?.[0];
+    const byTrap =
+      passageTrap !== undefined && !armedTraps.has(passageTrap) && reachable.has(passageTrap);
+    const pickaxeObtainable =
+      (rewardSelected === "pickaxe" && !rewardSpent) ||
+      (chestOpened && rewardSelected === null) ||
+      (!chestOpened && mazeMap.chest !== null && reachable.has(posKey(mazeMap.chest)));
+    const wallCell = keyToPosition(passageWall);
+    const beside = [
+      { row: wallCell.row - 1, col: wallCell.col },
+      { row: wallCell.row + 1, col: wallCell.col },
+      { row: wallCell.row, col: wallCell.col - 1 },
+      { row: wallCell.row, col: wallCell.col + 1 },
+    ];
+    const byPickaxe =
+      pickaxeObtainable && beside.some((cell) => insideBoard(cell) && reachable.has(posKey(cell)));
+    if (!byTrap && !byPickaxe) unreachableObjectives.push(passageWall);
+  }
   if (unreachableObjectives.length > 0) issues.push("UNREACHABLE_OBJECTIVE");
 
   const topologicallySolvable = unreachableObjectives.length === 0;

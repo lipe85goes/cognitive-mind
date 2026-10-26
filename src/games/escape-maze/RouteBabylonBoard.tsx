@@ -41,6 +41,11 @@ interface RouteBabylonBoardProps {
   trapLinks: RouteTrapLink[];
   /** ROTA2-DYNAMIC-TRAPS-01: walls dynamic traps opened, already out of `walls`. */
   trapOpenedWalls: string[];
+  /**
+   * ROTA2-DEPENDENT-OBJECTIVES-02: the portal is usable — the hook's derived
+   * objective verdict (lights, and the marked passage on Routes 2 and 3).
+   */
+  portalActive: boolean;
   reducedMotion: boolean;
   status: GameStatus;
   onMove: (delta: GridPosition) => void;
@@ -65,6 +70,7 @@ export function RouteBabylonBoard({
   brokenWall,
   trapLinks,
   trapOpenedWalls,
+  portalActive,
   reducedMotion,
   status,
   onMove,
@@ -106,6 +112,7 @@ export function RouteBabylonBoard({
         wall: link.mutation.wall,
       })),
       trapOpenedWallKeys: trapOpenedWalls,
+      portalActive,
       dangerTiles: Array.from(dangerTiles),
       reducedMotion,
       status,
@@ -127,6 +134,7 @@ export function RouteBabylonBoard({
       brokenWall,
       trapLinks,
       trapOpenedWalls,
+      portalActive,
       reducedMotion,
       status,
     ],
@@ -234,6 +242,7 @@ export function RouteBabylonBoard({
           .map((link) => `${link.trap}>${link.wall}`)
           .join(" ")}
         data-trap-opened-wall-cells={state.trapOpenedWallKeys.join(" ")}
+        data-portal-active={portalActive ? "true" : "false"}
         data-danger-cells={state.dangerTiles.join(" ")}
         data-move-targets={state.moveTargets.join(" ")}
         data-status={status}
