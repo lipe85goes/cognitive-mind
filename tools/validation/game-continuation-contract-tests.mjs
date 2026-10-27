@@ -1821,6 +1821,8 @@ const GARBAGE = [null, 7, "result", { id: "half", gameId: ROUTE }, { ...LEGACY[0
       "@/games/escape-maze/route-generation-client",
       "@/games/escape-maze/route-geometry",
       "@/games/escape-maze/route-invariants",
+      // ROTA2-DEPENDENT-OBJECTIVES-02 (approved): the pure objective module, on a tree that has it
+      ...(readSource("src/games/escape-maze/route-objectives.ts") !== null ? ["@/games/escape-maze/route-objectives"] : []),
       "@/games/escape-maze/route-session",
       "@/lib/game-sounds",
       "react",

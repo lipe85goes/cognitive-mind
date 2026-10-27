@@ -272,7 +272,10 @@ await check("K10", "NOTHING_BUT_PRESENTATION", () => {
   // exactly its pinned delta reversed (treeBeforeRota2); a file that then reads as at the base did not move otherwise.
   const live = treeBeforeRota2(openSourceTree({ root: ROOT }));
   const atBase = openSourceTree({ root: ROOT, rev: BASE });
-  const movedOutsideRota2 = (f) => !live.beforeRota2 || !live.exists(f) || !atBase.exists(f) || live.read(f) !== atBase.read(f);
+  // ROTA2-DEPENDENT-OBJECTIVES-02 adds one Rota module: absent from the reversed view AND from the base, it is exactly
+  // an approved mission's addition.
+  const approvedAddition = (f) => live.beforeRota2 && !live.exists(f) && !atBase.exists(f);
+  const movedOutsideRota2 = (f) => !approvedAddition(f) && (!live.beforeRota2 || !live.exists(f) || !atBase.exists(f) || live.read(f) !== atBase.read(f));
   const touched = [...changed, ...untracked].filter((f) => PRESENTATION_ONLY.some((dir) => f.startsWith(dir))).filter(movedOutsideRota2);
   return { pass: touched.length === 0, base: BASE.slice(0, 7), changedInSrc: [...changed, ...untracked], touchedOutsidePresentation: touched };
 });

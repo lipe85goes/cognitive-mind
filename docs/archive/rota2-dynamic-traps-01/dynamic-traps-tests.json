@@ -560,9 +560,10 @@
       "name": "V1_ROUTE_WITHOUT_ACTIVATION_BEHAVES_EQUIVALENTLY",
       "pass": true,
       "detail": {
-        "gamesCompared": 27,
+        "gamesCompared": 9,
         "mapsDifferentFromV1": 0,
         "divergences": [],
+        "supersededByDependentObjectives": 18,
         "note": "the linked trap avoided; maps differing from v1 are the link gate's retries (census)"
       }
     },
@@ -599,6 +600,6 @@
     }
   ],
   "run": {
-    "elapsedMs": 60968
+    "elapsedMs": 34760
   }
 }

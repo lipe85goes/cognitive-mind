@@ -3,55 +3,54 @@
   "commitTurns": 3,
   "gateMet": true,
   "seed": 7200000,
-  "doorA": "3,7",
-  "doorB": "2,8",
+  "doorA": "2,7",
+  "doorB": "0,5",
   "accesses": [
-    "3,7",
-    "2,8",
-    "0,4"
+    "2,7",
+    "0,5"
   ],
-  "committedTo": "3,7",
+  "committedTo": "2,7",
   "heldThroughSwitch": true,
-  "targetAfterCommitExpired": "2,8",
+  "targetAfterCommitExpired": "0,5",
   "reaimedToNewDoor": true,
   "trace": [
     {
       "turn": 1,
-      "threatenedDoor": "3,7",
-      "sentinel": "2,7",
-      "committedTarget": "3,7",
+      "threatenedDoor": "2,7",
+      "sentinel": "1,7",
+      "committedTarget": "2,7",
       "commitLeft": 3,
       "note": "Explorer threatens door A — Sentinel commits"
     },
     {
       "turn": 2,
-      "threatenedDoor": "2,8",
-      "sentinel": "3,7",
-      "committedTarget": "3,7",
+      "threatenedDoor": "0,5",
+      "sentinel": "2,7",
+      "committedTarget": "2,7",
       "commitLeft": 2,
       "note": "Explorer switched to door B"
     },
     {
       "turn": 3,
-      "threatenedDoor": "2,8",
-      "sentinel": "3,7",
-      "committedTarget": "3,7",
+      "threatenedDoor": "0,5",
+      "sentinel": "2,7",
+      "committedTarget": "2,7",
       "commitLeft": 1,
       "note": "Explorer switched to door B"
     },
     {
       "turn": 4,
-      "threatenedDoor": "2,8",
-      "sentinel": "3,7",
-      "committedTarget": "3,7",
+      "threatenedDoor": "0,5",
+      "sentinel": "2,7",
+      "committedTarget": "2,7",
       "commitLeft": 0,
       "note": "Explorer switched to door B"
     },
     {
       "turn": 5,
-      "threatenedDoor": "2,8",
-      "sentinel": "2,7",
-      "committedTarget": "2,8",
+      "threatenedDoor": "0,5",
+      "sentinel": "1,7",
+      "committedTarget": "0,5",
       "commitLeft": 3,
       "note": "commitment expired — may re-aim"
     }

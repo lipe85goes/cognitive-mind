@@ -34,7 +34,7 @@ import ts from "typescript";
 import { EXIT_OK, EXIT_USAGE, EXIT_VALIDATION_FAILED, openEvidence } from "./evidence.mjs";
 import { cellKey, loadRouteRuntime, pathBetween, playToEnd, sameCell, walkableNeighbours } from "./route-runtime-harness.mjs";
 import { ACTIONS } from "./dynamic-solver.mjs";
-import { buildDynamicContext, dynamicSuccessorSet, exploreDynamic, packDynamicState } from "./rota2-dynamic-solver.mjs";
+import { buildDynamicContext, dynamicSuccessorSet, packDynamicState } from "./rota2-dynamic-solver.mjs";
 import { objectiveStructure } from "./rota2-objectives-structure.mjs";
 
 export const OBJECTIVES_BASE = "32c419a2784b54043f38f08afd60c8628f44f54c";

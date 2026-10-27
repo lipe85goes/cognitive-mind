@@ -209,7 +209,10 @@ async function runChecks(tree) {
     // HOME-WORLD-VISUAL-UNIFICATION-01 (restated): the Home files that mission owns are the Home's (HOME_ATELIER_FILES)
     // ROTA2-DYNAMIC-TRAPS-01: the approved Rota 2.0 mission changes the Rota's own files on purpose; they are read with
     // exactly its pinned delta reversed (treeBeforeRota2), so any other change to them is still caught here.
-    const changed = changedOutsideGame03(treeBeforeRota2(tree), BASE_TREE, DIR);
+    // ROTA2-DEPENDENT-OBJECTIVES-02 adds one Rota module: the reversed view says it does not exist, and the base never
+    // had it — that is exactly an approved mission's addition, not a change outside Game 03.
+    const beforeRota2 = treeBeforeRota2(tree);
+    const changed = changedOutsideGame03(beforeRota2, BASE_TREE, DIR).filter((file) => beforeRota2.exists(file) || BASE_TREE.exists(file));
     const fields = ["dependencies", "devDependencies", "peerDependencies", "optionalDependencies"];
     const mine = JSON.parse(tree.read("package.json"));
     const base = JSON.parse(BASE_TREE.read("package.json"));
