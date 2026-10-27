@@ -329,6 +329,13 @@ regra do jogo mudou para o ambiente.
   recuperação, desempenho).
 - Game 03, Home, Circuito: nenhum arquivo de produto tocado (O29: só
   `src/games/escape-maze/` mudou).
+- Dois validadores legados **sempre reescrevem** seus registros ao rodar
+  (`sentinel-runtime-equivalence.mjs`, `dynamic-solvability-02.mjs`); os dois
+  imprimem OK aqui. Rodados na base exata `32c419a`, eles **também** reescrevem
+  os quatro registros (já estavam defasados na base). Os três da Sentinela saem
+  idênticos na base e na missão; o do Dynamic Solvability 02 difere da base só
+  em `observedStates` 3689 → 3727 e `wins` 16 → 15 (as Rotas 2/3 agora pedem a
+  passagem). Os registros, de missões fechadas, foram mantidos como estavam.
 
 ## 7. Limitações
 
