@@ -1128,10 +1128,19 @@ async function runSuite({ rev = null, transforms = [], sceneTransform = null, bo
     let compared = 0;
     let differentMaps = 0;
     const divergences = [];
+    // ROTA2-DEPENDENT-OBJECTIVES-02 (approved) supersedes this contract on Routes 2 and 3: there a Route that never
+    // opens the marked passage does not open its portal, on purpose. On such a tree (the hook says its Route's
+    // portal waits for the passage) those Routes are not v1 any more — their contract is
+    // rota2-dependent-objectives-tests.mjs (O10, O16) — and only Route 1 is held to v1 here.
+    const superseded = [];
     for (const difficulty of DIFFICULTIES) {
       for (const route of ROUTES) {
         for (const seed of [8_100_001, 8_100_002, 8_100_003]) {
           const now = RT.mount({ seed, difficulty, routeNumber: route });
+          if (now.state.objectives?.passage?.required) {
+            superseded.push(`${difficulty}-${route}-${seed}`);
+            continue;
+          }
           const link = linkOf(now.state.mazeMap);
           const avoid = link ? link.trap : null;
           const a = play(RT, seed, difficulty, route, avoid);
@@ -1145,7 +1154,8 @@ async function runSuite({ rev = null, transforms = [], sceneTransform = null, bo
         }
       }
     }
-    return { pass: divergences.length === 0 && compared >= 20, gamesCompared: compared, mapsDifferentFromV1: differentMaps, divergences: divergences.slice(0, 3), note: "the linked trap avoided; maps differing from v1 are the link gate's retries (census)" };
+    const enough = superseded.length === 0 ? compared >= 20 : compared >= 8;
+    return { pass: divergences.length === 0 && enough, gamesCompared: compared, mapsDifferentFromV1: differentMaps, divergences: divergences.slice(0, 3), supersededByDependentObjectives: superseded.length, note: "the linked trap avoided; maps differing from v1 are the link gate's retries (census)" };
   });
 
   await guarded("T28", "preserved", "ROTA_JOURNEY_STILL_TERMINATES", () => {

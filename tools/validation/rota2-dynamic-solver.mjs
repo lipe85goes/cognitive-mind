@@ -35,6 +35,18 @@
  * the union of both variants' doors and read back as a cell — the hook's
  * Sentinel holds its door as a position — so it means the same door on both.
  *
+ * ROTA2-DEPENDENT-OBJECTIVES-02 — objectives are part of the win condition.
+ * `requirePassage: true` (Routes 2 and 3) makes the portal wait for the marked
+ * passage too: reaching the exit with every light is a win only once the
+ * linked wall is open. In this PRE_CHEST model the only way the wall opens is
+ * its trap, and the trap's bit is already in the key — so the objective adds no
+ * state component: "passage open" IS `traps & linkBit`. Either order of the two
+ * prerequisites is representable (the lights mask and the trap bit are set
+ * independently). The Pickaxe opening the passage is outside this model (no
+ * Chest), and is covered structurally (rota2-dependent-objectives-census.mjs)
+ * and by the hook. `requirePassage: false` (Route 1, and the default) is the
+ * DYNAMIC-TRAPS-01 rule, unchanged.
+ *
  * Writes nothing.
  */
 import { ACTIONS, API, buildContext } from "./dynamic-solver.mjs";
@@ -249,13 +261,14 @@ function unifyAccesses(closedMeta, openMeta) {
   return unionAccessIds;
 }
 
-export function buildDynamicContext(map, difficulty, { dynamic = true } = {}) {
+export function buildDynamicContext(map, difficulty, { dynamic = true, requirePassage = false } = {}) {
   const closed = buildContext(map, difficulty);
   const link = dynamic ? (map.trapLinks ?? [])[0] ?? null : null;
   if (!link) {
     const meta = preparePackedContext(closed);
     const unionAccessIds = unifyAccesses(meta, meta);
-    return { map, difficulty, closed, open: closed, linkBit: 0, link: null, accessesDiffer: false, unionAccessIds };
+    // No link, nothing to open: the passage objective is complete (route-objectives.ts reads it the same way).
+    return { map, difficulty, closed, open: closed, linkBit: 0, link: null, accessesDiffer: false, unionAccessIds, requirePassage: false };
   }
   const openedWalls = new Set(map.walls);
   openedWalls.delete(link.mutation.wall);
@@ -277,6 +290,8 @@ export function buildDynamicContext(map, difficulty, { dynamic = true } = {}) {
     unionAccessIds,
     zoneDiffers: !sameIds([...closedMeta.zoneMask], [...openMeta.zoneMask]),
     openedCell: cellId(link.mutation.wall),
+    // ROTA2-DEPENDENT-OBJECTIVES-02: the portal also waits for the linked wall (= the linked trap's bit).
+    requirePassage: Boolean(requirePassage) && trapIndex >= 0,
   };
 }
 
@@ -297,7 +312,11 @@ export function enumerateDynamicSuccessors(dctx, canonicalOrNumericState, action
   if (next === state.h || next === state.s) return { hasWin: false, hasLoss: true, stateCount: 0 };
   const lights = state.lights | before.lightBitByCell[next];
   const traps = state.traps | before.trapBitByCell[next];
-  if (next === before.exitId && lights === before.allLights) {
+  // ROTA2-DEPENDENT-OBJECTIVES-02: the portal is ready when its prerequisites are — every light, and on a
+  // Route with the passage objective the linked wall open, which pre-Chest means its trap armed. An Explorer on
+  // the exit before that simply stands there, as in the hook.
+  const portalReady = lights === before.allLights && (!dctx.requirePassage || Boolean(traps & dctx.linkBit));
+  if (next === before.exitId && portalReady) {
     return { hasWin: true, hasLoss: false, stateCount: 0 };
   }
   // The trap this step armed has already opened its wall: the defenders read
@@ -416,8 +435,8 @@ export function exploreDynamic(dctx, { maxStates = 3_000_000, maxElapsedMs = 60_
  * link ignored: the trap only blocks the defenders). Labels are the
  * reference's PRE_CHEST labels; INCONCLUSIVE when a limit cut the search.
  */
-export function classifyMap(map, difficulty, { dynamic = true, maxStates, maxElapsedMs } = {}) {
-  const dctx = buildDynamicContext(map, difficulty, { dynamic });
+export function classifyMap(map, difficulty, { dynamic = true, requirePassage = false, maxStates, maxElapsedMs } = {}) {
+  const dctx = buildDynamicContext(map, difficulty, { dynamic, requirePassage });
   const graph = exploreDynamic(dctx, { maxStates, maxElapsedMs });
   const solved = solvePackedGraph(graph);
   return {

@@ -1,0 +1,803 @@
+{
+  "mission": "ROTA2-DEPENDENT-OBJECTIVES-02",
+  "base": "32c419a2784b54043f38f08afd60c8628f44f54c",
+  "allPass": true,
+  "passed": 30,
+  "total": 30,
+  "fixtures": {
+    "lightsFirst2": {
+      "seed": 6402,
+      "difficulty": "easy",
+      "route": 2,
+      "margin": 1
+    },
+    "lightsFirst3": {
+      "seed": 6400,
+      "difficulty": "easy",
+      "route": 3,
+      "margin": 1
+    },
+    "passageFirst": {
+      "seed": 6400,
+      "difficulty": "easy",
+      "route": 3,
+      "margin": 1
+    },
+    "pickaxeFirst": {
+      "seed": 6403,
+      "difficulty": "easy",
+      "route": 2,
+      "margin": 1
+    },
+    "pickaxeLast": {
+      "seed": 6401,
+      "difficulty": "medium",
+      "route": 3,
+      "margin": 1
+    },
+    "pickaxeOther": {
+      "seed": 6400,
+      "difficulty": "easy",
+      "route": 2,
+      "margin": 1
+    },
+    "secondChance": {
+      "seed": 6404,
+      "difficulty": "easy",
+      "route": 2,
+      "margin": 1
+    },
+    "earlyNothing": {
+      "seed": 6401,
+      "difficulty": "easy",
+      "route": 2,
+      "margin": 1
+    }
+  },
+  "checks": [
+    {
+      "id": "O01",
+      "tag": "preserved",
+      "name": "ROUTE1_OBJECTIVE_V1_EQUIVALENT",
+      "pass": true,
+      "detail": {
+        "gamesCompared": 36,
+        "framesCompared": 1808,
+        "wins": 16,
+        "portalActivations": 23,
+        "plan": [
+          "collect-all-lights"
+        ],
+        "divergences": []
+      }
+    },
+    {
+      "id": "O02",
+      "tag": "objectives",
+      "name": "ROUTE2_LIGHTS_AND_PASSAGE_PREREQUISITE",
+      "pass": true,
+      "detail": {
+        "plan": [
+          "collect-all-lights",
+          "open-linked-passage"
+        ],
+        "allLightsCollectedPortalActive": false,
+        "fixture": {
+          "seed": 6402,
+          "difficulty": "easy",
+          "route": 2,
+          "margin": 1
+        }
+      }
+    },
+    {
+      "id": "O03",
+      "tag": "objectives",
+      "name": "ROUTE3_LIGHTS_AND_PASSAGE_PREREQUISITE",
+      "pass": true,
+      "detail": {
+        "plan": [
+          "collect-all-lights",
+          "open-linked-passage"
+        ],
+        "allLightsCollectedPortalActive": false,
+        "fixture": {
+          "seed": 6400,
+          "difficulty": "easy",
+          "route": 3,
+          "margin": 1
+        }
+      }
+    },
+    {
+      "id": "O04",
+      "tag": "objectives",
+      "name": "OBJECTIVE_PLAN_USES_NO_RNG",
+      "pass": true,
+      "detail": {
+        "randomDrawn": false,
+        "plans": [
+          [
+            "collect-all-lights"
+          ],
+          [
+            "collect-all-lights",
+            "open-linked-passage"
+          ],
+          [
+            "collect-all-lights",
+            "open-linked-passage"
+          ]
+        ],
+        "hookPlans": [
+          "1:[\"collect-all-lights\"]",
+          "2:[\"collect-all-lights\",\"open-linked-passage\"]",
+          "3:[\"collect-all-lights\",\"open-linked-passage\"]"
+        ],
+        "mapsCompared": 54,
+        "mapsDifferentFromBase": 0
+      }
+    },
+    {
+      "id": "O05",
+      "tag": "objectives",
+      "name": "LINKED_PASSAGE_INITIALLY_INCOMPLETE",
+      "pass": true,
+      "detail": {
+        "mounts": 18,
+        "bad": []
+      }
+    },
+    {
+      "id": "O06",
+      "tag": "objectives",
+      "name": "TRAP_OPEN_COMPLETES_PASSAGE_OBJECTIVE",
+      "pass": true,
+      "detail": {
+        "rows": [
+          {
+            "route": 2,
+            "wallStandingBefore": true,
+            "passage": {
+              "required": true,
+              "wall": "6,4",
+              "open": true,
+              "complete": true
+            }
+          },
+          {
+            "route": 3,
+            "wallStandingBefore": true,
+            "passage": {
+              "required": true,
+              "wall": "3,5",
+              "open": true,
+              "complete": true
+            }
+          },
+          {
+            "route": 3,
+            "wallStandingBefore": true,
+            "passage": {
+              "required": true,
+              "wall": "3,5",
+              "open": true,
+              "complete": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "O07",
+      "tag": "objectives",
+      "name": "PICKAXE_OPEN_OF_LINKED_WALL_COMPLETES_PASSAGE",
+      "pass": true,
+      "detail": {
+        "before": {
+          "required": true,
+          "wall": "5,4",
+          "open": false,
+          "complete": false
+        },
+        "after": {
+          "required": true,
+          "wall": "5,4",
+          "open": true,
+          "complete": true
+        },
+        "portalActive": false,
+        "message": "Parede aberta: a passagem marcada está aberta. Ainda faltam luzes.",
+        "thenWon": false,
+        "fixture": {
+          "seed": 6403,
+          "difficulty": "easy",
+          "route": 2,
+          "margin": 1
+        }
+      }
+    },
+    {
+      "id": "O08",
+      "tag": "objectives",
+      "name": "PICKAXE_OPEN_OF_ANOTHER_WALL_DOES_NOT",
+      "pass": true,
+      "detail": {
+        "broken": "3,2",
+        "linked": "6,2",
+        "passage": {
+          "required": true,
+          "wall": "6,2",
+          "open": false,
+          "complete": false
+        },
+        "events": [
+          "WALL_OPENED",
+          "DEFENDERS_SETTLED"
+        ]
+      }
+    },
+    {
+      "id": "O09",
+      "tag": "objectives",
+      "name": "SECOND_CHANCE_PATH_REMAINS_VIABLE",
+      "pass": true,
+      "detail": {
+        "won": true,
+        "reward": "second-chance",
+        "passageAfterTrap": {
+          "required": true,
+          "wall": "5,4",
+          "open": true,
+          "complete": true
+        },
+        "fixture": {
+          "seed": 6404,
+          "difficulty": "easy",
+          "route": 2,
+          "margin": 1
+        }
+      }
+    },
+    {
+      "id": "O10",
+      "tag": "objectives",
+      "name": "ALL_LIGHTS_ALONE_DO_NOT_ACTIVATE_PORTAL_R2_R3",
+      "pass": true,
+      "detail": {
+        "rows": [
+          {
+            "route": 2,
+            "portalActive": false,
+            "lightsComplete": true,
+            "message": "Todas as luzes coletadas. Falta abrir a passagem marcada.",
+            "early": {
+              "status": "playing",
+              "message": "As luzes estão prontas. Falta abrir a passagem marcada.",
+              "completions": 0
+            }
+          },
+          {
+            "route": 3,
+            "portalActive": false,
+            "lightsComplete": true,
+            "message": "Todas as luzes coletadas. Falta abrir a passagem marcada.",
+            "early": {
+              "status": "playing",
+              "message": "As luzes estão prontas. Falta abrir a passagem marcada.",
+              "completions": 0
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "O11",
+      "tag": "objectives",
+      "name": "PASSAGE_ALONE_DOES_NOT_ACTIVATE_PORTAL",
+      "pass": true,
+      "detail": {
+        "view": {
+          "portalActive": false,
+          "objectives": {
+            "plan": {
+              "prerequisites": [
+                "collect-all-lights",
+                "open-linked-passage"
+              ]
+            },
+            "lights": {
+              "collected": 0,
+              "total": 4,
+              "complete": false
+            },
+            "passage": {
+              "required": true,
+              "wall": "3,5",
+              "open": true,
+              "complete": true
+            },
+            "missing": [
+              "collect-all-lights"
+            ],
+            "portalReady": false
+          },
+          "message": "Armadilha ativada: a passagem marcada se abriu, para todos. Ainda faltam luzes."
+        },
+        "events": [
+          "EXPLORER_STEP_COMMITTED",
+          "TRAP_ARMED",
+          "WALL_OPENED_BY_TRAP",
+          "DEFENDERS_SETTLED"
+        ]
+      }
+    },
+    {
+      "id": "O12",
+      "tag": "preserved",
+      "name": "FINAL_LIGHT_ACTIVATES_PORTAL_IF_PASSAGE_OPEN",
+      "pass": true,
+      "detail": {
+        "events": [
+          "EXPLORER_STEP_COMMITTED",
+          "LIGHT_COLLECTED",
+          "PORTAL_ACTIVATED",
+          "DEFENDERS_SETTLED"
+        ],
+        "view": {
+          "portalActive": true,
+          "message": "Portal ativado! Vá até a saída."
+        },
+        "won": true
+      }
+    },
+    {
+      "id": "O13",
+      "tag": "objectives",
+      "name": "TRAP_ACTIVATES_PORTAL_IF_LIGHTS_COMPLETE",
+      "pass": true,
+      "detail": {
+        "rows": [
+          {
+            "route": 2,
+            "events": [
+              "EXPLORER_STEP_COMMITTED",
+              "TRAP_ARMED",
+              "WALL_OPENED_BY_TRAP",
+              "PORTAL_ACTIVATED",
+              "DEFENDERS_SETTLED"
+            ],
+            "order": true,
+            "defendersAfter": true,
+            "hunterOnNewTopology": true,
+            "portalActive": true,
+            "message": "Armadilha ativada: a passagem marcada se abriu, para todos. Portal ativado! Vá até a saída.",
+            "won": true
+          },
+          {
+            "route": 3,
+            "events": [
+              "EXPLORER_STEP_COMMITTED",
+              "TRAP_ARMED",
+              "WALL_OPENED_BY_TRAP",
+              "PORTAL_ACTIVATED",
+              "DEFENDERS_SETTLED"
+            ],
+            "order": true,
+            "defendersAfter": true,
+            "hunterOnNewTopology": true,
+            "portalActive": true,
+            "message": "Armadilha ativada: a passagem marcada se abriu, para todos. Portal ativado! Vá até a saída.",
+            "won": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "O14",
+      "tag": "objectives",
+      "name": "PICKAXE_ACTIVATES_PORTAL_IF_LIGHTS_COMPLETE",
+      "pass": true,
+      "detail": {
+        "events": [
+          "WALL_OPENED",
+          "PORTAL_ACTIVATED",
+          "DEFENDERS_SETTLED"
+        ],
+        "lightsBefore": true,
+        "portalBefore": false,
+        "hunterOnOpenedMaze": true,
+        "view": {
+          "portalActive": true,
+          "message": "Parede aberta: a passagem marcada está aberta. Portal ativado! Vá até a saída.",
+          "status": "playing"
+        },
+        "thenWon": true
+      }
+    },
+    {
+      "id": "O15",
+      "tag": "preserved",
+      "name": "PORTAL_ACTIVATED_FIRES_ONCE",
+      "pass": true,
+      "detail": {
+        "sessions": [
+          {
+            "fixture": "2/6402",
+            "count": 1,
+            "won": true
+          },
+          {
+            "fixture": "3/6400",
+            "count": 1,
+            "won": true
+          },
+          {
+            "fixture": "3/6400",
+            "count": 1,
+            "won": true
+          },
+          {
+            "fixture": "2/6403",
+            "count": 1,
+            "won": false
+          },
+          {
+            "fixture": "3/6401",
+            "count": 1,
+            "won": true
+          },
+          {
+            "fixture": "2/6404",
+            "count": 1,
+            "won": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "O16",
+      "tag": "objectives",
+      "name": "EARLY_PORTAL_DOES_NOT_WIN",
+      "pass": true,
+      "detail": {
+        "rows": [
+          {
+            "case": "nothing done",
+            "status": "playing",
+            "completions": 0
+          },
+          {
+            "case": "lights done R2",
+            "status": "playing",
+            "completions": 0
+          },
+          {
+            "case": "lights done R3",
+            "status": "playing",
+            "completions": 0
+          },
+          {
+            "case": "passage done",
+            "status": "playing",
+            "completions": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "O17",
+      "tag": "objectives",
+      "name": "MISSING_OBJECTIVE_FEEDBACK_CORRECT_AND_CALM",
+      "pass": true,
+      "detail": {
+        "seen": {
+          "bothMissing": "Faltam luzes e a passagem marcada.",
+          "passageMissing": "As luzes estão prontas. Falta abrir a passagem marcada.",
+          "lightsMissing": "A passagem está aberta. Ainda faltam luzes.",
+          "lightsDonePassageMissing": "Todas as luzes coletadas. Falta abrir a passagem marcada.",
+          "trapLightsMissing": "Armadilha ativada: a passagem marcada se abriu, para todos. Ainda faltam luzes."
+        },
+        "wrong": [],
+        "stressful": []
+      }
+    },
+    {
+      "id": "O18",
+      "tag": "objectives",
+      "name": "RESTART_RESETS_DERIVED_OBJECTIVE_PROGRESS",
+      "pass": true,
+      "detail": {
+        "progressedBeforeRestart": true,
+        "after": {
+          "passage": {
+            "required": true,
+            "wall": "3,2",
+            "open": false,
+            "complete": false
+          },
+          "lights": {
+            "collected": 0,
+            "total": 4,
+            "complete": false
+          },
+          "portalActive": false
+        }
+      }
+    },
+    {
+      "id": "O19",
+      "tag": "objectives",
+      "name": "NEXT_ROUTE_GETS_ITS_OWN_OBJECTIVE_PLAN",
+      "pass": true,
+      "detail": {
+        "journey": [
+          {
+            "route": 1,
+            "plan": [
+              "collect-all-lights"
+            ],
+            "passageComplete": true,
+            "portalActive": false,
+            "wallStanding": true,
+            "passageOpenedBeforeLeaving": false
+          },
+          {
+            "route": 2,
+            "plan": [
+              "collect-all-lights",
+              "open-linked-passage"
+            ],
+            "passageComplete": false,
+            "portalActive": false,
+            "wallStanding": true,
+            "passageOpenedBeforeLeaving": true
+          },
+          {
+            "route": 3,
+            "plan": [
+              "collect-all-lights",
+              "open-linked-passage"
+            ],
+            "passageComplete": false,
+            "portalActive": false,
+            "wallStanding": true
+          }
+        ],
+        "afterAWonRoute2": {
+          "route": 3,
+          "passageComplete": false,
+          "lights": 0,
+          "portalActive": false
+        }
+      }
+    },
+    {
+      "id": "O20",
+      "tag": "objectives",
+      "name": "ROUTE1_TO_ROUTE2_INTRODUCES_PASSAGE_REQUIREMENT",
+      "pass": true,
+      "detail": {
+        "r1": {
+          "route": 1,
+          "plan": [
+            "collect-all-lights"
+          ],
+          "passageComplete": true,
+          "portalActive": false,
+          "wallStanding": true,
+          "passageOpenedBeforeLeaving": false
+        },
+        "r2": {
+          "route": 2,
+          "plan": [
+            "collect-all-lights",
+            "open-linked-passage"
+          ],
+          "passageComplete": false,
+          "portalActive": false,
+          "wallStanding": true,
+          "passageOpenedBeforeLeaving": true
+        }
+      }
+    },
+    {
+      "id": "O21",
+      "tag": "objectives",
+      "name": "ROUTE2_TO_ROUTE3_PRESERVES_REQUIREMENT",
+      "pass": true,
+      "detail": {
+        "r2": {
+          "route": 2,
+          "plan": [
+            "collect-all-lights",
+            "open-linked-passage"
+          ],
+          "passageComplete": false,
+          "portalActive": false,
+          "wallStanding": true,
+          "passageOpenedBeforeLeaving": true
+        },
+        "r3": {
+          "route": 3,
+          "plan": [
+            "collect-all-lights",
+            "open-linked-passage"
+          ],
+          "passageComplete": false,
+          "portalActive": false,
+          "wallStanding": true
+        }
+      }
+    },
+    {
+      "id": "O22",
+      "tag": "objectives",
+      "name": "CURRENT_TOPOLOGY_IS_THE_PASSAGE_TRUTH",
+      "pass": true,
+      "detail": {
+        "table": {
+          "standing": false,
+          "opened": true,
+          "otherOpened": false,
+          "openedNoLights": false,
+          "standingAllLights": false,
+          "openedAllLights": true
+        },
+        "rendersInspected": 1193,
+        "passageMismatch": 0,
+        "portalMismatch": 0,
+        "examples": []
+      }
+    },
+    {
+      "id": "O23",
+      "tag": "objectives",
+      "name": "NO_DUPLICATE_OBJECTIVE_STATE",
+      "pass": true,
+      "detail": {
+        "derivedInTheHook": true,
+        "stateFields": 19,
+        "addedStateFields": [],
+        "addedActions": [],
+        "addedEvents": [],
+        "objectiveNamedFields": []
+      }
+    },
+    {
+      "id": "O24",
+      "tag": "objectives",
+      "name": "OBJECTIVE_MODULE_IS_PURE",
+      "pass": true,
+      "detail": {
+        "imports": [
+          {
+            "from": "@/games/escape-maze/route-generation",
+            "typeOnly": true
+          }
+        ],
+        "forbidden": [],
+        "runsInABareRealm": true
+      }
+    },
+    {
+      "id": "O25",
+      "tag": "objectives",
+      "name": "DYNAMIC_SOLVER_MODELS_PASSAGE_REQUIREMENT",
+      "pass": true,
+      "detail": {
+        "winsWithPassageClosed": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "rows": [
+          {
+            "route": 1,
+            "difficulty": "easy",
+            "seed": 6501,
+            "required": false,
+            "passageClosedWins": true,
+            "passageOpenWins": true
+          },
+          {
+            "route": 2,
+            "difficulty": "easy",
+            "seed": 6501,
+            "required": true,
+            "passageClosedWins": false,
+            "passageOpenWins": true
+          },
+          {
+            "route": 3,
+            "difficulty": "easy",
+            "seed": 6501,
+            "required": true,
+            "passageClosedWins": false,
+            "passageOpenWins": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "O26",
+      "tag": "objectives",
+      "name": "SOLVER_AND_HOOK_AGREE",
+      "pass": true,
+      "detail": {
+        "transitions": 431,
+        "unsound": 0,
+        "heldDoorArmed": 0,
+        "objectiveUnsound": 0,
+        "afterPassage": 80,
+        "wins": 3,
+        "examples": []
+      }
+    },
+    {
+      "id": "O27",
+      "tag": "structure",
+      "name": "ALL_1080_MAPS_STRUCTURALLY_COMPLETABLE",
+      "pass": true,
+      "detail": {
+        "maps": 1080,
+        "standard": 360,
+        "dependent": 720,
+        "completable": 1080,
+        "trapPath": 720,
+        "pickaxePath": 720,
+        "lightsFirst": 720,
+        "passageFirst": 720,
+        "impossible": 0,
+        "examples": []
+      }
+    },
+    {
+      "id": "O28",
+      "tag": "structure",
+      "name": "NO_OBJECTIVE_CIRCULAR_DEPENDENCY",
+      "pass": true,
+      "detail": {
+        "mapsWithPassage": 720,
+        "circular": 0,
+        "trapReachableOnlyThroughItsWall": 0,
+        "planAcyclic": true,
+        "prerequisitesIndependent": true,
+        "moduleOnThisTree": true
+      }
+    },
+    {
+      "id": "O29",
+      "tag": "preserved",
+      "name": "HOME_GAME03_CIRCUITO_UNAFFECTED",
+      "pass": true,
+      "detail": {
+        "comparedWith": "HEAD",
+        "srcFilesChanged": 7,
+        "outsideTheRota": []
+      }
+    },
+    {
+      "id": "O30",
+      "tag": "preserved",
+      "name": "NO_TIMER_SCORE_OR_NEW_REWARD",
+      "pass": true,
+      "detail": {
+        "timersNow": 1,
+        "timersBase": 1,
+        "scoringModuleUnchanged": true,
+        "scoreCallsUnchanged": true,
+        "chestRewards": [
+          "pickaxe",
+          "second-chance"
+        ]
+      }
+    }
+  ],
+  "run": {
+    "elapsedMs": 115932
+  }
+}

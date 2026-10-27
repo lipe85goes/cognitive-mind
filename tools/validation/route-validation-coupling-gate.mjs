@@ -209,6 +209,11 @@ const ALLOWED = {
     reason: "STRUCTURAL_ASSERTION",
     note: "ROTA2-DYNAMIC-TRAPS-01: the approved delta's manifest names the files it touches (the reversal the extraction suites read through route-module-loader's treeBeforeRota2)",
   },
+  "rota2-dependent-objectives-tests.mjs": {
+    kinds: ["hook-path", "rota-ts-compile"],
+    reason: "STRUCTURAL_ASSERTION",
+    note: "ROTA2-DEPENDENT-OBJECTIVES-02: instruments the event seam and the Hunter's policy by file, reads the state/event unions and the objective module's text (purity, no new state), and mutates named modules; its Rota runs through the graph",
+  },
   "rota2-dependent-objectives-edit.mjs": {
     kinds: ["hook-path", "rota-module-path"],
     reason: "STRUCTURAL_ASSERTION",

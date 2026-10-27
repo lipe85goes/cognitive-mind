@@ -413,7 +413,9 @@ for (const { seed, route, difficulty } of runtimeSample) {
     margin = m;
     const run = RT.mount({ seed, difficulty, routeNumber: route });
     const link = run.state.trapLinks[0];
-    currentDctx = buildDynamicContext(run.state.mazeMap, difficulty);
+    // ROTA2-DEPENDENT-OBJECTIVES-02: the solver is held against the hook's OWN win condition — on a tree where
+    // the Route's portal also waits for the marked passage, the model's does too (absent before that mission).
+    currentDctx = buildDynamicContext(run.state.mazeMap, difficulty, { requirePassage: Boolean(run.state.objectives?.passage?.required) });
     inspect(run.state);
     if (m === 1) runtime.activationsAttempted += 1;
     const trap = keyToCell(link.trap);

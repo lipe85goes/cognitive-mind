@@ -558,7 +558,18 @@ export function playToEnd(run, policy, budget = 400) {
       best = pathBetween(g.player, g.guardian, g.walls);
     } else {
       const remaining = g.mazeMap.collectibleStars.filter((star) => !g.collectedSet.has(cellKey(star)));
-      const goals = remaining.length ? remaining : [g.mazeMap.exitPosition];
+      // ROTA2-DEPENDENT-OBJECTIVES-02: on a Route whose portal also waits for the marked passage, a portal still
+      // asleep after the last light sends the Explorer to the linked trap, which opens it. On any other tree (or
+      // Route) the portal is awake once the lights are, and this changes nothing.
+      const passageTrap =
+        !remaining.length && g.portalActive === false && g.objectives?.passage && !g.objectives.passage.complete
+          ? (g.trapLinks ?? [])[0]?.trap ?? null
+          : null;
+      const goals = remaining.length
+        ? remaining
+        : passageTrap
+          ? [{ row: Number(passageTrap.split(",")[0]), col: Number(passageTrap.split(",")[1]) }]
+          : [g.mazeMap.exitPosition];
       const reach = [g.guardian, g.sentinel, ...walkableNeighbours(g.guardian, g.walls)].map(cellKey);
       const around = new Set([...g.walls, ...reach]);
       around.delete(cellKey(g.player));
