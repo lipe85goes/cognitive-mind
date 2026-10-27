@@ -638,6 +638,15 @@ const ROTA_FIXTURE = {
   collectedCount: 0,
   totalLights: 1,
   portalActive: false,
+  // ROTA2-DEPENDENT-OBJECTIVES-02: the hook's derived objective view (Route 1's plan: the lights alone). A tree from
+  // before that mission never reads it.
+  objectives: {
+    plan: { prerequisites: ["collect-all-lights"] },
+    lights: { collected: 0, total: 1, complete: false },
+    passage: { required: false, wall: null, open: true, complete: true },
+    missing: ["collect-all-lights"],
+    portalReady: false,
+  },
   turns: 0,
   blockedMoves: 0,
   errors: 0,

@@ -218,6 +218,15 @@ const GAME_STATE = {
   collectedCount: 0,
   totalLights: 1,
   portalActive: false,
+  // ROTA2-DEPENDENT-OBJECTIVES-02: the hook's derived objective view (Route 1's plan: the lights alone). A tree from
+  // before that mission never reads it.
+  objectives: {
+    plan: { prerequisites: ["collect-all-lights"] },
+    lights: { collected: 0, total: 1, complete: false },
+    passage: { required: false, wall: null, open: true, complete: true },
+    missing: ["collect-all-lights"],
+    portalReady: false,
+  },
   turns: 0,
   blockedMoves: 0,
   errors: 0,
@@ -568,6 +577,9 @@ const BOARD_PROP_KEYS = [
 // wall links (to draw the shared rune) and the walls traps opened (to draw the opened passage). A tree of that
 // mission (its marker in the Rota) must pass exactly these as well; any other tree, exactly the v1 list.
 const ROTA2_BOARD_PROP_KEYS = ["trapLinks", "trapOpenedWalls"];
+// ROTA2-DEPENDENT-OBJECTIVES-02 — the next approved mission hands it one more: `portalActive`, the hook's derived
+// verdict (the lights, and the marked passage on Routes 2 and 3), so the board draws the portal the rules decided.
+const ROTA2_OBJECTIVES_BOARD_PROP_KEYS = ["portalActive"];
 /** What the slot shows, as a short name; anything unexpected is spelled out. */
 function describeSlot(rota) {
   const canvas = rota.canvas();
@@ -649,7 +661,11 @@ const record = (id, name, pass, detail) => {
   const expected = {
     slot: ["board"],
     boardImports: 1,
-    propKeys: GAME_SOURCE.includes("ROTA2-DYNAMIC-TRAPS-01") ? [...BOARD_PROP_KEYS, ...ROTA2_BOARD_PROP_KEYS].sort() : BOARD_PROP_KEYS,
+    propKeys: [
+      ...BOARD_PROP_KEYS,
+      ...(GAME_SOURCE.includes("ROTA2-DYNAMIC-TRAPS-01") ? ROTA2_BOARD_PROP_KEYS : []),
+      ...(GAME_SOURCE.includes("ROTA2-DEPENDENT-OBJECTIVES-02") ? ROTA2_OBJECTIVES_BOARD_PROP_KEYS : []),
+    ].sort(),
     onReadyIsOnEntryReady: true,
     onErrorIsOnEntryError: true,
     onMoveIsTryMovePlayer: true,

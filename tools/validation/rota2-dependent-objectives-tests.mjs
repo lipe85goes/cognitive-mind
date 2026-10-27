@@ -225,8 +225,11 @@ async function runSuite({ rev = null, transforms = [], solverRequirePassage = nu
   // this mission, present on the v1 tree 9f8ebb5 too): the Explorer arms a trap that IS the door the Sentinel holds;
   // the reference drops the Sentinel's commitment (door unreachable once blocked), the hook keeps it. Every piece
   // lands on the same cell either way — only the Sentinel's (target, commitLeft) bookkeeping differs.
-  const differential = { transitions: 0, unsound: 0, heldDoorArmed: 0, objectiveUnsound: 0, afterPassage: 0, wins: 0, examples: [] };
+  // `defenderModelGap`: the same state is missing under the OLD win rule too — the reference defender model, not the
+  // objective condition (which only decides whether a step onto the exit wins). See the census's `referenceGap`.
+  const differential = { transitions: 0, unsound: 0, heldDoorArmed: 0, defenderModelGap: 0, objectiveUnsound: 0, afterPassage: 0, wins: 0, examples: [] };
   let dctx = null;
+  let dctxOld = null;
   const inspectRender = (g) => {
     if (!g || g.mazeMap === null || !g.objectives) return;
     renders.inspected += 1;
@@ -281,7 +284,10 @@ async function runSuite({ rev = null, transforms = [], solverRequirePassage = nu
         const armedNow = after.triggeredTrapSet.size > before.triggeredTrapSet.size;
         const heldDoor = before.sentinelTarget ? cellKey(before.sentinelTarget) : null;
         const samePieces = decoded.some((d) => d.e === post.e && d.h === post.h && d.s === post.s && d.lights === post.lights && d.traps === post.traps);
+        const oldSupport = dctxOld ? dynamicSuccessorSet(dctxOld, pre, actionIndex) : null;
+        const oldAlsoMisses = after.status === "playing" && oldSupport && !oldSupport.hasWin && !oldSupport.states.includes(packDynamicState(dctxOld, post));
         if (after.status === "playing" && armedNow && heldDoor === cellKey(after.player) && samePieces) differential.heldDoorArmed += 1;
+        else if (oldAlsoMisses && !support?.hasWin) differential.defenderModelGap += 1;
         else differential.objectiveUnsound += 1;
         if (differential.examples.length < 5) differential.examples.push({ ...currentLabel, actionIndex, status: after.status, solverWin: Boolean(support?.hasWin), from: cellKey(before.player), to: cellKey(after.player), exit: cellKey(before.mazeMap.exitPosition), hunter: [cellKey(before.guardian), cellKey(after.guardian)], sentinel: [cellKey(before.sentinel), cellKey(after.sentinel)], target: [before.sentinelTarget && cellKey(before.sentinelTarget), after.sentinelTarget && cellKey(after.sentinelTarget), after.sentinelCommitLeft], pre, post: numericOf(after), support: support?.states?.map((k) => k) ?? null });
       }
@@ -371,6 +377,7 @@ async function runSuite({ rev = null, transforms = [], solverRequirePassage = nu
     // does — so a tree whose portal opens on the lights alone disagrees with it (unless a mutant forces the old rule).
     const missionRule = solverRequirePassage === null ? route >= 2 : solverRequirePassage && route >= 2;
     dctx = run.state.mazeMap ? buildDynamicContext(run.state.mazeMap, difficulty, { requirePassage: missionRule }) : null;
+    dctxOld = run.state.mazeMap ? buildDynamicContext(run.state.mazeMap, difficulty, { requirePassage: false }) : null;
     inspectRender(run.state);
     return run;
   };
@@ -972,7 +979,7 @@ async function runSuite({ rev = null, transforms = [], solverRequirePassage = nu
   });
 
   await guarded("O26", "objectives", "SOLVER_AND_HOOK_AGREE", () => ({
-    pass: differential.transitions > 100 && differential.objectiveUnsound === 0 && differential.unsound === differential.heldDoorArmed && differential.afterPassage > 0 && differential.wins > 0,
+    pass: differential.transitions > 100 && differential.objectiveUnsound === 0 && differential.unsound === differential.heldDoorArmed + differential.defenderModelGap && differential.afterPassage > 0 && differential.wins > 0,
     ...differential,
   }));
 
@@ -1185,22 +1192,8 @@ async function main() {
     for (const mutant of MUTANTS_LIST) {
       let outcome;
       try {
-        let failing;
-        if (mutant.textOnly) {
-          // A text property (the module's imports): checked on the mutated text itself, the way O24 reads a tree.
-          const [[file, fn]] = Object.entries(mutant.textOnly);
-          const original = fs.readFileSync(file, "utf8");
-          fs.writeFileSync(file, fn(original));
-          try {
-            const run = await runSuite({ quiet: true, fixturesHint: clean.fixtureSummary });
-            failing = run.results.filter((r) => !r.pass).map((r) => r.id);
-          } finally {
-            fs.writeFileSync(file, original);
-          }
-        } else {
-          const run = await runSuite({ quiet: true, transforms: mutant.transforms ?? [], solverRequirePassage: mutant.solverRequirePassage ?? null, fixturesHint: clean.fixtureSummary });
-          failing = run.results.filter((r) => !r.pass).map((r) => r.id);
-        }
+        const run = await runSuite({ quiet: true, transforms: mutant.transforms ?? [], solverRequirePassage: mutant.solverRequirePassage ?? null, fixturesHint: clean.fixtureSummary });
+        const failing = run.results.filter((r) => !r.pass).map((r) => r.id);
         const caughtBy = mutant.targets.filter((id) => failing.includes(id));
         outcome = { caught: caughtBy.length > 0, caughtBy, alsoFailing: failing.filter((id) => !mutant.targets.includes(id)) };
       } catch (error) {

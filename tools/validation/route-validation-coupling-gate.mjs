@@ -214,6 +214,11 @@ const ALLOWED = {
     reason: "STRUCTURAL_ASSERTION",
     note: "ROTA2-DEPENDENT-OBJECTIVES-02: instruments the event seam and the Hunter's policy by file, reads the state/event unions and the objective module's text (purity, no new state), and mutates named modules; its Rota runs through the graph",
   },
+  "rota2-dependent-objectives-census.mjs": {
+    kinds: ["rota-module-path"],
+    reason: "STRUCTURAL_ASSERTION",
+    note: "ROTA2-DEPENDENT-OBJECTIVES-02: read-only recorder lines in route-events.ts and route-defenders.ts, and the objective module required by name for its cost; its Rota runs through the graph",
+  },
   "rota2-dependent-objectives-edit.mjs": {
     kinds: ["hook-path", "rota-module-path"],
     reason: "STRUCTURAL_ASSERTION",

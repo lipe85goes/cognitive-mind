@@ -463,7 +463,7 @@ async function scenarioMain() {
     out.telegraph.linkedTrapLavender > (out.telegraph.plainTrapLavender ?? 0) &&
     out.telegraph.linkedWallLavender > 0 &&
     out.activation.published && out.activation.goneFromWalls && out.activation.otherWallsUnchanged &&
-    /mesma runa se abriu/.test(out.activation.message) && out.activation.wallPixelsChanged > 2 &&
+    /mesma runa se abriu|passagem marcada se abriu/.test(out.activation.message) && out.activation.wallPixelsChanged > 2 &&
     out.passage.wallStillOpen && (!out.restart || Object.values(out.restart).every(Boolean));
   return { ...out, held };
 }
@@ -563,7 +563,7 @@ async function scenarioActivationOnly(label, sessionOptions) {
     wallPixelsChanged: +(await meanDifference(act.wallBefore, immediately)).toFixed(2),
   };
   await s.context.close();
-  return { ...out, held: out.published && out.goneFromWalls && /mesma runa se abriu/.test(out.message) && out.wallPixelsChanged > 2 };
+  return { ...out, held: out.published && out.goneFromWalls && /mesma runa se abriu|passagem marcada se abriu/.test(out.message) && out.wallPixelsChanged > 2 };
 }
 
 async function scenarioContinuation() {

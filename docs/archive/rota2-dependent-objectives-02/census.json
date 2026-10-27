@@ -1,0 +1,274 @@
+{
+  "mission": "ROTA2-DEPENDENT-OBJECTIVES-02",
+  "base": "32c419a2784b54043f38f08afd60c8628f44f54c",
+  "allPass": false,
+  "checks": {
+    "noGenerationChange": true,
+    "everyMapLinked": true,
+    "route1StructurallyV1": true,
+    "dependentObjectivesStructurallyCompletable": true,
+    "noCircularDependency": true,
+    "noImpossibleObjective": true,
+    "trapAlwaysReachableWithoutThePassage": true,
+    "bothOrdersRepresentable": true,
+    "secondChanceNeverNeedsThePickaxe": true,
+    "inspectorAgreesPassageOpenable": false,
+    "route1UnchangedAdversarially": true,
+    "noNewImpossibleFromStructure": true,
+    "route1RuntimeEquivalent": true,
+    "everyScenarioWonSomewhere": true,
+    "bothOrdersObserved": true,
+    "portalActivatedOnceExactly": true,
+    "earlyPortalNeverWins": true,
+    "restartAndNextRouteFresh": true,
+    "everyPlayingRenderValid": true,
+    "passageTruthIsTheTopology": true,
+    "solverSoundAgainstHook": false,
+    "referenceGapIsPreExisting": false
+  },
+  "sizes": {
+    "routes": [
+      1,
+      2,
+      3
+    ],
+    "difficulties": [
+      "easy",
+      "medium",
+      "hard"
+    ],
+    "mapsPerCombination": 120,
+    "solverPerCombination": 8,
+    "runtimePerCombination": 12
+  },
+  "generation": {
+    "maps": 1080,
+    "throws": 0,
+    "sameAsBase": 1080,
+    "changedVsBase": 0,
+    "changedExamples": [],
+    "linkedMaps": 1080,
+    "evaluation": {
+      "evaluations": 216000,
+      "microsecondsPerEvaluation": 0.61,
+      "readyCount": 0
+    }
+  },
+  "structure": {
+    "standardMaps": 360,
+    "standardCompletable": 360,
+    "dependentMaps": 720,
+    "completable": 720,
+    "trapReachable": 720,
+    "lightsReachable": 720,
+    "portalReachableAfterPrerequisites": 720,
+    "lightsFirst": 720,
+    "passageFirst": 720,
+    "bothOrders": 720,
+    "pickaxePath": 720,
+    "secondChancePath": 720,
+    "circular": 0,
+    "impossible": 0,
+    "inspector": {
+      "states": 17820,
+      "notSolvable": 0,
+      "invalid": 17820,
+      "examples": []
+    },
+    "impossibleExamples": []
+  },
+  "adversarial": {
+    "maps": 72,
+    "byRoute": {
+      "1": {
+        "traps01": {
+          "P": 15,
+          "U": 2,
+          "G": 6,
+          "I": 1
+        },
+        "objectives02": {
+          "P": 15,
+          "U": 2,
+          "G": 6,
+          "I": 1
+        }
+      },
+      "2": {
+        "traps01": {
+          "P": 19,
+          "G": 5
+        },
+        "objectives02": {
+          "P": 19,
+          "G": 5
+        }
+      },
+      "3": {
+        "traps01": {
+          "P": 11,
+          "I": 6,
+          "G": 5,
+          "U": 2
+        },
+        "objectives02": {
+          "P": 11,
+          "I": 6,
+          "G": 5,
+          "U": 2
+        }
+      }
+    },
+    "traps01": {
+      "P": 45,
+      "U": 4,
+      "G": 16,
+      "I": 7
+    },
+    "objectives02": {
+      "P": 45,
+      "U": 4,
+      "G": 16,
+      "I": 7
+    },
+    "transitions": {
+      "P->P": 45,
+      "U->U": 4,
+      "G->G": 16,
+      "I->I": 7
+    },
+    "harder": 0,
+    "easier": 0,
+    "unchanged": 65,
+    "inconclusive": 7,
+    "route1Changed": 0,
+    "newlyImpossible": [],
+    "harderExamples": []
+  },
+  "runtime": {
+    "route1": {
+      "maps": 360,
+      "games": 360,
+      "mapsChanged": 0,
+      "divergences": [],
+      "wins": 129,
+      "portalActivations": 194,
+      "frames": 13740
+    },
+    "scenarios": {
+      "lights->trap": {
+        "attempted": 72,
+        "completed": 11,
+        "won": 11,
+        "portalActivations": 11,
+        "passageCompletedBy": {
+          "trap": 11
+        }
+      },
+      "trap->lights": {
+        "attempted": 72,
+        "completed": 19,
+        "won": 19,
+        "portalActivations": 19,
+        "passageCompletedBy": {
+          "trap": 19
+        }
+      },
+      "lights->pickaxe": {
+        "attempted": 72,
+        "completed": 11,
+        "won": 11,
+        "portalActivations": 11,
+        "passageCompletedBy": {
+          "pickaxe": 11
+        }
+      },
+      "pickaxe->lights": {
+        "attempted": 72,
+        "completed": 9,
+        "won": 9,
+        "portalActivations": 9,
+        "passageCompletedBy": {
+          "pickaxe": 9
+        }
+      },
+      "secondChance->trap": {
+        "attempted": 72,
+        "completed": 16,
+        "won": 16,
+        "portalActivations": 16,
+        "passageCompletedBy": {
+          "trap": 16
+        }
+      }
+    },
+    "portalActivatedTwice": 0,
+    "wonWithoutActivation": 0,
+    "earlyVisits": 50,
+    "earlyWins": 0,
+    "rendersInspected": 19680,
+    "invalidPlayingRenders": 0,
+    "passageTruthMismatch": 0,
+    "restart": {
+      "attempted": 72,
+      "reached": 36,
+      "fresh": 36
+    },
+    "nextRoute": {
+      "attempted": 36,
+      "fresh": 36
+    },
+    "differential": {
+      "transitions": 9149,
+      "unsound": 8,
+      "heldDoorArmed": 0,
+      "objectiveUnsound": 8,
+      "wins": 30,
+      "afterPassage": 2677,
+      "examples": [
+        {
+          "route": 3,
+          "status": "playing",
+          "solverWin": false
+        },
+        {
+          "route": 3,
+          "status": "playing",
+          "solverWin": false
+        },
+        {
+          "route": 3,
+          "status": "playing",
+          "solverWin": false
+        },
+        {
+          "route": 3,
+          "status": "playing",
+          "solverWin": false
+        },
+        {
+          "route": 3,
+          "status": "playing",
+          "solverWin": false
+        }
+      ]
+    }
+  },
+  "referenceGap": {
+    "v1-9f8ebb5": {
+      "transitions": 2016,
+      "unsound": 25,
+      "heldDoorArmed": 7,
+      "other": 18
+    },
+    "this-tree": {
+      "transitions": 2016,
+      "unsound": 25,
+      "heldDoorArmed": 7,
+      "other": 18
+    }
+  },
+  "run": {
+    "elapsedMs": 745501
+  }
+}
