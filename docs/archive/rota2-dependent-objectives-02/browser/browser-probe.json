@@ -1,0 +1,399 @@
+{
+  "base": "http://localhost:3100",
+  "scenarios": {
+    "route1": {
+      "attempt": 2,
+      "attempts": [
+        "finish",
+        "finish"
+      ],
+      "route": 1,
+      "noObjectiveList": true,
+      "linkedWallStillStanding": true,
+      "portalAsleepBeforeLastLight": true,
+      "portalAwakeAfterLastLight": true,
+      "message": "Portal ativado! Vá até a saída.",
+      "hudPortal": "PortalDisponível",
+      "card": {
+        "won": true,
+        "title": "Caminho aberto"
+      },
+      "held": true,
+      "seconds": 119
+    },
+    "lightsFirst": {
+      "attempt": 3,
+      "attempts": [
+        "lights",
+        "lights",
+        "finish"
+      ],
+      "route": 2,
+      "afterLights": {
+        "portalActive": "false",
+        "passage": {
+          "name": "Passagem marcada",
+          "state": "Fechada",
+          "done": false
+        },
+        "lights": {
+          "name": "Luzes",
+          "state": "3/3 coletadas, concluído",
+          "done": true
+        },
+        "portal": {
+          "name": "Portal",
+          "state": "Aguardando",
+          "done": false
+        },
+        "message": "Todas as luzes coletadas. Falta abrir a passagem marcada.",
+        "title": "Abra a passagem marcada para acordar o portal"
+      },
+      "listText": "Luzes\n3/3\ncoletadas, concluído\nPassagem marcada\nFechada\nPortal\nAguardando",
+      "ariaSnapshot": "- list \"Objetivos da rota\":\n  - listitem: Luzes 3/3 coletadas, concluído\n  - listitem: Passagem marcada Fechada\n  - listitem: Portal Aguardando",
+      "early": {
+        "status": "playing",
+        "message": "As luzes estão prontas. Falta abrir a passagem marcada."
+      },
+      "afterTrap": {
+        "portalActive": "true",
+        "passage": {
+          "name": "Passagem marcada",
+          "state": "Aberta, concluído",
+          "done": true
+        },
+        "portal": {
+          "name": "Portal",
+          "state": "Ativado",
+          "done": true
+        },
+        "message": "Armadilha ativada: a passagem marcada se abriu, para todos. Portal ativado! Vá até a saída."
+      },
+      "card": {
+        "won": true,
+        "title": "Caminho aberto"
+      },
+      "held": true,
+      "seconds": 183
+    },
+    "passageFirst": {
+      "attempt": 5,
+      "attempts": [
+        "finish",
+        "finish",
+        "trap",
+        "trap",
+        "finish"
+      ],
+      "route": 3,
+      "afterTrap": {
+        "portalActive": "false",
+        "passage": {
+          "name": "Passagem marcada",
+          "state": "Aberta, concluído",
+          "done": true
+        },
+        "portal": {
+          "name": "Portal",
+          "state": "Aguardando",
+          "done": false
+        },
+        "message": "Armadilha ativada: a passagem marcada se abriu, para todos. Ainda faltam luzes."
+      },
+      "beforeLastLight": {
+        "portalActive": "false"
+      },
+      "afterLastLight": {
+        "portalActive": "true",
+        "message": "Portal ativado! Vá até a saída.",
+        "portal": {
+          "name": "Portal",
+          "state": "Ativado",
+          "done": true
+        }
+      },
+      "card": {
+        "won": true,
+        "title": "Jornada concluída"
+      },
+      "held": true,
+      "seconds": 329
+    },
+    "pickaxe": {
+      "attempt": 2,
+      "attempts": [
+        "finish",
+        "finish"
+      ],
+      "route": 3,
+      "afterBreak": {
+        "passage": {
+          "name": "Passagem marcada",
+          "state": "Aberta, concluído",
+          "done": true
+        },
+        "portalActive": "false",
+        "message": "Parede aberta: a passagem marcada está aberta. Ainda faltam luzes.",
+        "trapStillDormant": true
+      },
+      "afterLights": {
+        "portalActive": "true"
+      },
+      "card": {
+        "won": true,
+        "title": "Jornada concluída"
+      },
+      "held": true,
+      "seconds": 221
+    },
+    "secondChance": {
+      "attempt": 2,
+      "attempts": [
+        "trap",
+        "finish"
+      ],
+      "route": 2,
+      "passageAfterTrap": {
+        "name": "Passagem marcada",
+        "state": "Aberta, concluído",
+        "done": true
+      },
+      "noPickaxeWall": true,
+      "card": {
+        "won": true,
+        "title": "Caminho aberto"
+      },
+      "held": true,
+      "seconds": 134
+    },
+    "early": {
+      "attempt": 3,
+      "attempts": [
+        "portal",
+        "portal",
+        "portal"
+      ],
+      "route": 3,
+      "status": "playing",
+      "message": "Faltam luzes e a passagem marcada.",
+      "portalActive": "false",
+      "noResult": true,
+      "held": true,
+      "seconds": 163
+    },
+    "continuation": {
+      "routes": [
+        1,
+        2,
+        3
+      ],
+      "cards": [
+        {
+          "won": false,
+          "title": "Rota registrada"
+        },
+        {
+          "won": false,
+          "title": "Rota registrada"
+        }
+      ],
+      "route1List": null,
+      "route2List": [
+        {
+          "name": "Luzes",
+          "state": "0/3 coletadas",
+          "done": false
+        },
+        {
+          "name": "Passagem marcada",
+          "state": "Fechada",
+          "done": false
+        },
+        {
+          "name": "Portal",
+          "state": "Aguardando",
+          "done": false
+        }
+      ],
+      "route3List": [
+        {
+          "name": "Luzes",
+          "state": "0/4 coletadas",
+          "done": false
+        },
+        {
+          "name": "Passagem marcada",
+          "state": "Fechada",
+          "done": false
+        },
+        {
+          "name": "Portal",
+          "state": "Aguardando",
+          "done": false
+        }
+      ],
+      "held": true,
+      "seconds": 120
+    },
+    "restart": {
+      "attempt": 1,
+      "attempts": [
+        "trap"
+      ],
+      "route": 2,
+      "openedBefore": true,
+      "after": {
+        "name": "Passagem marcada",
+        "state": "Fechada",
+        "done": false
+      },
+      "lights": {
+        "name": "Luzes",
+        "state": "0/3 coletadas",
+        "done": false
+      },
+      "portalActive": "false",
+      "nothingOpened": true,
+      "held": true,
+      "seconds": 74
+    },
+    "mobile": {
+      "attempt": 1,
+      "attempts": [
+        "trap"
+      ],
+      "route": 2,
+      "layout": {
+        "horizontalScroll": false,
+        "listInViewport": true,
+        "listHeight": 34
+      },
+      "passage": {
+        "name": "Passagem marcada",
+        "state": "Aberta, concluído",
+        "done": true
+      },
+      "held": true,
+      "seconds": 137
+    },
+    "reduced": {
+      "attempt": 1,
+      "attempts": [
+        "trap"
+      ],
+      "route": 2,
+      "passage": {
+        "name": "Passagem marcada",
+        "state": "Aberta, concluído",
+        "done": true
+      },
+      "stable": true,
+      "message": "Armadilha ativada: a passagem marcada se abriu, para todos. Ainda faltam luzes.",
+      "held": true,
+      "seconds": 59
+    }
+  },
+  "pageErrors": [],
+  "entryRetries": [
+    {
+      "entry": "route1",
+      "retries": 0
+    },
+    {
+      "entry": "route1",
+      "retries": 0
+    },
+    {
+      "entry": "lightsFirst",
+      "retries": 0
+    },
+    {
+      "entry": "lightsFirst:r1",
+      "retries": 0
+    },
+    {
+      "entry": "passageFirst",
+      "retries": 0
+    },
+    {
+      "entry": "passageFirst:r1",
+      "retries": 0
+    },
+    {
+      "entry": "passageFirst:retry",
+      "retries": 0
+    },
+    {
+      "entry": "passageFirst:retry",
+      "retries": 0
+    },
+    {
+      "entry": "pickaxe",
+      "retries": 0
+    },
+    {
+      "entry": "pickaxe:r1",
+      "retries": 0
+    },
+    {
+      "entry": "pickaxe:retry",
+      "retries": 0
+    },
+    {
+      "entry": "secondChance",
+      "retries": 0
+    },
+    {
+      "entry": "secondChance:r1",
+      "retries": 0
+    },
+    {
+      "entry": "early",
+      "retries": 0
+    },
+    {
+      "entry": "early:r1",
+      "retries": 0
+    },
+    {
+      "entry": "early:retry",
+      "retries": 0
+    },
+    {
+      "entry": "continuation",
+      "retries": 0
+    },
+    {
+      "entry": "continuation:r1",
+      "retries": 0
+    },
+    {
+      "entry": "continuation:r2",
+      "retries": 0
+    },
+    {
+      "entry": "restart",
+      "retries": 0
+    },
+    {
+      "entry": "restart:r1",
+      "retries": 0
+    },
+    {
+      "entry": "mobile",
+      "retries": 0
+    },
+    {
+      "entry": "mobile:r1",
+      "retries": 0
+    },
+    {
+      "entry": "reduced",
+      "retries": 0
+    },
+    {
+      "entry": "reduced:r1",
+      "retries": 0
+    }
+  ]
+}

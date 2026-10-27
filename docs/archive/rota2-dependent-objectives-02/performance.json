@@ -1,0 +1,55 @@
+{
+  "renders": {
+    "mission": {
+      "games": 72,
+      "inputs": 2593,
+      "renders": 2593,
+      "byRoute": {
+        "1": {
+          "inputs": 840,
+          "renders": 840,
+          "rendersPerInput": 1
+        },
+        "2": {
+          "inputs": 960,
+          "renders": 960,
+          "rendersPerInput": 1
+        },
+        "3": {
+          "inputs": 793,
+          "renders": 793,
+          "rendersPerInput": 1
+        }
+      },
+      "rendersPerInput": 1
+    },
+    "base": {
+      "games": 72,
+      "inputs": 2593,
+      "renders": 2593,
+      "byRoute": {
+        "1": {
+          "inputs": 840,
+          "renders": 840,
+          "rendersPerInput": 1
+        },
+        "2": {
+          "inputs": 960,
+          "renders": 960,
+          "rendersPerInput": 1
+        },
+        "3": {
+          "inputs": 793,
+          "renders": 793,
+          "rendersPerInput": 1
+        }
+      },
+      "rendersPerInput": 1
+    },
+    "samePerInput": true
+  },
+  "evaluation": {
+    "calls": 360000,
+    "microsecondsPerCall": 0.314
+  }
+}

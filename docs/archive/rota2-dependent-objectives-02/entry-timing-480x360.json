@@ -1,0 +1,69 @@
+{
+  "viewport": "480x360",
+  "rows": [
+    {
+      "run": 0,
+      "side": "base",
+      "entryMs": 22039,
+      "boardReadyAfterIntroMs": 4,
+      "retries": 0,
+      "errors": []
+    },
+    {
+      "run": 0,
+      "side": "candidate",
+      "entryMs": 15211,
+      "boardReadyAfterIntroMs": 451,
+      "retries": 0,
+      "errors": []
+    },
+    {
+      "run": 1,
+      "side": "base",
+      "entryMs": 20991,
+      "boardReadyAfterIntroMs": 16,
+      "retries": 0,
+      "errors": []
+    },
+    {
+      "run": 1,
+      "side": "candidate",
+      "entryMs": 18485,
+      "boardReadyAfterIntroMs": 17,
+      "retries": 0,
+      "errors": []
+    },
+    {
+      "run": 2,
+      "side": "base",
+      "entryMs": 15893,
+      "boardReadyAfterIntroMs": 20,
+      "retries": 0,
+      "errors": []
+    },
+    {
+      "run": 2,
+      "side": "candidate",
+      "entryMs": 16081,
+      "boardReadyAfterIntroMs": 941,
+      "retries": 0,
+      "errors": []
+    }
+  ],
+  "summary": {
+    "base": {
+      "runs": 3,
+      "failed": 0,
+      "retries": 0,
+      "medianEntryMs": 20991,
+      "medianBoardReadyAfterIntroMs": 16
+    },
+    "candidate": {
+      "runs": 3,
+      "failed": 0,
+      "retries": 0,
+      "medianEntryMs": 16081,
+      "medianBoardReadyAfterIntroMs": 451
+    }
+  }
+}

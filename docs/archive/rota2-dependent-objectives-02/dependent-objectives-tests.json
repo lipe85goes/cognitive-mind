@@ -731,6 +731,7 @@
         "transitions": 431,
         "unsound": 0,
         "heldDoorArmed": 0,
+        "defenderModelGap": 0,
         "objectiveUnsound": 0,
         "afterPassage": 80,
         "wins": 3,
@@ -798,6 +799,6 @@
     }
   ],
   "run": {
-    "elapsedMs": 115932
+    "elapsedMs": 118706
   }
 }

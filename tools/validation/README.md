@@ -195,6 +195,30 @@ with `--write` only for a change that belongs to the approved mission). The
 reversal refuses a hunk it cannot find exactly once, and anything outside the
 hunks still fails those suites as before.
 
+**ROTA 2.0 — DEPENDENT OBJECTIVES (ROTA2-DEPENDENT-OBJECTIVES-02)** — Route 1
+keeps lights → portal; on Routes 2 and 3 the portal also waits for the marked
+passage (the dynamic trap's linked wall) open, by its trap or the Pickaxe, in
+any order (`docs/ROTA2_DEPENDENT_OBJECTIVES_02.md`).
+
+```bash
+node tools/validation/rota2-dependent-objectives-tests.mjs                 # O01–O30 (check/--update evidence)
+node tools/validation/rota2-dependent-objectives-tests.mjs --rev=32c419a   # the mission's base: every [objectives] check fails, every [preserved]/[structure] one holds
+node tools/validation/rota2-dependent-objectives-tests.mjs --mutants       # 16 in-memory mutants, each caught by a check it targets
+node tools/validation/rota2-dependent-objectives-census.mjs                # 1080 maps, structure, solver classes, runtime scenarios (check/--update)
+node tools/validation/rota2-dependent-objectives-edit.mjs                  # the second approved delta reverses the tree to its base exactly
+node tools/validation/rota2-dependent-objectives-performance.mjs [--next-dir .next]  # renders per input vs base, evaluation cost, bundle
+PLAYWRIGHT_DIR=… node tools/validation/rota2-dependent-objectives-browser-probe.mjs  # needs `next build && next start -p 3100` and an idle CPU
+```
+
+The approved Rota 2.0 missions are a chain: `treeBeforeRota2` reverses this
+mission's hunks first (`rota2-dependent-objectives-edit.json`, back to
+DYNAMIC-TRAPS-01's tree) and then DYNAMIC-TRAPS-01's (back to v1), and hides
+the one module this mission adds (`route-objectives.ts`). The structural
+oracle (`rota2-objectives-structure.mjs`) is written apart from production.
+The solver (`rota2-dynamic-solver.mjs`) takes `requirePassage`: on Routes 2/3
+reaching the exit with every light wins only once the linked trap's bit is set
+(pre-Chest, the passage IS that bit).
+
 **GAME 03 — ESTÚDIO DAS DESCOBERTAS** — the skeleton (`hidden-objects`), the
 retirement of the Trilha Lógica (`number-trail`), the experience V2 and the
 target pool V1 (GAME03-EXPERIENCE-02). None writes anything unless asked to

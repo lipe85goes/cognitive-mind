@@ -16,8 +16,8 @@
  *   pickaxe         Route 2: Chest → Picareta → the marked wall broken → passage "Aberta" → lights → win.
  *   secondChance    Route 2: Chest → Segunda Chance → the trap → lights → win (the Pickaxe is never needed).
  *   early           Route 2: the portal first — no win, the calm missing-objective sentence.
- *   continuation    Route 1 (no list) → Route 2 (list, passage "Fechada") → Route 3 (list, fresh) — and
- *                   "Começar outra rota" after the passage opened brings it back "Fechada".
+ *   continuation    Route 1 (no list) → Route 2 (list, passage "Fechada") → Route 3 (list, fresh).
+ *   restart         Route 2: the passage opened, then "Começar outra rota": "Fechada" again, 0 lights.
  *   mobile          360×640 touch: the panel fits (no horizontal scroll), the D-pad opens the passage.
  *   reduced         prefers-reduced-motion: the same semantics.
  *
@@ -62,7 +62,7 @@ const arg = (name, fallback) => {
 const BASE = arg("--base", "http://localhost:3100");
 const OUT = arg("--out", null);
 const ATTEMPTS = Number(arg("--attempts", "6"));
-const SCENARIOS = arg("--scenario", "route1,lightsFirst,passageFirst,pickaxe,secondChance,early,continuation,mobile,reduced").split(",");
+const SCENARIOS = arg("--scenario", "route1,lightsFirst,passageFirst,pickaxe,secondChance,early,continuation,restart,mobile,reduced").split(",");
 const size = (text) => {
   const [width, height] = text.split("x").map(Number);
   return { width, height };
@@ -286,7 +286,10 @@ async function walkTo(s, target, avoid = [], budget = 60) {
 }
 async function walkBeside(s, cell, avoid = []) {
   const board = await readBoard(s);
-  const around = neighbours(cell, new Set(board.walls)).filter((c) => !avoid.includes(c)).sort((a, b) => manhattan(a, board.player) - manhattan(b, board.player));
+  // Never the closed Chest as a waypoint: arriving there pauses the turn on the reward choice.
+  const around = neighbours(cell, new Set(board.walls))
+    .filter((c) => !avoid.includes(c) && !(board.chest === c && !board.chestOpened))
+    .sort((a, b) => manhattan(a, board.player) - manhattan(b, board.player));
   for (const spot of around) {
     if (await walkTo(s, spot, [cell, ...avoid])) return true;
     const now = await readBoard(s);
@@ -303,8 +306,15 @@ async function stepOnto(s, cell, avoid = []) {
 }
 async function collectLights(s, avoid = [], { keepLast = false } = {}) {
   for (let guard = 0; guard < 10; guard += 1) {
-    const board = await readBoard(s);
+    let board = await readBoard(s);
     if (board.status !== "playing") return false;
+    // A walk that ended on the Chest anyway: take the Second Chance and go on (the Pickaxe is never needed here).
+    if (board.rewardPending) {
+      await s.page.locator('.rsg-reward-btn[aria-label^="Escolher Segunda Chance"]').click();
+      await s.page.waitForTimeout(300);
+      board = await readBoard(s);
+      if (board.status !== "playing") return false;
+    }
     const left = board.lights.filter((l) => !board.collected.includes(l)).sort((a, b) => manhattan(a, board.player) - manhattan(b, board.player));
     if (left.length === 0 || (keepLast && left.length === 1)) return true;
     const after = await stepOnto(s, left[0], avoid);
@@ -369,7 +379,7 @@ async function onRoute2(label, sessionOptions, plan) {
   const s = await newSession(sessionOptions);
   const attempts = [];
   try {
-    const route = await openRoute2(s, label);
+    let route = await openRoute2(s, label);
     if (route !== 2) return { held: false, error: `expected Route 2, reached ${route}` };
     for (let attempt = 1; attempt <= ATTEMPTS; attempt += 1) {
       const board = await readBoard(s);
@@ -378,13 +388,14 @@ async function onRoute2(label, sessionOptions, plan) {
         at(`${label}:${name}`);
         attempts[attempt - 1] = name;
       });
-      if (out) return { attempt, attempts, ...out };
+      if (out) return { attempt, attempts, route, ...out };
       const now = await readBoard(s);
       if (now.status === "playing") await restartFromDetails(s);
       else {
         // A Route 2 lost leads to Route 3 — the same plan holds there (same objectives); report which.
         await resultCard(s);
         await takeResultAction(s, `${label}:retry`);
+        route = (await routeOf(s)) ?? route;
         await startRoute(s);
       }
     }
@@ -406,39 +417,65 @@ const ariaTree = (s) => s.page.locator('ul[aria-label="Objetivos da rota"]').ari
 
 // --- scenarios -----------------------------------------------------------------------------------
 async function scenarioRoute1() {
-  for (let attempt = 1; attempt <= ATTEMPTS; attempt += 1) {
-    const s = await newSession();
-    try {
-      await enterRota(s, "route1");
-      const route = await routeOf(s);
-      await startRoute(s);
+  // A Route 1 still on (the careful walk found no way this time) is restarted in place — "Começar outra rota" keeps
+  // Route 1; a Route 1 lost hands the journey to Route 2, so the next attempt is a new session from Home.
+  let s = null;
+  const attempts = [];
+  try {
+    for (let attempt = 1; attempt <= ATTEMPTS * 2; attempt += 1) {
+      const reached = (name) => {
+        at(`route1:${name}`);
+        attempts[attempt - 1] = name;
+      };
+      if (!s) {
+        s = await newSession();
+        await enterRota(s, "route1");
+        if ((await routeOf(s)) !== 1) return { held: false, error: "the Rota did not open on Route 1" };
+        await startRoute(s);
+      }
       const start = await readBoard(s);
       const link = start.links[0];
-      if (!(await collectLights(s, link ? [link.trap] : [], { keepLast: true }))) continue;
-      const beforeLast = await readBoard(s);
-      const last = beforeLast.lights.find((l) => !beforeLast.collected.includes(l));
-      const afterLast = await stepOnto(s, last, link ? [link.trap] : []);
-      if (!afterLast || afterLast.status !== "playing") continue;
-      await witness(s, "route1-portal-awake");
-      const card = await finish(s);
-      if (!card) continue;
-      const out = {
-        attempt,
-        route,
-        noObjectiveList: start.objectives === null && afterLast.objectives === null,
-        linkedWallStillStanding: link ? afterLast.walls.includes(link.wall) : null,
-        portalAsleepBeforeLastLight: beforeLast.portalActive === "false",
-        portalAwakeAfterLastLight: afterLast.portalActive === "true",
-        message: afterLast.message,
-        hudPortal: afterLast.hudPortal,
-        card,
-      };
-      return { ...out, held: route === 1 && out.noObjectiveList && out.linkedWallStillStanding && out.portalAsleepBeforeLastLight && out.portalAwakeAfterLastLight && out.message === "Portal ativado! Vá até a saída." && card.won };
-    } finally {
-      await s.context.close();
+      const outcome = await (async () => {
+        reached("lights");
+        if (!(await collectLights(s, link ? [link.trap] : [], { keepLast: true }))) return null;
+        reached("last-light");
+        const beforeLast = await readBoard(s);
+        const last = beforeLast.lights.find((l) => !beforeLast.collected.includes(l));
+        const afterLast = await stepOnto(s, last, link ? [link.trap] : []);
+        if (!afterLast || afterLast.status !== "playing") return null;
+        reached("finish");
+        await witness(s, "route1-portal-awake");
+        const card = await finish(s);
+        if (!card) return null;
+        return { start, beforeLast, afterLast, card };
+      })();
+      if (outcome) {
+        const { beforeLast, afterLast, card } = outcome;
+        const out = {
+          attempt,
+          attempts,
+          route: 1,
+          noObjectiveList: start.objectives === null && afterLast.objectives === null,
+          linkedWallStillStanding: link ? afterLast.walls.includes(link.wall) : null,
+          portalAsleepBeforeLastLight: beforeLast.portalActive === "false",
+          portalAwakeAfterLastLight: afterLast.portalActive === "true",
+          message: afterLast.message,
+          hudPortal: afterLast.hudPortal,
+          card,
+        };
+        return { ...out, held: out.noObjectiveList && out.linkedWallStillStanding && out.portalAsleepBeforeLastLight && out.portalAwakeAfterLastLight && out.message === "Portal ativado! Vá até a saída." && card.won };
+      }
+      const now = await readBoard(s);
+      if (now.status === "playing" && !now.result) await restartFromDetails(s);
+      else {
+        await s.context.close();
+        s = null;
+      }
     }
+    return { held: false, attempts, error: "Route 1 not won within the attempts" };
+  } finally {
+    await s?.context.close();
   }
-  return { held: false, error: "Route 1 not won within the attempts" };
 }
 
 const scenarioLightsFirst = () =>
@@ -574,16 +611,6 @@ async function scenarioContinuation() {
     const r2 = await routeOf(s);
     await startRoute(s);
     const r2Start = await readBoard(s);
-    // Open the passage, restart: it is closed again.
-    let restart = null;
-    const link = r2Start.links[0];
-    const opened = await stepOnto(s, link.trap);
-    if (opened && opened.status === "playing" && opened.triggered.includes(link.trap)) {
-      const openedRow = row(opened, "Passagem marcada");
-      await restartFromDetails(s);
-      const fresh = await readBoard(s);
-      restart = { openedBefore: Boolean(openedRow?.done), after: row(fresh, "Passagem marcada"), lights: row(fresh, "Luzes"), portalActive: fresh.portalActive };
-    }
     const card2 = await loseAndContinue(s, "continuation:r2");
     const r3 = await routeOf(s);
     await startRoute(s);
@@ -595,18 +622,30 @@ async function scenarioContinuation() {
       route1List: r1Board.objectives,
       route2List: r2Start.objectives,
       route3List: r3Start.objectives,
-      restart,
     };
     const fresh = (b) => row(b, "Passagem marcada")?.state.startsWith("Fechada") && row(b, "Portal")?.state === "Aguardando" && b.portalActive === "false";
     return {
       ...out,
-      held: sameRoutes(out.routes) && r1Board.objectives === null && fresh(r2Start) && fresh(r3Start) && (restart === null || (restart.openedBefore && restart.after?.state.startsWith("Fechada") && restart.portalActive === "false")) && restart !== null,
+      held: sameRoutes(out.routes) && r1Board.objectives === null && fresh(r2Start) && fresh(r3Start),
     };
   } finally {
     await s.context.close();
   }
 }
 const sameRoutes = (routes) => JSON.stringify(routes) === JSON.stringify([1, 2, 3]);
+
+/** Route 2: open the passage, then "Começar outra rota" — the new board's passage is closed, nothing collected. */
+const scenarioRestart = () =>
+  onRoute2("restart", {}, async (s, link, reached) => {
+    reached("trap");
+    const opened = await stepOnto(s, link.trap);
+    if (!opened || opened.status !== "playing" || !opened.triggered.includes(link.trap)) return null;
+    const openedRow = row(opened, "Passagem marcada");
+    await restartFromDetails(s);
+    const fresh = await readBoard(s);
+    const out = { openedBefore: Boolean(openedRow?.done), after: row(fresh, "Passagem marcada"), lights: row(fresh, "Luzes"), portalActive: fresh.portalActive, nothingOpened: fresh.opened.length === 0 };
+    return { ...out, held: out.openedBefore && out.after?.state.startsWith("Fechada") && /^0\//.test(out.lights?.state ?? "") && out.portalActive === "false" && out.nothingOpened };
+  });
 
 async function scenarioMobile() {
   return onRoute2("mobile", { viewport: MOBILE, touch: true }, async (s, link, reached) => {
@@ -647,6 +686,7 @@ const runners = {
   secondChance: scenarioSecondChance,
   early: scenarioEarly,
   continuation: scenarioContinuation,
+  restart: scenarioRestart,
   mobile: scenarioMobile,
   reduced: scenarioReduced,
 };
