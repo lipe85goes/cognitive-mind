@@ -1,0 +1,117 @@
+{
+  "viewport": "480x360",
+  "rows": [
+    {
+      "run": 0,
+      "side": "base",
+      "entryMs": 18423,
+      "boardReadyAfterIntroMs": 1437,
+      "retries": 0,
+      "errors": []
+    },
+    {
+      "run": 0,
+      "side": "candidate",
+      "entryMs": 17656,
+      "boardReadyAfterIntroMs": 18,
+      "retries": 0,
+      "errors": []
+    },
+    {
+      "run": 1,
+      "side": "base",
+      "entryMs": 16396,
+      "boardReadyAfterIntroMs": 988,
+      "retries": 0,
+      "errors": []
+    },
+    {
+      "run": 1,
+      "side": "candidate",
+      "entryMs": 15710,
+      "boardReadyAfterIntroMs": 5,
+      "retries": 0,
+      "errors": []
+    },
+    {
+      "run": 2,
+      "side": "base",
+      "entryMs": 22671,
+      "boardReadyAfterIntroMs": 36,
+      "retries": 0,
+      "errors": []
+    },
+    {
+      "run": 2,
+      "side": "candidate",
+      "entryMs": 22445,
+      "boardReadyAfterIntroMs": 14,
+      "retries": 0,
+      "errors": []
+    },
+    {
+      "run": 3,
+      "side": "base",
+      "entryMs": 17205,
+      "boardReadyAfterIntroMs": 7,
+      "retries": 0,
+      "errors": []
+    },
+    {
+      "run": 3,
+      "side": "candidate",
+      "entryMs": 16268,
+      "boardReadyAfterIntroMs": 28,
+      "retries": 0,
+      "errors": []
+    },
+    {
+      "run": 4,
+      "side": "base",
+      "entryMs": 22220,
+      "boardReadyAfterIntroMs": 21,
+      "retries": 0,
+      "errors": []
+    },
+    {
+      "run": 4,
+      "side": "candidate",
+      "entryMs": 17072,
+      "boardReadyAfterIntroMs": 4,
+      "retries": 0,
+      "errors": []
+    },
+    {
+      "run": 5,
+      "side": "base",
+      "entryMs": 21002,
+      "boardReadyAfterIntroMs": 3,
+      "retries": 0,
+      "errors": []
+    },
+    {
+      "run": 5,
+      "side": "candidate",
+      "entryMs": 15028,
+      "boardReadyAfterIntroMs": 4,
+      "retries": 0,
+      "errors": []
+    }
+  ],
+  "summary": {
+    "base": {
+      "runs": 6,
+      "failed": 0,
+      "retries": 0,
+      "medianEntryMs": 18423,
+      "medianBoardReadyAfterIntroMs": 21
+    },
+    "candidate": {
+      "runs": 6,
+      "failed": 0,
+      "retries": 0,
+      "medianEntryMs": 16268,
+      "medianBoardReadyAfterIntroMs": 5
+    }
+  }
+}
