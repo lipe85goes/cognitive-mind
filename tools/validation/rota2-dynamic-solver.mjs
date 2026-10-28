@@ -49,6 +49,13 @@
  * and by the hook. `requirePassage: false` (Route 1, and the default) is the
  * DYNAMIC-TRAPS-01 rule, unchanged.
  *
+ * ROTA2-ADAPTIVE-HUNTER-04 — the Hunter reads a repeated direction on Routes 2 and 3. The state carries `d`, the
+ * direction of the Explorer's last successful step (the hook's `lastExplorerDirection`; 0 = none), and a step leaves
+ * the direction of its action — a component of the key, the one thing the policy remembers. `routeNumber` (default 1)
+ * says whether the Route adapts. On the maze AFTER the step (the one the defenders answer on) the Hunter's outcomes are
+ * the PRODUCTION interception moves whenever the production policy intercepts (`planHunterInterception`, through
+ * hunter-interception-support.mjs — the same call the static solver makes), and the reference support otherwise.
+ *
  * Writes nothing.
  */
 import { ACTIONS, API, buildContext } from "./dynamic-solver.mjs";
@@ -60,6 +67,10 @@ import {
 import { GrowableBuffer, PackedNodeStore } from "./dynamic-solver-packed-graph.mjs";
 import { classifyPacked, solvePackedGraph } from "./dynamic-solver-packed-solve.mjs";
 import { sentinelTargetDistance } from "./sentinel-target-distance.mjs";
+import { DIRECTION_RADIX, directionCodeOfAction, interceptionMoves, useDirectionQuotient } from "./hunter-interception-support.mjs";
+
+/** The packed key's layout carries the last direction (ROTA2-ADAPTIVE-HUNTER-04). */
+export const PACKED_KEY_HAS_DIRECTION = true;
 
 const CELL_COUNT = 81;
 const UNREACHABLE = 255;
@@ -115,14 +126,15 @@ function trapVariant(meta, trapMask) {
   return variant;
 }
 
-function packFields(meta, e, h, s, t, c, lights, traps) {
+function packFields(meta, e, h, s, t, c, lights, traps, d) {
   let key = e;
   key = key * CELL_COUNT + h;
   key = key * CELL_COUNT + s;
   key = key * meta.targetRadix + (t + 1);
   key = key * (MAX_COMMIT + 1) + c;
   key = key * meta.lightRadix + lights;
-  return key * meta.trapRadix + traps;
+  key = key * meta.trapRadix + traps;
+  return key * DIRECTION_RADIX + d;
 }
 
 function addUnique(target, value) {
@@ -266,18 +278,23 @@ function unifyAccesses(closedMeta, openMeta) {
   return unionAccessIds;
 }
 
-export function buildDynamicContext(map, difficulty, { dynamic = true, requirePassage = false } = {}) {
+export function buildDynamicContext(map, difficulty, { dynamic = true, requirePassage = false, routeNumber = 1, intercept } = {}) {
   const closed = buildContext(map, difficulty);
+  // ROTA2-ADAPTIVE-HUNTER-04: the Route (does the Hunter adapt?) and, for a suite, the production policy module to ask.
+  closed.routeNumber = routeNumber;
+  if (intercept !== undefined) closed.intercept = intercept;
   const link = dynamic ? (map.trapLinks ?? [])[0] ?? null : null;
   if (!link) {
     const meta = preparePackedContext(closed);
     const unionAccessIds = unifyAccesses(meta, meta);
     // No link, nothing to open: the passage objective is complete (route-objectives.ts reads it the same way).
-    return { map, difficulty, closed, open: closed, linkBit: 0, link: null, accessesDiffer: false, unionAccessIds, requirePassage: false };
+    return { map, difficulty, routeNumber, closed, open: closed, linkBit: 0, link: null, accessesDiffer: false, unionAccessIds, requirePassage: false };
   }
   const openedWalls = new Set(map.walls);
   openedWalls.delete(link.mutation.wall);
   const open = buildContext({ ...map, walls: openedWalls }, difficulty);
+  open.routeNumber = routeNumber;
+  if (intercept !== undefined) open.intercept = intercept;
   const closedMeta = preparePackedContext(closed);
   const openMeta = preparePackedContext(open);
   const accessesDiffer = !sameIds([...closedMeta.accessIds], [...openMeta.accessIds]);
@@ -286,6 +303,7 @@ export function buildDynamicContext(map, difficulty, { dynamic = true, requirePa
   return {
     map,
     difficulty,
+    routeNumber,
     closed,
     open,
     linkBit: trapIndex < 0 ? 0 : 1 << trapIndex,
@@ -327,8 +345,13 @@ export function enumerateDynamicSuccessors(dctx, canonicalOrNumericState, action
   // The trap this step armed has already opened its wall: the defenders read
   // the maze after the step.
   const after = metaFor(dctx, traps);
-  const hunterOutcomes = [];
-  hunterSupport(after, state.h, next, traps, state.s, hunterOutcomes);
+  // ROTA2-ADAPTIVE-HUNTER-04: the step's direction becomes the memory; the Hunter answers first, on the maze after the
+  // step — by the production interception when it intercepts (every move it may draw), by the reference support
+  // otherwise.
+  const direction = directionCodeOfAction(actionIndex);
+  const intercepting = interceptionMoves(after, state.h, next, state.d, actionIndex, traps, state.s);
+  const hunterOutcomes = intercepting ?? [];
+  if (intercepting === null) hunterSupport(after, state.h, next, traps, state.s, hunterOutcomes);
   const seen = [];
   let hasLoss = false;
   for (const hunter of hunterOutcomes) {
@@ -342,10 +365,10 @@ export function enumerateDynamicSuccessors(dctx, canonicalOrNumericState, action
       hasLoss = true;
       continue;
     }
-    const key = packFields(after, next, hunter, settledSentinel, sentinel.t, sentinel.c, lights, traps);
+    const key = packFields(after, next, hunter, settledSentinel, sentinel.t, sentinel.c, lights, traps, direction);
     if (seen.includes(key)) continue;
     seen.push(key);
-    emit(key, next, hunter, settledSentinel, sentinel.t, sentinel.c, lights, traps);
+    emit(key, next, hunter, settledSentinel, sentinel.t, sentinel.c, lights, traps, direction);
   }
   return { hasWin: false, hasLoss, stateCount: seen.length };
 }
@@ -359,7 +382,7 @@ export function dynamicSuccessorSet(dctx, state, actionIndex) {
 }
 
 export function packDynamicState(dctx, numeric) {
-  return packFields(metaFor(dctx, numeric.traps), numeric.e, numeric.h, numeric.s, numeric.t, numeric.c, numeric.lights, numeric.traps);
+  return packFields(metaFor(dctx, numeric.traps), numeric.e, numeric.h, numeric.s, numeric.t, numeric.c, numeric.lights, numeric.traps, numeric.d ?? 0);
 }
 
 /**
@@ -367,13 +390,17 @@ export function packDynamicState(dctx, numeric) {
  * reference attractors (`solvePackedGraph`) and classification apply as they
  * are. Limits as the reference's `maxStates` / `maxElapsedMs`.
  */
-export function exploreDynamic(dctx, { maxStates = 3_000_000, maxElapsedMs = 60_000 } = {}) {
+export function exploreDynamic(dctx, { maxStates = 3_000_000, maxElapsedMs = 60_000, directionQuotient = "auto" } = {}) {
   const started = performance.now();
+  // ROTA2-ADAPTIVE-HUNTER-04: where this Route's Hunter cannot read the direction, states that differ only in it are
+  // identified (exact; hunter-interception-support.mjs `useDirectionQuotient`). The key's direction digit is its least
+  // significant, so the quotient key is `key - d`.
+  const quotient = useDirectionQuotient(dctx.closed.packed, directionQuotient);
   const start = initialPackedState(dctx.closed);
   const startMeta = metaFor(dctx, start.traps);
-  const startKey = packFields(startMeta, start.e, start.h, start.s, start.t, start.c, start.lights, start.traps);
+  const startKey = packFields(startMeta, start.e, start.h, start.s, start.t, start.c, start.lights, start.traps, start.d);
   const nodes = new PackedNodeStore(65_536);
-  nodes.add(startKey, start.e, start.h, start.s, start.t, start.c, start.lights, start.traps);
+  nodes.add(startKey, start.e, start.h, start.s, start.t, start.c, start.lights, start.traps, -1, -1, 0, start.d);
   const actionSource = new GrowableBuffer(Uint32Array);
   const actionName = new GrowableBuffer(Uint8Array);
   const actionSuccessorOffset = new GrowableBuffer(Uint32Array);
@@ -394,10 +421,12 @@ export function exploreDynamic(dctx, { maxStates = 3_000_000, maxElapsedMs = 60_
     nodes.actionOffset[nodeId] = actionSource.length;
     for (let action = 0; action < ACTIONS.length; action += 1) {
       const successorOffset = successorIds.length;
-      const result = enumerateDynamicSuccessors(dctx, state, action, (key, e, h, s, t, c, lights, traps) => {
+      const result = enumerateDynamicSuccessors(dctx, state, action, (rawKey, e, h, s, t, c, lights, traps, rawD) => {
+        const key = quotient ? rawKey - rawD : rawKey;
+        const d = quotient ? 0 : rawD;
         let successorId = nodes.ids.get(key);
         if (successorId === undefined) {
-          successorId = nodes.add(key, e, h, s, t, c, lights, traps, nodeId, action, nodes.depth[nodeId] + 1);
+          successorId = nodes.add(key, e, h, s, t, c, lights, traps, nodeId, action, nodes.depth[nodeId] + 1, d);
         }
         successorIds.push(successorId);
       });
@@ -431,6 +460,7 @@ export function exploreDynamic(dctx, { maxStates = 3_000_000, maxElapsedMs = 60_
     truncated: head < nodes.count,
     resourceLimit,
     shortestWin,
+    directionQuotient: quotient,
     elapsedMs: performance.now() - started,
   };
 }
@@ -440,13 +470,14 @@ export function exploreDynamic(dctx, { maxStates = 3_000_000, maxElapsedMs = 60_
  * link ignored: the trap only blocks the defenders). Labels are the
  * reference's PRE_CHEST labels; INCONCLUSIVE when a limit cut the search.
  */
-export function classifyMap(map, difficulty, { dynamic = true, requirePassage = false, maxStates, maxElapsedMs } = {}) {
-  const dctx = buildDynamicContext(map, difficulty, { dynamic, requirePassage });
-  const graph = exploreDynamic(dctx, { maxStates, maxElapsedMs });
+export function classifyMap(map, difficulty, { dynamic = true, requirePassage = false, routeNumber = 1, intercept, maxStates, maxElapsedMs, directionQuotient } = {}) {
+  const dctx = buildDynamicContext(map, difficulty, { dynamic, requirePassage, routeNumber, intercept });
+  const graph = exploreDynamic(dctx, { maxStates, maxElapsedMs, directionQuotient });
   const solved = solvePackedGraph(graph);
   return {
     label: classifyPacked(graph, solved),
     explored: graph.explored,
+    directionQuotient: graph.directionQuotient,
     elapsedMs: Math.round(graph.elapsedMs),
     // Is the linked trap's bit set anywhere the Explorer can still win from?
     graph,

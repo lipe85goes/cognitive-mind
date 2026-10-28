@@ -22,6 +22,16 @@ import { loadInstrumented } from "./instrumented-generator.mjs";
 const LAB = loadInstrumented({ bare: true });
 export const API = LAB.API;
 export const setSeed = LAB.setSeed;
+/**
+ * ROTA2-ADAPTIVE-HUNTER-04 — the production interception policy (`planHunterInterception`), the module the hook
+ * itself runs, loaded from the same graph as `API`. The packed solvers ask it, never a copy of it
+ * (hunter-interception-support.mjs). Null on a tree before the mission. This string reference does not use it: it is
+ * the v1 (Route 1) model, whose Hunter never adapts.
+ */
+export const HUNTER_INTERCEPT_MODULE = "src/games/escape-maze/route-hunter-intercept.ts";
+export const INTERCEPT = LAB.graph.tree.exists(HUNTER_INTERCEPT_MODULE)
+  ? LAB.graph.require(HUNTER_INTERCEPT_MODULE)
+  : null;
 const kOf = (p) => API.posKey(p);
 const md = (a, b) => Math.abs(a.row - b.row) + Math.abs(a.col - b.col);
 const same = (a, b) => a.row === b.row && a.col === b.col;

@@ -1,10 +1,22 @@
-/** Exact numeric successor enumerator; reference equivalence is tested separately. */
+/**
+ * Exact numeric successor enumerator; reference equivalence is tested separately.
+ *
+ * ROTA2-ADAPTIVE-HUNTER-04: the state carries `d`, the direction of the last successful step, and a step leaves the
+ * direction of its action. On a Route that adapts (`ctx.routeNumber` 2 or 3) the Hunter's outcomes are the PRODUCTION
+ * interception moves whenever the production policy intercepts (hunter-interception-support.mjs →
+ * `planHunterInterception`), and the reference support otherwise. On Route 1 the policy never intercepts and the
+ * support is the reference's, unchanged.
+ */
 import { ACTIONS } from "./dynamic-solver.mjs";
 import {
   canonicalToNumeric,
   preparePackedContext,
 } from "./dynamic-solver-packed.mjs";
 import { sentinelTargetDistance } from "./sentinel-target-distance.mjs";
+import { DIRECTION_RADIX, directionCodeOfAction, interceptionMoves } from "./hunter-interception-support.mjs";
+
+/** The packed key's layout carries the last direction (ROTA2-ADAPTIVE-HUNTER-04). */
+export const PACKED_KEY_HAS_DIRECTION = true;
 
 const CELL_COUNT = 81;
 const UNREACHABLE = 255;
@@ -53,14 +65,15 @@ function trapVariant(meta, trapMask) {
   return variant;
 }
 
-function packFields(meta, e, h, s, t, c, lights, traps) {
+function packFields(meta, e, h, s, t, c, lights, traps, d) {
   let key = e;
   key = key * CELL_COUNT + h;
   key = key * CELL_COUNT + s;
   key = key * meta.targetRadix + (t + 1);
   key = key * (MAX_COMMIT + 1) + c;
   key = key * meta.lightRadix + lights;
-  return key * meta.trapRadix + traps;
+  key = key * meta.trapRadix + traps;
+  return key * DIRECTION_RADIX + d;
 }
 
 function addUnique(target, value) {
@@ -202,8 +215,12 @@ export function enumeratePackedSuccessors(
   if (next === meta.exitId && lights === meta.allLights) {
     return { hasWin: true, hasLoss: false, stateCount: 0 };
   }
-  const hunterOutcomes = [];
-  hunterSupport(meta, state.h, next, traps, state.s, hunterOutcomes);
+  // ROTA2-ADAPTIVE-HUNTER-04: the step's direction becomes the memory; the Hunter answers first — by the production
+  // interception when it intercepts (every move it may draw), by the reference support otherwise.
+  const direction = directionCodeOfAction(actionIndex);
+  const intercepting = interceptionMoves(meta, state.h, next, state.d, actionIndex, traps, state.s);
+  const hunterOutcomes = intercepting ?? [];
+  if (intercepting === null) hunterSupport(meta, state.h, next, traps, state.s, hunterOutcomes);
   const seen = [];
   let hasLoss = false;
   for (const hunter of hunterOutcomes) {
@@ -221,12 +238,12 @@ export function enumeratePackedSuccessors(
     }
     const packStarted = profile ? performance.now() : 0;
     const key = packFields(
-      meta, next, hunter, settledSentinel, sentinel.t, sentinel.c, lights, traps,
+      meta, next, hunter, settledSentinel, sentinel.t, sentinel.c, lights, traps, direction,
     );
     if (profile) profile.packingMs += performance.now() - packStarted;
     if (seen.includes(key)) continue;
     seen.push(key);
-    emit(key, next, hunter, settledSentinel, sentinel.t, sentinel.c, lights, traps);
+    emit(key, next, hunter, settledSentinel, sentinel.t, sentinel.c, lights, traps, direction);
   }
   return { hasWin: false, hasLoss, stateCount: seen.length };
 }

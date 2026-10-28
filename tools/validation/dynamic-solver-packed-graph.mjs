@@ -5,18 +5,20 @@ import {
   preparePackedContext,
 } from "./dynamic-solver-packed.mjs";
 import { enumeratePackedSuccessors } from "./dynamic-solver-packed-successors.mjs";
+import { DIRECTION_RADIX, useDirectionQuotient } from "./hunter-interception-support.mjs";
 
 const CELL_COUNT = 81;
 const MAX_COMMIT = 3;
 
-function packFields(meta, e, h, s, t, c, lights, traps) {
+function packFields(meta, e, h, s, t, c, lights, traps, d) {
   let key = e;
   key = key * CELL_COUNT + h;
   key = key * CELL_COUNT + s;
   key = key * meta.targetRadix + (t + 1);
   key = key * (MAX_COMMIT + 1) + c;
   key = key * meta.lightRadix + lights;
-  return key * meta.trapRadix + traps;
+  key = key * meta.trapRadix + traps;
+  return key * DIRECTION_RADIX + d;
 }
 
 export class GrowableBuffer {
@@ -59,6 +61,8 @@ export class PackedNodeStore {
     this.c = new Uint8Array(this.capacity);
     this.lights = new Uint8Array(this.capacity);
     this.traps = new Uint8Array(this.capacity);
+    // ROTA2-ADAPTIVE-HUNTER-04: the last successful step's direction (0 = none).
+    this.d = new Uint8Array(this.capacity);
     this.depth = new Uint32Array(this.capacity);
     this.parent = new Int32Array(this.capacity);
     this.parent.fill(-1);
@@ -85,6 +89,7 @@ export class PackedNodeStore {
     replace("c", Uint8Array);
     replace("lights", Uint8Array);
     replace("traps", Uint8Array);
+    replace("d", Uint8Array);
     replace("depth", Uint32Array);
     replace("parent", Int32Array, -1);
     replace("parentAction", Int8Array, -1);
@@ -92,7 +97,8 @@ export class PackedNodeStore {
     replace("actionCount", Uint8Array);
   }
 
-  add(key, e, h, s, t, c, lights, traps, parent = -1, parentAction = -1, depth = 0) {
+  /** `d` comes last so a caller from before ROTA2-ADAPTIVE-HUNTER-04 (no direction) still stores 0. */
+  add(key, e, h, s, t, c, lights, traps, parent = -1, parentAction = -1, depth = 0, d = 0) {
     if (this.count === this.capacity) this.grow();
     const id = this.count++;
     this.ids.set(key, id);
@@ -104,6 +110,7 @@ export class PackedNodeStore {
     this.c[id] = c;
     this.lights[id] = lights;
     this.traps[id] = traps;
+    this.d[id] = d;
     this.parent[id] = parent;
     this.parentAction[id] = parentAction;
     this.depth[id] = depth;
@@ -113,13 +120,13 @@ export class PackedNodeStore {
   numericState(id) {
     return {
       e: this.e[id], h: this.h[id], s: this.s[id], t: this.t[id],
-      c: this.c[id], lights: this.lights[id], traps: this.traps[id],
+      c: this.c[id], lights: this.lights[id], traps: this.traps[id], d: this.d[id],
     };
   }
 
   allocatedBytes() {
     return this.keys.byteLength + this.e.byteLength + this.h.byteLength + this.s.byteLength +
-      this.t.byteLength + this.c.byteLength + this.lights.byteLength + this.traps.byteLength +
+      this.t.byteLength + this.c.byteLength + this.lights.byteLength + this.traps.byteLength + this.d.byteLength +
       this.depth.byteLength + this.parent.byteLength + this.parentAction.byteLength +
       this.actionOffset.byteLength + this.actionCount.byteLength;
   }
@@ -153,13 +160,16 @@ export function explorePacked(ctx, limitsOrStateBudget = {}, options = {}) {
   };
   const started = performance.now();
   const meta = preparePackedContext(ctx);
+  // ROTA2-ADAPTIVE-HUNTER-04: the exact direction quotient where the Hunter cannot read the direction (Route 1) —
+  // hunter-interception-support.mjs `useDirectionQuotient`; `options.directionQuotient: false` keeps the full graph.
+  const quotient = useDirectionQuotient(meta, options.directionQuotient ?? "auto");
   const start = initialPackedState(ctx);
   const startKey = packFields(
-    meta, start.e, start.h, start.s, start.t, start.c, start.lights, start.traps,
+    meta, start.e, start.h, start.s, start.t, start.c, start.lights, start.traps, start.d,
   );
   const initialCapacity = Math.min(Math.max(limits.maxStates ?? 4096, 4096), 65_536);
   const nodes = new PackedNodeStore(initialCapacity);
-  nodes.add(startKey, start.e, start.h, start.s, start.t, start.c, start.lights, start.traps);
+  nodes.add(startKey, start.e, start.h, start.s, start.t, start.c, start.lights, start.traps, -1, -1, 0, start.d);
   const actionSource = new GrowableBuffer(Uint32Array);
   const actionName = new GrowableBuffer(Uint8Array);
   const actionSuccessorOffset = new GrowableBuffer(Uint32Array);
@@ -208,14 +218,16 @@ export function explorePacked(ctx, limitsOrStateBudget = {}, options = {}) {
         ctx,
         state,
         action,
-        (key, e, h, s, t, c, lights, traps) => {
+        (rawKey, e, h, s, t, c, lights, traps, rawD) => {
+          const key = quotient ? rawKey - rawD : rawKey;
+          const d = quotient ? 0 : rawD;
           const lookupStarted = performance.now();
           let successorId = nodes.ids.get(key);
           profile.visitedLookupMs += performance.now() - lookupStarted;
           if (successorId === undefined) {
             successorId = nodes.add(
               key, e, h, s, t, c, lights, traps,
-              nodeId, action, nodes.depth[nodeId] + 1,
+              nodeId, action, nodes.depth[nodeId] + 1, d,
             );
           }
           successorIds.push(successorId);
@@ -265,6 +277,7 @@ export function explorePacked(ctx, limitsOrStateBudget = {}, options = {}) {
     truncated: head < nodes.count,
     resourceLimit,
     shortestWin,
+    directionQuotient: quotient,
     elapsedMs,
     memory: lastMemory,
     profile: {

@@ -3,13 +3,24 @@
  *
  * The string-based solver remains the executable reference model. This module
  * changes representation and algorithms, never the runtime support model.
+ *
+ * ROTA2-ADAPTIVE-HUNTER-04 — one more component, `d`: the direction of the
+ * Explorer's last successful step (0 = none yet, 1..4 = ACTIONS order + 1;
+ * hunter-interception-support.mjs). It is the hook's `lastExplorerDirection`,
+ * and on Routes 2 and 3 the Hunter reads it (the production policy, through
+ * `meta.intercept`). Every Route carries it; on Route 1 nothing reads it. The
+ * string reference (`dynamic-solver.mjs`) has no such component — it is the v1
+ * model — so `oldStringKey` of a canonical state is its 7 v1 fields.
+ * A context's Route is `ctx.routeNumber` (1 when absent).
  */
 import {
   API,
   ACTIONS,
+  INTERCEPT,
   encode as oldStringKey,
   initialState as initialCanonicalState,
 } from "./dynamic-solver.mjs";
+import { DIRECTION_RADIX } from "./hunter-interception-support.mjs";
 
 const BOARD_SIDE = 9;
 const CELL_COUNT = BOARD_SIDE * BOARD_SIDE;
@@ -122,7 +133,7 @@ export function preparePackedContext(ctx) {
   const lightRadix = 1 << lightIds.length;
   const trapRadix = 1 << trapIds.length;
   const stateCardinality =
-    CELL_COUNT * CELL_COUNT * CELL_COUNT * targetRadix * (MAX_COMMIT + 1) * lightRadix * trapRadix;
+    CELL_COUNT * CELL_COUNT * CELL_COUNT * targetRadix * (MAX_COMMIT + 1) * lightRadix * trapRadix * DIRECTION_RADIX;
   if (!Number.isSafeInteger(stateCardinality - 1)) {
     throw new RangeError(`Packed state space exceeds Number.MAX_SAFE_INTEGER: ${stateCardinality}`);
   }
@@ -158,9 +169,15 @@ export function preparePackedContext(ctx) {
       commitTurnsRemaining: 2,
       collectedLights: lightIds.length,
       activeTraps: trapIds.length,
+      lastDirection: Math.ceil(Math.log2(DIRECTION_RADIX)),
     },
     trapVariants: new Array(trapRadix),
     precomputeMs: 0,
+    // ROTA2-ADAPTIVE-HUNTER-04: what the production interception policy is asked with.
+    routeNumber: ctx.routeNumber ?? 1,
+    intercept: ctx.intercept ?? INTERCEPT,
+    wallSet: ctx.map.walls,
+    keyToId: new Map(cells.map((position, id) => [`${position.row},${position.col}`, id])),
   };
   meta.trapVariants[0] = { neighbours: baseNeighbours, distances: baseDistances };
   meta.precomputeMs = performance.now() - started;
@@ -177,6 +194,8 @@ export function canonicalToNumeric(state) {
   return {
     e: convert(state.e), h: convert(state.h), s: convert(state.s),
     t: state.t, c: state.c, lights: state.lights, traps: state.traps,
+    // A canonical state from the v1 string reference has no direction: no step remembered.
+    d: state.d ?? 0,
   };
 }
 
@@ -184,6 +203,7 @@ export function numericToCanonical(state) {
   return {
     e: cellKey(state.e), h: cellKey(state.h), s: cellKey(state.s),
     t: state.t, c: state.c, lights: state.lights, traps: state.traps,
+    d: state.d ?? 0,
   };
 }
 
@@ -195,9 +215,10 @@ function validateNumericState(meta, state) {
   assertIntegerInRange(state.c, 0, MAX_COMMIT, "commitTurnsRemaining");
   assertIntegerInRange(state.lights, 0, meta.lightRadix - 1, "collectedLights");
   assertIntegerInRange(state.traps, 0, meta.trapRadix - 1, "activeTraps");
+  assertIntegerInRange(state.d, 0, DIRECTION_RADIX - 1, "lastDirection");
 }
 
-function packFields(meta, e, h, s, t, c, lights, traps) {
+function packFields(meta, e, h, s, t, c, lights, traps, d) {
   let key = e;
   key = key * CELL_COUNT + h;
   key = key * CELL_COUNT + s;
@@ -205,6 +226,7 @@ function packFields(meta, e, h, s, t, c, lights, traps) {
   key = key * (MAX_COMMIT + 1) + c;
   key = key * meta.lightRadix + lights;
   key = key * meta.trapRadix + traps;
+  key = key * DIRECTION_RADIX + d;
   return key;
 }
 
@@ -212,13 +234,37 @@ export function packState(ctx, canonicalOrNumericState) {
   const meta = preparePackedContext(ctx);
   const state = canonicalToNumeric(canonicalOrNumericState);
   validateNumericState(meta, state);
-  return packFields(meta, state.e, state.h, state.s, state.t, state.c, state.lights, state.traps);
+  return packFields(meta, state.e, state.h, state.s, state.t, state.c, state.lights, state.traps, state.d);
+}
+
+/**
+ * A packed key's fields, without validation — the one decoder every tool shares (the key layout is the solvers':
+ * e, h, s, t + 1, c, lights, traps, d — most significant first).
+ */
+export function decodePackedKey(meta, packedKey) {
+  let value = packedKey;
+  const d = value % DIRECTION_RADIX;
+  value = (value - d) / DIRECTION_RADIX;
+  const traps = value % meta.trapRadix;
+  value = (value - traps) / meta.trapRadix;
+  const lights = value % meta.lightRadix;
+  value = (value - lights) / meta.lightRadix;
+  const c = value % (MAX_COMMIT + 1);
+  value = (value - c) / (MAX_COMMIT + 1);
+  const t = (value % meta.targetRadix) - 1;
+  value = (value - (t + 1)) / meta.targetRadix;
+  const s = value % CELL_COUNT;
+  value = (value - s) / CELL_COUNT;
+  const h = value % CELL_COUNT;
+  return { e: (value - h) / CELL_COUNT, h, s, t, c, lights, traps, d };
 }
 
 export function unpackNumericState(ctx, packedKey) {
   const meta = preparePackedContext(ctx);
   assertIntegerInRange(packedKey, 0, meta.maximumPackedKey, "packedKey");
   let value = packedKey;
+  const d = value % DIRECTION_RADIX;
+  value = Math.floor(value / DIRECTION_RADIX);
   const traps = value % meta.trapRadix;
   value = Math.floor(value / meta.trapRadix);
   const lights = value % meta.lightRadix;
@@ -231,7 +277,7 @@ export function unpackNumericState(ctx, packedKey) {
   value = Math.floor(value / CELL_COUNT);
   const h = value % CELL_COUNT;
   value = Math.floor(value / CELL_COUNT);
-  return { e: value, h, s, t, c, lights, traps };
+  return { e: value, h, s, t, c, lights, traps, d };
 }
 
 export function unpackState(ctx, packedKey) {
@@ -250,6 +296,7 @@ export function packedStateContract(ctx) {
     lightCount: meta.lightIds.length,
     trapCount: meta.trapIds.length,
     commitValues: MAX_COMMIT + 1,
+    directionValues: DIRECTION_RADIX,
     componentBits: meta.componentBits,
     conservativeBitSum: Object.values(meta.componentBits).reduce((sum, bits) => sum + bits, 0),
     mixedRadixStateCardinality: meta.stateCardinality,

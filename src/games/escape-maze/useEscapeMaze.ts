@@ -1476,6 +1476,12 @@ export function useEscapeMaze(
        */
       trapOpenedWalls,
       trapLinks: mazeMap.trapLinks ?? [],
+      /**
+       * ROTA2-ADAPTIVE-HUNTER-04: the direction of the last successful step, as
+       * the Hunter will compare the next one with it. A read-only view; nothing
+       * on screen draws it.
+       */
+      lastExplorerDirection,
       dynamicSolvability: inspectDynamicMazeState({
         mazeMap,
         player,

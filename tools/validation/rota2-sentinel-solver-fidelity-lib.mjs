@@ -15,6 +15,14 @@
  *   - `playFixtureGames` the REAL hook through the runtime harness, under scripted Explorer policies, every pre-Chest
  *                        turn recorded with the recorder's decisions and the RNG draws the turn made.
  *
+ * ROTA2-ADAPTIVE-HUNTER-04: states carry `d`, the direction of the Explorer's last successful step (0 = none,
+ * 1..4 = ACTIONS order + 1 — the hook's `lastExplorerDirection`). `oracleSuccessors` asks the PRODUCTION interception
+ * policy (`planHunterInterception`, the module the hook runs, `octx.intercept`) exactly as `runDefenderPhase` does —
+ * the maze after the step, the armed traps and the Sentinel's cell blocked — and takes its moves as the Hunter's
+ * outcomes when it intercepts; otherwise the reference support, as before. Hunter before Sentinel, as before. `canon`
+ * stays the seven fields this suite has always compared (the direction is the action's, so a successor is identified
+ * by them); `canonD` adds `d`.
+ *
  * Writes nothing.
  */
 import fs from "node:fs";
@@ -25,7 +33,8 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { routeModuleDeclaring } from "./instrumented-generator.mjs";
 import { normalizeSource } from "./route-module-loader.mjs";
 import { cellKey, pathBetween, sameCell, walkableNeighbours } from "./route-runtime-harness.mjs";
-import { ACTIONS, hunterSupport as referenceHunterSupport } from "./dynamic-solver.mjs";
+import { ACTIONS, HUNTER_INTERCEPT_MODULE, hunterSupport as referenceHunterSupport } from "./dynamic-solver.mjs";
+import { DIRECTION_CODES, directionCodeOf, directionCodeOfAction } from "./hunter-interception-support.mjs";
 
 /** The mission's exact base: the reference solvers as they were before the correction. */
 export const FIDELITY_BASE = "f5826b2e587d8381ac2e9d05be5c1b517b97dcdc";
@@ -34,6 +43,8 @@ export const PACKED_FILE = "dynamic-solver-packed-successors.mjs";
 export const ROTA2_FILE = "rota2-dynamic-solver.mjs";
 /** Load order matters: the helper first, so the solvers that import it can be bound to its in-memory copy. */
 export const SOLVER_FILES = [HELPER_FILE, PACKED_FILE, ROTA2_FILE];
+/** ROTA2-ADAPTIVE-HUNTER-04: the adapter both packed solvers call the production interception policy through. */
+export const INTERCEPT_ADAPTER_FILE = "hunter-interception-support.mjs";
 
 const TOOLS_DIR = path.dirname(fileURLToPath(import.meta.url));
 export const REPO_ROOT = path.resolve(TOOLS_DIR, "..", "..");
@@ -47,6 +58,8 @@ export const idOfKey = (key) => {
   return row * 9 + col;
 };
 export const canon = (x) => `${x.e}|${x.h}|${x.s}|${x.target}|${x.c}|${x.lights}|${x.traps}`;
+/** ROTA2-ADAPTIVE-HUNTER-04: the canonical state with the last direction. */
+export const canonD = (x) => `${canon(x)}|${x.d ?? 0}`;
 export const parseCanon = (text) => {
   const [e, h, s, target, c, lights, traps] = text.split("|").map(Number);
   return { e, h, s, target, c, lights, traps };
@@ -130,8 +143,17 @@ export function sentinelMoveBody(source) {
 // solver answers in canonical form
 // =================================================================================================
 
-const decodeMixed = (meta, key) => {
+/**
+ * A solver key's fields. ROTA2-ADAPTIVE-HUNTER-04 appended the last direction (radix 5) as the least significant
+ * component; a solver tree from before it (a counterfactual) has no such component — `withDirection` says which.
+ */
+const decodeMixed = (meta, key, withDirection = true) => {
   let x = key;
+  let d = 0;
+  if (withDirection) {
+    d = x % DIRECTION_CODES.length;
+    x = (x - d) / DIRECTION_CODES.length;
+  }
   const traps = x % meta.trapRadix;
   x = (x - traps) / meta.trapRadix;
   const lights = x % meta.lightRadix;
@@ -143,14 +165,15 @@ const decodeMixed = (meta, key) => {
   const s = x % CELL_COUNT;
   x = (x - s) / CELL_COUNT;
   const h = x % CELL_COUNT;
-  return { e: (x - h) / CELL_COUNT, h, s, t, c, lights, traps };
+  return { e: (x - h) / CELL_COUNT, h, s, t, c, lights, traps, d };
 };
+const keysCarryDirection = (module) => module.PACKED_KEY_HAS_DIRECTION === true;
 
 /** Canonical state → the Rota 2.0 solver's numeric state (held door as an index into the union of doors). */
 export function rota2Numeric(dctx, state) {
   const t = state.target < 0 ? -1 : [...dctx.unionAccessIds].indexOf(state.target);
   if (state.target >= 0 && t < 0) throw new Error(`door ${keyOf(state.target)} is not in the map's union of doors`);
-  return { e: state.e, h: state.h, s: state.s, t, c: state.c, lights: state.lights, traps: state.traps };
+  return { e: state.e, h: state.h, s: state.s, t, c: state.c, lights: state.lights, traps: state.traps, d: state.d ?? 0 };
 }
 
 /** The Rota 2.0 solver's answer for (state, action), canonical. Null when the step is illegal. */
@@ -158,11 +181,18 @@ export function rota2Answer(solvers, dctx, state, actionIndex) {
   const result = solvers.rota2.dynamicSuccessorSet(dctx, rota2Numeric(dctx, state), actionIndex);
   if (!result) return null;
   const meta = dctx.closed.packed;
-  const states = result.states.map((key) => {
-    const x = decodeMixed(meta, key);
-    return canon({ ...x, target: x.t < 0 ? -1 : dctx.unionAccessIds[x.t] });
+  const decoded = result.states.map((key) => {
+    const x = decodeMixed(meta, key, keysCarryDirection(solvers.rota2));
+    return { ...x, target: x.t < 0 ? -1 : dctx.unionAccessIds[x.t] };
   });
-  return { hasWin: result.hasWin, hasLoss: result.hasLoss, states: [...new Set(states)].sort(), keys: result.states };
+  const states = decoded.map(canon);
+  return {
+    hasWin: result.hasWin,
+    hasLoss: result.hasLoss,
+    states: [...new Set(states)].sort(),
+    statesD: [...new Set(decoded.map(canonD))].sort(),
+    keys: result.states,
+  };
 }
 
 /** The static (v1-topology) packed solver's answer, canonical. Null when the step is illegal or the door is unknown. */
@@ -171,14 +201,19 @@ export function packedAnswer(solvers, ctx, state, actionIndex) {
   const accessIds = meta ? [...meta.accessIds] : ctx.zone.accesses.map(cellId);
   const t = state.target < 0 ? -1 : accessIds.indexOf(state.target);
   if (state.target >= 0 && t < 0) return null;
-  const result = solvers.packed.packedSuccessorSet(ctx, { e: state.e, h: state.h, s: state.s, t, c: state.c, lights: state.lights, traps: state.traps }, actionIndex);
+  const result = solvers.packed.packedSuccessorSet(ctx, { e: state.e, h: state.h, s: state.s, t, c: state.c, lights: state.lights, traps: state.traps, d: state.d ?? 0 }, actionIndex);
   if (!result) return null;
   const packed = ctx.packed;
-  const states = result.states.map((key) => {
-    const x = decodeMixed(packed, key);
-    return canon({ ...x, target: x.t < 0 ? -1 : packed.accessIds[x.t] });
+  const decoded = result.states.map((key) => {
+    const x = decodeMixed(packed, key, keysCarryDirection(solvers.packed));
+    return { ...x, target: x.t < 0 ? -1 : packed.accessIds[x.t] };
   });
-  return { hasWin: result.hasWin, hasLoss: result.hasLoss, states: [...new Set(states)].sort() };
+  return {
+    hasWin: result.hasWin,
+    hasLoss: result.hasLoss,
+    states: [...new Set(decoded.map(canon))].sort(),
+    statesD: [...new Set(decoded.map(canonD))].sort(),
+  };
 }
 
 export const sameAnswer = (a, b) =>
@@ -194,7 +229,7 @@ export const sameAnswer = (a, b) =>
  * One map's production context: both topologies (certified walls; the linked wall open) and the Sentinel's region of
  * each, computed by production `computePortalDefenceZone` exactly as the hook recomputes it (`turnZone`).
  */
-export function oracleContext(API, map, difficulty, { requirePassage = false, dynamic = true } = {}) {
+export function oracleContext(API, map, difficulty, { requirePassage = false, dynamic = true, routeNumber = 1, intercept = null } = {}) {
   const link = dynamic ? (map.trapLinks ?? [])[0] ?? null : null;
   const trapKeys = map.traps.map(cellKey);
   const openWalls = new Set(map.walls);
@@ -212,7 +247,17 @@ export function oracleContext(API, map, difficulty, { requirePassage = false, dy
     walls,
     zones: walls.map((w, k) => (k === 1 && !link ? null : API.computePortalDefenceZone(map.playerStart, map.exitPosition, w))),
     requirePassage: Boolean(requirePassage) && link !== null,
+    // ROTA2-ADAPTIVE-HUNTER-04: the Route, and the production interception module of the graph the hook runs in
+    // (`productionIntercept(RT)`); null asks nothing — a tree before the mission, or a Route-1-only question.
+    routeNumber,
+    intercept,
   };
+}
+
+/** The production interception module of a loaded runtime's graph — the very instance its hook calls — or null. */
+export function productionIntercept(RT) {
+  const graph = RT.LAB.graph;
+  return graph.tree.exists(HUNTER_INTERCEPT_MODULE) ? graph.require(HUNTER_INTERCEPT_MODULE) : null;
 }
 
 /**
@@ -228,22 +273,42 @@ export function oracleSuccessors(octx, state, actionIndex, recorder = null) {
   if (row < 0 || col < 0 || row >= 9 || col >= 9) return null;
   const next = row * 9 + col;
   if (octx.walls[before].has(keyOf(next))) return null;
-  if (next === state.h || next === state.s) return { hasWin: false, hasLoss: true, states: [], hunters: [], perHunter: [], decisions: [], next };
+  if (next === state.h || next === state.s) return { hasWin: false, hasLoss: true, states: [], statesD: [], hunters: [], perHunter: [], decisions: [], next, intercepting: false, interception: null };
   const li = octx.lightKeys.indexOf(keyOf(next));
   const ti = octx.trapKeys.indexOf(keyOf(next));
   const lights = li >= 0 ? state.lights | (1 << li) : state.lights;
   const traps = ti >= 0 ? state.traps | (1 << ti) : state.traps;
   const portalReady = lights === (1 << octx.lightKeys.length) - 1 && (!octx.requirePassage || (traps & octx.linkBit) !== 0);
-  if (next === octx.exitId && portalReady) return { hasWin: true, hasLoss: false, states: [], hunters: [], perHunter: [], decisions: [], next };
+  if (next === octx.exitId && portalReady) return { hasWin: true, hasLoss: false, states: [], statesD: [], hunters: [], perHunter: [], decisions: [], next, intercepting: false, interception: null };
   const after = (traps & octx.linkBit) !== 0 ? 1 : 0;
   const turnWalls = octx.walls[after];
   const zone = octx.zones[after];
   const armed = new Set(octx.trapKeys.filter((_, i) => traps & (1 << i)));
   const nextCell = cellOf(next);
   const sentinelCell = cellOf(state.s);
-  const hunters = referenceHunterSupport(cellOf(state.h), nextCell, map.exitPosition, turnWalls, octx.difficulty, armed, sentinelCell).map(cellId);
+  // ROTA2-ADAPTIVE-HUNTER-04: the Hunter answers first — by the production interception, asked as `runDefenderPhase`
+  // asks it (this step's direction, the remembered one, the maze after the step, armed traps and the Sentinel's cell
+  // blocked), when it intercepts: every move it may draw. Otherwise the reference support.
+  const interception = octx.intercept
+    ? octx.intercept.planHunterInterception({
+      routeNumber: octx.routeNumber,
+      difficulty: octx.difficulty,
+      previousDirection: DIRECTION_CODES[state.d ?? 0],
+      direction: DIRECTION_CODES[directionCodeOfAction(actionIndex)],
+      hunter: cellOf(state.h),
+      explorer: nextCell,
+      exitPosition: map.exitPosition,
+      walls: turnWalls,
+      blocked: new Set([...armed, keyOf(state.s)]),
+    })
+    : null;
+  const hunters = interception
+    ? interception.moves.map(cellId)
+    : referenceHunterSupport(cellOf(state.h), nextCell, map.exitPosition, turnWalls, octx.difficulty, armed, sentinelCell).map(cellId);
+  const d = directionCodeOfAction(actionIndex);
   if (recorder) recorder.decisions.length = 0;
   const states = new Set();
+  const statesD = new Set();
   const perHunter = [];
   let hasLoss = false;
   for (const hunter of hunters) {
@@ -263,14 +328,19 @@ export function oracleSuccessors(octx, state, actionIndex, recorder = null) {
       perHunter.push({ hunter, outcome: "SENTINEL_CAPTURE" });
       continue;
     }
-    const successor = canon({ e: next, h: hunter, s: settled, target: decided.target ? cellId(decided.target) : -1, c: decided.commitLeft, lights, traps });
+    const successorState = { e: next, h: hunter, s: settled, target: decided.target ? cellId(decided.target) : -1, c: decided.commitLeft, lights, traps, d };
+    const successor = canon(successorState);
     perHunter.push({ hunter, outcome: successor });
     states.add(successor);
+    statesD.add(canonD(successorState));
   }
   return {
     hasWin: false,
     hasLoss,
     states: [...states].sort(),
+    statesD: [...statesD].sort(),
+    intercepting: interception !== null,
+    interception,
     hunters: [...new Set(hunters)].sort((a, b) => a - b),
     perHunter,
     decisions: recorder ? recorder.decisions.map((d) => ({ ...d })) : [],
@@ -363,6 +433,8 @@ export function canonicalOfGame(g) {
   return {
     e: cellId(g.player), h: cellId(g.guardian), s: cellId(g.sentinel),
     target: g.sentinelTarget ? cellId(g.sentinelTarget) : -1, c: g.sentinelCommitLeft, lights, traps,
+    // ROTA2-ADAPTIVE-HUNTER-04: the hook's memory (a tree before the mission has none: 0).
+    d: directionCodeOf(g.lastExplorerDirection),
   };
 }
 
