@@ -170,7 +170,48 @@ nenhum modelo importa (H32). `[preserved]`: deve valer na base e aqui;
   **9** `[preserved]` valem (`ROTA2_ADAPTIVE_HUNTER_COUNTERFACTUAL_HOLDS`).
   Nenhum passa por vacuidade: H13/H18 exigem que o ramo tenha rodado (o módulo
   respondeu com planos e o hook escolheu entre movimentos de interceptação).
-- ⟨MUTANTS-TBD⟩
+- `--mutants`: **25/25** pegos, cada um por um check que ele mira (a tabela);
+  aplicados ao grafo carregado, nunca ao disco. O registro só é escrito por um
+  `--update` em que a suíte limpa passou e **todos** foram pegos; um mutante com
+  testemunha só conta se o check que falha mostra o defeito plantado.
+
+| | mutante | pego por |
+| --- | --- | --- |
+| M01 | o Caçador adaptativo dispara na Rota 1 | H08, H01, H02, H25 |
+| M02 | direção repetida nunca dispara | H07, H22 |
+| M03 | direção diferente também dispara | H06 |
+| M04 | a memória nunca atualiza | H04, H07 |
+| M05 | a memória lida pelo turno é zerada a cada render | H07 |
+| M06 | a memória vaza da Rota anterior | H29 |
+| M07 | o Fácil prevê duas casas | H09 |
+| M08 | o Difícil não usa a previsão de duas casas | H11 |
+| M09 | o Caçador pode pisar numa armadilha armada | H15 |
+| M10 | o Caçador pode pisar na Sentinela | H16 |
+| M11 | o Caçador pode pisar no portal | H17 |
+| M12 | o Caçador se teletransporta para a previsão | H18 |
+| M13 | a previsão atravessa parede | H14 |
+| M14 | um solver calcula os movimentos com a própria cópia da política | H32 |
+| M15 | o solver estático atualizado, o dinâmico velho | H22 |
+| M16 | o dinâmico atualizado, o estático velho (sem direção, sem interceptação) | H21, H24 |
+| M17 | os solvers ignoram a direção lembrada | H22, H21 |
+| M18 | o sucessor guarda a direção anterior em vez da do passo | H24 |
+| M19 | a interceptação espia o fluxo aleatório antes de escolher | H20 |
+| M20 | um movimento único de interceptação ainda consome sorteio | H20 |
+| M21 | a parede aberta é ignorada pela interceptação | H26 |
+| M22 | a política da Sentinela muda | H27 |
+| M23 | o fluxo aleatório da Rota 1 muda | H02, H25 |
+| M24 | a interceptação pode pôr o Caçador numa parede | H18 (testemunha) |
+| M25 | interceptar a previsão conta como captura (resultado sem movimento real) | H18 |
+
+  **M24 e a fixture de H18.** O mutante tira o teste de parede de
+  `hunterMayEnter`. Partidas reais raramente o expõem (a parede raramente é o
+  atalho), então H18 pergunta ao módulo um tabuleiro fixo: Rota 2, "direita"
+  repetida, Caçador (2,4), Explorador (4,2), portal (8,8), única parede (3,4).
+  O Difícil prevê (4,4); o módulo correto contorna a parede, (2,3) ou (2,5) —
+  exatamente o verificador de contrato —, e nenhum modo devolve (3,4) (Médio:
+  (2,3); Fácil: sem plano). Com M24 o módulo devolve `[(3,4)]` — a parede — e H18
+  falha por esse movimento ilegal (`illegalMoves: [{ cell: "3,4", reasons:
+  ["wall"] }]`), que é a testemunha exigida para contar M24 como pego.
 
 ### 6.3 Censo (`rota2-adaptive-hunter-census.mjs`) — 9/9
 
