@@ -50,7 +50,7 @@
     "linkedMaps": 1080,
     "evaluation": {
       "evaluations": 216000,
-      "microsecondsPerEvaluation": 0.835,
+      "microsecondsPerEvaluation": 1.082,
       "readyCount": 0
     }
   },
@@ -158,74 +158,74 @@
     "scenarios": {
       "lights->trap": {
         "attempted": 72,
+        "completed": 10,
+        "won": 10,
+        "portalActivations": 10,
+        "passageCompletedBy": {
+          "trap": 10
+        }
+      },
+      "trap->lights": {
+        "attempted": 72,
+        "completed": 15,
+        "won": 15,
+        "portalActivations": 15,
+        "passageCompletedBy": {
+          "trap": 15
+        }
+      },
+      "lights->pickaxe": {
+        "attempted": 72,
+        "completed": 12,
+        "won": 12,
+        "portalActivations": 12,
+        "passageCompletedBy": {
+          "pickaxe": 12
+        }
+      },
+      "pickaxe->lights": {
+        "attempted": 72,
+        "completed": 10,
+        "won": 10,
+        "portalActivations": 10,
+        "passageCompletedBy": {
+          "pickaxe": 10
+        }
+      },
+      "secondChance->trap": {
+        "attempted": 72,
         "completed": 11,
         "won": 11,
         "portalActivations": 11,
         "passageCompletedBy": {
           "trap": 11
         }
-      },
-      "trap->lights": {
-        "attempted": 72,
-        "completed": 19,
-        "won": 19,
-        "portalActivations": 19,
-        "passageCompletedBy": {
-          "trap": 19
-        }
-      },
-      "lights->pickaxe": {
-        "attempted": 72,
-        "completed": 11,
-        "won": 11,
-        "portalActivations": 11,
-        "passageCompletedBy": {
-          "pickaxe": 11
-        }
-      },
-      "pickaxe->lights": {
-        "attempted": 72,
-        "completed": 9,
-        "won": 9,
-        "portalActivations": 9,
-        "passageCompletedBy": {
-          "pickaxe": 9
-        }
-      },
-      "secondChance->trap": {
-        "attempted": 72,
-        "completed": 16,
-        "won": 16,
-        "portalActivations": 16,
-        "passageCompletedBy": {
-          "trap": 16
-        }
       }
     },
     "portalActivatedTwice": 0,
     "wonWithoutActivation": 0,
-    "earlyVisits": 50,
+    "earlyVisits": 49,
     "earlyWins": 0,
-    "rendersInspected": 19680,
+    "rendersInspected": 19147,
     "invalidPlayingRenders": 0,
     "passageTruthMismatch": 0,
     "restart": {
       "attempted": 72,
-      "reached": 36,
-      "fresh": 36
+      "reached": 34,
+      "fresh": 34
     },
     "nextRoute": {
       "attempted": 36,
       "fresh": 36
     },
     "differential": {
-      "transitions": 9149,
+      "transitions": 8753,
       "unsound": 0,
       "heldDoorArmed": 0,
       "defenderModelGap": 0,
       "objectiveUnsound": 0,
-      "wins": 30,
-      "afterPassage": 2677,
+      "wins": 25,
+      "afterPassage": 2548,
       "examples": [],
       "gapExamples": []
     }
@@ -245,6 +245,6 @@
     }
   },
   "run": {
-    "elapsedMs": 831011
+    "elapsedMs": 1059846
   }
 }
