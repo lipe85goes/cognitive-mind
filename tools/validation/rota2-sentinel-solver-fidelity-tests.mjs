@@ -38,7 +38,6 @@ import { EXIT_USAGE, EXIT_VALIDATION_FAILED, openEvidence } from "./evidence.mjs
 import { loadRouteRuntime } from "./route-runtime-harness.mjs";
 import { ACTIONS, buildContext, successors as stringReferenceSuccessors } from "./dynamic-solver.mjs";
 import {
-  DECISION_RECORDER,
   FIDELITY_BASE,
   HELPER_FILE,
   PACKED_FILE,
@@ -50,6 +49,7 @@ import {
   cellId,
   cellOf,
   decisionClass,
+  decisionRecorder,
   keyOf,
   loadSolvers,
   oracleContext,
@@ -166,7 +166,7 @@ function secondChanceGames(RT) {
  * pairs, and the pre-mission solvers' answers.
  */
 async function collectFixtures(rev, log) {
-  const RT = loadRouteRuntime({ directDifficulty: true, rev, transforms: [DECISION_RECORDER] });
+  const RT = loadRouteRuntime({ directDifficulty: true, rev, transforms: [decisionRecorder(rev)] });
   const recorder = attachRecorder(RT);
   const t0 = performance.now();
   const turns = playFixtureGames(RT, recorder, [...PORTAL_RUSH, ...TOURS]);
@@ -174,7 +174,7 @@ async function collectFixtures(rev, log) {
 
   // The same games on the other tree: the hook (src/) is not this mission's, so its turns and draws must not move.
   const otherRev = rev === null ? FIDELITY_BASE : null;
-  const RT2 = loadRouteRuntime({ directDifficulty: true, rev: otherRev, transforms: [DECISION_RECORDER] });
+  const RT2 = loadRouteRuntime({ directDifficulty: true, rev: otherRev, transforms: [decisionRecorder(otherRev)] });
   const turns2 = playFixtureGames(RT2, attachRecorder(RT2), [...PORTAL_RUSH, ...TOURS]);
   const secondChance = { here: secondChanceGames(RT), other: secondChanceGames(RT2), otherRev: otherRev ?? "working tree" };
 
@@ -448,9 +448,17 @@ function runChecks(solvers, fixtures, pre, { quiet = false, label = "" } = {}) {
     // The Sentinel walks toward the trapped door: production's successor moves it (not just bookkeeping).
     const moving = runtime.filter((p) => p.oracle.states.some((s) => parseCanon(s).s !== p.state.s));
     const shapes = hookMiss.map(({ turn, pair }) => missShape(turn, answers.get(pair.key).dynamic));
+    // The measurement that found the gap (DEPENDENT-OBJECTIVES-02 census D3: Route 1 portal rush, seeds 6400–6439,
+    // 25 of 2016 turns outside the support), replayed: every portal-rush turn, whatever its class.
+    const rush = runtimeTurns.filter(({ turn }) => turn.spec.policy === "portalRush");
+    const portalRushReplay = {
+      turns: rush.length,
+      preMissionOutside: rush.filter(({ turn, pair }) => !hookInSupport(turn, preAnswers.get(pair.key).dynamic)).length,
+      outside: rush.filter(({ turn, pair }) => !hookInSupport(turn, answers.get(pair.key).dynamic)).length,
+    };
     return {
       pass: list.length > 100 && armingHeld.length > 0 && laterHeld.length > 0 && moving.length > 0 && wrong.length === 0 && hookMiss.length === 0,
-      pairs: list.length, runtimePairs: runtime.length, hookTurns: turnsIn.length,
+      pairs: list.length, runtimePairs: runtime.length, hookTurns: turnsIn.length, portalRushReplay,
       witnesses: { armingTheHeldDoor: armingHeld.length, laterTurnsOfTheCommitment: laterHeld.length, freshCommitmentToAnArmedDoor: fresh.length, sentinelMoves: moving.length },
       vsProduction: wrong.length, hookOutside: hookMiss.length,
       hookMissShapes: { position: shapes.filter((s) => s.position).length, target: shapes.filter((s) => s.target).length, commitLeft: shapes.filter((s) => s.commitLeft).length },

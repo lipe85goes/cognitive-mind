@@ -9,7 +9,7 @@
  *                        model, `dynamic-solver.mjs`) on the maze after it, and for every Hunter outcome the REAL
  *                        `decideSentinelMove` with the REAL `computePortalDefenceZone` of that maze — exactly what
  *                        `runDefenderPhase` hands them. It answers in canonical form: held door as a CELL, not an index.
- *   - `DECISION_RECORDER` a read-only line in production `decideSentinelMove` saying which branch it took (target,
+ *   - `decisionRecorder` a read-only line in production `decideSentinelMove` saying which branch it took (target,
  *                        whether that target is blocked in the graph, whether the target-root BFS reached the Sentinel,
  *                        whether the commitment was released). It classifies; it never decides a verdict.
  *   - `playFixtureGames` the REAL hook through the runtime harness, under scripted Explorer policies, every pre-Chest
@@ -22,6 +22,7 @@ import path from "node:path";
 import { execFileSync } from "node:child_process";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
+import { routeModuleDeclaring } from "./instrumented-generator.mjs";
 import { normalizeSource } from "./route-module-loader.mjs";
 import { cellKey, pathBetween, sameCell, walkableNeighbours } from "./route-runtime-harness.mjs";
 import { ACTIONS, hunterSupport as referenceHunterSupport } from "./dynamic-solver.mjs";
@@ -33,7 +34,6 @@ export const PACKED_FILE = "dynamic-solver-packed-successors.mjs";
 export const ROTA2_FILE = "rota2-dynamic-solver.mjs";
 /** Load order matters: the helper first, so the solvers that import it can be bound to its in-memory copy. */
 export const SOLVER_FILES = [HELPER_FILE, PACKED_FILE, ROTA2_FILE];
-export const DEFENDERS_FILE = "src/games/escape-maze/route-defenders.ts";
 
 const TOOLS_DIR = path.dirname(fileURLToPath(import.meta.url));
 export const REPO_ROOT = path.resolve(TOOLS_DIR, "..", "..");
@@ -284,26 +284,30 @@ export function oracleSuccessors(octx, state, actionIndex, recorder = null) {
 // the decision recorder (read-only lines in production decideSentinelMove)
 // =================================================================================================
 
-const once = (source, anchor, insert, where) => {
-  if (source.split(anchor).length !== 2) throw new Error(`fidelity recorder: anchor not found exactly once in ${DEFENDERS_FILE}: ${JSON.stringify(anchor.slice(0, 60))}`);
+const once = (file, source, anchor, insert, where) => {
+  if (source.split(anchor).length !== 2) throw new Error(`fidelity recorder: anchor not found exactly once in ${file}: ${JSON.stringify(anchor.slice(0, 60))}`);
   return source.replace(anchor, where === "after" ? anchor + insert : insert + anchor);
 };
 /**
  * Records, per decision: the target the release test is about to read, the held door, the commitment, whether the
  * target is blocked in the defenders' graph (an armed trap), whether the target-root BFS reached the Sentinel, how many
- * traps were armed, and — set inside the release branch itself — whether the commitment was released.
+ * traps were armed, and — set inside the release branch itself — whether the commitment was released. Aimed at
+ * whichever Rota module declares `decideSentinelMove` in the tree at `rev` (ROUTE-C0: never a file named by hand).
  */
-export const DECISION_RECORDER = {
-  [DEFENDERS_FILE]: (source) => {
-    let text = once(source, "  let toTarget = getReachableDistances(target, graph);\n",
-      "  (globalThis as any).__fidelity?.decisions.push({ target: posKey(target), held: heldTarget ? posKey(heldTarget) : null, commitLeft, blocked: graph.has(posKey(target)), reached: toTarget.get(posKey(state.position)) !== undefined, armed: blockedForDefenders.size, released: false });\n",
-      "after");
-    text = once(text, "    target = home;\n    heldTarget = null;\n    commitLeft = 0;\n    toTarget = getReachableDistances(target, graph);\n",
-      "    { const d = (globalThis as any).__fidelity?.decisions; if (d && d.length) d[d.length - 1].released = true; }\n",
-      "before");
-    return text;
-  },
-};
+export function decisionRecorder(rev = null) {
+  const file = routeModuleDeclaring("decideSentinelMove", { rev });
+  return {
+    [file]: (source) => {
+      let text = once(file, source, "  let toTarget = getReachableDistances(target, graph);\n",
+        "  (globalThis as any).__fidelity?.decisions.push({ target: posKey(target), held: heldTarget ? posKey(heldTarget) : null, commitLeft, blocked: graph.has(posKey(target)), reached: toTarget.get(posKey(state.position)) !== undefined, armed: blockedForDefenders.size, released: false });\n",
+        "after");
+      text = once(file, text, "    target = home;\n    heldTarget = null;\n    commitLeft = 0;\n    toTarget = getReachableDistances(target, graph);\n",
+        "    { const d = (globalThis as any).__fidelity?.decisions; if (d && d.length) d[d.length - 1].released = true; }\n",
+        "before");
+      return text;
+    },
+  };
+}
 export function attachRecorder(RT) {
   RT.LAB.sb.__fidelity = { decisions: [] };
   return RT.LAB.sb.__fidelity;

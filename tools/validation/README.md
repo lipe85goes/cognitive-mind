@@ -219,6 +219,34 @@ The solver (`rota2-dynamic-solver.mjs`) takes `requirePassage`: on Routes 2/3
 reaching the exit with every light wins only once the linked trap's bit is set
 (pre-Chest, the passage IS that bit).
 
+**ROTA 2.0 — SENTINEL SOLVER FIDELITY (ROTA2-SENTINEL-SOLVER-FIDELITY-03)** —
+tooling only: the reference solvers' Sentinel now measures the distance to its
+target as the hook does (`docs/ROTA2_SENTINEL_SOLVER_FIDELITY_03.md`). The
+hook's `getReachableDistances(target, graph)` seeds an armed-trap target and
+reaches the maze through its legal neighbours; both packed solvers
+(`dynamic-solver-packed-successors.mjs`, `rota2-dynamic-solver.mjs`) read the
+release test, every candidate score and the stay score through one pure helper
+(`sentinel-target-distance.mjs`) that returns that number.
+
+```bash
+node tools/validation/rota2-sentinel-solver-fidelity-tests.mjs                 # S00–S12, ~1.5 min (check/--update evidence)
+node tools/validation/rota2-sentinel-solver-fidelity-tests.mjs --rev=f5826b2   # the exact base: every [fidelity] check fails, every [preserved] one holds
+node tools/validation/rota2-sentinel-solver-fidelity-tests.mjs --mutants       # M01–M12 in-memory solver mutants, each caught by a check it targets
+node tools/validation/rota2-sentinel-solver-fidelity-census.mjs                # 1080 maps, base vs corrected solver, classes, performance (check/--update)
+```
+
+Everything is held against production, never against another model: the
+real hook (`route-runtime-harness.mjs`), and the production turn composed from
+production pieces (`oracleSuccessors` in `rota2-sentinel-solver-fidelity-lib.mjs`:
+reference Hunter support, the real `decideSentinelMove` and
+`computePortalDefenceZone` on the maze after the step), which S00 shows is the
+hook (every real turn in its support) and, with the link ignored, the string
+reference. A read-only recorder in `decideSentinelMove` (located by
+declaration, `routeModuleDeclaring`) classifies each decision — target blocked
+or not, reached or released — so every disagreement is filed by class. The
+base and mutant solvers are imported from memory (`data:` URLs, relative
+imports bound to the working tree's other modules): nothing is written.
+
 **GAME 03 — ESTÚDIO DAS DESCOBERTAS** — the skeleton (`hidden-objects`), the
 retirement of the Trilha Lógica (`number-trail`), the experience V2 and the
 target pool V1 (GAME03-EXPERIENCE-02). None writes anything unless asked to

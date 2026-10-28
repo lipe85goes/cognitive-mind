@@ -8,7 +8,7 @@
  *   B  runtime       the REAL hook on every map, two scripted games each (a trap tour; the doors that are traps first),
  *                    every pre-Chest turn held against both Rota 2.0 solvers (and both static solvers on Route 1 turns
  *                    on the certified board). Every turn's production Sentinel decision is classified by a read-only
- *                    recorder (`DECISION_RECORDER`); a disagreement is filed by class and by what differs (the
+ *                    recorder (`decisionRecorder`); a disagreement is filed by class and by what differs (the
  *                    Sentinel's cell, its held door, its commitment, the terminal outcome). The same games on the base
  *                    tree's hook: same turns, same draws.
  *   C  focused       where a commitment, a trap and the active maze make the blocked-target case possible — a trap
@@ -30,13 +30,13 @@ import { openEvidence } from "./evidence.mjs";
 import { loadRouteRuntime } from "./route-runtime-harness.mjs";
 import { ACTIONS, buildContext, successors as stringReferenceSuccessors } from "./dynamic-solver.mjs";
 import {
-  DECISION_RECORDER,
   FIDELITY_BASE,
   attachDrawCounter,
   attachRecorder,
   canon,
   cellId,
   decisionClass,
+  decisionRecorder,
   keyOf,
   loadSolvers,
   oracleContext,
@@ -67,8 +67,8 @@ const tally = (object, key, n = 1) => {
 const manhattanIds = (a, b) => Math.abs(Math.floor(a / 9) - Math.floor(b / 9)) + Math.abs((a % 9) - (b % 9));
 const short = (label) => ({ GUARANTEED_SOLVABLE_PRE_CHEST: "G", POSSIBLE_BUT_NOT_GUARANTEED_PRE_CHEST: "P", PROVED_UNSOLVABLE_PRE_CHEST: "U", INCONCLUSIVE_RESOURCE_LIMIT: "I" })[label] ?? label;
 
-const NOW = loadRouteRuntime({ directDifficulty: true, transforms: [DECISION_RECORDER] });
-const PRE = loadRouteRuntime({ directDifficulty: true, rev: FIDELITY_BASE, transforms: [DECISION_RECORDER] });
+const NOW = loadRouteRuntime({ directDifficulty: true, transforms: [decisionRecorder()] });
+const PRE = loadRouteRuntime({ directDifficulty: true, rev: FIDELITY_BASE, transforms: [decisionRecorder(FIDELITY_BASE)] });
 const recorder = attachRecorder(NOW);
 const preRecorder = attachRecorder(PRE);
 const nowDraws = attachDrawCounter(NOW);
