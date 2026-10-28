@@ -1,0 +1,2399 @@
+{
+  "mission": "ROTA2-ADAPTIVE-HUNTER-04",
+  "base": "ec3e564a47b7fad8421bfae34fcbda32acebe043",
+  "checks": [
+    {
+      "id": "A1",
+      "name": "1080 maps identical to the base (draws included)",
+      "pass": true
+    },
+    {
+      "id": "B1",
+      "name": "Route 1 identical to the base: every render, event, draw, message and result",
+      "pass": true
+    },
+    {
+      "id": "C1",
+      "name": "every real turn in the oracle's and both solvers' support; oracle = dynamic solver",
+      "pass": true
+    },
+    {
+      "id": "C2",
+      "name": "the interception is the contract's, one legal cell, never a capture; its message only when it moved",
+      "pass": true
+    },
+    {
+      "id": "C3",
+      "name": "every situation the mission names was observed",
+      "pass": true
+    },
+    {
+      "id": "C4",
+      "name": "restart, mode change and the next Route forget the direction; a new session's first step never intercepts",
+      "pass": true
+    },
+    {
+      "id": "C5",
+      "name": "no state goes invalid or unsolvable while playing (both trees)",
+      "pass": true
+    },
+    {
+      "id": "D1",
+      "name": "Route 1's exact quotient is the base graph, state for state",
+      "pass": true
+    },
+    {
+      "id": "D2",
+      "name": "a map at a resource limit stays INCONCLUSIVE",
+      "pass": true
+    }
+  ],
+  "generation": {
+    "maps": 1080,
+    "identical": 1080,
+    "drawsIdentical": 1080,
+    "exceptions": 0,
+    "linked": 1080
+  },
+  "route1": {
+    "games": 360,
+    "renders": 20185,
+    "turns": 19465,
+    "hunterDraws": 31078,
+    "messages": 19465,
+    "mapsDiffer": 0,
+    "rendersDiffer": 0,
+    "eventsDiffer": 0,
+    "drawsDiffer": 0,
+    "messagesDiffer": 0,
+    "resultsDiffer": 0,
+    "wins": 183,
+    "losses": 122,
+    "captures": {
+      "hunter": 76,
+      "sentinel": 5,
+      "explorer-step": 41
+    },
+    "secondChances": 63,
+    "pickaxeWalls": 165,
+    "linkedTrapArmed": 213,
+    "examples": []
+  },
+  "runtime": {
+    "rates": {
+      "R1-easy": {
+        "base": {
+          "games": 280,
+          "winRate": 43.2,
+          "captureRate": 7.1,
+          "stoppedRate": 49.6,
+          "capturedBy": {
+            "hunter": 12,
+            "sentinel": 5,
+            "explorer-step": 3
+          },
+          "secondChances": 4
+        },
+        "now": {
+          "games": 280,
+          "winRate": 43.2,
+          "captureRate": 7.1,
+          "stoppedRate": 49.6,
+          "capturedBy": {
+            "hunter": 12,
+            "sentinel": 5,
+            "explorer-step": 3
+          },
+          "secondChances": 4
+        }
+      },
+      "R1-medium": {
+        "base": {
+          "games": 280,
+          "winRate": 12.5,
+          "captureRate": 65,
+          "stoppedRate": 22.5,
+          "capturedBy": {
+            "hunter": 172,
+            "sentinel": 2,
+            "explorer-step": 8
+          },
+          "secondChances": 14
+        },
+        "now": {
+          "games": 280,
+          "winRate": 12.5,
+          "captureRate": 65,
+          "stoppedRate": 22.5,
+          "capturedBy": {
+            "hunter": 172,
+            "sentinel": 2,
+            "explorer-step": 8
+          },
+          "secondChances": 14
+        }
+      },
+      "R1-hard": {
+        "base": {
+          "games": 280,
+          "winRate": 7.5,
+          "captureRate": 14.3,
+          "stoppedRate": 78.2,
+          "capturedBy": {
+            "hunter": 18,
+            "sentinel": 3,
+            "explorer-step": 19
+          },
+          "secondChances": 8
+        },
+        "now": {
+          "games": 280,
+          "winRate": 7.5,
+          "captureRate": 14.3,
+          "stoppedRate": 78.2,
+          "capturedBy": {
+            "hunter": 18,
+            "sentinel": 3,
+            "explorer-step": 19
+          },
+          "secondChances": 8
+        }
+      },
+      "R2-easy": {
+        "base": {
+          "games": 400,
+          "winRate": 18.8,
+          "captureRate": 15.5,
+          "stoppedRate": 65.8,
+          "capturedBy": {
+            "hunter": 26,
+            "sentinel": 13,
+            "explorer-step": 23
+          },
+          "secondChances": 6
+        },
+        "now": {
+          "games": 400,
+          "winRate": 19,
+          "captureRate": 15.3,
+          "stoppedRate": 65.8,
+          "capturedBy": {
+            "hunter": 26,
+            "sentinel": 13,
+            "explorer-step": 22
+          },
+          "secondChances": 6
+        }
+      },
+      "R2-medium": {
+        "base": {
+          "games": 400,
+          "winRate": 8,
+          "captureRate": 36.8,
+          "stoppedRate": 55.3,
+          "capturedBy": {
+            "hunter": 88,
+            "sentinel": 5,
+            "explorer-step": 54
+          },
+          "secondChances": 10
+        },
+        "now": {
+          "games": 400,
+          "winRate": 6.3,
+          "captureRate": 41.8,
+          "stoppedRate": 52,
+          "capturedBy": {
+            "hunter": 91,
+            "sentinel": 6,
+            "explorer-step": 70
+          },
+          "secondChances": 9
+        }
+      },
+      "R2-hard": {
+        "base": {
+          "games": 400,
+          "winRate": 3.8,
+          "captureRate": 15.5,
+          "stoppedRate": 80.8,
+          "capturedBy": {
+            "hunter": 16,
+            "sentinel": 6,
+            "explorer-step": 40
+          },
+          "secondChances": 2
+        },
+        "now": {
+          "games": 400,
+          "winRate": 1.5,
+          "captureRate": 15.5,
+          "stoppedRate": 83,
+          "capturedBy": {
+            "hunter": 17,
+            "sentinel": 5,
+            "explorer-step": 40
+          },
+          "secondChances": 2
+        }
+      },
+      "R3-easy": {
+        "base": {
+          "games": 400,
+          "winRate": 15,
+          "captureRate": 19.3,
+          "stoppedRate": 65.8,
+          "capturedBy": {
+            "hunter": 35,
+            "sentinel": 6,
+            "explorer-step": 36
+          },
+          "secondChances": 10
+        },
+        "now": {
+          "games": 400,
+          "winRate": 13.8,
+          "captureRate": 20.8,
+          "stoppedRate": 65.5,
+          "capturedBy": {
+            "hunter": 35,
+            "sentinel": 5,
+            "explorer-step": 43
+          },
+          "secondChances": 11
+        }
+      },
+      "R3-medium": {
+        "base": {
+          "games": 400,
+          "winRate": 2.8,
+          "captureRate": 59.5,
+          "stoppedRate": 37.8,
+          "capturedBy": {
+            "hunter": 204,
+            "sentinel": 10,
+            "explorer-step": 24
+          },
+          "secondChances": 10
+        },
+        "now": {
+          "games": 400,
+          "winRate": 2.5,
+          "captureRate": 62.8,
+          "stoppedRate": 34.8,
+          "capturedBy": {
+            "hunter": 210,
+            "sentinel": 4,
+            "explorer-step": 37
+          },
+          "secondChances": 12
+        }
+      },
+      "R3-hard": {
+        "base": {
+          "games": 400,
+          "winRate": 2.5,
+          "captureRate": 16,
+          "stoppedRate": 81.5,
+          "capturedBy": {
+            "hunter": 17,
+            "sentinel": 7,
+            "explorer-step": 40
+          },
+          "secondChances": 2
+        },
+        "now": {
+          "games": 400,
+          "winRate": 1.8,
+          "captureRate": 20.5,
+          "stoppedRate": 77.8,
+          "capturedBy": {
+            "hunter": 21,
+            "sentinel": 10,
+            "explorer-step": 51
+          },
+          "secondChances": 2
+        }
+      }
+    },
+    "outcomes": {
+      "now": {
+        "R1-easy": {
+          "games": 280,
+          "won": 121,
+          "lost": 20,
+          "budget": 139,
+          "noMove": 0,
+          "capturedBy": {
+            "hunter": 12,
+            "sentinel": 5,
+            "explorer-step": 3
+          },
+          "secondChances": 4,
+          "turns": 25422
+        },
+        "R1-medium": {
+          "games": 280,
+          "won": 35,
+          "lost": 182,
+          "budget": 48,
+          "noMove": 15,
+          "capturedBy": {
+            "hunter": 172,
+            "sentinel": 2,
+            "explorer-step": 8
+          },
+          "secondChances": 14,
+          "turns": 13636
+        },
+        "R1-hard": {
+          "games": 280,
+          "won": 21,
+          "lost": 40,
+          "budget": 132,
+          "noMove": 87,
+          "capturedBy": {
+            "hunter": 18,
+            "sentinel": 3,
+            "explorer-step": 19
+          },
+          "secondChances": 8,
+          "turns": 22983
+        },
+        "R2-easy": {
+          "games": 400,
+          "won": 76,
+          "lost": 61,
+          "budget": 262,
+          "noMove": 1,
+          "capturedBy": {
+            "hunter": 26,
+            "sentinel": 13,
+            "explorer-step": 22
+          },
+          "secondChances": 6,
+          "turns": 40529
+        },
+        "R2-medium": {
+          "games": 400,
+          "won": 25,
+          "lost": 167,
+          "budget": 148,
+          "noMove": 60,
+          "capturedBy": {
+            "hunter": 91,
+            "sentinel": 6,
+            "explorer-step": 70
+          },
+          "secondChances": 9,
+          "turns": 28944
+        },
+        "R2-hard": {
+          "games": 400,
+          "won": 6,
+          "lost": 62,
+          "budget": 216,
+          "noMove": 116,
+          "capturedBy": {
+            "hunter": 17,
+            "sentinel": 5,
+            "explorer-step": 40
+          },
+          "secondChances": 2,
+          "turns": 34605
+        },
+        "R3-easy": {
+          "games": 400,
+          "won": 55,
+          "lost": 83,
+          "budget": 258,
+          "noMove": 4,
+          "capturedBy": {
+            "hunter": 35,
+            "sentinel": 5,
+            "explorer-step": 43
+          },
+          "secondChances": 11,
+          "turns": 39742
+        },
+        "R3-medium": {
+          "games": 400,
+          "won": 10,
+          "lost": 251,
+          "budget": 102,
+          "noMove": 37,
+          "capturedBy": {
+            "hunter": 210,
+            "sentinel": 4,
+            "explorer-step": 37
+          },
+          "secondChances": 12,
+          "turns": 21244
+        },
+        "R3-hard": {
+          "games": 400,
+          "won": 7,
+          "lost": 82,
+          "budget": 200,
+          "noMove": 111,
+          "capturedBy": {
+            "hunter": 21,
+            "sentinel": 10,
+            "explorer-step": 51
+          },
+          "secondChances": 2,
+          "turns": 32572
+        }
+      },
+      "base": {
+        "R1-easy": {
+          "games": 280,
+          "won": 121,
+          "lost": 20,
+          "budget": 139,
+          "noMove": 0,
+          "capturedBy": {
+            "hunter": 12,
+            "sentinel": 5,
+            "explorer-step": 3
+          },
+          "secondChances": 4,
+          "turns": 25422
+        },
+        "R1-medium": {
+          "games": 280,
+          "won": 35,
+          "lost": 182,
+          "budget": 48,
+          "noMove": 15,
+          "capturedBy": {
+            "hunter": 172,
+            "sentinel": 2,
+            "explorer-step": 8
+          },
+          "secondChances": 14,
+          "turns": 13636
+        },
+        "R1-hard": {
+          "games": 280,
+          "won": 21,
+          "lost": 40,
+          "budget": 132,
+          "noMove": 87,
+          "capturedBy": {
+            "hunter": 18,
+            "sentinel": 3,
+            "explorer-step": 19
+          },
+          "secondChances": 8,
+          "turns": 22983
+        },
+        "R2-easy": {
+          "games": 400,
+          "won": 75,
+          "lost": 62,
+          "budget": 260,
+          "noMove": 3,
+          "capturedBy": {
+            "hunter": 26,
+            "sentinel": 13,
+            "explorer-step": 23
+          },
+          "secondChances": 6,
+          "turns": 40538
+        },
+        "R2-medium": {
+          "games": 400,
+          "won": 32,
+          "lost": 147,
+          "budget": 156,
+          "noMove": 65,
+          "capturedBy": {
+            "hunter": 88,
+            "sentinel": 5,
+            "explorer-step": 54
+          },
+          "secondChances": 10,
+          "turns": 29538
+        },
+        "R2-hard": {
+          "games": 400,
+          "won": 15,
+          "lost": 62,
+          "budget": 204,
+          "noMove": 119,
+          "capturedBy": {
+            "hunter": 16,
+            "sentinel": 6,
+            "explorer-step": 40
+          },
+          "secondChances": 2,
+          "turns": 33310
+        },
+        "R3-easy": {
+          "games": 400,
+          "won": 60,
+          "lost": 77,
+          "budget": 261,
+          "noMove": 2,
+          "capturedBy": {
+            "hunter": 35,
+            "sentinel": 6,
+            "explorer-step": 36
+          },
+          "secondChances": 10,
+          "turns": 40266
+        },
+        "R3-medium": {
+          "games": 400,
+          "won": 11,
+          "lost": 238,
+          "budget": 112,
+          "noMove": 39,
+          "capturedBy": {
+            "hunter": 204,
+            "sentinel": 10,
+            "explorer-step": 24
+          },
+          "secondChances": 10,
+          "turns": 23430
+        },
+        "R3-hard": {
+          "games": 400,
+          "won": 10,
+          "lost": 64,
+          "budget": 202,
+          "noMove": 124,
+          "capturedBy": {
+            "hunter": 17,
+            "sentinel": 7,
+            "explorer-step": 40
+          },
+          "secondChances": 2,
+          "turns": 31942
+        }
+      }
+    },
+    "hunterDraws": {
+      "R1-easy": {
+        "base": {
+          "steps": 25178,
+          "draws": 54478,
+          "perStep": 2.164
+        },
+        "now": {
+          "steps": 25178,
+          "draws": 54478,
+          "perStep": 2.164
+        }
+      },
+      "R1-medium": {
+        "base": {
+          "steps": 13391,
+          "draws": 25744,
+          "perStep": 1.922
+        },
+        "now": {
+          "steps": 13391,
+          "draws": 25744,
+          "perStep": 1.922
+        }
+      },
+      "R1-hard": {
+        "base": {
+          "steps": 22748,
+          "draws": 25250,
+          "perStep": 1.11
+        },
+        "now": {
+          "steps": 22748,
+          "draws": 25250,
+          "perStep": 1.11
+        }
+      },
+      "R2-easy": {
+        "base": {
+          "steps": 40238,
+          "draws": 90974,
+          "perStep": 2.261
+        },
+        "now": {
+          "steps": 40236,
+          "draws": 90872,
+          "perStep": 2.258
+        }
+      },
+      "R2-medium": {
+        "base": {
+          "steps": 29285,
+          "draws": 58082,
+          "perStep": 1.983
+        },
+        "now": {
+          "steps": 28676,
+          "draws": 49469,
+          "perStep": 1.725
+        }
+      },
+      "R2-hard": {
+        "base": {
+          "steps": 32989,
+          "draws": 39428,
+          "perStep": 1.195
+        },
+        "now": {
+          "steps": 34289,
+          "draws": 36386,
+          "perStep": 1.061
+        }
+      },
+      "R3-easy": {
+        "base": {
+          "steps": 39981,
+          "draws": 90176,
+          "perStep": 2.255
+        },
+        "now": {
+          "steps": 39459,
+          "draws": 88654,
+          "perStep": 2.247
+        }
+      },
+      "R3-medium": {
+        "base": {
+          "steps": 23144,
+          "draws": 45550,
+          "perStep": 1.968
+        },
+        "now": {
+          "steps": 20964,
+          "draws": 35087,
+          "perStep": 1.674
+        }
+      },
+      "R3-hard": {
+        "base": {
+          "steps": 31633,
+          "draws": 37738,
+          "perStep": 1.193
+        },
+        "now": {
+          "steps": 32225,
+          "draws": 33561,
+          "perStep": 1.041
+        }
+      }
+    },
+    "triggers": {
+      "R1-easy": {
+        "steps": 25057,
+        "repeats": 6269,
+        "interceptions": 0,
+        "oneCell": 0,
+        "twoCell": 0,
+        "ties": 0,
+        "fallbackOnRepeat": 0
+      },
+      "R1-medium": {
+        "steps": 13356,
+        "repeats": 3786,
+        "interceptions": 0,
+        "oneCell": 0,
+        "twoCell": 0,
+        "ties": 0,
+        "fallbackOnRepeat": 0
+      },
+      "R1-hard": {
+        "steps": 22727,
+        "repeats": 5980,
+        "interceptions": 0,
+        "oneCell": 0,
+        "twoCell": 0,
+        "ties": 0,
+        "fallbackOnRepeat": 0
+      },
+      "R2-easy": {
+        "steps": 40160,
+        "repeats": 15137,
+        "interceptions": 123,
+        "oneCell": 123,
+        "twoCell": 0,
+        "ties": 0,
+        "fallbackOnRepeat": 15014
+      },
+      "R2-medium": {
+        "steps": 28651,
+        "repeats": 9174,
+        "interceptions": 4023,
+        "oneCell": 4023,
+        "twoCell": 0,
+        "ties": 632,
+        "fallbackOnRepeat": 5151
+      },
+      "R2-hard": {
+        "steps": 34283,
+        "repeats": 10440,
+        "interceptions": 4117,
+        "oneCell": 1836,
+        "twoCell": 2281,
+        "ties": 398,
+        "fallbackOnRepeat": 6323
+      },
+      "R3-easy": {
+        "steps": 39404,
+        "repeats": 15353,
+        "interceptions": 114,
+        "oneCell": 114,
+        "twoCell": 0,
+        "ties": 0,
+        "fallbackOnRepeat": 15239
+      },
+      "R3-medium": {
+        "steps": 20954,
+        "repeats": 6871,
+        "interceptions": 3333,
+        "oneCell": 3333,
+        "twoCell": 0,
+        "ties": 621,
+        "fallbackOnRepeat": 3538
+      },
+      "R3-hard": {
+        "steps": 32218,
+        "repeats": 10473,
+        "interceptions": 4239,
+        "oneCell": 1612,
+        "twoCell": 2627,
+        "ties": 545,
+        "fallbackOnRepeat": 6234
+      }
+    },
+    "interceptions": {
+      "turns": 15934,
+      "captures": 0,
+      "illegal": 0,
+      "moreThanOneCell": 0,
+      "messageMissing": 0,
+      "messageWithout": 0,
+      "moduleDisagrees": 0,
+      "pursuitCouldNotHaveMadeIt": 2713
+    },
+    "coverage": {
+      "repeatedDirection": 83483,
+      "directionChanges": 170087,
+      "portalActivated": 594,
+      "trapActivationAndWallOpeningSameTurn": 1657,
+      "secondChance": 37,
+      "capture": 934,
+      "projectedCellBehindAClosedWall": 20591,
+      "legacyFallback": 51499,
+      "noLegalInterceptionMove": 26379,
+      "blockedProjectedCell": 4539,
+      "repeatOnTheTurnTheWallOpened": 804,
+      "oneCellProjection": 11041,
+      "hunterAdjacentToPredictedCell": 1251,
+      "interceptionOnTheTurnTheWallOpened": 330,
+      "hunterFartherFromPredictedCell": 14698,
+      "tiesBetweenLegalInterceptionMoves": 2196,
+      "projectionOnTheOpenedTopology": 1434,
+      "hardTwoCellBlocked": 6116,
+      "twoCellProjection": 4908,
+      "restartAndContinuationSequences": 24
+    },
+    "softlock": {
+      "now": {
+        "noMove": 431,
+        "unsolvableWhilePlaying": 0,
+        "invalidWhilePlaying": 0
+      },
+      "base": {
+        "noMove": 454,
+        "unsolvableWhilePlaying": 0,
+        "invalidWhilePlaying": 0
+      }
+    },
+    "sessions": {
+      "sequences": 24,
+      "rememberedBeforeReset": 24,
+      "nullAfterRestart": 24,
+      "nullAfterModeChange": 24,
+      "nullOnNextRoute": 24,
+      "firstStepOfNewSessionIntercepted": 0
+    }
+  },
+  "solverAgreement": {
+    "turns": 240244,
+    "interceptionTurns": 14549,
+    "outsideOracle": 0,
+    "outsideDynamic": 0,
+    "staticTurns": 143375,
+    "outsideStatic": 0,
+    "oracleDynamicPairs": 666955,
+    "oracleDynamicDisagreements": 0,
+    "pairsChangedByPolicy": 23044,
+    "examples": []
+  },
+  "fairness": {
+    "interceptionTurns": 14547,
+    "withASafeStep": 14547,
+    "withoutASafeStep": 0,
+    "withoutASafeStepUnderEveryPursuitMove": 0,
+    "interceptionTookTheLastSafeStep": 0,
+    "pursuitTurns": 168325,
+    "pursuitWithASafeStep": 168066,
+    "nextStep": {
+      "continued": 10161,
+      "turned": 4254,
+      "continuedThenCaptured3": 257,
+      "turnedThenCaptured3": 74
+    },
+    "continuingWasSafe": 13077,
+    "continuingWasUnsafe": 1470,
+    "turningWasSafe": 14481,
+    "examples": []
+  },
+  "stateSpace": {
+    "maps": 72,
+    "byRoute": {
+      "1": {
+        "base": {
+          "P": 15,
+          "U": 2,
+          "G": 6,
+          "I": 1
+        },
+        "now": {
+          "P": 15,
+          "U": 2,
+          "G": 6,
+          "I": 1
+        }
+      },
+      "2": {
+        "base": {
+          "P": 19,
+          "G": 5
+        },
+        "now": {
+          "P": 15,
+          "I": 3,
+          "G": 6
+        }
+      },
+      "3": {
+        "base": {
+          "P": 12,
+          "I": 5,
+          "G": 5,
+          "U": 2
+        },
+        "now": {
+          "P": 5,
+          "I": 15,
+          "G": 2,
+          "U": 2
+        }
+      }
+    },
+    "base": {
+      "P": 46,
+      "U": 4,
+      "G": 16,
+      "I": 6
+    },
+    "now": {
+      "P": 35,
+      "U": 4,
+      "G": 14,
+      "I": 19
+    },
+    "transitions": {
+      "P->P": 35,
+      "U->U": 4,
+      "G->G": 13,
+      "I->I": 6,
+      "P->I": 10,
+      "P->G": 1,
+      "G->I": 3
+    },
+    "route1QuotientEqualsBase": 24,
+    "route1QuotientLabelEqualsBase": 24,
+    "route1Full": {
+      "maps": 24,
+      "explored": 46741917,
+      "baseExplored": 28526674,
+      "labels": {
+        "P->P": 11,
+        "P->I": 4,
+        "U->U": 2,
+        "G->G": 3,
+        "G->I": 3,
+        "I->I": 1
+      },
+      "limited": 8
+    },
+    "representationOnly": {
+      "maps": 12,
+      "explored": 18860589,
+      "baseExplored": 12168098
+    },
+    "interceptingTransitions": 11699147,
+    "supportChangedTransitions": 8765142,
+    "policyCalls": 305288036,
+    "limits": {
+      "base": {
+        "STATE_LIMIT": 6
+      },
+      "now": {
+        "STATE_LIMIT": 19
+      }
+    },
+    "rows": [
+      {
+        "seed": 9210000,
+        "route": 1,
+        "difficulty": "easy",
+        "base": "P",
+        "baseExplored": 812397,
+        "baseLimit": null,
+        "now": "P",
+        "nowExplored": 812397,
+        "nowQuotient": true,
+        "nowLimit": null,
+        "policyCalls": 2281870,
+        "intercepting": 0,
+        "supportChanged": 0,
+        "route1Full": {
+          "label": "P",
+          "explored": 1691055,
+          "limit": null
+        }
+      },
+      {
+        "seed": 9210001,
+        "route": 1,
+        "difficulty": "easy",
+        "base": "P",
+        "baseExplored": 2523327,
+        "baseLimit": null,
+        "now": "P",
+        "nowExplored": 2523327,
+        "nowQuotient": true,
+        "nowLimit": null,
+        "policyCalls": 7295532,
+        "intercepting": 0,
+        "supportChanged": 0,
+        "route1Full": {
+          "label": "I",
+          "explored": 3000066,
+          "limit": "STATE_LIMIT"
+        }
+      },
+      {
+        "seed": 9210002,
+        "route": 1,
+        "difficulty": "easy",
+        "base": "P",
+        "baseExplored": 1535026,
+        "baseLimit": null,
+        "now": "P",
+        "nowExplored": 1535026,
+        "nowQuotient": true,
+        "nowLimit": null,
+        "policyCalls": 4220199,
+        "intercepting": 0,
+        "supportChanged": 0,
+        "route1Full": {
+          "label": "I",
+          "explored": 3000199,
+          "limit": "STATE_LIMIT"
+        }
+      },
+      {
+        "seed": 9210003,
+        "route": 1,
+        "difficulty": "easy",
+        "base": "P",
+        "baseExplored": 252396,
+        "baseLimit": null,
+        "now": "P",
+        "nowExplored": 252396,
+        "nowQuotient": true,
+        "nowLimit": null,
+        "policyCalls": 667746,
+        "intercepting": 0,
+        "supportChanged": 0,
+        "route1Full": {
+          "label": "P",
+          "explored": 515436,
+          "limit": null
+        }
+      },
+      {
+        "seed": 9210004,
+        "route": 1,
+        "difficulty": "easy",
+        "base": "P",
+        "baseExplored": 2240827,
+        "baseLimit": null,
+        "now": "P",
+        "nowExplored": 2240827,
+        "nowQuotient": true,
+        "nowLimit": null,
+        "policyCalls": 6123024,
+        "intercepting": 0,
+        "supportChanged": 0,
+        "route1Full": {
+          "label": "I",
+          "explored": 3000068,
+          "limit": "STATE_LIMIT"
+        }
+      },
+      {
+        "seed": 9210005,
+        "route": 1,
+        "difficulty": "easy",
+        "base": "P",
+        "baseExplored": 1075030,
+        "baseLimit": null,
+        "now": "P",
+        "nowExplored": 1075030,
+        "nowQuotient": true,
+        "nowLimit": null,
+        "policyCalls": 2915144,
+        "intercepting": 0,
+        "supportChanged": 0,
+        "route1Full": {
+          "label": "P",
+          "explored": 2273840,
+          "limit": null
+        }
+      },
+      {
+        "seed": 9210006,
+        "route": 1,
+        "difficulty": "easy",
+        "base": "P",
+        "baseExplored": 1330133,
+        "baseLimit": null,
+        "now": "P",
+        "nowExplored": 1330133,
+        "nowQuotient": true,
+        "nowLimit": null,
+        "policyCalls": 3592603,
+        "intercepting": 0,
+        "supportChanged": 0,
+        "route1Full": {
+          "label": "P",
+          "explored": 2829490,
+          "limit": null
+        }
+      },
+      {
+        "seed": 9210007,
+        "route": 1,
+        "difficulty": "easy",
+        "base": "P",
+        "baseExplored": 408736,
+        "baseLimit": null,
+        "now": "P",
+        "nowExplored": 408736,
+        "nowQuotient": true,
+        "nowLimit": null,
+        "policyCalls": 1090195,
+        "intercepting": 0,
+        "supportChanged": 0,
+        "route1Full": {
+          "label": "P",
+          "explored": 839996,
+          "limit": null
+        }
+      },
+      {
+        "seed": 9211000,
+        "route": 1,
+        "difficulty": "medium",
+        "base": "P",
+        "baseExplored": 785840,
+        "baseLimit": null,
+        "now": "P",
+        "nowExplored": 785840,
+        "nowQuotient": true,
+        "nowLimit": null,
+        "policyCalls": 2057714,
+        "intercepting": 0,
+        "supportChanged": 0,
+        "route1Full": {
+          "label": "P",
+          "explored": 1559477,
+          "limit": null
+        }
+      },
+      {
+        "seed": 9211001,
+        "route": 1,
+        "difficulty": "medium",
+        "base": "P",
+        "baseExplored": 1112946,
+        "baseLimit": null,
+        "now": "P",
+        "nowExplored": 1112946,
+        "nowQuotient": true,
+        "nowLimit": null,
+        "policyCalls": 2858171,
+        "intercepting": 0,
+        "supportChanged": 0,
+        "route1Full": {
+          "label": "P",
+          "explored": 2310307,
+          "limit": null
+        }
+      },
+      {
+        "seed": 9211002,
+        "route": 1,
+        "difficulty": "medium",
+        "base": "P",
+        "baseExplored": 1427785,
+        "baseLimit": null,
+        "now": "P",
+        "nowExplored": 1427785,
+        "nowQuotient": true,
+        "nowLimit": null,
+        "policyCalls": 3700682,
+        "intercepting": 0,
+        "supportChanged": 0,
+        "route1Full": {
+          "label": "P",
+          "explored": 2747348,
+          "limit": null
+        }
+      },
+      {
+        "seed": 9211003,
+        "route": 1,
+        "difficulty": "medium",
+        "base": "P",
+        "baseExplored": 930729,
+        "baseLimit": null,
+        "now": "P",
+        "nowExplored": 930729,
+        "nowQuotient": true,
+        "nowLimit": null,
+        "policyCalls": 2344044,
+        "intercepting": 0,
+        "supportChanged": 0,
+        "route1Full": {
+          "label": "P",
+          "explored": 1782734,
+          "limit": null
+        }
+      },
+      {
+        "seed": 9211004,
+        "route": 1,
+        "difficulty": "medium",
+        "base": "P",
+        "baseExplored": 1107916,
+        "baseLimit": null,
+        "now": "P",
+        "nowExplored": 1107916,
+        "nowQuotient": true,
+        "nowLimit": null,
+        "policyCalls": 2854275,
+        "intercepting": 0,
+        "supportChanged": 0,
+        "route1Full": {
+          "label": "P",
+          "explored": 2247705,
+          "limit": null
+        }
+      },
+      {
+        "seed": 9211005,
+        "route": 1,
+        "difficulty": "medium",
+        "base": "P",
+        "baseExplored": 2206508,
+        "baseLimit": null,
+        "now": "P",
+        "nowExplored": 2206508,
+        "nowQuotient": true,
+        "nowLimit": null,
+        "policyCalls": 5924308,
+        "intercepting": 0,
+        "supportChanged": 0,
+        "route1Full": {
+          "label": "I",
+          "explored": 3000061,
+          "limit": "STATE_LIMIT"
+        }
+      },
+      {
+        "seed": 9211006,
+        "route": 1,
+        "difficulty": "medium",
+        "base": "P",
+        "baseExplored": 205433,
+        "baseLimit": null,
+        "now": "P",
+        "nowExplored": 205433,
+        "nowQuotient": true,
+        "nowLimit": null,
+        "policyCalls": 535670,
+        "intercepting": 0,
+        "supportChanged": 0,
+        "route1Full": {
+          "label": "P",
+          "explored": 477729,
+          "limit": null
+        }
+      },
+      {
+        "seed": 9211007,
+        "route": 1,
+        "difficulty": "medium",
+        "base": "U",
+        "baseExplored": 850079,
+        "baseLimit": null,
+        "now": "U",
+        "nowExplored": 850079,
+        "nowQuotient": true,
+        "nowLimit": null,
+        "policyCalls": 2268102,
+        "intercepting": 0,
+        "supportChanged": 0,
+        "route1Full": {
+          "label": "U",
+          "explored": 1783385,
+          "limit": null
+        }
+      },
+      {
+        "seed": 9212000,
+        "route": 1,
+        "difficulty": "hard",
+        "base": "G",
+        "baseExplored": 79792,
+        "baseLimit": null,
+        "now": "G",
+        "nowExplored": 79792,
+        "nowQuotient": true,
+        "nowLimit": null,
+        "policyCalls": 184257,
+        "intercepting": 0,
+        "supportChanged": 0,
+        "route1Full": {
+          "label": "G",
+          "explored": 167496,
+          "limit": null
+        }
+      },
+      {
+        "seed": 9212001,
+        "route": 1,
+        "difficulty": "hard",
+        "base": "G",
+        "baseExplored": 2000089,
+        "baseLimit": null,
+        "now": "G",
+        "nowExplored": 2000089,
+        "nowQuotient": true,
+        "nowLimit": null,
+        "policyCalls": 4674139,
+        "intercepting": 0,
+        "supportChanged": 0,
+        "route1Full": {
+          "label": "I",
+          "explored": 3000065,
+          "limit": "STATE_LIMIT"
+        }
+      },
+      {
+        "seed": 9212002,
+        "route": 1,
+        "difficulty": "hard",
+        "base": "I",
+        "baseExplored": 3000154,
+        "baseLimit": "STATE_LIMIT",
+        "now": "I",
+        "nowExplored": 3000154,
+        "nowQuotient": true,
+        "nowLimit": "STATE_LIMIT",
+        "policyCalls": 6802665,
+        "intercepting": 0,
+        "supportChanged": 0,
+        "route1Full": {
+          "label": "I",
+          "explored": 3000102,
+          "limit": "STATE_LIMIT"
+        }
+      },
+      {
+        "seed": 9212003,
+        "route": 1,
+        "difficulty": "hard",
+        "base": "U",
+        "baseExplored": 320001,
+        "baseLimit": null,
+        "now": "U",
+        "nowExplored": 320001,
+        "nowQuotient": true,
+        "nowLimit": null,
+        "policyCalls": 761106,
+        "intercepting": 0,
+        "supportChanged": 0,
+        "route1Full": {
+          "label": "U",
+          "explored": 638957,
+          "limit": null
+        }
+      },
+      {
+        "seed": 9212004,
+        "route": 1,
+        "difficulty": "hard",
+        "base": "G",
+        "baseExplored": 75847,
+        "baseLimit": null,
+        "now": "G",
+        "nowExplored": 75847,
+        "nowQuotient": true,
+        "nowLimit": null,
+        "policyCalls": 170100,
+        "intercepting": 0,
+        "supportChanged": 0,
+        "route1Full": {
+          "label": "G",
+          "explored": 151373,
+          "limit": null
+        }
+      },
+      {
+        "seed": 9212005,
+        "route": 1,
+        "difficulty": "hard",
+        "base": "G",
+        "baseExplored": 1710719,
+        "baseLimit": null,
+        "now": "G",
+        "nowExplored": 1710719,
+        "nowQuotient": true,
+        "nowLimit": null,
+        "policyCalls": 4115384,
+        "intercepting": 0,
+        "supportChanged": 0,
+        "route1Full": {
+          "label": "I",
+          "explored": 3000185,
+          "limit": "STATE_LIMIT"
+        }
+      },
+      {
+        "seed": 9212006,
+        "route": 1,
+        "difficulty": "hard",
+        "base": "G",
+        "baseExplored": 2173031,
+        "baseLimit": null,
+        "now": "G",
+        "nowExplored": 2173031,
+        "nowQuotient": true,
+        "nowLimit": null,
+        "policyCalls": 5261140,
+        "intercepting": 0,
+        "supportChanged": 0,
+        "route1Full": {
+          "label": "I",
+          "explored": 3000076,
+          "limit": "STATE_LIMIT"
+        }
+      },
+      {
+        "seed": 9212007,
+        "route": 1,
+        "difficulty": "hard",
+        "base": "G",
+        "baseExplored": 361933,
+        "baseLimit": null,
+        "now": "G",
+        "nowExplored": 361933,
+        "nowQuotient": true,
+        "nowLimit": null,
+        "policyCalls": 894506,
+        "intercepting": 0,
+        "supportChanged": 0,
+        "route1Full": {
+          "label": "G",
+          "explored": 724767,
+          "limit": null
+        }
+      },
+      {
+        "seed": 9220000,
+        "route": 2,
+        "difficulty": "easy",
+        "base": "P",
+        "baseExplored": 1499402,
+        "baseLimit": null,
+        "now": "P",
+        "nowExplored": 2870120,
+        "nowQuotient": false,
+        "nowLimit": null,
+        "policyCalls": 7587934,
+        "intercepting": 23652,
+        "supportChanged": 22660,
+        "representationOnly": {
+          "label": "P",
+          "explored": 2871536,
+          "limit": null
+        }
+      },
+      {
+        "seed": 9220001,
+        "route": 2,
+        "difficulty": "easy",
+        "base": "P",
+        "baseExplored": 431258,
+        "baseLimit": null,
+        "now": "P",
+        "nowExplored": 897522,
+        "nowQuotient": false,
+        "nowLimit": null,
+        "policyCalls": 2441727,
+        "intercepting": 9511,
+        "supportChanged": 9353,
+        "representationOnly": {
+          "label": "P",
+          "explored": 897759,
+          "limit": null
+        }
+      },
+      {
+        "seed": 9220002,
+        "route": 2,
+        "difficulty": "easy",
+        "base": "P",
+        "baseExplored": 710228,
+        "baseLimit": null,
+        "now": "P",
+        "nowExplored": 1356783,
+        "nowQuotient": false,
+        "nowLimit": null,
+        "policyCalls": 3604099,
+        "intercepting": 11514,
+        "supportChanged": 10966
+      },
+      {
+        "seed": 9220003,
+        "route": 2,
+        "difficulty": "easy",
+        "base": "P",
+        "baseExplored": 256750,
+        "baseLimit": null,
+        "now": "P",
+        "nowExplored": 563505,
+        "nowQuotient": false,
+        "nowLimit": null,
+        "policyCalls": 1545985,
+        "intercepting": 5558,
+        "supportChanged": 5338
+      },
+      {
+        "seed": 9220004,
+        "route": 2,
+        "difficulty": "easy",
+        "base": "P",
+        "baseExplored": 190364,
+        "baseLimit": null,
+        "now": "P",
+        "nowExplored": 430442,
+        "nowQuotient": false,
+        "nowLimit": null,
+        "policyCalls": 1204259,
+        "intercepting": 10552,
+        "supportChanged": 10232
+      },
+      {
+        "seed": 9220005,
+        "route": 2,
+        "difficulty": "easy",
+        "base": "P",
+        "baseExplored": 395446,
+        "baseLimit": null,
+        "now": "P",
+        "nowExplored": 819783,
+        "nowQuotient": false,
+        "nowLimit": null,
+        "policyCalls": 2256939,
+        "intercepting": 18032,
+        "supportChanged": 17680
+      },
+      {
+        "seed": 9220006,
+        "route": 2,
+        "difficulty": "easy",
+        "base": "P",
+        "baseExplored": 758707,
+        "baseLimit": null,
+        "now": "P",
+        "nowExplored": 1637770,
+        "nowQuotient": false,
+        "nowLimit": null,
+        "policyCalls": 4547730,
+        "intercepting": 15971,
+        "supportChanged": 15151
+      },
+      {
+        "seed": 9220007,
+        "route": 2,
+        "difficulty": "easy",
+        "base": "P",
+        "baseExplored": 1634358,
+        "baseLimit": null,
+        "now": "I",
+        "nowExplored": 3000080,
+        "nowQuotient": false,
+        "nowLimit": "STATE_LIMIT",
+        "policyCalls": 8323657,
+        "intercepting": 29977,
+        "supportChanged": 28564
+      },
+      {
+        "seed": 9221000,
+        "route": 2,
+        "difficulty": "medium",
+        "base": "P",
+        "baseExplored": 224022,
+        "baseLimit": null,
+        "now": "P",
+        "nowExplored": 476425,
+        "nowQuotient": false,
+        "nowLimit": null,
+        "policyCalls": 1260148,
+        "intercepting": 60346,
+        "supportChanged": 47840,
+        "representationOnly": {
+          "label": "P",
+          "explored": 476513,
+          "limit": null
+        }
+      },
+      {
+        "seed": 9221001,
+        "route": 2,
+        "difficulty": "medium",
+        "base": "P",
+        "baseExplored": 803498,
+        "baseLimit": null,
+        "now": "P",
+        "nowExplored": 1741526,
+        "nowQuotient": false,
+        "nowLimit": null,
+        "policyCalls": 4640650,
+        "intercepting": 514956,
+        "supportChanged": 440278,
+        "representationOnly": {
+          "label": "P",
+          "explored": 1743202,
+          "limit": null
+        }
+      },
+      {
+        "seed": 9221002,
+        "route": 2,
+        "difficulty": "medium",
+        "base": "P",
+        "baseExplored": 2097284,
+        "baseLimit": null,
+        "now": "I",
+        "nowExplored": 3000093,
+        "nowQuotient": false,
+        "nowLimit": "STATE_LIMIT",
+        "policyCalls": 7389304,
+        "intercepting": 523567,
+        "supportChanged": 450123
+      },
+      {
+        "seed": 9221003,
+        "route": 2,
+        "difficulty": "medium",
+        "base": "P",
+        "baseExplored": 175833,
+        "baseLimit": null,
+        "now": "P",
+        "nowExplored": 366503,
+        "nowQuotient": false,
+        "nowLimit": null,
+        "policyCalls": 955271,
+        "intercepting": 68046,
+        "supportChanged": 53714
+      },
+      {
+        "seed": 9221004,
+        "route": 2,
+        "difficulty": "medium",
+        "base": "P",
+        "baseExplored": 391734,
+        "baseLimit": null,
+        "now": "P",
+        "nowExplored": 766068,
+        "nowQuotient": false,
+        "nowLimit": null,
+        "policyCalls": 2009026,
+        "intercepting": 108495,
+        "supportChanged": 88962
+      },
+      {
+        "seed": 9221005,
+        "route": 2,
+        "difficulty": "medium",
+        "base": "P",
+        "baseExplored": 1601623,
+        "baseLimit": null,
+        "now": "I",
+        "nowExplored": 3000287,
+        "nowQuotient": false,
+        "nowLimit": "STATE_LIMIT",
+        "policyCalls": 7870341,
+        "intercepting": 886931,
+        "supportChanged": 774738
+      },
+      {
+        "seed": 9221006,
+        "route": 2,
+        "difficulty": "medium",
+        "base": "P",
+        "baseExplored": 339143,
+        "baseLimit": null,
+        "now": "P",
+        "nowExplored": 726456,
+        "nowQuotient": false,
+        "nowLimit": null,
+        "policyCalls": 1950019,
+        "intercepting": 66938,
+        "supportChanged": 55693
+      },
+      {
+        "seed": 9221007,
+        "route": 2,
+        "difficulty": "medium",
+        "base": "P",
+        "baseExplored": 264383,
+        "baseLimit": null,
+        "now": "P",
+        "nowExplored": 502668,
+        "nowQuotient": false,
+        "nowLimit": null,
+        "policyCalls": 1227253,
+        "intercepting": 81068,
+        "supportChanged": 66919
+      },
+      {
+        "seed": 9222000,
+        "route": 2,
+        "difficulty": "hard",
+        "base": "P",
+        "baseExplored": 67316,
+        "baseLimit": null,
+        "now": "P",
+        "nowExplored": 164476,
+        "nowQuotient": false,
+        "nowLimit": null,
+        "policyCalls": 386891,
+        "intercepting": 8900,
+        "supportChanged": 4094,
+        "representationOnly": {
+          "label": "P",
+          "explored": 123801,
+          "limit": null
+        }
+      },
+      {
+        "seed": 9222001,
+        "route": 2,
+        "difficulty": "hard",
+        "base": "G",
+        "baseExplored": 861030,
+        "baseLimit": null,
+        "now": "G",
+        "nowExplored": 1777576,
+        "nowQuotient": false,
+        "nowLimit": null,
+        "policyCalls": 4241078,
+        "intercepting": 256456,
+        "supportChanged": 135519,
+        "representationOnly": {
+          "label": "G",
+          "explored": 1628670,
+          "limit": null
+        }
+      },
+      {
+        "seed": 9222002,
+        "route": 2,
+        "difficulty": "hard",
+        "base": "G",
+        "baseExplored": 720131,
+        "baseLimit": null,
+        "now": "G",
+        "nowExplored": 1501756,
+        "nowQuotient": false,
+        "nowLimit": null,
+        "policyCalls": 3713500,
+        "intercepting": 288314,
+        "supportChanged": 155597
+      },
+      {
+        "seed": 9222003,
+        "route": 2,
+        "difficulty": "hard",
+        "base": "P",
+        "baseExplored": 99943,
+        "baseLimit": null,
+        "now": "G",
+        "nowExplored": 209580,
+        "nowQuotient": false,
+        "nowLimit": null,
+        "policyCalls": 512226,
+        "intercepting": 36674,
+        "supportChanged": 20941
+      },
+      {
+        "seed": 9222004,
+        "route": 2,
+        "difficulty": "hard",
+        "base": "G",
+        "baseExplored": 1059789,
+        "baseLimit": null,
+        "now": "G",
+        "nowExplored": 2363335,
+        "nowQuotient": false,
+        "nowLimit": null,
+        "policyCalls": 5880626,
+        "intercepting": 533002,
+        "supportChanged": 270116
+      },
+      {
+        "seed": 9222005,
+        "route": 2,
+        "difficulty": "hard",
+        "base": "P",
+        "baseExplored": 265082,
+        "baseLimit": null,
+        "now": "P",
+        "nowExplored": 523746,
+        "nowQuotient": false,
+        "nowLimit": null,
+        "policyCalls": 1280751,
+        "intercepting": 27740,
+        "supportChanged": 13839
+      },
+      {
+        "seed": 9222006,
+        "route": 2,
+        "difficulty": "hard",
+        "base": "G",
+        "baseExplored": 1296186,
+        "baseLimit": null,
+        "now": "G",
+        "nowExplored": 2815102,
+        "nowQuotient": false,
+        "nowLimit": null,
+        "policyCalls": 6976194,
+        "intercepting": 314935,
+        "supportChanged": 162291
+      },
+      {
+        "seed": 9222007,
+        "route": 2,
+        "difficulty": "hard",
+        "base": "G",
+        "baseExplored": 272531,
+        "baseLimit": null,
+        "now": "G",
+        "nowExplored": 566153,
+        "nowQuotient": false,
+        "nowLimit": null,
+        "policyCalls": 1388907,
+        "intercepting": 91066,
+        "supportChanged": 54944
+      },
+      {
+        "seed": 9230000,
+        "route": 3,
+        "difficulty": "easy",
+        "base": "P",
+        "baseExplored": 644906,
+        "baseLimit": null,
+        "now": "P",
+        "nowExplored": 1389749,
+        "nowQuotient": false,
+        "nowLimit": null,
+        "policyCalls": 3891640,
+        "intercepting": 25404,
+        "supportChanged": 22664,
+        "representationOnly": {
+          "label": "P",
+          "explored": 1390557,
+          "limit": null
+        }
+      },
+      {
+        "seed": 9230001,
+        "route": 3,
+        "difficulty": "easy",
+        "base": "P",
+        "baseExplored": 2568773,
+        "baseLimit": null,
+        "now": "I",
+        "nowExplored": 3000345,
+        "nowQuotient": false,
+        "nowLimit": "STATE_LIMIT",
+        "policyCalls": 7615909,
+        "intercepting": 8501,
+        "supportChanged": 7616,
+        "representationOnly": {
+          "label": "I",
+          "explored": 3000274,
+          "limit": "STATE_LIMIT"
+        }
+      },
+      {
+        "seed": 9230002,
+        "route": 3,
+        "difficulty": "easy",
+        "base": "P",
+        "baseExplored": 2346749,
+        "baseLimit": null,
+        "now": "I",
+        "nowExplored": 3000332,
+        "nowQuotient": false,
+        "nowLimit": "STATE_LIMIT",
+        "policyCalls": 7801885,
+        "intercepting": 30546,
+        "supportChanged": 29714
+      },
+      {
+        "seed": 9230003,
+        "route": 3,
+        "difficulty": "easy",
+        "base": "P",
+        "baseExplored": 2599663,
+        "baseLimit": null,
+        "now": "I",
+        "nowExplored": 3000258,
+        "nowQuotient": false,
+        "nowLimit": "STATE_LIMIT",
+        "policyCalls": 7981041,
+        "intercepting": 0,
+        "supportChanged": 0
+      },
+      {
+        "seed": 9230004,
+        "route": 3,
+        "difficulty": "easy",
+        "base": "I",
+        "baseExplored": 3000024,
+        "baseLimit": "STATE_LIMIT",
+        "now": "I",
+        "nowExplored": 3000204,
+        "nowQuotient": false,
+        "nowLimit": "STATE_LIMIT",
+        "policyCalls": 7312172,
+        "intercepting": 57082,
+        "supportChanged": 54602
+      },
+      {
+        "seed": 9230005,
+        "route": 3,
+        "difficulty": "easy",
+        "base": "P",
+        "baseExplored": 2081832,
+        "baseLimit": null,
+        "now": "I",
+        "nowExplored": 3000135,
+        "nowQuotient": false,
+        "nowLimit": "STATE_LIMIT",
+        "policyCalls": 7931313,
+        "intercepting": 35648,
+        "supportChanged": 34709
+      },
+      {
+        "seed": 9230006,
+        "route": 3,
+        "difficulty": "easy",
+        "base": "P",
+        "baseExplored": 963317,
+        "baseLimit": null,
+        "now": "P",
+        "nowExplored": 1990076,
+        "nowQuotient": false,
+        "nowLimit": null,
+        "policyCalls": 5729744,
+        "intercepting": 32054,
+        "supportChanged": 29912
+      },
+      {
+        "seed": 9230007,
+        "route": 3,
+        "difficulty": "easy",
+        "base": "P",
+        "baseExplored": 2165940,
+        "baseLimit": null,
+        "now": "I",
+        "nowExplored": 3000084,
+        "nowQuotient": false,
+        "nowLimit": "STATE_LIMIT",
+        "policyCalls": 7950936,
+        "intercepting": 35942,
+        "supportChanged": 34139
+      },
+      {
+        "seed": 9231000,
+        "route": 3,
+        "difficulty": "medium",
+        "base": "I",
+        "baseExplored": 3000094,
+        "baseLimit": "STATE_LIMIT",
+        "now": "I",
+        "nowExplored": 3000016,
+        "nowQuotient": false,
+        "nowLimit": "STATE_LIMIT",
+        "policyCalls": 7054579,
+        "intercepting": 772817,
+        "supportChanged": 658278,
+        "representationOnly": {
+          "label": "I",
+          "explored": 3000039,
+          "limit": "STATE_LIMIT"
+        }
+      },
+      {
+        "seed": 9231001,
+        "route": 3,
+        "difficulty": "medium",
+        "base": "P",
+        "baseExplored": 1686650,
+        "baseLimit": null,
+        "now": "I",
+        "nowExplored": 3000106,
+        "nowQuotient": false,
+        "nowLimit": "STATE_LIMIT",
+        "policyCalls": 8153468,
+        "intercepting": 573692,
+        "supportChanged": 467422,
+        "representationOnly": {
+          "label": "I",
+          "explored": 3000075,
+          "limit": "STATE_LIMIT"
+        }
+      },
+      {
+        "seed": 9231002,
+        "route": 3,
+        "difficulty": "medium",
+        "base": "P",
+        "baseExplored": 1109030,
+        "baseLimit": null,
+        "now": "P",
+        "nowExplored": 2203766,
+        "nowQuotient": false,
+        "nowLimit": null,
+        "policyCalls": 5690900,
+        "intercepting": 342515,
+        "supportChanged": 281683
+      },
+      {
+        "seed": 9231003,
+        "route": 3,
+        "difficulty": "medium",
+        "base": "I",
+        "baseExplored": 3000017,
+        "baseLimit": "STATE_LIMIT",
+        "now": "I",
+        "nowExplored": 3000013,
+        "nowQuotient": false,
+        "nowLimit": "STATE_LIMIT",
+        "policyCalls": 6941996,
+        "intercepting": 721215,
+        "supportChanged": 614567
+      },
+      {
+        "seed": 9231004,
+        "route": 3,
+        "difficulty": "medium",
+        "base": "P",
+        "baseExplored": 2099646,
+        "baseLimit": null,
+        "now": "I",
+        "nowExplored": 3000098,
+        "nowQuotient": false,
+        "nowLimit": "STATE_LIMIT",
+        "policyCalls": 7547586,
+        "intercepting": 475042,
+        "supportChanged": 395501
+      },
+      {
+        "seed": 9231005,
+        "route": 3,
+        "difficulty": "medium",
+        "base": "I",
+        "baseExplored": 3000300,
+        "baseLimit": "STATE_LIMIT",
+        "now": "I",
+        "nowExplored": 3000398,
+        "nowQuotient": false,
+        "nowLimit": "STATE_LIMIT",
+        "policyCalls": 7494179,
+        "intercepting": 1011039,
+        "supportChanged": 853313
+      },
+      {
+        "seed": 9231006,
+        "route": 3,
+        "difficulty": "medium",
+        "base": "P",
+        "baseExplored": 1384976,
+        "baseLimit": null,
+        "now": "P",
+        "nowExplored": 2837813,
+        "nowQuotient": false,
+        "nowLimit": null,
+        "policyCalls": 7283895,
+        "intercepting": 529682,
+        "supportChanged": 422914
+      },
+      {
+        "seed": 9231007,
+        "route": 3,
+        "difficulty": "medium",
+        "base": "I",
+        "baseExplored": 3000103,
+        "baseLimit": "STATE_LIMIT",
+        "now": "I",
+        "nowExplored": 3000238,
+        "nowQuotient": false,
+        "nowLimit": "STATE_LIMIT",
+        "policyCalls": 7205777,
+        "intercepting": 820392,
+        "supportChanged": 659688
+      },
+      {
+        "seed": 9232000,
+        "route": 3,
+        "difficulty": "hard",
+        "base": "G",
+        "baseExplored": 319385,
+        "baseLimit": null,
+        "now": "G",
+        "nowExplored": 1140911,
+        "nowQuotient": false,
+        "nowLimit": null,
+        "policyCalls": 2809833,
+        "intercepting": 143637,
+        "supportChanged": 83922,
+        "representationOnly": {
+          "label": "G",
+          "explored": 617987,
+          "limit": null
+        }
+      },
+      {
+        "seed": 9232001,
+        "route": 3,
+        "difficulty": "hard",
+        "base": "P",
+        "baseExplored": 61764,
+        "baseLimit": null,
+        "now": "P",
+        "nowExplored": 322531,
+        "nowQuotient": false,
+        "nowLimit": null,
+        "policyCalls": 705867,
+        "intercepting": 19454,
+        "supportChanged": 9218,
+        "representationOnly": {
+          "label": "P",
+          "explored": 110176,
+          "limit": null
+        }
+      },
+      {
+        "seed": 9232002,
+        "route": 3,
+        "difficulty": "hard",
+        "base": "G",
+        "baseExplored": 1787223,
+        "baseLimit": null,
+        "now": "I",
+        "nowExplored": 3000089,
+        "nowQuotient": false,
+        "nowLimit": "STATE_LIMIT",
+        "policyCalls": 6985001,
+        "intercepting": 493046,
+        "supportChanged": 308057
+      },
+      {
+        "seed": 9232003,
+        "route": 3,
+        "difficulty": "hard",
+        "base": "U",
+        "baseExplored": 231394,
+        "baseLimit": null,
+        "now": "U",
+        "nowExplored": 517237,
+        "nowQuotient": false,
+        "nowLimit": null,
+        "policyCalls": 1319790,
+        "intercepting": 107179,
+        "supportChanged": 64970
+      },
+      {
+        "seed": 9232004,
+        "route": 3,
+        "difficulty": "hard",
+        "base": "G",
+        "baseExplored": 1327413,
+        "baseLimit": null,
+        "now": "G",
+        "nowExplored": 2624755,
+        "nowQuotient": false,
+        "nowLimit": null,
+        "policyCalls": 6238954,
+        "intercepting": 325239,
+        "supportChanged": 173252
+      },
+      {
+        "seed": 9232005,
+        "route": 3,
+        "difficulty": "hard",
+        "base": "G",
+        "baseExplored": 1551119,
+        "baseLimit": null,
+        "now": "I",
+        "nowExplored": 3000165,
+        "nowQuotient": false,
+        "nowLimit": "STATE_LIMIT",
+        "policyCalls": 7353112,
+        "intercepting": 516724,
+        "supportChanged": 283099
+      },
+      {
+        "seed": 9232006,
+        "route": 3,
+        "difficulty": "hard",
+        "base": "U",
+        "baseExplored": 288793,
+        "baseLimit": null,
+        "now": "U",
+        "nowExplored": 1020599,
+        "nowQuotient": false,
+        "nowLimit": null,
+        "policyCalls": 2678048,
+        "intercepting": 261482,
+        "supportChanged": 148411
+      },
+      {
+        "seed": 9232007,
+        "route": 3,
+        "difficulty": "hard",
+        "base": "G",
+        "baseExplored": 2807504,
+        "baseLimit": null,
+        "now": "I",
+        "nowExplored": 3000125,
+        "nowQuotient": false,
+        "nowLimit": "STATE_LIMIT",
+        "policyCalls": 6823320,
+        "intercepting": 368614,
+        "supportChanged": 211939
+      }
+    ],
+    "extended": [],
+    "cardinality": {
+      "example": {
+        "seed": 9210000,
+        "route": 1,
+        "difficulty": "easy"
+      },
+      "directionValues": 5,
+      "mixedRadixStateCardinality": 2040733440,
+      "withoutDirection": 408146688,
+      "factor": 5,
+      "numberSafe": true
+    }
+  },
+  "cost": {
+    "inputs": 8455,
+    "rendersPerInput": {
+      "now": 1,
+      "base": 1
+    }
+  },
+  "run": {
+    "timingsMs": {
+      "A": 109122,
+      "B": 32206,
+      "C": 817225,
+      "C-sessions": 5383,
+      "D": 1912234,
+      "E": 14539
+    },
+    "totalMs": 2896866,
+    "peakHeapMB": 1005,
+    "rssMB": 1863,
+    "policyCost": {
+      "microsecondsPerCall": 5.94,
+      "microsecondsPerRepeatedStep": 9.77,
+      "microsecondsPerOtherStep": 0.04
+    },
+    "baseMs": [
+      4521,
+      10406,
+      6489,
+      638,
+      9435,
+      4666,
+      5244,
+      1545,
+      3317,
+      4638,
+      5653,
+      3406,
+      5107,
+      8180,
+      495,
+      3366,
+      188,
+      6756,
+      11736,
+      1144,
+      447,
+      7737,
+      8854,
+      1330,
+      5272,
+      1442,
+      2872,
+      1210,
+      485,
+      1606,
+      2975,
+      6390,
+      493,
+      3096,
+      7393,
+      481,
+      1122,
+      6186,
+      1315,
+      942,
+      145,
+      2632,
+      2491,
+      220,
+      4026,
+      1013,
+      4659,
+      782,
+      2142,
+      9391,
+      9526,
+      10612,
+      13162,
+      8003,
+      3859,
+      9699,
+      13885,
+      8674,
+      4929,
+      14284,
+      10177,
+      17043,
+      6202,
+      16701,
+      1242,
+      181,
+      7365,
+      601,
+      5685,
+      6460,
+      1428,
+      11907
+    ],
+    "nowMs": [
+      4951,
+      13536,
+      8650,
+      1247,
+      10689,
+      5887,
+      6542,
+      2167,
+      4472,
+      6250,
+      7873,
+      5595,
+      6439,
+      11110,
+      1013,
+      4446,
+      185,
+      8827,
+      13655,
+      1356,
+      231,
+      8389,
+      10286,
+      1530,
+      16332,
+      5536,
+      8485,
+      3782,
+      2738,
+      5279,
+      10153,
+      17388,
+      5102,
+      27619,
+      33200,
+      4218,
+      8497,
+      48118,
+      6569,
+      5281,
+      1327,
+      18587,
+      18023,
+      2231,
+      32727,
+      4398,
+      30197,
+      5929,
+      9197,
+      17589,
+      19217,
+      19288,
+      18989,
+      19460,
+      13895,
+      20191,
+      44501,
+      42251,
+      26199,
+      45643,
+      36800,
+      57671,
+      41179,
+      50101,
+      13358,
+      2908,
+      35134,
+      6969,
+      28037,
+      38158,
+      14169,
+      31201
+    ]
+  }
+}
