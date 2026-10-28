@@ -165,7 +165,7 @@
       "startIdentical": true,
       "runtimeIdentical": true,
       "endIdentical": true,
-      "turnsTraced": 9,
+      "turnsTraced": 11,
       "start": {
         "route": 3,
         "mode": "hard",

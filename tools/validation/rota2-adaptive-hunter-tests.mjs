@@ -1449,9 +1449,11 @@ async function main() {
     if (wrong.length) console.log(`unexpected: ${wrong.map((r) => `${r.id}(${r.pass ? "passed" : "failed"})`).join(", ")}`);
     console.log(wrong.length === 0 ? "ROTA2_ADAPTIVE_HUNTER_COUNTERFACTUAL_HOLDS" : "ROTA2_ADAPTIVE_HUNTER_COUNTERFACTUAL_BROKEN");
     const EVIDENCE = openEvidence(process.env.ROUTE_VALIDATION_OUT ?? "docs/archive/rota2-adaptive-hunter-04");
-    EVIDENCE.write(`counterfactual-${REV.slice(0, 7)}.json`, {
+    // The resolved commit, not the spelling on the command line: the record names one tree whatever was typed.
+    const commit = execFileSync("git", ["rev-parse", "--verify", `${REV}^{commit}`], { cwd: REPO_ROOT, encoding: "utf8" }).trim();
+    EVIDENCE.write(`counterfactual-${commit.slice(0, 7)}.json`, {
       mission: "ROTA2-ADAPTIVE-HUNTER-04",
-      rev: REV,
+      rev: commit,
       holds: wrong.length === 0,
       adaptiveFailing: n("adaptive", false),
       adaptiveTotal: all("adaptive"),

@@ -2,8 +2,8 @@
   "mission": "ROTA-DIFFICULTY-05-REBALANCE",
   "suite": "difficulty-rebalance-focused",
   "fingerprints": {
-    "first": "bf4ea2a54b33dd68eca2fd62203c8052516bb19ff65b97aa78086f52dcf0a2ac",
-    "second": "bf4ea2a54b33dd68eca2fd62203c8052516bb19ff65b97aa78086f52dcf0a2ac",
+    "first": "307b7b60f129fbc27763d99912ccf5e289ab7e75669f0744098a6104a992ae33",
+    "second": "307b7b60f129fbc27763d99912ccf5e289ab7e75669f0744098a6104a992ae33",
     "equal": true
   },
   "parameters": {

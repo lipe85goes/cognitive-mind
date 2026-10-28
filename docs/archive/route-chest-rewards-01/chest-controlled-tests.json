@@ -67,7 +67,7 @@
           "rewardSelected": null
         },
         {
-          "seed": 6102000,
+          "seed": 6102001,
           "combo": "hard/r3",
           "playerOnChest": true,
           "chestOpened": true,
@@ -105,12 +105,12 @@
         {
           "seed": 6101000,
           "defendersBeforeChest": {
-            "guardian": "1,4",
+            "guardian": "2,5",
             "sentinel": "1,7",
             "turns": 4
           },
           "defendersDuringPause": {
-            "guardian": "1,4",
+            "guardian": "2,5",
             "sentinel": "1,7",
             "turns": 5
           },
@@ -119,20 +119,20 @@
           "turnsAfterChoice": 5,
           "choiceIsNotATurn": true,
           "defendersAfterChoice": {
-            "guardian": "1,5",
+            "guardian": "2,4",
             "sentinel": "1,7"
           }
         },
         {
-          "seed": 6102000,
+          "seed": 6102001,
           "defendersBeforeChest": {
-            "guardian": "4,2",
-            "sentinel": "1,7",
+            "guardian": "2,2",
+            "sentinel": "1,8",
             "turns": 5
           },
           "defendersDuringPause": {
-            "guardian": "4,2",
-            "sentinel": "1,7",
+            "guardian": "2,2",
+            "sentinel": "1,8",
             "turns": 6
           },
           "defendersStill": true,
@@ -140,8 +140,8 @@
           "turnsAfterChoice": 6,
           "choiceIsNotATurn": true,
           "defendersAfterChoice": {
-            "guardian": "4,1",
-            "sentinel": "1,7"
+            "guardian": "2,1",
+            "sentinel": "1,8"
           }
         }
       ],
@@ -173,7 +173,7 @@
         {
           "reward": "pickaxe",
           "combo": "hard/r3",
-          "seed": 6302001,
+          "seed": 6302000,
           "rewardSelected": "pickaxe",
           "pickaxeAvailable": true,
           "secondChanceAvailable": false,
@@ -207,7 +207,7 @@
         {
           "reward": "second-chance",
           "combo": "hard/r3",
-          "seed": 6302001,
+          "seed": 6302000,
           "rewardSelected": "second-chance",
           "pickaxeAvailable": false,
           "secondChanceAvailable": true,

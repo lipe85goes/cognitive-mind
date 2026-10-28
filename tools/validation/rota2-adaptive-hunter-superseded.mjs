@@ -33,6 +33,12 @@ export const SUPERSEDED = [
   { file: "docs/archive/rota2-sentinel-solver-fidelity-03/census.json", metadata: ["run"], validator: "rota2-sentinel-solver-fidelity-census.mjs" },
   // ROTA-DIFFICULTY-04C's session-determinism witness A is a Route 3 game: its scripted walk lasts longer now.
   { file: "docs/archive/route-difficulty-04c-diagnostic-launcher/diagnostic-launcher.json", metadata: [], validator: "diagnostic-launcher-tests.mjs" },
+  // CORE records whose fixtures or counts include Route 2/3 games (their Route 1 share is identical: see the note).
+  { file: "docs/archive/route-chest-rewards-01/chest-controlled-tests.json", metadata: [], validator: "chest-controlled-tests.mjs" },
+  { file: "docs/archive/route-chest-rewards-01/chest-runtime-gameplay.json", metadata: [], validator: "chest-runtime-gameplay.mjs" },
+  { file: "docs/archive/route-chest-rewards-01/pickaxe-controlled-tests.json", metadata: [], validator: "pickaxe-controlled-tests.mjs" },
+  { file: "docs/archive/route-difficulty-04-baseline/difficulty-baseline-tests.json", metadata: [], validator: "difficulty-baseline-tests.mjs" },
+  { file: "docs/archive/route-difficulty-05-rebalance/regressions/rebalance-focused/difficulty-rebalance-tests.json", metadata: [], validator: "difficulty-rebalance-tests.mjs" },
 ];
 
 const show = (spec) => {

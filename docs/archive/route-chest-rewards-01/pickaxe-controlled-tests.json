@@ -466,8 +466,8 @@
       "id": "L",
       "name": "ALL_ENTITIES_USE_OPENING",
       "pass": true,
-      "explorerCrossings": 161,
-      "defenderOccupations": 5,
+      "explorerCrossings": 160,
+      "defenderOccupations": 2,
       "runsObserved": 161,
       "note": "a broken wall leaves the ONE wall set every walkability question goes through; there is no player-only hole"
     },
@@ -555,7 +555,7 @@
       "id": "DEFENDER_BENEFIT",
       "name": "OPENING_MAY_FAVOUR_A_DEFENDER",
       "pass": true,
-      "fixturesWhereAnOpeningShortenedTheHunterPath": 4,
+      "fixturesWhereAnOpeningShortenedTheHunterPath": 2,
       "note": "§29 — no invisible protection for the Explorer: an opening that helps the Hunter is allowed to be made and is not silently blocked"
     }
   ],
