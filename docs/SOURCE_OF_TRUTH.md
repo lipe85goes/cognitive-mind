@@ -129,7 +129,17 @@ commit `da551b17eddbf0a156228c7e2a5fc9ca178180c9` (2026-10-05).
   and makes the Route 2/3 portal wait for every light AND the marked passage
   (the trap-linked wall) open, by its trap or the Pickaxe; objectives are
   derived, no state/action/event added (gate checks R4/R5/D4). Not merged
-  until accepted.
+  until accepted. ROTA2-SENTINEL-SOLVER-FIDELITY-03
+  (`docs/ROTA2_SENTINEL_SOLVER_FIDELITY_03.md`) was tooling only: no `src/`
+  change and no lock exception. The third approved mission,
+  ROTA2-ADAPTIVE-HUNTER-04 (`docs/ROTA2_ADAPTIVE_HUNTER_04.md`, branch
+  `feat/rota2-adaptive-hunter-04`, base `ec3e564`), keeps Route 1's Hunter as
+  v1 and lets the Route 2/3 Hunter react to the Explorer repeating the
+  direction of its last successful step by trying to get ahead of it — one
+  state field (`lastExplorerDirection`, written by `MOVE_EXPLORER`), one pure
+  shared policy module (`route-hunter-intercept.ts`) that both reference
+  solvers load, no action/event added (gate checks R4/R6/D4). Not merged until
+  accepted.
 
 ## Reproducing the project
 

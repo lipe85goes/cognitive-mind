@@ -145,6 +145,20 @@ const ROTA2_APPROVED_MISSIONS = [
     objectivesModule: "src/games/escape-maze/route-objectives.ts",
     objectivePlans: { 1: ["collect-all-lights"], 2: ["collect-all-lights", "open-linked-passage"], 3: ["collect-all-lights", "open-linked-passage"] },
   },
+  {
+    // The Hunter reads one remembered fact — the direction of the Explorer's last successful step — and on Routes 2
+    // and 3 tries to get ahead of a repeated direction. One state field, written by the existing MOVE_EXPLORER; no
+    // action, no event. (ROTA2-SENTINEL-SOLVER-FIDELITY-03 came between: tooling only, no product exception, no entry.)
+    mission: "ROTA2-ADAPTIVE-HUNTER-04",
+    stateActions: [],
+    domainEvents: [],
+    stateFields: ["lastExplorerDirection"],
+    // The one module it adds, and the policy it must hold (R6): Route 1 never adapts, Routes 2 and 3 do; Easy and
+    // Medium predict one cell, Hard up to two.
+    interceptionModule: "src/games/escape-maze/route-hunter-intercept.ts",
+    adaptsOnRoute: { 1: false, 2: true, 3: true },
+    horizons: { easy: 1, medium: 1, hard: 2 },
+  },
 ];
 /** RouteRuntimeState's v1 fields (route-state.ts at the v1 lock); R4 accepts only approved additions. */
 const V1_STATE_FIELDS = [
@@ -154,6 +168,7 @@ const V1_STATE_FIELDS = [
 ];
 const ROTA2_STATE_FIELDS = ROTA2_APPROVED_MISSIONS.flatMap((m) => m.stateFields);
 const OBJECTIVES = ROTA2_APPROVED_MISSIONS.find((m) => m.objectivesModule);
+const INTERCEPTION = ROTA2_APPROVED_MISSIONS.find((m) => m.interceptionModule);
 const ROTA2_ACTIONS = ROTA2_APPROVED_MISSIONS.flatMap((m) => m.stateActions);
 const ROTA2_EVENTS = ROTA2_APPROVED_MISSIONS.flatMap((m) => m.domainEvents);
 
@@ -228,7 +243,8 @@ const MUTANTS = [
   {
     name: "objective progress stored in the Rota state (a duplicate of what the walls and lights say)",
     file: "src/games/escape-maze/route-state.ts",
-    edits: [["  trapOpenedWalls: string[];\n}", "  trapOpenedWalls: string[];\n  passageObjectiveDone: boolean;\n}"]],
+    // ROTA2-ADAPTIVE-HUNTER-04 put its approved field after `trapOpenedWalls`; the anchor no longer closes the interface.
+    edits: [["  trapOpenedWalls: string[];\n", "  trapOpenedWalls: string[];\n  passageObjectiveDone: boolean;\n"]],
     mustFail: ["R4"],
   },
   {
@@ -254,6 +270,36 @@ const MUTANTS = [
     file: "src/games/escape-maze/route-objectives.ts",
     edits: [['import type { MazeMap } from "@/games/escape-maze/route-generation";', 'import type { MazeMap } from "@/games/escape-maze/route-generation";\nimport { useMemo } from "react";\nvoid useMemo;']],
     mustFail: ["R5"],
+  },
+  {
+    name: "a second Hunter memory in the Rota state (a move history the approval does not cover)",
+    file: "src/games/escape-maze/route-state.ts",
+    edits: [["  lastExplorerDirection: ExplorerDirection | null;\n}", "  lastExplorerDirection: ExplorerDirection | null;\n  explorerMoveHistory: ExplorerDirection[];\n}"]],
+    mustFail: ["R4"],
+  },
+  {
+    name: "Route 1's Hunter adapts too",
+    file: "src/games/escape-maze/route-hunter-intercept.ts",
+    edits: [["  return routeNumber >= 2;", "  return routeNumber >= 1;"]],
+    mustFail: ["R6"],
+  },
+  {
+    name: "Easy predicts two cells ahead",
+    file: "src/games/escape-maze/route-hunter-intercept.ts",
+    edits: [["  easy: 1,\n  medium: 1,", "  easy: 2,\n  medium: 1,"]],
+    mustFail: ["R6"],
+  },
+  {
+    name: "the interception policy draws from Math.random",
+    file: "src/games/escape-maze/route-hunter-intercept.ts",
+    edits: [["    if (moves.length > 0) return { target, horizon, moves };", "    if (moves.length > 0) return { target, horizon, moves: Math.random() < 0.5 ? moves : moves.slice(0, 1) };"]],
+    mustFail: ["R6"],
+  },
+  {
+    name: "the interception policy imports React",
+    file: "src/games/escape-maze/route-hunter-intercept.ts",
+    edits: [['import type { DifficultyLevel, GridPosition } from "@/types/game";', 'import type { DifficultyLevel, GridPosition } from "@/types/game";\nimport { useMemo } from "react";\nvoid useMemo;']],
+    mustFail: ["R6"],
   },
   {
     name: "the Circuit's session no longer revoked on unmount",
@@ -372,6 +418,25 @@ function evaluateTypesOnlyModule(tree, file) {
   if (/\brequire\(/.test(js)) throw new Error(`${file} imports something at run time`);
   const cjs = { exports: {} };
   vm.runInNewContext(js, { module: cjs, exports: cjs.exports }, { filename: file });
+  return cjs.exports;
+}
+
+/**
+ * ROTA2-ADAPTIVE-HUNTER-04: a module whose only run-time imports are `allowed` Rota modules, each itself types-only —
+ * evaluated in an empty realm, so it can reach nothing else.
+ */
+function evaluateModuleWithImports(tree, file, allowed) {
+  const js = ts.transpileModule(tree.read(file), {
+    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
+    fileName: file,
+  }).outputText;
+  const require = (specifier) => {
+    const resolved = tree.resolve(specifier, file);
+    if (!allowed.includes(resolved)) throw new Error(`${file} imports ${specifier} at run time`);
+    return evaluateTypesOnlyModule(tree, resolved);
+  };
+  const cjs = { exports: {} };
+  vm.runInNewContext(js, { module: cjs, exports: cjs.exports, require }, { filename: file });
   return cjs.exports;
 }
 
@@ -639,6 +704,41 @@ function codeChecks(tree) {
     };
   });
 
+  check("R6", "rota", "ROTA2_INTERCEPTION_POLICY_IS_PURE_AND_APPROVED", () => {
+    // A tree before ROTA2-ADAPTIVE-HUNTER-04 has no interception module, and nothing to hold here.
+    const file = INTERCEPTION.interceptionModule;
+    if (!has(file)) return { pass: true, interceptionModule: "absent (a tree before the mission)" };
+    const node = graph.node(file);
+    const source = codeOnly(text(file));
+    const forbidden = source.match(/Math\.random|routeRandom|randomItem|Date\.now|performance\.|\bwindow\b|\bdocument\b|localStorage|sessionStorage|\bWorker\b|postMessage|@babylonjs|\bReact\b|\buse(State|Effect|Memo|Reducer|Ref|Callback)\b/g) ?? [];
+    // Its one run-time import is the board's size.
+    const runtimeImports = [...node.static, ...node.dynamic, ...node.worker, ...node.packages.static, ...node.packages.dynamic];
+    const allowedImports = [M("route-config.ts")];
+    let policy = null;
+    try {
+      const mod = evaluateModuleWithImports(tree, file, allowedImports);
+      policy = {
+        adaptsOnRoute: Object.fromEntries([1, 2, 3].map((n) => [n, mod.hunterAdaptsOnRoute(n)])),
+        horizons: { ...mod.INTERCEPT_HORIZON },
+      };
+    } catch (error) {
+      policy = { error: String(error?.message ?? error).split("\n")[0] };
+    }
+    const hookReadsIt = graph.node(FILES.hook).static.includes(file);
+    const stateReadsIt = graph.node(FILES.state).static.includes(file);
+    return {
+      pass:
+        forbidden.length === 0 && runtimeImports.every((imp) => allowedImports.includes(imp)) &&
+        same(policy?.adaptsOnRoute, INTERCEPTION.adaptsOnRoute) && same(policy?.horizons, INTERCEPTION.horizons) &&
+        hookReadsIt && stateReadsIt,
+      runtimeImports,
+      forbidden: [...new Set(forbidden)],
+      policy,
+      hookReadsIt,
+      stateReadsIt,
+    };
+  });
+
   check("M1", "circuit", "CIRCUIT_TIMERS_BELONG_TO_THE_SESSION", () => {
     const hook = codeOnly(text(FILES.circuitHook));
     const setTimeouts = (hook.match(/\bsetTimeout\(/g) ?? []).length;
@@ -724,9 +824,9 @@ function docChecks() {
 
   check("D4", "APPROVED_ROTA2_MISSIONS_RECORDED", () => {
     // Each approved Rota 2.0 mission is written into the lock record: its id, the change class, and what it added.
-    const rows = ROTA2_APPROVED_MISSIONS.map(({ mission, stateActions, domainEvents }) => {
+    const rows = ROTA2_APPROVED_MISSIONS.map(({ mission, stateActions, domainEvents, stateFields }) => {
       const section = doc.includes(mission) ? doc.slice(doc.indexOf(mission)) : "";
-      const recorded = [...stateActions, ...domainEvents].every((name) => doc.includes(name));
+      const recorded = [...stateActions, ...domainEvents, ...stateFields].every((name) => doc.includes(name));
       return { mission, inDocument: Boolean(section), classFour: /class(e)? 4|classe 4/i.test(doc), additionsRecorded: recorded };
     });
     return { pass: rows.every((r) => r.inDocument && r.classFour && r.additionsRecorded), missions: rows };

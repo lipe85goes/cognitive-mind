@@ -19,6 +19,11 @@
 import fs from "node:fs";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
+import {
+  ROTA2_ADAPTIVE_HUNTER_ADDED_FILES,
+  ROTA2_ADAPTIVE_HUNTER_FILES,
+  reverseAdaptive,
+} from "./rota2-adaptive-hunter-edit.mjs";
 
 export const ROTA2_DEPENDENT_OBJECTIVES_BASE = "32c419a2784b54043f38f08afd60c8628f44f54c";
 export const ROTA2_DEPENDENT_OBJECTIVES_MARKER = "ROTA2-DEPENDENT-OBJECTIVES-02";
@@ -128,11 +133,24 @@ function main() {
   const untracked = execFileSync("git", ["ls-files", "--others", "--exclude-standard", "src/games/escape-maze/"], { cwd: root, encoding: "utf8" })
     .split("\n")
     .filter(Boolean);
+  // ROTA2-ADAPTIVE-HUNTER-04 came after: the chain reverses the newer mission first (rota2-adaptive-hunter-edit.mjs),
+  // so this manifest is checked against the tree it was written for — and a file only that mission touched (or added)
+  // is outside THIS delta only if it still differs from this base once that mission's hunks are reversed.
+  const laterMissionOnly = (file) => {
+    if (ROTA2_ADAPTIVE_HUNTER_ADDED_FILES.includes(file)) return true;
+    if (!ROTA2_ADAPTIVE_HUNTER_FILES.includes(file)) return false;
+    const reversed = reverseAdaptive(file, normalize(fs.readFileSync(path.join(root, file), "utf8")));
+    const base = normalize(execFileSync("git", ["show", `${ROTA2_DEPENDENT_OBJECTIVES_BASE}:${file}`], { cwd: root, encoding: "utf8" }));
+    return reversed === base;
+  };
   const outside = [...changed, ...untracked].filter(
-    (file) => !ROTA2_DEPENDENT_OBJECTIVES_FILES.includes(file) && !ROTA2_DEPENDENT_OBJECTIVES_ADDED_FILES.includes(file),
+    (file) =>
+      !ROTA2_DEPENDENT_OBJECTIVES_FILES.includes(file) &&
+      !ROTA2_DEPENDENT_OBJECTIVES_ADDED_FILES.includes(file) &&
+      !laterMissionOnly(file),
   );
   const rows = ROTA2_DEPENDENT_OBJECTIVES_FILES.map((file) => {
-    const live = normalize(fs.readFileSync(path.join(root, file), "utf8"));
+    const live = reverseAdaptive(file, normalize(fs.readFileSync(path.join(root, file), "utf8")));
     const base = normalize(execFileSync("git", ["show", `${ROTA2_DEPENDENT_OBJECTIVES_BASE}:${file}`], { cwd: root, encoding: "utf8" }));
     let reversed = null;
     let error = null;

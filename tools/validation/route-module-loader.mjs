@@ -40,6 +40,12 @@ import {
   carriesObjectives,
   reverseObjectives,
 } from "./rota2-dependent-objectives-edit.mjs";
+import {
+  ROTA2_ADAPTIVE_HUNTER_ADDED_FILES,
+  ROTA2_ADAPTIVE_HUNTER_FILES,
+  carriesAdaptive,
+  reverseAdaptive,
+} from "./rota2-adaptive-hunter-edit.mjs";
 
 /** The Rota's entry: the hook the game mounts. Where its logic lives is the graph's business. */
 export const ROUTE_HOOK = "src/games/escape-maze/useEscapeMaze.ts";
@@ -1151,9 +1157,11 @@ export function treeBeforeC7C(tree) {
  */
 export function routeFileBeforeRota2(tree, file) {
   const repoPath = tree.toRepoPath(file);
-  // ROTA2-DEPENDENT-OBJECTIVES-02 came after ROTA2-DYNAMIC-TRAPS-01: the approved missions are a chain, reversed
-  // newest first — back to DYNAMIC-TRAPS-01's tree, then back to v1.
+  // ROTA2-DEPENDENT-OBJECTIVES-02 came after ROTA2-DYNAMIC-TRAPS-01, and ROTA2-ADAPTIVE-HUNTER-04 after both: the
+  // approved missions are a chain, reversed newest first — back to DEPENDENT-OBJECTIVES-02's tree, then back to
+  // DYNAMIC-TRAPS-01's, then back to v1.
   let text = tree.read(repoPath);
+  if (ROTA2_ADAPTIVE_HUNTER_FILES.includes(repoPath)) text = reverseAdaptive(repoPath, text);
   if (ROTA2_DEPENDENT_OBJECTIVES_FILES.includes(repoPath)) text = reverseObjectives(repoPath, text);
   return ROTA2_DYNAMIC_TRAPS_FILES.includes(repoPath) ? reverseRota2(repoPath, text) : text;
 }
@@ -1168,10 +1176,13 @@ export function treeBeforeRota2(tree) {
   if (tree.beforeRota2) return tree;
   const touched =
     ROTA2_DYNAMIC_TRAPS_FILES.some((file) => tree.exists(file) && tree.read(file).includes(ROTA2_DYNAMIC_TRAPS_MARKER)) ||
-    carriesObjectives((file) => tree.exists(file), (file) => tree.read(file));
+    carriesObjectives((file) => tree.exists(file), (file) => tree.read(file)) ||
+    carriesAdaptive((file) => tree.exists(file), (file) => tree.read(file));
   if (!touched) return tree;
-  // ROTA2-DEPENDENT-OBJECTIVES-02 adds a module; before Rota 2.0 it does not exist.
-  const added = (file) => ROTA2_DEPENDENT_OBJECTIVES_ADDED_FILES.includes(tree.toRepoPath(file));
+  // ROTA2-DEPENDENT-OBJECTIVES-02 and ROTA2-ADAPTIVE-HUNTER-04 each add a module; before Rota 2.0 neither exists.
+  const added = (file) =>
+    ROTA2_DEPENDENT_OBJECTIVES_ADDED_FILES.includes(tree.toRepoPath(file)) ||
+    ROTA2_ADAPTIVE_HUNTER_ADDED_FILES.includes(tree.toRepoPath(file));
   const view = openSourceTree({
     root: tree.root,
     underlying: {

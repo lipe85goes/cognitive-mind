@@ -224,6 +224,11 @@ const ALLOWED = {
     reason: "STRUCTURAL_ASSERTION",
     note: "ROTA2-DEPENDENT-OBJECTIVES-02: the second approved delta's manifest names the files it touches and the module it adds (reversed before ROTA2-DYNAMIC-TRAPS-01's in route-module-loader's treeBeforeRota2)",
   },
+  "rota2-adaptive-hunter-edit.mjs": {
+    kinds: ["hook-path", "rota-module-path"],
+    reason: "STRUCTURAL_ASSERTION",
+    note: "ROTA2-ADAPTIVE-HUNTER-04: the third approved delta's manifest names the files it touches and the module it adds (reversed first, before ROTA2-DEPENDENT-OBJECTIVES-02's and ROTA2-DYNAMIC-TRAPS-01's, in route-module-loader's treeBeforeRota2)",
+  },
   "route-board-loader-tests.mjs": { kinds: ["rota-module-path", "rota-ts-compile"], reason: "UI_STAGE" },
   "diagnostic-launcher-tests.mjs": {
     kinds: ["rota-module-path"],

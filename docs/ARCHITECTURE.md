@@ -50,7 +50,15 @@ política de mudança: `docs/GAMEPLAY_PLATFORM_LOCK_V1.md`. Gate:
   `route-objectives.ts`, puro, dá o plano de objetivos de cada Rota (Rota 1:
   luzes; Rotas 2/3: luzes + passagem marcada) e o avalia a partir de
   `collectedStars` e de `currentWalls`; o hook deriva `portalActive` dele a
-  cada render. Nenhum estado, ação ou evento novo.
+  cada render. Nenhum estado, ação ou evento novo. Terceira missão aprovada:
+  ROTA2-ADAPTIVE-HUNTER-04 (`docs/ROTA2_ADAPTIVE_HUNTER_04.md`) — o estado
+  ganha `lastExplorerDirection` (escrito por `MOVE_EXPLORER` a partir do
+  passo); `route-hunter-intercept.ts`, puro, é a única implementação da
+  interceptação (Rotas 2/3: direção repetida → casa prevista à frente →
+  movimentos legais que encurtam o caminho até ela no labirinto atual), lida
+  pelo turno (`runDefenderPhase`, Caçador antes da Sentinela) e pelos dois
+  solvers de referência; o empate é sorteado no hook
+  (`chooseInterceptionMove`), nunca no módulo. A Rota 1 não adapta.
 - Depois do lock, mudança em Rota/Circuito/plataforma só por: correção de
   regressão, segurança/dependência, performance medida, missão Rota 2.0
   aprovada, ou requisito de plataforma achado pelo Game 03.

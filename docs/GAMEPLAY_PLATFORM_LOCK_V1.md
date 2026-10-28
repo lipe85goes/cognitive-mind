@@ -100,6 +100,23 @@ npm 10.9.4 (`npm ci` limpo a partir do `package-lock.json`), Next 16.3.6
 > exatamente o comportamento aprovado dessas duas missões — não "qualquer coisa
 > em `escape-maze`".
 
+> **Pós-lock — ROTA2-SENTINEL-SOLVER-FIDELITY-03:** missão só de ferramenta
+> (o solver de referência mede a Sentinela como o hook). Nenhum arquivo de
+> `src/` mudou; **não é uma exceção** a este lock e não tem entrada no
+> manifesto do gate. Ver `docs/ROTA2_SENTINEL_SOLVER_FIDELITY_03.md`.
+
+> **Pós-lock — ROTA2-ADAPTIVE-HUNTER-04 (classe 4 do §12: missão Rota 2.0
+> explicitamente aprovada):** o primeiro Caçador que reconhece um padrão. Nas
+> Rotas 2 e 3, quando o Explorador repete a direção do passo anterior bem
+> sucedido, o Caçador tenta chegar antes a uma casa à frente dele; a Rota 1
+> continua com a perseguição da v1. Terceira exceção aprovada aos contratos do
+> §4.1, registrada nele, no manifesto do gate (`ROTA2_APPROVED_MISSIONS`, checks
+> R4, R6 e D4) e em `docs/ROTA2_ADAPTIVE_HUNTER_04.md`. A aprovação cobre
+> exatamente o campo `lastExplorerDirection`, o módulo puro
+> `route-hunter-intercept.ts`, a política das Rotas 2/3 e a mensagem dela — não
+> é permissão genérica para mudar o comportamento da Rota. O que está congelado
+> é a v1 **mais** exatamente o comportamento aprovado das três missões.
+
 ## 4. Frozen contracts
 
 ### 4.1 Rota Estratégica v1 — contrato de produto
@@ -194,11 +211,44 @@ continua valendo, com exatamente estes acréscimos:
   estado em texto; a Rota 1 mantém a linha de objetivo da v1. O tabuleiro
   recebe `portalActive` do hook.
 
+**Exceção aprovada — Rota 2.0 (ROTA2-ADAPTIVE-HUNTER-04, classe 4 do §12).**
+Base `ec3e564a47b7fad8421bfae34fcbda32acebe043` (a árvore final da
+ROTA2-SENTINEL-SOLVER-FIDELITY-03, cujo `src/` é o da DEPENDENT-OBJECTIVES-02).
+Tudo acima (v1 + DYNAMIC-TRAPS-01 + DEPENDENT-OBJECTIVES-02) continua valendo,
+com exatamente estes acréscimos:
+
+- `RouteRuntimeState.lastExplorerDirection` (`"up" | "right" | "down" | "left"
+  | null`): a direção do último passo bem sucedido do Explorador, derivada pela
+  transição C5 existente `MOVE_EXPLORER` (posição anterior → posição nova).
+  `null` em toda sessão nova (início, reinício, troca de modo, próxima Rota);
+  passo bloqueado, Picareta, escolha do Baú e Segunda Chance que segura o
+  Explorador não a mudam. Nenhuma ação C5 e nenhum evento C6 novos (12 ações,
+  14 eventos). Nenhuma lista de passos, nenhum perfil, nada entre Rotas.
+- `route-hunter-intercept.ts`, puro (só importa o tamanho do tabuleiro): a
+  direção de um passo, as Rotas que adaptam (2 e 3; a Rota 1 nunca), o
+  horizonte por modo (Fácil 1 casa e só se o Caçador a ocupa com um movimento;
+  Médio 1; Difícil até 2, depois 1) e `planHunterInterception`, a lista
+  ordenada e determinística dos movimentos legais de um passo que encurtam o
+  caminho do Caçador até a casa prevista, no labirinto atual
+  (`currentWalls(...)`, com a parede aberta no turno), sem atravessar parede,
+  portal, armadilha armada, Sentinela ou o Explorador. Só reage quando o passo
+  do turno repete a direção lembrada e o Caçador não está ao lado do
+  Explorador. O mesmo módulo é o que os dois solvers de referência carregam.
+- No turno, o Caçador continua antes da Sentinela: quando a interceptação vale,
+  ele anda para um dos movimentos listados (`chooseInterceptionMove` em
+  `route-defenders.ts`: um sorteio do fluxo da Rota só no empate); senão
+  `chooseGuardianMove` decide como antes. A Sentinela não mudou.
+- Mensagem calma "O Caçador tenta cortar seu caminho." só quando a
+  interceptação deu o movimento, abaixo das mensagens do próprio passo (luz,
+  armadilha, passagem, portal) e acima da proximidade do Caçador. Sem
+  cronômetro, alarme, pontuação ou recompensa.
+
 **Não pertencem à v1 — ficam para a Rota 2.0 (não implementados, dívida D16):**
 microsequência de morte/captura; armadilha alterando o mapa; objetivos
 dependentes (primeira fatia aprovada acima: luzes + passagem marcada nas Rotas
-2/3); mapa mudando durante o jogo; Caçador adaptativo/interceptador;
-qualquer outra mudança de gameplay não aprovada.
+2/3); mapa mudando durante o jogo; Caçador adaptativo/interceptador (primeira
+fatia aprovada acima: a direção repetida nas Rotas 2/3); qualquer outra
+mudança de gameplay não aprovada.
 
 ### 4.2 Circuito de Memória v1 — contrato
 
@@ -488,7 +538,7 @@ ferramenta/processo). Cada item foi auditado nesta missão — nada foi assumido
 | D13 | confete sem cancelamento | POST-LOCK | `celebrateSuccess` agenda `setTimeout` sem limpar no unmount; respeita `prefers-reduced-motion` | confete pode disparar após sair do resultado | efeito visual inofensivo | missão visual futura |
 | D14 | superfícies compartilhadas com ramo por jogo | POST-LOCK | `RewardResultModal` tem ramo da Rota lendo `details` (routeNumber, journeyCompleted…); `GameHowToPlay` (rótulo do CTA), `HomeStage` (mundo padrão = Rota) e `rewards.ts` (cópia por `GameId`) | um jogo novo cai nos defaults genéricos | `details` é contrato de apresentação; nada decide fluxo por ele (fluxo = `continuation`); shell e GameScreen seguem limpos | Game 03 Discovery: promover para metadado só com o segundo consumidor |
 | D15 | metadados de registro espalhados | POST-LOCK | um `GameId` novo exige entradas em `types/game.ts`, `entry-contract.ts`, `games/index.ts`, `activities.ts`, `stage-progress.ts`, `worlds.ts`, `game-intros.ts`, `rewards.ts`, `homeLayout.ts`, `worldVisuals.ts`, `WorldEmblem.tsx`, `worldDioramaLayout.ts` | checklist longo | o TypeScript obriga cada `Record<GameId, …>` (o build falha até completar) | Game 03 Discovery: consolidar só se o Game 03 provar a dor |
-| D16 | ideias de gameplay da Rota 2.0 | ROTA-2.0 | não implementadas: microsequência de morte/captura, objetivos dependentes, Caçador adaptativo/interceptador, armadilhas que fecham parede ou outros arquétipos dinâmicos. Primeira fatia de "armadilha alterando mapa / mapa mudando durante o jogo" feita em ROTA2-DYNAMIC-TRAPS-01 (só `open-wall`, uma por mapa); primeira fatia de "objetivos dependentes" feita em ROTA2-DEPENDENT-OBJECTIVES-02 (luzes + passagem marcada nas Rotas 2/3) | — | fora da v1 por definição | missão Rota 2.0 aprovada explicitamente |
+| D16 | ideias de gameplay da Rota 2.0 | ROTA-2.0 | não implementadas: microsequência de morte/captura, objetivos dependentes, Caçador adaptativo/interceptador, armadilhas que fecham parede ou outros arquétipos dinâmicos. Primeira fatia de "armadilha alterando mapa / mapa mudando durante o jogo" feita em ROTA2-DYNAMIC-TRAPS-01 (só `open-wall`, uma por mapa); primeira fatia de "objetivos dependentes" feita em ROTA2-DEPENDENT-OBJECTIVES-02 (luzes + passagem marcada nas Rotas 2/3); primeira fatia do "Caçador adaptativo/interceptador" feita em ROTA2-ADAPTIVE-HUNTER-04 (direção repetida → interceptação nas Rotas 2/3) | — | fora da v1 por definição | missão Rota 2.0 aprovada explicitamente |
 | D17 | âncoras obsoletas nos mutantes C6 | DEV/TOOLING | 3 de 13 mutantes de `route-domain-events-tests --mutants` BROKEN ("anchor found 0x" no hook): troca LIGHT_COLLECTED/TRAP_ARMED, ROUTE_ENDED antes de EXPLORER_CAPTURED, hook expondo o último evento. Em `e8971eb` (pré-C7B) o mesmo runner pega 13/13 | 3 mutações históricas não são aplicadas | nenhum mutante C6 sobreviveu; os 10 aplicados são pegos; C7A/C7B/C7C 42/42 | tooling: re-ancorar no texto pós-C7B |
 | D18 | watchdog de entrada sob SwiftShader | DEV/TOOLING | em Chromium headless sem GPU, com a CPU disputada, o board pode passar dos 28 s do watchdog da Rota; as probes pressionam "Tentar novamente" (mesma sessão) e reportam quantas vezes | ruído de ambiente nas probes | é o caminho de retry do produto funcionando; em GPU real a medição de produção é 9,5–14,8 s | tooling: rodar probes com a CPU ociosa |
 | D19 | gate estrutural do C5 cego a uma célula `useState` reposta | DEV/TOOLING | o mutante "a cell put back: moveTick in its own useState" é aplicado e sobrevive: `structureChecks(treeBeforeC7B(tree))` reconstrói o hook a partir de `e8971eb` + edição sancionada e a linha adicionada some (verificado: `moveTickCell` ausente na visão); os outros 3 mutantes C5 não são aplicados (âncoras 0× desde `bd75e69`) | o contrato "nenhuma célula fora do reducer" do C5 deixou de ser vigiado pelo runner histórico | o produto está correto (1 `useState`); o gate do lock pina o formato no texto real (R3) e seu mutante em memória é pego | tooling: o C5 ler o hook ao vivo para S2/S3 e re-ancorar os mutantes |
@@ -588,14 +638,15 @@ node tools/validation/gameplay-platform-lock-v1.mjs --counterfactuals # prova qu
 | R1 | `continuation.ts` avaliado: final = 3; tabela R1–R3 × vitória/derrota; leitor aceita só 1–3 |
 | R2 | modos, recompensas do Baú, 11 ações C5 e 13 eventos C6 da v1 — mais só o que uma missão Rota 2.0 aprovada acrescentou (`ROTA2_APPROVED_MISSIONS`: `OPEN_WALL_BY_TRAP`, `WALL_OPENED_BY_TRAP`) |
 | R3 | estado do hook da Rota: um único `useState` (`routeNumber`) e um único `useReducer` (`routeSessionReducer`) — lido no texto real (cobre a lacuna D19) |
-| R4 | campos de `RouteRuntimeState`: os 18 da v1 mais só os que uma missão Rota 2.0 aprovada acrescentou (`trapOpenedWalls`); nenhum objetivo guardado em estado |
+| R4 | campos de `RouteRuntimeState`: os 18 da v1 mais só os que uma missão Rota 2.0 aprovada acrescentou (`trapOpenedWalls`, `lastExplorerDirection`); nenhum objetivo guardado em estado |
 | R5 | `route-objectives.ts` (quando existe): sem import de runtime, sem React/Babylon/browser/storage/Worker/`Math.random`; plano avaliado = Rota 1 luzes, Rotas 2/3 luzes + passagem; o hook o lê |
+| R6 | `route-hunter-intercept.ts` (quando existe): único import de runtime `route-config.ts`; sem `Math.random`/`routeRandom`/relógio/React/Babylon/browser/storage/Worker; avaliado: só as Rotas 2 e 3 adaptam, horizontes Fácil 1 / Médio 1 / Difícil 2; o hook e `route-state.ts` o leem |
 | M1 | Circuito: 1 `setTimeout`, dentro de `scheduleForSession` (registrado e guardado pela sessão); revoke limpa; unmount revoga; sem `setInterval` |
 | M2 | Circuito: readiness `explicit`, `GameComponentProps`, `onReady/onError` ligados, carregado por `import()` |
 | D1 | este documento: decisão, commit canônico ancestral do HEAD, seções obrigatórias |
 | D2 | dívida: toda linha D01–D19 classificada, IDs exigidos presentes, nenhum BLOCKER |
 | D3 | decisões anteriores não reabertas (`GITHUB_SOURCE_OF_TRUTH = YES`, `DECISION: C7_GO`) e lock referenciado em SOURCE_OF_TRUTH e ARCHITECTURE |
-| D4 | cada missão Rota 2.0 aprovada registrada neste documento (id, classe 4, acréscimos) |
+| D4 | cada missão Rota 2.0 aprovada registrada neste documento (id, classe 4, acréscimos: ações, eventos e campos de estado) |
 
 ## 14. Contrafactual
 
@@ -628,6 +679,11 @@ cada uma precisa derrubar exatamente o check dela:
 | Rota 3 esquecendo a passagem | R5 | CAUGHT (falha R5) |
 | plano de objetivos com `Math.random` | R5 | CAUGHT (falha R5) |
 | módulo de objetivos importando React | R5 | CAUGHT (falha R5) |
+| uma segunda memória do Caçador no estado (`explorerMoveHistory`) | R4 | CAUGHT (falha R4) |
+| o Caçador da Rota 1 adaptando também | R6 | CAUGHT (falha R6) |
+| Fácil prevendo duas casas | R6 | CAUGHT (falha R6) |
+| política de interceptação com `Math.random` | R6 | CAUGHT (falha R6) |
+| módulo de interceptação importando React | R6 | CAUGHT (falha R6) |
 
 Saída: `LOCK_GATE_COUNTERFACTUALS_HOLD`.
 
