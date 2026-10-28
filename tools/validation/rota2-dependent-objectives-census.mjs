@@ -27,7 +27,7 @@ import { buildDynamicContext, classifyMap, dynamicSuccessorSet, packDynamicState
 import { objectiveStructure, reachableFrom } from "./rota2-objectives-structure.mjs";
 import { openEvidence } from "./evidence.mjs";
 import { decodePackedKey } from "./dynamic-solver-packed.mjs";
-import { directionCodeOf } from "./hunter-interception-support.mjs";
+import { directionCodeOf, directionCodeOfAction } from "./hunter-interception-support.mjs";
 import { productionIntercept } from "./rota2-sentinel-solver-fidelity-lib.mjs";
 
 const BASE = "32c419a2784b54043f38f08afd60c8628f44f54c";
@@ -572,23 +572,30 @@ for (const [label, rev] of QUICK ? [] : [["v1-9f8ebb5", V1], ["this-tree", null]
     const run = rt.mount({ seed, difficulty, routeNumber: 1 });
     const map = run.state.mazeMap;
     dctx = buildDynamicContext(map, difficulty, {});
+    // ROTA2-ADAPTIVE-HUNTER-04: a tree older than the mission (the v1 tree here) keeps no direction. Its states get
+    // the one the hook and the solvers give a state — the direction of the last successful step, 0 before the first —
+    // so both trees are compared on the same key; on Route 1 nothing reads it.
+    const keepsDirection = "lastExplorerDirection" in run.state;
+    let stepDirection = 0;
+    const stateOf = (g) => (keepsDirection ? numericOf(g) : { ...numericOf(g), d: stepDirection });
     for (let k = 0; k < 40 && run.state.status === "playing" && !run.state.chestOpened; k += 1) {
       const g = run.state;
       if (sameCell(g.player, map.exitPosition)) break;
       const blocked = new Set([...g.walls, cellKey(g.guardian), cellKey(g.sentinel), ...(map.chest ? [cellKey(map.chest)] : [])]);
       const path = pathBetween(g.player, map.exitPosition, blocked);
       if (!path || path.length < 2) break;
-      const pre = numericOf(g);
+      const pre = stateOf(g);
       const actionIndex = ACTIONS.findIndex((a) => a.row === path[1].row - g.player.row && a.col === path[1].col - g.player.col);
       run.stepTo(path[1]);
       const after = run.state;
+      if (!sameCell(after.player, g.player)) stepDirection = directionCodeOfAction(actionIndex);
       if (after.chestOpened) break;
       const support = dynamicSuccessorSet(dctx, pre, actionIndex);
       row.transitions += 1;
-      const sound = after.status === "lost" ? support?.hasLoss : after.status === "won" ? support?.hasWin : support && support.states.includes(packDynamicState(dctx, numericOf(after)));
+      const sound = after.status === "lost" ? support?.hasLoss : after.status === "won" ? support?.hasWin : support && support.states.includes(packDynamicState(dctx, stateOf(after)));
       if (sound) continue;
       row.unsound += 1;
-      const post = numericOf(after);
+      const post = stateOf(after);
       const armedNow = after.triggeredTrapSet.size > g.triggeredTrapSet.size;
       const samePieces = (support?.states ?? []).map(decodeKey).some((x) => x.e === post.e && x.h === post.h && x.s === post.s && x.lights === post.lights && x.traps === post.traps);
       if (after.status === "playing" && armedNow && g.sentinelTarget && sameCell(g.sentinelTarget, after.player) && samePieces) row.heldDoorArmed += 1;
