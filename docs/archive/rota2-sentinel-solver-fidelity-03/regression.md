@@ -71,4 +71,16 @@ The five pre-existing failures (C3 P5, C5 P2, C6 P2, C7B P3, C7C P3) are the
 ones ROTA2-DEPENDENT-OBJECTIVES-02 recorded: each extraction suite's "every
 other module untouched" against its own historical base.
 
-TODO-FINAL
+## Final checks (this tree)
+
+| check | result |
+| ----- | ------ |
+| `npm run lint` | 0 errors, the base's 5 warnings (none in this mission's files) |
+| `tsc --noEmit` | clean |
+| `next build` | ok; all 263 static client files byte-identical to the base build (13 194 899 bytes of chunks; build-id manifests excluded) |
+| `git diff --check` | clean |
+| `git diff f5826b2 -- src/` | empty |
+| CORE `validation-hygiene-tests.mjs` | 15/15, `CORE_BATTERY_PASSED`, read-only proven, evidence MATCHES |
+| DEEP `final-acceptance.mjs` | structural 1080 / continuous 270 / recovery OK, 5 records MATCH |
+| fidelity census `--check` on the final code | 11/11 checks, `ROTA2_SENTINEL_FIDELITY_CENSUS_OK`, evidence MATCHES |
+| `rota2-dependent-objectives-tests.mjs --mutants` | 16/16 caught (M14, the solver on the old win rule, by O25/O26) |

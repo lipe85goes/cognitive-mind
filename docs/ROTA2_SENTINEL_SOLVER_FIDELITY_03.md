@@ -87,7 +87,7 @@ pré-processamento novo.
 
 `docs/archive/rota2-sentinel-solver-fidelity-03/` (`fidelity-tests.json`,
 `counterfactual-f5826b2.json`, `mutants.json`, `census.json`,
-`regression.md`).
+`superseded-records.md`, `regression.md`).
 
 Tudo é comparado com a produção, nunca com outro modelo:
 
@@ -222,7 +222,8 @@ quatro leituras de tabela. A censo completa leva ~24 min.
   SOLVABILITY-01, ROTA-ADVERSARIAL-SOLVABILITY-03, DUAL-GUARDIANS-01B,
   DYNAMIC-SOLVABILITY-02): rodados só em worktrees de rascunho das duas
   árvores; nada foi escrito neles aqui. A deriva que eles já têm na base não é
-  desta missão; a diferença base → esta árvore é só a classe corrigida.
+  desta missão; a diferença base → esta árvore é só a classe corrigida (além
+  de percentuais de tempo do perfil de desempenho).
 - **Testemunhas arquivadas da 02A.** Das 10, cinco passam por um passo que a
   produção de hoje não dá. Dois (8801012 passo 18, 8801108 passo 25) são desta
   classe: o solver antigo os aceitava, o corrigido os rejeita, como a produção.
@@ -231,7 +232,24 @@ quatro leituras de tabela. A censo completa leva ~24 min.
   `adversarial-resource-analysis.mjs` falhar na base. Lacuna anterior e alheia
   (§4).
 
-TODO-FINAL
+### 3.5 Verificações finais
+
+| | resultado |
+| - | - |
+| `npm run lint` | 0 erros (os 5 avisos da base, nenhum nos arquivos desta missão) |
+| `tsc --noEmit` | limpo |
+| `next build` | ok; os 263 arquivos estáticos do cliente idênticos byte a byte aos da base (13 194 899 bytes de chunks, fora os manifestos do build id) — Home e Rota sem mudança de bundle |
+| `git diff --check` | limpo |
+| `git diff f5826b2 -- src/` | vazio (0 linhas) |
+| CORE (`validation-hygiene-tests.mjs`) | 15/15, `CORE_BATTERY_PASSED`, imutabilidade provada (0 arquivos criados/alterados/retocados, `git status` idêntico), evidência bate |
+| DEEP (`final-acceptance.mjs`) | 1080 estruturais, 270 contínuos, recuperação: ok; as 5 evidências batem |
+| suíte de fidelidade / contrafactual / mutantes | 13/13 · fidelity 4/4 falham e preserved 9/9 valem na base · 12/12 |
+| censo de fidelidade (`--check` no código final) | 11/11 checks, `ROTA2_SENTINEL_FIDELITY_CENSUS_OK`, evidência bate |
+| Dynamic Traps: suíte / censo | 28/28, evidência bate / 16/16, registro atualizado (§3.4) |
+| Dependent Objectives: suíte / censo / mutantes | 30/30, evidência bate / 22/22, registro atualizado (§3.4) / 16/16 pegos (M14, o solver com a regra antiga, por O25/O26) |
+| Platform Lock | 21/21; `--counterfactuals` valem |
+| coupling gate | 6/6 (sem entrada nova na lista de permissões) |
+| C1–C7C, jornada, continuação, carregador do tabuleiro | ver `regression.md`; as 5 falhas pré-existentes idênticas na base |
 
 ## 4. Outras lacunas do modelo (não desta classe)
 
