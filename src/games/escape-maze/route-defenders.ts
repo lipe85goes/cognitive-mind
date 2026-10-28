@@ -291,3 +291,16 @@ export function chooseGuardianMove(
   );
   return randomItem(best);
 }
+
+/**
+ * ROTA2-ADAPTIVE-HUNTER-04 — the Hunter's move when it intercepts: one of the
+ * moves `planHunterInterception` (route-hunter-intercept.ts) listed, all equally
+ * good. A tie is broken through the Rota's one random stream, like every other
+ * Hunter tie; a single move is taken as it is, without a draw that could not
+ * change anything.
+ */
+export function chooseInterceptionMove(
+  moves: readonly GridPosition[],
+): GridPosition {
+  return moves.length === 1 ? moves[0] : randomItem(moves);
+}

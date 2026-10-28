@@ -1,5 +1,9 @@
 import type { SentinelState } from "@/games/escape-maze/route-defenders";
 import type { MazeMap } from "@/games/escape-maze/route-generation";
+import {
+  explorerStepDirection,
+  type ExplorerDirection,
+} from "@/games/escape-maze/route-hunter-intercept";
 import type {
   ChestReward,
   GameStatus,
@@ -35,10 +39,16 @@ import type { DifficultyLevel, GridPosition } from "@/types/game";
  * `trapOpenedWalls`, and one transition, `OPEN_WALL_BY_TRAP`: the maze can now
  * change during a Route, and that change is recorded here, never in `mazeMap`.
  *
+ * ROTA2-ADAPTIVE-HUNTER-04 (an approved Rota 2.0 mission) adds one field,
+ * `lastExplorerDirection`, written by the existing `MOVE_EXPLORER` transition
+ * from the step itself — no action of its own.
+ *
  * Pure: state and action in, a new state out. No React, no RNG, no map
  * generation, no sound, no clock, no storage — it does not even run the
  * defenders' policy: a new Route arrives with its board already generated and
- * the Sentinel already on its post. It imports types only.
+ * the Sentinel already on its post. It imports types only, and one pure
+ * function: the direction of a step (route-hunter-intercept.ts), so the memory
+ * and the Hunter read a step's direction the same way.
  */
 
 /** Every logical, mutable field of one Route session. `routeNumber` is not one: it is the session's identity. */
@@ -81,6 +91,14 @@ export interface RouteRuntimeState {
    * `currentWalls(mazeMap.walls, brokenWall, trapOpenedWalls)`.
    */
   trapOpenedWalls: string[];
+  /**
+   * ROTA2-ADAPTIVE-HUNTER-04: the direction of the Explorer's most recent
+   * successful step this Route, or null before the first. A blocked step, a
+   * Pickaxe break, a reward choice or a Second Chance that held the Explorer in
+   * place leave it as it is. The Hunter compares the NEXT step with it (Routes 2
+   * and 3); nothing else reads it.
+   */
+  lastExplorerDirection: ExplorerDirection | null;
 }
 
 /** What a new Route session starts from. Everything else starts at its zero. */
@@ -96,8 +114,9 @@ export interface RouteSessionStart {
 /**
  * A new Route session, as one coherent state: the board, the three pieces on
  * their starts, every counter at zero, nothing collected or armed, the Chest
- * closed and nothing chosen, spent, broken or opened by a trap. The arrays are
- * new, so no list of a previous Route can leak into this one.
+ * closed and nothing chosen, spent, broken or opened by a trap, and no step
+ * remembered. The arrays are new, so no list of a previous Route can leak into
+ * this one.
  */
 export function createRouteState(start: RouteSessionStart): RouteRuntimeState {
   return {
@@ -120,6 +139,7 @@ export function createRouteState(start: RouteSessionStart): RouteRuntimeState {
     rewardSpent: false,
     brokenWall: null,
     trapOpenedWalls: [],
+    lastExplorerDirection: null,
   };
 }
 
@@ -134,7 +154,11 @@ export type RouteStateAction =
   | { type: "BLOCK_STEP"; message: string }
   /** A turn is counted: `turns` becomes the given number, `moveTick` one more. */
   | { type: "COUNT_TURN"; turns: number }
-  /** The Explorer stands on `player` with these lights; `armedTrap`, when set, joins the armed traps. */
+  /**
+   * The Explorer stands on `player` with these lights; `armedTrap`, when set,
+   * joins the armed traps. ROTA2-ADAPTIVE-HUNTER-04: the step's direction, from
+   * where the Explorer stood to `player`, becomes `lastExplorerDirection`.
+   */
   | {
       type: "MOVE_EXPLORER";
       player: GridPosition;
@@ -195,6 +219,11 @@ export function routeStateReducer(
           action.armedTrap === null
             ? state.triggeredTraps
             : [...state.triggeredTraps, action.armedTrap],
+        // Derived from the step, never handed in: a "move" that is not one
+        // orthogonal step invents no direction and keeps the last one.
+        lastExplorerDirection:
+          explorerStepDirection(state.player, action.player) ??
+          state.lastExplorerDirection,
       };
     case "OPEN_CHEST":
       return { ...state, chestOpened: true, message: action.message };

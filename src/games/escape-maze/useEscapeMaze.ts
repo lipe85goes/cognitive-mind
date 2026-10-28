@@ -20,6 +20,7 @@ import {
 import {
   SENTINEL_COMMIT_TURNS,
   chooseGuardianMove,
+  chooseInterceptionMove,
   computePortalDefenceZone,
   createSentinelState,
   decideSentinelMove,
@@ -68,6 +69,14 @@ import {
   routeObjectivePlan,
   type RouteObjectiveEvaluation,
 } from "@/games/escape-maze/route-objectives";
+// ROTA2-ADAPTIVE-HUNTER-04: on Routes 2 and 3 the Hunter reads the Explorer
+// stepping the same way twice and tries to get ahead of it — one shared, pure
+// policy (route-hunter-intercept.ts) that the reference solvers load too.
+import {
+  explorerStepDirection,
+  planHunterInterception,
+  type ExplorerDirection,
+} from "@/games/escape-maze/route-hunter-intercept";
 // ROUTE-C6: the hook says what happened — a `RouteDomainEvent` — and
 // route-events.ts translates it into the C5 transitions that record it. The
 // hook still runs the turn: it decides which events happen, in what order and
@@ -205,11 +214,23 @@ interface DefenderPhaseInput {
   /** True only while an unspent Second Chance is held. */
   secondChanceReady: boolean;
   /**
+   * ROTA2-ADAPTIVE-HUNTER-04: the Explorer's step this turn — its direction and
+   * the direction of the successful step before it — or null when the turn is
+   * not a step (a reward chosen, a wall broken). Only a step can show the
+   * Hunter a repeated direction.
+   */
+  explorerStep: {
+    direction: ExplorerDirection | null;
+    previousDirection: ExplorerDirection | null;
+  } | null;
+  /**
    * What to say when the turn ends without anyone being caught. A function
    * because the step's own message ranks against how close the Hunter ended up,
-   * and that is only known once the defenders have answered.
+   * and that is only known once the defenders have answered — and, since
+   * ROTA2-ADAPTIVE-HUNTER-04, against whether the Hunter's move was an
+   * interception (`intercepting`), which is only known then too.
    */
-  calmMessage: (guardianAfter: GridPosition) => string;
+  calmMessage: (guardianAfter: GridPosition, intercepting: boolean) => string;
 }
 
 /**
@@ -239,6 +260,13 @@ const TRAP_OPENED_WALL_MESSAGE =
   "Armadilha ativada: a parede da mesma runa se abriu. A passagem serve para todos.";
 const TRAP_LINK_ALREADY_OPEN_MESSAGE =
   "Armadilha ativada. A parede da mesma runa já estava aberta.";
+
+/**
+ * ROTA2-ADAPTIVE-HUNTER-04 — said only on a turn whose Hunter move came from
+ * the interception (never when the usual pursuit decided). Calm: it names what
+ * the Hunter did, and leaves the answer — turning — to the Explorer.
+ */
+const HUNTER_INTERCEPT_MESSAGE = "O Caçador tenta cortar seu caminho.";
 
 /**
  * ROTA2-DEPENDENT-OBJECTIVES-02 — what the Explorer is told on a Route whose
@@ -741,6 +769,8 @@ export function useEscapeMaze(
       brokenWall,
       // ROTA2-DYNAMIC-TRAPS-01: the walls dynamic traps opened this Route.
       trapOpenedWalls,
+      // ROTA2-ADAPTIVE-HUNTER-04: the direction of the last successful step.
+      lastExplorerDirection,
     } = route;
 
     // --- Chest, derived -------------------------------------------------------
@@ -841,14 +871,42 @@ export function useEscapeMaze(
         wallBroken: input.brokenWallNow !== null,
       });
 
-      const nextGuardian = chooseGuardianMove(
-        input.guardianFrom,
-        input.playerPosition,
-        mazeMap.exitPosition,
-        input.graphWalls,
-        difficulty,
-        new Set([...input.armedTraps, posKey(input.sentinelFrom.position)]),
-      );
+      const hunterBlocked = new Set([
+        ...input.armedTraps,
+        posKey(input.sentinelFrom.position),
+      ]);
+      // ROTA2-ADAPTIVE-HUNTER-04: on Routes 2 and 3 a step that repeats the
+      // previous step's direction lets the Hunter try to get ahead of the
+      // Explorer, on the maze as it stands now (`graphWalls`, the step's wall
+      // already open) and around the same cells it may never enter. When no
+      // interception works — and always on Route 1, and on any turn that is
+      // not a step — the pursuit decides, exactly as before, drawing what it
+      // always drew.
+      const interception =
+        input.explorerStep === null
+          ? null
+          : planHunterInterception({
+              routeNumber,
+              difficulty,
+              previousDirection: input.explorerStep.previousDirection,
+              direction: input.explorerStep.direction,
+              hunter: input.guardianFrom,
+              explorer: input.playerPosition,
+              exitPosition: mazeMap.exitPosition,
+              walls: input.graphWalls,
+              blocked: hunterBlocked,
+            });
+      const nextGuardian =
+        interception !== null
+          ? chooseInterceptionMove(interception.moves)
+          : chooseGuardianMove(
+              input.guardianFrom,
+              input.playerPosition,
+              mazeMap.exitPosition,
+              input.graphWalls,
+              difficulty,
+              hunterBlocked,
+            );
 
       if (positionsEqual(nextGuardian, input.playerPosition)) {
         if (input.secondChanceReady) {
@@ -925,7 +983,7 @@ export function useEscapeMaze(
         turn: input.turnNumber,
         guardian: nextGuardian,
         sentinel: settledSentinel,
-        message: input.calmMessage(nextGuardian),
+        message: input.calmMessage(nextGuardian, interception !== null),
       });
     };
 
@@ -969,6 +1027,9 @@ export function useEscapeMaze(
       }
 
       const nextTurn = turns + 1;
+      // ROTA2-ADAPTIVE-HUNTER-04: this step's direction, read before anything
+      // is committed; `lastExplorerDirection` is still the previous step's.
+      const stepDirection = explorerStepDirection(player, next);
       const stepOnGuardian = positionsEqual(next, guardian);
       const stepOnSentinel = positionsEqual(next, sentinel.position);
 
@@ -1178,13 +1239,21 @@ export function useEscapeMaze(
         rewardSpentNow: rewardSpent,
         brokenWallNow: brokenWall,
         secondChanceReady: secondChanceAvailable,
+        explorerStep: {
+          direction: stepDirection,
+          previousDirection: lastExplorerDirection,
+        },
         // Same priority the route has always used: what the Explorer just did
         // first, then how close the Hunter got, then the portal, then calm.
         // ROTA2-DYNAMIC-TRAPS-01: a dynamic trap says what it did to the maze.
         // ROTA2-DEPENDENT-OBJECTIVES-02: on a Route with the marked passage,
         // the passage and what is still missing are said too. Route 1 keeps
         // every v1 message (`passageRequired` is false there).
-        calmMessage: (guardianAfter) =>
+        // ROTA2-ADAPTIVE-HUNTER-04: an interception is said after what the
+        // step itself did (a light, a trap, a wall, the portal) and before how
+        // close the Hunter is — only when the interception made the move, so
+        // never on Route 1.
+        calmMessage: (guardianAfter, intercepting) =>
           trapLink !== null
             ? trapOpensWall !== null
               ? passageRequired
@@ -1205,15 +1274,17 @@ export function useEscapeMaze(
                   ? passageRequired
                     ? missingObjectivesMessage(nextObjectives)
                     : "O portal ainda precisa das luzes da rota."
-                  : manhattanDistance(guardianAfter, next) <= 2
-                    ? "O Caçador está próximo. Pense no próximo caminho."
-                    : manhattanDistance(next, mazeMap.exitPosition) <= 2
-                      ? nextPortalActive
-                        ? "A saída está próxima."
-                        : passageRequired
-                          ? missingObjectivesMessage(nextObjectives)
-                          : "O portal ainda precisa de todas as luzes."
-                      : "Boa jogada. O Caçador se moveu.",
+                  : intercepting
+                    ? HUNTER_INTERCEPT_MESSAGE
+                    : manhattanDistance(guardianAfter, next) <= 2
+                      ? "O Caçador está próximo. Pense no próximo caminho."
+                      : manhattanDistance(next, mazeMap.exitPosition) <= 2
+                        ? nextPortalActive
+                          ? "A saída está próxima."
+                          : passageRequired
+                            ? missingObjectivesMessage(nextObjectives)
+                            : "O portal ainda precisa de todas as luzes."
+                        : "Boa jogada. O Caçador se moveu.",
       });
     };
 
@@ -1248,6 +1319,9 @@ export function useEscapeMaze(
         // A Second Chance taken here is armed immediately: it protects the rest of
         // the very turn in which it was chosen.
         secondChanceReady: reward === "second-chance",
+        // ROTA2-ADAPTIVE-HUNTER-04: choosing is not a step — the step that
+        // reached the Chest is already remembered, and the pursuit answers.
+        explorerStep: null,
         calmMessage: () =>
           reward === "pickaxe"
             ? // Post-playtest: this used to say "procure uma parede rachada",
@@ -1335,6 +1409,8 @@ export function useEscapeMaze(
         rewardSpentNow: true,
         brokenWallNow: wallKey,
         secondChanceReady: false,
+        // ROTA2-ADAPTIVE-HUNTER-04: breaking is not a step; the pursuit answers.
+        explorerStep: null,
         calmMessage: () =>
           openedPassage
             ? portalActivatedNow
