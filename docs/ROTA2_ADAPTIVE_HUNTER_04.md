@@ -305,6 +305,49 @@ Fácil quase não muda.
 
 ⟨SECTIONS-TBD⟩
 
+## 7. Limitações
+
+- **Uma regra, uma memória.** O Caçador só reage a uma direção repetida; quem
+  muda de direção a cada passo nunca o vê adaptar (H06). É o escopo pedido: sem
+  perfil, sem histórico, nada entre Rotas.
+- **O Fácil quase não adapta** (< 1 % das repetições, §6.3): o contrato exige
+  que a casa prevista esteja a um movimento do Caçador, que por sua vez não pode
+  estar ao lado do Explorador. Se o Fácil deve "mostrar" a adaptação é decisão
+  de design (§8).
+- **A interceptação posiciona, não captura** (o portão "Caçador não vizinho do
+  Explorador"). A captura continua sendo da perseguição ou do passo do próprio
+  Explorador; nenhuma interceptação capturou em 15 934 + 949 casos.
+- **Espaço de estados.** Nas Rotas 2/3 o grafo exato cresce (×≈2, até ×5,2);
+  13 mapas da amostra de 72 passaram a `I` no limite de 3 M estados (10 P → I,
+  3 G → I). Ficam INCONCLUSIVOS; o limite não foi aumentado. A
+  solucionabilidade exata continua pré-Baú e amostral.
+- **Desfechos medidos com políticas roteirizadas**, não com pessoas: os números
+  de captura/vitória (§6.3) indicam direção, não dificuldade percebida.
+- **Mensagem fora da tela em telas baixas (pré-existente).** A 480×360 o produto
+  rola a página até o tabuleiro e os controles ao iniciar a Rota, e a linha de
+  status (no painel acima do tabuleiro) sai da tela — **igual na base**
+  (`browser/status-line-480x360.json`: 0/37 passos na base, 0/40 aqui). A
+  mensagem da interceptação está na região `role="status"` (anunciada por leitor
+  de tela) como todas as outras; a 360×640 ela aparece na tela. Esta missão não
+  mexe em layout.
+- O navegador roda em SwiftShader a 480×360 e 360×640; os tempos de entrada
+  variam 15–23 s de execução para execução nas duas árvores.
+
+## 8. Perguntas para o playtest
+
+1. Quem anda em linha reta nas Rotas 2/3 **percebe** o Caçador cortando o
+   caminho? Associa isso a ter repetido a direção?
+2. "O Caçador tenta cortar seu caminho." é entendido? Em corredores longos ele
+   aparece em passos seguidos — incomoda ou ajuda?
+3. Depois de ver a mensagem, a pessoa passa a variar a direção? Isso torna o
+   jogo mais interessante ou só mais lento?
+4. O Difícil (previsão de 2 casas) parece justo, ou parece que o Caçador
+   "adivinha"?
+5. O Fácil deveria adaptar de forma visível, ou é bom que ele quase não mude?
+6. A Rota 1 continua parecendo a mesma?
+7. Em telas baixas (paisagem pequena), a pessoa sente falta da mensagem que
+   ficou fora da tela?
+
 ## 9. Validadores anteriores que leem o delta aprovado
 
 O que mudou nas ferramentas, e por quê (nenhum contrato enfraquecido):
