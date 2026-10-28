@@ -43,6 +43,8 @@
       "detail": {
         "hookTurns": 3059,
         "hookTurnsOutsideOracle": 0,
+        "interceptingPairs": 0,
+        "interceptingPairsLeftOutForThisSolverTree": 0,
         "staticPairs": 105167,
         "oracleVsStringReference": 0,
         "note": "every real hook turn is in the composed production support; with the link ignored the composition equals the string reference (production decideSentinelMove on the certified board)"
@@ -452,9 +454,11 @@
         "isolatedPairs": 95932,
         "hunterSupportVsProduction": 0,
         "hunterSupportVsPreMission": 0,
+        "isolatedInterceptingPairs": 0,
         "hookHunterOutsideSupport": 0,
         "hookTurnsAndDrawsEqualOtherTree": true,
-        "otherTree": "working tree",
+        "otherTree": "f5826b2e587d8381ac2e9d05be5c1b517b97dcdc",
+        "comparedTree": "working tree without ROTA2-ADAPTIVE-HUNTER-04's pinned hunks",
         "hookDraws": 4603,
         "solverFilesDrawing": [],
         "examples": []
@@ -499,7 +503,8 @@
           }
         ],
         "secondChanceSameAsOtherTree": true,
-        "otherTree": "working tree",
+        "otherTree": "f5826b2e587d8381ac2e9d05be5c1b517b97dcdc",
+        "comparedTree": "working tree without ROTA2-ADAPTIVE-HUNTER-04's pinned hunks",
         "note": "PRE_CHEST solvers: a Second Chance never reaches them; the hook's Second Chance path is src/, identical on both trees"
       }
     },
@@ -511,11 +516,12 @@
       "detail": {
         "base": "f5826b2e587d8381ac2e9d05be5c1b517b97dcdc",
         "changedUnderSrc": [],
-        "uncommittedUnderSrc": []
+        "uncommittedUnderSrc": [],
+        "changedByTheApprovedLaterDelta": []
       }
     }
   ],
   "run": {
-    "elapsedMs": 87085
+    "elapsedMs": 92604
   }
 }

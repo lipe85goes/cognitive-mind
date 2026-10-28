@@ -10,27 +10,27 @@
       "trapTours": 22,
       "secondChance": 3
     },
-    "hookTurns": 3059,
-    "pairs": 107297,
+    "hookTurns": 2992,
+    "pairs": 106848,
     "byClass": {
-      "explored:BLOCKED_KEPT": 701,
-      "explored:BLOCKED_RELEASED": 13,
-      "explored:NO_DECISION": 417,
+      "explored:BLOCKED_KEPT": 850,
+      "explored:BLOCKED_RELEASED": 6,
+      "explored:NO_DECISION": 411,
       "explored:NO_TRAP": 663,
-      "explored:OPEN_RELEASED": 30,
-      "explored:OTHER_TRAP": 5241,
+      "explored:OPEN_RELEASED": 21,
+      "explored:OTHER_TRAP": 4710,
       "grid:BLOCKED_KEPT": 86305,
       "grid:BLOCKED_RELEASED": 570,
       "grid:OPEN_RELEASED": 13,
       "grid:OTHER_TRAP": 10960,
-      "runtime:BLOCKED_KEPT": 97,
-      "runtime:BLOCKED_RELEASED": 5,
-      "runtime:NO_DECISION": 14,
-      "runtime:NO_TRAP": 1733,
-      "runtime:OPEN_RELEASED": 4,
-      "runtime:OTHER_TRAP": 531
+      "runtime:BLOCKED_KEPT": 131,
+      "runtime:BLOCKED_RELEASED": 2,
+      "runtime:NO_DECISION": 13,
+      "runtime:NO_TRAP": 1736,
+      "runtime:OPEN_RELEASED": 3,
+      "runtime:OTHER_TRAP": 454
     },
-    "staticPairs": 105167
+    "staticPairs": 104748
   },
   "checks": [
     {
@@ -39,9 +39,11 @@
       "name": "THE_PRODUCTION_ORACLE_IS_THE_HOOK",
       "pass": true,
       "detail": {
-        "hookTurns": 3059,
+        "hookTurns": 2992,
         "hookTurnsOutsideOracle": 0,
-        "staticPairs": 105167,
+        "interceptingPairs": 30,
+        "interceptingPairsLeftOutForThisSolverTree": 0,
+        "staticPairs": 104748,
         "oracleVsStringReference": 0,
         "note": "every real hook turn is in the composed production support; with the link ignored the composition equals the string reference (production decideSentinelMove on the certified board)"
       }
@@ -66,19 +68,19 @@
       "name": "ARMED_TRAP_TARGET_KEPT_AS_THE_HOOK_KEEPS_IT",
       "pass": true,
       "detail": {
-        "pairs": 87103,
-        "runtimePairs": 97,
-        "hookTurns": 145,
+        "pairs": 87286,
+        "runtimePairs": 131,
+        "hookTurns": 239,
         "portalRushReplay": {
           "turns": 2016,
           "preMissionOutside": 25,
           "outside": 0
         },
         "witnesses": {
-          "armingTheHeldDoor": 11,
-          "laterTurnsOfTheCommitment": 60,
-          "freshCommitmentToAnArmedDoor": 23,
-          "sentinelMoves": 15
+          "armingTheHeldDoor": 10,
+          "laterTurnsOfTheCommitment": 84,
+          "freshCommitmentToAnArmedDoor": 33,
+          "sentinelMoves": 23
         },
         "vsProduction": 0,
         "hookOutside": 0,
@@ -103,24 +105,24 @@
       "name": "UNREACHABLE_COMMITMENT_RELEASED_EXACTLY_WHEN_PRODUCTION_RELEASES",
       "pass": true,
       "detail": {
-        "pairs": 635,
+        "pairs": 615,
         "byClass": {
-          "blockedTargetUnreached": 588,
-          "openTargetCutOff": 47
+          "blockedTargetUnreached": 578,
+          "openTargetCutOff": 37
         },
         "runtimeWitnesses": {
-          "blockedTargetUnreached": 5,
-          "openTargetCutOff": 4
+          "blockedTargetUnreached": 2,
+          "openTargetCutOff": 3
         },
-        "hookTurns": 13,
+        "hookTurns": 8,
         "vsProduction": 0,
         "hookOutside": 0,
         "examples": [],
         "firstWitness": {
           "map": "9222105|2|hard",
           "policy": "trapTour",
-          "before": "35|62|8|44|0|16|7",
-          "hook": "26|53|8|-1|0|16|15"
+          "before": "25|52|8|44|0|0|23",
+          "hook": "26|53|8|-1|0|0|31"
         }
       }
     },
@@ -130,8 +132,8 @@
       "name": "TRAP_ON_ANOTHER_CELL_POLICY_PRESERVED",
       "pass": true,
       "detail": {
-        "pairs": 5031,
-        "hookTurns": 495,
+        "pairs": 4580,
+        "hookTurns": 390,
         "vsProduction": 0,
         "hookOutside": 0,
         "vsPreMission": 0,
@@ -144,10 +146,10 @@
       "name": "OPENED_MAZE_KEEPS_UNION_DOOR_IDENTITY",
       "pass": true,
       "detail": {
-        "pairs": 58762,
-        "hookTurns": 616,
-        "remappedDoorTurns": 63,
-        "armedTrapTargetOnOpenedMaze": 64,
+        "pairs": 58082,
+        "hookTurns": 520,
+        "remappedDoorTurns": 84,
+        "armedTrapTargetOnOpenedMaze": 88,
         "mapsWithDifferentDoorsWhenOpen": 9,
         "vsProduction": 0,
         "hookOutside": 0,
@@ -203,8 +205,8 @@
           ],
           "solverDisagreesWithProduction": []
         },
-        "pairs": 105167,
-        "armedTrapTargetPairs": 87185,
+        "pairs": 104748,
+        "armedTrapTargetPairs": 87355,
         "vsStringReference": 0,
         "route1HookTurns": 2280,
         "route1ArmedTrapTargetTurns": 43,
@@ -218,8 +220,8 @@
       "name": "NO_TRAP_STATES_EQUIVALENT_TO_PRE_MISSION",
       "pass": true,
       "detail": {
-        "pairs": 2397,
-        "hookTurns": 2100,
+        "pairs": 2400,
+        "hookTurns": 2104,
         "vsProduction": 0,
         "hookOutside": 0,
         "vsPreMission": 0,
@@ -233,8 +235,8 @@
       "name": "ORDINARY_TRAP_STATES_EQUIVALENT_TO_PRE_MISSION",
       "pass": true,
       "detail": {
-        "pairs": 16779,
-        "hookTurns": 790,
+        "pairs": 16161,
+        "hookTurns": 630,
         "vsProduction": 0,
         "hookOutside": 0,
         "vsPreMission": 0,
@@ -279,13 +281,15 @@
       "name": "HUNTER_SUPPORT_AND_RNG_DRAWS_UNCHANGED",
       "pass": true,
       "detail": {
-        "isolatedPairs": 95932,
+        "isolatedPairs": 95484,
         "hunterSupportVsProduction": 0,
         "hunterSupportVsPreMission": 0,
+        "isolatedInterceptingPairs": 30,
         "hookHunterOutsideSupport": 0,
         "hookTurnsAndDrawsEqualOtherTree": true,
         "otherTree": "f5826b2e587d8381ac2e9d05be5c1b517b97dcdc",
-        "hookDraws": 4603,
+        "comparedTree": "working tree without ROTA2-ADAPTIVE-HUNTER-04's pinned hunks",
+        "hookDraws": 4402,
         "solverFilesDrawing": [],
         "examples": []
       }
@@ -297,12 +301,12 @@
       "pass": true,
       "detail": {
         "winFlagDiffers": 0,
-        "explorerOrHunterCapturePairs": 573,
+        "explorerOrHunterCapturePairs": 570,
         "captureMissed": 0,
         "endedTurns": {
           "hunter": 14,
           "step": 16,
-          "win": 3
+          "win": 1
         },
         "endedTurnsDisagreeing": 0,
         "secondChanceGames": [
@@ -330,6 +334,7 @@
         ],
         "secondChanceSameAsOtherTree": true,
         "otherTree": "f5826b2e587d8381ac2e9d05be5c1b517b97dcdc",
+        "comparedTree": "working tree without ROTA2-ADAPTIVE-HUNTER-04's pinned hunks",
         "note": "PRE_CHEST solvers: a Second Chance never reaches them; the hook's Second Chance path is src/, identical on both trees"
       }
     },
@@ -341,11 +346,17 @@
       "detail": {
         "base": "f5826b2e587d8381ac2e9d05be5c1b517b97dcdc",
         "changedUnderSrc": [],
-        "uncommittedUnderSrc": []
+        "uncommittedUnderSrc": [],
+        "changedByTheApprovedLaterDelta": [
+          "src/games/escape-maze/route-defenders.ts",
+          "src/games/escape-maze/route-hunter-intercept.ts",
+          "src/games/escape-maze/route-state.ts",
+          "src/games/escape-maze/useEscapeMaze.ts"
+        ]
       }
     }
   ],
   "run": {
-    "elapsedMs": 90337
+    "elapsedMs": 92329
   }
 }

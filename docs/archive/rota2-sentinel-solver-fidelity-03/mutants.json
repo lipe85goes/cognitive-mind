@@ -10,27 +10,27 @@
       "trapTours": 22,
       "secondChance": 3
     },
-    "hookTurns": 3059,
-    "pairs": 107297,
+    "hookTurns": 2992,
+    "pairs": 106848,
     "byClass": {
-      "explored:BLOCKED_KEPT": 701,
-      "explored:BLOCKED_RELEASED": 13,
-      "explored:NO_DECISION": 417,
+      "explored:BLOCKED_KEPT": 850,
+      "explored:BLOCKED_RELEASED": 6,
+      "explored:NO_DECISION": 411,
       "explored:NO_TRAP": 663,
-      "explored:OPEN_RELEASED": 30,
-      "explored:OTHER_TRAP": 5241,
+      "explored:OPEN_RELEASED": 21,
+      "explored:OTHER_TRAP": 4710,
       "grid:BLOCKED_KEPT": 86305,
       "grid:BLOCKED_RELEASED": 570,
       "grid:OPEN_RELEASED": 13,
       "grid:OTHER_TRAP": 10960,
-      "runtime:BLOCKED_KEPT": 97,
-      "runtime:BLOCKED_RELEASED": 5,
-      "runtime:NO_DECISION": 14,
-      "runtime:NO_TRAP": 1733,
-      "runtime:OPEN_RELEASED": 4,
-      "runtime:OTHER_TRAP": 531
+      "runtime:BLOCKED_KEPT": 131,
+      "runtime:BLOCKED_RELEASED": 2,
+      "runtime:NO_DECISION": 13,
+      "runtime:NO_TRAP": 1736,
+      "runtime:OPEN_RELEASED": 3,
+      "runtime:OTHER_TRAP": 454
     },
-    "staticPairs": 105167
+    "staticPairs": 104748
   },
   "mutants": [
     {
@@ -241,6 +241,6 @@
     }
   ],
   "run": {
-    "elapsedMs": 153229
+    "elapsedMs": 150449
   }
 }

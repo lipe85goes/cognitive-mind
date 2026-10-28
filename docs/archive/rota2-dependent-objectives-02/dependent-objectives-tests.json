@@ -6,7 +6,7 @@
   "total": 30,
   "fixtures": {
     "lightsFirst2": {
-      "seed": 6402,
+      "seed": 6406,
       "difficulty": "easy",
       "route": 2,
       "margin": 1
@@ -30,8 +30,8 @@
       "margin": 1
     },
     "pickaxeLast": {
-      "seed": 6401,
-      "difficulty": "medium",
+      "seed": 6404,
+      "difficulty": "easy",
       "route": 3,
       "margin": 1
     },
@@ -83,7 +83,7 @@
         ],
         "allLightsCollectedPortalActive": false,
         "fixture": {
-          "seed": 6402,
+          "seed": 6406,
           "difficulty": "easy",
           "route": 2,
           "margin": 1
@@ -160,7 +160,7 @@
             "wallStandingBefore": true,
             "passage": {
               "required": true,
-              "wall": "6,4",
+              "wall": "6,2",
               "open": true,
               "complete": true
             }
@@ -271,11 +271,7 @@
             "portalActive": false,
             "lightsComplete": true,
             "message": "Todas as luzes coletadas. Falta abrir a passagem marcada.",
-            "early": {
-              "status": "playing",
-              "message": "As luzes estão prontas. Falta abrir a passagem marcada.",
-              "completions": 0
-            }
+            "early": null
           },
           {
             "route": 3,
@@ -372,7 +368,7 @@
             "hunterOnNewTopology": true,
             "portalActive": true,
             "message": "Armadilha ativada: a passagem marcada se abriu, para todos. Portal ativado! Vá até a saída.",
-            "won": true
+            "won": false
           },
           {
             "route": 3,
@@ -423,9 +419,9 @@
       "detail": {
         "sessions": [
           {
-            "fixture": "2/6402",
+            "fixture": "2/6406",
             "count": 1,
-            "won": true
+            "won": false
           },
           {
             "fixture": "3/6400",
@@ -443,7 +439,7 @@
             "won": false
           },
           {
-            "fixture": "3/6401",
+            "fixture": "3/6404",
             "count": 1,
             "won": true
           },
@@ -464,11 +460,6 @@
         "rows": [
           {
             "case": "nothing done",
-            "status": "playing",
-            "completions": 0
-          },
-          {
-            "case": "lights done R2",
             "status": "playing",
             "completions": 0
           },
@@ -569,7 +560,8 @@
           "passageComplete": false,
           "lights": 0,
           "portalActive": false
-        }
+        },
+        "wonRoute2": "searched win (seed 6403, easy)"
       }
     },
     {
@@ -644,7 +636,7 @@
           "standingAllLights": false,
           "openedAllLights": true
         },
-        "rendersInspected": 1193,
+        "rendersInspected": 1512,
         "passageMismatch": 0,
         "portalMismatch": 0,
         "examples": []
@@ -728,13 +720,13 @@
       "name": "SOLVER_AND_HOOK_AGREE",
       "pass": true,
       "detail": {
-        "transitions": 431,
+        "transitions": 525,
         "unsound": 0,
         "heldDoorArmed": 0,
         "defenderModelGap": 0,
         "objectiveUnsound": 0,
-        "afterPassage": 80,
-        "wins": 3,
+        "afterPassage": 67,
+        "wins": 2,
         "examples": []
       }
     },
@@ -777,7 +769,7 @@
       "pass": true,
       "detail": {
         "comparedWith": "HEAD",
-        "srcFilesChanged": 7,
+        "srcFilesChanged": 10,
         "outsideTheRota": []
       }
     },
@@ -799,6 +791,6 @@
     }
   ],
   "run": {
-    "elapsedMs": 118706
+    "elapsedMs": 120298
   }
 }
