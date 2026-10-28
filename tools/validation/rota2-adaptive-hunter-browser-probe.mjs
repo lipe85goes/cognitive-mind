@@ -32,6 +32,13 @@
  *   keyboard        arrow keys only: an interception, announced in the `role="status"` region.
  *   reduced         prefers-reduced-motion: an interception, same semantics.
  *
+ * On screen. Every summary counts the steps after which the status line was inside the viewport
+ * (`statusLineOnScreen`). At 480×360 the product scrolls the page to the board and the controls when a Route starts,
+ * and the status line (the objective panel, above the board) is then out of view — on ec3e564 exactly as here (run
+ * `--scenario route1` against both builds). So the on-screen requirement is `mobile`'s, where the layout keeps the
+ * panel in view; `keyboard` and `reduced` require the message in the live `role="status"` region, as every other
+ * message of the Route is, and record whether it was on screen.
+ *
  * Usage:
  *   next build && next start -p 3100
  *   node tools/validation/rota2-adaptive-hunter-browser-probe.mjs [--base URL] [--scenario a,b] [--attempts N]
@@ -426,6 +433,7 @@ const summarize = (steps) => ({
   repeats: steps.filter((x) => x.stepped && x.previous === x.direction).length,
   interceptions: steps.filter((x) => x.plan && x.playing).length,
   messages: steps.filter((x) => x.intercepted).length,
+  statusLineOnScreen: steps.filter((x) => x.stepped && x.after?.messageOnScreen).length,
   violations: steps.filter((x) => x.violation).map((x) => ({ violation: x.violation, hunter: x.hunter, plan: x.planMoves })),
 });
 const stepView = (x) => x && { route: x.route, difficulty: x.difficulty, previous: x.previous, direction: x.direction, horizon: x.horizon, hunter: x.hunter, planMoves: x.planMoves, message: x.message, violation: x.violation };
@@ -705,14 +713,17 @@ async function scenarioContinuation() {
   }
 }
 
-const anInterception = (label, options) =>
+const anInterception = (label, { onScreen = false, ...options }) =>
   onRoute(label, { route: 2, difficulty: "medium", anyAdaptive: true, ...options }, async (s) => {
     const { found, steps } = await hunt(s, (x) => Boolean(x.plan) && x.playing && x.intercepted);
     if (!found) return null;
     await witness(s, `${label}-interception`);
     const sum = summarize(steps);
     const layout = await s.page.evaluate(() => ({ horizontalScroll: document.documentElement.scrollWidth > window.innerWidth }));
-    return { summary: sum, interception: stepView(found), messageOnScreen: found.after.messageOnScreen, statusRole: found.after.statusRole, layout, held: sum.violations.length === 0 && found.after.statusRole === "status" && found.after.messageOnScreen && !layout.horizontalScroll };
+    return {
+      summary: sum, interception: stepView(found), message: found.after.message, messageOnScreen: found.after.messageOnScreen, onScreenRequired: onScreen, statusRole: found.after.statusRole, layout,
+      held: sum.violations.length === 0 && found.after.statusRole === "status" && found.after.message === INTERCEPT_MESSAGE && (!onScreen || found.after.messageOnScreen) && !layout.horizontalScroll,
+    };
   });
 
 const runners = {
@@ -729,7 +740,7 @@ const runners = {
   secondChance: scenarioSecondChance,
   restart: scenarioRestart,
   continuation: scenarioContinuation,
-  mobile: () => anInterception("mobile", { session: { viewport: MOBILE, touch: true } }),
+  mobile: () => anInterception("mobile", { onScreen: true, session: { viewport: MOBILE, touch: true } }),
   keyboard: () => anInterception("keyboard", { keyboardOnly: true }),
   reduced: () => anInterception("reduced", { session: { reducedMotion: "reduce" } }),
 };

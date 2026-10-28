@@ -1,0 +1,55 @@
+{
+  "viewport": "480x360",
+  "command": "node tools/validation/rota2-adaptive-hunter-browser-probe.mjs --base <URL> --scenario route1",
+  "note": "statusLineOnScreen = steps after which .rsg-objective-message[role=status] intersected the viewport. Starting a Route scrolls the page to the board and controls at this size; the status line is then above the viewport on both builds.",
+  "base": {
+    "build": "ec3e564",
+    "attempt": 1,
+    "tries": [
+      {
+        "attempt": 1,
+        "route": 1,
+        "held": true,
+        "steps": 37
+      }
+    ],
+    "route": 1,
+    "difficulty": "medium",
+    "summary": {
+      "steps": 37,
+      "repeats": 10,
+      "interceptions": 0,
+      "messages": 0,
+      "statusLineOnScreen": 0,
+      "violations": []
+    },
+    "repeatsThatWouldInterceptOnRoute2": 10,
+    "held": true,
+    "seconds": 66
+  },
+  "mission": {
+    "build": "feat/rota2-adaptive-hunter-04",
+    "attempt": 1,
+    "tries": [
+      {
+        "attempt": 1,
+        "route": 1,
+        "held": true,
+        "steps": 40
+      }
+    ],
+    "route": 1,
+    "difficulty": "medium",
+    "summary": {
+      "steps": 40,
+      "repeats": 9,
+      "interceptions": 0,
+      "messages": 0,
+      "statusLineOnScreen": 0,
+      "violations": []
+    },
+    "repeatsThatWouldInterceptOnRoute2": 9,
+    "held": true,
+    "seconds": 58
+  }
+}
