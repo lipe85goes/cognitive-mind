@@ -1,6 +1,6 @@
 {
   "mission": "ROTA2-ADAPTIVE-HUNTER-04",
-  "caught": 24,
+  "caught": 25,
   "total": 25,
   "mutants": [
     {
@@ -166,6 +166,7 @@
       "alsoFailing": [
         "H07",
         "H12",
+        "H18",
         "H20",
         "H26"
       ]
@@ -426,9 +427,77 @@
       "targets": [
         "H18"
       ],
-      "caught": false,
-      "caughtBy": [],
-      "alsoFailing": []
+      "caught": true,
+      "caughtBy": [
+        "H18"
+      ],
+      "alsoFailing": [
+        "H07",
+        "H10",
+        "H11",
+        "H12",
+        "H13",
+        "H20",
+        "H26"
+      ],
+      "witness": {
+        "check": "H18",
+        "field": "focusedFixture",
+        "shown": true,
+        "value": {
+          "holds": false,
+          "wall": "3,4",
+          "wallCellReturned": true,
+          "easy": {
+            "target": null,
+            "horizon": null,
+            "moves": null,
+            "contractMoves": null,
+            "matchesTheContract": true,
+            "illegalMoves": []
+          },
+          "medium": {
+            "target": "4,3",
+            "horizon": 1,
+            "moves": [
+              "3,4",
+              "2,3"
+            ],
+            "contractMoves": [
+              "2,3"
+            ],
+            "matchesTheContract": false,
+            "illegalMoves": [
+              {
+                "cell": "3,4",
+                "reasons": [
+                  "wall"
+                ]
+              }
+            ]
+          },
+          "hard": {
+            "target": "4,4",
+            "horizon": 2,
+            "moves": [
+              "3,4"
+            ],
+            "contractMoves": [
+              "2,3",
+              "2,5"
+            ],
+            "matchesTheContract": false,
+            "illegalMoves": [
+              {
+                "cell": "3,4",
+                "reasons": [
+                  "wall"
+                ]
+              }
+            ]
+          }
+        }
+      }
     },
     {
       "id": "M25",
