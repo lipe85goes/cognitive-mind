@@ -1,0 +1,449 @@
+{
+  "mission": "ROTA2-ADAPTIVE-HUNTER-04",
+  "caught": 24,
+  "total": 25,
+  "mutants": [
+    {
+      "id": "M01",
+      "name": "the adaptive Hunter triggers on Route 1",
+      "targets": [
+        "H08",
+        "H01",
+        "H02",
+        "H25"
+      ],
+      "caught": true,
+      "caughtBy": [
+        "H08",
+        "H01",
+        "H02",
+        "H25"
+      ],
+      "alsoFailing": [
+        "H07"
+      ]
+    },
+    {
+      "id": "M02",
+      "name": "a repeated direction never triggers",
+      "targets": [
+        "H07",
+        "H22"
+      ],
+      "caught": true,
+      "caughtBy": [
+        "H07",
+        "H22"
+      ],
+      "alsoFailing": [
+        "H09",
+        "H10",
+        "H11",
+        "H12",
+        "H13",
+        "H14",
+        "H15",
+        "H16",
+        "H17",
+        "H18",
+        "H19",
+        "H20",
+        "H21",
+        "H26",
+        "H32"
+      ]
+    },
+    {
+      "id": "M03",
+      "name": "a different direction triggers too",
+      "targets": [
+        "H06"
+      ],
+      "caught": true,
+      "caughtBy": [
+        "H06"
+      ],
+      "alsoFailing": [
+        "H07",
+        "H09",
+        "H10"
+      ]
+    },
+    {
+      "id": "M04",
+      "name": "the direction memory never updates",
+      "targets": [
+        "H04",
+        "H07"
+      ],
+      "caught": true,
+      "caughtBy": [
+        "H04",
+        "H07"
+      ],
+      "alsoFailing": [
+        "H05",
+        "H09",
+        "H11",
+        "H15",
+        "H16",
+        "H17",
+        "H18",
+        "H20",
+        "H21",
+        "H22",
+        "H24",
+        "H26",
+        "H29"
+      ]
+    },
+    {
+      "id": "M05",
+      "name": "the memory the turn reads is reset on every render",
+      "targets": [
+        "H07"
+      ],
+      "caught": true,
+      "caughtBy": [
+        "H07"
+      ],
+      "alsoFailing": [
+        "H09",
+        "H11",
+        "H15",
+        "H16",
+        "H17",
+        "H18",
+        "H20",
+        "H21",
+        "H22",
+        "H26"
+      ]
+    },
+    {
+      "id": "M06",
+      "name": "the memory leaks from the previous Route",
+      "targets": [
+        "H29"
+      ],
+      "caught": true,
+      "caughtBy": [
+        "H29"
+      ],
+      "alsoFailing": [
+        "H03",
+        "H06",
+        "H07",
+        "H21",
+        "H22"
+      ]
+    },
+    {
+      "id": "M07",
+      "name": "Easy predicts two cells ahead",
+      "targets": [
+        "H09"
+      ],
+      "caught": true,
+      "caughtBy": [
+        "H09"
+      ],
+      "alsoFailing": [
+        "H07",
+        "H13"
+      ]
+    },
+    {
+      "id": "M08",
+      "name": "Hard does not use the two-cell prediction",
+      "targets": [
+        "H11"
+      ],
+      "caught": true,
+      "caughtBy": [
+        "H11"
+      ],
+      "alsoFailing": [
+        "H07",
+        "H12",
+        "H20",
+        "H26"
+      ]
+    },
+    {
+      "id": "M09",
+      "name": "the Hunter may step onto an armed trap",
+      "targets": [
+        "H15"
+      ],
+      "caught": true,
+      "caughtBy": [
+        "H15"
+      ],
+      "alsoFailing": [
+        "H07",
+        "H11",
+        "H13",
+        "H18",
+        "H20",
+        "H21",
+        "H22",
+        "H26"
+      ]
+    },
+    {
+      "id": "M10",
+      "name": "the Hunter may step onto the Sentinel",
+      "targets": [
+        "H16"
+      ],
+      "caught": true,
+      "caughtBy": [
+        "H16"
+      ],
+      "alsoFailing": [
+        "H07",
+        "H11",
+        "H13",
+        "H18",
+        "H20",
+        "H21",
+        "H22",
+        "H26"
+      ]
+    },
+    {
+      "id": "M11",
+      "name": "the Hunter may step onto the portal",
+      "targets": [
+        "H17"
+      ],
+      "caught": true,
+      "caughtBy": [
+        "H17"
+      ],
+      "alsoFailing": [
+        "H07",
+        "H09",
+        "H10",
+        "H11",
+        "H12",
+        "H13",
+        "H18",
+        "H20",
+        "H26"
+      ]
+    },
+    {
+      "id": "M12",
+      "name": "the Hunter teleports to the predicted cell",
+      "targets": [
+        "H18"
+      ],
+      "caught": true,
+      "caughtBy": [
+        "H18"
+      ],
+      "alsoFailing": [
+        "H07",
+        "H10",
+        "H11",
+        "H12",
+        "H19",
+        "H20",
+        "H26"
+      ]
+    },
+    {
+      "id": "M13",
+      "name": "the prediction passes through a wall",
+      "targets": [
+        "H14"
+      ],
+      "caught": true,
+      "caughtBy": [
+        "H14"
+      ],
+      "alsoFailing": [
+        "H07",
+        "H11",
+        "H12",
+        "H13"
+      ]
+    },
+    {
+      "id": "M14",
+      "name": "a solver computes the moves with its own copy of the policy",
+      "targets": [
+        "H32"
+      ],
+      "caught": true,
+      "caughtBy": [
+        "H32"
+      ],
+      "alsoFailing": []
+    },
+    {
+      "id": "M15",
+      "name": "the static solver is updated but the dynamic solver is stale",
+      "targets": [
+        "H22"
+      ],
+      "caught": true,
+      "caughtBy": [
+        "H22"
+      ],
+      "alsoFailing": [
+        "H32"
+      ]
+    },
+    {
+      "id": "M16",
+      "name": "the dynamic solver is updated but the static solver is stale (no direction, no interception)",
+      "targets": [
+        "H21",
+        "H24"
+      ],
+      "caught": true,
+      "caughtBy": [
+        "H21",
+        "H24"
+      ],
+      "alsoFailing": [
+        "H23",
+        "H32"
+      ]
+    },
+    {
+      "id": "M17",
+      "name": "the solvers ignore the remembered direction",
+      "targets": [
+        "H22",
+        "H21"
+      ],
+      "caught": true,
+      "caughtBy": [
+        "H22",
+        "H21"
+      ],
+      "alsoFailing": [
+        "H32"
+      ]
+    },
+    {
+      "id": "M18",
+      "name": "a successor keeps the previous direction instead of the step's",
+      "targets": [
+        "H24"
+      ],
+      "caught": true,
+      "caughtBy": [
+        "H24"
+      ],
+      "alsoFailing": [
+        "H22",
+        "H23"
+      ]
+    },
+    {
+      "id": "M19",
+      "name": "the interception peeks at the random stream before choosing",
+      "targets": [
+        "H20"
+      ],
+      "caught": true,
+      "caughtBy": [
+        "H20"
+      ],
+      "alsoFailing": []
+    },
+    {
+      "id": "M20",
+      "name": "a single interception move still consumes a draw",
+      "targets": [
+        "H20"
+      ],
+      "caught": true,
+      "caughtBy": [
+        "H20"
+      ],
+      "alsoFailing": []
+    },
+    {
+      "id": "M21",
+      "name": "the opened wall is ignored by the interception",
+      "targets": [
+        "H26"
+      ],
+      "caught": true,
+      "caughtBy": [
+        "H26"
+      ],
+      "alsoFailing": [
+        "H07",
+        "H11",
+        "H20",
+        "H22"
+      ]
+    },
+    {
+      "id": "M22",
+      "name": "the Sentinel's policy changes",
+      "targets": [
+        "H27"
+      ],
+      "caught": true,
+      "caughtBy": [
+        "H27"
+      ],
+      "alsoFailing": [
+        "H02",
+        "H21",
+        "H22",
+        "H25"
+      ]
+    },
+    {
+      "id": "M23",
+      "name": "Route 1's random stream changes",
+      "targets": [
+        "H02",
+        "H25"
+      ],
+      "caught": true,
+      "caughtBy": [
+        "H02",
+        "H25"
+      ],
+      "alsoFailing": [
+        "H06",
+        "H08"
+      ]
+    },
+    {
+      "id": "M24",
+      "name": "the interception can put the Hunter in a wall (an illegal state)",
+      "targets": [
+        "H18"
+      ],
+      "caught": false,
+      "caughtBy": [],
+      "alsoFailing": []
+    },
+    {
+      "id": "M25",
+      "name": "an interception that reaches its prediction counts as a capture (a result without a real move)",
+      "targets": [
+        "H18"
+      ],
+      "caught": true,
+      "caughtBy": [
+        "H18"
+      ],
+      "alsoFailing": [
+        "H21",
+        "H22"
+      ]
+    }
+  ]
+}

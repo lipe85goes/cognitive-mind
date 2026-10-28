@@ -26,6 +26,9 @@ import { ACTIONS } from "./dynamic-solver.mjs";
 import { buildDynamicContext, classifyMap, dynamicSuccessorSet, packDynamicState } from "./rota2-dynamic-solver.mjs";
 import { objectiveStructure, reachableFrom } from "./rota2-objectives-structure.mjs";
 import { openEvidence } from "./evidence.mjs";
+import { decodePackedKey } from "./dynamic-solver-packed.mjs";
+import { directionCodeOf } from "./hunter-interception-support.mjs";
+import { productionIntercept } from "./rota2-sentinel-solver-fidelity-lib.mjs";
 
 const BASE = "32c419a2784b54043f38f08afd60c8628f44f54c";
 const V1 = "9f8ebb5d8c0c747e68d8719e523ecab3ecbdab00";
@@ -206,6 +209,8 @@ const rank = { G: 0, P: 1, U: 2 };
 const adversarial = { maps: 0, byRoute: {}, traps01: {}, objectives02: {}, transitions: {}, harder: 0, easier: 0, unchanged: 0, inconclusive: 0, route1Changed: 0, newlyImpossible: [], harderExamples: [] };
 const solverSample = ROUTES.flatMap((route) => DIFFICULTIES.flatMap((difficulty) => allMaps.filter((m) => m.route === route && m.difficulty === difficulty).slice(0, SOLVER_PER_COMBINATION)));
 for (const { seed, route, difficulty, map } of solverSample) {
+  // The pursuit Hunter (Route 1's — `routeNumber` left at 1): this question is the objective's, old rule against new.
+  // The classes with ROTA2-ADAPTIVE-HUNTER-04's Hunter on Routes 2/3 are rota2-adaptive-hunter-census.mjs D.
   const before = classifyMap(map, difficulty, { dynamic: true, requirePassage: false });
   const after = classifyMap(map, difficulty, { dynamic: true, requirePassage: route >= 2 });
   const a = short(before.label);
@@ -326,22 +331,8 @@ let margin = 1;
 let dctx = null;
 let dctxOld = null;
 let currentRun = null;
-const decodeKey = (key) => {
-  const m = dctx.closed.packed;
-  let x = key;
-  const traps = x % m.trapRadix;
-  x = (x - traps) / m.trapRadix;
-  const lights = x % m.lightRadix;
-  x = (x - lights) / m.lightRadix;
-  const c = x % 4;
-  x = (x - c) / 4;
-  const t = (x % m.targetRadix) - 1;
-  x = (x - (t + 1)) / m.targetRadix;
-  const s = x % 81;
-  x = (x - s) / 81;
-  const h = x % 81;
-  return { e: (x - h) / 81, h, s, t, c, lights, traps };
-};
+// The shared decoder: the key carries the last direction since ROTA2-ADAPTIVE-HUNTER-04.
+const decodeKey = (key) => decodePackedKey(dctx.closed.packed, key);
 const numericOf = (g) => {
   const id = (p) => p.row * 9 + p.col;
   let lights = 0;
@@ -353,7 +344,8 @@ const numericOf = (g) => {
     if (g.triggeredTrapSet.has(cellKey(t))) traps |= 1 << i;
   });
   const t = g.sentinelTarget ? [...dctx.unionAccessIds].indexOf(id(g.sentinelTarget)) : -1;
-  return { e: id(g.player), h: id(g.guardian), s: id(g.sentinel), t, c: g.sentinelCommitLeft, lights, traps };
+  // ROTA2-ADAPTIVE-HUNTER-04: the remembered direction is part of the state (0 on a tree without it).
+  return { e: id(g.player), h: id(g.guardian), s: id(g.sentinel), t, c: g.sentinelCommitLeft, lights, traps, d: directionCodeOf(g.lastExplorerDirection) };
 };
 const inspect = (g) => {
   if (!g || !g.mazeMap) return;
@@ -513,8 +505,10 @@ for (const { seed, route, difficulty } of runtimeSample) {
       const run = NOW.mount({ seed, difficulty, routeNumber: route });
       trace.events.length = 0;
       currentRun = { seed, route, difficulty, scenario: name, margin: m };
-      dctx = buildDynamicContext(run.state.mazeMap, difficulty, { requirePassage: true });
-      dctxOld = buildDynamicContext(run.state.mazeMap, difficulty, { requirePassage: false });
+      // ROTA2-ADAPTIVE-HUNTER-04 (approved later): the hook's own Hunter — its Route and its interception module.
+      const hunter = { routeNumber: route, intercept: productionIntercept(NOW) };
+      dctx = buildDynamicContext(run.state.mazeMap, difficulty, { requirePassage: true, ...hunter });
+      dctxOld = buildDynamicContext(run.state.mazeMap, difficulty, { requirePassage: false, ...hunter });
       inspect(run.state);
       const link = run.state.mazeMap.trapLinks[0];
       scenario(run, link);

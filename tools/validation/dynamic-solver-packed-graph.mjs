@@ -5,7 +5,7 @@ import {
   preparePackedContext,
 } from "./dynamic-solver-packed.mjs";
 import { enumeratePackedSuccessors } from "./dynamic-solver-packed-successors.mjs";
-import { DIRECTION_RADIX, useDirectionQuotient } from "./hunter-interception-support.mjs";
+import { DIRECTION_RADIX, appliesDirectionQuotient } from "./hunter-interception-support.mjs";
 
 const CELL_COUNT = 81;
 const MAX_COMMIT = 3;
@@ -161,8 +161,8 @@ export function explorePacked(ctx, limitsOrStateBudget = {}, options = {}) {
   const started = performance.now();
   const meta = preparePackedContext(ctx);
   // ROTA2-ADAPTIVE-HUNTER-04: the exact direction quotient where the Hunter cannot read the direction (Route 1) —
-  // hunter-interception-support.mjs `useDirectionQuotient`; `options.directionQuotient: false` keeps the full graph.
-  const quotient = useDirectionQuotient(meta, options.directionQuotient ?? "auto");
+  // hunter-interception-support.mjs `appliesDirectionQuotient`; `options.directionQuotient: false` keeps the full graph.
+  const quotient = appliesDirectionQuotient(meta, options.directionQuotient ?? "auto");
   const start = initialPackedState(ctx);
   const startKey = packFields(
     meta, start.e, start.h, start.s, start.t, start.c, start.lights, start.traps, start.d,

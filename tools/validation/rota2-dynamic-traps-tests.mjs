@@ -108,6 +108,14 @@ const INSTRUMENT = {
     );
     return out;
   },
+  // ROTA2-ADAPTIVE-HUNTER-04 (an approved later mission): on Routes 2/3 a Hunter decision can be an interception
+  // instead of the pursuit — recorded the same way, so "every Hunter decision" means both. A tree without the module
+  // never loads it.
+  "src/games/escape-maze/route-hunter-intercept.ts": (source) => {
+    const anchor = "    if (moves.length > 0) return { target, horizon, moves };\n";
+    if (source.split(anchor).length !== 2) throw shapeChanged("planHunterInterception");
+    return source.replace(anchor, `    if (moves.length > 0) (globalThis as any).__rota2?.hunter.push({ walls, blocked, interception: true });\n${anchor}`);
+  },
 };
 
 // =================================================================================================
@@ -1350,6 +1358,7 @@ const edit = (anchor, replacement, what) => (source) => {
   if (source.split(anchor).length !== 2) throw new Error(`mutant anchor not found: ${what}`);
   return source.replace(anchor, replacement);
 };
+const chain = (...fns) => (source) => fns.reduce((text, fn) => fn(text), source);
 const ACTIVATION_PICK = `      const trapOpensWall =
         trapLink !== null && walls.has(trapLink.mutation.wall)
           ? trapLink.mutation.wall
@@ -1395,15 +1404,20 @@ const MUTANTS_LIST = [
   },
   {
     id: "M06", name: "Hunter sees the old topology", targets: ["T07"],
-    transforms: { [FILES.hook]: edit(`      const nextGuardian = chooseGuardianMove(
+    // ROTA2-ADAPTIVE-HUNTER-04 split the Hunter's decision into the interception and the pursuit: the mutant hands
+    // the old topology to both (on a tree before it, to the one pursuit call).
+    transforms: { [FILES.hook]: (source) => {
+      const before = `      const nextGuardian = chooseGuardianMove(
         input.guardianFrom,
         input.playerPosition,
         mazeMap.exitPosition,
-        input.graphWalls,`, `      const nextGuardian = chooseGuardianMove(
-        input.guardianFrom,
-        input.playerPosition,
-        mazeMap.exitPosition,
-        mazeMap.walls,`, "M06") },
+        input.graphWalls,`;
+      if (source.split(before).length === 2) return edit(before, before.replace("input.graphWalls,", "mazeMap.walls,"), "M06")(source);
+      return chain(
+        edit("              walls: input.graphWalls,\n", "              walls: mazeMap.walls,\n", "M06 interception"),
+        edit("              mazeMap.exitPosition,\n              input.graphWalls,\n", "              mazeMap.exitPosition,\n              mazeMap.walls,\n", "M06 pursuit"),
+      )(source);
+    } },
   },
   {
     id: "M07", name: "Sentinel sees the old topology", targets: ["T08"],

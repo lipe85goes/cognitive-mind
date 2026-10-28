@@ -35,6 +35,10 @@ import { EXIT_OK, EXIT_USAGE, EXIT_VALIDATION_FAILED, openEvidence } from "./evi
 import { cellKey, loadRouteRuntime, pathBetween, playToEnd, sameCell, walkableNeighbours } from "./route-runtime-harness.mjs";
 import { ACTIONS } from "./dynamic-solver.mjs";
 import { buildDynamicContext, dynamicSuccessorSet, packDynamicState } from "./rota2-dynamic-solver.mjs";
+import { decodePackedKey } from "./dynamic-solver-packed.mjs";
+import { directionCodeOf } from "./hunter-interception-support.mjs";
+import { reverseAdaptive } from "./rota2-adaptive-hunter-edit.mjs";
+import { productionIntercept } from "./rota2-sentinel-solver-fidelity-lib.mjs";
 import { objectiveStructure } from "./rota2-objectives-structure.mjs";
 
 export const OBJECTIVES_BASE = "32c419a2784b54043f38f08afd60c8628f44f54c";
@@ -255,7 +259,8 @@ async function runSuite({ rev = null, transforms = [], solverRequirePassage = nu
       if (g.triggeredTrapSet.has(cellKey(t))) traps |= 1 << i;
     });
     const t = g.sentinelTarget ? [...dctx.unionAccessIds].indexOf(id(g.sentinelTarget)) : -1;
-    return { e: id(g.player), h: id(g.guardian), s: id(g.sentinel), t, c: g.sentinelCommitLeft, lights, traps };
+    // ROTA2-ADAPTIVE-HUNTER-04: the remembered direction is part of the state (0 on a tree without it).
+    return { e: id(g.player), h: id(g.guardian), s: id(g.sentinel), t, c: g.sentinelCommitLeft, lights, traps, d: directionCodeOf(g.lastExplorerDirection) };
   };
   const step = (run, cell) => {
     const before = run.state;
@@ -376,8 +381,11 @@ async function runSuite({ rev = null, transforms = [], solverRequirePassage = nu
     // The model is the MISSION's: on Routes 2 and 3 the portal waits for the passage, whatever the tree under test
     // does — so a tree whose portal opens on the lights alone disagrees with it (unless a mutant forces the old rule).
     const missionRule = solverRequirePassage === null ? route >= 2 : solverRequirePassage && route >= 2;
-    dctx = run.state.mazeMap ? buildDynamicContext(run.state.mazeMap, difficulty, { requirePassage: missionRule }) : null;
-    dctxOld = run.state.mazeMap ? buildDynamicContext(run.state.mazeMap, difficulty, { requirePassage: false }) : null;
+    // ROTA2-ADAPTIVE-HUNTER-04 (approved later): the Hunter the solver models is the tree's own — its Route, and the
+    // interception module its hook runs (none on a tree before that mission).
+    const hunter = { routeNumber: route, intercept: productionIntercept(RT) };
+    dctx = run.state.mazeMap ? buildDynamicContext(run.state.mazeMap, difficulty, { requirePassage: missionRule, ...hunter }) : null;
+    dctxOld = run.state.mazeMap ? buildDynamicContext(run.state.mazeMap, difficulty, { requirePassage: false, ...hunter }) : null;
     inspectRender(run.state);
     return run;
   };
@@ -857,15 +865,29 @@ async function runSuite({ rev = null, transforms = [], solverRequirePassage = nu
     return out;
   })();
   await guarded("O19", "objectives", "NEXT_ROUTE_GETS_ITS_OWN_OBJECTIVE_PLAN", () => {
-    const f = lightsFirst[2];
+    // A WON Route 2. The lights-first fixture used to be one; since ROTA2-ADAPTIVE-HUNTER-04 (approved later) its Route 2
+    // Hunter may intercept and that walk can end lost — then the first seed whose careful win attempt wins is used.
+    let f = lightsFirst[2]?.won ? lightsFirst[2] : null;
+    let wonBy = f ? "lights-first fixture" : null;
+    for (const seed of SEEDS) {
+      if (f) break;
+      for (const difficulty of DIFFICULTIES) {
+        const run = mountFor({ seed, difficulty, route: 2, margin: 1 });
+        if (playToEnd(run, "win") === "won") {
+          f = { run, seed };
+          wonBy = `searched win (seed ${seed}, ${difficulty})`;
+          break;
+        }
+      }
+    }
     let fromWon = null;
-    if (f?.won) {
+    if (f) {
       const next = f.run.nextSession({ seed: f.seed + 1 });
       const g = next.state;
       fromWon = { route: g.routeNumber, passageComplete: g.objectives?.passage?.complete ?? null, lights: g.objectives?.lights?.collected ?? null, portalActive: g.portalActive };
     }
     const fresh = journey.slice(1).every((j) => j.passageComplete === false && j.portalActive === false && j.wallStanding === true);
-    return { pass: fresh && fromWon !== null && fromWon.route === 3 && fromWon.passageComplete === false && fromWon.lights === 0 && fromWon.portalActive === false, journey, afterAWonRoute2: fromWon };
+    return { pass: fresh && fromWon !== null && fromWon.route === 3 && fromWon.passageComplete === false && fromWon.lights === 0 && fromWon.portalActive === false, journey, afterAWonRoute2: fromWon, wonRoute2: wonBy };
   });
   await guarded("O20", "objectives", "ROUTE1_TO_ROUTE2_INTRODUCES_PASSAGE_REQUIREMENT", () => {
     const [r1, r2] = journey;
@@ -904,7 +926,12 @@ async function runSuite({ rev = null, transforms = [], solverRequirePassage = nu
   });
 
   await guarded("O23", "objectives", "NO_DUPLICATE_OBJECTIVE_STATE", () => {
-    const now = textOf;
+    // ROTA2-ADAPTIVE-HUNTER-04 (approved later) added one state field of its own (`lastExplorerDirection`); the question
+    // here is this mission's, so the tree is read with exactly that mission's pinned hunks reversed.
+    const now = (file) => {
+      const text = textOf(file);
+      return text === null ? null : reverseAdaptive(file, text);
+    };
     const base = (file) => readFromRev(OBJECTIVES_BASE, file);
     const fieldsNow = declared(now(FILES.state), FILES.state, "RouteRuntimeState");
     const fieldsBase = declared(base(FILES.state), FILES.state, "RouteRuntimeState");
@@ -1069,22 +1096,9 @@ async function runSuite({ rev = null, transforms = [], solverRequirePassage = nu
 
 const STRUCTURE = {};
 
-/** A packed solver key back into its fields (rota2-dynamic-solver.mjs `packFields`, in reverse). */
+/** A packed solver key back into its fields — the shared decoder (the key carries the last direction since ROTA2-ADAPTIVE-HUNTER-04). */
 function decodeKey(dctx, key) {
-  const m = dctx.closed.packed;
-  let x = key;
-  const traps = x % m.trapRadix;
-  x = (x - traps) / m.trapRadix;
-  const lights = x % m.lightRadix;
-  x = (x - lights) / m.lightRadix;
-  const c = x % 4;
-  x = (x - c) / 4;
-  const t = (x % m.targetRadix) - 1;
-  x = (x - (t + 1)) / m.targetRadix;
-  const s = x % 81;
-  x = (x - s) / 81;
-  const h = x % 81;
-  return { e: (x - h) / 81, h, s, t, c, lights, traps };
+  return decodePackedKey(dctx.closed.packed, key);
 }
 
 // =================================================================================================
@@ -1154,7 +1168,8 @@ const MUTANTS_LIST = [
   },
   {
     id: "M11", name: "objective state duplicated in the reducer", targets: ["O23"],
-    transforms: { [STATE]: edit("  trapOpenedWalls: string[];\n}", "  trapOpenedWalls: string[];\n  passageObjectiveDone?: boolean;\n}", "M11") },
+    // ROTA2-ADAPTIVE-HUNTER-04 put its approved field after `trapOpenedWalls`; the duplicate goes after `brokenWall`.
+    transforms: { [STATE]: edit("  brokenWall: string | null;\n", "  brokenWall: string | null;\n  passageObjectiveDone?: boolean;\n", "M11") },
   },
   { id: "M12", name: "the objective plan uses Math.random", targets: ["O04"], transforms: { [OBJ]: edit("  return ROUTE_OBJECTIVE_PLANS[route as 1 | 2 | 3];", "  return Math.random() < 2 ? ROUTE_OBJECTIVE_PLANS[route as 1 | 2 | 3] : STANDARD_PLAN;", "M12") } },
   { id: "M13", name: "the objective evaluator imports React", targets: ["O24"], transforms: { [OBJ]: edit('import type { MazeMap } from "@/games/escape-maze/route-generation";', 'import type { MazeMap } from "@/games/escape-maze/route-generation";\nimport { useMemo } from "react";\nvoid useMemo;', "M13") } },

@@ -1806,6 +1806,7 @@ const GARBAGE = [null, 7, "result", { id: "half", gameId: ROUTE }, { ...LEGACY[0
     routeGenerationWorkerProtocolRuntimeImports: runtimeSpecifiersOf(FILES.routeGenerationWorkerProtocol),
     routeGenerationWorkerProtocolImportedAtRuntimeBy: runtimeImportersOf(FILES.routeGenerationWorkerProtocol),
   };
+  const hasInterception = readSource("src/games/escape-maze/route-hunter-intercept.ts") !== null;
   const expected = {
     readerExists: true,
     readerRuntimeImports: [],
@@ -1820,6 +1821,8 @@ const GARBAGE = [null, 7, "result", { id: "half", gameId: ROUTE }, { ...LEGACY[0
       // ROUTE-C7C: no `route-generation` — the hook's `generateMaze` re-export left; generation is the Worker's
       "@/games/escape-maze/route-generation-client",
       "@/games/escape-maze/route-geometry",
+      // ROTA2-ADAPTIVE-HUNTER-04 (approved): the pure interception policy, on a tree that has it
+      ...(hasInterception ? ["@/games/escape-maze/route-hunter-intercept"] : []),
       "@/games/escape-maze/route-invariants",
       // ROTA2-DEPENDENT-OBJECTIVES-02 (approved): the pure objective module, on a tree that has it
       ...(readSource("src/games/escape-maze/route-objectives.ts") !== null ? ["@/games/escape-maze/route-objectives"] : []),
@@ -1829,7 +1832,8 @@ const GARBAGE = [null, 7, "result", { id: "half", gameId: ROUTE }, { ...LEGACY[0
     ],
     typesRuntimeImports: [],
     routeConfigRuntimeImports: [],
-    routeConfigImportedAtRuntimeBy: [FILES.routeDefenders, FILES.routeGeneration, FILES.routeGeometry, FILES.routeInvariants, FILES.hook],
+    // ROTA2-ADAPTIVE-HUNTER-04 (approved): the interception policy reads the board's size, on a tree that has it.
+    routeConfigImportedAtRuntimeBy: [FILES.routeDefenders, FILES.routeGeneration, FILES.routeGeometry, ...(hasInterception ? ["src/games/escape-maze/route-hunter-intercept.ts"] : []), FILES.routeInvariants, FILES.hook],
     routeGenerationRuntimeImports: [
       "@/engine/difficulty",
       "@/engine/route-random",
@@ -1849,7 +1853,8 @@ const GARBAGE = [null, 7, "result", { id: "half", gameId: ROUTE }, { ...LEGACY[0
     routeDefendersImportedAtRuntimeBy: [FILES.hook],
     routeInvariantsRuntimeImports: ["@/games/escape-maze/route-config", "@/games/escape-maze/route-geometry"],
     routeInvariantsImportedAtRuntimeBy: [FILES.hook],
-    routeStateRuntimeImports: [],
+    // ROTA2-ADAPTIVE-HUNTER-04 (approved): the state derives a step's direction with the policy module's one function.
+    routeStateRuntimeImports: hasInterception ? ["@/games/escape-maze/route-hunter-intercept"] : [],
     routeStateImportedAtRuntimeBy: [FILES.routeSession],
     routeEventsRuntimeImports: [],
     routeEventsImportedAtRuntimeBy: [FILES.hook],

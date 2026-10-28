@@ -81,7 +81,7 @@ export function directionObservable(meta) {
  * state. `option`: "auto" (default) applies it exactly when the direction is not observable; false never applies it
  * (the full graph, for measuring what the component costs); true demands it, and refuses where `d` is observable.
  */
-export function useDirectionQuotient(meta, option = "auto") {
+export function appliesDirectionQuotient(meta, option = "auto") {
   const observable = directionObservable(meta);
   if (option === true && observable) {
     throw new Error("direction quotient refused: this Route's Hunter reads the direction, so states differing in it are not equivalent");

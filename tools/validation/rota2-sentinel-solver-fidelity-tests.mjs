@@ -30,6 +30,17 @@
  *   node tools/validation/rota2-sentinel-solver-fidelity-tests.mjs --rev=f5826b2   # counterfactual (check/--update)
  *   node tools/validation/rota2-sentinel-solver-fidelity-tests.mjs --mutants       # M01–M12 (check/--update)
  *
+ * ROTA2-ADAPTIVE-HUNTER-04 came after this mission and changed production on purpose: on Routes 2/3 the Hunter may
+ * intercept a repeated direction. So that this suite keeps holding TODAY's production (never a reversed copy of it):
+ *   - the oracle and both solvers model the Route (`routeNumber`) and ask the production interception module of the
+ *     tree's runtime (`productionIntercept`), and states carry the remembered direction (`d`) where the hook has one;
+ *   - a solver tree from before that mission (the pre-mission f5826b2 solvers, a `--rev` counterfactual) has no
+ *     interception branch: its comparisons skip the transitions where production intercepted (counted, never hidden);
+ *   - "the hook is not this mission's" (S10c, S11, S12) now reads: outside the approved later delta — the working
+ *     tree with exactly ROTA2-ADAPTIVE-HUNTER-04's pinned hunks reversed (rota2-adaptive-hunter-edit.mjs) — the
+ *     hook is the base's, turn for turn and draw for draw.
+ * What each measured at ec3e564 is in docs/archive/rota2-adaptive-hunter-04/superseded-records.md.
+ *
  * Exit: 0 pass · 1 a check (or counterfactual/mutant expectation) failed · 2 evidence diverged · 3 usage.
  */
 import fs from "node:fs";
@@ -59,10 +70,16 @@ import {
   packedAnswer,
   parseCanon,
   playFixtureGames,
+  productionIntercept,
   rota2Answer,
   sameAnswer,
   sentinelMoveBody,
 } from "./rota2-sentinel-solver-fidelity-lib.mjs";
+import {
+  ROTA2_ADAPTIVE_HUNTER_ADDED_FILES,
+  ROTA2_ADAPTIVE_HUNTER_FILES,
+  reverseAdaptive,
+} from "./rota2-adaptive-hunter-edit.mjs";
 
 const args = process.argv.slice(2);
 const revArg = args.find((arg) => arg.startsWith("--rev="));
@@ -143,14 +160,36 @@ function archivedWitnessSteps() {
 }
 
 const mapKey = (spec) => `${spec.seed}|${spec.route}|${spec.difficulty}`;
-const pairKey = (state, actionIndex) => `${canon(state)}#${actionIndex}`;
+// ROTA2-ADAPTIVE-HUNTER-04: on Routes 2/3 the remembered direction is part of the state (the Hunter may read it).
+const pairKey = (state, actionIndex, route = 1) => `${canon(state)}${route >= 2 && state.d ? `|d${state.d}` : ""}#${actionIndex}`;
+const normalizeText = (text) => text.replace(/\r\n/g, "\n");
+/** ROTA2-ADAPTIVE-HUNTER-04: the working tree's Rota with exactly that mission's pinned hunks reversed. */
+function withoutAdaptiveHunter() {
+  const out = {};
+  for (const file of ROTA2_ADAPTIVE_HUNTER_FILES) out[file] = reverseAdaptive(file, normalizeText(fs.readFileSync(path.join(REPO_ROOT, file), "utf8")));
+  return out;
+}
 const manhattanIds = (a, b) => Math.abs(Math.floor(a / 9) - Math.floor(b / 9)) + Math.abs((a % 9) - (b % 9));
 
 function srcUnchanged(rev) {
   const run = (argv) => execFileSync("git", argv, { cwd: REPO_ROOT, encoding: "utf8" }).trim();
   const committed = rev ? run(["diff", "--name-only", FIDELITY_BASE, rev, "--", "src/"]) : run(["diff", "--name-only", FIDELITY_BASE, "--", "src/"]);
   const untracked = rev ? "" : run(["status", "--porcelain", "--", "src/"]);
-  return { committed: committed ? committed.split("\n") : [], untracked: untracked ? untracked.split("\n") : [] };
+  const changed = committed ? committed.split("\n") : [];
+  // ROTA2-ADAPTIVE-HUNTER-04 (an approved later mission) changed src/ on purpose: a file it touched counts as unchanged
+  // when reversing exactly its pinned hunks gives the base's text back; the module it adds is its own.
+  const show = (spec) => execFileSync("git", ["show", spec], { cwd: REPO_ROOT, encoding: "utf8" });
+  const read = (file) => (rev ? show(`${rev}:${file}`) : fs.readFileSync(path.join(REPO_ROOT, file), "utf8"));
+  const approvedLater = changed.filter((file) => {
+    if (ROTA2_ADAPTIVE_HUNTER_ADDED_FILES.includes(file)) return true;
+    if (!ROTA2_ADAPTIVE_HUNTER_FILES.includes(file)) return false;
+    try {
+      return reverseAdaptive(file, normalizeText(read(file))) === normalizeText(show(`${FIDELITY_BASE}:${file}`));
+    } catch {
+      return false;
+    }
+  });
+  return { committed: changed.filter((file) => !approvedLater.includes(file)), approvedLater, untracked: untracked ? untracked.split("\n") : [] };
 }
 
 /** Second Chance games on one runtime: every render's pieces and the event stream. */
@@ -219,11 +258,17 @@ async function collectFixtures(rev, log) {
   const turns = playFixtureGames(RT, recorder, [...PORTAL_RUSH, ...TOURS]);
   log(`   hook: ${turns.length} pre-Chest turns in ${PORTAL_RUSH.length + TOURS.length} games (${Math.round(performance.now() - t0)} ms)`);
 
-  // The same games on the other tree: the hook (src/) is not this mission's, so its turns and draws must not move.
-  const otherRev = rev === null ? FIDELITY_BASE : null;
-  const RT2 = loadRouteRuntime({ directDifficulty: true, rev: otherRev, transforms: [decisionRecorder(otherRev)] });
-  const turns2 = playFixtureGames(RT2, attachRecorder(RT2), [...PORTAL_RUSH, ...TOURS]);
-  const secondChance = { here: secondChanceGames(RT), other: secondChanceGames(RT2), otherRev: otherRev ?? "working tree" };
+  // The same games on the base and on the working tree WITHOUT the approved later delta (ROTA2-ADAPTIVE-HUNTER-04's
+  // pinned hunks reversed): the hook (src/) is not this mission's, so outside that delta its turns and draws must not
+  // move.
+  const otherRev = FIDELITY_BASE;
+  const RTB = loadRouteRuntime({ directDifficulty: true, rev: FIDELITY_BASE, transforms: [decisionRecorder(FIDELITY_BASE)] });
+  const RTW0 = loadRouteRuntime({ directDifficulty: true, sourceOverrides: withoutAdaptiveHunter(), transforms: [decisionRecorder(null)] });
+  const turnsB = playFixtureGames(RTB, attachRecorder(RTB), [...PORTAL_RUSH, ...TOURS]);
+  const turnsW0 = playFixtureGames(RTW0, attachRecorder(RTW0), [...PORTAL_RUSH, ...TOURS]);
+  const secondChance = { here: secondChanceGames(RT), minus: secondChanceGames(RTW0), other: secondChanceGames(RTB), otherRev };
+  // The tree's own interception module (null on a tree before ROTA2-ADAPTIVE-HUNTER-04): what its hook runs.
+  const intercept = productionIntercept(RT);
 
   // --- per-map production contexts -------------------------------------------------------------------------------------
   const maps = new Map();
@@ -232,8 +277,8 @@ async function collectFixtures(rev, log) {
     if (!maps.has(key)) {
       const map = turn.map;
       maps.set(key, {
-        key, spec: turn.spec, map, difficulty: turn.spec.difficulty, requirePassage: turn.requirePassage,
-        octx: oracleContext(RT.API, map, turn.spec.difficulty, { requirePassage: turn.requirePassage }),
+        key, spec: turn.spec, map, difficulty: turn.spec.difficulty, requirePassage: turn.requirePassage, route: turn.spec.route,
+        octx: oracleContext(RT.API, map, turn.spec.difficulty, { requirePassage: turn.requirePassage, routeNumber: turn.spec.route, intercept }),
         staticCtx: buildContext(map, turn.spec.difficulty),
       });
     }
@@ -244,7 +289,7 @@ async function collectFixtures(rev, log) {
   const pairs = [];
   const seen = new Map();
   const addPair = (m, state, actionIndex, source, turn = null) => {
-    const key = `${m.key}#${pairKey(state, actionIndex)}`;
+    const key = `${m.key}#${pairKey(state, actionIndex, m.route)}`;
     if (seen.has(key)) {
       if (turn) seen.get(key).turns.push(turn);
       return null;
@@ -254,6 +299,8 @@ async function collectFixtures(rev, log) {
     const decision = oracle.decisions[0] ?? null;
     const pair = {
       key, m, state, actionIndex, source, turns: turn ? [turn] : [], oracle, decision, cls: decisionClass(decision),
+      // ROTA2-ADAPTIVE-HUNTER-04: production's Hunter intercepted on this transition.
+      intercepting: Boolean(oracle.intercepting),
       held: state.c > 0 && state.target >= 0,
       armingNow: oracle.next !== undefined && (oracle.traps ?? state.traps) !== state.traps,
     };
@@ -381,7 +428,7 @@ async function collectFixtures(rev, log) {
   const archived = archivedWitnessSteps();
   log(`   archived witnesses: ${archived.witnesses.length}, ${archived.steps.length} steps judged by production`);
 
-  return { RT, turns, turns2, secondChance, maps: [...maps.values()], pairs, archived, otherRev: otherRev ?? "working tree" };
+  return { RT, turns, turnsB, turnsW0, secondChance, maps: [...maps.values()], pairs, archived, otherRev, intercept };
 }
 
 /** A solver tree's answers on every pair (Rota 2.0 solver everywhere; static solver where the string reference answers). */
@@ -391,7 +438,10 @@ function answerAll(solvers, fixtures) {
   const out = new Map();
   for (const pair of fixtures.pairs) {
     const m = pair.m;
-    if (!dctx.has(m.key)) dctx.set(m.key, solvers.rota2.buildDynamicContext(m.map, m.difficulty, { requirePassage: m.requirePassage }));
+    if (!dctx.has(m.key)) dctx.set(m.key, solvers.rota2.buildDynamicContext(m.map, m.difficulty, { requirePassage: m.requirePassage, routeNumber: m.route, intercept: fixtures.intercept }));
+    // The static solver is held against the string reference — the v1 model, whose Hunter never adapts — so it is
+    // asked as Route 1 (ROTA2-ADAPTIVE-HUNTER-04's static solver on Routes 2/3 is held against production by
+    // rota2-adaptive-hunter-tests.mjs H21).
     if (!sctx.has(m.key)) sctx.set(m.key, buildContext(m.map, m.difficulty));
     const dynamic = rota2Answer(solvers, dctx.get(m.key), pair.state, pair.actionIndex);
     const stat = pair.staticRef ? packedAnswer(solvers, sctx.get(m.key), pair.state, pair.actionIndex) : null;
@@ -447,7 +497,11 @@ function runChecks(solvers, fixtures, pre, { quiet = false, label = "" } = {}) {
   if (label) log(label);
   const { answers, dctx } = answerAll(solvers, fixtures);
   const preAnswers = pre.answers;
-  const { pairs } = fixtures;
+  // ROTA2-ADAPTIVE-HUNTER-04: a solver tree from before it cannot model a transition where production intercepted;
+  // those are left out of its comparisons (and counted). The pre-mission solvers are always such a tree.
+  const solverIntercepts = solvers.rota2.PACKED_KEY_HAS_DIRECTION === true;
+  const interceptingPairs = fixtures.pairs.filter((p) => p.intercepting).length;
+  const pairs = solverIntercepts ? fixtures.pairs : fixtures.pairs.filter((p) => !p.intercepting);
   const runtimePairs = pairs.filter((p) => p.source === "runtime");
   const runtimeTurns = runtimePairs.flatMap((p) => p.turns.map((turn) => ({ turn, pair: p })));
   const firstMisses = (list, limit = 3) => list.slice(0, limit).map((p) => ({ map: p.m.key, state: canon(p.state), action: ACTIONS[p.actionIndex].name, cls: p.cls, oracle: p.oracle.states.slice(0, 3), solver: answers.get(p.key).dynamic?.states.slice(0, 3) }));
@@ -464,16 +518,18 @@ function runChecks(solvers, fixtures, pre, { quiet = false, label = "" } = {}) {
     }
     return { wrong, hookMiss, turnsIn };
   };
-  const unchanged = (list, which = "dynamic") => list.filter((p) => !sameAnswer(answers.get(p.key)[which], preAnswers.get(p.key)[which]));
+  const unchanged = (list, which = "dynamic") => list.filter((p) => !p.intercepting && !sameAnswer(answers.get(p.key)[which], preAnswers.get(p.key)[which]));
 
   // ---------------------------------------------------------------------------------------------- S00
   guarded("S00", "preserved", "THE_PRODUCTION_ORACLE_IS_THE_HOOK", () => {
-    const outside = runtimeTurns.filter(({ turn, pair }) => !hookInSupport(turn, oracleAnswer(pair)));
+    const allRuntime = fixtures.pairs.filter((p) => p.source === "runtime").flatMap((p) => p.turns.map((turn) => ({ turn, pair: p })));
+    const outside = allRuntime.filter(({ turn, pair }) => !hookInSupport(turn, oracleAnswer(pair)));
     const staticPairs = pairs.filter((p) => p.staticRef && p.staticOracle);
     const disagree = staticPairs.filter((p) => !sameAnswer(p.staticOracle, p.staticRef));
     return {
-      pass: runtimeTurns.length > 2000 && outside.length === 0 && staticPairs.length > 1000 && disagree.length === 0,
-      hookTurns: runtimeTurns.length, hookTurnsOutsideOracle: outside.length,
+      pass: allRuntime.length > 2000 && outside.length === 0 && staticPairs.length > 1000 && disagree.length === 0,
+      hookTurns: allRuntime.length, hookTurnsOutsideOracle: outside.length,
+      interceptingPairs, interceptingPairsLeftOutForThisSolverTree: solverIntercepts ? 0 : interceptingPairs,
       staticPairs: staticPairs.length, oracleVsStringReference: disagree.length,
       note: "every real hook turn is in the composed production support; with the link ignored the composition equals the string reference (production decideSentinelMove on the certified board)",
     };
@@ -715,17 +771,20 @@ function runChecks(solvers, fixtures, pre, { quiet = false, label = "" } = {}) {
     const vsPre = isolated.filter((p) => !same(view(answers.get(p.key).dynamic), view(preAnswers.get(p.key).dynamic)));
     // (b) the hook's own Hunter move is in the solver's support on every turn that went on.
     const hunterMiss = runtimeTurns.filter(({ turn, pair }) => turn.status === "playing" && !(answers.get(pair.key).dynamic?.states ?? []).some((s) => parseCanon(s).h === turn.after.h));
-    // (c) the hook's draws, turn by turn, equal the other tree's (the hook is not this mission's).
-    const a = fixtures.turns.map((t) => `${mapKey(t.spec)}|${t.spec.policy}|${t.k}|${canon(t.before)}|${canon(t.after)}|${t.draws}`);
-    const b = fixtures.turns2.map((t) => `${mapKey(t.spec)}|${t.spec.policy}|${t.k}|${canon(t.before)}|${canon(t.after)}|${t.draws}`);
+    const vsPreScoped = vsPre.filter((p) => !p.intercepting);
+    // (c) the hook's draws, turn by turn, equal the other tree's (the hook is not this mission's) — outside the approved
+    //     later delta: the working tree with ROTA2-ADAPTIVE-HUNTER-04's hunks reversed, against the base.
+    const a = fixtures.turnsW0.map((t) => `${mapKey(t.spec)}|${t.spec.policy}|${t.k}|${canon(t.before)}|${canon(t.after)}|${t.draws}`);
+    const b = fixtures.turnsB.map((t) => `${mapKey(t.spec)}|${t.spec.policy}|${t.k}|${canon(t.before)}|${canon(t.after)}|${t.draws}`);
     const drawsSame = a.length === b.length && a.every((x, i) => x === b[i]);
     const totalDraws = fixtures.turns.reduce((n, t) => n + (t.draws ?? 0), 0);
     // (d) the solvers draw nothing.
     const drawing = SOLVER_FILES.filter((file) => /Math\.random|routeRandom/.test(solvers.sources[file] ?? ""));
     return {
-      pass: isolated.length > 1000 && vsProduction.length === 0 && vsPre.length === 0 && hunterMiss.length === 0 && drawsSame && totalDraws > 0 && drawing.length === 0,
-      isolatedPairs: isolated.length, hunterSupportVsProduction: vsProduction.length, hunterSupportVsPreMission: vsPre.length,
-      hookHunterOutsideSupport: hunterMiss.length, hookTurnsAndDrawsEqualOtherTree: drawsSame, otherTree: fixtures.otherRev, hookDraws: totalDraws,
+      pass: isolated.length > 1000 && vsProduction.length === 0 && vsPreScoped.length === 0 && hunterMiss.length === 0 && drawsSame && totalDraws > 0 && drawing.length === 0,
+      isolatedPairs: isolated.length, hunterSupportVsProduction: vsProduction.length, hunterSupportVsPreMission: vsPreScoped.length,
+      isolatedInterceptingPairs: isolated.filter((p) => p.intercepting).length,
+      hookHunterOutsideSupport: hunterMiss.length, hookTurnsAndDrawsEqualOtherTree: drawsSame, otherTree: fixtures.otherRev, comparedTree: "working tree without ROTA2-ADAPTIVE-HUNTER-04's pinned hunks", hookDraws: totalDraws,
       solverFilesDrawing: drawing,
       examples: vsProduction.slice(0, 2).map((p) => ({ map: p.m.key, state: canon(p.state), solver: view(answers.get(p.key).dynamic), production: expected(p) })),
     };
@@ -733,7 +792,7 @@ function runChecks(solvers, fixtures, pre, { quiet = false, label = "" } = {}) {
 
   // ---------------------------------------------------------------------------------------------- S11
   guarded("S11", "preserved", "TERMINAL_AND_SECOND_CHANCE_UNCHANGED", () => {
-    const winWrong = pairs.filter((p) => answers.get(p.key).dynamic?.hasWin !== p.oracle.hasWin || answers.get(p.key).dynamic?.hasWin !== preAnswers.get(p.key).dynamic?.hasWin);
+    const winWrong = pairs.filter((p) => answers.get(p.key).dynamic?.hasWin !== p.oracle.hasWin || (!p.intercepting && answers.get(p.key).dynamic?.hasWin !== preAnswers.get(p.key).dynamic?.hasWin));
     const forcedLoss = pairs.filter((p) => p.oracle.hasLoss && (p.oracle.next === p.state.h || p.oracle.next === p.state.s || p.oracle.perHunter.some((x) => x.outcome === "HUNTER_CAPTURE")));
     const lossMissed = forcedLoss.filter((p) => !answers.get(p.key).dynamic?.hasLoss);
     const ended = runtimeTurns.filter(({ turn }) => turn.status !== "playing");
@@ -741,15 +800,16 @@ function runChecks(solvers, fixtures, pre, { quiet = false, label = "" } = {}) {
     const byCause = {};
     for (const x of ended) byCause[cause(x)] = (byCause[cause(x)] ?? 0) + 1;
     const nonSentinel = ended.filter((x) => cause(x) !== "sentinel");
-    const endedWrong = nonSentinel.filter(({ turn, pair }) => !hookInSupport(turn, answers.get(pair.key).dynamic) || !hookInSupport(turn, preAnswers.get(pair.key).dynamic));
+    const endedWrong = nonSentinel.filter(({ turn, pair }) => !hookInSupport(turn, answers.get(pair.key).dynamic) || (!pair.intercepting && !hookInSupport(turn, preAnswers.get(pair.key).dynamic)));
     const sc = fixtures.secondChance;
-    const scSame = sc.here.length === sc.other.length && sc.here.every((g, i) => g.frames === sc.other[i].frames && g.completions === sc.other[i].completions && g.status === sc.other[i].status);
+    // Outside the approved later delta (ROTA2-ADAPTIVE-HUNTER-04 reversed), the hook's Second Chance is the base's.
+    const scSame = sc.minus.length === sc.other.length && sc.minus.every((g, i) => g.frames === sc.other[i].frames && g.completions === sc.other[i].completions && g.status === sc.other[i].status);
     const scUsed = sc.here.filter((g) => g.used).length;
     return {
       pass: winWrong.length === 0 && forcedLoss.length > 0 && lossMissed.length === 0 && nonSentinel.length > 0 && endedWrong.length === 0 && scSame && scUsed > 0,
       winFlagDiffers: winWrong.length, explorerOrHunterCapturePairs: forcedLoss.length, captureMissed: lossMissed.length,
       endedTurns: byCause, endedTurnsDisagreeing: endedWrong.length,
-      secondChanceGames: sc.here.map((g) => ({ seed: g.seed, route: g.route, reachedChest: g.reachedChest, used: g.used, status: g.status })), secondChanceSameAsOtherTree: scSame, otherTree: sc.otherRev,
+      secondChanceGames: sc.here.map((g) => ({ seed: g.seed, route: g.route, reachedChest: g.reachedChest, used: g.used, status: g.status })), secondChanceSameAsOtherTree: scSame, otherTree: sc.otherRev, comparedTree: "working tree without ROTA2-ADAPTIVE-HUNTER-04's pinned hunks",
       note: "PRE_CHEST solvers: a Second Chance never reaches them; the hook's Second Chance path is src/, identical on both trees",
     };
   });
@@ -757,7 +817,7 @@ function runChecks(solvers, fixtures, pre, { quiet = false, label = "" } = {}) {
   // ---------------------------------------------------------------------------------------------- S12
   guarded("S12", "preserved", "NO_PRODUCTION_FILE_CHANGED", () => {
     const diff = srcUnchanged(fixtures.rev);
-    return { pass: diff.committed.length === 0 && diff.untracked.length === 0, base: FIDELITY_BASE, changedUnderSrc: diff.committed, uncommittedUnderSrc: diff.untracked };
+    return { pass: diff.committed.length === 0 && diff.untracked.length === 0, base: FIDELITY_BASE, changedUnderSrc: diff.committed, uncommittedUnderSrc: diff.untracked, changedByTheApprovedLaterDelta: diff.approvedLater };
   });
 
   return results;

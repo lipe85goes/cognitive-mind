@@ -42,6 +42,8 @@ import { independentLinkOffences, linkProfile } from "./rota2-link-oracle.mjs";
 import { ACTIONS } from "./dynamic-solver.mjs";
 import { buildDynamicContext, classifyMap, dynamicSuccessorSet, packDynamicState } from "./rota2-dynamic-solver.mjs";
 import { openEvidence } from "./evidence.mjs";
+import { directionCodeOf } from "./hunter-interception-support.mjs";
+import { productionIntercept } from "./rota2-sentinel-solver-fidelity-lib.mjs";
 
 const BASE = "9f8ebb5d8c0c747e68d8719e523ecab3ecbdab00";
 const DIFFICULTIES = ["easy", "medium", "hard"];
@@ -234,6 +236,8 @@ const rank = { G: 0, P: 1, U: 2 };
 const solver = { maps: 0, v1: {}, rota2: {}, transitions: {}, improved: 0, degraded: 0, unchanged: 0, inconclusive: 0, accessesDiffer: 0, degradedExamples: [], improvedExamples: [], note: "a class change needs every v1 strategy of that class to arm the linked trap" };
 const solverSample = ROUTES.flatMap((route) => DIFFICULTIES.flatMap((difficulty) => allMaps.filter((m) => m.route === route && m.difficulty === difficulty).slice(0, SOLVER_PER_COMBINATION)));
 for (const { seed, route, difficulty, map } of solverSample) {
+  // The pursuit Hunter (Route 1's — `routeNumber` left at 1): this question is the topology's, v1 against Rota 2.0.
+  // The classes with ROTA2-ADAPTIVE-HUNTER-04's Hunter on Routes 2/3 are rota2-adaptive-hunter-census.mjs D.
   const v1 = classifyMap(map, difficulty, { dynamic: false });
   const r2 = classifyMap(map, difficulty, { dynamic: true });
   solver.maps += 1;
@@ -348,7 +352,8 @@ const numericOf = (g, dctx) => {
     if (g.triggeredTrapSet.has(cellKey(t))) traps |= 1 << i;
   });
   const t = g.sentinelTarget ? [...dctx.unionAccessIds].indexOf(id(g.sentinelTarget)) : -1;
-  return { e: id(g.player), h: id(g.guardian), s: id(g.sentinel), t, c: g.sentinelCommitLeft, lights, traps };
+  // ROTA2-ADAPTIVE-HUNTER-04: the remembered direction is part of the state (0 on a tree without it).
+  return { e: id(g.player), h: id(g.guardian), s: id(g.sentinel), t, c: g.sentinelCommitLeft, lights, traps, d: directionCodeOf(g.lastExplorerDirection) };
 };
 let currentDctx = null;
 function inspect(g) {
@@ -415,7 +420,8 @@ for (const { seed, route, difficulty } of runtimeSample) {
     const link = run.state.trapLinks[0];
     // ROTA2-DEPENDENT-OBJECTIVES-02: the solver is held against the hook's OWN win condition — on a tree where
     // the Route's portal also waits for the marked passage, the model's does too (absent before that mission).
-    currentDctx = buildDynamicContext(run.state.mazeMap, difficulty, { requirePassage: Boolean(run.state.objectives?.passage?.required) });
+    // ROTA2-ADAPTIVE-HUNTER-04 (approved later): the hook's own Hunter too — its Route and its interception module.
+    currentDctx = buildDynamicContext(run.state.mazeMap, difficulty, { requirePassage: Boolean(run.state.objectives?.passage?.required), routeNumber: route, intercept: productionIntercept(RT) });
     inspect(run.state);
     if (m === 1) runtime.activationsAttempted += 1;
     const trap = keyToCell(link.trap);

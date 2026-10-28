@@ -24,6 +24,8 @@
  * Usage: node tools/validation/rota2-sentinel-solver-fidelity-census.mjs [--check|--update]
  *        (`ROUTE_VALIDATION_OUT=<dir>` to write elsewhere; `FIDELITY_CENSUS_QUICK=1` a small sample, nothing written)
  */
+import fs from "node:fs";
+import path from "node:path";
 import { createHash } from "node:crypto";
 
 import { openEvidence } from "./evidence.mjs";
@@ -44,9 +46,11 @@ import {
   packedAnswer,
   parseCanon,
   playFixtureGames,
+  productionIntercept,
   rota2Answer,
   sameAnswer,
 } from "./rota2-sentinel-solver-fidelity-lib.mjs";
+import { ROTA2_ADAPTIVE_HUNTER_FILES, reverseAdaptive } from "./rota2-adaptive-hunter-edit.mjs";
 
 const QUICK = process.env.FIDELITY_CENSUS_QUICK === "1";
 const DIFFICULTIES = ["easy", "medium", "hard"];
@@ -75,6 +79,20 @@ const nowDraws = attachDrawCounter(NOW);
 const preDraws = attachDrawCounter(PRE);
 const CANDIDATE = await loadSolvers();
 const BASE = await loadSolvers({ rev: FIDELITY_BASE });
+/**
+ * ROTA2-ADAPTIVE-HUNTER-04 came after this mission and changed production on Routes 2/3 on purpose. The census keeps
+ * holding TODAY's hook: the oracle and the corrected solver model its Hunter (Route, production interception module,
+ * remembered direction); the base solvers (f5826b2) predate it, so transitions where production intercepted are left
+ * out of THEIR comparisons (counted). "The base tree's hook is identical" now reads: the working tree with exactly that
+ * mission's pinned hunks reversed (rota2-adaptive-hunter-edit.mjs) plays the base's games turn for turn.
+ */
+const INTERCEPT = productionIntercept(NOW);
+const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..", "..");
+const W0 = loadRouteRuntime({
+  directDifficulty: true,
+  sourceOverrides: Object.fromEntries(ROTA2_ADAPTIVE_HUNTER_FILES.map((file) => [file, reverseAdaptive(file, fs.readFileSync(path.join(ROOT, file), "utf8").replace(/\r\n/g, "\n"))])),
+  transforms: [decisionRecorder()],
+});
 
 // =================================================================================================
 // A — generation
@@ -129,9 +147,10 @@ const SPECS = allMaps.flatMap(({ seed, route, difficulty }) => ["trapTour", "doo
 const tB = performance.now();
 const turns = playFixtureGames(NOW, recorder, SPECS);
 const preTurns = playFixtureGames(PRE, preRecorder, SPECS);
+const w0Turns = playFixtureGames(W0, attachRecorder(W0), SPECS);
 const hookMs = performance.now() - tB;
 const turnLine = (t) => `${t.spec.seed}|${t.spec.route}|${t.spec.difficulty}|${t.spec.policy}|${t.k}|${canon(t.before)}|${canon(t.after)}|${t.status}|${t.draws}`;
-const hookSameOnBase = turns.length === preTurns.length && turns.every((t, i) => turnLine(t) === turnLine(preTurns[i]));
+const hookSameOnBase = w0Turns.length === preTurns.length && w0Turns.every((t, i) => turnLine(t) === turnLine(preTurns[i]));
 log(`   ${turns.length} turns in ${SPECS.length} games (${Math.round(hookMs)} ms, both trees) · base tree's hook identical: ${hookSameOnBase}`);
 
 const contexts = new Map();
@@ -140,8 +159,8 @@ const contextOf = (spec, map, requirePassage) => {
   if (!contexts.has(key)) {
     contexts.set(key, {
       key, spec, map, requirePassage,
-      octx: oracleContext(NOW.API, map, spec.difficulty, { requirePassage }),
-      d: { candidate: CANDIDATE.rota2.buildDynamicContext(map, spec.difficulty, { requirePassage }), base: BASE.rota2.buildDynamicContext(map, spec.difficulty, { requirePassage }) },
+      octx: oracleContext(NOW.API, map, spec.difficulty, { requirePassage, routeNumber: spec.route, intercept: INTERCEPT }),
+      d: { candidate: CANDIDATE.rota2.buildDynamicContext(map, spec.difficulty, { requirePassage, routeNumber: spec.route, intercept: INTERCEPT }), base: BASE.rota2.buildDynamicContext(map, spec.difficulty, { requirePassage }) },
       s: { candidate: buildContext(map, spec.difficulty), base: buildContext(map, spec.difficulty) },
       staticCtx: buildContext(map, spec.difficulty),
     });
@@ -179,6 +198,8 @@ const runtime = {
   candidate: emptyDiff(),
   staticRoute1: { transitions: 0, base: emptyDiff(), candidate: emptyDiff() },
   hunter: { isolatedTurns: 0, supportDiffers: 0, hookHunterOutside: 0 },
+  // ROTA2-ADAPTIVE-HUNTER-04: turns where production's Hunter intercepted (left out of the base solvers' comparisons).
+  interceptingTurns: 0,
   hookDraws: 0,
   hookSameOnBaseTree: hookSameOnBase,
   reproducing: {},
@@ -207,7 +228,10 @@ for (const turn of turns) {
     candidate: rota2Answer(CANDIDATE, c.d.candidate, turn.before, turn.actionIndex),
     base: rota2Answer(BASE, c.d.base, turn.before, turn.actionIndex),
   };
+  const intercepting = Boolean(oracleSuccessors(c.octx, turn.before, turn.actionIndex)?.intercepting);
+  if (intercepting) runtime.interceptingTurns += 1;
   for (const which of ["candidate", "base"]) {
+    if (which === "base" && intercepting) continue;
     if (hookIn(turn.status, turn.after, answers[which])) continue;
     const shapes = shapeOf(turn.status, turn.after, answers[which]);
     fileDiff(runtime[which], cls, shapes);
@@ -216,7 +240,7 @@ for (const turn of turns) {
     if (examples.length < 5) examples.push({ seed: turn.spec.seed, route: turn.spec.route, difficulty: turn.spec.difficulty, policy: turn.spec.policy, turn: turn.k, cls, shapes, before: canon(turn.before), hook: canon(turn.after), solver: answers[which]?.states.slice(0, 3) });
   }
   // Hunter: where the Sentinel cannot reach the Explorer's cell, the two solvers' Hunter outcomes must be the same.
-  if (turn.status === "playing" && manhattanIds(turn.before.s, turn.after.e) > 1) {
+  if (turn.status === "playing" && manhattanIds(turn.before.s, turn.after.e) > 1 && !intercepting) {
     runtime.hunter.isolatedTurns += 1;
     const hs = (a) => [...new Set((a?.states ?? []).map((x) => parseCanon(x).h))].sort().join(",") + (a?.hasLoss ? "|L" : "");
     if (hs(answers.candidate) !== hs(answers.base)) runtime.hunter.supportDiffers += 1;
@@ -262,7 +286,10 @@ const evalPair = (c, state, actionIndex, source) => {
   tally(focused.bySource, source);
   tally(focused.byClass, cls);
   const expected = { hasWin: oracle.hasWin, hasLoss: oracle.hasLoss, states: oracle.states };
+  if (oracle.intercepting) tally(focused, "interceptingPairs");
   for (const which of ["candidate", "base"]) {
+    // ROTA2-ADAPTIVE-HUNTER-04: the base solvers predate the interception; such a pair is not theirs to answer.
+    if (which === "base" && oracle.intercepting) continue;
     const answer = rota2Answer(which === "candidate" ? CANDIDATE : BASE, c.d[which], state, actionIndex);
     if (!sameAnswer(answer, expected)) {
       fileDiff(focused[which], cls, [answer && answer.states.length !== expected.states.length ? "supportSize" : "content"]);

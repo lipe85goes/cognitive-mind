@@ -67,7 +67,7 @@ import {
 import { GrowableBuffer, PackedNodeStore } from "./dynamic-solver-packed-graph.mjs";
 import { classifyPacked, solvePackedGraph } from "./dynamic-solver-packed-solve.mjs";
 import { sentinelTargetDistance } from "./sentinel-target-distance.mjs";
-import { DIRECTION_RADIX, directionCodeOfAction, interceptionMoves, useDirectionQuotient } from "./hunter-interception-support.mjs";
+import { DIRECTION_RADIX, directionCodeOfAction, interceptionMoves, appliesDirectionQuotient } from "./hunter-interception-support.mjs";
 
 /** The packed key's layout carries the last direction (ROTA2-ADAPTIVE-HUNTER-04). */
 export const PACKED_KEY_HAS_DIRECTION = true;
@@ -393,9 +393,9 @@ export function packDynamicState(dctx, numeric) {
 export function exploreDynamic(dctx, { maxStates = 3_000_000, maxElapsedMs = 60_000, directionQuotient = "auto" } = {}) {
   const started = performance.now();
   // ROTA2-ADAPTIVE-HUNTER-04: where this Route's Hunter cannot read the direction, states that differ only in it are
-  // identified (exact; hunter-interception-support.mjs `useDirectionQuotient`). The key's direction digit is its least
+  // identified (exact; hunter-interception-support.mjs `appliesDirectionQuotient`). The key's direction digit is its least
   // significant, so the quotient key is `key - d`.
-  const quotient = useDirectionQuotient(dctx.closed.packed, directionQuotient);
+  const quotient = appliesDirectionQuotient(dctx.closed.packed, directionQuotient);
   const start = initialPackedState(dctx.closed);
   const startMeta = metaFor(dctx, start.traps);
   const startKey = packFields(startMeta, start.e, start.h, start.s, start.t, start.c, start.lights, start.traps, start.d);

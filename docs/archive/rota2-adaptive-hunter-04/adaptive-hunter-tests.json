@@ -569,13 +569,14 @@
             "interceptingCalls": 55
           }
         },
-        "toolingFilesWithAPolicyOfTheirOwn": [],
+        "modelFilesWithAPolicyOfTheirOwn": [],
+        "modelFilesImportingTheContractChecker": [],
         "adapterCallsTheModule": true,
         "bothSolversCallTheAdapter": true
       }
     }
   ],
   "run": {
-    "elapsedMs": 49385
+    "elapsedMs": 49753
   }
 }

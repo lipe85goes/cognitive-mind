@@ -36,9 +36,9 @@ import path from "node:path";
 import { execFileSync } from "node:child_process";
 import ts from "typescript";
 
-import { EXIT_OK, EXIT_USAGE, EXIT_VALIDATION_FAILED, openEvidence } from "./evidence.mjs";
-import { cellKey, loadRouteRuntime, pathBetween, sameCell, walkableNeighbours } from "./route-runtime-harness.mjs";
-import { ACTIONS, API as REFERENCE_API, HUNTER_INTERCEPT_MODULE, buildContext, hunterSupport as referenceHunterSupport } from "./dynamic-solver.mjs";
+import { EXIT_USAGE, EXIT_VALIDATION_FAILED, openEvidence } from "./evidence.mjs";
+import { cellKey, loadRouteRuntime, pathBetween, sameCell } from "./route-runtime-harness.mjs";
+import { ACTIONS, API as REFERENCE_API, HUNTER_INTERCEPT_MODULE, buildContext } from "./dynamic-solver.mjs";
 import { decodePackedKey, packState, unpackState, packedStateContract } from "./dynamic-solver-packed.mjs";
 import {
   INTERCEPT_ADAPTER_FILE,
@@ -56,9 +56,36 @@ import {
   productionIntercept,
   rota2Answer,
 } from "./rota2-sentinel-solver-fidelity-lib.mjs";
-import { DIRECTION_CODES, directionCodeOf } from "./hunter-interception-support.mjs";
+import { DIRECTION_CODES } from "./hunter-interception-support.mjs";
+import {
+  ADAPTIVE_BASE,
+  DELTA,
+  DIFFICULTIES,
+  DIRECTIONS,
+  INSTRUMENT,
+  INTERCEPT_MESSAGE,
+  NEIGHBOUR_ORDER,
+  POLICIES,
+  ROUTES,
+  actionIndexOf,
+  add,
+  analyseTurn,
+  attachTrace,
+  canonicalOf,
+  contractInterception,
+  drawLogOf,
+  inBoard,
+  lcgFrom,
+  legalDirections,
+  manhattan,
+  modulePlan,
+  planKey,
+  playGame,
+  sameJson,
+  tally,
+} from "./rota2-adaptive-hunter-lib.mjs";
 
-export const ADAPTIVE_BASE = "ec3e564a47b7fad8421bfae34fcbda32acebe043";
+export { ADAPTIVE_BASE, contractInterception };
 const REPO_ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..", "..");
 const ROTA = "src/games/escape-maze/";
 const FILES = {
@@ -71,7 +98,6 @@ const FILES = {
   intercept: HUNTER_INTERCEPT_MODULE,
   scoring: "src/engine/scoring.ts",
 };
-const INTERCEPT_MESSAGE = "O Caçador tenta cortar seu caminho.";
 
 const args = process.argv.slice(2);
 const revArg = args.find((arg) => arg.startsWith("--rev="));
@@ -84,63 +110,8 @@ if (args.some((arg) => !known.has(arg)) || REV === "" || (REV && MUTANTS)) {
 }
 
 // =================================================================================================
-// instrumentation — read-only recorder lines, the same anchors on the base and today
+// small helpers (the recorder, the policies and the contract checker are rota2-adaptive-hunter-lib.mjs's)
 // =================================================================================================
-
-const shapeChanged = (what) => new Error(`rota2-adaptive-hunter-tests: anchor not found (${what})`);
-function insertAfter(source, anchor, line, what, { optional = false } = {}) {
-  const parts = source.split(anchor).length;
-  if (parts === 1 && optional) return source;
-  if (parts !== 2) throw shapeChanged(what);
-  return source.replace(anchor, `${anchor}${line}`);
-}
-/**
- * Every domain event; the order the defenders' policies are asked in (H: the pursuit, I: the interception pick, S: the
- * Sentinel); and the Sentinel's every decision input, re-decided on the base by H27.
- */
-const INSTRUMENT = {
-  [FILES.events]: (source) =>
-    insertAfter(source, "): RouteStateAction[] {\n", "  (globalThis as any).__ah?.events.push(event);\n", "routeStateActionsForEvent"),
-  [FILES.defenders]: (source) => {
-    let text = insertAfter(
-      source,
-      "  blockedForDefenders: Set<string> = EMPTY_BLOCKED,\n): GridPosition {\n",
-      "  (globalThis as any).__ah?.order.push(\"H\");\n",
-      "chooseGuardianMove",
-    );
-    text = insertAfter(
-      text,
-      "  blockedForDefenders: Set<string> = EMPTY_BLOCKED,\n): SentinelState {\n",
-      "  (globalThis as any).__ah?.order.push(\"S\");\n  (globalThis as any).__ah?.sentinel.push({ state: { ...state }, playerPosition: { ...playerPosition }, exitPosition: { ...exitPosition }, walls: [...walls], zone, commitTurns, blocked: [...blockedForDefenders] });\n",
-      "decideSentinelMove",
-    );
-    // A tree before the mission has no interception pick.
-    return insertAfter(text, "  moves: readonly GridPosition[],\n): GridPosition {\n", "  (globalThis as any).__ah?.order.push(\"I\");\n", "chooseInterceptionMove", { optional: true });
-  },
-};
-
-// =================================================================================================
-// small helpers
-// =================================================================================================
-
-const DIFFICULTIES = ["easy", "medium", "hard"];
-const ROUTES = [1, 2, 3];
-const DIRECTIONS = ["up", "down", "left", "right"];
-const DELTA = { up: { row: -1, col: 0 }, down: { row: 1, col: 0 }, left: { row: 0, col: -1 }, right: { row: 0, col: 1 } };
-const NEIGHBOUR_ORDER = ["up", "down", "left", "right"];
-const manhattan = (a, b) => Math.abs(a.row - b.row) + Math.abs(a.col - b.col);
-const inBoard = (c) => c.row >= 0 && c.row < 9 && c.col >= 0 && c.col < 9;
-const add = (c, d, k = 1) => ({ row: c.row + d.row * k, col: c.col + d.col * k });
-const sameJson = (a, b) => JSON.stringify(a) === JSON.stringify(b);
-const directionOf = (from, to) => DIRECTIONS.find((d) => DELTA[d].row === to.row - from.row && DELTA[d].col === to.col - from.col) ?? null;
-const actionIndexOf = (direction) => ACTIONS.findIndex((a) => a.row === DELTA[direction].row && a.col === DELTA[direction].col);
-const lcgFrom = (seed) => {
-  let state = (seed * 2654435761) >>> 0;
-  return () => ((state = (Math.imul(state, 1664525) + 1013904223) >>> 0) / 2 ** 32);
-};
-const tally = (object, key, by = 1) => {
-  object[key] = (object[key] ?? 0) + by;
-};
 
 function readFromRev(rev, file) {
   try {
@@ -177,47 +148,6 @@ function declared(source, file, name, { tag = null } = {}) {
 }
 
 // =================================================================================================
-// the contract checker — the mission's rules, read literally (a judge; nothing else calls it)
-// =================================================================================================
-
-/**
- * What the mission says the Hunter does on this turn: null (the pursuit decides) or { target, horizon, moves }.
- *
- *   - Routes 2 and 3 only; a step whose direction equals the previous successful step's; the Hunter not already next
- *     to the Explorer.
- *   - From the mode's horizon (easy 1, medium 1, hard 2) down to 1: every cell from the Explorer to the prediction is
- *     on the board and not a wall of the current maze; the prediction is a cell the Hunter may stand on (not a wall,
- *     the portal, an armed trap or the Sentinel) and is not the Hunter's own cell; Easy — the Hunter steps onto it with
- *     this move; Medium/Hard — the legal moves one step closer to it, distances by production `findPathLength` on the
- *     current walls with the portal, the armed traps, the Sentinel and the Explorer blocked.
- *   - The first prediction with a move wins; moves in the board's neighbour order (up, down, left, right).
- */
-export function contractInterception({ route, difficulty, previous, direction, hunter, explorer, exit, walls, blocked }) {
-  if (route < 2) return null;
-  if (!direction || previous !== direction) return null;
-  if (manhattan(hunter, explorer) <= 1) return null;
-  const horizon = difficulty === "hard" ? 2 : 1;
-  const hunterMay = (c) => inBoard(c) && !walls.has(cellKey(c)) && !sameCell(c, exit) && !blocked.has(cellKey(c));
-  const obstacles = new Set([...blocked, cellKey(exit), cellKey(explorer)]);
-  const legal = NEIGHBOUR_ORDER.map((d) => add(hunter, DELTA[d])).filter(hunterMay);
-  for (let k = horizon; k >= 1; k -= 1) {
-    const cells = Array.from({ length: k }, (_, i) => add(explorer, DELTA[direction], i + 1));
-    if (!cells.every((c) => inBoard(c) && !walls.has(cellKey(c)))) continue;
-    const target = cells[k - 1];
-    if (!hunterMay(target) || sameCell(target, hunter)) continue;
-    let moves;
-    if (difficulty === "easy") moves = legal.filter((c) => sameCell(c, target));
-    else {
-      const fromHunter = REFERENCE_API.findPathLength(hunter, target, walls, obstacles);
-      moves = fromHunter === null ? [] : legal.filter((c) => REFERENCE_API.findPathLength(c, target, walls, obstacles) === fromHunter - 1);
-    }
-    if (moves.length > 0) return { target, horizon: k, moves };
-  }
-  return null;
-}
-const planKey = (plan) => (plan === null || plan === undefined ? "null" : `${cellKey(plan.target)}@${plan.horizon}:${plan.moves.map(cellKey).join(";")}`);
-
-// =================================================================================================
 // the suite
 // =================================================================================================
 
@@ -244,9 +174,8 @@ async function runSuite({ rev = null, transforms = [], solverEdits = {}, quiet =
   // --- the tree under test, and the base ----------------------------------------------------------------------------
   const RT = loadRouteRuntime({ directDifficulty: true, rev, transforms: [INSTRUMENT, transforms] });
   const PRE = loadRouteRuntime({ directDifficulty: true, rev: ADAPTIVE_BASE, transforms: [INSTRUMENT] });
-  for (const rt of [RT, PRE]) rt.LAB.sb.__ah = { events: [], order: [], sentinel: [] };
-  const trace = RT.LAB.sb.__ah;
-  const preTrace = PRE.LAB.sb.__ah;
+  const trace = attachTrace(RT, { recordSentinel: true });
+  const preTrace = attachTrace(PRE);
   const textOf = (file) => {
     const text = readFromRev(rev, file);
     const fn = transforms && !Array.isArray(transforms) ? transforms[file] : null;
@@ -262,169 +191,8 @@ async function runSuite({ rev = null, transforms = [], solverEdits = {}, quiet =
     return rt.API.generateMaze(difficulty, route);
   };
 
-  // Draw log: every value the Rota's stream hands out, in order (the harness seeds the sandbox's Math.random).
-  const drawLogOf = (rt) => {
-    const math = rt.LAB.sb.Math;
-    const log = { values: [] };
-    const draw = math.random;
-    math.random = () => {
-      const value = draw();
-      log.values.push(value);
-      return value;
-    };
-    return log;
-  };
   const draws = drawLogOf(RT);
   const preDraws = drawLogOf(PRE);
-
-  // --- fixtures: the real hook, scripted Explorers, every turn recorded ---------------------------------------------
-
-  const snapshot = (g) => ({
-    status: g.status,
-    message: g.message,
-    turns: g.turns,
-    errors: g.errors,
-    player: { ...g.player },
-    guardian: { ...g.guardian },
-    sentinel: { ...g.sentinel },
-    sentinelTarget: g.sentinelTarget ? { ...g.sentinelTarget } : null,
-    sentinelCommitLeft: g.sentinelCommitLeft,
-    walls: new Set(g.walls),
-    armed: new Set(g.triggeredTrapSet),
-    collected: new Set(g.collectedSet),
-    chestOpened: g.chestOpened,
-    rewardSelected: g.rewardSelected,
-    rewardSpent: g.rewardSpent,
-    rewardChoicePending: g.rewardChoicePending,
-    lastExplorerDirection: g.lastExplorerDirection,
-    portalActive: g.portalActive,
-    passageRequired: Boolean(g.objectives?.passage?.required),
-    trapOpenedWalls: [...(g.trapOpenedWalls ?? [])],
-    valid: g.dynamicSolvability?.valid ?? true,
-  });
-
-  /**
-   * One game. `policy(g, ctx)` returns { kind: "move", direction } | { kind: "choose", reward } | { kind: "break", wall }
-   * | null (stop). Every action is recorded with the state before and after, the events, the draws and the defenders'
-   * ask order; `tracked` is the suite's own memory of the last successful direction (it never reads the hook's).
-   */
-  function playGame(rt, rtTrace, rtDraws, spec, policy, { maxActions = 120, onRender = null } = {}) {
-    const run = rt.mount({ seed: spec.seed, difficulty: spec.difficulty, routeNumber: spec.route, onRender });
-    const map = run.state.mazeMap;
-    const turns = [];
-    const ctx = { rand: lcgFrom(spec.seed + spec.route * 7 + DIFFICULTIES.indexOf(spec.difficulty) * 13), map, lastDirection: null, steps: 0, spec };
-    let tracked = null;
-    for (let i = 0; i < maxActions && run.state.status === "playing"; i += 1) {
-      const g = run.state;
-      const action = g.rewardChoicePending ? { kind: "choose", reward: spec.reward ?? "second-chance" } : policy(g, ctx);
-      if (!action) break;
-      const before = snapshot(g);
-      rtTrace.events.length = 0;
-      rtTrace.order.length = 0;
-      const drawStart = rtDraws.values.length;
-      if (action.kind === "move") run.move(DELTA[action.direction]);
-      else if (action.kind === "choose") run.choose(action.reward);
-      else if (action.kind === "break") run.break(action.wall);
-      const after = snapshot(run.state);
-      const stepped = action.kind === "move" && after.turns === before.turns + 1 && !sameCell(after.player, before.player);
-      const turn = {
-        spec, map, k: turns.length, action, before, after, stepped,
-        trackedPrevious: tracked,
-        events: rtTrace.events.map((e) => ({ ...e })),
-        order: [...rtTrace.order],
-        draws: rtDraws.values.slice(drawStart),
-      };
-      turns.push(turn);
-      if (stepped) {
-        tracked = action.direction;
-        ctx.lastDirection = action.direction;
-      }
-      ctx.steps += 1;
-    }
-    return { run, map, turns };
-  }
-
-  // Explorer policies. All avoid stepping onto a defender (a capture by the Explorer's own step tells nothing).
-  const legalDirections = (g, { avoidDefenders = true, chest = true } = {}) =>
-    DIRECTIONS.filter((d) => {
-      const c = add(g.player, DELTA[d]);
-      if (!inBoard(c) || g.walls.has(cellKey(c))) return false;
-      if (avoidDefenders && (sameCell(c, g.guardian) || sameCell(c, g.sentinel))) return false;
-      if (!chest && g.mazeMap.chest && sameCell(c, g.mazeMap.chest) && !g.chestOpened) return false;
-      return true;
-    });
-  const towards = (g, goal, { chest = true } = {}) => {
-    const blocked = new Set([...g.walls, cellKey(g.guardian), cellKey(g.sentinel)]);
-    if (!chest && g.mazeMap.chest && !g.chestOpened) blocked.add(cellKey(g.mazeMap.chest));
-    blocked.delete(cellKey(goal));
-    const route = pathBetween(g.player, goal, blocked);
-    return route && route.length >= 2 ? directionOf(g.player, route[1]) : null;
-  };
-  const goalOf = (g, { trapFirst = false } = {}) => {
-    const link = (g.mazeMap.trapLinks ?? [])[0] ?? null;
-    const linkTrap = link ? cellOf(cellId({ row: +link.trap.split(",")[0], col: +link.trap.split(",")[1] })) : null;
-    const lightsLeft = g.mazeMap.collectibleStars.filter((s) => !g.collectedSet.has(cellKey(s)));
-    if (trapFirst && linkTrap && !g.triggeredTrapSet.has(link.trap)) return linkTrap;
-    if (lightsLeft.length) return lightsLeft[0];
-    if (linkTrap && !g.triggeredTrapSet.has(link.trap)) return linkTrap;
-    return g.mazeMap.exitPosition;
-  };
-  const POLICIES = {
-    // Keeps going the way it went while it can (the pattern), turns when it must; drifts toward its goal.
-    straight: (g, ctx) => {
-      const legal = legalDirections(g, { chest: false });
-      if (!legal.length) return null;
-      if (ctx.lastDirection && legal.includes(ctx.lastDirection) && ctx.rand() < 0.7) return { kind: "move", direction: ctx.lastDirection };
-      const toward = towards(g, goalOf(g, { trapFirst: ctx.spec.trapFirst }), { chest: false });
-      if (toward && ctx.rand() < 0.7) return { kind: "move", direction: toward };
-      return { kind: "move", direction: legal[Math.floor(ctx.rand() * legal.length)] };
-    },
-    // Never repeats a direction when it has another legal one (H06).
-    turner: (g, ctx) => {
-      const legal = legalDirections(g, { chest: false });
-      if (!legal.length) return null;
-      const others = legal.filter((d) => d !== ctx.lastDirection);
-      const pool = others.length ? others : legal;
-      const toward = towards(g, goalOf(g), { chest: false });
-      if (toward && pool.includes(toward) && ctx.rand() < 0.6) return { kind: "move", direction: toward };
-      return { kind: "move", direction: pool[Math.floor(ctx.rand() * pool.length)] };
-    },
-    // The linked trap first (its wall opens), then straight runs — the opened topology under the interception (H26).
-    linkRunner: (g, ctx) => {
-      const link = (g.mazeMap.trapLinks ?? [])[0] ?? null;
-      const legal = legalDirections(g, { chest: false });
-      if (!legal.length) return null;
-      if (link && !g.triggeredTrapSet.has(link.trap)) {
-        const toward = towards(g, cellOf(cellId({ row: +link.trap.split(",")[0], col: +link.trap.split(",")[1] })), { chest: false });
-        if (toward) return { kind: "move", direction: toward };
-      }
-      const wall = link ? cellOf(cellId({ row: +link.mutation.wall.split(",")[0], col: +link.mutation.wall.split(",")[1] })) : null;
-      if (ctx.lastDirection && legal.includes(ctx.lastDirection) && ctx.rand() < 0.8) return { kind: "move", direction: ctx.lastDirection };
-      if (wall && ctx.rand() < 0.6) {
-        const toward = towards(g, wall, { chest: false });
-        if (toward) return { kind: "move", direction: toward };
-      }
-      return { kind: "move", direction: legal[Math.floor(ctx.rand() * legal.length)] };
-    },
-    // Chest, a reward, a blocked bump now and then, the Pickaxe on an adjacent wall (H05, Route 1 equivalence).
-    mixed: (g, ctx) => {
-      if (g.pickaxeAvailable && g.breakTargets?.length && ctx.rand() < 0.25) return { kind: "break", wall: g.breakTargets[Math.floor(ctx.rand() * g.breakTargets.length)].cell };
-      if (ctx.rand() < 0.08) {
-        const bump = DIRECTIONS.find((d) => {
-          const c = add(g.player, DELTA[d]);
-          return !inBoard(c) || g.walls.has(cellKey(c));
-        });
-        if (bump) return { kind: "move", direction: bump };
-      }
-      const legal = legalDirections(g);
-      if (!legal.length) return null;
-      const goal = g.mazeMap.chest && !g.chestOpened && ctx.steps < 40 ? g.mazeMap.chest : goalOf(g);
-      if (ctx.lastDirection && legal.includes(ctx.lastDirection) && ctx.rand() < 0.4) return { kind: "move", direction: ctx.lastDirection };
-      const toward = towards(g, goal);
-      if (toward && ctx.rand() < 0.75) return { kind: "move", direction: toward };
-      return { kind: "move", direction: legal[Math.floor(ctx.rand() * legal.length)] };
-    },
-  };
 
   const SEEDS_PER = 10;
   const specs = [];
@@ -447,46 +215,12 @@ async function runSuite({ rev = null, transforms = [], solverEdits = {}, quiet =
   const allTurns = games.flatMap((game) => game.turns);
 
   // --- per-turn analysis ----------------------------------------------------------------------------------------------
-  const settledHunter = (turn) => {
-    const settle = turn.events.find((e) => e.type === "DEFENDERS_SETTLED" || (e.type === "EXPLORER_CAPTURED" && e.by !== "explorer-step"));
-    return settle ? settle.guardian : null;
-  };
-  const turnInput = (turn, previous) => ({
-    route: turn.spec.route,
-    difficulty: turn.spec.difficulty,
-    previous,
-    direction: turn.action.direction,
-    hunter: turn.before.guardian,
-    explorer: turn.after.player,
-    exit: turn.map.exitPosition,
-    walls: turn.after.walls,
-    blocked: new Set([...turn.after.armed, cellKey(turn.before.sentinel)]),
-  });
-  const helperPlan = (input) =>
-    intercept
-      ? intercept.planHunterInterception({
-        routeNumber: input.route, difficulty: input.difficulty, previousDirection: input.previous, direction: input.direction,
-        hunter: input.hunter, explorer: input.explorer, exitPosition: input.exit, walls: input.walls, blocked: input.blocked,
-      })
-      : null;
-  // The defenders answer a step on these turns: a successful step, the Chest not opened, the Route still on.
-  const answered = (turn) => turn.stepped && !turn.after.rewardChoicePending && turn.after.status !== "won";
-  for (const turn of allTurns) {
-    if (!answered(turn)) continue;
-    const input = turnInput(turn, turn.trackedPrevious);
-    turn.input = input;
-    turn.contract = contractInterception(input);
-    turn.helper = helperPlan(input);
-    // Production's pursuit support, as the reference models it: armed traps and the Sentinel's cell illegal.
-    turn.legacy = referenceHunterSupport(input.hunter, input.explorer, input.exit, input.walls, input.difficulty, turn.after.armed, turn.before.sentinel);
-    turn.hunterAfter = settledHunter(turn);
-    turn.secondChanceByDefender = turn.events.some((e) => e.type === "SECOND_CHANCE_USED" && e.cause !== "explorer");
-    turn.repeat = input.previous !== null && input.previous === input.direction;
-  }
+  const helperPlan = (input) => modulePlan(intercept, input);
+  for (const turn of allTurns) analyseTurn(turn, intercept);
   const answeredTurns = allTurns.filter((t) => t.input);
   const adaptiveRoute = (t) => t.spec.route >= 2;
   const contractTurns = answeredTurns.filter((t) => t.contract !== null);
-  const observedMove = (t) => t.hunterAfter !== null && !t.secondChanceByDefender;
+  const observedMove = (t) => t.observed;
 
   // --- solver contexts per map ----------------------------------------------------------------------------------------
   const contexts = new Map();
@@ -505,38 +239,8 @@ async function runSuite({ rev = null, transforms = [], solverEdits = {}, quiet =
     }
     return contexts.get(key);
   };
-  const canonicalBefore = (turn) => {
-    const g = turn.before;
-    let lights = 0;
-    turn.map.collectibleStars.forEach((s, i) => {
-      if (g.collected.has(cellKey(s))) lights |= 1 << i;
-    });
-    let traps = 0;
-    turn.map.traps.forEach((t, i) => {
-      if (g.armed.has(cellKey(t))) traps |= 1 << i;
-    });
-    return {
-      e: cellId(g.player), h: cellId(g.guardian), s: cellId(g.sentinel),
-      target: g.sentinelTarget ? cellId(g.sentinelTarget) : -1, c: g.sentinelCommitLeft, lights, traps,
-      d: directionCodeOf(turn.trackedPrevious),
-    };
-  };
-  const canonicalAfter = (turn) => {
-    const g = turn.after;
-    let lights = 0;
-    turn.map.collectibleStars.forEach((s, i) => {
-      if (g.collected.has(cellKey(s))) lights |= 1 << i;
-    });
-    let traps = 0;
-    turn.map.traps.forEach((t, i) => {
-      if (g.armed.has(cellKey(t))) traps |= 1 << i;
-    });
-    return {
-      e: cellId(g.player), h: cellId(g.guardian), s: cellId(g.sentinel),
-      target: g.sentinelTarget ? cellId(g.sentinelTarget) : -1, c: g.sentinelCommitLeft, lights, traps,
-      d: directionCodeOf(turn.action.direction),
-    };
-  };
+  const canonicalBefore = (turn) => canonicalOf(turn, "before");
+  const canonicalAfter = (turn) => canonicalOf(turn, "after");
   // Pre-Chest, with defenders that answered and a state the solvers model (no Chest, no Pickaxe, no Second Chance).
   const solverTurns = answeredTurns.filter((t) => !t.before.chestOpened && !t.after.chestOpened && !t.secondChanceByDefender && t.after.status !== "won");
 
@@ -808,7 +512,6 @@ async function runSuite({ rev = null, transforms = [], solverEdits = {}, quiet =
     input.contract = contractInterception(input);
     input.helper = helperPlan(input);
   }
-  const batteryAgree = battery.filter((b) => planKey(b.contract) === planKey(b.helper)).length;
   const helperPlans = battery.filter((b) => b.helper);
   const legalMove = (b, c) => inBoard(c) && manhattan(c, b.hunter) === 1 && !b.walls.has(cellKey(c)) && !sameCell(c, b.exit) && !b.blocked.has(cellKey(c)) && !sameCell(c, b.explorer);
   const projectionWalkable = (b, plan) => Array.from({ length: plan.horizon }, (_, i) => add(b.explorer, DELTA[b.direction], i + 1)).every((c) => inBoard(c) && !b.walls.has(cellKey(c)));
@@ -1538,20 +1241,29 @@ async function runSuite({ rev = null, transforms = [], solverEdits = {}, quiet =
       }
       perSolver[name] = { transitionsAsked: asked, moduleCalls: calls.total - start.total, interceptingCalls: calls.intercepting - start.intercepting };
     }
-    // (c) no tooling file holds a policy of its own: no horizon table, no "two cells ahead" outside the module.
-    const toolFiles = fs.readdirSync(path.join(REPO_ROOT, "tools/validation")).filter((f) => f.endsWith(".mjs") && f !== path.basename(new URL(import.meta.url).pathname));
-    const copies = toolFiles.filter((f) => /INTERCEPT_HORIZON\s*[:=]|horizon\s*=\s*difficulty\s*===\s*"hard"/.test(fs.readFileSync(path.join(REPO_ROOT, "tools/validation", f), "utf8")));
+    // (c) no model holds a policy of its own: the solvers (as loaded — a mutant's text included), the modules they and
+    //     the production-backed oracle are built from — no horizon table, no "two cells ahead", no BFS to a prediction.
+    //     (The contract checker of rota2-adaptive-hunter-lib.mjs is the suite's judge; no model imports it.)
+    const MODEL_FILES = ["dynamic-solver.mjs", "dynamic-solver-packed.mjs", "dynamic-solver-packed-graph.mjs", "dynamic-solver-packed-solve.mjs", "sentinel-target-distance.mjs", "rota2-sentinel-solver-fidelity-lib.mjs"];
+    const modelSources = {
+      ...Object.fromEntries(MODEL_FILES.map((f) => [f, fs.readFileSync(path.join(REPO_ROOT, "tools/validation", f), "utf8")])),
+      ...Object.fromEntries([INTERCEPT_ADAPTER_FILE, PACKED_FILE, ROTA2_FILE].map((f) => [f, solvers.sources[f] ?? ""])),
+    };
+    const policySignature = /INTERCEPT_HORIZON|\bhorizon\b|"hard"\s*\?\s*2|copiedInterception|\bpredict/;
+    const copies = Object.entries(modelSources).filter(([, text]) => policySignature.test(text.replace(/\/\/[^\n]*|\/\*[\s\S]*?\*\//g, ""))).map(([f]) => f);
+    const modelsImportTheJudge = Object.entries(modelSources).filter(([, text]) => /rota2-adaptive-hunter-lib/.test(text)).map(([f]) => f);
     const solverSources = Object.fromEntries([INTERCEPT_ADAPTER_FILE, PACKED_FILE, ROTA2_FILE].map((f) => [f, solvers.sources[f] ?? ""]));
     const adapterCalls = /intercept\.planHunterInterception\(/.test(solverSources[INTERCEPT_ADAPTER_FILE]);
     const solversUseAdapter = [PACKED_FILE, ROTA2_FILE].every((f) => /interceptionMoves\(/.test(solverSources[f]) && /from "\.\/hunter-interception-support\.mjs"/.test(solverSources[f]));
     return {
       pass:
         hookImports && productionImportsTools.length === 0 && Object.values(perSolver).every((s) => s.transitionsAsked > 0 && s.moduleCalls >= s.transitionsAsked && s.interceptingCalls > 0) &&
-        copies.length === 0 && adapterCalls && solversUseAdapter,
+        copies.length === 0 && modelsImportTheJudge.length === 0 && adapterCalls && solversUseAdapter,
       hookImportsTheModule: hookImports,
       productionFilesImportingTools: productionImportsTools,
       callsToTheProductionModule: perSolver,
-      toolingFilesWithAPolicyOfTheirOwn: copies,
+      modelFilesWithAPolicyOfTheirOwn: copies,
+      modelFilesImportingTheContractChecker: modelsImportTheJudge,
       adapterCallsTheModule: adapterCalls,
       bothSolversCallTheAdapter: solversUseAdapter,
     };
@@ -1626,7 +1338,9 @@ const MUTANTS_LIST = [
   { id: "M21", name: "the opened wall is ignored by the interception", targets: ["H26"], transforms: { [HOOK]: edit("              walls: input.graphWalls,", "              walls: mazeMap.walls,", "M21") } },
   { id: "M22", name: "the Sentinel's policy changes", targets: ["H27"], transforms: { [DEFENDERS]: edit("const SENTINEL_THREAT_HORIZON = 6;", "const SENTINEL_THREAT_HORIZON = 5;", "M22") } },
   { id: "M23", name: "Route 1's random stream changes", targets: ["H02", "H25"], transforms: { [HOOK]: edit("          : chooseGuardianMove(\n", "          : (chooseInterceptionMove([input.guardianFrom, input.guardianFrom]), chooseGuardianMove)(\n", "M23") } },
-  { id: "M24", name: "the interception can put the Hunter in a wall (an illegal state)", targets: ["H18"], transforms: { [INTERCEPT]: edit("  const hunterMoves = NEIGHBOUR_DELTAS.map((delta) => ({\n    row: hunter.row + delta.row,\n    col: hunter.col + delta.col,\n  })).filter((cell) => hunterMayEnter(cell.row, cell.col));", "  const hunterMoves = NEIGHBOUR_DELTAS.map((delta) => ({\n    row: hunter.row + delta.row,\n    col: hunter.col + delta.col,\n  })).filter((cell) => inBoard(cell.row, cell.col));", "M24") } },
+  // Walls stop counting for the interception's own moves and paths (the prediction still needs a walkable line): the
+  // Hunter can be sent into a wall — a state the game can never be in.
+  { id: "M24", name: "the interception can put the Hunter in a wall (an illegal state)", targets: ["H18"], transforms: { [INTERCEPT]: edit("    inBoard(row, col) &&\n    !isWall(row, col) &&\n", "    inBoard(row, col) &&\n", "M24") } },
   {
     id: "M25", name: "an interception that reaches its prediction counts as a capture (a result without a real move)", targets: ["H18"],
     transforms: { [HOOK]: edit("      if (positionsEqual(nextGuardian, input.playerPosition)) {", "      if (positionsEqual(nextGuardian, input.playerPosition) || (interception !== null && positionsEqual(nextGuardian, interception.target))) {", "M25") },
@@ -1696,7 +1410,9 @@ async function main() {
       return EXIT_VALIDATION_FAILED;
     }
     const rows = [];
-    for (const mutant of MUTANTS_LIST) {
+    // Debugging only: `ROTA2_ADAPTIVE_MUTANTS=M24,M25` runs those alone and writes nothing.
+    const only = process.env.ROTA2_ADAPTIVE_MUTANTS ? process.env.ROTA2_ADAPTIVE_MUTANTS.split(",") : null;
+    for (const mutant of MUTANTS_LIST.filter((m) => !only || only.includes(m.id))) {
       let outcome;
       try {
         const solverEdits = { ...(mutant.solverEdits ?? {}) };
@@ -1717,6 +1433,7 @@ async function main() {
     const caught = rows.filter((r) => r.caught).length;
     console.log(`\n${caught}/${rows.length} mutants caught`);
     console.log(caught === rows.length ? "ROTA2_ADAPTIVE_HUNTER_MUTANTS_CAUGHT" : "ROTA2_ADAPTIVE_HUNTER_MUTANTS_MISSED");
+    if (only) return caught === rows.length ? 0 : EXIT_VALIDATION_FAILED;
     const EVIDENCE = openEvidence(process.env.ROUTE_VALIDATION_OUT ?? "docs/archive/rota2-adaptive-hunter-04");
     EVIDENCE.write("mutants.json", { mission: "ROTA2-ADAPTIVE-HUNTER-04", caught, total: rows.length, mutants: rows });
     return EVIDENCE.finish({ ok: caught === rows.length });
