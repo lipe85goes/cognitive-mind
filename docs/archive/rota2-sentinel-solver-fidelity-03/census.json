@@ -48,28 +48,28 @@
   },
   "runtime": {
     "games": 2160,
-    "transitions": 64328,
+    "transitions": 63678,
     "byClass": {
-      "NO_TRAP": 15787,
-      "OTHER_TRAP": 45912,
-      "NO_DECISION": 1522,
-      "BLOCKED_KEPT": 1031,
-      "OPEN_RELEASED": 66,
-      "BLOCKED_RELEASED": 10
+      "NO_TRAP": 16105,
+      "OTHER_TRAP": 44898,
+      "NO_DECISION": 1538,
+      "BLOCKED_KEPT": 1124,
+      "OPEN_RELEASED": 6,
+      "BLOCKED_RELEASED": 7
     },
-    "heldTargetIsTrapCell": 2529,
-    "armedDuringCommitment": 829,
-    "heldDoorArmedThisTurn": 43,
-    "openTopologyTurns": 33923,
+    "heldTargetIsTrapCell": 2602,
+    "armedDuringCommitment": 902,
+    "heldDoorArmedThisTurn": 41,
+    "openTopologyTurns": 32149,
     "base": {
-      "disagreements": 1031,
+      "disagreements": 1106,
       "byClass": {
-        "BLOCKED_KEPT": 1031
+        "BLOCKED_KEPT": 1106
       },
       "byShape": {
-        "position": 409,
-        "target": 1027,
-        "commitLeft": 785,
+        "position": 406,
+        "target": 1102,
+        "commitLeft": 843,
         "terminal": 4
       }
     },
@@ -99,11 +99,12 @@
       }
     },
     "hunter": {
-      "isolatedTurns": 61485,
+      "isolatedTurns": 56070,
       "supportDiffers": 0,
       "hookHunterOutside": 0
     },
-    "hookDraws": 116524,
+    "interceptingTurns": 4940,
+    "hookDraws": 106822,
     "hookSameOnBaseTree": true,
     "reproducing": {
       "1|easy|9210001": 8,
@@ -146,23 +147,20 @@
       "1|hard|9212106": 20,
       "2|easy|9220045": 4,
       "2|easy|9220076": 44,
-      "2|medium|9221013": 6,
-      "2|medium|9221024": 21,
-      "2|medium|9221077": 16,
-      "2|medium|9221092": 4,
-      "2|hard|9222036": 2,
-      "2|hard|9222069": 2,
-      "2|hard|9222089": 18,
-      "2|hard|9222105": 9,
-      "3|easy|9230007": 6,
+      "2|medium|9221092": 8,
+      "2|hard|9222069": 15,
+      "2|hard|9222089": 90,
+      "2|hard|9222105": 16,
+      "2|hard|9222118": 6,
+      "3|easy|9230007": 14,
       "3|easy|9230009": 2,
       "3|easy|9230018": 2,
-      "3|easy|9230038": 2,
       "3|easy|9230049": 9,
       "3|easy|9230099": 1,
       "3|medium|9231030": 8,
-      "3|hard|9232050": 4,
-      "3|hard|9232080": 4
+      "3|hard|9232050": 3,
+      "3|hard|9232080": 3,
+      "3|hard|9232088": 14
     },
     "candidateExamples": [],
     "baseExamples": [
@@ -264,30 +262,30 @@
         ]
       }
     ],
-    "reproducingCount": 57
+    "reproducingCount": 54
   },
   "focused": {
-    "pairs": 242251,
+    "pairs": 235726,
     "bySource": {
-      "explored": 146843,
+      "explored": 140318,
       "grid": 95408
     },
     "byClass": {
-      "OTHER_TRAP": 145177,
-      "NO_DECISION": 5880,
-      "NO_TRAP": 2247,
-      "BLOCKED_KEPT": 88675,
-      "OPEN_RELEASED": 105,
-      "BLOCKED_RELEASED": 167
+      "OTHER_TRAP": 139333,
+      "NO_DECISION": 5423,
+      "NO_TRAP": 2104,
+      "BLOCKED_KEPT": 88673,
+      "OPEN_RELEASED": 25,
+      "BLOCKED_RELEASED": 168
     },
     "base": {
-      "disagreements": 87870,
+      "disagreements": 87862,
       "byClass": {
-        "BLOCKED_KEPT": 87870
+        "BLOCKED_KEPT": 87862
       },
       "byShape": {
-        "content": 82422,
-        "supportSize": 5448
+        "content": 82413,
+        "supportSize": 5449
       }
     },
     "candidate": {
@@ -296,22 +294,22 @@
       "byShape": {}
     },
     "static": {
-      "pairs": 234562,
+      "pairs": 228587,
       "byClass": {
-        "OTHER_TRAP": 138671,
-        "NO_DECISION": 5759,
-        "NO_TRAP": 2247,
-        "BLOCKED_KEPT": 87629,
-        "OPEN_RELEASED": 89,
-        "BLOCKED_RELEASED": 167
+        "OTHER_TRAP": 133340,
+        "NO_DECISION": 5334,
+        "NO_TRAP": 2104,
+        "BLOCKED_KEPT": 87616,
+        "OPEN_RELEASED": 25,
+        "BLOCKED_RELEASED": 168
       },
       "base": {
-        "disagreements": 86824,
+        "disagreements": 86810,
         "byClass": {
-          "BLOCKED_KEPT": 86824
+          "BLOCKED_KEPT": 86810
         },
         "byShape": {
-          "content": 86824
+          "content": 86810
         }
       },
       "candidate": {
@@ -325,7 +323,8 @@
       "base": 0,
       "candidate": 0
     },
-    "candidateExamples": []
+    "candidateExamples": [],
+    "interceptingPairs": 939
   },
   "classes": {
     "maps": 72,
@@ -362,39 +361,39 @@
   },
   "performance": {
     "prepareMsPerMap": {
-      "base": 1.136,
-      "candidate": 1.194
+      "base": 1.42,
+      "candidate": 1.408
     },
     "microsecondsPerTransition": {
-      "base": 1.264,
-      "candidate": 1.337,
+      "base": 1.912,
+      "candidate": 1.515,
       "transitions": 60000
     },
     "exploration": {
       "maps": 24,
       "base": {
         "states": 4724626,
-        "ms": 18302,
-        "statesPerSecond": 258148,
-        "peakHeapDeltaMb": 25.9
+        "ms": 18290,
+        "statesPerSecond": 258322,
+        "peakHeapDeltaMb": 26.6
       },
       "candidate": {
         "states": 4724884,
-        "ms": 16782,
-        "statesPerSecond": 281547,
-        "peakHeapDeltaMb": 22.7
+        "ms": 22660,
+        "statesPerSecond": 208511,
+        "peakHeapDeltaMb": 28.1
       }
     },
     "classifyMs": {
-      "base": 413105,
-      "candidate": 426635
+      "base": 415339,
+      "candidate": 506901
     },
     "phasesMs": {
-      "hook": 271543,
-      "focused": 201028
+      "hook": 405613,
+      "focused": 197321
     }
   },
   "run": {
-    "elapsedMs": 1463809
+    "elapsedMs": 1705915
   }
 }
