@@ -4,6 +4,7 @@ import {
   canonicalToNumeric,
   preparePackedContext,
 } from "./dynamic-solver-packed.mjs";
+import { sentinelTargetDistance } from "./sentinel-target-distance.mjs";
 
 const CELL_COUNT = 81;
 const UNREACHABLE = 255;
@@ -146,9 +147,12 @@ function sentinelMove(meta, sentinel, targetIndex, commitLeft, player, traps) {
     heldTarget = -1;
     nextCommit = 0;
   }
+  // ROTA2-SENTINEL-SOLVER-FIDELITY-03: every distance to the target is the hook's `getReachableDistances(target,
+  // graph)`, which seeds an armed-trap target and reaches the maze through its legal neighbours — so a door the
+  // Explorer arms stays held and is walked toward, as in the hook (sentinel-target-distance.mjs).
   if (
     traps !== 0 && heldTarget >= 0 &&
-    variant.distances[sentinel * CELL_COUNT + target] === UNREACHABLE
+    sentinelTargetDistance(meta, variant, traps, sentinel, target) === UNREACHABLE
   ) {
     target = meta.exitId;
     heldTarget = -1;
@@ -162,7 +166,7 @@ function sentinelMove(meta, sentinel, targetIndex, commitLeft, player, traps) {
     const homeDistance = variant.distances[next * CELL_COUNT + meta.exitId];
     if (homeDistance === UNREACHABLE || homeDistance > SENTINEL_MAX_HOME_DISTANCE) continue;
     optionCount += 1;
-    const rawScore = variant.distances[next * CELL_COUNT + target];
+    const rawScore = sentinelTargetDistance(meta, variant, traps, next, target);
     const score = rawScore === UNREACHABLE ? 99 : rawScore;
     if (score < bestScore) {
       bestScore = score;
@@ -170,7 +174,7 @@ function sentinelMove(meta, sentinel, targetIndex, commitLeft, player, traps) {
     }
   }
   if (optionCount === 0) return { s: sentinel, t: heldTarget, c: nextCommit };
-  const rawStayScore = variant.distances[sentinel * CELL_COUNT + target];
+  const rawStayScore = sentinelTargetDistance(meta, variant, traps, sentinel, target);
   const stayScore = rawStayScore === UNREACHABLE ? 99 : rawStayScore;
   return { s: bestScore < stayScore ? best : sentinel, t: heldTarget, c: nextCommit };
 }
