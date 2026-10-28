@@ -260,6 +260,40 @@
       "name": "the Hunter moves at most one cell, to a legal cell, and captures only by a real move",
       "pass": false,
       "detail": {
+        "focusedFixture": {
+          "holds": false,
+          "wall": "3,4",
+          "wallCellReturned": false,
+          "easy": {
+            "target": null,
+            "horizon": null,
+            "moves": null,
+            "contractMoves": null,
+            "matchesTheContract": true,
+            "illegalMoves": []
+          },
+          "medium": {
+            "target": null,
+            "horizon": null,
+            "moves": null,
+            "contractMoves": [
+              "2,3"
+            ],
+            "matchesTheContract": false,
+            "illegalMoves": []
+          },
+          "hard": {
+            "target": null,
+            "horizon": null,
+            "moves": null,
+            "contractMoves": [
+              "2,3",
+              "2,5"
+            ],
+            "matchesTheContract": false,
+            "illegalMoves": []
+          }
+        },
         "hookInterceptionPicks": 0,
         "interceptionPlanMovesNotOneLegalCell": 0,
         "hookHunterMovedMoreThanOneCell": 0,

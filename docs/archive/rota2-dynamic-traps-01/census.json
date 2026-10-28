@@ -256,36 +256,36 @@
   "runtime": {
     "maps": 108,
     "activationsAttempted": 108,
-    "activations": 75,
-    "stepsOntoADefenderOnTheTrap": 12,
-    "wallOpenedOnActivation": 75,
+    "activations": 69,
+    "stepsOntoADefenderOnTheTrap": 14,
+    "wallOpenedOnActivation": 69,
     "invalidAfterActivation": 0,
-    "hunterDecisionsAfterOpening": 509,
+    "hunterDecisionsAfterOpening": 440,
     "hunterDecisionsOnStaleTopology": 0,
-    "defenderEnteredOpenedCell": 18,
-    "defenderRoutedThroughPassage": 31,
+    "defenderEnteredOpenedCell": 13,
+    "defenderRoutedThroughPassage": 26,
     "pickaxeBeforeTrap": {
       "attempted": 108,
-      "completed": 67,
+      "completed": 61,
       "rerolled": 0,
       "invalid": 0,
-      "noOp": 67
+      "noOp": 61
     },
     "trapBeforePickaxe": {
       "attempted": 108,
-      "completed": 73,
+      "completed": 66,
       "linkedWallOffered": 0,
       "invalid": 0
     },
-    "rendersInspected": 5271,
-    "invalidRenders": 2,
+    "rendersInspected": 5155,
+    "invalidRenders": 4,
     "invalidPlayingRenders": 0,
     "invalidTerminalRenders": {
-      "lost:PLAYER_ON_UNOPENED_CHEST": 2
+      "lost:PLAYER_ON_UNOPENED_CHEST": 4
     },
-    "terminalIssuesSameInV1": 2,
+    "terminalIssuesSameInV1": 4,
     "terminalIssuesDifferentInV1": 0,
-    "terminalIssuesAfterAnOpening": 2,
+    "terminalIssuesAfterAnOpening": 3,
     "invalidExamples": [
       {
         "status": "lost",
@@ -312,16 +312,40 @@
         "trapOpenedWalls": [
           "8,6"
         ]
+      },
+      {
+        "status": "lost",
+        "issues": [
+          "PLAYER_ON_UNOPENED_CHEST"
+        ],
+        "player": "3,0",
+        "guardian": "3,0",
+        "sentinel": "1,7",
+        "chest": "3,0",
+        "trapOpenedWalls": [
+          "4,4"
+        ]
+      },
+      {
+        "status": "lost",
+        "issues": [
+          "PLAYER_ON_UNOPENED_CHEST"
+        ],
+        "player": "3,1",
+        "guardian": "3,1",
+        "sentinel": "1,8",
+        "chest": "3,1",
+        "trapOpenedWalls": []
       }
     ],
     "differential": {
-      "transitions": 1840,
+      "transitions": 1793,
       "unsound": 0,
       "examples": [],
-      "afterOpening": 585
+      "afterOpening": 523
     }
   },
   "run": {
-    "elapsedMs": 766335
+    "elapsedMs": 919169
   }
 }

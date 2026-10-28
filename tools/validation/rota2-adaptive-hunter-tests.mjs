@@ -109,6 +109,24 @@ if (args.some((arg) => !known.has(arg)) || REV === "" || (REV && MUTANTS)) {
   process.exit(EXIT_USAGE);
 }
 
+/**
+ * H18's focused fixture, in the suite's input shape (Hard; H18 also asks the same board on Easy and Medium). Route 2,
+ * a repeated "right": the Explorer's two cells ahead, (4,3) and (4,4), are clear, so Hard predicts (4,4). The only
+ * wall, (3,4), is the cell straight between the Hunter (2,4) and that prediction: the shortest legal way goes around
+ * it, through (2,3) or (2,5). Nothing in it depends on a game, a seed or a draw.
+ */
+const H18_FIXTURE = Object.freeze({
+  route: 2,
+  difficulty: "hard",
+  previous: "right",
+  direction: "right",
+  hunter: { row: 2, col: 4 },
+  explorer: { row: 4, col: 2 },
+  exit: { row: 8, col: 8 },
+  walls: new Set(["3,4"]),
+  blocked: new Set(),
+});
+
 // =================================================================================================
 // small helpers (the recorder, the policies and the contract checker are rota2-adaptive-hunter-lib.mjs's)
 // =================================================================================================
@@ -513,7 +531,16 @@ async function runSuite({ rev = null, transforms = [], solverEdits = {}, quiet =
     input.helper = helperPlan(input);
   }
   const helperPlans = battery.filter((b) => b.helper);
-  const legalMove = (b, c) => inBoard(c) && manhattan(c, b.hunter) === 1 && !b.walls.has(cellKey(c)) && !sameCell(c, b.exit) && !b.blocked.has(cellKey(c)) && !sameCell(c, b.explorer);
+  /** Why a Hunter move is not a legal one-cell move ([] = legal): the reasons `legalMove` checks, named. */
+  const illegalReasons = (b, c) => [
+    !inBoard(c) && "off the board",
+    manhattan(c, b.hunter) !== 1 && "not one cell",
+    b.walls.has(cellKey(c)) && "wall",
+    sameCell(c, b.exit) && "portal",
+    b.blocked.has(cellKey(c)) && "armed trap or Sentinel",
+    sameCell(c, b.explorer) && "the Explorer",
+  ].filter(Boolean);
+  const legalMove = (b, c) => illegalReasons(b, c).length === 0;
   const projectionWalkable = (b, plan) => Array.from({ length: plan.horizon }, (_, i) => add(b.explorer, DELTA[b.direction], i + 1)).every((c) => inBoard(c) && !b.walls.has(cellKey(c)));
 
   await guarded("H09", "adaptive", "Easy intercepts only a predicted cell it reaches with this one move", () => {
@@ -712,6 +739,28 @@ async function runSuite({ rev = null, transforms = [], solverEdits = {}, quiet =
     };
   });
   await guarded("H18", "adaptive", "the Hunter moves at most one cell, to a legal cell, and captures only by a real move", () => {
+    // The focused fixture: one board, no game, no RNG. A repeated "right" on Route 2; the two-cell prediction (4,4) is
+    // clear, and the wall (3,4) stands on the Hunter's straight line to it. The legal plan goes around the wall —
+    // (2,3) or (2,5); a helper that lets the Hunter path through walls takes (3,4) instead (M24). The same board on
+    // Medium and Easy as well: every move any mode returns must be a legal cell and the contract's.
+    const focused = Object.fromEntries(DIFFICULTIES.map((difficulty) => {
+      const fixture = { ...H18_FIXTURE, difficulty };
+      const plan = intercept ? helperPlan(fixture) : null;
+      const contract = contractInterception(fixture);
+      return [difficulty, {
+        target: plan ? cellKey(plan.target) : null,
+        horizon: plan?.horizon ?? null,
+        moves: plan ? plan.moves.map(cellKey) : null,
+        contractMoves: contract ? contract.moves.map(cellKey) : null,
+        matchesTheContract: planKey(plan) === planKey(contract),
+        illegalMoves: plan ? plan.moves.map((m) => ({ cell: cellKey(m), reasons: illegalReasons(fixture, m) })).filter((m) => m.reasons.length) : [],
+      }];
+    }));
+    const focusedHard = focused.hard;
+    const focusedHolds =
+      intercept !== null &&
+      focusedHard.target === "4,4" && focusedHard.horizon === 2 && focusedHard.moves.length > 0 &&
+      DIFFICULTIES.every((d) => focused[d].matchesTheContract && focused[d].illegalMoves.length === 0);
     const notOneCell = helperPlans.filter((b) => b.helper.moves.some((m) => !legalMove(b, m)));
     const hookJump = answeredTurns.filter((t) => observedMove(t) && manhattan(t.input.hunter, t.hunterAfter) > 1);
     const hookIntoWall = hookPositions.filter((t) => t.after.walls.has(cellKey(t.after.guardian)));
@@ -724,7 +773,8 @@ async function runSuite({ rev = null, transforms = [], solverEdits = {}, quiet =
     const interceptionCaptures = hookInterceptionMoves.filter((t) => sameCell(t.hunterAfter, t.after.player));
     const invalid = allTurns.filter((t) => t.after.status === "playing" && !t.after.valid);
     return {
-      pass: exercised && notOneCell.length === 0 && hookJump.length === 0 && hookIntoWall.length === 0 && fakeCaptures.length === 0 && interceptionCaptures.length === 0 && invalid.length === 0,
+      pass: exercised && focusedHolds && notOneCell.length === 0 && hookJump.length === 0 && hookIntoWall.length === 0 && fakeCaptures.length === 0 && interceptionCaptures.length === 0 && invalid.length === 0,
+      focusedFixture: { holds: focusedHolds, wall: "3,4", wallCellReturned: DIFFICULTIES.some((d) => focused[d].moves?.includes("3,4")), ...focused },
       hookInterceptionPicks: hookPicks,
       interceptionPlanMovesNotOneLegalCell: notOneCell.length,
       hookHunterMovedMoreThanOneCell: hookJump.length,
@@ -1340,7 +1390,16 @@ const MUTANTS_LIST = [
   { id: "M23", name: "Route 1's random stream changes", targets: ["H02", "H25"], transforms: { [HOOK]: edit("          : chooseGuardianMove(\n", "          : (chooseInterceptionMove([input.guardianFrom, input.guardianFrom]), chooseGuardianMove)(\n", "M23") } },
   // Walls stop counting for the interception's own moves and paths (the prediction still needs a walkable line): the
   // Hunter can be sent into a wall — a state the game can never be in.
-  { id: "M24", name: "the interception can put the Hunter in a wall (an illegal state)", targets: ["H18"], transforms: { [INTERCEPT]: edit("    inBoard(row, col) &&\n    !isWall(row, col) &&\n", "    inBoard(row, col) &&\n", "M24") } },
+  {
+    id: "M24", name: "the interception can put the Hunter in a wall (an illegal state)", targets: ["H18"],
+    transforms: { [INTERCEPT]: edit("    inBoard(row, col) &&\n    !isWall(row, col) &&\n", "    inBoard(row, col) &&\n", "M24") },
+    // Caught only through H18's focused fixture: the mutated helper must hand back the wall (3,4) as a Hard move.
+    witness: {
+      check: "H18",
+      field: "focusedFixture",
+      shows: (w) => w.hard.illegalMoves.some((m) => m.cell === "3,4" && m.reasons.includes("wall")),
+    },
+  },
   {
     id: "M25", name: "an interception that reaches its prediction counts as a capture (a result without a real move)", targets: ["H18"],
     transforms: { [HOOK]: edit("      if (positionsEqual(nextGuardian, input.playerPosition)) {", "      if (positionsEqual(nextGuardian, input.playerPosition) || (interception !== null && positionsEqual(nextGuardian, interception.target))) {", "M25") },
@@ -1424,17 +1483,29 @@ async function main() {
         const failing = run.results.filter((r) => !r.pass).map((r) => r.id);
         const caughtBy = mutant.targets.filter((id) => failing.includes(id));
         outcome = { caught: caughtBy.length > 0, caughtBy, alsoFailing: failing.filter((id) => !mutant.targets.includes(id)) };
+        // A mutant with a witness counts only when the failing check shows the defect it was written to plant.
+        if (mutant.witness) {
+          const { check, field, shows } = mutant.witness;
+          const witness = run.results.find((r) => r.id === check)?.detail?.[field] ?? null;
+          const shown = witness !== null && shows(witness);
+          outcome = { ...outcome, caught: outcome.caught && failing.includes(check) && shown, witness: { check, field, shown, value: witness } };
+        }
       } catch (error) {
         outcome = { caught: false, broken: String(error?.message ?? error).split("\n")[0] };
       }
       rows.push({ id: mutant.id, name: mutant.name, targets: mutant.targets, ...outcome });
-      console.log(`${outcome.caught ? "CAUGHT" : outcome.broken ? "BROKEN" : "MISSED"}  ${mutant.id} — ${mutant.name}${outcome.caughtBy ? ` (by ${outcome.caughtBy.join(", ")}${outcome.alsoFailing?.length ? `; also failing ${outcome.alsoFailing.join(", ")}` : ""})` : ""}${outcome.broken ? `: ${outcome.broken}` : ""}`);
+      console.log(`${outcome.caught ? "CAUGHT" : outcome.broken ? "BROKEN" : "MISSED"}  ${mutant.id} — ${mutant.name}${outcome.caughtBy ? ` (by ${outcome.caughtBy.join(", ")}${outcome.alsoFailing?.length ? `; also failing ${outcome.alsoFailing.join(", ")}` : ""})` : ""}${outcome.broken ? `: ${outcome.broken}` : ""}${outcome.witness ? ` · witness ${outcome.witness.check}.${outcome.witness.field} ${outcome.witness.shown ? "shown" : "NOT shown"}: ${JSON.stringify(outcome.witness.value?.hard ?? null)}` : ""}`);
     }
     const caught = rows.filter((r) => r.caught).length;
     console.log(`\n${caught}/${rows.length} mutants caught`);
     console.log(caught === rows.length ? "ROTA2_ADAPTIVE_HUNTER_MUTANTS_CAUGHT" : "ROTA2_ADAPTIVE_HUNTER_MUTANTS_MISSED");
     if (only) return caught === rows.length ? 0 : EXIT_VALIDATION_FAILED;
     const EVIDENCE = openEvidence(process.env.ROUTE_VALIDATION_OUT ?? "docs/archive/rota2-adaptive-hunter-04");
+    // The record is the baseline of a suite that catches every mutant: an --update that missed one writes nothing.
+    if (EVIDENCE.mode === "update" && caught !== rows.length) {
+      console.log(`\nevidence (update): NOT WRITTEN — ${rows.length - caught} mutant(s) not caught: ${rows.filter((r) => !r.caught).map((r) => r.id).join(", ")}`);
+      return EXIT_VALIDATION_FAILED;
+    }
     EVIDENCE.write("mutants.json", { mission: "ROTA2-ADAPTIVE-HUNTER-04", caught, total: rows.length, mutants: rows });
     return EVIDENCE.finish({ ok: caught === rows.length });
   }
