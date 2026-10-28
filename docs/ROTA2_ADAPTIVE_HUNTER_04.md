@@ -164,6 +164,104 @@ nenhum modelo importa (H32). `[preserved]`: deve valer na base e aqui;
 | H31 | sem cronômetro, sem pontuação, sem recompensa nova | 0 chamadas de tempo; pontuação e recompensas inalteradas |
 | H32 | os solvers chamam o módulo da produção; nenhuma cópia | dinâmico 150/150, estático 55/55 chamadas ao módulo; 0 arquivos de produção importando `tools/` |
 
+### 6.2 Contrafactual e mutantes
+
+- `--rev=ec3e564` (a base exata): os **23** checks `[adaptive]` falham e os
+  **9** `[preserved]` valem (`ROTA2_ADAPTIVE_HUNTER_COUNTERFACTUAL_HOLDS`).
+  Nenhum passa por vacuidade: H13/H18 exigem que o ramo tenha rodado (o módulo
+  respondeu com planos e o hook escolheu entre movimentos de interceptação).
+- ⟨MUTANTS-TBD⟩
+
+### 6.3 Censo (`rota2-adaptive-hunter-census.mjs`) — 9/9
+
+1080 mapas (3 Rotas × 3 modos × 120) e as partidas do hook real nas duas
+árvores (esta e `ec3e564`), com quatro políticas roteirizadas (reta, que vira,
+que vai à armadilha ligada, mista com recompensas).
+
+| | check | medido |
+| --- | --- | --- |
+| A1 | geração idêntica à base | 1080/1080 mapas e seus sorteios |
+| B1 | Rota 1 idêntica à base | **360 partidas**, 20 185 renders, 19 465 turnos, 31 078 sorteios do Caçador: 0 diferenças em render, evento, sorteio, mensagem ou resultado |
+| C1 | todo turno real no suporte do oráculo e dos dois solvers; oráculo = solver dinâmico | 240 244 turnos (14 549 de interceptação), 143 375 no estático; 0 fora; 666 955 pares, 0 discordâncias |
+| C2 | interceptação do contrato, uma casa legal, nunca captura; mensagem só quando moveu | **15 934** interceptações; 0 capturas, 0 ilegais, 0 mensagens erradas; 2 713 movimentos que a perseguição não faria |
+| C3 | toda situação nomeada pela missão observada | 21 categorias (lista abaixo) |
+| C4 | reinício, troca de modo e próxima Rota esquecem a direção | 24 sequências; 0 interceptações no 1º passo de uma sessão nova |
+| C5 | nenhum estado inválido ou sem solução enquanto se joga | 0 nas duas árvores |
+| D1 | o quociente exato da Rota 1 é o grafo da base | 24/24 mapas, estado por estado e rótulo |
+| D2 | mapa no limite de recursos continua INCONCLUSIVO | 19 linhas no limite, todas `I` |
+
+Cobertura (C3): direção repetida 83 483 · mudança 170 087 · previsão de 1 casa
+11 041 · de 2 casas 4 908 · 2 casas bloqueadas (Difícil) 6 116 · previsão
+bloqueada 4 539 · atrás de parede fechada 20 591 · na topologia aberta 1 434 ·
+Caçador vizinho da previsão 1 251 · mais longe 14 698 · empates 2 196 · nenhum
+movimento de interceptação 26 379 · fallback para a perseguição 51 499 ·
+armadilha + parede no mesmo turno 1 657 · repetição no turno em que a parede
+abriu 804 · portal ativado 594 · captura 934 · Segunda Chance 37 · sequências
+de reinício/continuação 24.
+
+**Quando a interceptação acontece** (passos / repetições / interceptações):
+
+| | Fácil | Médio | Difícil |
+| --- | --- | --- | --- |
+| Rota 1 | 25 057 / 6 269 / **0** | 13 356 / 3 786 / **0** | 22 727 / 5 980 / **0** |
+| Rota 2 | 40 160 / 15 137 / 123 | 28 651 / 9 174 / 4 023 | 34 283 / 10 440 / 4 117 (2 281 de 2 casas) |
+| Rota 3 | 39 404 / 15 353 / 114 | 20 954 / 6 871 / 3 333 | 32 218 / 10 473 / 4 239 (2 627 de 2 casas) |
+
+No Fácil a interceptação é rara (< 1 % das repetições): ela exige que o Caçador,
+sem estar ao lado do Explorador, esteja ao lado da casa prevista. É o contrato
+("só quando alcança com um movimento"); se o Fácil deve ser perceptivelmente
+adaptativo é pergunta de playtest (§8).
+
+**Sorteios do Caçador por passo** (base → missão): Rota 1 idêntica (2,164 /
+1,922 / 1,110); Rota 2 2,261 → 2,258 · 1,983 → 1,725 · 1,195 → 1,061; Rota 3
+2,255 → 2,247 · 1,968 → 1,674 · 1,193 → 1,041. Cai porque uma interceptação de
+movimento único não sorteia; nenhum sorteio novo aparece fora de um empate
+(H20). A geração não sorteia diferente (A1).
+
+**Desfechos das políticas roteirizadas** (não são jogadores; 400 partidas por
+célula nas Rotas 2/3, 280 na Rota 1): Rota 1 idêntica. Captura, base → missão:
+R2 15,5 → 15,3 % · 36,8 → 41,8 % · 15,5 → 15,5 %; R3 19,3 → 20,8 % · 59,5 →
+62,8 % · 16,0 → 20,5 % (Fácil · Médio · Difícil). Vitória: R2 18,8 → 19,0 % ·
+8,0 → 6,3 % · 3,8 → 1,5 %; R3 15,0 → 13,8 % · 2,8 → 2,5 % · 2,5 → 1,8 %. O
+Médio e o Difícil ficam um pouco mais duros para quem anda em linha reta; o
+Fácil quase não muda.
+
+### 6.4 Justiça
+
+- **A interceptação nunca captura** (C2: 0 de 15 934; H18: 0 de 949) e nunca
+  tira o último passo seguro: em 14 547/14 547 turnos de interceptação o
+  Explorador tinha um passo seguro depois, mesmo contra todo movimento possível
+  da perseguição (`withoutASafeStepUnderEveryPursuitMove` 0).
+- Depois de uma interceptação, as políticas continuaram reto 10 161 vezes
+  (13 077 casos em que continuar era seguro, 1 470 em que não era) e viraram
+  4 254 vezes (14 481 casos em que virar era seguro): mudar de direção desfaz a
+  previsão (H06: 0 interceptações em 6 624 mudanças).
+- **Solucionabilidade exata pré-Baú** (72 mapas, 3 M estados por mapa, sem
+  aumentar o limite): Rota 1 idêntica (24/24, inclusive estados explorados).
+  Rotas 2/3: nenhum mapa passa a `U`; **R2 Difícil 9222003 P → G** (a
+  interceptação de movimento único estreita as respostas do Caçador); 10 P → I
+  e 3 G → I por limite de estados — continuam **INCONCLUSIVOS**, sem reclassificar.
+  Base {P 46, U 4, G 16, I 6} → missão {P 35, U 4, G 14, I 19}.
+- Nenhum estado sem solução durante o jogo (C5), nas duas árvores.
+
+### 6.5 Espaço de estados
+
+- A chave ganha `d` (raiz 5): a cardinalidade de raiz mista do exemplo vai de
+  408 146 688 a 2 040 733 440 (×5, ainda `Number`-seguro).
+- **Rota 1**: o quociente exato (estados que diferem só em `d` são bissimilares,
+  porque o Caçador da Rota 1 não lê `d`) explora **exatamente** o grafo da base
+  (D1, 24/24). Sem o quociente seriam 46,7 M estados contra 28,5 M (×1,64) e 8
+  mapas bateriam no limite — por isso o quociente.
+- **Rotas 2/3**: aqui `d` é lido, então não há quociente e o grafo cresce de
+  verdade — tipicamente ×2, até ×5,2 (R3 Difícil 9232001: 61 764 → 322 531).
+  A maior parte vem da representação: com `d` carregado e a política desligada
+  (12 mapas) são 18,9 M estados contra 12,2 M na base (alguns no limite); a
+  política acrescenta sobretudo no Difícil (R3 Difícil 9232000: 0,62 M só com
+  `d`, 1,14 M com a política; R2 Fácil 9220000: 2,87 M nos dois). Nos 48 mapas,
+  11,7 M transições interceptam, 8,8 M têm o suporte mudado pela política, e o
+  módulo é chamado 305 M vezes. Mapas no limite de 3 M estados: base 6 →
+  missão 19 (todos `I`; o limite não foi aumentado).
+
 ⟨SECTIONS-TBD⟩
 
 ## 9. Validadores anteriores que leem o delta aprovado
