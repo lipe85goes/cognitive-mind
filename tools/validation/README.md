@@ -247,6 +247,12 @@ or not, reached or released — so every disagreement is filed by class. The
 base and mutant solvers are imported from memory (`data:` URLs, relative
 imports bound to the working tree's other modules): nothing is written.
 
+Since this mission the DYNAMIC-TRAPS-01 and DEPENDENT-OBJECTIVES-02 census
+records carry the corrected solver's outputs (one map's class, the reference
+gap, the differential's defender-model gap); what each measured at its own
+commit, field by field and reproduced on the base, is in
+`docs/archive/rota2-sentinel-solver-fidelity-03/superseded-records.md`.
+
 **GAME 03 — ESTÚDIO DAS DESCOBERTAS** — the skeleton (`hidden-objects`), the
 retirement of the Trilha Lógica (`number-trail`), the experience V2 and the
 target pool V1 (GAME03-EXPERIENCE-02). None writes anything unless asked to

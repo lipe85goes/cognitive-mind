@@ -1,0 +1,246 @@
+{
+  "mission": "ROTA2-SENTINEL-SOLVER-FIDELITY-03",
+  "base": "f5826b2e587d8381ac2e9d05be5c1b517b97dcdc",
+  "allCaught": true,
+  "caught": 12,
+  "total": 12,
+  "fixtures": {
+    "games": {
+      "portalRush": 120,
+      "trapTours": 22,
+      "secondChance": 3
+    },
+    "hookTurns": 3059,
+    "pairs": 107297,
+    "byClass": {
+      "explored:BLOCKED_KEPT": 701,
+      "explored:BLOCKED_RELEASED": 13,
+      "explored:NO_DECISION": 417,
+      "explored:NO_TRAP": 663,
+      "explored:OPEN_RELEASED": 30,
+      "explored:OTHER_TRAP": 5241,
+      "grid:BLOCKED_KEPT": 86305,
+      "grid:BLOCKED_RELEASED": 570,
+      "grid:OPEN_RELEASED": 13,
+      "grid:OTHER_TRAP": 10960,
+      "runtime:BLOCKED_KEPT": 97,
+      "runtime:BLOCKED_RELEASED": 5,
+      "runtime:NO_DECISION": 14,
+      "runtime:NO_TRAP": 1733,
+      "runtime:OPEN_RELEASED": 4,
+      "runtime:OTHER_TRAP": 531
+    },
+    "staticPairs": 105167
+  },
+  "mutants": [
+    {
+      "id": "M01",
+      "name": "a blocked target is always UNREACHABLE",
+      "targets": [
+        "S02",
+        "S09"
+      ],
+      "caught": true,
+      "caughtBy": [
+        "S02",
+        "S09"
+      ],
+      "alsoFailing": [
+        "S05",
+        "S06"
+      ]
+    },
+    {
+      "id": "M02",
+      "name": "the old release condition on a blocked target is restored",
+      "targets": [
+        "S02",
+        "S05",
+        "S06"
+      ],
+      "caught": true,
+      "caughtBy": [
+        "S02",
+        "S05",
+        "S06"
+      ],
+      "alsoFailing": [
+        "S09"
+      ]
+    },
+    {
+      "id": "M03",
+      "name": "a blocked target is at distance zero",
+      "targets": [
+        "S09"
+      ],
+      "caught": true,
+      "caughtBy": [
+        "S09"
+      ],
+      "alsoFailing": [
+        "S02",
+        "S03",
+        "S05",
+        "S06"
+      ]
+    },
+    {
+      "id": "M04",
+      "name": "only the first legal neighbour of a blocked target is considered",
+      "targets": [
+        "S09"
+      ],
+      "caught": true,
+      "caughtBy": [
+        "S09"
+      ],
+      "alsoFailing": [
+        "S02",
+        "S05",
+        "S06"
+      ]
+    },
+    {
+      "id": "M05",
+      "name": "candidate and stay positions scored off the target-root BFS",
+      "targets": [
+        "S02",
+        "S09"
+      ],
+      "caught": true,
+      "caughtBy": [
+        "S02",
+        "S09"
+      ],
+      "alsoFailing": [
+        "S05",
+        "S06"
+      ]
+    },
+    {
+      "id": "M06",
+      "name": "the static solver fixed, the Rota 2.0 solver left wrong",
+      "targets": [
+        "S02",
+        "S05"
+      ],
+      "caught": true,
+      "caughtBy": [
+        "S02",
+        "S05"
+      ],
+      "alsoFailing": [
+        "S09"
+      ]
+    },
+    {
+      "id": "M07",
+      "name": "the Rota 2.0 solver fixed, the static solver left wrong",
+      "targets": [
+        "S06"
+      ],
+      "caught": true,
+      "caughtBy": [
+        "S06"
+      ],
+      "alsoFailing": [
+        "S09"
+      ]
+    },
+    {
+      "id": "M08",
+      "name": "the Sentinel may step onto an armed trap",
+      "targets": [
+        "S09"
+      ],
+      "caught": true,
+      "caughtBy": [
+        "S09"
+      ],
+      "alsoFailing": [
+        "S02",
+        "S04",
+        "S05",
+        "S06",
+        "S08",
+        "S10"
+      ]
+    },
+    {
+      "id": "M09",
+      "name": "the held door read through the opened maze's own door list, not the union",
+      "targets": [
+        "S05"
+      ],
+      "caught": true,
+      "caughtBy": [
+        "S05"
+      ],
+      "alsoFailing": [
+        "S02",
+        "S04",
+        "S08",
+        "S09"
+      ]
+    },
+    {
+      "id": "M10",
+      "name": "no-trap move tie-break changes",
+      "targets": [
+        "S07",
+        "S01"
+      ],
+      "caught": true,
+      "caughtBy": [
+        "S07",
+        "S01"
+      ],
+      "alsoFailing": [
+        "S06"
+      ]
+    },
+    {
+      "id": "M11",
+      "name": "a genuinely unreachable commitment is kept",
+      "targets": [
+        "S03"
+      ],
+      "caught": true,
+      "caughtBy": [
+        "S03"
+      ],
+      "alsoFailing": [
+        "S05",
+        "S06",
+        "S08",
+        "S09"
+      ]
+    },
+    {
+      "id": "M12",
+      "name": "the Hunter's random tie-break modelled as one fixed draw",
+      "targets": [
+        "S10"
+      ],
+      "caught": true,
+      "caughtBy": [
+        "S10"
+      ],
+      "alsoFailing": [
+        "S01",
+        "S02",
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07",
+        "S08",
+        "S09"
+      ]
+    }
+  ],
+  "run": {
+    "elapsedMs": 153229
+  }
+}

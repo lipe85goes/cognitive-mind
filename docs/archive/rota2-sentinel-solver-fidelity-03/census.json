@@ -1,0 +1,400 @@
+{
+  "mission": "ROTA2-SENTINEL-SOLVER-FIDELITY-03",
+  "base": "f5826b2e587d8381ac2e9d05be5c1b517b97dcdc",
+  "allPass": true,
+  "checks": {
+    "noGenerationChange": true,
+    "noGenerationDrawChange": true,
+    "hookIdenticalOnBaseTree": true,
+    "baseReproducesTheGap": true,
+    "baseGapOnlyInBlockedTargetClass": true,
+    "candidateAgreesWithHook": true,
+    "candidateAgreesWithProduction": true,
+    "oracleIsTheStringReference": true,
+    "sentinelNeverOnBlockedCell": true,
+    "hunterUnchanged": true,
+    "blockedTargetCaseExercised": true
+  },
+  "sizes": {
+    "routes": [
+      1,
+      2,
+      3
+    ],
+    "difficulties": [
+      "easy",
+      "medium",
+      "hard"
+    ],
+    "mapsPerCombination": 120,
+    "gamesPerMap": 2,
+    "explorePerGame": 150,
+    "grid": {
+      "masks": 4,
+      "sentinels": 8,
+      "arrivals": 5
+    },
+    "solverPerCombination": 8
+  },
+  "generation": {
+    "maps": 1080,
+    "throws": 0,
+    "sameAsBase": 1080,
+    "changedVsBase": 0,
+    "drawsSameAsBase": 1080,
+    "totalDraws": 872277,
+    "digest": "8d96be88df03243ffc47fcae0fcf30bf217ac3406dc6978863fe3f09188e6ac2",
+    "changedExamples": []
+  },
+  "runtime": {
+    "games": 2160,
+    "transitions": 64328,
+    "byClass": {
+      "NO_TRAP": 15787,
+      "OTHER_TRAP": 45912,
+      "NO_DECISION": 1522,
+      "BLOCKED_KEPT": 1031,
+      "OPEN_RELEASED": 66,
+      "BLOCKED_RELEASED": 10
+    },
+    "heldTargetIsTrapCell": 2529,
+    "armedDuringCommitment": 829,
+    "heldDoorArmedThisTurn": 43,
+    "openTopologyTurns": 33923,
+    "base": {
+      "disagreements": 1031,
+      "byClass": {
+        "BLOCKED_KEPT": 1031
+      },
+      "byShape": {
+        "position": 409,
+        "target": 1027,
+        "commitLeft": 785,
+        "terminal": 4
+      }
+    },
+    "candidate": {
+      "disagreements": 0,
+      "byClass": {},
+      "byShape": {}
+    },
+    "staticRoute1": {
+      "transitions": 10413,
+      "base": {
+        "disagreements": 241,
+        "byClass": {
+          "BLOCKED_KEPT": 241
+        },
+        "byShape": {
+          "position": 80,
+          "target": 239,
+          "commitLeft": 180,
+          "terminal": 2
+        }
+      },
+      "candidate": {
+        "disagreements": 0,
+        "byClass": {},
+        "byShape": {}
+      }
+    },
+    "hunter": {
+      "isolatedTurns": 61485,
+      "supportDiffers": 0,
+      "hookHunterOutside": 0
+    },
+    "hookDraws": 116524,
+    "hookSameOnBaseTree": true,
+    "reproducing": {
+      "1|easy|9210001": 8,
+      "1|easy|9210012": 40,
+      "1|easy|9210014": 46,
+      "1|easy|9210015": 48,
+      "1|easy|9210016": 40,
+      "1|easy|9210025": 24,
+      "1|easy|9210030": 4,
+      "1|easy|9210045": 52,
+      "1|easy|9210059": 44,
+      "1|easy|9210064": 40,
+      "1|easy|9210065": 50,
+      "1|easy|9210080": 44,
+      "1|easy|9210104": 48,
+      "1|medium|9211003": 30,
+      "1|medium|9211004": 34,
+      "1|medium|9211017": 10,
+      "1|medium|9211036": 2,
+      "1|medium|9211037": 8,
+      "1|medium|9211047": 10,
+      "1|medium|9211077": 7,
+      "1|medium|9211089": 30,
+      "1|medium|9211100": 6,
+      "1|medium|9211101": 12,
+      "1|medium|9211109": 20,
+      "1|hard|9212021": 8,
+      "1|hard|9212023": 4,
+      "1|hard|9212036": 26,
+      "1|hard|9212039": 1,
+      "1|hard|9212044": 34,
+      "1|hard|9212051": 8,
+      "1|hard|9212052": 9,
+      "1|hard|9212061": 24,
+      "1|hard|9212072": 4,
+      "1|hard|9212083": 8,
+      "1|hard|9212092": 50,
+      "1|hard|9212098": 6,
+      "1|hard|9212105": 8,
+      "1|hard|9212106": 20,
+      "2|easy|9220045": 4,
+      "2|easy|9220076": 44,
+      "2|medium|9221013": 6,
+      "2|medium|9221024": 21,
+      "2|medium|9221077": 16,
+      "2|medium|9221092": 4,
+      "2|hard|9222036": 2,
+      "2|hard|9222069": 2,
+      "2|hard|9222089": 18,
+      "2|hard|9222105": 9,
+      "3|easy|9230007": 6,
+      "3|easy|9230009": 2,
+      "3|easy|9230018": 2,
+      "3|easy|9230038": 2,
+      "3|easy|9230049": 9,
+      "3|easy|9230099": 1,
+      "3|medium|9231030": 8,
+      "3|hard|9232050": 4,
+      "3|hard|9232080": 4
+    },
+    "candidateExamples": [],
+    "baseExamples": [
+      {
+        "seed": 9210001,
+        "route": 1,
+        "difficulty": "easy",
+        "policy": "trapTour",
+        "turn": 15,
+        "cls": "BLOCKED_KEPT",
+        "shapes": [
+          "position",
+          "target",
+          "commitLeft"
+        ],
+        "before": "23|3|16|32|0|4|1",
+        "hook": "14|2|7|14|3|4|3",
+        "solver": [
+          "14|2|16|-1|0|4|3",
+          "14|4|16|-1|0|4|3"
+        ]
+      },
+      {
+        "seed": 9210001,
+        "route": 1,
+        "difficulty": "easy",
+        "policy": "trapTour",
+        "turn": 16,
+        "cls": "BLOCKED_KEPT",
+        "shapes": [
+          "position",
+          "target",
+          "commitLeft"
+        ],
+        "before": "14|2|7|14|3|4|3",
+        "hook": "23|1|6|14|2|4|3",
+        "solver": [
+          "23|11|16|-1|0|4|3",
+          "23|1|16|-1|0|4|3",
+          "23|3|16|-1|0|4|3"
+        ]
+      },
+      {
+        "seed": 9210001,
+        "route": 1,
+        "difficulty": "easy",
+        "policy": "trapTour",
+        "turn": 17,
+        "cls": "BLOCKED_KEPT",
+        "shapes": [
+          "position",
+          "target",
+          "commitLeft"
+        ],
+        "before": "23|1|6|14|2|4|3",
+        "hook": "32|0|5|14|1|4|3",
+        "solver": [
+          "32|0|7|-1|0|4|3",
+          "32|10|7|-1|0|4|3",
+          "32|2|7|-1|0|4|3"
+        ]
+      },
+      {
+        "seed": 9210001,
+        "route": 1,
+        "difficulty": "easy",
+        "policy": "trapTour",
+        "turn": 18,
+        "cls": "BLOCKED_KEPT",
+        "shapes": [
+          "position",
+          "target"
+        ],
+        "before": "32|0|5|14|1|4|3",
+        "hook": "41|9|5|14|0|4|3",
+        "solver": [
+          "41|1|6|-1|0|4|3",
+          "41|9|6|-1|0|4|3"
+        ]
+      },
+      {
+        "seed": 9210001,
+        "route": 1,
+        "difficulty": "easy",
+        "policy": "doorTraps",
+        "turn": 11,
+        "cls": "BLOCKED_KEPT",
+        "shapes": [
+          "position",
+          "target",
+          "commitLeft"
+        ],
+        "before": "13|35|16|32|0|4|0",
+        "hook": "14|44|7|14|3|4|2",
+        "solver": [
+          "14|26|16|-1|0|4|2",
+          "14|34|16|-1|0|4|2",
+          "14|44|16|-1|0|4|2"
+        ]
+      }
+    ],
+    "reproducingCount": 57
+  },
+  "focused": {
+    "pairs": 242251,
+    "bySource": {
+      "explored": 146843,
+      "grid": 95408
+    },
+    "byClass": {
+      "OTHER_TRAP": 145177,
+      "NO_DECISION": 5880,
+      "NO_TRAP": 2247,
+      "BLOCKED_KEPT": 88675,
+      "OPEN_RELEASED": 105,
+      "BLOCKED_RELEASED": 167
+    },
+    "base": {
+      "disagreements": 87870,
+      "byClass": {
+        "BLOCKED_KEPT": 87870
+      },
+      "byShape": {
+        "content": 82422,
+        "supportSize": 5448
+      }
+    },
+    "candidate": {
+      "disagreements": 0,
+      "byClass": {},
+      "byShape": {}
+    },
+    "static": {
+      "pairs": 234562,
+      "byClass": {
+        "OTHER_TRAP": 138671,
+        "NO_DECISION": 5759,
+        "NO_TRAP": 2247,
+        "BLOCKED_KEPT": 87629,
+        "OPEN_RELEASED": 89,
+        "BLOCKED_RELEASED": 167
+      },
+      "base": {
+        "disagreements": 86824,
+        "byClass": {
+          "BLOCKED_KEPT": 86824
+        },
+        "byShape": {
+          "content": 86824
+        }
+      },
+      "candidate": {
+        "disagreements": 0,
+        "byClass": {},
+        "byShape": {}
+      },
+      "oracleVsStringReference": 0
+    },
+    "sentinelOnBlocked": {
+      "base": 0,
+      "candidate": 0
+    },
+    "candidateExamples": []
+  },
+  "classes": {
+    "maps": 72,
+    "base": {
+      "P": 45,
+      "U": 4,
+      "G": 16,
+      "I": 7
+    },
+    "candidate": {
+      "P": 46,
+      "U": 4,
+      "G": 16,
+      "I": 6
+    },
+    "transitions": {
+      "P->P": 45,
+      "U->U": 4,
+      "G->G": 16,
+      "I->I": 6,
+      "I->P": 1
+    },
+    "changed": [
+      {
+        "seed": 9230007,
+        "route": 3,
+        "difficulty": "easy",
+        "pair": "I->P",
+        "exploredBase": 3000120,
+        "exploredCandidate": 2165940
+      }
+    ],
+    "exploredDiffers": 10
+  },
+  "performance": {
+    "prepareMsPerMap": {
+      "base": 1.136,
+      "candidate": 1.194
+    },
+    "microsecondsPerTransition": {
+      "base": 1.264,
+      "candidate": 1.337,
+      "transitions": 60000
+    },
+    "exploration": {
+      "maps": 24,
+      "base": {
+        "states": 4724626,
+        "ms": 18302,
+        "statesPerSecond": 258148,
+        "peakHeapDeltaMb": 25.9
+      },
+      "candidate": {
+        "states": 4724884,
+        "ms": 16782,
+        "statesPerSecond": 281547,
+        "peakHeapDeltaMb": 22.7
+      }
+    },
+    "classifyMs": {
+      "base": 413105,
+      "candidate": 426635
+    },
+    "phasesMs": {
+      "hook": 271543,
+      "focused": 201028
+    }
+  },
+  "run": {
+    "elapsedMs": 1463809
+  }
+}

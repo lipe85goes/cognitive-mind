@@ -32,11 +32,13 @@
  *
  * Exit: 0 pass · 1 a check (or counterfactual/mutant expectation) failed · 2 evidence diverged · 3 usage.
  */
+import fs from "node:fs";
+import path from "node:path";
 import { execFileSync } from "node:child_process";
 
 import { EXIT_USAGE, EXIT_VALIDATION_FAILED, openEvidence } from "./evidence.mjs";
 import { loadRouteRuntime } from "./route-runtime-harness.mjs";
-import { ACTIONS, buildContext, successors as stringReferenceSuccessors } from "./dynamic-solver.mjs";
+import { ACTIONS, API as REFERENCE_API, buildContext, encode, initialState, setSeed as setReferenceSeed, successors as stringReferenceSuccessors } from "./dynamic-solver.mjs";
 import {
   FIDELITY_BASE,
   HELPER_FILE,
@@ -94,6 +96,51 @@ const TOUR_SEEDS = [
 const TOURS = TOUR_SEEDS.flatMap(([seed, route, difficulty]) => ["trapTour", "doorTraps"].map((policy) => ({ seed, route, difficulty, policy })));
 /** Second Chance games (S11): the Chest, the Second Chance, then into the Hunter. */
 const SECOND_CHANCE_SEEDS = [[9_221_000, 2, "medium"], [9_232_000, 3, "hard"], [9_210_005, 1, "easy"]];
+
+/**
+ * Witnesses the pre-correction solver produced and the closed records still carry (ROTA-DYNAMIC-SOLVABILITY-02A
+ * shortest existential witnesses, which ROTA-ADVERSARIAL-SOLVABILITY-03 re-validates step by step). Each step is
+ * judged by production (the string reference: production `decideSentinelMove` on the certified board); the static
+ * solver must accept exactly the steps production accepts, up to the first one production does not make.
+ */
+const ARCHIVED_WITNESSES = "docs/archive/route-dynamic-solvability-02a/hash-1/suspect-seeds-analysis.json";
+function archivedWitnessSteps() {
+  const report = JSON.parse(fs.readFileSync(path.join(REPO_ROOT, ARCHIVED_WITNESSES), "utf8"));
+  const steps = [];
+  const witnesses = [];
+  for (const item of report.cases) {
+    const witness = item.shortestExistentialWitness ?? [];
+    if (witness.length === 0) continue;
+    setReferenceSeed(item.seed);
+    const map = REFERENCE_API.generateMaze(item.mode, item.route);
+    const ctx = buildContext(map, item.mode);
+    const id = (k) => cellId({ row: +k.split(",")[0], col: +k.split(",")[1] });
+    const toCanonical = (st) => ({ e: id(st.e), h: id(st.h), s: id(st.s), target: st.t < 0 ? -1 : id(ctx.accessKeys[st.t]), c: st.c, lights: st.lights, traps: st.traps });
+    let state = initialState(ctx);
+    let firstNonProduction = null;
+    for (let index = 0; index < witness.length; index += 1) {
+      const step = witness[index];
+      const actionIndex = ACTIONS.findIndex((a) => a.name === step.action);
+      const res = stringReferenceSuccessors(ctx, state, ACTIONS[actionIndex]);
+      const productionHas = Boolean(res) && (step.state === "WIN" ? res.outcomes.some((o) => o.terminal === "WIN") : res.outcomes.some((o) => o.state && encode(o.state) === step.state));
+      let target = "WIN";
+      if (step.state !== "WIN") {
+        const [e, h, sn, t, c, lights, traps] = step.state.split("|");
+        target = canon(toCanonical({ e, h, s: sn, t: Number(t), c: Number(c), lights: Number(lights), traps: Number(traps) }));
+      }
+      steps.push({ seed: item.seed, route: item.route, mode: item.mode, index: index + 1, map, ctx, state: toCanonical(state), actionIndex, target, productionHas });
+      if (!productionHas) {
+        firstNonProduction = index + 1;
+        break;
+      }
+      if (step.state === "WIN") break;
+      const [e, h, sn, t, c, lights, traps] = step.state.split("|");
+      state = { e, h, s: sn, t: Number(t), c: Number(c), lights: Number(lights), traps: Number(traps) };
+    }
+    witnesses.push({ seed: item.seed, route: item.route, mode: item.mode, length: witness.length, firstNonProductionStep: firstNonProduction });
+  }
+  return { steps, witnesses };
+}
 
 const mapKey = (spec) => `${spec.seed}|${spec.route}|${spec.difficulty}`;
 const pairKey = (state, actionIndex) => `${canon(state)}#${actionIndex}`;
@@ -331,7 +378,10 @@ async function collectFixtures(rev, log) {
     pair.staticCls = o ? decisionClass(o.decisions[0] ?? null) : null;
   }
 
-  return { RT, turns, turns2, secondChance, maps: [...maps.values()], pairs, otherRev: otherRev ?? "working tree" };
+  const archived = archivedWitnessSteps();
+  log(`   archived witnesses: ${archived.witnesses.length}, ${archived.steps.length} steps judged by production`);
+
+  return { RT, turns, turns2, secondChance, maps: [...maps.values()], pairs, archived, otherRev: otherRev ?? "working tree" };
 }
 
 /** A solver tree's answers on every pair (Rota 2.0 solver everywhere; static solver where the string reference answers). */
@@ -529,8 +579,24 @@ function runChecks(solvers, fixtures, pre, { quiet = false, label = "" } = {}) {
     const route1 = runtimeTurns.filter(({ turn, pair }) => turn.spec.route === 1 && !pair.oracle.open && pair.staticRef);
     const hookMiss = route1.filter(({ turn, pair }) => !hookInSupport(turn, answers.get(pair.key).stat));
     const route1Blocked = route1.filter(({ pair }) => pair.staticCls === "BLOCKED_KEPT");
+    // The witnesses the pre-correction solver left in closed records: the solver accepts a step iff production does.
+    const archivedCtx = new Map();
+    const archivedWrong = fixtures.archived.steps.filter((step) => {
+      const key = `${step.seed}|${step.route}|${step.mode}`;
+      if (!archivedCtx.has(key)) archivedCtx.set(key, buildContext(step.map, step.mode));
+      const answer = packedAnswer(solvers, archivedCtx.get(key), step.state, step.actionIndex);
+      const solverHas = Boolean(answer) && (step.target === "WIN" ? answer.hasWin : answer.states.includes(step.target));
+      return solverHas !== step.productionHas;
+    });
+    const archivedWitnesses = {
+      witnesses: fixtures.archived.witnesses.length,
+      stepsJudged: fixtures.archived.steps.length,
+      notProductionTransitions: fixtures.archived.witnesses.filter((w) => w.firstNonProductionStep !== null).map((w) => ({ seed: w.seed, route: w.route, mode: w.mode, step: w.firstNonProductionStep, of: w.length })),
+      solverDisagreesWithProduction: archivedWrong.map((step) => ({ seed: step.seed, step: step.index, productionHas: step.productionHas })),
+    };
     return {
-      pass: list.length > 1000 && blocked.length > 0 && route1Blocked.length > 0 && wrong.length === 0 && hookMiss.length === 0,
+      pass: list.length > 1000 && blocked.length > 0 && route1Blocked.length > 0 && wrong.length === 0 && hookMiss.length === 0 && archivedWrong.length === 0,
+      archivedWitnesses,
       pairs: list.length, armedTrapTargetPairs: blocked.length, vsStringReference: wrong.length,
       route1HookTurns: route1.length, route1ArmedTrapTargetTurns: route1Blocked.length, route1HookOutside: hookMiss.length,
       examples: wrong.slice(0, 3).map((p) => ({ map: p.m.key, state: canon(p.state), action: ACTIONS[p.actionIndex].name, ref: p.staticRef.states.slice(0, 2), solver: answers.get(p.key).stat?.states.slice(0, 2) })),

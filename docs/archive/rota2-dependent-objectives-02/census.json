@@ -50,7 +50,7 @@
     "linkedMaps": 1080,
     "evaluation": {
       "evaluations": 216000,
-      "microsecondsPerEvaluation": 0.883,
+      "microsecondsPerEvaluation": 0.835,
       "readyCount": 0
     }
   },
@@ -106,41 +106,41 @@
       },
       "3": {
         "traps01": {
-          "P": 11,
-          "I": 6,
+          "P": 12,
+          "I": 5,
           "G": 5,
           "U": 2
         },
         "objectives02": {
-          "P": 11,
-          "I": 6,
+          "P": 12,
+          "I": 5,
           "G": 5,
           "U": 2
         }
       }
     },
     "traps01": {
-      "P": 45,
+      "P": 46,
       "U": 4,
       "G": 16,
-      "I": 7
+      "I": 6
     },
     "objectives02": {
-      "P": 45,
+      "P": 46,
       "U": 4,
       "G": 16,
-      "I": 7
+      "I": 6
     },
     "transitions": {
-      "P->P": 45,
+      "P->P": 46,
       "U->U": 4,
       "G->G": 16,
-      "I->I": 7
+      "I->I": 6
     },
     "harder": 0,
     "easier": 0,
-    "unchanged": 65,
-    "inconclusive": 7,
+    "unchanged": 66,
+    "inconclusive": 6,
     "route1Changed": 0,
     "newlyImpossible": [],
     "harderExamples": []
@@ -220,71 +220,31 @@
     },
     "differential": {
       "transitions": 9149,
-      "unsound": 8,
+      "unsound": 0,
       "heldDoorArmed": 0,
-      "defenderModelGap": 8,
+      "defenderModelGap": 0,
       "objectiveUnsound": 0,
       "wins": 30,
       "afterPassage": 2677,
       "examples": [],
-      "gapExamples": [
-        {
-          "seed": 9231007,
-          "route": 3,
-          "difficulty": "medium",
-          "scenario": "trap->lights",
-          "margin": -1,
-          "sentinel": [
-            "1,7",
-            "0,7"
-          ],
-          "heldDoor": "1,6",
-          "traps": 10
-        },
-        {
-          "seed": 9231007,
-          "route": 3,
-          "difficulty": "medium",
-          "scenario": "trap->lights",
-          "margin": -1,
-          "sentinel": [
-            "0,7",
-            "0,6"
-          ],
-          "heldDoor": "0,5",
-          "traps": 10
-        },
-        {
-          "seed": 9231007,
-          "route": 3,
-          "difficulty": "medium",
-          "scenario": "trap->lights",
-          "margin": -1,
-          "sentinel": [
-            "0,6",
-            "0,6"
-          ],
-          "heldDoor": "0,5",
-          "traps": 10
-        }
-      ]
+      "gapExamples": []
     }
   },
   "referenceGap": {
     "v1-9f8ebb5": {
       "transitions": 2016,
-      "unsound": 25,
-      "heldDoorArmed": 7,
-      "other": 18
+      "unsound": 0,
+      "heldDoorArmed": 0,
+      "other": 0
     },
     "this-tree": {
       "transitions": 2016,
-      "unsound": 25,
-      "heldDoorArmed": 7,
-      "other": 18
+      "unsound": 0,
+      "heldDoorArmed": 0,
+      "other": 0
     }
   },
   "run": {
-    "elapsedMs": 734924
+    "elapsedMs": 831011
   }
 }

@@ -200,24 +200,23 @@
       "I": 6
     },
     "rota2": {
-      "P": 45,
+      "P": 46,
       "U": 4,
       "G": 16,
-      "I": 7
+      "I": 6
     },
     "transitions": {
-      "P->P": 43,
+      "P->P": 44,
       "U->P": 2,
       "U->U": 4,
       "G->G": 11,
       "I->I": 6,
-      "P->I": 1,
       "P->G": 5
     },
     "improved": 7,
     "degraded": 0,
-    "unchanged": 58,
-    "inconclusive": 7,
+    "unchanged": 59,
+    "inconclusive": 6,
     "accessesDiffer": 1,
     "degradedExamples": [],
     "improvedExamples": [
@@ -323,6 +322,6 @@
     }
   },
   "run": {
-    "elapsedMs": 1224456
+    "elapsedMs": 766335
   }
 }

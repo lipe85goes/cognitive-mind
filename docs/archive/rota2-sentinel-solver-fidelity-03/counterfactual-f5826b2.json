@@ -1,0 +1,521 @@
+{
+  "mission": "ROTA2-SENTINEL-SOLVER-FIDELITY-03",
+  "rev": "f5826b2e587d8381ac2e9d05be5c1b517b97dcdc",
+  "holds": true,
+  "fidelityFailing": 4,
+  "fidelityTotal": 4,
+  "preservedHolding": 9,
+  "preservedTotal": 9,
+  "fixtures": {
+    "games": {
+      "portalRush": 120,
+      "trapTours": 22,
+      "secondChance": 3
+    },
+    "hookTurns": 3059,
+    "pairs": 107297,
+    "byClass": {
+      "explored:BLOCKED_KEPT": 701,
+      "explored:BLOCKED_RELEASED": 13,
+      "explored:NO_DECISION": 417,
+      "explored:NO_TRAP": 663,
+      "explored:OPEN_RELEASED": 30,
+      "explored:OTHER_TRAP": 5241,
+      "grid:BLOCKED_KEPT": 86305,
+      "grid:BLOCKED_RELEASED": 570,
+      "grid:OPEN_RELEASED": 13,
+      "grid:OTHER_TRAP": 10960,
+      "runtime:BLOCKED_KEPT": 97,
+      "runtime:BLOCKED_RELEASED": 5,
+      "runtime:NO_DECISION": 14,
+      "runtime:NO_TRAP": 1733,
+      "runtime:OPEN_RELEASED": 4,
+      "runtime:OTHER_TRAP": 531
+    },
+    "staticPairs": 105167
+  },
+  "checks": [
+    {
+      "id": "S00",
+      "tag": "preserved",
+      "name": "THE_PRODUCTION_ORACLE_IS_THE_HOOK",
+      "pass": true,
+      "detail": {
+        "hookTurns": 3059,
+        "hookTurnsOutsideOracle": 0,
+        "staticPairs": 105167,
+        "oracleVsStringReference": 0,
+        "note": "every real hook turn is in the composed production support; with the link ignored the composition equals the string reference (production decideSentinelMove on the certified board)"
+      }
+    },
+    {
+      "id": "S01",
+      "tag": "preserved",
+      "name": "HELD_OPEN_TARGET_NO_TRAP_UNCHANGED",
+      "pass": true,
+      "detail": {
+        "pairs": 1409,
+        "hookTurns": 983,
+        "vsProduction": 0,
+        "hookOutside": 0,
+        "vsPreMission": 0,
+        "examples": []
+      }
+    },
+    {
+      "id": "S02",
+      "tag": "fidelity",
+      "name": "ARMED_TRAP_TARGET_KEPT_AS_THE_HOOK_KEEPS_IT",
+      "pass": false,
+      "detail": {
+        "pairs": 87103,
+        "runtimePairs": 97,
+        "hookTurns": 145,
+        "portalRushReplay": {
+          "turns": 2016,
+          "preMissionOutside": 25,
+          "outside": 25
+        },
+        "witnesses": {
+          "armingTheHeldDoor": 11,
+          "laterTurnsOfTheCommitment": 60,
+          "freshCommitmentToAnArmedDoor": 23,
+          "sentinelMoves": 15
+        },
+        "vsProduction": 85848,
+        "hookOutside": 144,
+        "hookMissShapes": {
+          "position": 80,
+          "target": 144,
+          "commitLeft": 110
+        },
+        "firstWitness": {
+          "map": "6412|1|easy",
+          "policy": "portalRush",
+          "turn": 15,
+          "before": "41|17|16|32|2|4|0",
+          "hook": "32|26|16|32|1|4|1"
+        },
+        "examples": [
+          {
+            "map": "6412|1|easy",
+            "state": "41|17|16|32|2|4|0",
+            "action": "UP",
+            "cls": "BLOCKED_KEPT",
+            "oracle": [
+              "32|26|16|32|1|4|1"
+            ],
+            "solver": [
+              "32|26|16|-1|0|4|1"
+            ]
+          },
+          {
+            "map": "6412|1|easy",
+            "state": "32|26|16|32|1|4|1",
+            "action": "RIGHT",
+            "cls": "BLOCKED_KEPT",
+            "oracle": [
+              "33|17|16|32|0|4|1",
+              "33|35|16|32|0|4|1"
+            ],
+            "solver": [
+              "33|17|16|-1|0|4|1",
+              "33|35|16|-1|0|4|1"
+            ]
+          },
+          {
+            "map": "6412|1|easy",
+            "state": "33|17|16|32|0|4|1",
+            "action": "UP",
+            "cls": "BLOCKED_KEPT",
+            "oracle": [
+              "24|26|16|32|3|4|1"
+            ],
+            "solver": [
+              "24|26|16|-1|0|4|1"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S03",
+      "tag": "preserved",
+      "name": "UNREACHABLE_COMMITMENT_RELEASED_EXACTLY_WHEN_PRODUCTION_RELEASES",
+      "pass": true,
+      "detail": {
+        "pairs": 635,
+        "byClass": {
+          "blockedTargetUnreached": 588,
+          "openTargetCutOff": 47
+        },
+        "runtimeWitnesses": {
+          "blockedTargetUnreached": 5,
+          "openTargetCutOff": 4
+        },
+        "hookTurns": 13,
+        "vsProduction": 0,
+        "hookOutside": 0,
+        "examples": [],
+        "firstWitness": {
+          "map": "9222105|2|hard",
+          "policy": "trapTour",
+          "before": "35|62|8|44|0|16|7",
+          "hook": "26|53|8|-1|0|16|15"
+        }
+      }
+    },
+    {
+      "id": "S04",
+      "tag": "preserved",
+      "name": "TRAP_ON_ANOTHER_CELL_POLICY_PRESERVED",
+      "pass": true,
+      "detail": {
+        "pairs": 5031,
+        "hookTurns": 495,
+        "vsProduction": 0,
+        "hookOutside": 0,
+        "vsPreMission": 0,
+        "examples": []
+      }
+    },
+    {
+      "id": "S05",
+      "tag": "fidelity",
+      "name": "OPENED_MAZE_KEEPS_UNION_DOOR_IDENTITY",
+      "pass": false,
+      "detail": {
+        "pairs": 58762,
+        "hookTurns": 616,
+        "remappedDoorTurns": 63,
+        "armedTrapTargetOnOpenedMaze": 64,
+        "mapsWithDifferentDoorsWhenOpen": 9,
+        "vsProduction": 47305,
+        "hookOutside": 101,
+        "heldDoorOutsideUnion": 0,
+        "examples": [
+          {
+            "map": "6412|1|easy",
+            "state": "41|17|16|32|2|4|0",
+            "action": "UP",
+            "cls": "BLOCKED_KEPT",
+            "oracle": [
+              "32|26|16|32|1|4|1"
+            ],
+            "solver": [
+              "32|26|16|-1|0|4|1"
+            ]
+          },
+          {
+            "map": "6412|1|easy",
+            "state": "32|26|16|32|1|4|1",
+            "action": "RIGHT",
+            "cls": "BLOCKED_KEPT",
+            "oracle": [
+              "33|17|16|32|0|4|1",
+              "33|35|16|32|0|4|1"
+            ],
+            "solver": [
+              "33|17|16|-1|0|4|1",
+              "33|35|16|-1|0|4|1"
+            ]
+          },
+          {
+            "map": "6412|1|easy",
+            "state": "33|17|16|32|0|4|1",
+            "action": "UP",
+            "cls": "BLOCKED_KEPT",
+            "oracle": [
+              "24|26|16|32|3|4|1"
+            ],
+            "solver": [
+              "24|26|16|-1|0|4|1"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S06",
+      "tag": "fidelity",
+      "name": "STATIC_TOPOLOGY_SAME_CORRECTED_SEMANTICS",
+      "pass": false,
+      "detail": {
+        "archivedWitnesses": {
+          "witnesses": 10,
+          "stepsJudged": 185,
+          "notProductionTransitions": [
+            {
+              "seed": 8801012,
+              "route": 1,
+              "mode": "easy",
+              "step": 18,
+              "of": 21
+            },
+            {
+              "seed": 8801108,
+              "route": 1,
+              "mode": "medium",
+              "step": 25,
+              "of": 28
+            },
+            {
+              "seed": 8801204,
+              "route": 1,
+              "mode": "hard",
+              "step": 7,
+              "of": 31
+            },
+            {
+              "seed": 8801207,
+              "route": 1,
+              "mode": "hard",
+              "step": 3,
+              "of": 22
+            },
+            {
+              "seed": 8801212,
+              "route": 1,
+              "mode": "hard",
+              "step": 2,
+              "of": 28
+            }
+          ],
+          "solverDisagreesWithProduction": [
+            {
+              "seed": 8801012,
+              "step": 18,
+              "productionHas": false
+            },
+            {
+              "seed": 8801108,
+              "step": 25,
+              "productionHas": false
+            }
+          ]
+        },
+        "pairs": 105167,
+        "armedTrapTargetPairs": 87185,
+        "vsStringReference": 85902,
+        "route1HookTurns": 2280,
+        "route1ArmedTrapTargetTurns": 43,
+        "route1HookOutside": 43,
+        "examples": [
+          {
+            "map": "6412|1|easy",
+            "state": "41|17|16|32|2|4|0",
+            "action": "UP",
+            "ref": [
+              "32|26|16|32|1|4|1"
+            ],
+            "solver": [
+              "32|26|16|-1|0|4|1"
+            ]
+          },
+          {
+            "map": "6412|1|easy",
+            "state": "32|26|16|32|1|4|1",
+            "action": "RIGHT",
+            "ref": [
+              "33|17|16|32|0|4|1",
+              "33|35|16|32|0|4|1"
+            ],
+            "solver": [
+              "33|17|16|-1|0|4|1",
+              "33|35|16|-1|0|4|1"
+            ]
+          },
+          {
+            "map": "6412|1|easy",
+            "state": "33|17|16|32|0|4|1",
+            "action": "UP",
+            "ref": [
+              "24|26|16|32|3|4|1"
+            ],
+            "solver": [
+              "24|26|16|-1|0|4|1"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S07",
+      "tag": "preserved",
+      "name": "NO_TRAP_STATES_EQUIVALENT_TO_PRE_MISSION",
+      "pass": true,
+      "detail": {
+        "pairs": 2397,
+        "hookTurns": 2100,
+        "vsProduction": 0,
+        "hookOutside": 0,
+        "vsPreMission": 0,
+        "staticVsPreMission": 0,
+        "examples": []
+      }
+    },
+    {
+      "id": "S08",
+      "tag": "preserved",
+      "name": "ORDINARY_TRAP_STATES_EQUIVALENT_TO_PRE_MISSION",
+      "pass": true,
+      "detail": {
+        "pairs": 16779,
+        "hookTurns": 790,
+        "vsProduction": 0,
+        "hookOutside": 0,
+        "vsPreMission": 0,
+        "staticVsPreMission": 0,
+        "examples": []
+      }
+    },
+    {
+      "id": "S09",
+      "tag": "fidelity",
+      "name": "MOVE_SCORING_DISTANCE_IS_THE_TARGET_ROOT_BFS",
+      "pass": false,
+      "detail": {
+        "helperPresent": false,
+        "helperPairs": 0,
+        "helperVsProductionBfs": 0,
+        "solverVariantsChecked": 0,
+        "solverVariantsWrong": 0,
+        "helperMaps": 40,
+        "gridDecisions": 97848,
+        "gridVsProduction": 85050,
+        "structure": [
+          {
+            "file": "dynamic-solver-packed-successors.mjs",
+            "helperReads": 0,
+            "rawTargetReads": 3
+          },
+          {
+            "file": "rota2-dynamic-solver.mjs",
+            "helperReads": 0,
+            "rawTargetReads": 3
+          }
+        ],
+        "sentinelOnBlockedCell": 0,
+        "helperExamples": [],
+        "gridExamples": [
+          {
+            "map": "6412|1|easy",
+            "state": "14|72|16|32|1|0|1",
+            "action": "UP",
+            "cls": "BLOCKED_KEPT",
+            "oracle": [
+              "5|63|16|32|0|0|1",
+              "5|73|16|32|0|0|1"
+            ],
+            "solver": [
+              "5|63|16|-1|0|0|1",
+              "5|73|16|-1|0|0|1"
+            ]
+          },
+          {
+            "map": "6412|1|easy",
+            "state": "14|72|16|32|2|0|1",
+            "action": "UP",
+            "cls": "BLOCKED_KEPT",
+            "oracle": [
+              "5|63|16|32|1|0|1",
+              "5|73|16|32|1|0|1"
+            ],
+            "solver": [
+              "5|63|16|-1|0|0|1",
+              "5|73|16|-1|0|0|1"
+            ]
+          },
+          {
+            "map": "6412|1|easy",
+            "state": "14|72|16|32|3|0|1",
+            "action": "UP",
+            "cls": "BLOCKED_KEPT",
+            "oracle": [
+              "5|63|16|32|2|0|1",
+              "5|73|16|32|2|0|1"
+            ],
+            "solver": [
+              "5|63|16|-1|0|0|1",
+              "5|73|16|-1|0|0|1"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "S10",
+      "tag": "preserved",
+      "name": "HUNTER_SUPPORT_AND_RNG_DRAWS_UNCHANGED",
+      "pass": true,
+      "detail": {
+        "isolatedPairs": 95932,
+        "hunterSupportVsProduction": 0,
+        "hunterSupportVsPreMission": 0,
+        "hookHunterOutsideSupport": 0,
+        "hookTurnsAndDrawsEqualOtherTree": true,
+        "otherTree": "working tree",
+        "hookDraws": 4603,
+        "solverFilesDrawing": [],
+        "examples": []
+      }
+    },
+    {
+      "id": "S11",
+      "tag": "preserved",
+      "name": "TERMINAL_AND_SECOND_CHANCE_UNCHANGED",
+      "pass": true,
+      "detail": {
+        "winFlagDiffers": 0,
+        "explorerOrHunterCapturePairs": 573,
+        "captureMissed": 0,
+        "endedTurns": {
+          "hunter": 14,
+          "step": 16,
+          "win": 3
+        },
+        "endedTurnsDisagreeing": 0,
+        "secondChanceGames": [
+          {
+            "seed": 9221000,
+            "route": 2,
+            "reachedChest": true,
+            "used": true,
+            "status": "lost"
+          },
+          {
+            "seed": 9232000,
+            "route": 3,
+            "reachedChest": true,
+            "used": false,
+            "status": "playing"
+          },
+          {
+            "seed": 9210005,
+            "route": 1,
+            "reachedChest": true,
+            "used": false,
+            "status": "playing"
+          }
+        ],
+        "secondChanceSameAsOtherTree": true,
+        "otherTree": "working tree",
+        "note": "PRE_CHEST solvers: a Second Chance never reaches them; the hook's Second Chance path is src/, identical on both trees"
+      }
+    },
+    {
+      "id": "S12",
+      "tag": "preserved",
+      "name": "NO_PRODUCTION_FILE_CHANGED",
+      "pass": true,
+      "detail": {
+        "base": "f5826b2e587d8381ac2e9d05be5c1b517b97dcdc",
+        "changedUnderSrc": [],
+        "uncommittedUnderSrc": []
+      }
+    }
+  ],
+  "run": {
+    "elapsedMs": 87085
+  }
+}
