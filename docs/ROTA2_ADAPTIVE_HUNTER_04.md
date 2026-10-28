@@ -165,3 +165,43 @@ nenhum modelo importa (H32). `[preserved]`: deve valer na base e aqui;
 | H32 | os solvers chamam o módulo da produção; nenhuma cópia | dinâmico 150/150, estático 55/55 chamadas ao módulo; 0 arquivos de produção importando `tools/` |
 
 ⟨SECTIONS-TBD⟩
+
+## 9. Validadores anteriores que leem o delta aprovado
+
+O que mudou nas ferramentas, e por quê (nenhum contrato enfraquecido):
+
+- `route-module-loader.mjs` `treeBeforeRota2`: a cadeia — os hunks desta
+  missão (`rota2-adaptive-hunter-edit.json`) primeiro, depois os da
+  DEPENDENT-OBJECTIVES-02, depois os da DYNAMIC-TRAPS-01; os dois módulos
+  acrescentados somem da visão. `rota2-dependent-objectives-edit.mjs` e
+  `rota2-dynamic-traps-edit.mjs` conferem o próprio manifesto depois de reverter
+  as missões mais novas. Os três manifestos revertem exatamente.
+- `gameplay-platform-lock-v1.mjs`: a missão em `ROTA2_APPROVED_MISSIONS` (o
+  campo `lastExplorerDirection`, o módulo, Rotas que adaptam {1: não, 2 e 3:
+  sim}, horizontes {1, 1, 2}); R4/D4 aceitam exatamente esse campo; R6 novo
+  (módulo de interceptação puro, plano aprovado, avaliado com os imports reais);
+  5 mutantes novos; a âncora do mutante dos objetivos acompanha o campo novo.
+- Solvers: `d` na chave empacotada dos dois solvers (raiz 5), no canônico, no
+  numérico, no pack/unpack, na validação, nos sucessores e no estado inicial;
+  o decodificador compartilhado `decodePackedKey`; o quociente exato de `d` onde
+  o Caçador não lê a direção (Rota 1). Contexto com `routeNumber` e `intercept`
+  (o módulo da produção; `null` = a perseguição de antes).
+- O oráculo composto (`oracleSuccessors`) pergunta ao módulo como o
+  `runDefenderPhase` pergunta (paredes do turno, armadilhas armadas + Sentinela
+  bloqueadas) e devolve `statesD`.
+- `rota2-sentinel-solver-fidelity-tests.mjs`: pares com `d` nas Rotas ≥ 2; o
+  solver estático compara na Rota 1; S10c/S11 ("o hook não é desta missão")
+  leem a árvore com exatamente os hunks desta missão revertidos (W0); S12 aceita
+  o delta aprovado depois (`reverseAdaptive`). O censo da fidelidade faz o
+  mesmo e, contra solvers anteriores a esta missão, pula os turnos em que a
+  produção interceptou (contados).
+- `rota2-dynamic-traps-tests.mjs` / `-census.mjs` e
+  `rota2-dependent-objectives-tests.mjs` / `-census.mjs`: contextos com a Rota e
+  o módulo; as classes exatas desses censos continuam medidas com o modelo de
+  perseguição de cada missão (o que elas mediram); T07 registra também as
+  decisões de interceptação; O19 procura uma vitória na Rota 2; O23 passa por
+  `reverseAdaptive`.
+- `game-continuation-contract-tests.mjs` I1: os imports de runtime do hook e do
+  estado incluem `route-hunter-intercept` numa árvore que o tem.
+- `route-validation-coupling-gate.mjs`: `rota2-adaptive-hunter-edit.mjs` na
+  lista (lê o manifesto, não o código).
