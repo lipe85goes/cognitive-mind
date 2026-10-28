@@ -27,7 +27,7 @@
         "margin": 1
       },
       "medium-3": {
-        "seed": 6106,
+        "seed": 6105,
         "margin": 1
       },
       "hard-1": {
@@ -492,7 +492,7 @@
           "easy-3@6101",
           "medium-1@6154",
           "medium-2@6100",
-          "medium-3@6106",
+          "medium-3@6105",
           "hard-1@6100",
           "hard-2@6101",
           "hard-3@6108"
@@ -600,6 +600,6 @@
     }
   ],
   "run": {
-    "elapsedMs": 34760
+    "elapsedMs": 34654
   }
 }
