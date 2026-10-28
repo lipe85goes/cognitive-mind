@@ -175,7 +175,8 @@ export function preparePackedContext(ctx) {
     precomputeMs: 0,
     // ROTA2-ADAPTIVE-HUNTER-04: what the production interception policy is asked with.
     routeNumber: ctx.routeNumber ?? 1,
-    intercept: ctx.intercept ?? INTERCEPT,
+    // `ctx.intercept` set (even to null: "this tree has no such policy") is the module of the tree under test.
+    intercept: ctx.intercept !== undefined ? ctx.intercept : INTERCEPT,
     wallSet: ctx.map.walls,
     keyToId: new Map(cells.map((position, id) => [`${position.row},${position.col}`, id])),
   };

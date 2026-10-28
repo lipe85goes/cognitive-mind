@@ -1,0 +1,554 @@
+{
+  "mission": "ROTA2-ADAPTIVE-HUNTER-04",
+  "rev": "ec3e564a47b7fad8421bfae34fcbda32acebe043",
+  "holds": true,
+  "adaptiveFailing": 23,
+  "adaptiveTotal": 23,
+  "preservedHolding": 9,
+  "preservedTotal": 9,
+  "checks": [
+    {
+      "id": "H01",
+      "tag": "preserved",
+      "name": "Route 1 Hunter support unchanged (hook, solvers, every remembered direction)",
+      "pass": true,
+      "detail": {
+        "route1Turns": 3179,
+        "hookMovesOutsidePursuitSupport": 0,
+        "solverPairs": 63580,
+        "differFromPreMissionSolvers": 0,
+        "supportDependsOnRememberedDirection": 0,
+        "examples": []
+      }
+    },
+    {
+      "id": "H02",
+      "tag": "preserved",
+      "name": "Route 1 RNG draws unchanged (count and value, turn by turn, against the base)",
+      "pass": true,
+      "detail": {
+        "games": 36,
+        "turns": 2746,
+        "draws": 4484,
+        "gamesWithDifferentDraws": 0
+      }
+    },
+    {
+      "id": "H03",
+      "tag": "adaptive",
+      "name": "the remembered direction starts null (mount, start, every new session)",
+      "pass": false,
+      "detail": {
+        "sessions": 9,
+        "values": [
+          "undefined"
+        ]
+      }
+    },
+    {
+      "id": "H04",
+      "tag": "adaptive",
+      "name": "a successful step stores its direction (all four, every Route)",
+      "pass": false,
+      "detail": {
+        "stepsByDirection": {
+          "up": 4548,
+          "right": 4047,
+          "down": 3647,
+          "left": 3231
+        },
+        "mismatches": 15473
+      }
+    },
+    {
+      "id": "H05",
+      "tag": "adaptive",
+      "name": "a blocked step — and a break, a reward choice, a Second Chance in place — keeps the last direction",
+      "pass": false,
+      "detail": {
+        "kinds": {
+          "blocked": 132,
+          "break": 16,
+          "choose": 34,
+          "secondChanceInPlace": 5
+        },
+        "overwritten": 0,
+        "nonNullDirectionsKept": 0
+      }
+    },
+    {
+      "id": "H06",
+      "tag": "preserved",
+      "name": "a change of direction never adapts (Routes 2/3: pursuit support, no interception message)",
+      "pass": true,
+      "detail": {
+        "directionChanges": 6763,
+        "firstSteps": 144,
+        "hunterOutsidePursuit": 0,
+        "interceptionMessage": 0,
+        "helperIntercepts": 0,
+        "interceptionPicks": 0
+      }
+    },
+    {
+      "id": "H07",
+      "tag": "adaptive",
+      "name": "a repeated direction on Routes 2/3 makes the Hunter intercept, as the contract says",
+      "pass": false,
+      "detail": {
+        "interceptionTurns": 1090,
+        "byRouteMode": {
+          "R2-easy": 5,
+          "R2-medium": 211,
+          "R2-hard": 269,
+          "R3-easy": 16,
+          "R3-medium": 305,
+          "R3-hard": 284
+        },
+        "hookMoveNotAnInterceptionMove": 455,
+        "movesThePursuitCouldNotHaveMade": 0,
+        "interceptionWithoutMessage": 989,
+        "messageWithoutInterception": 0,
+        "treeHelperDisagreesWithContract": 1092,
+        "example": {
+          "seed": 9420000,
+          "contract": "1,3@1:1,3",
+          "helper": "null"
+        }
+      }
+    },
+    {
+      "id": "H08",
+      "tag": "preserved",
+      "name": "a repeated direction on Route 1 changes nothing (pursuit support, no message, no interception pick)",
+      "pass": true,
+      "detail": {
+        "route1Repeats": 1337,
+        "repeatsThatWouldInterceptOnRoute2": 421,
+        "hunterOutsidePursuit": 0,
+        "interceptionMessage": 0,
+        "interceptionPicks": 0
+      }
+    },
+    {
+      "id": "H09",
+      "tag": "adaptive",
+      "name": "Easy intercepts only a predicted cell it reaches with this one move",
+      "pass": false,
+      "detail": {
+        "easyStates": 50343,
+        "easyInterceptions": 0,
+        "notAOneMoveOneCellPlan": 0,
+        "distantPredictionsLeftToThePursuit": 9646,
+        "hookEasyInterceptions": 21,
+        "hookEasyNotOnThePrediction": 15
+      }
+    },
+    {
+      "id": "H10",
+      "tag": "adaptive",
+      "name": "Medium predicts one cell ahead and takes every legal move one step closer to it",
+      "pass": false,
+      "detail": {
+        "mediumStates": 47223,
+        "mediumInterceptions": 0,
+        "hunterAdjacentToPrediction": 0,
+        "hunterFartherFromPrediction": 0,
+        "notOneCellAhead": 0,
+        "moveNotOneStepCloser": 0,
+        "improvingMoveLeftOut": 0
+      }
+    },
+    {
+      "id": "H11",
+      "tag": "adaptive",
+      "name": "Hard predicts two cells ahead when both are clear and the second can be approached",
+      "pass": false,
+      "detail": {
+        "hardStates": 43146,
+        "twoCellPlans": 0,
+        "twoCellPlanWrong": 0,
+        "twoCellPredictionNotUsed": 3090,
+        "hookTwoCellInterceptions": 317
+      }
+    },
+    {
+      "id": "H12",
+      "tag": "adaptive",
+      "name": "Hard falls back to one cell when the two-cell prediction does not work, and never forces it",
+      "pass": false,
+      "detail": {
+        "hardRepeats": 13742,
+        "twoCellPredictionUnusable": 3914,
+        "byReason": {
+          "wallOrBoard": 3531,
+          "portal": 94,
+          "armedTrap": 203,
+          "sentinel": 86
+        },
+        "fellBackToOneCell": 0,
+        "unusableTwoCellForced": 0,
+        "twoCellClearButUnapproachableFellBack": 0
+      }
+    },
+    {
+      "id": "H13",
+      "tag": "adaptive",
+      "name": "a blocked one-cell prediction falls back to the pursuit (every mode)",
+      "pass": false,
+      "detail": {
+        "interceptionModule": false,
+        "repeatsWithBlockedPrediction": 17492,
+        "interceptedAnyway": 0,
+        "hookRepeatsLeftToThePursuit": 3740,
+        "hookOutsidePursuit": 0
+      }
+    },
+    {
+      "id": "H14",
+      "tag": "adaptive",
+      "name": "a prediction behind a wall is never treated as walkable (closed and opened mazes)",
+      "pass": false,
+      "detail": {
+        "predictionsIntoAWall": 10671,
+        "interceptedThroughAWall": 0,
+        "plansWithAWallOnTheProjection": 0,
+        "predictionsThroughTheOpenedPassage": 0
+      }
+    },
+    {
+      "id": "H15",
+      "tag": "adaptive",
+      "name": "the Hunter never enters an armed trap (interception moves and every real position)",
+      "pass": false,
+      "detail": {
+        "hookInterceptionPicks": 0,
+        "interceptionPlans": 0,
+        "plansWithAnArmedTrapNextToTheHunter": 0,
+        "planMovesOrTargetsOnAnArmedTrap": 0,
+        "hookHunterOnAnArmedTrap": 0
+      }
+    },
+    {
+      "id": "H16",
+      "tag": "adaptive",
+      "name": "the Hunter never enters the Sentinel's cell",
+      "pass": false,
+      "detail": {
+        "hookInterceptionPicks": 0,
+        "plansWithTheSentinelNextToTheHunter": 0,
+        "planMovesOrTargetsOnTheSentinel": 0,
+        "hookHunterOnTheSentinel": 0
+      }
+    },
+    {
+      "id": "H17",
+      "tag": "adaptive",
+      "name": "the Hunter never enters the portal",
+      "pass": false,
+      "detail": {
+        "hookInterceptionPicks": 0,
+        "plansWithThePortalNextToTheHunter": 0,
+        "predictionsOntoThePortal": 476,
+        "planMovesOrTargetsOnThePortal": 0,
+        "hookHunterOnThePortal": 0
+      }
+    },
+    {
+      "id": "H18",
+      "tag": "adaptive",
+      "name": "the Hunter moves at most one cell, to a legal cell, and captures only by a real move",
+      "pass": false,
+      "detail": {
+        "hookInterceptionPicks": 0,
+        "interceptionPlanMovesNotOneLegalCell": 0,
+        "hookHunterMovedMoreThanOneCell": 0,
+        "hookHunterInAWall": 0,
+        "hunterCaptures": 37,
+        "capturesWithoutARealMove": 0,
+        "interceptionMovesThatCaptured": 0,
+        "invalidStatesWhilePlaying": 0
+      }
+    },
+    {
+      "id": "H19",
+      "tag": "adaptive",
+      "name": "the moves come in a fixed order, the same every time, and asking draws nothing",
+      "pass": false,
+      "detail": {
+        "interceptionModule": "absent"
+      }
+    },
+    {
+      "id": "H20",
+      "tag": "adaptive",
+      "name": "the hook draws only to break a tie among the listed moves, and picks the drawn one",
+      "pass": false,
+      "detail": {
+        "singleMoveTurns": 904,
+        "tieTurns": 186,
+        "unexpectedDrawCount": 1010,
+        "pickNotTheDrawnMove": 33
+      }
+    },
+    {
+      "id": "H21",
+      "tag": "adaptive",
+      "name": "the static solver's support holds every production outcome (Route 1, and Routes 2/3 on the certified walls)",
+      "pass": false,
+      "detail": {
+        "staticTurns": 7447,
+        "interceptionTurnsAmongThem": 0,
+        "outsideTheStaticSupport": 7420,
+        "examples": [
+          {
+            "who": "static",
+            "seed": 9410000,
+            "route": 1,
+            "mode": "easy",
+            "k": 0,
+            "after": "63|13|16|-1|0|0|0|1",
+            "static": [
+              "63|13|16|-1|0|0|0|0",
+              "63|5|16|-1|0|0|0|0"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "H22",
+      "tag": "adaptive",
+      "name": "the dynamic solver's support holds every production outcome; it equals the production-backed oracle",
+      "pass": false,
+      "detail": {
+        "realTurns": 13699,
+        "interceptionTurns": 0,
+        "outsideTheOracle": 0,
+        "outsideTheDynamicSolver": 13652,
+        "oracleDynamicPairs": 37818,
+        "oracleDynamicDisagreements": 35688,
+        "interceptionPairs": 0,
+        "pairsWhoseSupportThePolicyChanged": 0,
+        "examples": [
+          {
+            "who": "dynamic",
+            "seed": 9410000,
+            "route": 1,
+            "mode": "easy",
+            "k": 0,
+            "after": "63|13|16|-1|0|0|0|1",
+            "dynamic": [
+              "63|13|16|-1|0|0|0|0",
+              "63|5|16|-1|0|0|0|0"
+            ]
+          },
+          {
+            "who": "oracle≠dynamic",
+            "seed": 9410000,
+            "route": 1,
+            "k": 0,
+            "action": 0,
+            "oracle": [
+              "63|13|16|-1|0|0|0|1",
+              "63|5|16|-1|0|0|0|1"
+            ],
+            "dynamic": [
+              "63|13|16|-1|0|0|0|0",
+              "63|5|16|-1|0|0|0|0"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "H23",
+      "tag": "adaptive",
+      "name": "the last direction is encoded and decoded exactly (contract, pack/unpack, both solvers' keys)",
+      "pass": false,
+      "detail": {
+        "directionValues": 5,
+        "states": 400,
+        "roundTripMismatches": 0,
+        "keyCollisionsAcrossDirections": 0,
+        "solverSuccessorKeys": 1842,
+        "successorKeysWithoutTheStepsDirection": 1842,
+        "invalidDirectionsRejected": [
+          {
+            "d": -1,
+            "rejected": true
+          },
+          {
+            "d": 5,
+            "rejected": true
+          },
+          {
+            "d": 1.5,
+            "rejected": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "H24",
+      "tag": "adaptive",
+      "name": "the next state's direction is the step actually taken (hook and solvers); an illegal step is no successor",
+      "pass": false,
+      "detail": {
+        "successorStates": 6762,
+        "successorsWithAnotherDirection": 6762,
+        "hookMemoryNotTheStep": 600,
+        "illegalSteps": 723,
+        "illegalStepsWithSuccessors": 0
+      }
+    },
+    {
+      "id": "H25",
+      "tag": "preserved",
+      "name": "Route 1 maps and observable outcomes equal the base (36 seeded games, every mode)",
+      "pass": true,
+      "detail": {
+        "games": 36,
+        "renders": 2818,
+        "turns": 2746,
+        "wins": 10,
+        "losses": 11,
+        "captures": 11,
+        "mapsDiffer": 0,
+        "gamesWithADifferentRender": 0,
+        "gamesWithDifferentEvents": 0,
+        "gamesWithADifferentResult": 0,
+        "examples": []
+      }
+    },
+    {
+      "id": "H26",
+      "tag": "adaptive",
+      "name": "the interception plans on the maze as it stands (the trap's opened wall included)",
+      "pass": false,
+      "detail": {
+        "interceptionsAfterTheWallOpened": 505,
+        "whereTheOpenedWallChangesThePlan": 78,
+        "hookNotOnTheCurrentMazePlan": 38,
+        "hookOnTheStaleMazePlan": 0,
+        "repeatsOnTheTurnTheWallOpened": 46,
+        "batteryStatesPlannedOnTheOpenedMaze": 0
+      }
+    },
+    {
+      "id": "H27",
+      "tag": "preserved",
+      "name": "the Hunter answers before the Sentinel; the Sentinel decides exactly as on the base",
+      "pass": true,
+      "detail": {
+        "turnsHunterThenSentinel": 15351,
+        "turnsInAnotherOrder": 0,
+        "sentinelAskedAfterAHunterCapture": 0,
+        "sentinelDecisionsReplayedOnTheBase": 20000,
+        "decisionsThatDiffer": 0,
+        "decideSentinelMoveTextUnchanged": true
+      }
+    },
+    {
+      "id": "H28",
+      "tag": "preserved",
+      "name": "the portal's requirements are unchanged (plan module, every render, one activation)",
+      "pass": true,
+      "detail": {
+        "objectivesModuleUnchanged": true,
+        "states": 15660,
+        "portalMismatch": 0,
+        "sessionsActivatingTwice": 0
+      }
+    },
+    {
+      "id": "H29",
+      "tag": "adaptive",
+      "name": "restart, a change of mode and the next Route all start with no remembered direction",
+      "pass": false,
+      "detail": {
+        "sessions": 4,
+        "rememberedBeforeEachReset": 0,
+        "rows": [
+          {
+            "route": 1,
+            "difficulty": "medium",
+            "firstStepAdapts": false
+          },
+          {
+            "route": 1,
+            "difficulty": "hard",
+            "firstStepAdapts": false
+          },
+          {
+            "route": 2,
+            "difficulty": "medium",
+            "firstStepAdapts": false
+          },
+          {
+            "route": 2,
+            "difficulty": "hard",
+            "firstStepAdapts": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "H30",
+      "tag": "preserved",
+      "name": "no new action or domain event; the state gains at most the one approved field",
+      "pass": true,
+      "detail": {
+        "actions": 12,
+        "events": 14,
+        "eventsModuleUnchanged": true,
+        "stateFields": 19,
+        "addedFields": [],
+        "removedFields": []
+      }
+    },
+    {
+      "id": "H31",
+      "tag": "preserved",
+      "name": "no timer, no score change, no new reward; an interception costs the Explorer nothing",
+      "pass": true,
+      "detail": {
+        "timerCallSites": {
+          "useEscapeMaze.ts": {
+            "now": 0,
+            "base": 0
+          },
+          "route-state.ts": {
+            "now": 0,
+            "base": 0
+          },
+          "route-defenders.ts": {
+            "now": 0,
+            "base": 0
+          },
+          "route-hunter-intercept.ts": {
+            "now": 0,
+            "base": 0
+          }
+        },
+        "scoringModuleUnchanged": true,
+        "scoreCallsUnchanged": true,
+        "chestRewards": [
+          "pickaxe",
+          "second-chance"
+        ],
+        "errorsWithoutACapture": 0,
+        "clockInThePolicy": false
+      }
+    },
+    {
+      "id": "H32",
+      "tag": "adaptive",
+      "name": "the solvers call the production module the hook runs — no copy of the policy anywhere else",
+      "pass": false,
+      "detail": {
+        "interceptionModule": "absent"
+      }
+    }
+  ]
+}

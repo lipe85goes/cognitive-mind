@@ -41,10 +41,13 @@ export const FIDELITY_BASE = "f5826b2e587d8381ac2e9d05be5c1b517b97dcdc";
 export const HELPER_FILE = "sentinel-target-distance.mjs";
 export const PACKED_FILE = "dynamic-solver-packed-successors.mjs";
 export const ROTA2_FILE = "rota2-dynamic-solver.mjs";
-/** Load order matters: the helper first, so the solvers that import it can be bound to its in-memory copy. */
-export const SOLVER_FILES = [HELPER_FILE, PACKED_FILE, ROTA2_FILE];
 /** ROTA2-ADAPTIVE-HUNTER-04: the adapter both packed solvers call the production interception policy through. */
 export const INTERCEPT_ADAPTER_FILE = "hunter-interception-support.mjs";
+/**
+ * Load order matters: the helpers first, so the solvers that import them can be bound to their in-memory copies. The
+ * adapter (ROTA2-ADAPTIVE-HUNTER-04) does not exist on a tree before it; the solvers of such a tree do not import it.
+ */
+export const SOLVER_FILES = [INTERCEPT_ADAPTER_FILE, HELPER_FILE, PACKED_FILE, ROTA2_FILE];
 
 const TOOLS_DIR = path.dirname(fileURLToPath(import.meta.url));
 export const REPO_ROOT = path.resolve(TOOLS_DIR, "..", "..");
