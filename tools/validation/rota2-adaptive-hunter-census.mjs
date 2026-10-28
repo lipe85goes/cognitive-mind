@@ -27,6 +27,7 @@
  *        `ROTA2_CENSUS_EXTENDED=1`: also re-explore every INCONCLUSIVE map of D with an explicit, larger limit
  *        (reported apart; never replaces the 3 M-state class).
  */
+import fs from "node:fs";
 import { cellKey, loadRouteRuntime, pathBetween, sameCell } from "./route-runtime-harness.mjs";
 import { ACTIONS, API as REFERENCE_API, buildContext, hunterSupport as referenceHunterSupport } from "./dynamic-solver.mjs";
 import { packedStateContract } from "./dynamic-solver-packed.mjs";
@@ -492,29 +493,72 @@ const stateSpace = {
   limits: { base: {}, now: {} }, rows: [], extended: [], cardinality: null,
 };
 const solverSample = allMaps.filter((m) => m.seed % 1000 < SOLVER_PER_COMBINATION);
+/**
+ * One map's exact analysis, as plain data. `ROTA2_CENSUS_CACHE=<file>` (a scratch file, never the evidence) keeps each
+ * map's record as it completes, so an interrupted census resumes where it stopped instead of re-exploring hours of
+ * graphs; a record is reused only for the same map key and the same tree (`git rev-parse HEAD` + a dirty flag would be
+ * too coarse — the cache is for one run's resumption and is deleted by the caller afterwards).
+ */
+const CACHE = process.env.ROTA2_CENSUS_CACHE ?? null;
+const cached = new Map();
+if (CACHE && fs.existsSync(CACHE)) {
+  for (const line of fs.readFileSync(CACHE, "utf8").split("\n").filter(Boolean)) {
+    const record = JSON.parse(line);
+    cached.set(record.key, record);
+  }
+}
+function analyseMap({ seed, route, difficulty, map }) {
+  const key = `${seed}|${route}|${difficulty}`;
+  if (cached.has(key)) return cached.get(key);
+  const requirePassage = route >= 2;
+  const counts = { calls: 0, intercepting: 0, changed: 0 };
+  const counting = {
+    ...intercept,
+    hunterAdaptsOnRoute: intercept.hunterAdaptsOnRoute,
+    planHunterInterception: (input) => {
+      counts.calls += 1;
+      const plan = intercept.planHunterInterception(input);
+      if (plan) {
+        counts.intercepting += 1;
+        // The pursuit's support for the same transition (the adapter's `blocked` holds the armed traps and the Sentinel).
+        const pursuit = referenceHunterSupport(input.hunter, input.explorer, input.exitPosition, input.walls, input.difficulty, input.blocked, null).map(cellKey).sort();
+        if (!sameJson(pursuit, plan.moves.map(cellKey).sort())) counts.changed += 1;
+      }
+      return plan;
+    },
+  };
+  const before = preSolvers.rota2.classifyMap(map, difficulty, { dynamic: true, requirePassage });
+  const after = solvers.rota2.classifyMap(map, difficulty, { dynamic: true, requirePassage, routeNumber: route, intercept: counting });
+  const record = {
+    key,
+    row: {
+      seed, route, difficulty,
+      base: short(before.label), baseExplored: before.explored, baseLimit: before.graph.resourceLimit ?? null,
+      now: short(after.label), nowExplored: after.explored, nowQuotient: after.directionQuotient, nowLimit: after.graph.resourceLimit ?? null,
+      policyCalls: counts.calls, intercepting: counts.intercepting, supportChanged: counts.changed,
+      baseMs: before.elapsedMs, nowMs: after.elapsedMs,
+    },
+  };
+  if (route === 1) {
+    // What the component costs where it is never read: Route 1 without the quotient.
+    const full = solvers.rota2.classifyMap(map, difficulty, { dynamic: true, requirePassage, routeNumber: 1, intercept, directionQuotient: false });
+    record.row.route1Full = { label: short(full.label), explored: full.explored, limit: full.graph.resourceLimit ?? null };
+  } else if (seed % 1000 < 2) {
+    // Routes 2/3: the direction carried but the policy off — the representation's share of the growth.
+    const off = solvers.rota2.classifyMap(map, difficulty, { dynamic: true, requirePassage, routeNumber: 1, intercept, directionQuotient: false });
+    record.row.representationOnly = { label: short(off.label), explored: off.explored, limit: off.graph.resourceLimit ?? null };
+  }
+  if (EXTENDED && record.row.now === "I") {
+    const ext = solvers.rota2.classifyMap(map, difficulty, { dynamic: true, requirePassage, routeNumber: route, intercept, maxStates: 10_000_000, maxElapsedMs: 900_000 });
+    record.extended = { seed, route, difficulty, label: short(ext.label), explored: ext.explored, limit: ext.graph.resourceLimit ?? null, elapsedMs: ext.elapsedMs };
+  }
+  if (CACHE) fs.appendFileSync(CACHE, `${JSON.stringify(record)}\n`);
+  return record;
+}
 time("D", () => {
-  for (const { seed, route, difficulty, map } of solverSample) {
-    const requirePassage = route >= 2;
-    const counts = { calls: 0, intercepting: 0, changed: 0 };
-    const counting = {
-      ...intercept,
-      hunterAdaptsOnRoute: intercept.hunterAdaptsOnRoute,
-      planHunterInterception: (input) => {
-        counts.calls += 1;
-        const plan = intercept.planHunterInterception(input);
-        if (plan) {
-          counts.intercepting += 1;
-          // The pursuit's support for the same transition (the adapter's `blocked` holds the armed traps and the Sentinel).
-          const pursuit = referenceHunterSupport(input.hunter, input.explorer, input.exitPosition, input.walls, input.difficulty, input.blocked, null).map(cellKey).sort();
-          if (!sameJson(pursuit, plan.moves.map(cellKey).sort())) counts.changed += 1;
-        }
-        return plan;
-      },
-    };
-    const before = preSolvers.rota2.classifyMap(map, difficulty, { dynamic: true, requirePassage });
-    const after = solvers.rota2.classifyMap(map, difficulty, { dynamic: true, requirePassage, routeNumber: route, intercept: counting });
-    const b = short(before.label);
-    const a = short(after.label);
+  for (const entry of solverSample) {
+    const { row, extended } = analyseMap(entry);
+    const { route, base: b, now: a } = row;
     stateSpace.maps += 1;
     tally(stateSpace.base, b);
     tally(stateSpace.now, a);
@@ -522,37 +566,27 @@ time("D", () => {
     (stateSpace.byRoute[route] ??= { base: {}, now: {} });
     tally(stateSpace.byRoute[route].base, b);
     tally(stateSpace.byRoute[route].now, a);
-    if (before.graph.resourceLimit) tally(stateSpace.limits.base, before.graph.resourceLimit);
-    if (after.graph.resourceLimit) tally(stateSpace.limits.now, after.graph.resourceLimit);
-    stateSpace.interceptingTransitions += counts.intercepting;
-    stateSpace.supportChangedTransitions += counts.changed;
-    stateSpace.policyCalls += counts.calls;
-    const row = { seed, route, difficulty, base: b, baseExplored: before.explored, now: a, nowExplored: after.explored, nowQuotient: after.directionQuotient, nowLimit: after.graph.resourceLimit ?? null, policyCalls: counts.calls, intercepting: counts.intercepting, supportChanged: counts.changed, baseMs: before.elapsedMs, nowMs: after.elapsedMs };
+    if (row.baseLimit) tally(stateSpace.limits.base, row.baseLimit);
+    if (row.nowLimit) tally(stateSpace.limits.now, row.nowLimit);
+    stateSpace.interceptingTransitions += row.intercepting;
+    stateSpace.supportChangedTransitions += row.supportChanged;
+    stateSpace.policyCalls += row.policyCalls;
     if (route === 1) {
-      if (after.explored === before.explored) stateSpace.route1QuotientEqualsBase += 1;
+      if (row.nowExplored === row.baseExplored) stateSpace.route1QuotientEqualsBase += 1;
       if (a === b) stateSpace.route1QuotientLabelEqualsBase += 1;
-      // What the component costs where it is never read: Route 1 without the quotient.
-      const full = solvers.rota2.classifyMap(map, difficulty, { dynamic: true, requirePassage, routeNumber: 1, intercept, directionQuotient: false });
       stateSpace.route1Full.maps += 1;
-      stateSpace.route1Full.explored += full.explored;
-      stateSpace.route1Full.baseExplored += before.explored;
-      tally(stateSpace.route1Full.labels, `${b}->${short(full.label)}`);
-      if (full.graph.resourceLimit) stateSpace.route1Full.limited += 1;
-      row.route1Full = { label: short(full.label), explored: full.explored, limit: full.graph.resourceLimit ?? null };
-    } else if (seed % 1000 < 2) {
-      // Routes 2/3: the direction carried but the policy off — the representation's share of the growth.
-      const off = solvers.rota2.classifyMap(map, difficulty, { dynamic: true, requirePassage, routeNumber: 1, intercept, directionQuotient: false });
+      stateSpace.route1Full.explored += row.route1Full.explored;
+      stateSpace.route1Full.baseExplored += row.baseExplored;
+      tally(stateSpace.route1Full.labels, `${b}->${row.route1Full.label}`);
+      if (row.route1Full.limit) stateSpace.route1Full.limited += 1;
+    } else if (row.representationOnly) {
       stateSpace.representationOnly.maps += 1;
-      stateSpace.representationOnly.explored += off.explored;
-      stateSpace.representationOnly.baseExplored += before.explored;
-      row.representationOnly = { label: short(off.label), explored: off.explored, limit: off.graph.resourceLimit ?? null };
+      stateSpace.representationOnly.explored += row.representationOnly.explored;
+      stateSpace.representationOnly.baseExplored += row.baseExplored;
     }
-    if (EXTENDED && a === "I") {
-      const ext = solvers.rota2.classifyMap(map, difficulty, { dynamic: true, requirePassage, routeNumber: route, intercept, maxStates: 10_000_000, maxElapsedMs: 900_000 });
-      stateSpace.extended.push({ seed, route, difficulty, label: short(ext.label), explored: ext.explored, limit: ext.graph.resourceLimit ?? null, elapsedMs: ext.elapsedMs });
-    }
-    stateSpace.rows.push(row);
-    log(`   R${route} ${difficulty} ${seed}: base ${b} (${before.explored}) → now ${a} (${after.explored}${after.graph.resourceLimit ? `, ${after.graph.resourceLimit}` : ""})${row.route1Full ? ` · full ${row.route1Full.label} ${row.route1Full.explored}` : ""}${row.representationOnly ? ` · d-only ${row.representationOnly.label} ${row.representationOnly.explored}` : ""}`);
+    if (extended) stateSpace.extended.push(extended);
+    stateSpace.rows.push({ ...row });
+    log(`   R${route} ${row.difficulty} ${row.seed}: base ${b} (${row.baseExplored}) → now ${a} (${row.nowExplored}${row.nowLimit ? `, ${row.nowLimit}` : ""})${row.route1Full ? ` · full ${row.route1Full.label} ${row.route1Full.explored}` : ""}${row.representationOnly ? ` · d-only ${row.representationOnly.label} ${row.representationOnly.explored}` : ""}`);
     sampleHeap();
   }
   if (solverSample.length) {

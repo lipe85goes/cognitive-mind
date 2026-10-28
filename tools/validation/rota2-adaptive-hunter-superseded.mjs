@@ -31,6 +31,8 @@ export const SUPERSEDED = [
   { file: "docs/archive/rota2-sentinel-solver-fidelity-03/counterfactual-f5826b2.json", metadata: ["run"], validator: "rota2-sentinel-solver-fidelity-tests.mjs --rev=f5826b2" },
   { file: "docs/archive/rota2-sentinel-solver-fidelity-03/mutants.json", metadata: ["run"], validator: "rota2-sentinel-solver-fidelity-tests.mjs --mutants" },
   { file: "docs/archive/rota2-sentinel-solver-fidelity-03/census.json", metadata: ["run"], validator: "rota2-sentinel-solver-fidelity-census.mjs" },
+  // ROTA-DIFFICULTY-04C's session-determinism witness A is a Route 3 game: its scripted walk lasts longer now.
+  { file: "docs/archive/route-difficulty-04c-diagnostic-launcher/diagnostic-launcher.json", metadata: [], validator: "diagnostic-launcher-tests.mjs" },
 ];
 
 const show = (spec) => {

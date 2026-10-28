@@ -253,6 +253,48 @@ gap, the differential's defender-model gap); what each measured at its own
 commit, field by field and reproduced on the base, is in
 `docs/archive/rota2-sentinel-solver-fidelity-03/superseded-records.md`.
 
+**ROTA 2.0 — ADAPTIVE HUNTER (ROTA2-ADAPTIVE-HUNTER-04)** — on Routes 2 and
+3 a step that repeats the direction of the Explorer's previous successful step
+lets the Hunter try to get ahead of it (Easy: the predicted cell in one move;
+Medium: one cell ahead; Hard: up to two), on the current maze; otherwise the
+pursuit decides as before. Route 1 never adapts
+(`docs/ROTA2_ADAPTIVE_HUNTER_04.md`).
+
+```bash
+node tools/validation/rota2-adaptive-hunter-tests.mjs                 # H01–H32 (check/--update evidence)
+node tools/validation/rota2-adaptive-hunter-tests.mjs --rev=ec3e564   # the exact base: every [adaptive] check fails, every [preserved] one holds
+node tools/validation/rota2-adaptive-hunter-tests.mjs --mutants       # M01–M25, each caught by a check it targets
+node tools/validation/rota2-adaptive-hunter-census.mjs                # 1080 maps, Route 1 vs base, runtime both trees, exact classes (check/--update; ~1.5 h)
+node tools/validation/rota2-adaptive-hunter-edit.mjs                  # the third approved delta reverses the tree to its base exactly
+node tools/validation/rota2-adaptive-hunter-superseded.mjs [--write]  # the earlier missions' records this mission moved, field by field
+PLAYWRIGHT_DIR=… node tools/validation/rota2-adaptive-hunter-browser-probe.mjs [--scenario a,b]  # needs `next build && next start -p 3100` and an idle CPU
+```
+
+One implementation: `src/games/escape-maze/route-hunter-intercept.ts`. The
+hook calls it; both packed solvers call the SAME module (loaded from the
+production graph, `dynamic-solver.mjs` `INTERCEPT`) through
+`hunter-interception-support.mjs`, which only translates a packed state; the
+production-backed oracle (`oracleSuccessors`) asks it as `runDefenderPhase`
+does. The packed key gains `d` (radix 5, the last direction; 0 = none) in both
+solvers; on a Route whose Hunter cannot read it (Route 1) the exploration
+identifies states that differ only in `d` — exact (bisimilar), and checked to
+give the pre-mission graph state for state (`directionQuotient: false` keeps
+the full graph). The suite judges production with a contract checker written
+from the mission text (`rota2-adaptive-hunter-lib.mjs`
+`contractInterception`, production `findPathLength` for distances), which no
+model imports (H32).
+
+The approved Rota 2.0 missions stay a chain: `treeBeforeRota2` reverses this
+mission's hunks first (`rota2-adaptive-hunter-edit.json`), then
+DEPENDENT-OBJECTIVES-02's, then DYNAMIC-TRAPS-01's, and hides the module this
+mission adds. The earlier Rota 2.0 suites and censuses hold today's Hunter:
+their oracle and solver differentials model the Route and the production
+module, comparisons with solver trees older than this mission skip the
+transitions where production intercepted (counted), and "the hook is not this
+mission's" reads the working tree with exactly this mission's hunks reversed.
+What each record measured at ec3e564 is listed field by field in
+`docs/archive/rota2-adaptive-hunter-04/superseded-records.md`.
+
 **GAME 03 — ESTÚDIO DAS DESCOBERTAS** — the skeleton (`hidden-objects`), the
 retirement of the Trilha Lógica (`number-trail`), the experience V2 and the
 target pool V1 (GAME03-EXPERIENCE-02). None writes anything unless asked to

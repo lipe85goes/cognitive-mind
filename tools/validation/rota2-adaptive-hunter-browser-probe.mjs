@@ -156,7 +156,7 @@ const MODE_BUTTON = { easy: "Modo Aberto", medium: "Modo Equilibrado", hard: "Mo
 const browser = await chromium.launch({
   args: ["--use-angle=swiftshader", "--use-gl=angle", "--ignore-gpu-blocklist", "--enable-unsafe-swiftshader"],
 });
-const report = { base: BASE, scenarios: {}, pageErrors: [], entryRetries: [], steps: { judged: 0, interceptions: 0, violations: 0 } };
+const report = { base: BASE, scenarios: {}, pageErrors: [], entryRetries: [], steps: { judged: 0, interceptions: 0, violations: 0 }, violations: [] };
 
 async function newSession({ viewport = DESKTOP, touch = false, reducedMotion = "no-preference" } = {}) {
   const context = await browser.newContext({ viewport, deviceScaleFactor: 1, hasTouch: touch, isMobile: touch, reducedMotion });
@@ -214,11 +214,12 @@ async function chooseMode(s, difficulty) {
 }
 const startRoute = async (s) => {
   at("start-route");
+  // The setup screen names the Route ("Rota N"); once it starts, the line shows the objective instead.
+  s.route = (await routeOf(s)) ?? s.route;
   await s.page.locator('button[aria-label="Iniciar rota com a dificuldade selecionada"]').click();
   await s.page.waitForFunction(() => document.querySelector("canvas.route-babylon-board")?.getAttribute("data-status") === "playing", null, { timeout: 60000 });
   await s.page.waitForTimeout(400);
   s.memory = null;
-  s.route = (await routeOf(s)) ?? s.route;
 };
 const routeOf = (s) =>
   s.page.evaluate(() => Number(/Rota (\d+)/.exec(document.querySelector(".rsg-current-objective strong")?.textContent ?? "")?.[1]) || null);
@@ -228,13 +229,20 @@ async function readBoard({ page }) {
     const canvas = document.querySelector("canvas.route-babylon-board");
     const list = (name) => (canvas?.getAttribute(name) ?? "").split(" ").filter(Boolean);
     if (!canvas) return { result: Boolean(document.querySelector(".prm-card")) };
+    // The Sentinel's cell is not a canvas attribute: read it from the board's props. The fiber a DOM node points to can
+    // be the alternate one, a render behind; the props whose Explorer and Hunter match the committed attributes are the
+    // current ones.
     let sentinel = null;
+    const cellText = (cell) => (cell && typeof cell.row === "number" ? `${cell.row},${cell.col}` : null);
     const fiberKey = Object.keys(canvas).find((k) => k.startsWith("__reactFiber$"));
-    for (let fiber = fiberKey ? canvas[fiberKey] : null; fiber; fiber = fiber.return) {
-      const cell = fiber.memoizedProps?.sentinel;
-      if (cell && typeof cell.row === "number") {
-        sentinel = `${cell.row},${cell.col}`;
-        break;
+    for (let fiber = fiberKey ? canvas[fiberKey] : null; fiber && !sentinel; fiber = fiber.return) {
+      for (const candidate of [fiber, fiber.alternate]) {
+        const props = candidate?.memoizedProps;
+        if (!props?.sentinel || typeof props.sentinel.row !== "number") continue;
+        if (cellText(props.player) === canvas.getAttribute("data-player-cell") && cellText(props.guardian) === canvas.getAttribute("data-guardian-cell")) {
+          sentinel = cellText(props.sentinel);
+          break;
+        }
       }
     }
     const status = document.querySelector('.rsg-objective-message[role="status"]');
@@ -318,7 +326,15 @@ async function judgedStep(s, direction, before = null) {
     }
   }
   if (plan && playing) report.steps.interceptions += 1;
-  if (violation) report.steps.violations += 1;
+  if (violation) {
+    report.steps.violations += 1;
+    report.violations.push({
+      stage, violation, route: s.route, difficulty: s.difficulty, previous: verdict.previous, direction,
+      player: [before.player, after.player], hunter: [before.guardian, hunterAfter], sentinel: [before.sentinel, after.sentinel],
+      plan: plan ? plan.moves.map((m) => key(m.row, m.col)) : null, pursuit, message: after.message,
+      armed: [...armedAfter], walls: [...walls].sort().join(" "), exit: before.exit,
+    });
+  }
   return {
     ...verdict, before, after, input, plan, playing, intercepted, outranked, violation,
     horizon: plan?.horizon ?? null,
@@ -467,7 +483,7 @@ async function openRoute(s, label, route, difficulty = "easy") {
     await loseAndContinue(s, `${label}:r${r}`);
     await startRoute(s);
   }
-  return routeOf(s);
+  return s.route;
 }
 /**
  * Run `plan(s)` on Route `route` (mode `difficulty`) until it returns a verdict: a Route still on is restarted in place,
@@ -521,7 +537,7 @@ async function scenarioHome() {
 }
 
 const scenarioRoute1 = () =>
-  onRoute("route1", { route: 1 }, async (s) => {
+  onRoute("route1", { route: 1, difficulty: "medium" }, async (s) => {
     const { steps } = await hunt(s, () => false, { budget: 40 });
     const sum = summarize(steps);
     const tempting = steps.filter((x) => x.wouldInterceptOnRoute2 && x.playing);
@@ -531,7 +547,7 @@ const scenarioRoute1 = () =>
   });
 
 const scenarioRoute2Repeat = () =>
-  onRoute("route2Repeat", { route: 2 }, async (s) => {
+  onRoute("route2Repeat", { route: 2, difficulty: "medium" }, async (s) => {
     const { found, steps } = await hunt(s, (x) => Boolean(x.plan) && x.playing);
     if (!found) return null;
     await witness(s, "route2-interception");
@@ -540,7 +556,7 @@ const scenarioRoute2Repeat = () =>
   });
 
 const scenarioRoute2Change = () =>
-  onRoute("route2Change", { route: 2 }, async (s) => {
+  onRoute("route2Change", { route: 2, difficulty: "medium" }, async (s) => {
     const { steps } = await hunt(s, () => false, { budget: 30, neverRepeat: true, repeatSeeking: false });
     const sum = summarize(steps);
     const changes = steps.filter((x) => x.stepped && x.previous && x.previous !== x.direction && x.playing);
@@ -566,7 +582,7 @@ const byHorizon = (label, difficulty, horizon) => () =>
   });
 
 const scenarioWallProjection = () =>
-  onRoute("wallProjection", { route: 2, anyAdaptive: true }, async (s) => {
+  onRoute("wallProjection", { route: 2, difficulty: "medium", anyAdaptive: true }, async (s) => {
     const { found, steps } = await hunt(s, (x) => x.previous === x.direction && x.predictionIntoWall && x.playing, { budget: 80 });
     if (!found) return null;
     const sum = summarize(steps);
@@ -574,7 +590,7 @@ const scenarioWallProjection = () =>
   });
 
 const scenarioDynamicWall = () =>
-  onRoute("dynamicWall", { route: 2, anyAdaptive: true }, async (s) => {
+  onRoute("dynamicWall", { route: 2, difficulty: "medium", anyAdaptive: true }, async (s) => {
     const start = await readBoard(s);
     const link = start.links[0];
     if (!link) return null;
@@ -600,7 +616,7 @@ const scenarioDynamicWall = () =>
   });
 
 const scenarioArmedTrap = () =>
-  onRoute("armedTrap", { route: 2, anyAdaptive: true }, async (s) => {
+  onRoute("armedTrap", { route: 2, difficulty: "medium", anyAdaptive: true }, async (s) => {
     const start = await readBoard(s);
     const trap = start.traps.find((t) => !start.triggered.includes(t));
     if (!trap) return null;
@@ -621,7 +637,7 @@ const scenarioArmedTrap = () =>
   });
 
 const scenarioSecondChance = () =>
-  onRoute("secondChance", { route: 2, anyAdaptive: true }, async (s) => {
+  onRoute("secondChance", { route: 2, difficulty: "medium", anyAdaptive: true }, async (s) => {
     const board = await readBoard(s);
     if (!board.chest) return null;
     for (let i = 0; i < 50; i += 1) {
@@ -653,7 +669,7 @@ const scenarioSecondChance = () =>
   });
 
 const scenarioRestart = () =>
-  onRoute("restart", { route: 2, anyAdaptive: true }, async (s) => {
+  onRoute("restart", { route: 2, difficulty: "medium", anyAdaptive: true }, async (s) => {
     const { steps } = await hunt(s, (x) => x.stepped && x.previous !== null, { budget: 10 });
     const before = steps.filter((x) => x.stepped).at(-1);
     if (!before) return null;
@@ -690,7 +706,7 @@ async function scenarioContinuation() {
 }
 
 const anInterception = (label, options) =>
-  onRoute(label, { route: 2, anyAdaptive: true, ...options }, async (s) => {
+  onRoute(label, { route: 2, difficulty: "medium", anyAdaptive: true, ...options }, async (s) => {
     const { found, steps } = await hunt(s, (x) => Boolean(x.plan) && x.playing && x.intercepted);
     if (!found) return null;
     await witness(s, `${label}-interception`);
@@ -737,6 +753,7 @@ const held = SCENARIOS.every((name) => report.scenarios[name]?.held) && report.p
 log(`steps judged: ${report.steps.judged} · interceptions: ${report.steps.interceptions} · violations: ${report.steps.violations}`);
 log(`page errors: ${report.pageErrors.length}${report.pageErrors.length ? ` — ${report.pageErrors[0]}` : ""}`);
 log(`entry retries: ${JSON.stringify(report.entryRetries)}`);
+if (report.violations.length) log(`violations: ${JSON.stringify(report.violations).slice(0, 3000)}`);
 if (OUT) fs.writeFileSync(path.join(OUT, "browser-probe.json"), `${JSON.stringify(report, null, 2)}\n`);
 log(held ? "ROTA2_ADAPTIVE_HUNTER_BROWSER_HELD" : "ROTA2_ADAPTIVE_HUNTER_BROWSER_FAILED");
 process.exit(held ? EXIT_OK : EXIT_FAILED);
