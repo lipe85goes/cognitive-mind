@@ -148,7 +148,7 @@ nenhum modelo importa (H32). `[preserved]`: deve valer na base e aqui;
 | H13 | previsão de 1 casa bloqueada → perseguição (todo modo) | 17 492 repetições; 0 interceptações |
 | H14 | previsão atrás de parede nunca é andável (labirinto fechado e aberto) | 10 671 previsões contra parede: 0; 137 pela passagem aberta |
 | H15–H17 | o Caçador nunca entra em armadilha armada, na Sentinela, no portal | 13 219 planos; 0 movimentos ou alvos ilegais; 0 posições reais ilegais |
-| H18 | no máximo uma casa, legal; captura só por movimento real | 949 escolhas; 37 capturas, 0 por interceptação; 0 estados inválidos |
+| H18 | no máximo uma casa, legal; captura só por movimento real | fixture fixa (parede (3,4) entre o Caçador e a previsão (4,4)): Difícil (2,3)/(2,5), Médio (2,3), Fácil sem plano — nunca (3,4); 949 escolhas; 37 capturas, 0 por interceptação; 0 estados inválidos |
 | H19 | ordem fixa dos movimentos; perguntar não sorteia | 13 219 planos, 2 670 empates; 0 respostas diferentes, 0 sorteios |
 | H20 | o hook sorteia só no empate e usa o sorteado | 801 turnos de movimento único (0 sorteios), 148 empates (1 sorteio cada) |
 | H21 | o suporte do solver estático contém toda saída da produção | 7 110 turnos (477 de interceptação); 0 fora |
