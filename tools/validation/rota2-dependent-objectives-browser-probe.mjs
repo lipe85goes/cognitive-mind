@@ -24,10 +24,21 @@
  * A Route lost before its scenario finishes is simply the next attempt (counted). Under software WebGL the entry
  * watchdog can expire: "Tentar novamente" is pressed (the product's own retry) and counted.
  *
+ * Fixtures (`--entry launcher`, test-only). From Home every board is drawn from an unseeded stream, so a Route 2
+ * scenario is a search over random boards. `--entry launcher` (a `next dev` server: `/lab/route-launcher` exists only
+ * there) opens Route 2 through the product's own diagnostic seam instead — `armRouteRandomSeed`, the map and every
+ * later draw (the Hunter's included) fixed by `--seed`, the mode by `--difficulty` (default easy, the Home default).
+ * The same scripted plan then plays ONE deterministic game: the same fixture gives the same game on any build that
+ * plays it the same, so a fixture compares two builds turn for turn. There are no retries (a retry of a fixture is
+ * the same game). The scenarios that start on Route 2 take it; route1 and continuation stay on the Home entry.
+ *
  * Usage:
  *   next build && next start -p 3100
  *   node tools/validation/rota2-dependent-objectives-browser-probe.mjs [--base URL] [--scenario a,b] [--attempts N]
  *        [--out DIR] [--viewport 480x360] [--mobile-viewport 360x640]
+ *   next dev -p 3110
+ *   node tools/validation/rota2-dependent-objectives-browser-probe.mjs --base http://localhost:3110 --entry launcher
+ *        --seed N [--difficulty easy|medium|hard] --scenario lightsFirst
  *
  * Writes nothing unless `--out DIR` (witness screenshots and the run's JSON). Exit: 0 held · 1 failed · 3 usage.
  */
@@ -62,6 +73,12 @@ const arg = (name, fallback) => {
 const BASE = arg("--base", "http://localhost:3100");
 const OUT = arg("--out", null);
 const ATTEMPTS = Number(arg("--attempts", "6"));
+const ENTRY = arg("--entry", "home");
+const FIXTURE = ENTRY === "launcher" ? { route: 2, seed: Number(arg("--seed", "NaN")), difficulty: arg("--difficulty", "easy") } : null;
+if (!["home", "launcher"].includes(ENTRY) || (FIXTURE && (!Number.isInteger(FIXTURE.seed) || FIXTURE.seed < 0 || !["easy", "medium", "hard"].includes(FIXTURE.difficulty)))) {
+  console.error("usage: --entry home | --entry launcher --seed <non-negative integer> [--difficulty easy|medium|hard]");
+  process.exit(EXIT_USAGE);
+}
 const SCENARIOS = arg("--scenario", "route1,lightsFirst,passageFirst,pickaxe,secondChance,early,continuation,restart,mobile,reduced").split(",");
 const size = (text) => {
   const [width, height] = text.split("x").map(Number);
@@ -142,7 +159,7 @@ const directionOf = (from, to) => {
 const browser = await chromium.launch({
   args: ["--use-angle=swiftshader", "--use-gl=angle", "--ignore-gpu-blocklist", "--enable-unsafe-swiftshader"],
 });
-const report = { base: BASE, scenarios: {}, pageErrors: [], entryRetries: [] };
+const report = { base: BASE, entry: ENTRY, fixture: FIXTURE, scenarios: {}, pageErrors: [], entryRetries: [] };
 
 async function newSession({ viewport = DESKTOP, touch = false, reducedMotion = "no-preference" } = {}) {
   const context = await browser.newContext({ viewport, deviceScaleFactor: 1, hasTouch: touch, isMobile: touch, reducedMotion });
@@ -365,8 +382,24 @@ async function restartFromDetails(s) {
   await s.page.locator(".rsg-details-close").click();
   await s.page.waitForTimeout(500);
 }
-/** A Route 2 session: Home → Route 1 lost → Route 2 started. */
+/** A Route 2 fixture: the launcher (next dev) arms `FIXTURE.seed` and opens Route 2 in `FIXTURE.difficulty`. */
+async function openRoute2ViaLauncher(s, label) {
+  const { page } = s;
+  at(`${label}:launcher`);
+  await page.goto(`${BASE}/lab/route-launcher`, { waitUntil: "domcontentloaded", timeout: 180000 });
+  await page.getByLabel("Route", { exact: true }).fill(String(FIXTURE.route), { timeout: 180000 });
+  await page.getByLabel("Difficulty", { exact: true }).selectOption(FIXTURE.difficulty);
+  await page.getByLabel("Seed", { exact: true }).fill(String(FIXTURE.seed));
+  await page.getByRole("button", { name: "Launch", exact: true }).click();
+  await page.locator(".rsg-shell").waitFor({ state: "visible", timeout: 180000 });
+  await page.locator('.route-babylon-wrap[data-visual-state="ready"]').waitFor({ timeout: 180000 });
+  const route = await routeOf(s);
+  await startRoute(s);
+  return route;
+}
+/** A Route 2 session: Home → Route 1 lost → Route 2 started (or the launcher's fixture). */
 async function openRoute2(s, label) {
+  if (FIXTURE) return openRoute2ViaLauncher(s, label);
   await enterRota(s, label);
   await startRoute(s);
   await loseAndContinue(s, `${label}:r1`);
@@ -381,14 +414,16 @@ async function onRoute2(label, sessionOptions, plan) {
   try {
     let route = await openRoute2(s, label);
     if (route !== 2) return { held: false, error: `expected Route 2, reached ${route}` };
-    for (let attempt = 1; attempt <= ATTEMPTS; attempt += 1) {
+    // A fixture is one deterministic game: a retry would replay it.
+    for (let attempt = 1; attempt <= (FIXTURE ? 1 : ATTEMPTS); attempt += 1) {
       const board = await readBoard(s);
       const link = board.links[0];
       const out = await plan(s, link, (name) => {
         at(`${label}:${name}`);
         attempts[attempt - 1] = name;
       });
-      if (out) return { attempt, attempts, route, ...out };
+      if (out) return { attempt, attempts, route, ...(FIXTURE ? { fixture: FIXTURE } : {}), ...out };
+      if (FIXTURE) return { held: false, attempts, route, fixture: FIXTURE, stoppedAt: await readBoard(s), error: "the fixture's game did not finish the plan" };
       const now = await readBoard(s);
       if (now.status === "playing") await restartFromDetails(s);
       else {
