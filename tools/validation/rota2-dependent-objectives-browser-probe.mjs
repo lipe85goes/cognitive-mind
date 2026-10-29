@@ -387,9 +387,20 @@ async function openRoute2ViaLauncher(s, label) {
   const { page } = s;
   at(`${label}:launcher`);
   await page.goto(`${BASE}/lab/route-launcher`, { waitUntil: "domcontentloaded", timeout: 180000 });
-  await page.getByLabel("Route", { exact: true }).fill(String(FIXTURE.route), { timeout: 180000 });
-  await page.getByLabel("Difficulty", { exact: true }).selectOption(FIXTURE.difficulty);
-  await page.getByLabel("Seed", { exact: true }).fill(String(FIXTURE.seed));
+  // The form is client state (defaults: Route 3, hard, another seed): fill it only once React has hydrated it, or
+  // the launch reads the defaults. Each control sits inside its <label> (the select's name also carries its option).
+  await page.waitForFunction(
+    () => {
+      const button = [...document.querySelectorAll("button")].find((b) => b.textContent.trim() === "Launch");
+      return Boolean(button && Object.keys(button).some((key) => key.startsWith("__reactProps")));
+    },
+    null,
+    { timeout: 180000, polling: 100 },
+  );
+  const control = (label, tag) => page.locator("label", { hasText: label }).locator(tag);
+  await control("Route", "input").fill(String(FIXTURE.route), { timeout: 180000 });
+  await control("Difficulty", "select").selectOption(FIXTURE.difficulty);
+  await control("Seed", "input").fill(String(FIXTURE.seed));
   await page.getByRole("button", { name: "Launch", exact: true }).click();
   await page.locator(".rsg-shell").waitFor({ state: "visible", timeout: 180000 });
   await page.locator('.route-babylon-wrap[data-visual-state="ready"]').waitFor({ timeout: 180000 });
