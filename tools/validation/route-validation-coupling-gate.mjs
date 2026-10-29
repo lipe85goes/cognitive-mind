@@ -229,6 +229,16 @@ const ALLOWED = {
     reason: "STRUCTURAL_ASSERTION",
     note: "ROTA2-ADAPTIVE-HUNTER-04: the third approved delta's manifest names the files it touches and the module it adds (reversed first, before ROTA2-DEPENDENT-OBJECTIVES-02's and ROTA2-DYNAMIC-TRAPS-01's, in route-module-loader's treeBeforeRota2)",
   },
+  "rota2-adaptive-hunter-tests.mjs": {
+    kinds: ["hook-path"],
+    reason: "STRUCTURAL_ASSERTION",
+    note: "ROTA2-ADAPTIVE-HUNTER-04: names the hook among the files it reads structurally (timer call sites, H31) and scans for a copy of the policy (H32), and mutates it by file (M05, M23); its Rota runs through the graph",
+  },
+  "rota2-adaptive-hunter-lib.mjs": {
+    kinds: ["rota-module-path"],
+    reason: "STRUCTURAL_ASSERTION",
+    note: "ROTA2-ADAPTIVE-HUNTER-04: read-only recorder lines in route-events.ts and route-defenders.ts (the turn's events and the defenders' order), as ROTA2-DEPENDENT-OBJECTIVES-02's census; its Rota runs through the graph",
+  },
   "route-board-loader-tests.mjs": { kinds: ["rota-module-path", "rota-ts-compile"], reason: "UI_STAGE" },
   "diagnostic-launcher-tests.mjs": {
     kinds: ["rota-module-path"],
