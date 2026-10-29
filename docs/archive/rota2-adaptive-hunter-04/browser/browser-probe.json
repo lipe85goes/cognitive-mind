@@ -1,0 +1,742 @@
+{
+  "base": "http://localhost:3100",
+  "scenarios": {
+    "home": {
+      "setup": {
+        "shell": true,
+        "startButton": true,
+        "modes": [
+          "Modo Aberto: Mais aberto",
+          "Modo Equilibrado: Equilibrado",
+          "Modo Desafiador: Mais caminhos"
+        ]
+      },
+      "route": 1,
+      "status": "playing",
+      "held": true,
+      "seconds": 47
+    },
+    "route1": {
+      "attempt": 1,
+      "tries": [
+        {
+          "attempt": 1,
+          "route": 1,
+          "held": true,
+          "steps": 40
+        }
+      ],
+      "route": 1,
+      "difficulty": "medium",
+      "summary": {
+        "steps": 40,
+        "repeats": 9,
+        "interceptions": 0,
+        "messages": 0,
+        "statusLineOnScreen": 0,
+        "violations": []
+      },
+      "repeatsThatWouldInterceptOnRoute2": 4,
+      "held": true,
+      "seconds": 90
+    },
+    "route2Repeat": {
+      "attempt": 1,
+      "tries": [
+        {
+          "attempt": 1,
+          "route": 2,
+          "held": true,
+          "steps": 2
+        }
+      ],
+      "route": 2,
+      "difficulty": "medium",
+      "summary": {
+        "steps": 2,
+        "repeats": 1,
+        "interceptions": 1,
+        "messages": 1,
+        "statusLineOnScreen": 0,
+        "violations": []
+      },
+      "interception": {
+        "route": 2,
+        "difficulty": "medium",
+        "previous": "up",
+        "direction": "up",
+        "horizon": 1,
+        "hunter": [
+          "2,4",
+          "3,4"
+        ],
+        "planMoves": [
+          "3,4"
+        ],
+        "message": "O Caçador tenta cortar seu caminho.",
+        "violation": null
+      },
+      "held": true,
+      "seconds": 87
+    },
+    "route2Change": {
+      "attempt": 1,
+      "tries": [
+        {
+          "attempt": 1,
+          "route": 2,
+          "held": true,
+          "steps": 30
+        }
+      ],
+      "route": 2,
+      "difficulty": "medium",
+      "summary": {
+        "steps": 30,
+        "repeats": 0,
+        "interceptions": 0,
+        "messages": 0,
+        "statusLineOnScreen": 0,
+        "violations": []
+      },
+      "directionChanges": 29,
+      "held": true,
+      "seconds": 86
+    },
+    "route3Easy": {
+      "attempt": 1,
+      "tries": [
+        {
+          "attempt": 1,
+          "route": 3,
+          "held": true,
+          "steps": 2
+        }
+      ],
+      "route": 3,
+      "difficulty": "easy",
+      "summary": {
+        "steps": 2,
+        "repeats": 1,
+        "interceptions": 0,
+        "messages": 0,
+        "statusLineOnScreen": 0,
+        "violations": []
+      },
+      "distantPrediction": {
+        "route": 3,
+        "difficulty": "easy",
+        "previous": "up",
+        "direction": "up",
+        "horizon": null,
+        "hunter": [
+          "0,4",
+          "1,4"
+        ],
+        "planMoves": null,
+        "message": "Boa jogada. O Caçador se moveu.",
+        "violation": null
+      },
+      "held": true,
+      "seconds": 127
+    },
+    "route3Medium": {
+      "attempt": 1,
+      "tries": [
+        {
+          "attempt": 1,
+          "route": 3,
+          "held": true,
+          "steps": 2
+        }
+      ],
+      "route": 3,
+      "difficulty": "medium",
+      "summary": {
+        "steps": 2,
+        "repeats": 1,
+        "interceptions": 1,
+        "messages": 1,
+        "statusLineOnScreen": 0,
+        "violations": []
+      },
+      "interception": {
+        "route": 3,
+        "difficulty": "medium",
+        "previous": "right",
+        "direction": "right",
+        "horizon": 1,
+        "hunter": [
+          "1,3",
+          "2,3"
+        ],
+        "planMoves": [
+          "2,3"
+        ],
+        "message": "O Caçador tenta cortar seu caminho.",
+        "violation": null
+      },
+      "held": true,
+      "seconds": 145
+    },
+    "route3Hard": {
+      "attempt": 2,
+      "tries": [
+        {
+          "attempt": 1,
+          "route": 3,
+          "held": false,
+          "steps": null
+        },
+        {
+          "attempt": 2,
+          "route": 3,
+          "held": true,
+          "steps": 38
+        }
+      ],
+      "route": 3,
+      "difficulty": "hard",
+      "summary": {
+        "steps": 38,
+        "repeats": 4,
+        "interceptions": 3,
+        "messages": 3,
+        "statusLineOnScreen": 35,
+        "violations": []
+      },
+      "interception": {
+        "route": 3,
+        "difficulty": "hard",
+        "previous": "right",
+        "direction": "right",
+        "horizon": 2,
+        "hunter": [
+          "8,2",
+          "8,1"
+        ],
+        "planMoves": [
+          "7,2",
+          "8,1"
+        ],
+        "message": "O Caçador tenta cortar seu caminho.",
+        "violation": null
+      },
+      "held": true,
+      "seconds": 220
+    },
+    "wallProjection": {
+      "attempt": 1,
+      "tries": [
+        {
+          "attempt": 1,
+          "route": 2,
+          "held": true,
+          "steps": 26
+        }
+      ],
+      "route": 2,
+      "difficulty": "medium",
+      "summary": {
+        "steps": 26,
+        "repeats": 15,
+        "interceptions": 12,
+        "messages": 10,
+        "statusLineOnScreen": 0,
+        "violations": []
+      },
+      "repeatIntoAWall": {
+        "route": 2,
+        "difficulty": "medium",
+        "previous": "right",
+        "direction": "right",
+        "horizon": null,
+        "hunter": [
+          "8,4",
+          "7,4"
+        ],
+        "planMoves": null,
+        "message": "Boa jogada. O Caçador se moveu.",
+        "violation": null
+      },
+      "held": true,
+      "seconds": 106
+    },
+    "dynamicWall": {
+      "attempt": 1,
+      "tries": [
+        {
+          "attempt": 1,
+          "route": 2,
+          "held": true,
+          "steps": 2
+        }
+      ],
+      "route": 2,
+      "difficulty": "medium",
+      "summary": {
+        "steps": 2,
+        "repeats": 1,
+        "interceptions": 1,
+        "messages": 1,
+        "statusLineOnScreen": 0,
+        "violations": []
+      },
+      "openedWall": "6,2",
+      "interception": {
+        "route": 2,
+        "difficulty": "medium",
+        "previous": "down",
+        "direction": "down",
+        "horizon": 1,
+        "hunter": [
+          "2,2",
+          "2,3"
+        ],
+        "planMoves": [
+          "2,3"
+        ],
+        "message": "O Caçador tenta cortar seu caminho.",
+        "violation": null
+      },
+      "planDiffersOnTheStaleMaze": false,
+      "held": true,
+      "seconds": 82
+    },
+    "armedTrap": {
+      "attempt": 1,
+      "tries": [
+        {
+          "attempt": 1,
+          "route": 2,
+          "held": true,
+          "steps": 3
+        }
+      ],
+      "route": 2,
+      "difficulty": "medium",
+      "summary": {
+        "steps": 3,
+        "repeats": 1,
+        "interceptions": 1,
+        "messages": 1,
+        "statusLineOnScreen": 0,
+        "violations": []
+      },
+      "armedTraps": [
+        "6,1"
+      ],
+      "interception": {
+        "route": 2,
+        "difficulty": "medium",
+        "previous": "up",
+        "direction": "up",
+        "horizon": 1,
+        "hunter": [
+          "1,0",
+          "1,1"
+        ],
+        "planMoves": [
+          "1,1"
+        ],
+        "message": "O Caçador tenta cortar seu caminho.",
+        "violation": null
+      },
+      "hunterOnAnArmedTrap": 0,
+      "held": true,
+      "seconds": 79
+    },
+    "secondChance": {
+      "attempt": 1,
+      "tries": [
+        {
+          "attempt": 1,
+          "route": 2,
+          "held": true,
+          "steps": null
+        }
+      ],
+      "route": 2,
+      "difficulty": "medium",
+      "message": "Segunda Chance: você resistiu e os defensores recuaram.",
+      "statusAfter": "playing",
+      "stepped": true,
+      "held": true,
+      "seconds": 114
+    },
+    "restart": {
+      "attempt": 1,
+      "tries": [
+        {
+          "attempt": 1,
+          "route": 2,
+          "held": true,
+          "steps": null
+        }
+      ],
+      "route": 2,
+      "difficulty": "medium",
+      "rememberedBeforeRestart": "right",
+      "firstStepAfterRestart": {
+        "route": 2,
+        "difficulty": "medium",
+        "previous": null,
+        "direction": "right",
+        "horizon": null,
+        "hunter": [
+          "2,3",
+          "2,2"
+        ],
+        "planMoves": null,
+        "message": "Boa jogada. O Caçador se moveu.",
+        "violation": null
+      },
+      "held": true,
+      "seconds": 84
+    },
+    "continuation": {
+      "firsts": [
+        {
+          "route": 1,
+          "step": {
+            "route": 1,
+            "difficulty": "easy",
+            "previous": null,
+            "direction": "up",
+            "horizon": null,
+            "hunter": [
+              "0,4",
+              "0,5"
+            ],
+            "planMoves": null,
+            "message": "Boa jogada. O Caçador se moveu.",
+            "violation": null
+          },
+          "noAdaptation": true
+        },
+        {
+          "route": 2,
+          "step": {
+            "route": 2,
+            "difficulty": "easy",
+            "previous": null,
+            "direction": "right",
+            "horizon": null,
+            "hunter": [
+              "1,4",
+              "0,4"
+            ],
+            "planMoves": null,
+            "message": "Boa jogada. O Caçador se moveu.",
+            "violation": null
+          },
+          "noAdaptation": true
+        },
+        {
+          "route": 3,
+          "step": {
+            "route": 3,
+            "difficulty": "easy",
+            "previous": null,
+            "direction": "up",
+            "horizon": null,
+            "hunter": [
+              "1,6",
+              "0,6"
+            ],
+            "planMoves": null,
+            "message": "Boa jogada. O Caçador se moveu.",
+            "violation": null
+          },
+          "noAdaptation": true
+        }
+      ],
+      "held": true,
+      "seconds": 100
+    },
+    "mobile": {
+      "attempt": 1,
+      "tries": [
+        {
+          "attempt": 1,
+          "route": 2,
+          "held": true,
+          "steps": 2
+        }
+      ],
+      "route": 2,
+      "difficulty": "medium",
+      "summary": {
+        "steps": 2,
+        "repeats": 1,
+        "interceptions": 1,
+        "messages": 1,
+        "statusLineOnScreen": 2,
+        "violations": []
+      },
+      "interception": {
+        "route": 2,
+        "difficulty": "medium",
+        "previous": "right",
+        "direction": "right",
+        "horizon": 1,
+        "hunter": [
+          "2,4",
+          "2,5"
+        ],
+        "planMoves": [
+          "2,3",
+          "2,5"
+        ],
+        "message": "O Caçador tenta cortar seu caminho.",
+        "violation": null
+      },
+      "message": "O Caçador tenta cortar seu caminho.",
+      "messageOnScreen": true,
+      "onScreenRequired": true,
+      "statusRole": "status",
+      "layout": {
+        "horizontalScroll": false
+      },
+      "held": true,
+      "seconds": 110
+    },
+    "keyboard": {
+      "attempt": 1,
+      "tries": [
+        {
+          "attempt": 1,
+          "route": 2,
+          "held": true,
+          "steps": 2
+        }
+      ],
+      "route": 2,
+      "difficulty": "medium",
+      "summary": {
+        "steps": 2,
+        "repeats": 1,
+        "interceptions": 1,
+        "messages": 1,
+        "statusLineOnScreen": 0,
+        "violations": []
+      },
+      "interception": {
+        "route": 2,
+        "difficulty": "medium",
+        "previous": "right",
+        "direction": "right",
+        "horizon": 1,
+        "hunter": [
+          "2,2",
+          "2,1"
+        ],
+        "planMoves": [
+          "2,1"
+        ],
+        "message": "O Caçador tenta cortar seu caminho.",
+        "violation": null
+      },
+      "message": "O Caçador tenta cortar seu caminho.",
+      "messageOnScreen": false,
+      "onScreenRequired": false,
+      "statusRole": "status",
+      "layout": {
+        "horizontalScroll": false
+      },
+      "held": true,
+      "seconds": 75
+    },
+    "reduced": {
+      "attempt": 1,
+      "tries": [
+        {
+          "attempt": 1,
+          "route": 2,
+          "held": true,
+          "steps": 3
+        }
+      ],
+      "route": 2,
+      "difficulty": "medium",
+      "summary": {
+        "steps": 3,
+        "repeats": 1,
+        "interceptions": 1,
+        "messages": 1,
+        "statusLineOnScreen": 0,
+        "violations": []
+      },
+      "interception": {
+        "route": 2,
+        "difficulty": "medium",
+        "previous": "right",
+        "direction": "right",
+        "horizon": 1,
+        "hunter": [
+          "5,7",
+          "6,7"
+        ],
+        "planMoves": [
+          "6,7"
+        ],
+        "message": "O Caçador tenta cortar seu caminho.",
+        "violation": null
+      },
+      "message": "O Caçador tenta cortar seu caminho.",
+      "messageOnScreen": false,
+      "onScreenRequired": false,
+      "statusRole": "status",
+      "layout": {
+        "horizontalScroll": false
+      },
+      "held": true,
+      "seconds": 64
+    }
+  },
+  "pageErrors": [],
+  "entryRetries": [
+    {
+      "entry": "home",
+      "retries": 0
+    },
+    {
+      "entry": "route1",
+      "retries": 0
+    },
+    {
+      "entry": "route2Repeat",
+      "retries": 0
+    },
+    {
+      "entry": "route2Repeat:r1",
+      "retries": 0
+    },
+    {
+      "entry": "route2Change",
+      "retries": 0
+    },
+    {
+      "entry": "route2Change:r1",
+      "retries": 0
+    },
+    {
+      "entry": "route3Easy",
+      "retries": 0
+    },
+    {
+      "entry": "route3Easy:r1",
+      "retries": 0
+    },
+    {
+      "entry": "route3Easy:r2",
+      "retries": 0
+    },
+    {
+      "entry": "route3Medium",
+      "retries": 0
+    },
+    {
+      "entry": "route3Medium:r1",
+      "retries": 0
+    },
+    {
+      "entry": "route3Medium:r2",
+      "retries": 0
+    },
+    {
+      "entry": "route3Hard",
+      "retries": 0
+    },
+    {
+      "entry": "route3Hard:r1",
+      "retries": 0
+    },
+    {
+      "entry": "route3Hard:r2",
+      "retries": 0
+    },
+    {
+      "entry": "wallProjection",
+      "retries": 0
+    },
+    {
+      "entry": "wallProjection:r1",
+      "retries": 0
+    },
+    {
+      "entry": "dynamicWall",
+      "retries": 0
+    },
+    {
+      "entry": "dynamicWall:r1",
+      "retries": 0
+    },
+    {
+      "entry": "armedTrap",
+      "retries": 0
+    },
+    {
+      "entry": "armedTrap:r1",
+      "retries": 0
+    },
+    {
+      "entry": "secondChance",
+      "retries": 0
+    },
+    {
+      "entry": "secondChance:r1",
+      "retries": 0
+    },
+    {
+      "entry": "restart",
+      "retries": 0
+    },
+    {
+      "entry": "restart:r1",
+      "retries": 0
+    },
+    {
+      "entry": "continuation",
+      "retries": 0
+    },
+    {
+      "entry": "continuation:r1",
+      "retries": 0
+    },
+    {
+      "entry": "continuation:r2",
+      "retries": 0
+    },
+    {
+      "entry": "mobile",
+      "retries": 0
+    },
+    {
+      "entry": "mobile:r1",
+      "retries": 0
+    },
+    {
+      "entry": "keyboard",
+      "retries": 0
+    },
+    {
+      "entry": "keyboard:r1",
+      "retries": 0
+    },
+    {
+      "entry": "reduced",
+      "retries": 0
+    },
+    {
+      "entry": "reduced:r1",
+      "retries": 0
+    }
+  ],
+  "steps": {
+    "judged": 256,
+    "interceptions": 50,
+    "violations": 0
+  },
+  "violations": []
+}
