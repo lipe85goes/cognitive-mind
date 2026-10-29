@@ -341,6 +341,13 @@ async function collectLights(s, avoid = [], { keepLast = false } = {}) {
 }
 async function resultCard(s) {
   at("result-card");
+  if (FIXTURE) {
+    // The launcher shows no result card: its result line reads the same GameResult (`details.won` → "vitória").
+    const line = s.page.locator("p", { hasText: "Fim:" });
+    await line.waitFor({ timeout: 30000 });
+    const text = (await line.innerText()).trim();
+    return { won: /^Fim:\s*vitória/.test(text), title: text.split("·")[0].trim(), source: "launcher result line" };
+  }
   await s.page.locator(".prm-card").waitFor({ timeout: 30000 });
   return s.page.evaluate(() => {
     const card = document.querySelector(".prm-card");
