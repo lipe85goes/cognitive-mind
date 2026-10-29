@@ -303,6 +303,51 @@ Fácil quase não muda.
   módulo é chamado 305 M vezes. Mapas no limite de 3 M estados: base 6 →
   missão 19 (todos `I`; o limite não foi aumentado).
 
+### 6.6 Navegador (`rota2-adaptive-hunter-browser-probe.mjs`) — 16/16
+
+`next build && next start`, Chromium/SwiftShader a 480×360 (360×640 no móvel).
+Cada passo é julgado contra o verificador de contrato com o tabuleiro lido da
+tela (props do canvas) e a mensagem lida da região `role="status"`: **256
+passos, 50 interceptações, 0 violações, 0 erros de página, 0 novas tentativas
+de entrada** (`browser/browser-probe.json`).
+
+| cenário | o que mostrou |
+| --- | --- |
+| home | galeria → intro → setup (3 modos) → Rota 1 jogando |
+| route1 | 40 passos, repetições que interceptariam na Rota 2: 0 interceptações, 0 mensagens |
+| route2Repeat | 2 passos iguais no Médio → interceptação, a mensagem |
+| route2Change | só mudanças de direção → nunca adapta |
+| route3Easy | previsão distante → a perseguição decide |
+| route3Medium / route3Hard | previsão de 1 casa / de 2 casas, movimento do plano, a mensagem |
+| wallProjection | repetição contra parede → sem plano, sem movimento ilegal |
+| dynamicWall | a armadilha abre a parede; a interceptação seguinte planeja no labirinto aberto |
+| armedTrap | interceptação com armadilha armada ao lado; o Caçador nunca nela |
+| secondChance | a Segunda Chance segura o Explorador como antes |
+| restart / continuation | reinício e Rota 1 → 2 → 3: o primeiro passo de cada sessão nunca intercepta |
+| mobile | 360×640, toque: a mensagem na tela, sem rolagem horizontal |
+| keyboard / reduced | setas / `prefers-reduced-motion`: a interceptação e a mensagem exata na região `role="status"` |
+
+A exigência "mensagem na tela" é do cenário móvel: a 480×360 a linha de status
+fica fora da tela durante o jogo **na base e aqui** (§7).
+
+### 6.7 Performance (`performance.json`, `entry-timing-480x360.json`)
+
+- **Bundle** (`route-generation-bundle-audit.mjs --gate`, build da base e da
+  missão; o gate vale nos dois): JS inicial do Home **idêntico** (756,1 KB /
+  237,1 KB gzip; um arquivo de 830 B só troca o nome com hash do chunk da Rota
+  que o carregador preguiçoso busca); Worker idêntico (34,1 KB); Babylon
+  idêntico (7,84 MB); conjunto preguiçoso da Rota 60,8 → 62,9 KB (20,2 → 21,0 KB
+  gzip, **+0,8 KB**). A geração continua só no Worker.
+- **Entrada** (480×360, 6 execuções por lado): mediana 18,4 s na base, 16,3 s
+  na missão, 0 falhas — dentro da variação entre execuções (15–23 s nos dois);
+  numa primeira série de 3 a ordem foi a inversa. Nenhuma regressão mensurável.
+- **Commits do React por entrada**: 1,0 na base e na missão (hook real, as
+  partidas do censo): a memória entra no mesmo despacho do passo.
+- **Custo da política**: ~6 µs por chamada em 8 455 entradas reais (≈ 10 µs num passo
+  repetido, que faz a BFS; 0,04 µs nos outros, que retornam antes), medido com
+  outros validadores rodando — um teto.
+- **Censo**: 48 min, pico de heap 1 GB; a parte exata (D) é 32 min.
+
 ⟨SECTIONS-TBD⟩
 
 ## 7. Limitações
