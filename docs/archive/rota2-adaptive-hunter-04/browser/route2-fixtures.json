@@ -1,0 +1,220 @@
+{
+  "entry": "/lab/route-launcher on next dev (armRouteRandomSeed), Route 2 Easy, 480x360; candidate first, then ec3e564; each sweep stops at the first seed that holds on both",
+  "command": "node tools/validation/rota2-dependent-objectives-browser-probe.mjs --base <dev URL> --entry launcher --seed N --difficulty easy --scenario <name> --out DIR",
+  "randomBoards": "the complete run from Home on the production build (6 random boards each): passageFirst and pickaxe FAILED, the other 8 scenarios HELD",
+  "scenarios": {
+    "passageFirst": {
+      "rows": [
+        {
+          "seed": 7101,
+          "base": {
+            "held": false,
+            "stage": "lights",
+            "stop": {
+              "status": "lost",
+              "player": "1,6",
+              "hunter": "4,7",
+              "sentinel": "1,6",
+              "lights": "1/3"
+            }
+          },
+          "candidate": {
+            "held": false,
+            "stage": "lights",
+            "stop": {
+              "status": "lost",
+              "player": "1,6",
+              "hunter": "4,7",
+              "sentinel": "1,6",
+              "lights": "1/3"
+            }
+          },
+          "sameGame": true
+        },
+        {
+          "seed": 7102,
+          "base": {
+            "held": false,
+            "stage": "finish",
+            "stop": {
+              "status": "lost",
+              "player": "1,7",
+              "hunter": "7,0",
+              "sentinel": "1,7",
+              "lights": "3/3"
+            }
+          },
+          "candidate": {
+            "held": false,
+            "stage": "finish",
+            "stop": {
+              "status": "lost",
+              "player": "1,7",
+              "hunter": "7,0",
+              "sentinel": "1,7",
+              "lights": "3/3"
+            }
+          },
+          "sameGame": true
+        },
+        {
+          "seed": 7103,
+          "base": {
+            "held": true,
+            "stage": "finish"
+          },
+          "candidate": {
+            "held": true,
+            "stage": "finish"
+          },
+          "sameGame": true
+        }
+      ],
+      "pinned": 7103,
+      "onlyOneBuildHeld": [],
+      "differentGame": []
+    },
+    "pickaxe": {
+      "rows": [
+        {
+          "seed": 7101,
+          "base": {
+            "held": false,
+            "stage": "lights",
+            "stop": {
+              "status": "lost",
+              "player": "1,6",
+              "hunter": "2,8",
+              "sentinel": "1,6",
+              "lights": "1/3"
+            }
+          },
+          "candidate": {
+            "held": false,
+            "stage": "lights",
+            "stop": {
+              "status": "lost",
+              "player": "1,6",
+              "hunter": "2,8",
+              "sentinel": "1,6",
+              "lights": "1/3"
+            }
+          },
+          "sameGame": true
+        },
+        {
+          "seed": 7102,
+          "base": {
+            "held": false,
+            "stage": "beside-wall",
+            "stop": {
+              "status": "playing",
+              "player": "4,2",
+              "hunter": "1,5",
+              "sentinel": "1,6",
+              "lights": "0/3"
+            }
+          },
+          "candidate": {
+            "held": false,
+            "stage": "beside-wall",
+            "stop": {
+              "status": "playing",
+              "player": "4,2",
+              "hunter": "1,5",
+              "sentinel": "1,6",
+              "lights": "0/3"
+            }
+          },
+          "sameGame": true
+        },
+        {
+          "seed": 7103,
+          "base": {
+            "held": true,
+            "stage": "finish"
+          },
+          "candidate": {
+            "held": true,
+            "stage": "finish"
+          },
+          "sameGame": true
+        }
+      ],
+      "pinned": 7103,
+      "onlyOneBuildHeld": [],
+      "differentGame": []
+    },
+    "secondChance": {
+      "rows": [
+        {
+          "seed": 7101,
+          "base": {
+            "held": false,
+            "stage": "lights",
+            "stop": {
+              "status": "lost",
+              "player": "1,6",
+              "hunter": "5,8",
+              "sentinel": "1,6",
+              "lights": "1/3"
+            }
+          },
+          "candidate": {
+            "held": false,
+            "stage": "lights",
+            "stop": {
+              "status": "lost",
+              "player": "1,6",
+              "hunter": "5,8",
+              "sentinel": "1,6",
+              "lights": "1/3"
+            }
+          },
+          "sameGame": true
+        },
+        {
+          "seed": 7102,
+          "base": {
+            "held": false,
+            "stage": "finish",
+            "stop": {
+              "status": "lost",
+              "player": "0,4",
+              "hunter": "6,4",
+              "sentinel": "0,4",
+              "lights": "3/3"
+            }
+          },
+          "candidate": {
+            "held": false,
+            "stage": "finish",
+            "stop": {
+              "status": "lost",
+              "player": "0,4",
+              "hunter": "6,4",
+              "sentinel": "0,4",
+              "lights": "3/3"
+            }
+          },
+          "sameGame": true
+        },
+        {
+          "seed": 7103,
+          "base": {
+            "held": true,
+            "stage": "finish"
+          },
+          "candidate": {
+            "held": true,
+            "stage": "finish"
+          },
+          "sameGame": true
+        }
+      ],
+      "pinned": 7103,
+      "onlyOneBuildHeld": [],
+      "differentGame": []
+    }
+  }
+}

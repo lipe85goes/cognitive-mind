@@ -32,7 +32,8 @@
  * plays it the same, so a fixture compares two builds turn for turn. There are no retries (a retry of a fixture is
  * the same game). The scenarios that start on Route 2 take it; route1 and continuation stay on the Home entry.
  * `--fixtures <next dev URL>` plays only the PINNED scenarios that way (their own seed), everything else from Home on
- * `--base` — the complete run. Without it, a pinned scenario searches random boards from Home, as before.
+ * `--base` — the complete run. Without it, a pinned scenario searches random boards from Home, as before; the
+ * scenarios that only reach the trap or the portal (early, restart, mobile, reduced) always do.
  *
  * Usage:
  *   next build && next start -p 3100
@@ -40,7 +41,7 @@
  *        [--out DIR] [--viewport 480x360] [--mobile-viewport 360x640]
  *   next dev -p 3110                      # the launcher exists only there
  *   node tools/validation/rota2-dependent-objectives-browser-probe.mjs --base http://localhost:3100 \
- *        --fixtures http://localhost:3110    # the complete run: lightsFirst plays its pinned fixture (PINNED)
+ *        --fixtures http://localhost:3110    # the complete run: the PINNED scenarios play their fixtures
  *   node tools/validation/rota2-dependent-objectives-browser-probe.mjs --base http://localhost:3110 --entry launcher
  *        --seed N [--difficulty easy|medium|hard] --scenario lightsFirst   # one seeded game (fixture sweeps)
  *
@@ -85,13 +86,19 @@ if (!["home", "launcher"].includes(ENTRY) || (SEEDED && (!Number.isInteger(SEEDE
   process.exit(EXIT_USAGE);
 }
 /**
- * The pinned fixtures (`--fixtures <next dev URL>`): a scenario whose random-board search fails on the base and here
- * alike plays one seeded game instead. lightsFirst: the scripted plan (lights → early portal → trap → portal) finishes
- * on few boards — 17 seeds swept on ec3e564 and on this tree (ROTA2-ADAPTIVE-HUNTER-04,
- * docs/archive/rota2-adaptive-hunter-04/browser/lightsFirst-fixtures.json) ended identically on 16, and seed 7106 is
- * the one that finishes it, the same game turn for turn on both builds.
+ * The pinned fixtures (`--fixtures <next dev URL>`): the scenarios whose plan must run to the end (a win) search
+ * random boards from Home, and that search fails on the base and here alike — the scripted walker heads for each goal
+ * without planning around the defenders. With a fixture each plays one seeded game instead, chosen by sweeping seeds
+ * through the launcher on ec3e564 and on this tree (ROTA2-ADAPTIVE-HUNTER-04, docs/archive/rota2-adaptive-hunter-04/
+ * browser/lightsFirst-fixtures.json, route2-fixtures.json): every swept seed but one played the same game on both
+ * builds, none held on one build only, and each pinned seed finishes its plan identically on both.
  */
-const PINNED = { lightsFirst: { route: 2, seed: 7106, difficulty: "easy" } };
+const PINNED = {
+  lightsFirst: { route: 2, seed: 7106, difficulty: "easy" },
+  passageFirst: { route: 2, seed: 7103, difficulty: "easy" },
+  pickaxe: { route: 2, seed: 7103, difficulty: "easy" },
+  secondChance: { route: 2, seed: 7103, difficulty: "easy" },
+};
 /** The fixture a Route 2 scenario plays, with the server that has the launcher; null = Home, random boards. */
 const fixtureFor = (label) => (SEEDED ? { ...SEEDED, base: BASE } : FIXTURES_BASE && PINNED[label] ? { ...PINNED[label], base: FIXTURES_BASE } : null);
 const SCENARIOS = arg("--scenario", "route1,lightsFirst,passageFirst,pickaxe,secondChance,early,continuation,restart,mobile,reduced").split(",");
