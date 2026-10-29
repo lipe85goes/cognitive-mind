@@ -348,7 +348,60 @@ fica fora da tela durante o jogo **na base e aqui** (§7).
   outros validadores rodando — um teto.
 - **Censo**: 48 min, pico de heap 1 GB; a parte exata (D) é 32 min.
 
-⟨SECTIONS-TBD⟩
+### 6.8 Regressões
+
+Cada suíte abaixo rodou nesta árvore **e** na base exata `ec3e564` (worktree
+de rascunho, cada árvore com o próprio validador). "Pré-existente" = a mesma
+contagem e o mesmo check falhando na base.
+
+| conjunto | esta árvore | base `ec3e564` |
+| --- | --- | --- |
+| **CORE** (`validation-hygiene-tests.mjs`) | **15/15**, imutabilidade provada (0 criados/apagados/alterados, `git status` idêntico), evidência MATCHES | — |
+| **DEEP** (`final-acceptance.mjs`) | estrutural 1080/1080, contínuo 270/270, recuperação; as 5 evidências MATCHES | — |
+| C1 config · C2 geração | 22/22 · 21/21 | 22/22 · 21/21 |
+| C3 defensores · C4 invariantes | 19/20 (P5) · 18/19 (P5) | 19/20 (P5) · 18/19 (P5) — pré-existente |
+| C5 estado · C6 eventos | 41/42 (P2) · 34/35 (P2) | 41/42 (P2) · 34/35 (P2) — pré-existente |
+| C7B ciclo de vida · C7C Worker | 36/37 (P3) · 40/41 (P3) | 36/37 (P3) · 40/41 (P3) — pré-existente |
+| Worker RNG handoff · jornada (ownership, terminal) · continuação · carregador do tabuleiro · module loader | 28/28 · 7/7, 13/13 · 21/21 · 7/7 · 23/23 | idêntico |
+| readiness · watchdog · Circuito (ciclo de vida) · projeção | 19/19 · 10/10 · 13/13 · 12/12 | idêntico |
+| `validate-route-9x9.mjs` | 2 340 mapas, 0 fallbacks, 0 throws, 0 erros | — |
+| Game 03: lock final · interações · replayability | 9/9 · 28/28 · 36/36 | idêntico |
+| Game 03: skeleton · experiência · multiscene · calibração | 37/38 (H03) · 44/45 (E22) · 19/20 (M19) · 27/28 (P01) | os mesmos — pré-existente |
+| Home (`home-atelier-kit-tests.mjs`) | 9/9 | 9/9 |
+| Gameplay/Platform Lock · coupling gate | 22/22 · 6/6 | 21/21 · 6/6 |
+
+- Os quatro checks do Game 03 que falham (H03, E22, M19, P01) perguntam se a
+  pasta da Rota mudou desde o commit de cada missão do Game 03: na base já
+  mudou (12 arquivos, das missões da Rota anteriores); aqui a lista ganha os
+  dois arquivos do delta aprovado desta missão. Os mesmos checks confirmam o
+  que importa: nenhuma dependência ou lockfile mudou, e o Circuito está
+  intocado (E23 `CIRCUITO_UNTOUCHED`).
+- C6 na base caiu uma vez (`g.startGame is not a function` no worker do runtime
+  React) com o navegador rodando ao lado; sozinha, deu 34/35 (P2), igual aqui.
+- **Home, Game 03, Circuito**: `git diff ec3e564 -- src` toca só
+  `src/games/escape-maze/` (os 4 arquivos do delta aprovado).
+- O coupling gate pegou que a suíte e a lib desta missão acoplam a arquivos da
+  Rota (instrumentação, H31/H32, mutantes) sem declaração: declaradas como as
+  das missões Rota 2.0 anteriores (`STRUCTURAL_ASSERTION`).
+
+**Missões Rota 2.0 anteriores** (cada registro reproduzido **exatamente** na
+base antes de ser regravado aqui; campo a campo em
+`docs/archive/rota2-adaptive-hunter-04/superseded-records.md`):
+
+| | suíte | contrafactual | mutantes | censo | navegador |
+| --- | --- | --- | --- | --- | --- |
+| DYNAMIC-TRAPS-01 | 28/28 (um seed de fixture: 6106 → 6105) | `9f8ebb5`: 23 falham, 5 valem | 17/17 | 16/16 (só contagens das Rotas 2/3) | 5/5 |
+| DEPENDENT-OBJECTIVES-02 | 30/30 (fixtures das Rotas 2/3) | `32c419a`: 23 + 5 + 2 | 16/16 | 22/22 (lacuna de referência 0 nas duas árvores) | §6.9 |
+| SENTINEL-SOLVER-FIDELITY-03 | 13/13 | `f5826b2`: vale | 12/12 | 11/11 | — |
+
+Os registros CORE com partidas das Rotas 2/3 (chest-controlled,
+chest-runtime-gameplay, pickaxe-controlled, difficulty-baseline,
+difficulty-rebalance, diagnostic-launcher) batem na base e divergem aqui só
+por partidas das Rotas 2/3: rodados restritos à Rota 1, os três primeiros dão
+registros **idênticos** nas duas árvores; os dois fingerprints diferem em 100 e
+123 folhas, todas de linhas das Rotas 2/3.
+
+⟨OBJECTIVES-BROWSER⟩
 
 ## 7. Limitações
 
