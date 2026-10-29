@@ -307,9 +307,11 @@ Fácil quase não muda.
 
 `next build && next start`, Chromium/SwiftShader a 480×360 (360×640 no móvel).
 Cada passo é julgado contra o verificador de contrato com o tabuleiro lido da
-tela (props do canvas) e a mensagem lida da região `role="status"`: **256
-passos, 50 interceptações, 0 violações, 0 erros de página, 0 novas tentativas
-de entrada** (`browser/browser-probe.json`).
+tela (props do canvas) e a mensagem lida da região `role="status"`: **253
+passos, 61 interceptações, 0 violações, 0 erros de página, 0 novas tentativas
+de entrada**, na build de produção final (`browser/browser-probe.json`).
+`route1` e `wallProjection` passaram na segunda tentativa (a primeira não
+chegou a um passo jogável); nenhuma asserção falhou.
 
 | cenário | o que mostrou |
 | --- | --- |
@@ -327,8 +329,8 @@ de entrada** (`browser/browser-probe.json`).
 | mobile | 360×640, toque: a mensagem na tela, sem rolagem horizontal |
 | keyboard / reduced | setas / `prefers-reduced-motion`: a interceptação e a mensagem exata na região `role="status"` |
 
-A exigência "mensagem na tela" é do cenário móvel: a 480×360 a linha de status
-fica fora da tela durante o jogo **na base e aqui** (§7).
+A exigência "mensagem na tela" é do cenário móvel: a 480×360, depois de
+"Iniciar rota", a linha de status fica fora da tela **na base e aqui** (§7).
 
 ### 6.7 Performance (`performance.json`, `entry-timing-480x360.json`)
 
@@ -465,12 +467,13 @@ A sonda da DYNAMIC-TRAPS-01 nesta build: **5/5**, 0 erros de página
 - **Desfechos medidos com políticas roteirizadas**, não com pessoas: os números
   de captura/vitória (§6.3) indicam direção, não dificuldade percebida.
 - **Mensagem fora da tela em telas baixas (pré-existente).** A 480×360 o produto
-  rola a página até o tabuleiro e os controles ao iniciar a Rota, e a linha de
+  rola a página até o tabuleiro e os controles em "Iniciar rota", e a linha de
   status (no painel acima do tabuleiro) sai da tela — **igual na base**
-  (`browser/status-line-480x360.json`: 0/37 passos na base, 0/40 aqui). A
-  mensagem da interceptação está na região `role="status"` (anunciada por leitor
-  de tela) como todas as outras; a 360×640 ela aparece na tela. Esta missão não
-  mexe em layout.
+  (`browser/status-line-480x360.json`: 0/37 passos na base, 0/40 aqui). Depende
+  da rolagem, não da build: um reinício que não rola a deixa visível (o `route1`
+  da rodada final, 40/40). A mensagem da interceptação está na região
+  `role="status"` (anunciada por leitor de tela) como todas as outras; a
+  360×640 ela aparece na tela. Esta missão não mexe em layout.
 - O navegador roda em SwiftShader a 480×360 e 360×640; os tempos de entrada
   variam 15–23 s de execução para execução nas duas árvores.
 
@@ -527,4 +530,24 @@ O que mudou nas ferramentas, e por quê (nenhum contrato enfraquecido):
 - `game-continuation-contract-tests.mjs` I1: os imports de runtime do hook e do
   estado incluem `route-hunter-intercept` numa árvore que o tem.
 - `route-validation-coupling-gate.mjs`: `rota2-adaptive-hunter-edit.mjs` na
-  lista (lê o manifesto, não o código).
+  lista (lê o manifesto, não o código), e a suíte (`hook-path`: H31, H32,
+  mutantes M05/M23) e a lib (`rota-module-path`: linhas de registro em
+  `route-events.ts`/`route-defenders.ts`) desta missão, como as das missões
+  Rota 2.0 anteriores.
+- `rota2-dependent-objectives-browser-probe.mjs`: `--entry launcher --seed N`
+  (um jogo semeado pela costura de diagnóstico do produto, `next dev`) e
+  `--fixtures <URL do next dev>` (os quatro cenários fixados jogam a sua
+  semente; o resto pelo Home na build de produção) — §6.9. Nenhuma asserção
+  mudou; no modo fixture o resultado vem da linha de resultado do launcher (o
+  mesmo `GameResult`).
+
+## 10. Veredito
+
+**TECHNICAL_PASS_HUMAN_PLAYTEST_REQUIRED.** Todos os portões técnicos valem
+(§6): suíte 32/32, contrafactual na base, 25/25 mutantes, censo 9/9 (Rota 1
+idêntica à base em 360 partidas e no grafo exato), navegador 16/16, as três
+missões Rota 2.0 anteriores reproduzidas na base e mantidas aqui, CORE e DEEP,
+as regressões (as falhas restantes são pré-existentes e idênticas na base), o
+lock da plataforma, a reversão exata dos três deltas aprovados, lint, tipos,
+build e `git diff --check`. O que falta só uma pessoa responde (§8): se a
+adaptação é percebida, entendida e justa, sobretudo no Fácil e no Difícil.
