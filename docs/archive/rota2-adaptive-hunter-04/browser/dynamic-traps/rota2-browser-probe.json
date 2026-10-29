@@ -1,0 +1,148 @@
+{
+  "base": "http://localhost:3100",
+  "scenarios": {
+    "main": {
+      "published": {
+        "links": 1,
+        "wallStanding": true,
+        "trapDormant": true,
+        "nothingOpened": true
+      },
+      "telegraph": {
+        "linkedTrapLavender": 0.0037,
+        "linkedWallLavender": 0.0119,
+        "plainTrapLavender": 0
+      },
+      "activation": {
+        "attempt": 1,
+        "trap": "5,5",
+        "wall": "5,3",
+        "published": true,
+        "goneFromWalls": true,
+        "otherWallsUnchanged": true,
+        "message": "Armadilha ativada: a parede da mesma runa se abriu. A passagem serve para todos.",
+        "wallPixelsChanged": 11.94
+      },
+      "passage": {
+        "explorerWalkedThrough": true,
+        "hunterTrail": [
+          "0,6",
+          "0,6",
+          "0,7",
+          "0,6",
+          "0,7",
+          "0,6",
+          "0,5",
+          "0,6"
+        ],
+        "sentinelTrail": [
+          "1,7",
+          "1,7",
+          "1,7",
+          "1,7",
+          "1,7",
+          "1,7",
+          "1,7",
+          "1,7"
+        ],
+        "defenderOnTheOpenedCell": false,
+        "wallStillOpen": true
+      },
+      "restart": {
+        "nothingOpened": true,
+        "newLinkStanding": true,
+        "dormant": true
+      },
+      "held": true,
+      "seconds": 173
+    },
+    "pickaxe": {
+      "attempt": 1,
+      "attempts": [
+        "trap-armed"
+      ],
+      "link": {
+        "trap": "3,3",
+        "wall": "2,2"
+      },
+      "brokenWall": "2,2",
+      "trapOpenedWalls": [],
+      "wallsUnchangedByTheStep": true,
+      "message": "Armadilha ativada. A parede da mesma runa já estava aberta.",
+      "held": true,
+      "seconds": 86
+    },
+    "mobile": {
+      "attempt": 1,
+      "link": {
+        "trap": "4,3",
+        "wall": "3,0"
+      },
+      "published": true,
+      "goneFromWalls": true,
+      "message": "Armadilha ativada: a parede da mesma runa se abriu. A passagem serve para todos.",
+      "lavenderRightAfter": 0.0022,
+      "lavenderAfter1500ms": 0.0022,
+      "wallPixelsChanged": 18.23,
+      "held": true,
+      "seconds": 114
+    },
+    "reduced": {
+      "attempt": 1,
+      "link": {
+        "trap": "3,6",
+        "wall": "3,2"
+      },
+      "published": true,
+      "goneFromWalls": true,
+      "message": "Armadilha ativada: a parede da mesma runa se abriu. A passagem serve para todos.",
+      "lavenderRightAfter": 0.0015,
+      "lavenderAfter1500ms": 0.0015,
+      "wallPixelsChanged": 6.19,
+      "held": true,
+      "seconds": 94
+    },
+    "continuation": {
+      "routeWithOpening": 1,
+      "resultCard": {
+        "attempt": true,
+        "title": "Rota registrada"
+      },
+      "action": "Explorar outra rota",
+      "nextRoute": 2,
+      "nextNothingOpened": true,
+      "nextLinkStanding": true,
+      "nextTrapsDormant": true,
+      "nextLinkDiffers": true,
+      "held": true,
+      "seconds": 109
+    }
+  },
+  "pageErrors": [],
+  "entryRetries": [
+    {
+      "entry": "main",
+      "retries": 0
+    },
+    {
+      "entry": "pickaxe",
+      "retries": 0
+    },
+    {
+      "entry": "mobile",
+      "retries": 0
+    },
+    {
+      "entry": "reduced",
+      "retries": 0
+    },
+    {
+      "entry": "continuation",
+      "retries": 0
+    },
+    {
+      "entry": "continuation-next-route",
+      "retries": 0
+    }
+  ]
+}
