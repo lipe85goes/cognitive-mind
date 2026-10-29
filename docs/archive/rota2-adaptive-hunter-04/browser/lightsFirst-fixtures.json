@@ -1,0 +1,462 @@
+{
+  "scenario": "lightsFirst (Route 2: every light → portal asleep, passage Fechada → early portal does not win → trap opens the passage, wakes the portal → win)",
+  "fixtures": {
+    "route": 2,
+    "difficulty": "easy",
+    "seeds": "7101-7117",
+    "entry": "/lab/route-launcher on next dev (armRouteRandomSeed)",
+    "base": "ec3e564 (next dev :3111)",
+    "candidate": "feat/rota2-adaptive-hunter-04 (next dev :3110)",
+    "viewport": "480x360",
+    "command": "node tools/validation/rota2-dependent-objectives-browser-probe.mjs --base <dev URL> --entry launcher --seed N --difficulty easy --scenario lightsFirst --out DIR"
+  },
+  "randomBoards": {
+    "note": "unmodified probe, Home entry, production builds, 6 random boards each",
+    "base": "FAILED (no board of 6 finished the plan)",
+    "candidate": "HELD (first board)"
+  },
+  "rows": [
+    {
+      "seed": 7101,
+      "base": {
+        "held": false,
+        "stage": "lights",
+        "stop": {
+          "status": "lost",
+          "player": "1,6",
+          "hunter": "3,8",
+          "sentinel": "1,6",
+          "lights": "1/3"
+        }
+      },
+      "candidate": {
+        "held": false,
+        "stage": "lights",
+        "stop": {
+          "status": "lost",
+          "player": "1,6",
+          "hunter": "3,8",
+          "sentinel": "1,6",
+          "lights": "1/3"
+        }
+      },
+      "sameGame": true
+    },
+    {
+      "seed": 7102,
+      "base": {
+        "held": false,
+        "stage": "lights",
+        "stop": {
+          "status": "playing",
+          "player": "8,0",
+          "hunter": "0,4",
+          "sentinel": "1,7",
+          "lights": "0/3"
+        }
+      },
+      "candidate": {
+        "held": false,
+        "stage": "lights",
+        "stop": {
+          "status": "playing",
+          "player": "8,0",
+          "hunter": "0,4",
+          "sentinel": "1,7",
+          "lights": "0/3"
+        }
+      },
+      "sameGame": true
+    },
+    {
+      "seed": 7103,
+      "base": {
+        "held": false,
+        "stage": "lights",
+        "stop": {
+          "status": "lost",
+          "player": "1,1",
+          "hunter": "1,1",
+          "sentinel": "1,6",
+          "lights": "3/3"
+        }
+      },
+      "candidate": {
+        "held": false,
+        "stage": "lights",
+        "stop": {
+          "status": "lost",
+          "player": "1,1",
+          "hunter": "1,1",
+          "sentinel": "1,6",
+          "lights": "3/3"
+        }
+      },
+      "sameGame": true
+    },
+    {
+      "seed": 7104,
+      "base": {
+        "held": false,
+        "stage": "lights",
+        "stop": {
+          "status": "lost",
+          "player": "2,8",
+          "hunter": "2,8",
+          "sentinel": "2,6",
+          "lights": "1/3"
+        }
+      },
+      "candidate": {
+        "held": false,
+        "stage": "lights",
+        "stop": {
+          "status": "lost",
+          "player": "2,8",
+          "hunter": "2,8",
+          "sentinel": "2,6",
+          "lights": "1/3"
+        }
+      },
+      "sameGame": true
+    },
+    {
+      "seed": 7105,
+      "base": {
+        "held": false,
+        "stage": "lights",
+        "stop": {
+          "status": "lost",
+          "player": "0,1",
+          "hunter": "0,1",
+          "sentinel": "0,7",
+          "lights": "2/3"
+        }
+      },
+      "candidate": {
+        "held": false,
+        "stage": "lights",
+        "stop": {
+          "status": "lost",
+          "player": "1,0",
+          "hunter": "1,0",
+          "sentinel": "1,7",
+          "lights": "1/3"
+        }
+      },
+      "sameGame": false
+    },
+    {
+      "seed": 7106,
+      "base": {
+        "held": true,
+        "stage": "finish"
+      },
+      "candidate": {
+        "held": true,
+        "stage": "finish"
+      },
+      "sameGame": true
+    },
+    {
+      "seed": 7107,
+      "base": {
+        "held": false,
+        "stage": "lights",
+        "stop": {
+          "status": "lost",
+          "player": "1,2",
+          "hunter": "1,2",
+          "sentinel": "2,7",
+          "lights": "0/3"
+        }
+      },
+      "candidate": {
+        "held": false,
+        "stage": "lights",
+        "stop": {
+          "status": "lost",
+          "player": "1,2",
+          "hunter": "1,2",
+          "sentinel": "2,7",
+          "lights": "0/3"
+        }
+      },
+      "sameGame": true
+    },
+    {
+      "seed": 7108,
+      "base": {
+        "held": false,
+        "stage": "lights",
+        "stop": {
+          "status": "lost",
+          "player": "1,7",
+          "hunter": "1,8",
+          "sentinel": "1,7",
+          "lights": "2/3"
+        }
+      },
+      "candidate": {
+        "held": false,
+        "stage": "lights",
+        "stop": {
+          "status": "lost",
+          "player": "1,7",
+          "hunter": "1,8",
+          "sentinel": "1,7",
+          "lights": "2/3"
+        }
+      },
+      "sameGame": true
+    },
+    {
+      "seed": 7109,
+      "base": {
+        "held": false,
+        "stage": "lights",
+        "stop": {
+          "status": "playing",
+          "player": "3,4",
+          "hunter": "3,7",
+          "sentinel": "2,6",
+          "lights": "1/3"
+        }
+      },
+      "candidate": {
+        "held": false,
+        "stage": "lights",
+        "stop": {
+          "status": "playing",
+          "player": "3,4",
+          "hunter": "3,7",
+          "sentinel": "2,6",
+          "lights": "1/3"
+        }
+      },
+      "sameGame": true
+    },
+    {
+      "seed": 7110,
+      "base": {
+        "held": false,
+        "stage": "lights",
+        "stop": {
+          "status": "lost",
+          "player": "1,6",
+          "hunter": "1,7",
+          "sentinel": "1,6",
+          "lights": "2/3"
+        }
+      },
+      "candidate": {
+        "held": false,
+        "stage": "lights",
+        "stop": {
+          "status": "lost",
+          "player": "1,6",
+          "hunter": "1,7",
+          "sentinel": "1,6",
+          "lights": "2/3"
+        }
+      },
+      "sameGame": true
+    },
+    {
+      "seed": 7111,
+      "base": {
+        "held": false,
+        "stage": "lights",
+        "stop": {
+          "status": "playing",
+          "player": "7,7",
+          "hunter": "1,8",
+          "sentinel": "2,6",
+          "lights": "2/3"
+        }
+      },
+      "candidate": {
+        "held": false,
+        "stage": "lights",
+        "stop": {
+          "status": "playing",
+          "player": "7,7",
+          "hunter": "1,8",
+          "sentinel": "2,6",
+          "lights": "2/3"
+        }
+      },
+      "sameGame": true
+    },
+    {
+      "seed": 7112,
+      "base": {
+        "held": false,
+        "stage": "lights",
+        "stop": {
+          "status": "playing",
+          "player": "8,0",
+          "hunter": "0,4",
+          "sentinel": "1,7",
+          "lights": "0/3"
+        }
+      },
+      "candidate": {
+        "held": false,
+        "stage": "lights",
+        "stop": {
+          "status": "playing",
+          "player": "8,0",
+          "hunter": "0,4",
+          "sentinel": "1,7",
+          "lights": "0/3"
+        }
+      },
+      "sameGame": true
+    },
+    {
+      "seed": 7113,
+      "base": {
+        "held": false,
+        "stage": "early-portal",
+        "stop": {
+          "status": "playing",
+          "player": "6,8",
+          "hunter": "0,0",
+          "sentinel": "1,5",
+          "lights": "3/3"
+        }
+      },
+      "candidate": {
+        "held": false,
+        "stage": "early-portal",
+        "stop": {
+          "status": "playing",
+          "player": "6,8",
+          "hunter": "0,0",
+          "sentinel": "1,5",
+          "lights": "3/3"
+        }
+      },
+      "sameGame": true
+    },
+    {
+      "seed": 7114,
+      "base": {
+        "held": false,
+        "stage": "early-portal",
+        "stop": {
+          "status": "playing",
+          "player": "2,3",
+          "hunter": "0,6",
+          "sentinel": "2,7",
+          "lights": "3/3"
+        }
+      },
+      "candidate": {
+        "held": false,
+        "stage": "early-portal",
+        "stop": {
+          "status": "playing",
+          "player": "2,3",
+          "hunter": "0,6",
+          "sentinel": "2,7",
+          "lights": "3/3"
+        }
+      },
+      "sameGame": true
+    },
+    {
+      "seed": 7115,
+      "base": {
+        "held": false,
+        "stage": "early-portal",
+        "stop": {
+          "status": "playing",
+          "player": "5,7",
+          "hunter": "0,5",
+          "sentinel": "2,7",
+          "lights": "3/3"
+        }
+      },
+      "candidate": {
+        "held": false,
+        "stage": "early-portal",
+        "stop": {
+          "status": "playing",
+          "player": "5,7",
+          "hunter": "0,5",
+          "sentinel": "2,7",
+          "lights": "3/3"
+        }
+      },
+      "sameGame": true
+    },
+    {
+      "seed": 7116,
+      "base": {
+        "held": false,
+        "stage": "trap",
+        "stop": {
+          "status": "lost",
+          "player": "3,7",
+          "hunter": "4,1",
+          "sentinel": "3,6",
+          "lights": "3/3"
+        }
+      },
+      "candidate": {
+        "held": false,
+        "stage": "trap",
+        "stop": {
+          "status": "lost",
+          "player": "3,7",
+          "hunter": "4,1",
+          "sentinel": "3,6",
+          "lights": "3/3"
+        }
+      },
+      "sameGame": true
+    },
+    {
+      "seed": 7117,
+      "base": {
+        "held": false,
+        "stage": "lights",
+        "stop": {
+          "status": "playing",
+          "player": "8,0",
+          "hunter": "0,4",
+          "sentinel": "1,7",
+          "lights": "0/3"
+        }
+      },
+      "candidate": {
+        "held": false,
+        "stage": "lights",
+        "stop": {
+          "status": "playing",
+          "player": "8,0",
+          "hunter": "0,4",
+          "sentinel": "1,7",
+          "lights": "0/3"
+        }
+      },
+      "sameGame": true
+    }
+  ],
+  "summary": {
+    "seeds": 17,
+    "heldOnBoth": [
+      7106
+    ],
+    "failedOnBoth": 16,
+    "baseOnly": [],
+    "candidateOnly": [],
+    "sameGame": 16,
+    "differentGame": [
+      7105
+    ],
+    "note": "sameGame: the whole scenario record (stop state, panel, messages, result) equal on both builds, run time and server URL aside"
+  }
+}
