@@ -401,7 +401,50 @@ por partidas das Rotas 2/3: rodados restritos à Rota 1, os três primeiros dão
 registros **idênticos** nas duas árvores; os dois fingerprints diferem em 100 e
 123 folhas, todas de linhas das Rotas 2/3.
 
-⟨OBJECTIVES-BROWSER⟩
+### 6.9 O navegador da DEPENDENT-OBJECTIVES-02 — `lightsFirst` e as fixtures
+
+A sonda completa falhou uma vez em `lightsFirst` ("nenhuma tentativa terminou
+o plano"). Investigação, sem mexer em asserção nem em tentativas:
+
+1. **Sonda inalterada, só `lightsFirst`, builds de produção** (Home, tabuleiros
+   aleatórios, 6 tentativas): a **base `ec3e564` falhou** (nenhum dos 6
+   tabuleiros terminou o plano); a missão passou no primeiro.
+2. **Mesma fixture nas duas builds.** O único caminho determinístico que o
+   harness permite é a costura de diagnóstico do próprio produto,
+   `/lab/route-launcher` (só em `next dev`; `armRouteRandomSeed` fixa o mapa e
+   todo sorteio seguinte, o do Caçador inclusive). A sonda ganhou
+   `--entry launcher --seed N` (só teste: nenhuma mudança de produto, nenhuma
+   asserção mudada; uma fixture é um jogo só, sem novas tentativas). Rota 2,
+   Fácil (o padrão do Home), 480×360, o mesmo plano roteirizado, sementes
+   7101–7117, base e missão (`browser/lightsFirst-fixtures.json`):
+   - **16 de 17 sementes jogam o mesmo jogo nas duas builds** (registro do
+     cenário inteiro igual: estado final, painel, mensagens, resultado);
+   - 7105 diverge (uma interceptação do Fácil na missão: a captura vem uma luz
+     antes) e **falha nas duas**;
+   - nenhuma semente passa numa build só; **7106 termina o plano nas duas,
+     idêntica**.
+3. Conclusão: a falha é do plano roteirizado (o andador vai a cada luz sem
+   planejar em volta dos defensores), **igual na base e aqui** — não um efeito
+   desta missão. Pelo pedido, a sonda foi estabilizada com fixtures
+   determinísticas: `--fixtures <URL do next dev>` faz os cenários `PINNED`
+   jogarem a sua semente pelo launcher e todo o resto pelo Home na build de
+   produção.
+4. A rodada completa seguinte (máquina ociosa) perdeu `passageFirst` e
+   `pickaxe` pelo mesmo motivo. Varridos do mesmo jeito (missão primeiro, depois
+   a base; `browser/route2-fixtures.json`): para `passageFirst`, `pickaxe` e
+   `secondChance`, as sementes 7101 e 7102 falham **nas duas builds com o mesmo
+   jogo** e 7103 termina o plano nas duas, idêntica. Fixadas: `lightsFirst`
+   7106; `passageFirst`, `pickaxe`, `secondChance` 7103. `early`, `restart`,
+   `mobile` e `reduced` só chegam à armadilha ou ao portal e continuam pelo
+   Home.
+5. **Sonda completa na missão: 10/10** (`ROTA2_OBJECTIVES_BROWSER_HELD`, 0
+   erros de página; `browser/dependent-objectives/`). A asserção de que as luzes
+   sozinhas não acordam o portal e a passagem ainda precisa ser aberta continua
+   a mesma (portal "Aguardando", passagem "Fechada", visita antecipada sem
+   vitória, a armadilha abre a passagem e acorda o portal, vitória).
+
+A sonda da DYNAMIC-TRAPS-01 nesta build: **5/5**, 0 erros de página
+(`browser/dynamic-traps/`).
 
 ## 7. Limitações
 

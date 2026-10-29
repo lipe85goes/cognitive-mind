@@ -207,8 +207,18 @@ node tools/validation/rota2-dependent-objectives-tests.mjs --mutants       # 16 
 node tools/validation/rota2-dependent-objectives-census.mjs                # 1080 maps, structure, solver classes, runtime scenarios (check/--update)
 node tools/validation/rota2-dependent-objectives-edit.mjs                  # the second approved delta reverses the tree to its base exactly
 node tools/validation/rota2-dependent-objectives-performance.mjs [--next-dir .next]  # renders per input vs base, evaluation cost, bundle
-PLAYWRIGHT_DIR=… node tools/validation/rota2-dependent-objectives-browser-probe.mjs  # needs `next build && next start -p 3100` and an idle CPU
+PLAYWRIGHT_DIR=… node tools/validation/rota2-dependent-objectives-browser-probe.mjs --fixtures http://localhost:3110  # needs `next build && next start -p 3100`, `next dev -p 3110` and an idle CPU
 ```
+
+The four scenarios whose plan must run to a win (lightsFirst, passageFirst,
+pickaxe, secondChance) play pinned seeded fixtures through the product's
+diagnostic launcher (`/lab/route-launcher`, `next dev` only) under
+`--fixtures`; the rest play from Home on the production build. Without
+`--fixtures` those four search random boards from Home, a search that fails on
+some runs on the base and on later trees alike (ROTA2-ADAPTIVE-HUNTER-04,
+`docs/archive/rota2-adaptive-hunter-04/browser/lightsFirst-fixtures.json`,
+`route2-fixtures.json`). One seeded game: `--entry launcher --seed N
+[--difficulty easy] --scenario <name>` against the dev server.
 
 The approved Rota 2.0 missions are a chain: `treeBeforeRota2` reverses this
 mission's hunks first (`rota2-dependent-objectives-edit.json`, back to
